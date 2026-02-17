@@ -102,6 +102,7 @@
                         <button name="open_new_sample_add_wizard" groups="lerm_civil.lerm_access_create_srf" string="New Sample" type="object" class="btn btn-primary mr-2" invisible="state in ('2-confirm')"/>
                         <button name="open_sample_add_wizard" groups="lerm_civil.lerm_access_create_srf" string="Repeat Sample" type="object" class="btn btn-primary" invisible="state in ('2-confirm')"/>
                     </div>
+                    
 
                     <field name="samples"
                                         readonly="1"
@@ -109,6 +110,7 @@
                                         <!-- groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf" -->
                         
                         <tree>
+                           <field name="show_lab_id" column_invisible="1"/>
                             <field name="kes_no" string="Sample No."/>
                             <field name="material_id"/>
                             <field name="discipline_id"/>
@@ -121,7 +123,8 @@
                             <field name="sample_description"/>
                             <field name="sample_qty" column_invisible="1"/>
                             <field name="quantity"/>
-                            <field name="lab_id"/>
+                            <field name="lab_id" invisible="show_lab_id == False"/>
+                            <!-- <field name="lab_ids_raw"  /> -->
 
 
                             
@@ -353,7 +356,7 @@
                         <field name="disturbes_samples"/>
                         <field name="equipment_availability"/>
                         <field name="resource_availability"/>
-                        <field name="test_performed"/>
+                        <field name="test_performed" string="Whether all requested tests can be performed: "/>
                         
                         <field name="material_id" invisible="1"/>
                         <field name="doc_name"/>
@@ -369,6 +372,7 @@
                         <field name="equipment_availability_remark"/>
                         <field name="resource_availability_remark"/>
                         <field name="test_performed_remark"/>
+                         <field name="lab_id" invisible="1"/>
                         
 
                         <field name="sample_id" invisible="1"/>
@@ -381,6 +385,14 @@
 
                     </group>
                 </group>
+
+                <div>
+                 <button name="action_split_lab_ids"
+                    string="Show Lab ID"
+                    type="object"
+                    class="btn-primary"/>
+
+                </div>
                 
                 <field name="review_line_ids" create="false" delete="false">
                     <tree create="false" editable="bottom" delete="false">

@@ -15,9 +15,8 @@ class LermSampleForm(models.Model):
     _description = "Sample"
     _rec_name = 'kes_no'
 
-
+    show_lab_id = fields.Boolean(default=False)
     
-
 
 
     client_reference1 = fields.Char(string="Client Reference",compute="_compute_client_reference", store=True)
@@ -369,6 +368,7 @@ class LermSampleForm(models.Model):
                 'default_size_id': self.size_id.id,
                 'default_grade_id': self.grade_id.id,
                 'default_sample_qty': self.sample_qty,
+                'default_quantity': self.quantity,
                 'default_received_by_id': self.received_by_id.id,
                 'default_sample_received_date':self.sample_received_date,
                 'default_sample_condition':self.sample_condition,
@@ -904,6 +904,13 @@ class SampleRequestReview(models.Model):
         ondelete='cascade'
     )
 
+    lab_id = fields.Char(
+        string="Lab ID",
+        related='sample_id.lab_id',
+        store=True,
+        readonly=True
+    )
+
     review_line_ids = fields.One2many(
         'sample.request.review.lines',
         'parent_id',
@@ -1049,6 +1056,94 @@ class SampleRequestReview(models.Model):
     def _compute_material_id(self):
         for rec in self:
             rec.material_id = rec.sample_id.material_id.id if rec.sample_id.material_id else False
+
+    # def action_split_lab_ids(self):
+    #     for rec in self:
+    #         if not rec.lab_id:
+    #             continue
+
+    #         # delete old lines
+    #         rec.review_line_ids.unlink()
+
+    #         lab_text = rec.lab_id.strip()
+    #         ids = []
+
+    #         # CASE 1 → Range present
+    #         if ' - ' in lab_text:
+    #             start, end = lab_text.split(' - ')
+
+    #             import re
+    #             start_num = int(re.search(r'\d+$', start).group())
+    #             end_num = int(re.search(r'\d+$', end).group())
+
+    #             prefix = start[:start.rfind('-')+1]
+
+    #             for i in range(start_num, end_num + 1):
+    #                 ids.append(f"{prefix}{i}")
+    #         else:
+    #             ids.append(lab_text)
+
+    #         # create lines
+    #         lines = []
+    #         for lab in ids:
+    #             lines.append((0, 0, {
+    #                 'lab_id': lab
+    #             }))
+
+    #         rec.write({
+    #             'review_line_ids': lines
+    #         })
+
+    #     # 🔥 WIZARD REOPEN → CLOSE HONAR NAHI
+    #     return {
+    #         'type': 'ir.actions.act_window',
+    #         'res_model': 'sample.request.review',
+    #         'view_mode': 'form',
+    #         'res_id': self.id,
+    #         'target': 'new',   # wizard popup mode
+    #     }
+
+    def action_split_lab_ids(self):
+        for rec in self:
+            if not rec.lab_id or not rec.sample_id:
+                continue
+
+            lab_text = rec.lab_id.strip()
+            ids = []
+
+            if ' - ' in lab_text:
+                start, end = lab_text.split(' - ')
+
+                import re
+                start_num = int(re.search(r'\d+$', start).group())
+                end_num = int(re.search(r'\d+$', end).group())
+
+                prefix = start[:start.rfind('-') + 1]
+
+                for i in range(start_num, end_num + 1):
+                    ids.append(f"{prefix}{i}")
+            else:
+                ids.append(lab_text)
+
+            # Update review lines
+            rec.review_line_ids.unlink()
+            lines_vals = [(0, 0, {'lab_id': lab}) for lab in ids]
+            rec.write({'review_line_ids': lines_vals})
+
+            # 🔥 SHOW lab_id in Sample after button click
+            rec.sample_id.show_lab_id = True
+
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'sample.request.review',
+            'view_mode': 'form',
+            'res_id': self.id,
+            'target': 'new',
+            'flags': {'reload': True},
+        }
+
+
+
 
 
     
