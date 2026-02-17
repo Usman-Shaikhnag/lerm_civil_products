@@ -35,17 +35,7 @@ class GsbMechanical(models.Model):
                 },
         }
     
-    def open_eln_page(self):
-        # import wdb; wdb.set_trace()
-
-        return {
-                'view_mode': 'form',
-                'res_model': "lerm.eln",
-                'type': 'ir.actions.act_window',
-                'target': 'current',
-                'res_id': self.eln_ref.id,
-                
-            }
+    
 
     @api.model
     def create(self, vals):
@@ -128,6 +118,135 @@ class GsbMechanical(models.Model):
                     record.density_relation_visible = True
                 if sample.internal_id == 'rt14752hyt-b27e-48c6-81b8-900521446761':
                     record.cbr_visible = True
+
+
+    def open_eln_page(self):
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+
+            # Dry Gradation
+            if result.parameter.internal_id == '214578fgtr-560e-41f9-9f7e-3455c9b2925d':
+                result.calculated = True
+            
+            # Water Absorbtion
+            if result.parameter.internal_id == '216587ghtr-4e73-44ca-93ed-442f74cd1e9b':
+                result.result_char = round(self.water_absorbtion,2)
+                result.calculated = True
+                if self.water_absorbtion_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Elongation and Flakiness Index
+            if result.parameter.internal_id == '32147hgv4-599e-4569-8cd2-48e1dc120714':
+                result.result_char = round(self.aggregate_elongation,2)
+                result.calculated = True
+                if self.aggregate_elongation_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Elongation and Flakiness Index
+            if result.parameter.internal_id == '56482hgt1-70fb-4c47-baec-9880be12d765':
+                result.result_char = round(self.aggregate_flakiness,2)
+                result.calculated = True
+                if self.aggregate_flakiness_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Abrasion Value
+            if result.parameter.internal_id == '2145hgt1-3f1c-4aca-ac94-3c2bb0f034e2':
+                result.result_char = round(self.abrasion_value_percentage,2)
+                result.calculated = True
+                if self.abrasion_value_percentage_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Impact Value
+            if result.parameter.internal_id == '21457gtr4-a55f-47ac-aee6-9f37d733ccca':
+                result.result_char = round(self.average_impact_value,2)
+                result.calculated = True
+                if self.average_impact_value_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Plastic Limit
+            if result.parameter.internal_id == '14527gthy-f86e-4a5f-bd15-a5b0c173b5ed':
+                result.result_char = round(self.average_plastic_moisture,2)
+                result.calculated = True
+                if self.average_plastic_moisture_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Liquid Limit
+            if result.parameter.internal_id == '12547ftd4-3ed1-4021-90a2-47651f0ed81d':
+                result.result_char = round(self.liquid_limit,2)
+                result.calculated = True
+                if self.liquid_limit_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Plasticity Index Visible
+            if result.parameter.internal_id == '24584fgrt-1611-4790-9410-ef5db6233932':
+                result.result_char = round(self.plasticity_index,2)
+                result.calculated = True
+                if self.plasticity_index_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Density Relation Using Heavy Compaction
+            if result.parameter.internal_id == 'm21547tyu-0579-4221-8a82-bbfadcd3131f':
+                # result.result_char = round(self.aggregate_elongation,2)
+                result.calculated = True
+                # if self.aggregate_combine_conformity == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+
+            # CBR
+            if result.parameter.internal_id == 'rt14752hyt-b27e-48c6-81b8-900521446761':
+                # result.result_char = round(self.aggregate_elongation,2)
+                result.calculated = True
+                # if self.aggregate_combine_conformity == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+
+
+
+
+
+
+        return {
+                'view_mode': 'form',
+                'res_model': "lerm.eln",
+                'type': 'ir.actions.act_window',
+                'target': 'current',
+                'res_id': self.eln_ref.id,
+                
+            }
                 
 
     # Dry Gradation

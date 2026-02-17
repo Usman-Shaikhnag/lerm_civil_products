@@ -2237,6 +2237,86 @@ class CoarseAggregateMechanical(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
 
+            # Deleterious Content - Clay Lumps
+            if result.parameter.internal_id == 'd7e389bc-21ad-41eb-a602-f448f996eb2f':
+                result.calculated = True
+                result.result_char = round(self.clay_lumps_percent,2)
+                if self.clay_lumps_percent_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Deleterious Material - Lightweight Pieces (Coal & Lignite)
+            if result.parameter.internal_id == 'e7cc6b68-2550-4e1e-a28e-8526295e733f':
+                result.calculated = True
+                result.result_char = round(self.light_weight_percent,2)
+                if self.light_weight_percent_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Los Angeles Abrasion Value
+            if result.parameter.internal_id == '37f2161e-5cc0-413f-b76c-10478c65baf9':
+                result.calculated = True
+                result.result_char = round(self.abrasion_value_percentage,2)
+                if self.abrasion_value_percentage_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Deleterious content (Material finer than 75 micron)
+            if result.parameter.internal_id == '988f5bf6-c865-453c-9cd6-993a5a59ad95':
+                result.calculated = True
+                result.result_char = round(self.material_finer75,2)
+                if self.material_finer75_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # All-in-Aggregate Grading (Size,80 mm,40 mm,20 mm,4.75 mm,600 µm,150 µm )
+            if result.parameter.internal_id == '6976f6b5-5756-4ef7-a680-50b0c0dbccc8':
+                result.calculated = True
+                
+
+            # Soundness - Na2SO4
+            if result.parameter.internal_id == '153f3c8b-6ccb-4db0-b89d-02db61f61e81':
+                result.calculated = True
+                result.result_char = round(self.soundness_na2so4,2)
+                if self.soundness_na2so4_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Soundness - MgSO4
+            if result.parameter.internal_id == '89650e58-11a6-42af-8eb7-187467443a79':
+                result.calculated = True
+                result.result_char = round(self.soundness_mgso4,2)
+                if self.soundness_mgso4_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # 10 % Fine Value
+            if result.parameter.internal_id == '5f506c08-4369-491d-93a6-030514c29661':
+                result.calculated = True
+                result.result_char = round(self.load_10percent_fine_values,2)
+                if self.load_10percent_fine_values_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Angularity Number
+            if result.parameter.internal_id == '5c163fc2-c88c-4233-921e-1eae56c3ba23':
+                result.calculated = True
+               
+
 
         return {
                 'view_mode': 'form',

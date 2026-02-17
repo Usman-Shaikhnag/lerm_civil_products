@@ -738,34 +738,54 @@ class GgbsMechanical(models.Model):
 
 
     def open_eln_page(self):
-        # import wdb; wdb.set_trace()
-        for result in self.eln_ref.parameters_result:
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+        
                     if result.parameter.internal_id == '21457801hg-b44a-48cc-9d41-198f55346af0':
                         result.result_char = self.normal_consistency
+                        result.calculated = True
                         continue
+
+
                     if result.parameter.internal_id == '210bgf54-baa4-466f-a6a7-044da708f265':
                         result.result_char = self.average_specific_gravity
+                        result.calculated = True
                         if self.specific_gravity_nabl == 'pass':
                             result.nabl_status = 'nabl'
                         else:
                             result.nabl_status = 'non-nabl'
                         continue
+
+                    
                     if result.parameter.internal_id == '1452fgr0-8e67-4e94-86ea-98d9472f5c71':
                         result.result_char = self.slag_activity_index_7days
+                        result.calculated = True
                         if self.specific_gravity_nabl == 'pass':
                             result.nabl_status = 'nabl'
                         else:
                             result.nabl_status = 'non-nabl'
                         continue
+
+
                     if result.parameter.internal_id == '5214hgtb-c526-4092-a3a7-6b0ff7e69c0a':
                         result.result_char = self.fineness_air_permeability
+                        result.calculated = True
                         if self.fineness_nabl == 'pass':
                             result.nabl_status = 'nabl'
                         else:
                             result.nabl_status = 'non-nabl'
                         continue
+
+
                     if result.parameter.internal_id == 'bg21hy20-f42a-4405-b127-b5d84fe78485':
                         result.result_char = self.slag_activity_index_28days
+                        result.calculated = True
                         if self.slag_28days_nabl == 'pass':
                             result.nabl_status = 'nabl'
                         else:
