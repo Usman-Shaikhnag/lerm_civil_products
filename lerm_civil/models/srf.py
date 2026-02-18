@@ -91,6 +91,13 @@ class Group(models.Model):
     group = fields.Char(string="Group", required=True)
     def __str__(self):
         return self.group
+
+    issue_no = fields.Integer("Issue No")
+    rev_no = fields.Integer("Revision No.")
+
+    issue_date = fields.Date("Issue Date")
+    rev_date = fields.Date("Revision Date")
+    doc_no = fields.Char("Doc No")
     
 class TestMethod(models.Model):
     _name = "lerm_civil.test_method"
@@ -112,6 +119,7 @@ class SrfForm(models.Model):
 
 
     material_id = fields.Many2one('product.template')
+    show_lab_id = fields.Boolean(default=False)
 
 
     srf_id = fields.Char(string="SRF ID",tracking=True)
@@ -212,87 +220,177 @@ class SrfForm(models.Model):
 
    
 
+    # def action_generate_sample_lab_groups(self):
+    #     # import wdb;wdb.set_trace()
+    #     lines = self.samples.sorted(key=lambda r: r.id)
+        
+    #     if not lines:
+    #         return
+
+    #     first_line = lines[0]
+    #     if not first_line:
+    #         return
+
+    #     try:
+    #         for line in lines:
+    #             if line.quantity <= 0:
+    #                 continue
+    #             line.lab_id = False
+    #             line.lab_ids_raw = False
+                
+
+
+    #             if not line.material_id or line.quantity <= 0 or line.sample_qty <= 0:
+    #                 continue
+
+    #             # prevent double consume
+    #             if line.lab_ids_raw:
+    #                 continue
+
+    #             seq_code = line._get_lab_sequence_code(line.material_id)
+    #             if not seq_code:
+    #                 continue
+
+    #             total = line.quantity * line.sample_qty   # 🔥 MULTIPLY HERE
+
+    #             ids = []
+    #             for i in range(total):
+    #                 lab = line.env['ir.sequence'].next_by_code(seq_code)
+    #                 if not lab:
+    #                     break
+    #                 ids.append(lab)
+
+    #             if not ids:
+    #                 continue
+
+    #             # store consumed IDs
+    #             line.lab_ids_raw = ','.join(ids)
+
+    #             # preview
+    #             if len(ids) == 1:
+    #                 line.lab_id = ids[0]
+    #             else:
+    #                 line.lab_id = f"{ids[0]} - {ids[-1]}"
+                
+    #             review_lines_vals = []
+
+    #             for lab in ids:
+    #                 review_lines_vals.append((0, 0, {
+    #                     'lab_id': lab,
+    #                 }))
+    #             # import wdb;wdb.set_trace()
+
+    #             existing_review = self.env['sample.request.review'].sudo().search([
+    #                 ('sample_id', '=', line.id)
+    #             ])
+    #             if existing_review:
+    #                 existing_review.unlink()
+
+    #             wizard = self.env['sample.request.review'].sudo().create({
+    #                 'sample_id': line.id,
+    #                 'review_line_ids': review_lines_vals
+    #             })
+
+
+    #         self.is_generated = True
+                
+
+
+    #     except Exception as e:
+    #         first_line.lab_id = f"Error: {e}"
+
     def action_generate_sample_lab_groups(self):
-        # import wdb;wdb.set_trace()
+        # 1. Lines la ID nusar sort kara mhanje Sequence 1, 2, 3... barobar yeil
         lines = self.samples.sorted(key=lambda r: r.id)
         
         if not lines:
             return
 
-        first_line = lines[0]
-        if not first_line:
-            return
-
         try:
             for line in lines:
-                if line.quantity <= 0:
-                    continue
+                # ---------------------------------------------------
+                # STEP 1: Junya values compulsory clear kara
+                # ---------------------------------------------------
                 line.lab_id = False
                 line.lab_ids_raw = False
                 
-
-
-                if not line.material_id or line.quantity <= 0 or line.sample_qty <= 0:
+                # Basic Validation
+                if not line.material_id or line.quantity <= 0:
                     continue
 
-                # prevent double consume
-                if line.lab_ids_raw:
-                    continue
-
+                # Sequence Code milva
                 seq_code = line._get_lab_sequence_code(line.material_id)
                 if not seq_code:
                     continue
 
-                total = line.quantity * line.sample_qty   # 🔥 MULTIPLY HERE
+                # ---------------------------------------------------
+                # STEP 2: Calculation (Total IDs = Qty * Sample Qty)
+                # ---------------------------------------------------
+                # E.g. Quantity 1 * Sample_Qty 2 = 2 IDs pahije
+                # sample_qty = line.sample_qty if line.sample_qty > 0 else 1
+                total_ids_needed = int(line.quantity * 1)
 
-                ids = []
-                for i in range(total):
+                generated_ids = []
+                
+                # ---------------------------------------------------
+                # STEP 3: IDs Generate Loop (New Unique IDs)
+                # ---------------------------------------------------
+                for _ in range(total_ids_needed):
                     lab = line.env['ir.sequence'].next_by_code(seq_code)
-                    if not lab:
-                        break
-                    ids.append(lab)
+                    if lab:
+                        generated_ids.append(lab)
 
-                if not ids:
+                if not generated_ids:
                     continue
 
-                # store consumed IDs
-                line.lab_ids_raw = ','.join(ids)
+                # ---------------------------------------------------
+                # STEP 4: Store & Display
+                # ---------------------------------------------------
+                # Raw storage
+                line.lab_ids_raw = ','.join(generated_ids)
 
-                # preview
-                if len(ids) == 1:
-                    line.lab_id = ids[0]
+                # Display Range (e.g. "S-26-430 - S-26-431")
+                if len(generated_ids) == 1:
+                    line.lab_id = generated_ids[0]
                 else:
-                    line.lab_id = f"{ids[0]} - {ids[-1]}"
+                    line.lab_id = f"{generated_ids[0]} - {generated_ids[-1]}"
                 
-                review_lines_vals = []
+                # ---------------------------------------------------
+                # STEP 5: Update Review Wizard
+                # ---------------------------------------------------
+                # review_lines_vals = []
+                # for lab in generated_ids:
+                #     review_lines_vals.append((0, 0, {
+                #         'lab_id': lab,
+                #     }))
 
-                for lab in ids:
-                    review_lines_vals.append((0, 0, {
-                        'lab_id': lab,
-                    }))
-                # import wdb;wdb.set_trace()
+                # # Remove old review
+                # existing_review = self.env['sample.request.review'].sudo().search([
+                #     ('sample_id', '=', line.id)
+                # ])
+                # if existing_review:
+                #     existing_review.unlink()
 
-                existing_review = self.env['sample.request.review'].sudo().search([
-                    ('sample_id', '=', line.id)
-                ])
-                if existing_review:
-                    existing_review.unlink()
+                # # Create new review
+                # self.env['sample.request.review'].sudo().create({
+                #     'sample_id': line.id,
+                #     'review_line_ids': review_lines_vals
+                # })
 
-                wizard = self.env['sample.request.review'].sudo().create({
-                    'sample_id': line.id,
-                    'review_line_ids': review_lines_vals
-                })
-
-
+            # Mark as generated
             self.is_generated = True
-                
-
 
         except Exception as e:
-            first_line.lab_id = f"Error: {e}"
+            if lines:
+                lines[0].lab_id = f"Error: {str(e)}"
+
 
     
+ 
 
+
+    
+   
 
    
 
@@ -1007,6 +1105,7 @@ class CreateSampleWizard(models.TransientModel):
        
     )
     
+    
     lab_ids_raw = fields.Char()
 
 
@@ -1067,43 +1166,43 @@ class CreateSampleWizard(models.TransientModel):
     #         else:
     #             rec.lab_id = f"{ids[0]} - {ids[-1]}"
 
-    @api.depends('material_id', 'quantity', 'sample_qty')
-    def _compute_lab_id(self):
-        for rec in self:
-            rec.lab_id = False
-            rec.lab_ids_raw = False
+    # @api.depends('material_id', 'quantity', 'sample_qty')
+    # def _compute_lab_id(self):
+    #     for rec in self:
+    #         rec.lab_id = False
+    #         rec.lab_ids_raw = False
 
-            if not rec.material_id or rec.quantity <= 0 or rec.sample_qty <= 0:
-                continue
+    #         if not rec.material_id or rec.quantity <= 0 or rec.sample_qty <= 0:
+    #             continue
 
-            # prevent double consume
-            if rec.lab_ids_raw:
-                continue
+    #         # prevent double consume
+    #         if rec.lab_ids_raw:
+    #             continue
 
-            seq_code = rec._get_lab_sequence_code(rec.material_id)
-            if not seq_code:
-                continue
+    #         seq_code = rec._get_lab_sequence_code(rec.material_id)
+    #         if not seq_code:
+    #             continue
 
-            total = rec.quantity * rec.sample_qty   # 🔥 MULTIPLY HERE
+    #         total = rec.quantity * rec.sample_qty   # 🔥 MULTIPLY HERE
 
-            ids = []
-            for i in range(total):
-                lab = rec.env['ir.sequence'].next_by_code(seq_code)
-                if not lab:
-                    break
-                ids.append(lab)
+    #         ids = []
+    #         for i in range(total):
+    #             lab = rec.env['ir.sequence'].next_by_code(seq_code)
+    #             if not lab:
+    #                 break
+    #             ids.append(lab)
 
-            if not ids:
-                continue
+    #         if not ids:
+    #             continue
 
-            # store consumed IDs
-            rec.lab_ids_raw = ','.join(ids)
+    #         # store consumed IDs
+    #         rec.lab_ids_raw = ','.join(ids)
 
-            # preview
-            if len(ids) == 1:
-                rec.lab_id = ids[0]
-            else:
-                rec.lab_id = f"{ids[0]} - {ids[-1]}"
+    #         # preview
+    #         if len(ids) == 1:
+    #             rec.lab_id = ids[0]
+    #         else:
+    #             rec.lab_id = f"{ids[0]} - {ids[-1]}"
 
 
     
@@ -1112,53 +1211,25 @@ class CreateSampleWizard(models.TransientModel):
     
 
    
-    def action_create_sample(self):
-        self.ensure_one()
+    # def action_create_sample(self):
+    #     self.ensure_one()
 
-        if not self.lab_ids_raw:
-            return
+    #     if not self.lab_ids_raw:
+    #         return
 
-        ids = self.lab_ids_raw.split(',')
+    #     ids = self.lab_ids_raw.split(',')
 
-        lines = [{
-            'srf_id': self.srf_id.id,
-            'material_id': self.material_id.id,
-            'lab_id': lab,
-        } for lab in ids]
+    #     lines = [{
+    #         'srf_id': self.srf_id.id,
+    #         'material_id': self.material_id.id,
+    #         'lab_id': lab,
+    #     } for lab in ids]
 
-        self.env['lerm.srf.sample'].create(lines)
+    #     self.env['lerm.srf.sample'].create(lines)
 
-        return {'type': 'ir.actions.act_window_close'}
-
-    
-
-
+    #     return {'type': 'ir.actions.act_window_close'}
 
     
-
-
-
-    
-    
-
-
-
-    
-
-
-    
-
-    
-
-   
-
-
-
-
-    
-
-
-
 
 
     # ---------------------------------------------------
@@ -1404,6 +1475,7 @@ class CreateSampleWizard(models.TransientModel):
         conformity = self.conformity
         volume = self.volume
         product_name = self.product_name
+        quantity: self.quantity
         # lab_id = self.lab_id
 
 
@@ -1461,6 +1533,7 @@ class CreateSampleWizard(models.TransientModel):
             'product_name':product_name,
             'lab_location':self.lab_location.id,
             'location_name':self.location_name.id,
+            'quantity': self.quantity,
             # 'lab_id':self.lab_id,
 
             

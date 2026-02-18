@@ -61,10 +61,10 @@
                             <td style="border:1px solid #000; padding:3px;"><span t-field="o.rev_no"/></td>
 
                             <td style="border:1px solid #000; padding:3px;"><b>Rev. Dt:</b></td>
-                            <td style="border:1px solid #000; padding:3px;">  <span t-field="o.rev_date"/></td>
+                            <td style="border:1px solid #000; padding:3px;">  <span t-field="o.rev_date1"/></td>
 
                              <td style="border:1px solid #000; padding:3px;"><b>Issue Dt:</b></td>
-                            <td style="border:1px solid #000; padding:3px;">  <span t-field="o.issue_date"/></td>
+                            <td style="border:1px solid #000; padding:3px;">  <span t-field="o.issue_date1"/></td>
                         </tr>
 
                     </table>
@@ -160,30 +160,25 @@
                         </tr>
 
                         <tr>
-                            <td><b>Number of rock samples:</b></td>
+                            <td><b>Number of <span t-field="o.material_id"/> samples:</b></td>
                             <td colspan="3">
-                                <!-- <span t-field="o.rock_samples"/> -->
+                                <span t-field="o.no_samples"/>
                             </td>
                         </tr>
 
-                        <tr>
-                            <td><b>Number of natural stone samples:</b></td>
-                            <td colspan="3">
-                                <!-- <span t-field="o.stone_samples"/> -->
-                            </td>
-                        </tr>
+                       
 
                         <tr>
                             <td><b>Expected completion date:</b></td>
                             <td colspan="3">
-                                <!-- <span t-field="o.expected_completion_date"/> -->
+                                <span t-field="o.completion_date"/>
                             </td>
                         </tr>
 
                         <tr>
                             <td><b>Reference (W.O / Mail):</b></td>
                             <td colspan="3">
-                                <!-- <span t-field="o.reference_no"/> -->
+                                <span t-field="o.w_o"/>
                             </td>
                         </tr>
 
@@ -252,6 +247,33 @@
                             </div>
 
                         </div>
+
+                         <div class="signatureContainer girdgird" style="margin-top:50px;">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<div style="height: 40px;">
+						
+						</div>
+                            <div>
+                                <b>
+                                <!-- <span t-esc="o.sample_id.name"/> -->
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    <!-- (<span t-esc="o.sample_id.job_title"/>) -->
+                                </b>
+                            </div>
+                        </div>
+                        
+								
+							
+							</div>
+                    
 
 
 
