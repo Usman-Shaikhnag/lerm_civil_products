@@ -29,6 +29,23 @@
                                 </tree>
                             </field>
                         </div>
+                         <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
                   
                   
 
@@ -41,7 +58,7 @@
                                 </tr>
                                 <tr>
                                     <td style="width:50%;"><label for="date_of_testing">Date of Testing</label></td>
-                                    <td style="width:50%;"><field name="date_of_testing"/></td>
+                                    <td style="width:50%;"><field name="date_of_testing" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td style="width:50%;"><label for="age_of_test">Age of Test, days</label></td>
@@ -62,7 +79,7 @@
                                 </tr>
                                 <tr>
                                     <td style="width:50%;"><label for="sample_condition">Sample Conditioning</label></td>
-                                    <td style="width:50%;"><field name="sample_condition"/></td>
+                                    <td style="width:50%;"><field name="sample_condition" class="blue-input"/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -74,19 +91,19 @@
                             <tbody>
                                 <tr>
                                     <td><label for="specime_prepared">Date &amp; Time Specime Prepared</label></td>
-                                    <td><field name="specime_prepared"/></td>
+                                    <td><field name="specime_prepared" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="conditioning_started">Date &amp; Time Conditioning Started</label></td>
-                                    <td><field name="conditioning_started"/></td>
+                                    <td><field name="conditioning_started" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="Vaccum_starte">Date &amp; Time Vaccum Started</label></td>
-                                    <td><field name="Vaccum_starte"/></td>
+                                    <td><field name="Vaccum_starte" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="water_added">Date &amp; Time Water Added</label></td>
-                                    <td><field name="water_added"/></td>
+                                    <td><field name="water_added" class="blue-input"/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -95,15 +112,15 @@
                             <tbody>
                                 <tr>
                                     <td><label for="vaccum_turn_off">Date &amp; Time Vaccum Turn Off</label></td>
-                                    <td><field name="vaccum_turn_off"/></td>
+                                    <td><field name="vaccum_turn_off" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="soaking_started">Date &amp; Time Soaking Started</label></td>
-                                    <td><field name="soaking_started"/></td>
+                                    <td><field name="soaking_started" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="soaking_completed">Date &amp; Time Soaking completed</label></td>
-                                    <td><field name="soaking_completed"/></td>
+                                    <td><field name="soaking_completed" class="blue-input"/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -131,16 +148,16 @@
                                 <tbody>
                                     <tr>
                                         <td style="border: 1px solid black; color: black; padding: 8px 10px;">
-                                            <label for="thickness_specimen1"/>
+                                            <label for="thickness_specimen1" />
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="thickness_specimen1" nolabel="1"/>
+                                            <field name="thickness_specimen1" nolabel="1" class="blue-input"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                          <field name="thickness_specimen2" nolabel="1"/>
+                                          <field name="thickness_specimen2" nolabel="1" class="blue-input"/>
                                         </td>
                                            <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                          <field name="thickness_specimen3" nolabel="1"/>
+                                          <field name="thickness_specimen3" nolabel="1" class="blue-input"/>
                                         </td>
                                     </tr>
 
@@ -149,13 +166,13 @@
                                             <label for="diameter_specimen1"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="diameter_specimen1" nolabel="1"/>
+                                            <field name="diameter_specimen1" nolabel="1" class="blue-input"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                          <field name="diameter_specimen2" nolabel="1"/>
+                                          <field name="diameter_specimen2" nolabel="1" class="blue-input"/>
                                         </td>
                                            <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                          <field name="diameter_specimen3" nolabel="1"/>
+                                          <field name="diameter_specimen3" nolabel="1" class="blue-input"/>
                                         </td>
                                     </tr>
 
@@ -164,13 +181,13 @@
                                             <label for="initial_voltage1"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="initial_voltage1" nolabel="1"/>
+                                            <field name="initial_voltage1" nolabel="1" class="blue-input"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                          <field name="initial_voltage2" nolabel="1"/>
+                                          <field name="initial_voltage2" nolabel="1" class="blue-input"/>
                                         </td>
                                            <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                          <field name="initial_voltage3" nolabel="1"/>
+                                          <field name="initial_voltage3" nolabel="1" class="blue-input"/>
                                         </td>
                                     </tr>
 
@@ -179,13 +196,13 @@
                                             <label for="initial_current1"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="initial_current1" nolabel="1"/>
+                                            <field name="initial_current1" nolabel="1" class="blue-input"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                          <field name="initial_current2" nolabel="1"/>
+                                          <field name="initial_current2" nolabel="1" class="blue-input"/>
                                         </td>
                                            <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                          <field name="initial_current3" nolabel="1"/>
+                                          <field name="initial_current3" nolabel="1" class="blue-input"/>
                                         </td>
                                     </tr>
 
@@ -195,13 +212,13 @@
                                             <label for="initial_temprrature1"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="initial_temprrature1" nolabel="1"/>
+                                            <field name="initial_temprrature1" nolabel="1" class="blue-input"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                          <field name="initial_temprrature2" nolabel="1"/>
+                                          <field name="initial_temprrature2" nolabel="1" class="blue-input"/>
                                         </td>
                                            <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                          <field name="initial_temprrature3" nolabel="1"/>
+                                          <field name="initial_temprrature3" nolabel="1" class="blue-input"/>
                                         </td>
                                     </tr>
 
@@ -210,13 +227,13 @@
                                             <label for="final_voltage1"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="final_voltage1" nolabel="1"/>
+                                            <field name="final_voltage1" nolabel="1" class="blue-input"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                          <field name="final_voltage2" nolabel="1"/>
+                                          <field name="final_voltage2" nolabel="1" class="blue-input"/>
                                         </td>
                                            <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                          <field name="final_voltage3" nolabel="1"/>
+                                          <field name="final_voltage3" nolabel="1" class="blue-input"/>
                                         </td>
                                     </tr>
 
@@ -225,13 +242,13 @@
                                             <label for="final_curent1"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="final_curent1" nolabel="1"/>
+                                            <field name="final_curent1" nolabel="1" class="blue-input"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                          <field name="final_curent2" nolabel="1"/>
+                                          <field name="final_curent2" nolabel="1" class="blue-input"/>
                                         </td>
                                            <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                          <field name="final_curent3" nolabel="1"/>
+                                          <field name="final_curent3" nolabel="1" class="blue-input"/>
                                         </td>
                                     </tr>
 
@@ -240,13 +257,13 @@
                                             <label for="final_tempreture1"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="final_tempreture1" nolabel="1"/>
+                                            <field name="final_tempreture1" nolabel="1" class="blue-input"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                          <field name="final_tempreture2" nolabel="1"/>
+                                          <field name="final_tempreture2" nolabel="1" class="blue-input"/>
                                         </td>
                                            <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                          <field name="final_tempreture3" nolabel="1"/>
+                                          <field name="final_tempreture3" nolabel="1" class="blue-input"/>
                                         </td>
                                     </tr>
 
@@ -271,13 +288,13 @@
 
                         <field name="child_lines1" class="custom_table_borders" nolabel="1">
                             <tree editable="bottom">
-                                <field name='depth1'/>
-                                <field name='depth2'/>
-                                <field name='depth3'/>
-                                <field name='depth4'/>
-                                <field name='depth5'/>
-                                <field name='depth6'/>
-                                <field name='depth7'/>
+                                <field name='depth1' class="blue-input" decoration-info="depth1 != 0"/>
+                                <field name='depth2' class="blue-input" decoration-info="depth2 != 0"/>
+                                <field name='depth3' class="blue-input" decoration-info="depth3 != 0"/>
+                                <field name='depth4' class="blue-input" decoration-info="depth4 != 0"/>
+                                <field name='depth5' class="blue-input" decoration-info="depth5 != 0"/>
+                                <field name='depth6' class="blue-input" decoration-info="depth6 != 0"/>
+                                <field name='depth7' class="blue-input" decoration-info="depth7 != 0"/>
                                 <field name='dx_avg'/>
                               
                             </tree>
@@ -386,13 +403,13 @@
                                             <label for="specimen1_ov3"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="specimen1_ov3" nolabel="1"/>
+                                            <field name="specimen1_ov3" nolabel="1" class="blue-input"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                          <field name="specimen2_ov3" nolabel="1"/>
+                                          <field name="specimen2_ov3" nolabel="1" class="blue-input"/>
                                         </td>
                                            <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                          <field name="specimen3_ov3" nolabel="1"/>
+                                          <field name="specimen3_ov3" nolabel="1" class="blue-input"/>
                                         </td>
                                     </tr>
 
