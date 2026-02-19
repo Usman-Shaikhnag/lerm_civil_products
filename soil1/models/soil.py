@@ -5332,12 +5332,12 @@ class ConsolidationUnloadingLine(models.Model):
 
     time_m = fields.Float(string="Time (Minutes)")
     load_8_0_4_0 = fields.Float(string="8.0-4.0" ,digits=(8,3))
-    load_4_0_8_0 = fields.Float(string="4.0-8.0" ,digits=(8,3))
-    load_2_0_4_0 = fields.Float(string="2.0-4.0" ,digits=(8,3))
-    load_1_0_2_0 = fields.Float(string="1.0-2.0" ,digits=(8,3))
-    load_0_5_1_0 = fields.Float(string="0.5-1.0" ,digits=(8,3))
-    load_0_2_0_5 = fields.Float(string="0.2-0.5" ,digits=(8,3))
-    load_0_1_0_2 = fields.Float(string="0.1-0.2" ,digits=(8,3))
+    load_4_0_8_0 = fields.Float(string="4.0-2.0" ,digits=(8,3))
+    load_2_0_4_0 = fields.Float(string="2.0-1.0" ,digits=(8,3))
+    load_1_0_2_0 = fields.Float(string="1.0-0.5" ,digits=(8,3))
+    load_0_5_1_0 = fields.Float(string="0.5-0.2" ,digits=(8,3))
+    load_0_2_0_5 = fields.Float(string="0.2-0.1" ,digits=(8,3))
+    load_0_1_0_2 = fields.Float(string="0.1-0.0" ,digits=(8,3))
     # load_0_05_0_1 = fields.Float(string="0.05-0.1",digits=(8,3))
     setting_load = fields.Float(string="Setting Load",digits=(8,3))
 
@@ -7293,24 +7293,59 @@ class DirectShearTestLine(models.Model):
             else:
                 rec.corrected_area = 0.0
 
+    # @api.depends('prove_ring_read')
+    # def _compute_horizontal_shear(self):
+    #     for rec in self:
+    #         rec.horizontal_shear = ((rec.prove_ring_read or 0.0) * 0.8555 + 9.6658) / 9.81
+
     @api.depends('prove_ring_read')
     def _compute_horizontal_shear(self):
-        for rec in self:
-            rec.horizontal_shear = ((rec.prove_ring_read or 0.0) * 0.8555 + 9.6658) / 9.81
+     for rec in self:
+        # FIRST ROW → ZERO
+        if rec.id and rec.id == min(self.ids):
+            rec.horizontal_shear = 0.0
+            continue
 
-    @api.depends('horizontal_shear', 'parent_id_direct_shear.shear_force_percent_change','corrected_area')
+        if rec.prove_ring_read:
+            rec.horizontal_shear = ((rec.prove_ring_read * 0.8555) + 9.6658) / 9.81
+        else:
+            rec.horizontal_shear = 0.0
+
+    # @api.depends('horizontal_shear', 'parent_id_direct_shear.shear_force_percent_change','corrected_area')
+    # def _compute_horizontal_shear_temp(self):
+    #     for rec in self:
+    #         percent = rec.parent_id_direct_shear.shear_force_percent_change or 0.0
+    #         rec.horizontal_shear_temp = rec.horizontal_shear + (rec.horizontal_shear * percent)
+
+    @api.depends('horizontal_shear', 'parent_id_direct_shear.shear_force_percent_change')
     def _compute_horizontal_shear_temp(self):
-        for rec in self:
-            percent = rec.parent_id_direct_shear.shear_force_percent_change or 0.0
-            rec.horizontal_shear_temp = rec.horizontal_shear + (rec.horizontal_shear * percent)
+     for rec in self:
+        if rec.id and rec.id == min(self.ids):
+            rec.horizontal_shear_temp = 0.0
+            continue
+
+        percent = rec.parent_id_direct_shear.shear_force_percent_change or 0.0
+        rec.horizontal_shear_temp = rec.horizontal_shear + (rec.horizontal_shear * percent)
+
+    # @api.depends('horizontal_shear_temp', 'corrected_area')
+    # def _compute_shear_stress(self):
+    #     for rec in self:
+    #         if rec.corrected_area:
+    #             rec.shear_stress = rec.horizontal_shear_temp / rec.corrected_area
+    #         else:
+    #             rec.shear_stress = 0.0
 
     @api.depends('horizontal_shear_temp', 'corrected_area')
     def _compute_shear_stress(self):
-        for rec in self:
-            if rec.corrected_area:
-                rec.shear_stress = rec.horizontal_shear_temp / rec.corrected_area
-            else:
-                rec.shear_stress = 0.0
+     for rec in self:
+        if rec.id and rec.id == min(self.ids):
+            rec.shear_stress = 0.0
+            continue
+
+        if rec.corrected_area:
+            rec.shear_stress = rec.horizontal_shear_temp / rec.corrected_area
+        else:
+            rec.shear_stress = 0.0
 
 
 
@@ -8084,17 +8119,44 @@ class permHeadLine(models.Model):
 
     avg_permeability_27 = fields.Float("Average Permeability K27 :",compute="_compute_avg_permeability", digits=(16, 9), store=True)
 
-    @api.depends('permeability_ids.permeability','specific_gravity_per')
-    def _compute_avg_permeability(self):
-        for line in self:
-            if line.permeability_ids:
-                vals = line.permeability_ids.mapped("permeability")
-                line.avg_permeability = sum(vals) / len(vals)
-                line.avg_permeability_27 = line.avg_permeability * line.specific_gravity_per
+    avg_permeability_sci = fields.Char(string="Avg KT ",compute="_compute_avg_permeability",store=True)
 
-            else:
-                line.avg_permeability = 0.0
-                line.avg_permeability_27 = 0.0
+    avg_permeability_27_sci = fields.Char(string="K27 ",compute="_compute_avg_permeability",store=True)
+
+    # @api.depends('permeability_ids.permeability','specific_gravity_per')
+    # def _compute_avg_permeability(self):
+    #     for line in self:
+    #         if line.permeability_ids:
+    #             vals = line.permeability_ids.mapped("permeability")
+    #             line.avg_permeability = sum(vals) / len(vals)
+    #             line.avg_permeability_27 = line.avg_permeability * line.specific_gravity_per
+
+    #         else:
+    #             line.avg_permeability = 0.0
+    #             line.avg_permeability_27 = 0.0
+
+    @api.depends('permeability_ids.permeability', 'specific_gravity_per')
+    def _compute_avg_permeability(self):
+     for line in self:
+        if line.permeability_ids:
+            vals = line.permeability_ids.mapped("permeability")
+            avg = sum(vals) / len(vals)
+
+            k27 = avg * line.specific_gravity_per
+
+            # Float values (for math)
+            line.avg_permeability = avg
+            line.avg_permeability_27 = k27
+
+            # Scientific notation (display)
+            line.avg_permeability_sci = "{:.2E}".format(avg)
+            line.avg_permeability_27_sci = "{:.2E}".format(k27)
+
+        else:
+            line.avg_permeability = 0.0
+            line.avg_permeability_27 = 0.0
+            line.avg_permeability_sci = "0.00E+00"
+            line.avg_permeability_27_sci = "0.00E+00"
 
 
     
@@ -8976,6 +9038,10 @@ class HeavyCompactionLine(models.Model):
 
             
 
+    type_of_compaction = fields.Selection([
+    ('Heavy', 'Heavy'),
+    ('Light', 'Light'),], string="Type Of Compaction", default='Light')
+
     graph_image_light_heavy = fields.Binary("Compaction Curve Graph", compute="_compute_graph_image_light_heavy", store=True)
 
     @api.depends('soil_light_heavy_lines.moisture_content', 'soil_light_heavy_lines.dry_density')
@@ -8987,153 +9053,21 @@ class HeavyCompactionLine(models.Model):
             record.graph_image_light_heavy = False
 
 
-
-
-#     def generate_compaction_curve(self):
-#      self.ensure_one()
-
-#      lines = self.soil_light_heavy_lines.filtered(
-#         lambda l: l.moisture_content and l.dry_density
-#     )
-#      if len(lines) < 3:
-#         return False
-
-#     # Sort & remove duplicates
-#      points = sorted(
-#         {(float(l.moisture_content), float(l.dry_density)) for l in lines},
-#         key=lambda p: p[0]
-#      )
-#      if len(points) < 3:
-#         return False
-
-#      x_vals = np.array([p[0] for p in points])
-#      y_vals = np.array([p[1] for p in points])
-
-#      # Maximum Dry Density & OMC
-#      max_idx = np.argmax(y_vals)
-#      max_density = y_vals[max_idx]
-#      omc = x_vals[max_idx]
-
-#     #  from scipy.interpolate import CubicSpline
-#     #  cs = CubicSpline(x_vals, y_vals, bc_type='natural')
-#     #  x_smooth = np.linspace(x_vals.min(), x_vals.max(), 400)
-#     #  y_smooth = cs(x_smooth)
-
-#     # ---- Quadratic Polynomial Fit (EXACT Excel behavior) ----
-#      coeffs = np.polyfit(x_vals, y_vals, 2)
-#      poly = np.poly1d(coeffs)
-
-#      x_smooth = np.linspace(x_vals.min(), x_vals.max(), 400)
-#      y_smooth = poly(x_smooth)
-
-# # ---- TRUE Maximum from Polynomial ----
-#      a, b, c = coeffs
-#      omc = -b / (2 * a)
-#      max_density = poly(omc)
-
-
-#      import matplotlib
-#      matplotlib.use('Agg')
-#      import matplotlib.pyplot as plt
-#      from io import BytesIO
-#      import base64
-
-#      fig, ax = plt.subplots(figsize=(10, 5), dpi=110)
-
-#     # ---- Smooth Curve ----
-#      ax.plot(
-#         x_smooth, y_smooth,
-#         color='#0b2c5d', linewidth=2
-#      )
-
-#     # ---- Square Data Points ----
-#      ax.scatter(
-#         x_vals, y_vals,
-#         marker='s', s=60,
-#         facecolor='#4f81bd',
-#         edgecolor='#1f4e79',
-#         zorder=5
-#     )
-
-#     # ---- Yellow Max Density Line ----
-#      ax.axhline(
-#         y=max_density,
-#         color='#f1c232',
-#         linewidth=2
-#     )
-
-#     # ---- Green OMC Line ----
-#      ax.axvline(
-#         x=omc,
-#         color='#00a651',
-#         linewidth=2
-#     )
-
-#     # ---- Red Peak Marker ----
-#      ax.scatter(
-#         [omc], [max_density],
-#         marker='^',
-#         s=130,
-#         color='red',
-#         zorder=6
-#     )
-
-#     # ---- Axis Limits & Ticks (EXACT LIKE IMAGE) ----
-#      ax.set_xlim(5, 40)
-#      ax.set_ylim(0.8, 1.7)
-
-#      ax.set_xticks([5, 10, 15, 20, 25, 30, 35, 40])
-#      ax.set_yticks([0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7])
-
-#     # ---- Labels ----
-#      ax.set_xlabel('Moisture Content (%)', fontsize=11, fontweight='bold')
-#      ax.set_ylabel('Dry Density (gm/cc)', fontsize=11, fontweight='bold')
-
-#     # ---- Title ----
-#      ax.set_title(
-#         'Moisture Density Test Results',
-#         fontsize=13,
-#         fontweight='bold',
-#         pad=15
-#     )
-
-#     # ---- No Grid (as per image) ----
-#      ax.grid(False)
-
-#     # ---- Thick Black Border ----
-#      for spine in ax.spines.values():
-#         spine.set_linewidth(2)
-#         spine.set_color('black')
-
-#     # ---- Export ----
-#      buf = BytesIO()
-#      fig.tight_layout()
-#      fig.savefig(
-#         buf,
-#         format='png',
-#         dpi=110,
-#         bbox_inches='tight',
-#         facecolor='white'
-#     )
-#      plt.close(fig)
-#      buf.seek(0)
-
-#      return base64.b64encode(buf.read())
-
     def generate_compaction_curve(self):
      self.ensure_one()
+     from scipy.interpolate import PchipInterpolator
 
     # --------------------------------------------------
     # 1. COLLECT DATA
     # --------------------------------------------------
      lines = self.soil_light_heavy_lines.filtered(
-        lambda l: l.moisture_content and l.dry_density
+        lambda l: l.avg_moisture_content and l.dry_density
     )
      if len(lines) < 3:
         return False
 
      points = sorted(
-        {(float(l.moisture_content), float(l.dry_density)) for l in lines},
+        {(float(l.avg_moisture_content), float(l.dry_density)) for l in lines},
         key=lambda p: p[0]
     )
      if len(points) < 3:
@@ -9152,23 +9086,18 @@ class HeavyCompactionLine(models.Model):
     # --------------------------------------------------
     # 3. QUADRATIC CURVE (FORCED THROUGH PEAK)
     # --------------------------------------------------
-     x0 = omc
-     y0 = measured_max_density
+     from scipy.interpolate import PchipInterpolator
 
-     X = (x_vals - x0) ** 2
-     a = np.sum((y_vals - y0) * X) / np.sum(X ** 2)
-
-     def poly(x):
-        return a * (x - x0) ** 2 + y0
+     interp = PchipInterpolator(x_vals, y_vals)
 
      x_smooth = np.linspace(x_vals.min(), x_vals.max(), 400)
-     y_smooth = poly(x_smooth)
+     y_smooth = interp(x_smooth)
 
     # --------------------------------------------------
     # 4. PLOT
     # --------------------------------------------------
    
-     fig, ax = plt.subplots(figsize=(10, 5), dpi=110)
+     fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
 
     # Smooth curve ONLY
      ax.plot(
@@ -9180,6 +9109,7 @@ class HeavyCompactionLine(models.Model):
 
     # ❌ REMOVE BLUE POINTS (DO NOT PLOT THEM)
     # ax.scatter(x_vals, y_vals, ...)
+     ax.scatter(x_vals, y_vals,color='#0b2c5d',s=40,zorder=5)
 
     # --------------------------------------------------
     # 5. REFERENCE LINES & PEAK
@@ -9208,22 +9138,53 @@ class HeavyCompactionLine(models.Model):
     # --------------------------------------------------
     # 6. AXES & STYLE
     # --------------------------------------------------
-     ax.set_xlim(5, 40)
-     ax.set_ylim(0.8, 1.7)
 
-     ax.set_xticks([5, 10, 15, 20, 25, 30, 35, 40])
-     ax.set_yticks([0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7])
+    
+
+    # Padding (5%)
+     x_pad = (x_vals.max() - x_vals.min()) * 0.05
+     y_pad = (y_vals.max() - y_vals.min()) * 0.05
+
+     xmin = x_vals.min() - x_pad
+     xmax = x_vals.max() + x_pad
+     ymin = y_vals.min() - y_pad
+     ymax = y_vals.max() + y_pad
+
+    # Round nicely
+     xmin = np.floor(xmin / 2) * 2
+     xmax = np.ceil(xmax / 2) * 2
+     ymin = np.floor(ymin * 10) / 10
+     ymax = np.ceil(ymax * 10) / 10
+
+     ax.set_xlim(xmin, xmax)
+     ax.set_ylim(ymin, ymax)
+
+    # Automatic ticks
+     ax.set_xticks(np.arange(xmin, xmax + 0.1, 5))
+    #  ax.set_yticks(np.arange(ymin, ymax + 0.001, 0.05))
+     # Smart Y tick spacing
+     y_range = ymax - ymin
+
+     if y_range <= 0.5:
+       y_step = 0.1
+     elif y_range <= 1.5:
+       y_step = 0.2
+     elif y_range <= 3:
+       y_step = 0.4
+     else:
+      y_step = 1.0
+
+     ax.set_yticks(np.arange(ymin, ymax + y_step, y_step))
 
      ax.set_xlabel('Moisture Content (%)', fontsize=11, fontweight='bold')
      ax.set_ylabel('Dry Density (gm/cc)', fontsize=11, fontweight='bold')
 
      ax.set_title(
-        'Moisture Density Test Results',
-        fontsize=13,
-        fontweight='bold',
-        pad=15
-    )
-
+     'Moisture Density Test Results',
+     fontsize=13,
+     fontweight='bold',
+     pad=15)
+    
      ax.grid(False)
 
      for spine in ax.spines.values():
@@ -9248,6 +9209,116 @@ class HeavyCompactionLine(models.Model):
      return base64.b64encode(buf.read())
 
 
+    # def generate_compaction_curve(self):
+    #  self.ensure_one()
+
+    #  import numpy as np
+    #  import matplotlib.pyplot as plt
+    #  from io import BytesIO
+    #  import base64
+
+    # # --------------------------------------------------
+    # # 1. COLLECT DATA (IGNORE ZERO ROWS)
+    # # --------------------------------------------------
+    #  lines = self.soil_light_heavy_lines.filtered(
+    #     lambda l: l.avg_moisture_content and l.dry_density
+    # )
+
+    #  if len(lines) < 3:
+    #     return False
+
+    #  points = sorted(
+    #     [(float(l.avg_moisture_content), float(l.dry_density)) for l in lines if l.dry_density > 0],
+    #     key=lambda p: p[0]
+    # )
+
+    #  x_vals = np.array([p[0] for p in points])
+    #  y_vals = np.array([p[1] for p in points])
+
+    # # --------------------------------------------------
+    # # 2. PEAK (EXCEL STYLE)
+    # # --------------------------------------------------
+    #  max_idx = np.argmax(y_vals)
+    #  omc = x_vals[max_idx]
+    #  max_density = y_vals[max_idx]
+
+    # # --------------------------------------------------
+    # # 3. PLOT (STRAIGHT THROUGH POINTS)
+    # # --------------------------------------------------
+    #  x0 = omc
+    #  y0 = max_density
+
+    #  X = (x_vals - x0) ** 2
+    #  a = np.sum((y_vals - y0) * X) / np.sum(X ** 2)
+
+    #  def poly(x):
+    #     return a * (x - x0) ** 2 + y0
+
+    #  x_smooth = np.linspace(x_vals.min(), x_vals.max(), 400)
+    #  y_smooth = poly(x_smooth)
+
+    #  fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
+
+    # # Line through points (EXCEL BEHAVIOUR)
+    #  ax.plot(
+    #     x_vals,
+    #     y_vals,
+    #     color='#0b2c5d',
+    #     linewidth=2,
+    #     marker='o',
+    #     markersize=6
+    # )
+
+    # # --------------------------------------------------
+    # # 4. REFERENCE LINES
+    # # --------------------------------------------------
+    #  ax.axhline(max_density, color='#f1c232', linewidth=2)
+    #  ax.axvline(omc, color='#00a651', linewidth=2)
+
+    #  ax.scatter([omc], [max_density], marker='^', s=140, color='red', zorder=6)
+
+    # # --------------------------------------------------
+    # # 5. AUTO AXES (FROM DATA)
+    # # --------------------------------------------------
+    #  x_pad = (x_vals.max() - x_vals.min()) * 0.1
+    #  y_pad = (y_vals.max() - y_vals.min()) * 0.1
+
+    #  xmin = np.floor((x_vals.min() - x_pad) / 2) * 2
+    #  xmax = np.ceil((x_vals.max() + x_pad) / 2) * 2
+
+    #  ymin = np.floor((y_vals.min() - y_pad) * 10) / 10
+    #  ymax = np.ceil((y_vals.max() + y_pad) * 10) / 10
+
+    #  ax.set_xlim(xmin, xmax)
+    #  ax.set_ylim(ymin, ymax)
+ 
+    #  ax.set_xticks(np.arange(xmin, xmax + 1, 5))
+    #  ax.set_yticks(np.arange(ymin, ymax + 0.01, 0.1))
+
+    # # --------------------------------------------------
+    # # 6. LABELS
+    # # --------------------------------------------------
+    #  ax.set_xlabel('Moisture Content (%)', fontsize=11, fontweight='bold')
+    #  ax.set_ylabel('Dry Density (gm/cc)', fontsize=11, fontweight='bold')
+
+    #  ax.set_title('Moisture Density Test Results', fontsize=13, fontweight='bold', pad=15)
+
+    #  ax.grid(False)
+
+    #  for spine in ax.spines.values():
+    #     spine.set_linewidth(2)
+    #     spine.set_color('black')
+
+    # # --------------------------------------------------
+    # # 7. EXPORT IMAGE
+    # # --------------------------------------------------
+    #  buf = BytesIO()
+    #  fig.tight_layout()
+    #  fig.savefig(buf, format='png', dpi=110, bbox_inches='tight', facecolor='white')
+    #  plt.close(fig)
+
+    #  buf.seek(0)
+    #  return base64.b64encode(buf.read())
 
 
     
@@ -9994,40 +10065,127 @@ class DrirectShearLine(models.Model):
     
     shear_graph_image = fields.Binary("Shear Stress Graph")
 
+    # def action_generate_shear_graph(self):
+    #     for rec in self:
+    #         strain_vals = []
+    #         shear_vals = []
+
+    #         for line in rec.direct_shear_ids:
+    #             if line.horizontal_dispalacement and line.shear_stress:
+    #                 strain_vals.append(line.horizontal_dispalacement)
+    #                 shear_vals.append(line.shear_stress)
+
+    #         if not strain_vals:
+    #             return
+
+    #         # Sort by strain
+    #         data = sorted(zip(strain_vals, shear_vals))
+    #         strain_vals, shear_vals = zip(*data)
+
+    #         fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
+
+    #         # Line + Small Points
+    #         ax.plot(strain_vals, shear_vals, marker='o', markersize=2)
+
+    #         ax.set_xlabel("Strain")
+    #         ax.set_ylabel("Shear Stress")
+    #         ax.grid(True)
+
+    #         buffer = BytesIO()
+    #         plt.savefig(buffer, format='png', bbox_inches='tight')
+    #         buffer.seek(0)
+    #         image_base64 = base64.b64encode(buffer.read())
+    #         buffer.close()
+    #         plt.close(fig)
+
+    #         rec.shear_graph_image = image_base64
+
+
     def action_generate_shear_graph(self):
-        for rec in self:
-            strain_vals = []
-            shear_vals = []
+     import numpy as np
+     from scipy.interpolate import PchipInterpolator
+     import matplotlib.pyplot as plt
+     from matplotlib.ticker import MultipleLocator
+     from io import BytesIO
+     import base64
 
-            for line in rec.direct_shear_ids:
-                if line.horizontal_dispalacement and line.shear_stress:
-                    strain_vals.append(line.horizontal_dispalacement)
-                    shear_vals.append(line.shear_stress)
+     for rec in self:
+        strain_vals = []
+        shear_vals = []
 
-            if not strain_vals:
-                return
+        # Collect only rows with proving ring input
+        for line in rec.direct_shear_ids:
+            if line.prove_ring_read and line.prove_ring_read > 0:
+                strain_vals.append(line.horizontal_dispalacement or 0.0)
+                shear_vals.append(line.shear_stress or 0.0)
 
-            # Sort by strain
-            data = sorted(zip(strain_vals, shear_vals))
-            strain_vals, shear_vals = zip(*data)
+        if not strain_vals:
+            return
 
-            fig, ax = plt.subplots(figsize=(8, 4), dpi=150)
+        # Add origin (0,0)
+        strain_vals.insert(0, 0.0)
+        shear_vals.insert(0, 0.0)
 
-            # Line + Small Points
-            ax.plot(strain_vals, shear_vals, marker='o', markersize=2)
+        # Remove negative shear values
+        clean = [(x, y) for x, y in zip(strain_vals, shear_vals) if y >= 0]
+        strain_vals, shear_vals = zip(*clean)
 
-            ax.set_xlabel("Strain")
-            ax.set_ylabel("Shear Stress")
-            ax.grid(True)
+        # Convert to numpy
+        x = np.array(strain_vals)
+        y = np.array(shear_vals)
 
-            buffer = BytesIO()
-            plt.savefig(buffer, format='png', bbox_inches='tight')
-            buffer.seek(0)
-            image_base64 = base64.b64encode(buffer.read())
-            buffer.close()
-            plt.close(fig)
+        # Sort by strain
+        idx = np.argsort(x)
+        x = x[idx]
+        y = y[idx]
 
-            rec.shear_graph_image = image_base64
+        # Excel-like monotonic smoothing
+        interp = PchipInterpolator(x, y)
+        xnew = np.linspace(x.min(), x.max(), 300)
+        ynew = interp(xnew)
+
+        fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
+
+        # Axes crossing at (0,0)
+        ax.spines['left'].set_position(('data', 0))
+        ax.spines['bottom'].set_position(('data', 0))
+        ax.spines['right'].set_color('none')
+        ax.spines['top'].set_color('none')
+
+        ax.xaxis.set_ticks_position('bottom')
+        ax.yaxis.set_ticks_position('left')
+        ax.margins(x=0, y=0)
+
+        # Plot (bold + visible)
+        ax.plot(xnew, ynew, linewidth=2.5, zorder=3)
+        ax.scatter(x, y, s=30, zorder=4)
+
+        # Force X axis to stop at last point
+        ax.set_xlim(left=0, right=x.max())
+
+        ax.set_xlabel("Strain")
+        ax.set_ylabel("Shear Stress")
+        ax.set_ylim(bottom=0, top=y.max() * 1.05)
+
+        # Dense ticks (lab style)
+        ax.xaxis.set_major_locator(MultipleLocator(0.5))
+        ax.xaxis.set_minor_locator(MultipleLocator(0.25))
+
+        ax.yaxis.set_major_locator(MultipleLocator(0.02))
+        ax.yaxis.set_minor_locator(MultipleLocator(0.01))
+
+        # Grid behind curve
+        ax.grid(which='major', alpha=0.4, zorder=0)
+        ax.grid(which='minor', alpha=0.2, zorder=0)
+
+        buffer = BytesIO()
+        plt.savefig(buffer, format='png', bbox_inches='tight')
+        buffer.seek(0)
+        image_base64 = base64.b64encode(buffer.read())
+        buffer.close()
+        plt.close(fig)
+
+        rec.shear_graph_image = image_base64
 
 
     
@@ -10790,115 +10948,6 @@ class DrirectShearLine(models.Model):
 
 
 
-    # def action_generate_shear_graph_4(self):
-    #  for rec in self:
-
-    #     rec.shear_graph_image_4 = False
-
-    #     # ===== DATA =====
-    #     x_vals = [
-    #         rec.normal_stress,
-    #         rec.normal_stress_2,
-    #         rec.normal_stress_3,
-    #     ]
-    #     y_vals = [
-    #         rec.shear_test_final1,
-    #         rec.shear_test_final2,
-    #         rec.shear_test_final3,
-    #     ]
-
-    #     pairs = [(x, y) for x, y in zip(x_vals, y_vals) if x and y]
-    #     if len(pairs) < 2:
-    #         continue
-
-    #     pairs.sort(key=lambda p: p[0])
-    #     x, y = zip(*pairs)
-
-    #     # ===== LINEAR REGRESSION =====
-    #     n = len(x)
-    #     sum_x = sum(x)
-    #     sum_y = sum(y)
-    #     sum_xy = sum(xi * yi for xi, yi in zip(x, y))
-    #     sum_x2 = sum(xi * xi for xi in x)
-
-    #     slope = (n * sum_xy - sum_x * sum_y) / (n * sum_x2 - sum_x ** 2)
-    #     intercept = (sum_y - slope * sum_x) / n
-
-    #     y_fit = [slope * xi + intercept for xi in x]
-
-    #     # ===== R² =====
-    #     y_mean = sum_y / n
-    #     ss_tot = sum((yi - y_mean) ** 2 for yi in y)
-    #     ss_res = sum((yi - yfi) ** 2 for yi, yfi in zip(y, y_fit))
-    #     r_squared = 1 - (ss_res / ss_tot)
-
-    #     # ===== TRENDLINE RANGE =====
-    #     x_min = min(x)
-    #     x_max = max(x)
-    #     x_line = [x_min, x_max]
-    #     y_line = [slope * xi + intercept for xi in x_line]
-
-    #     # ===== PLOT =====
-    #     fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
-
-    #     # Excel blue data line + markers
-    #     ax.plot(
-    #         x, y,
-    #         color='#4472C4',
-    #         marker='o',
-    #         markersize=6,
-    #         linewidth=2.5
-    #     )
-
-    #     # Black trendline
-    #     ax.plot(
-    #         x_line, y_line,
-    #         color='black',
-    #         linewidth=1.6
-    #     )
-
-    #     # Labels
-    #     ax.set_xlabel("Normal stress, kg/sq.cm", fontsize=11)
-    #     ax.set_ylabel("Shear Stress, kg/sq.cm", fontsize=11)
-    #     ax.set_title("Shear Stress Vs Normal Stress", fontsize=13)
-    #     # ===== EXCEL-LIKE X AXIS =====
-    #     ax.set_xlim(0, 1.6)                      # Axis starts at 0
-    #     ax.set_xticks(np.arange(0, 1.61, 0.2))
-
-    #     # Axis limits (Excel-like)
-    #     # ax.set_xlim(x_min, x_max)
-    #     ax.set_ylim(0, max(y) * 1.15)
-
-    #     # Vertical gridlines only
-    #     ax.xaxis.grid(True, color='#BFBFBF', linewidth=0.8)
-    #     ax.yaxis.grid(False)
-
-    #     # Excel-like border
-    #     for spine in ax.spines.values():
-    #         spine.set_color('#7F7F7F')
-    #         spine.set_linewidth(1)
-
-    #     ax.tick_params(labelsize=10)
-
-    #     # Equation text (positioned like Excel)
-    #     eq_text = f"y = {slope:.4f}x + {intercept:.4f}\nR² = {r_squared:.4f}"
-    #     ax.text(
-    #         x_min + (x_max - x_min) * 0.35,
-    #         max(y) * 0.78,
-    #         eq_text,
-    #         fontsize=10
-    #     )
-
-    #     # ===== SAVE IMAGE =====
-    #     buffer = BytesIO()
-    #     fig.savefig(buffer, format='png', bbox_inches='tight', facecolor='white')
-    #     buffer.seek(0)
-
-    #     rec.shear_graph_image_4 = base64.b64encode(buffer.read())
-
-    #     buffer.close()
-    #     plt.close(fig)
-
     def action_generate_shear_graph_4(self):
      for rec in self:
 
@@ -10941,15 +10990,16 @@ class DrirectShearLine(models.Model):
         ss_res = sum((yi - yfi) ** 2 for yi, yfi in zip(y, y_fit))
         r_squared = 1 - (ss_res / ss_tot)
 
-        # ===== TRENDLINE RANGE (START FROM Y-AXIS) =====
+        # ===== TRENDLINE RANGE =====
+        x_min = min(x)
         x_max = max(x)
-        x_line = [0, x_max]
-        y_line = [intercept, slope * x_max + intercept]
+        x_line = [x_min, x_max]
+        y_line = [slope * xi + intercept for xi in x_line]
 
         # ===== PLOT =====
         fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
 
-        # Excel-style blue data line
+        # Excel blue data line + markers
         ax.plot(
             x, y,
             color='#4472C4',
@@ -10958,7 +11008,7 @@ class DrirectShearLine(models.Model):
             linewidth=2.5
         )
 
-        # Black trendline (touches Y-axis)
+        # Black trendline
         ax.plot(
             x_line, y_line,
             color='black',
@@ -10969,27 +11019,29 @@ class DrirectShearLine(models.Model):
         ax.set_xlabel("Normal stress, kg/sq.cm", fontsize=11)
         ax.set_ylabel("Shear Stress, kg/sq.cm", fontsize=11)
         ax.set_title("Shear Stress Vs Normal Stress", fontsize=13)
-
-        # ===== AXES (EXCEL-LIKE) =====
-        ax.set_xlim(0, 1.6)
+        # ===== EXCEL-LIKE X AXIS =====
+        ax.set_xlim(0, 1.6)                      # Axis starts at 0
         ax.set_xticks(np.arange(0, 1.61, 0.2))
+
+        # Axis limits (Excel-like)
+        # ax.set_xlim(x_min, x_max)
         ax.set_ylim(0, max(y) * 1.15)
 
-        # Gridlines
+        # Vertical gridlines only
         ax.xaxis.grid(True, color='#BFBFBF', linewidth=0.8)
         ax.yaxis.grid(False)
 
-        # Border
+        # Excel-like border
         for spine in ax.spines.values():
             spine.set_color('#7F7F7F')
             spine.set_linewidth(1)
 
         ax.tick_params(labelsize=10)
 
-        # Equation text
+        # Equation text (positioned like Excel)
         # eq_text = f"y = {slope:.4f}x + {intercept:.4f}\nR² = {r_squared:.4f}"
         # ax.text(
-        #     0.35 * x_max,
+        #     x_min + (x_max - x_min) * 0.35,
         #     max(y) * 0.78,
         #     eq_text,
         #     fontsize=10
@@ -11004,6 +11056,112 @@ class DrirectShearLine(models.Model):
 
         buffer.close()
         plt.close(fig)
+
+    # def action_generate_shear_graph_4(self):
+    #  for rec in self:
+
+    #     rec.shear_graph_image_4 = False
+
+    #     # ===== DATA =====
+    #     x_vals = [
+    #         rec.normal_stress,
+    #         rec.normal_stress_2,
+    #         rec.normal_stress_3,
+    #     ]
+    #     y_vals = [
+    #         rec.shear_test_final1,
+    #         rec.shear_test_final2,
+    #         rec.shear_test_final3,
+    #     ]
+
+    #     pairs = [(x, y) for x, y in zip(x_vals, y_vals) if x and y]
+    #     if len(pairs) < 2:
+    #         continue
+
+    #     pairs.sort(key=lambda p: p[0])
+    #     x, y = zip(*pairs)
+
+    #     # ===== LINEAR REGRESSION =====
+    #     n = len(x)
+    #     sum_x = sum(x)
+    #     sum_y = sum(y)
+    #     sum_xy = sum(xi * yi for xi, yi in zip(x, y))
+    #     sum_x2 = sum(xi * xi for xi in x)
+
+    #     slope = (n * sum_xy - sum_x * sum_y) / (n * sum_x2 - sum_x ** 2)
+    #     intercept = (sum_y - slope * sum_x) / n
+
+    #     y_fit = [slope * xi + intercept for xi in x]
+
+    #     # ===== R² =====
+    #     y_mean = sum_y / n
+    #     ss_tot = sum((yi - y_mean) ** 2 for yi in y)
+    #     ss_res = sum((yi - yfi) ** 2 for yi, yfi in zip(y, y_fit))
+    #     r_squared = 1 - (ss_res / ss_tot)
+
+    #     # ===== TRENDLINE RANGE (START FROM Y-AXIS) =====
+    #     x_max = max(x)
+    #     x_line = [0, x_max]
+    #     y_line = [intercept, slope * x_max + intercept]
+
+    #     # ===== PLOT =====
+    #     fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
+
+    #     # Excel-style blue data line
+    #     ax.plot(
+    #         x, y,
+    #         color='#4472C4',
+    #         marker='o',
+    #         markersize=6,
+    #         linewidth=2.5
+    #     )
+
+    #     # Black trendline (touches Y-axis)
+    #     ax.plot(
+    #         x_line, y_line,
+    #         color='black',
+    #         linewidth=1.6
+    #     )
+
+    #     # Labels
+    #     ax.set_xlabel("Normal stress, kg/sq.cm", fontsize=11)
+    #     ax.set_ylabel("Shear Stress, kg/sq.cm", fontsize=11)
+    #     ax.set_title("Shear Stress Vs Normal Stress", fontsize=13)
+
+    #     # ===== AXES (EXCEL-LIKE) =====
+    #     ax.set_xlim(0, 1.6)
+    #     ax.set_xticks(np.arange(0, 1.61, 0.2))
+    #     ax.set_ylim(0, max(y) * 1.15)
+
+    #     # Gridlines
+    #     ax.xaxis.grid(True, color='#BFBFBF', linewidth=0.8)
+    #     ax.yaxis.grid(False)
+
+    #     # Border
+    #     for spine in ax.spines.values():
+    #         spine.set_color('#7F7F7F')
+    #         spine.set_linewidth(1)
+
+    #     ax.tick_params(labelsize=10)
+
+    #     # Equation text
+    #     # eq_text = f"y = {slope:.4f}x + {intercept:.4f}\nR² = {r_squared:.4f}"
+    #     # ax.text(
+    #     #     0.35 * x_max,
+    #     #     max(y) * 0.78,
+    #     #     eq_text,
+    #     #     fontsize=10
+    #     # )
+
+    #     # ===== SAVE IMAGE =====
+    #     buffer = BytesIO()
+    #     fig.savefig(buffer, format='png', bbox_inches='tight', facecolor='white')
+    #     buffer.seek(0)
+
+    #     rec.shear_graph_image_4 = base64.b64encode(buffer.read())
+
+    #     buffer.close()
+    #     plt.close(fig)
 
 
 
@@ -11442,69 +11600,170 @@ class SwellingPressureLine(models.Model):
 
 
 
+    # def generate_line_chart_swell(self):
+    #  self.ensure_one()
+
+    #  lines = self.swelling_table_ids.sorted('applied_pressure')
+    #  x_vals = np.array(
+    #     [l.applied_pressure for l in lines if l.applied_pressure is not None],
+    #     dtype=float
+    #  )
+    #  y_vals = np.array(
+    #     [l.delta_h for l in lines if l.delta_h is not None],
+    #     dtype=float
+    #  )
+    #  if x_vals.size < 3:
+    #     return False    # need at least 3 points for a curve
+
+    #  # swelling pressure (same as before) ...
+    #  sp = 0.0
+    #  for i in range(len(x_vals) - 1):
+    #     d1 = y_vals[i]
+    #     d2 = y_vals[i + 1]
+    #     if d1 >= 0 and d2 <= 0 and (d2 - d1) != 0:
+    #         p1 = x_vals[i]
+    #         p2 = x_vals[i + 1]
+    #         sp = p1 + (p2 - p1) * (0.0 - d1) / (d2 - d1)
+    #         break
+
+    #  # ---- cubic spline for smooth curve ----
+    #  from scipy.interpolate import CubicSpline   # needs SciPy installed [web:72][web:74]
+    #  cs = CubicSpline(x_vals, y_vals, bc_type='natural')
+    #  x_smooth = np.linspace(x_vals.min(), x_vals.max(), 400)
+    #  y_smooth = cs(x_smooth)
+
+    #  import matplotlib
+    #  matplotlib.use('Agg')
+    
+
+    #  fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
+
+    #  # smooth cubic‑spline curve
+    #  ax.plot(x_smooth, y_smooth, color='steelblue', linewidth=2)
+
+    #  # original points
+    #  ax.scatter(x_vals, y_vals, color='steelblue')
+    #  for x, y in zip(x_vals, y_vals):
+    #     ax.annotate(f"{y:.3f}", (x, y),
+    #                 textcoords="offset points", xytext=(0, 5),
+    #                 ha='center', fontsize=8)
+
+    #  ax.axhline(0, color='tab:blue', linewidth=1)
+    #  if sp:
+    #     ax.axvline(sp, color='red', linewidth=1)
+
+    #  ax.set_xlabel('Pressure kg/cm²')
+    #  ax.set_ylabel('Deformation, mm')
+    #  ax.set_ylim(-0.75, 2.50)
+    #  ax.set_yticks([-0.75, 0.0, 0.75, 1.50, 2.25])
+    #  ax.grid(True)
+
+    #  buf = BytesIO()
+    #  fig.tight_layout()
+    #  fig.savefig(buf, format='png')
+    #  plt.close(fig)
+    #  buf.seek(0)
+    #  return base64.b64encode(buf.read())
+
     def generate_line_chart_swell(self):
      self.ensure_one()
 
-     lines = self.swelling_table_ids.sorted('applied_pressure')
-     x_vals = np.array(
-        [l.applied_pressure for l in lines if l.applied_pressure is not None],
-        dtype=float
-     )
-     y_vals = np.array(
-        [l.delta_h for l in lines if l.delta_h is not None],
-        dtype=float
-     )
-     if x_vals.size < 3:
-        return False    # need at least 3 points for a curve
-
-     # swelling pressure (same as before) ...
-     sp = 0.0
-     for i in range(len(x_vals) - 1):
-        d1 = y_vals[i]
-        d2 = y_vals[i + 1]
-        if d1 >= 0 and d2 <= 0 and (d2 - d1) != 0:
-            p1 = x_vals[i]
-            p2 = x_vals[i + 1]
-            sp = p1 + (p2 - p1) * (0.0 - d1) / (d2 - d1)
-            break
-
-     # ---- cubic spline for smooth curve ----
-     from scipy.interpolate import CubicSpline   # needs SciPy installed [web:72][web:74]
-     cs = CubicSpline(x_vals, y_vals, bc_type='natural')
-     x_smooth = np.linspace(x_vals.min(), x_vals.max(), 400)
-     y_smooth = cs(x_smooth)
-
+     import numpy as np
+     import base64
+     from io import BytesIO
      import matplotlib
      matplotlib.use('Agg')
-    
+     import matplotlib.pyplot as plt
+     from scipy.interpolate import CubicSpline
+     from matplotlib.ticker import LogLocator, LogFormatterMathtext
 
-     fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
+    # -----------------------------
+    # Data
+    # -----------------------------
+     lines = self.swelling_table_ids.sorted('applied_pressure')
 
-     # smooth cubic‑spline curve
-     ax.plot(x_smooth, y_smooth, color='steelblue', linewidth=2)
+     x = np.array([l.applied_pressure for l in lines if l.applied_pressure > 0], float)
+     y = np.array([l.delta_h for l in lines if l.delta_h is not None], float)
 
-     # original points
-     ax.scatter(x_vals, y_vals, color='steelblue')
-     for x, y in zip(x_vals, y_vals):
-        ax.annotate(f"{y:.3f}", (x, y),
-                    textcoords="offset points", xytext=(0, 5),
-                    ha='center', fontsize=8)
+     if len(x) < 3:
+        return False
 
-     ax.axhline(0, color='tab:blue', linewidth=1)
-     if sp:
-        ax.axvline(sp, color='red', linewidth=1)
+    # -----------------------------
+    # Swelling pressure
+    # -----------------------------
+     sp = 0
+     for i in range(len(x)-1):
+        if y[i] >= 0 and y[i+1] <= 0:
+            sp = x[i] + (x[i+1]-x[i])*(0-y[i])/(y[i+1]-y[i])
+            break
 
-     ax.set_xlabel('Pressure kg/cm²')
-     ax.set_ylabel('Deformation, mm')
-     ax.set_ylim(-0.75, 2.50)
-     ax.set_yticks([-0.75, 0.0, 0.75, 1.50, 2.25])
-     ax.grid(True)
+    # -----------------------------
+    # Excel-style spline (log domain)
+    # -----------------------------
+     lx = np.log10(x)
+     cs = CubicSpline(lx, y, bc_type='natural')
 
+     lx_s = np.linspace(lx.min(), lx.max(), 500)
+     xs = 10**lx_s
+     ys = cs(lx_s)
+
+    # -----------------------------
+    # Figure
+    # -----------------------------
+     fig, ax = plt.subplots(figsize=(10,5), dpi=100)
+
+    # Curve
+     ax.plot(xs, ys, color='#4472C4', linewidth=2.5)
+
+    # Markers
+     ax.scatter(x, y, color='#4472C4', s=30, zorder=5)
+
+    # Point labels
+     for xi, yi in zip(x, y):
+        ax.text(xi, yi+0.05, f"{yi:.3f}", ha='center', fontsize=8)
+
+    # Zero line
+     ax.axhline(0, color='#4472C4', linewidth=1.5)
+
+    # X-axis on zero
+     ax.spines['bottom'].set_position(('data',0))
+
+    # Swelling pressure
+     ax.axvline(sp, color='red', linewidth=1.5)
+
+    # Log X
+     ax.set_xscale('log')
+     ax.set_xlim(0.1,10)
+
+     ax.xaxis.set_major_locator(LogLocator(base=10))
+     ax.xaxis.set_major_formatter(LogFormatterMathtext())
+     ax.xaxis.set_minor_locator(LogLocator(base=10, subs=np.arange(2,10)*0.1))
+
+    # Y limits
+     ax.set_ylim(-0.75, 2.25)
+     ax.set_yticks(np.arange(-0.75, 2.26, 0.50))
+
+    # Grid (Excel density)
+     ax.grid(which='major', color='#A6A6A6', linewidth=0.8)
+     ax.grid(which='minor', color='#D9D9D9', linewidth=0.5)
+
+    # Labels
+     ax.set_xlabel('Pressure kg/cm2', fontsize=10)
+     ax.set_ylabel('Deformation, mm', fontsize=10)
+
+    # Borders
+     ax.spines['top'].set_visible(True)
+     ax.spines['right'].set_visible(True)
+
+    # -----------------------------
+    # Export
+    # -----------------------------
      buf = BytesIO()
      fig.tight_layout()
      fig.savefig(buf, format='png')
      plt.close(fig)
      buf.seek(0)
+
      return base64.b64encode(buf.read())
 
 
