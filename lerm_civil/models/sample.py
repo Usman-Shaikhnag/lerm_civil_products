@@ -957,7 +957,7 @@ class SampleRequestReview(models.Model):
         string="Review Lines"
     )
 
-    receipt_date = fields.Date("Date of Receipt")
+    receipt_date = fields.Date("Date of Receipt",store=True,)
     lot_detail = fields.Integer("Lot Detail")
     disturbes_samples = fields.Integer("No of disturbed samples")
     undisturbes_samples = fields.Integer("No of undisturbed samples")

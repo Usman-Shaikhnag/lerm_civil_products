@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="rr_report">
+
+    <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="o">
+        
+
+       <div style="width:100%;">
+
+        <table style="width:100%; border-collapse:collapse; border:1px solid #000; font-size:12px;">
+            <tr>
+
+                <!-- LEFT LOGO -->
+                <td style="width:23%; vertical-align:middle; text-align:center;">
+
+                    <img t-if="logo_base64"  t-att-src="'data:image/png;base64,%s' % logo_base64" style="height:50px; display:block; margin:0 auto;"/>
+                        
+                </td>
+
+
+                <!-- RIGHT GRID -->
+                <td style="width:70%; border:1px solid #000; padding:0;">
+                    <table style="width:100%; border-collapse:collapse; font-size:12px;">
+
+                        <!-- COMPANY -->
+                        <tr>
+                            <td colspan="6" style="border:1px solid #000; padding:4px;">
+                                <b>GENSTRU CONSULTANTS PVT. LTD</b>
+                            </td>
+                        </tr>
+
+                        <!-- DOC NAME -->
+                        <tr>
+                            <td style="border:1px solid #000; padding:3px;"><b>Doc. Name</b></td>
+                            <td colspan="6" style="border:1px solid #000; padding:3px;">
+                                <span t-field="o.doc_name"/>
+                            </td>
+
+                           
+                        </tr>
+
+                        <!-- DOC NO -->
+                        <tr>
+                            <td style="border:1px solid #000000; padding:3px;"><b>Doc. No.</b></td>
+                            <td colspan="3" style="border:1px solid #000; padding:3px;">
+                                <span t-field="o.doc_no"/>
+                            </td>
+
+
+                           
+                             <td style="border:1px solid #000; padding:3px;"><b>Issue No:</b></td>
+                            <td style="border:1px solid #000; padding:3px;"><span t-field="o.issue_no"/></td>
+
+                           
+                        </tr>
+
+                        <!-- REV -->
+                        <tr>
+                            <td style="border:1px solid #000; padding:3px;"><b>Rev. No.</b></td>
+                            <td style="border:1px solid #000; padding:3px;"><span t-field="o.rev_no"/></td>
+
+                            <td style="border:1px solid #000; padding:3px;"><b>Rev. Dt:</b></td>
+                            <td style="border:1px solid #000; padding:3px;">  <span t-field="o.rev_date1"/></td>
+
+                             <td style="border:1px solid #000; padding:3px;"><b>Issue Dt:</b></td>
+                            <td style="border:1px solid #000; padding:3px;">  <span t-field="o.issue_date1"/></td>
+                        </tr>
+
+                    </table>
+                </td>
+
+            </tr>
+        </table>
+
+    </div>
+         <table style="width:100%; border-collapse:collapse; font-size:13px;" border="1">
+
+                        <tr>
+                            <td style="width:25%;"><b>Review of order request no.</b></td>
+                            <td style="width:45%;">
+                                <!-- <span t-field="o.name"/> -->
+                            </td>
+
+                            <td style="width:10%;"><b>Date:</b></td>
+                            <td style="width:20%;">
+                                <span t-field="o.receipt_date"/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Customer Name &amp; Address:</b></td>
+                            <td colspan="3">
+                                <span t-field="o.sample_id.srf_id.customer.name"/>
+                                
+										<span t-field="o.sample_id.srf_id.customer.street"/>
+										<span t-field="o.sample_id.srf_id.customer.street2"/>
+										<span t-field="o.sample_id.srf_id.customer.city"/>
+                                        <span t-if="o.sample_id.srf_id.customer.zip"> - <span t-field="o.sample_id.srf_id.customer.zip"/></span>,
+										<span t-field="o.sample_id.srf_id.customer.state_id"/> ,
+										<span t-field="o.sample_id.srf_id.customer.country_id"/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><b>For (End Customer, if any):</b></td>
+                            <td colspan="3">
+                                <!-- <span t-field="o.end_customer"/> -->
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Report to be issued in the name of:</b></td>
+                            <td colspan="3">
+                                <!-- <span t-field="o.report_issue_name"/> -->
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Contact details of receiver (Phone, Email and address):</b></td>
+                            <td colspan="3">
+                                <span t-field="o.sample_id.srf_id.contact_person.phone"/>,<span t-field="o.sample_id.srf_id.contact_person.email"/> And <span t-field="o.sample_id.srf_id.customer.street"/>
+										<span t-field="o.sample_id.srf_id.customer.street2"/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Project Name:</b></td>
+                            <td colspan="3">
+                                <span t-field="o.sample_id.srf_id.name_work"/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Date of Receipt::</b></td>
+                            <td colspan="3">
+                                <span t-field="o.sample_id.srf_id.srf_date"/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Lot Details:</b></td>
+                            <td colspan="3">
+                                <span t-field="o.lot_detail"/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Number of disturbed Samples:</b></td>
+                            <td colspan="3">
+                                <span t-field="o.disturbes_samples"/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Number of undisturbed soil samples:</b></td>
+                            <td colspan="3">
+                                <span t-field="o.undisturbes_samples"/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Number of <span t-field="o.material_id"/> samples:</b></td>
+                            <td colspan="3">
+                                <span t-field="o.no_samples"/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Equipment Availability: YES/NO</b></td>
+                            <td colspan="3">
+                                <t t-if="o.equipment_availability">YES</t>
+                                <t t-else="">NO</t>,<span t-field="o.equipment_availability_remark"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>Resource Availability: YES/NO</b></td>
+                            <td colspan="3">
+                                <t t-if="o.resource_availability">YES</t>
+                                <t t-else="">NO</t>,<span t-field="o.resource_availability_remark"/>
+
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Whether all requested tests can be performed: YES/NO</b></td>
+                            <td colspan="3">
+                                <t t-if="o.test_performed">YES</t>
+                                <t t-else="">NO</t>,<span t-field="o.test_performed_remark"/>
+
+                            </td>
+                        </tr>
+
+                       
+
+                        <tr>
+                            <td><b>Expected completion date:</b></td>
+                            <td colspan="3">
+                                <span t-field="o.completion_date"/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><b>Reference (W.O / Mail):</b></td>
+                            <td colspan="3">
+                                <span t-field="o.w_o"/>
+                            </td>
+                        </tr>
+
+                    </table>
+
+                    <br/>
+
+
+                    <!-- REVIEW TABLE -->
+                    <table border="1" style="width:100%; border-collapse:collapse;">
+                    <t t-set="i" t-value="0"/>
+                        <thead>
+                        <tr>
+                                <th style="text-align:center;" colspan="4">Sample Details</th>
+                                <th style="text-align:center;" colspan="3">Review</th>
+                                <th style="text-align:center;" colspan="2"></th>
+                                
+                              
+                            </tr>
+                            <tr>
+                                <th style="text-align:center;">Sr. No</th>
+                                <th style="text-align:center;">Chainage/ Location/ID</th>
+                                <th style="text-align:center;">Depth (m)</th>
+                                <th style="text-align:center;">Sample Details</th>
+                                <th style="text-align:center;">Packing</th>
+                                <th style="text-align:center;">Quantity*</th>
+                                <th style="text-align:center;">Sample Approved</th>
+                                <th style="text-align:center;">Lab ID</th>
+                                <th style="text-align:center;">Remarks</th>
+                              
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                        <t t-set="i" t-value="0"/>
+                        <t t-set="total" t-value="len(o.review_line_ids)"/>
+                            <t t-foreach="o.review_line_ids" t-as="line"  >
+                                <tr>
+                                    <!-- <td><span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+                                    </td> -->
+                                    <td style="text-align:center;">
+                                        <span t-esc="i + 1"/>
+                                    </td>
+                                    <td style="text-align:center;"><span t-field="line.source"/></td>
+                                    <td style="text-align:center;"><span t-field="line.depth"/></td>
+                                    <td style="text-align:center;"><span t-field="line.sample_details"/></td>
+                                    <td style="text-align:center;">
+                                       
+                                        <span t-field="line.packing"/>
+                                    </td>
+                                    <td style="text-align:center;">
+                                        
+                                         <span t-field="line.quantity"/>
+                                    </td>
+                                    <td style="text-align:center;">
+                                       
+                                            <span t-field="line.approved"/>
+                                    </td>
+                                    <td style="text-align:center;"><span t-field="line.lab_id"/></td>
+                                    <td style="text-align:center;">
+                                            <t t-if="line.remarks">
+                                                <span t-esc="line.remarks"/>
+                                            </t>
+                                            <t t-else="">
+                                                --
+                                            </t>
+                                    </td>
+                                     
+
+
+                                  
+                                </tr>
+                                 <t t-set="i" t-value="i + 1"/>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <div class="footer" style="width:100%; font-size:12px;">
+
+                            <!-- BLACK HORIZONTAL LINE -->
+                            <div style="border-top: 2px solid black; margin-bottom: 5px; width:100%;"></div>
+
+                            <!-- PAGE NUMBER BELOW LINE -->
+                            <div style="text-align:center;">
+                                Page <span class="page"/> of <span class="topage"/>
+                            </div>
+
+                        </div>
+
+                         <div class="signatureContainer girdgird" 
+                                style="display:flex; justify-content:space-between; margin-top:40px;">
+
+                                <!-- Prepared By -->
+                                <div style="text-align:left;">
+                                    <b>Prepared By</b>
+                                </div>
+
+                                <!-- Checked By -->
+                                <div style="text-align:right;">
+                                    <b>Checked By</b>
+                                </div>
+
+                            </div>
+
+                        
+								
+							
+							<!-- </div> -->
+                    
+
+
+
+            </t>
+        </t>
+
+</template>
+
+
+
+
+<record id="action_rr_report1" model="ir.actions.report">
+    <field name="name">RR Report</field>
+    <field name="model">sample.request.review</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">lerm_civil.rr_report</field>
+    <field name="report_file">lerm_civil.rr_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+
+</odoo>
+
+
