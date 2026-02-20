@@ -3886,15 +3886,47 @@ class SoilCBRLine(models.Model):
         for rec in self:
             rec.no_division = rec.proving_reading * 5
 
-    @api.depends('no_division')
+    # @api.depends('no_division')
+    # def _compute_applied_force(self):
+    #     for rec in self:
+    #         # rec.applied_force = (0.0133 * rec.no_division) + 0.0404 if rec.no_division else 0.0404
+    #         rec.applied_force = (0.0133 * rec.no_division) + 0.0404 if rec.no_division else 0.0404
+
+    # @api.depends('no_division', 'parent_id_cbr.m', 'parent_id_cbr.c')
+    # def _compute_applied_force(self):
+    #  for rec in self:
+    #     m = rec.parent_id_cbr.m or 0.0
+    #     c = rec.parent_id_cbr.c or 0.0
+    #     n = rec.no_division or 0.0
+
+    #     rec.applied_force = (m * n) + c
+
+    @api.depends('no_division', 'parent_id_cbr.m', 'parent_id_cbr.c')
     def _compute_applied_force(self):
-        for rec in self:
-            rec.applied_force = (0.0133 * rec.no_division) + 0.0404 if rec.no_division else 0.0404
+     for rec in self:
+        m = rec.parent_id_cbr.m or 0.0
+        c = rec.parent_id_cbr.c or 0.0
+        n = rec.no_division or 0.0
+
+        if n == 0:
+            rec.applied_force = 0.0
+        else:
+            rec.applied_force = (m * n) + c
+
+    # @api.depends('applied_force', 'parent_id_cbr.rise_force')
+    # def _compute_avg_load(self):
+    #     for rec in self:
+    #         rise_force = rec.parent_id_cbr.rise_force or 0.0
+    #         rec.avg_load = rec.applied_force + (rec.applied_force * rise_force)
 
     @api.depends('applied_force', 'parent_id_cbr.rise_force')
     def _compute_avg_load(self):
-        for rec in self:
-            rise_force = rec.parent_id_cbr.rise_force or 0.0
+     for rec in self:
+        rise_force = rec.parent_id_cbr.rise_force or 0.0
+
+        if rec.applied_force == 0:
+            rec.avg_load = 0.0
+        else:
             rec.avg_load = rec.applied_force + (rec.applied_force * rise_force)
 
    
@@ -13322,6 +13354,9 @@ class CbrLine(models.Model):
 
     cbr_2_5_mm = fields.Float(string="CBR At Penetration Of 2.5 mm",compute="_compute_cbr_values") 
     cbr_5_mm = fields.Float(string="CBR At Penetration Of 5 mm",compute="_compute_cbr_values")
+
+    m = fields.Float(string="Applied force (kN) First", digits=(10,4))
+    c = fields.Float(string="Applied force (kN) Second", digits=(10,4))
 
     # --- SEPARATE COMPUTE FUNCTION ---
     # @api.depends('soil_table', 'soil_table.penetration', 'soil_table.avg_load')
