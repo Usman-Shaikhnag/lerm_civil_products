@@ -31,6 +31,23 @@
                             </tree>
                         </field>
                     </div>
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
 
                      <group invisible = "paver_visible == False"  style="white-space: nowrap; width:70%;text-align: center">
                         <h1>
@@ -140,18 +157,18 @@
                                 <tbody>
                                     <tr>
                                         <td style="text-align: center; border: 1px solid black;">
-                                            <field name="gms1" nolabel="1"/>
+                                            <field name="gms1" nolabel="1" class="blue-input"/>
                                         </td>
                                         <td style="text-align: center; border: 1px solid black;">
-                                            <field name="n1" nolabel="1"/>
+                                            <field name="n1" nolabel="1" class="blue-input"/>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="text-align: center; border: 1px solid black;">
-                                            <field name="gms2" nolabel="1"/>
+                                            <field name="gms2" nolabel="1" class="blue-input"/>
                                         </td>
                                         <td style="text-align: center; border: 1px solid black;">
-                                            <field name="n2" nolabel="1"/>
+                                            <field name="n2" nolabel="1" class="blue-input"/>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -201,9 +218,9 @@
                                 <field name="water_absorption_child_lines" mode="tree" nolabel="1">
                                     <tree editable="bottom" class="custom_table_borders" style="width: 100%; border-collapse: collapse;">
                                         <field name="serial_no" />
-                                        <field name="sample_identification"/>
-                                        <field name="dry_wt_w1" />
-                                        <field name="wet_w2" />
+                                        <field name="sample_identification" class="blue-input" decoration-info="sample_identification != 0"/>
+                                        <field name="dry_wt_w1"  class="blue-input" decoration-info="dry_wt_w1 != 0"/>
+                                        <field name="wet_w2"  class="blue-input" decoration-info="wet_w2 != 0"/>
                                         <field name="water_absorption"/>
                                     </tree>
                                 </field>
@@ -262,12 +279,12 @@
                     <field name="commpressive_child_lines"   mode="tree" nolabel="1" >
                             <tree editable="bottom" class="custom_table_borders" style="width: 100%;">
                                 <field name="serial_no"/>
-                                <field name="sample_identification_com"/>
-                                <field name="wt_block" />
+                                <field name="sample_identification_com" class="blue-input" decoration-info="sample_identification_com != 0"/>
+                                <field name="wt_block"  class="blue-input" decoration-info="wt_block != 0"/>
                                 <field name="correction_factor"/>
-                                <field name="load"/>
+                                <field name="load" class="blue-input" decoration-info="load != 0"/>
                                 <field name="compressive_strenght"/>
-                                <field name="thickness"/>
+                                <field name="thickness" class="blue-input" decoration-info="thickness != 0"/>
                                
                             </tree>
                     </field>

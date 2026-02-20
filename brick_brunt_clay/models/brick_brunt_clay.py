@@ -21,6 +21,7 @@ class MechanicalBricksBurntClay(models.Model):
         compute="_compute_units", store=False
     )
 
+
     def _compute_units(self):
         for rec in self:
             comp_param = self.env['lerm.parameter.master'].search([

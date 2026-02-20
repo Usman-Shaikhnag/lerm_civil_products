@@ -46,6 +46,24 @@
                       </field>
                     </div>
                     <group/>
+
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
                    
        
                    <!-- Chequered Tiles -->
@@ -61,20 +79,20 @@
                         <field name="chequered_tiles_lines" nolabel="1" colspan="2" >
                             <tree editable="bottom">
                                 <field name='sr_no'/>
-                                <field name='flatness1'/>
-                                <field name='flatness2'/>
-                                <field name='flatness3'/>
-                                <field name='flatness4'/>
+                                <field name='flatness1' class="blue-input" decoration-info="flatness1 != 0"/>
+                                <field name='flatness2' class="blue-input" decoration-info="flatness2 != 0"/>
+                                <field name='flatness3'  class="blue-input" decoration-info="flatness3 != 0"/>
+                                <field name='flatness4' class="blue-input" decoration-info="flatness4 != 0"/>
 
-                                <field name='perpendicularity1'/>
-                                <field name='perpendicularity2'/>
-                                <field name='perpendicularity3'/>
-                                <field name='perpendicularity4'/>
+                                <field name='perpendicularity1' class="blue-input" decoration-info="perpendicularity1 != 0"/>
+                                <field name='perpendicularity2' class="blue-input" decoration-info="perpendicularity2 != 0"/>
+                                <field name='perpendicularity3' class="blue-input" decoration-info="perpendicularity3 != 0"/>
+                                <field name='perpendicularity4' class="blue-input" decoration-info="perpendicularity4 != 0"/>
 
-                                <field name='straightness1'/>
-                                <field name='straightness2'/>
-                                <field name='straightness3'/>
-                                <field name='straightness4'/>
+                                <field name='straightness1' class="blue-input" decoration-info="straightness1 != 0"/>
+                                <field name='straightness2' class="blue-input" decoration-info="straightness2 != 0"/>
+                                <field name='straightness3' class="blue-input" decoration-info="straightness3 != 0"/>
+                                <field name='straightness4' class="blue-input" decoration-info="straightness4 != 0"/>
                                 
                             </tree>
                          </field> 
@@ -196,52 +214,7 @@
                     <group/>
                     <group/>
 
-                      <!-- <group>
-                      <group style="width:25%">
-                                <field name='average_flatness_conformity'
-                                       decoration-success="average_flatness_conformity == 'pass'" 
-                                       decoration-danger="average_flatness_conformity == 'fail'" 
-                                       readonly="1"/>
-                        </group>
-                          <group style="width:25%">
-                                <field name="average_flatness_nabl"
-                                       decoration-success="average_flatness_nabl == 'pass'" 
-                                       decoration-danger="average_flatness_nabl == 'fail'" 
-                                       readonly="1"/>
-                            </group>
-                        </group>
-                        <group>
-
-
-                             <group style="width:25%">
-                                <field name='average_perpendicularity_conformity'
-                                       decoration-success="average_perpendicularity_conformity == 'pass'" 
-                                       decoration-danger="average_perpendicularity_conformity == 'fail'" 
-                                       readonly="1"/>
-                        </group>
-                          <group style="width:25%">
-                                <field name="average_perpendicularity_nabl"
-                                       decoration-success="average_perpendicularity_nabl == 'pass'" 
-                                       decoration-danger="average_perpendicularity_nabl == 'fail'" 
-                                       readonly="1"/>
-                            </group>
-                        </group>
-
-
-                   <group>
-                        <group style="width:25%">
-                                <field name='average_straightness_conformity'
-                                       decoration-success="average_straightness_conformity == 'pass'" 
-                                       decoration-danger="average_straightness_conformity == 'fail'" 
-                                       readonly="1"/>
-                        </group>
-                          <group style="width:25%">
-                                <field name="average_straightness_nabl"
-                                       decoration-success="average_straightness_nabl == 'pass'" 
-                                       decoration-danger="average_straightness_nabl == 'fail'" 
-                                       readonly="1"/>
-                            </group>
-                        </group> -->
+                    
 
                             
 
@@ -259,8 +232,8 @@
                         <field name="chequered_water_absorption_lines" nolabel="1" colspan="2">
                             <tree editable="bottom">
                                 <field name='sr_no'/>
-                                <field name='mass_of_saturated'/>
-                                <field name='mass_of_oven'/>
+                                <field name='mass_of_saturated' class="blue-input" decoration-info="mass_of_saturated != 0"/>
+                                <field name='mass_of_oven' class="blue-input" decoration-info="mass_of_oven != 0"/>
                                 <field name='water_absorption'/>
 
                             </tree>
@@ -293,24 +266,7 @@
                     </div>
                     <group/>
 
-                    <!-- <group style="white-space: nowrap; width:70%;">
-                        <field name='average_water_absorption' col="4"/>
-                       
-                    </group>
-                     <group>
-                       <group style="width:25%">
-                                <field name='average_water_absorption_conformity'
-                                       decoration-success="average_water_absorption_conformity == 'pass'" 
-                                       decoration-danger="average_water_absorption_conformity == 'fail'" 
-                                       readonly="1"/>
-                        </group>
-                          <group style="width:25%">
-                                <field name="average_water_absorption_nabl"
-                                       decoration-success="average_water_absorption_nabl == 'pass'" 
-                                       decoration-danger="average_water_absorption_nabl == 'fail'" 
-                                       readonly="1"/>
-                            </group>
-                        </group> -->
+                  
 
 
                        <!-- WET TRANSVERSE STRENGTH TEST -->
@@ -326,10 +282,10 @@
                         <field name="chequered_wet_transver_lines" nolabel="1" colspan="2" >
                             <tree editable="bottom">
                                 <field name='sr_no'/>
-                                <field name='width_b'/>
-                                <field name='span_between'/>
-                                <field name='fracture_thicness'/>
-                                <field name='breaking_load'/>
+                                <field name='width_b' class="blue-input" decoration-info="width_b != 0"/>
+                                <field name='span_between' class="blue-input" decoration-info="span_between != 0"/>
+                                <field name='fracture_thicness' class="blue-input" decoration-info="fracture_thicness != 0"/>
+                                <field name='breaking_load' class="blue-input" decoration-info="breaking_load != 0"/>
                                 <field name='wet_transver'/>
                             </tree>
                          </field> 
