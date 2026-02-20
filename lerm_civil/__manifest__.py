@@ -41,7 +41,8 @@
     'security/ir.model.access.csv',
     'reports/genstru_eln_report.xml',
     'reports/genstru_eln_datasheet.xml',
-    'reports/review_form_report.xml'
+    'reports/review_form_report.xml',
+    'reports/rr_report.xml'
    
 
 

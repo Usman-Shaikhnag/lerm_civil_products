@@ -121,6 +121,27 @@ class SrfForm(models.Model):
     material_id = fields.Many2one('product.template')
     show_lab_id = fields.Boolean(default=False)
 
+    def action_print_or_report(self):
+        self.ensure_one()
+
+        return self.env.ref(
+            'lerm_civil.srf_report_action'
+        ).report_action(self)
+
+    # def action_print_review_report(self):
+
+    #     review = self.env['sample.request.review'].search([
+    #         ('sample_id', '=', self.id)
+    #     ], limit=1)
+
+    #     if not review:
+    #         raise UserError("Review record not found")
+
+    #     return self.env.ref(
+    #         'lerm_civil.action_custom_geotech_report'
+    #     ).report_action(review)
+
+
 
     srf_id = fields.Char(string="SRF ID",tracking=True)
     kes_number = fields.Char(string="UID",tracking=True)

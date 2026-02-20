@@ -33,6 +33,19 @@
                         invisible="1"/>
 
 
+                <button name="action_print_or_report"
+                    string="OR Report"
+                    type="object"
+                    class="btn-primary"
+                   />
+
+
+                   
+
+
+
+
+
                     <button name="confirm_srf" class="oe_highlight" type="object" string="Confirm"
                         groups="lerm_civil.lerm_access_confirm_srf"
                         invisible="state in ('2-confirm')"/>
@@ -374,14 +387,14 @@
                         <field name="resource_availability_remark"/>
                         <field name="test_performed_remark"/>
                          <!-- <field name="lab_id" /> -->
-                         <field name="quantity" />
+                         <field name="quantity" invisible="1"/>
                         
 
                         <field name="sample_id" invisible="1"/>
-                        <field name="parameters" widget="many2many_tags" invisible="1"/>
+                        <field name="parameters" widget="many2many_tags"  invisible="1"/>
                         <field name="group_id"  invisible="1"/>
-                        <field name="rev_no" invisible="1" />
-                        <field name="rev_date1" invisible="1" />
+                        <field name="rev_no"  invisible="1"/>
+                        <field name="rev_date1" invisible="1"/>
                         <field name="w_o" />
                         <field name="no_samples" />
 
@@ -417,8 +430,10 @@
                 <footer>
 
 
-             <button name="%(lerm_civil.action_custom_geotech_report1)d"
-                string="Print Report"
+             
+
+            <button name="%(lerm_civil.action_rr_report1)d"
+                string="RR Report"
                 type="action"
                 class="btn-primary"
                 icon="fa-print"/>
@@ -445,6 +460,7 @@
         <field name="model">sample.request.review</field>
         <field name="arch" type="xml">
             <tree create="false" delete="false">
+               <field name="lab_id"/>
                 <field name="sample_id"/>
                 <field name="receipt_date"/>
                 <field name="lot_detail"/>
