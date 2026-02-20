@@ -30,7 +30,20 @@
                         type="object"
 
                         class="btn-primary"
-                        invisible="is_generated == True"/>
+                        invisible="1"/>
+
+
+                <button name="action_print_or_report"
+                    string="OR Report"
+                    type="object"
+                    class="btn-primary"
+                   />
+
+
+                   
+
+
+
 
 
                     <button name="confirm_srf" class="oe_highlight" type="object" string="Confirm"
@@ -102,6 +115,7 @@
                         <button name="open_new_sample_add_wizard" groups="lerm_civil.lerm_access_create_srf" string="New Sample" type="object" class="btn btn-primary mr-2" invisible="state in ('2-confirm')"/>
                         <button name="open_sample_add_wizard" groups="lerm_civil.lerm_access_create_srf" string="Repeat Sample" type="object" class="btn btn-primary" invisible="state in ('2-confirm')"/>
                     </div>
+                    
 
                     <field name="samples"
                                         readonly="1"
@@ -109,6 +123,7 @@
                                         <!-- groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf" -->
                         
                         <tree>
+                           <field name="show_lab_id" column_invisible="1"/>
                             <field name="kes_no" string="Sample No."/>
                             <field name="material_id"/>
                             <field name="discipline_id"/>
@@ -121,7 +136,8 @@
                             <field name="sample_description"/>
                             <field name="sample_qty" column_invisible="1"/>
                             <field name="quantity"/>
-                            <field name="lab_id"/>
+                            <field name="lab_id" column_invisible="1"/>
+                            <!-- <field name="lab_ids_raw"  /> -->
 
 
                             
@@ -347,13 +363,21 @@
         <field name="arch" type="xml">
             <form create="false">
                 <!-- <field name='sample_id'/> -->
+                 <field name="split_done" invisible="1" />
                 <group>
                     <group>
                         <field name="receipt_date"/>
                         <field name="disturbes_samples"/>
                         <field name="equipment_availability"/>
                         <field name="resource_availability"/>
-                        <field name="test_performed"/>
+                        <field name="test_performed" string="Whether all requested tests can be performed: "/>
+                        
+                        <field name="material_id" invisible="1"/>
+                        <field name="doc_name"/>
+                        <field name="completion_date"/>
+                        <field name="issue_no" invisible="1"/>
+                        <field name="issue_date1" invisible="1"/>
+                        <field name="doc_no" invisible="1"/>
 
                     </group>
                     <group>
@@ -362,9 +386,29 @@
                         <field name="equipment_availability_remark"/>
                         <field name="resource_availability_remark"/>
                         <field name="test_performed_remark"/>
+                         <!-- <field name="lab_id" /> -->
+                         <field name="quantity" invisible="1"/>
+                        
+
+                        <field name="sample_id" invisible="1"/>
+                        <field name="parameters" widget="many2many_tags"  invisible="1"/>
+                        <field name="group_id"  invisible="1"/>
+                        <field name="rev_no"  invisible="1"/>
+                        <field name="rev_date1" invisible="1"/>
+                        <field name="w_o" />
+                        <field name="no_samples" />
 
                     </group>
                 </group>
+
+                <div>
+                 <button name="action_split_lab_ids"
+                    string="Assign Lab ID"
+                    type="object"
+                    class="btn-primary"
+                    invisible="split_done == True"/>
+
+                </div>
                 
                 <field name="review_line_ids" create="false" delete="false">
                     <tree create="false" editable="bottom" delete="false">
@@ -378,9 +422,33 @@
                         <field name="quantity"/>
                         <field name="approved"/>
                         <field name="remarks"/>
+                        
+
 
                     </tree>
                 </field>
+                <footer>
+
+
+             
+
+            <button name="%(lerm_civil.action_rr_report1)d"
+                string="RR Report"
+                type="action"
+                class="btn-primary"
+                icon="fa-print"/>
+
+            <button string="Save"
+                class="btn-primary"
+                special="save"
+                />
+
+            <button string="Close"
+                    class="btn-secondary"
+                    special="cancel"/>
+
+
+            </footer>
                 
                 
             </form>
@@ -392,6 +460,7 @@
         <field name="model">sample.request.review</field>
         <field name="arch" type="xml">
             <tree create="false" delete="false">
+               <field name="lab_id"/>
                 <field name="sample_id"/>
                 <field name="receipt_date"/>
                 <field name="lot_detail"/>

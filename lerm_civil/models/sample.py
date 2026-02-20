@@ -15,9 +15,8 @@ class LermSampleForm(models.Model):
     _description = "Sample"
     _rec_name = 'kes_no'
 
-
+    show_lab_id = fields.Boolean(default=False)
     
-
 
 
     client_reference1 = fields.Char(string="Client Reference",compute="_compute_client_reference", store=True)
@@ -369,6 +368,7 @@ class LermSampleForm(models.Model):
                 'default_size_id': self.size_id.id,
                 'default_grade_id': self.grade_id.id,
                 'default_sample_qty': self.sample_qty,
+                'default_quantity': self.quantity,
                 'default_received_by_id': self.received_by_id.id,
                 'default_sample_received_date':self.sample_received_date,
                 'default_sample_condition':self.sample_condition,
@@ -904,13 +904,60 @@ class SampleRequestReview(models.Model):
         ondelete='cascade'
     )
 
+    lab_id = fields.Char(
+        string="Lab ID",
+        related='sample_id.lab_id',
+        store=True,
+        readonly=True
+    )
+    quantity = fields.Integer(
+        string="Quantity",
+        compute="_compute_quantity",
+        store=True
+    )
+
+   
+    # @api.depends('sample_id', 'sample_id.quantity')
+    # def _compute_quantity(self):
+    #     for rec in self:
+    #         old_qty = rec.quantity or 0
+    #         new_qty = rec.sample_id.quantity if rec.sample_id else 0
+
+    #         rec.quantity = new_qty
+
+    #         # 🔁 Quantity change zali tar button parat visible
+    #         if old_qty != new_qty:
+    #             rec.split_done = False
+
+    @api.depends('sample_id', 'sample_id.quantity')
+    def _compute_quantity(self):
+        for rec in self:
+            new_qty = rec.sample_id.quantity if rec.sample_id else 0
+            rec.quantity = new_qty
+
+            # ---------- AUTO GENERATE LINES ----------
+            if rec.id:  # record saved asel tarach
+                existing = len(rec.review_line_ids)
+
+                # Case 1 — Increase → new lines add
+                if new_qty > existing:
+                    vals = []
+                    for _ in range(new_qty - existing):
+                        vals.append((0, 0, {}))
+                    rec.write({'review_line_ids': vals})
+
+                # Case 2 — Decrease → extra lines remove
+                elif new_qty < existing:
+                    rec.review_line_ids[new_qty:].unlink()
+
+
     review_line_ids = fields.One2many(
         'sample.request.review.lines',
         'parent_id',
         string="Review Lines"
     )
 
-    receipt_date = fields.Date("Date of Receipt")
+    receipt_date = fields.Date("Date of Receipt",store=True,)
     lot_detail = fields.Integer("Lot Detail")
     disturbes_samples = fields.Integer("No of disturbed samples")
     undisturbes_samples = fields.Integer("No of undisturbed samples")
@@ -920,6 +967,220 @@ class SampleRequestReview(models.Model):
     resource_availability_remark = fields.Text("Resource Availability Remarks")
     test_performed = fields.Boolean("Whether all tests are performed")
     test_performed_remark = fields.Text("Test Performed Remarks")
+
+    completion_date = fields.Date("Expected completion Date")
+    w_o = fields.Char("Reference (W.O / Mail)")
+
+    no_samples = fields.Integer("Number of  samples")
+
+    @api.onchange('lot_detail')
+    def _onchange_lot_detail(self):
+        for rec in self:
+            rec.no_samples = len(rec.review_line_ids.filtered(lambda l: l.lab_id))
+
+    
+
+   
+
+    doc_name = fields.Char("Doc Name",default="Order Request Form")
+    employee_id = fields.Many2one(
+        'hr.employee',
+        string="Prepared By"
+    )
+    
+
+    sample_id = fields.Many2one(
+        'lerm.srf.sample',
+        string='Sample',
+        required=True,
+        ondelete='cascade'
+    )
+
+    parameters = fields.Many2many(
+        'lerm.parameter.master',
+        string="Parameter",
+        compute="_compute_parameters",
+        store=True,
+        readonly=False
+    )
+
+    @api.depends('sample_id', 'sample_id.parameters')
+    def _compute_parameters(self):
+        for rec in self:
+            if rec.sample_id and rec.sample_id.parameters:
+                rec.parameters = rec.sample_id.parameters
+            else:
+                rec.parameters = [(5, 0, 0)]   # clear
+
+    group_id = fields.Many2one(
+        'lerm_civil.group',
+        string="Group",
+        compute="_compute_group_id",
+        store=True
+    )
+
+    @api.depends('sample_id')
+    def _compute_group_id(self):
+        for rec in self:
+            rec.group_id = rec.sample_id.group_id.id if rec.sample_id.group_id else False
+
+    issue_no = fields.Integer(
+        string="Issue No",
+        compute="_compute_issue_no",
+        store=True
+    )
+
+    @api.depends('group_id')
+    def _compute_issue_no(self):
+        for rec in self:
+            rec.issue_no = rec.group_id.issue_no if rec.group_id else 0
+
+    rev_no = fields.Integer(
+        string="Revision No.",
+        compute="_compute_rev_no",
+        store=True
+    )
+
+    @api.depends('group_id')
+    def _compute_rev_no(self):
+        for rec in self:
+            rec.rev_no = rec.group_id.rev_no if rec.group_id else 0
+
+    issue_date1 = fields.Date(
+        string="Issue Date",
+        compute="_compute_issue_date",
+        store=True
+    )
+
+   
+
+    rev_date1 = fields.Date(
+        string="Revision Date",
+        compute="_compute_rev_date",
+        store=True
+    )
+
+   
+
+    @api.depends('group_id')
+    def _compute_issue_date(self):
+        for rec in self:
+            rec.issue_date1 = rec.group_id.issue_date if rec.group_id else False
+
+
+    @api.depends('group_id')
+    def _compute_rev_date(self):
+        for rec in self:
+            rec.rev_date1 = rec.group_id.rev_date if rec.group_id else False
+
+
+    doc_no = fields.Char(
+        string="Doc No",
+        compute="_compute_doc_no",
+        store=True
+    )
+
+    @api.depends('group_id')
+    def _compute_doc_no(self):
+        for rec in self:
+            rec.doc_no = rec.group_id.doc_no if rec.group_id else 0
+
+    material_id = fields.Many2one(
+        'product.template',
+        string="Material",
+        compute="_compute_material_id",
+        store=True
+    )
+
+    @api.depends('sample_id')
+    def _compute_material_id(self):
+        for rec in self:
+            rec.material_id = rec.sample_id.material_id.id if rec.sample_id.material_id else False
+
+    
+    split_done = fields.Boolean("Lab Split Done", default=False)
+
+
+   
+
+    def action_split_lab_ids(self):
+        for rec in self:
+            if rec.split_done:
+                continue
+
+            if not rec.sample_id or rec.quantity <= 0:
+                continue
+
+            seq_code = rec.sample_id._get_lab_sequence_code(rec.sample_id.material_id)
+            if not seq_code:
+                continue
+
+            total_ids_needed = int(rec.quantity)
+            generated_ids = []
+
+            for _ in range(total_ids_needed):
+                new_lab = self.env['ir.sequence'].next_by_code(seq_code)
+                if new_lab:
+                    generated_ids.append(new_lab)
+
+            if not generated_ids:
+                continue
+
+            # -------------------------------
+            # Update Sample (Range + Raw)
+            # -------------------------------
+            rec.sample_id.lab_ids_raw = ','.join(generated_ids)
+
+            if len(generated_ids) == 1:
+                rec.sample_id.lab_id = generated_ids[0]
+            else:
+                rec.sample_id.lab_id = f"{generated_ids[0]} - {generated_ids[-1]}"
+
+            rec.sample_id.show_lab_id = True
+
+            # -------------------------------
+            # DATA SAFE LINE UPDATE
+            # -------------------------------
+            existing_lines = rec.review_line_ids
+
+            # Case 1 — Update existing lines (NO DELETE)
+            for i, line in enumerate(existing_lines):
+                if i < len(generated_ids):
+                    line.lab_id = generated_ids[i]
+
+            # Case 2 — Add new lines (if qty increased)
+            if len(generated_ids) > len(existing_lines):
+                new_vals = []
+                for lab in generated_ids[len(existing_lines):]:
+                    new_vals.append((0, 0, {'lab_id': lab}))
+                rec.write({'review_line_ids': new_vals})
+
+            # Case 3 — Extra lines (optional delete)
+            elif len(generated_ids) < len(existing_lines):
+                existing_lines[len(generated_ids):].unlink()
+
+            # One time button
+            rec.split_done = True
+
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'sample.request.review',
+            'view_mode': 'form',
+            'res_id': self.id,
+            'target': 'new',
+            'flags': {'reload': True},
+        }
+
+
+
+
+
+
+
+
+    
+
+    
 
     _sql_constraints = [
         ('unique_sample_review', 'unique(sample_id)',
@@ -965,3 +1226,5 @@ class SampleRequestReviewLine(models.Model):
     quantity = fields.Boolean("Quantity")
     approved = fields.Boolean("Approved")
     remarks = fields.Text("Remarks")
+
+    

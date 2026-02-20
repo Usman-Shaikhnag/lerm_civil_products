@@ -16,6 +16,7 @@ from . import employee
 from . import invoice
 from . import lab_master
 from . import general_template
+from . import custom_geotech_report
 
 
 

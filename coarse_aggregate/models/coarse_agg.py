@@ -1,4 +1,6 @@
 from odoo import api, fields, models
+from decimal import Decimal, ROUND_HALF_UP 
+from odoo.tools.float_utils import float_round
 from odoo.exceptions import UserError,ValidationError
 import math
 import matplotlib.pyplot as plt
@@ -260,7 +262,7 @@ class CoarseAggregateMechanical(models.Model):
 
     wt_of_aggregate_passing_sieve = fields.Float(string="Weight of Aggregate Passing Sieve (B) – gms.")
 
-    aggregate_crushing_value = fields.Float(string="Aggregate Crushing Value in % = (B/A)x100",compute="_compute_aggregate_crushing_value")
+    aggregate_crushing_value = fields.Float(string="Aggregate Crushing Value in % = (B/A)x100",compute="_compute_aggregate_crushing_value",store=True)
 
 
     @api.depends('wt_of_empty_cylinder', 'wt_of_cylinder_aggregate')
@@ -285,7 +287,7 @@ class CoarseAggregateMechanical(models.Model):
 
     wt_of_aggregate_passing_sieve_2 = fields.Float(string="Weight of Aggregate Passing Sieve (B) – gms.")
 
-    aggregate_crushing_value_2 = fields.Float(string="Aggregate Crushing Value in % = (B/A)x100",compute="_compute_aggregate_crushing_value_2")
+    aggregate_crushing_value_2 = fields.Float(string="Aggregate Crushing Value in % = (B/A)x100",compute="_compute_aggregate_crushing_value_2",store=True)
 
 
     @api.depends('wt_of_empty_cylinder_2', 'wt_of_cylinder_aggregate_2')
@@ -301,12 +303,30 @@ class CoarseAggregateMechanical(models.Model):
             else:
                rec.aggregate_crushing_value_2 =0.0
 
-    average_crushing_value = fields.Float(string="Average Aggregate Crushing Value", compute="_compute_average_crushing_value")
+    average_crushing_value = fields.Float(string="Average Aggregate Crushing Value", compute="_compute_average_crushing_value",digits=(10,2),store=True)
+
+    # @api.depends('aggregate_crushing_value', 'aggregate_crushing_value_2')
+    # def _compute_average_crushing_value(self):
+    #     for rec in self:
+    #           rec.average_crushing_value = round((rec.aggregate_crushing_value + rec.aggregate_crushing_value_2) /2,2)
+
+    
 
     @api.depends('aggregate_crushing_value', 'aggregate_crushing_value_2')
     def _compute_average_crushing_value(self):
-        for rec in self:
-              rec.average_crushing_value = (rec.aggregate_crushing_value + rec.aggregate_crushing_value_2) /2
+     for rec in self:
+        avg = (rec.aggregate_crushing_value + rec.aggregate_crushing_value_2) / 2
+        rec.average_crushing_value = float_round(avg, precision_digits=2)
+
+    
+
+    
+
+    
+
+    
+
+    
 
 
 
@@ -2784,6 +2804,16 @@ class CoarseAggregateMechanical(models.Model):
                     else:
                         result.nabl_status = 'non-nabl'
                     continue
+
+                # Soundness Test
+                if result.parameter.internal_id == '8b80bc59-f49e-483e-8ccd-2fb4b076620e':
+                    result.result_char = round(self.total_avg_manesium,2)
+                    result.calculated = True
+                    # if self.total_avg_sulphae_nabl == 'pass':
+                    #     result.nabl_status = 'nabl'
+                    # else:
+                    #     result.nabl_status = 'non-nabl'
+                    # continue
 
         return {
                 'view_mode': 'form',
