@@ -5261,30 +5261,81 @@ class SpecificGravity(models.Model):
 # Atterbergs Limits (Free Swell)
 
  
+# class SoilFreeSwell(models.Model):
+#     _name = "soil.free.swell"
+
+
+#     parent_id = fields.Many2one( "mechanical.soil1", string="Parent Test", ondelete="cascade", required=True,)
+#     serial_no = fields.Integer(string="Sr.No", readonly=True)
+#     lab_id = fields.Char(string="Lab No.")
+
+#     vd = fields.Float(string="Vd")  
+#     vk = fields.Float(string="Vk") 
+
+#     free_swell = fields.Float( string="Free swell (%)", compute="_compute_free_swell", store=True, readonly=True,)
+#     is_ok = fields.Boolean( string="TRUE/FALSE",  compute="_compute_is_ok",  store=True, readonly=True,)
+
+   
+#     @api.depends("vd", "vk")
+#     def _compute_free_swell(self):
+#         for rec in self:
+#             if rec.vk:
+#                 rec.free_swell = (rec.vd - rec.vk) / rec.vk * 100.0
+#             else:
+#                 rec.free_swell = 0.0
+
+    
+#     @api.depends("free_swell")
+#     def _compute_is_ok(self):
+#         for rec in self:
+#             rec.is_ok = bool(rec.free_swell and rec.free_swell <= 50.0)
+
+#     @api.model
+#     def create(self, vals):
+#         if vals.get("parent_id") and not vals.get("serial_no"):
+#             last = self.search(
+#                 [("parent_id", "=", vals["parent_id"])],
+#                 order="serial_no desc",
+#                 limit=1,
+#             )
+#             vals["serial_no"] = (last.serial_no or 0) + 1 if last else 1
+#         return super().create(vals)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class SoilFreeSwell(models.Model):
     _name = "soil.free.swell"
 
-
-    parent_id = fields.Many2one( "mechanical.soil1", string="Parent Test", ondelete="cascade", required=True,)
+    parent_id = fields.Many2one("mechanical.soil1", string="Parent Test", ondelete="cascade", required=True)
     serial_no = fields.Integer(string="Sr.No", readonly=True)
     lab_id = fields.Char(string="Lab No.")
 
     vd = fields.Float(string="Vd")  
     vk = fields.Float(string="Vk") 
 
-    free_swell = fields.Float( string="Free swell (%)", compute="_compute_free_swell", store=True, readonly=True,)
-    is_ok = fields.Boolean( string="TRUE/FALSE",  compute="_compute_is_ok",  store=True, readonly=True,)
+    free_swell = fields.Float(string="Free swell (%)", compute="_compute_free_swell", store=True, readonly=True)
+    is_ok = fields.Boolean(string="TRUE/FALSE", compute="_compute_is_ok", store=True, readonly=True)
 
-   
     @api.depends("vd", "vk")
     def _compute_free_swell(self):
         for rec in self:
-            if rec.vk:
-                rec.free_swell = (rec.vd - rec.vk) / rec.vk * 100.0
+            if rec.vk and rec.vk != 0:
+                rec.free_swell = max(0.0, (rec.vd - rec.vk) / rec.vk * 100.0)
             else:
                 rec.free_swell = 0.0
 
-    
     @api.depends("free_swell")
     def _compute_is_ok(self):
         for rec in self:
@@ -5300,6 +5351,58 @@ class SoilFreeSwell(models.Model):
             )
             vals["serial_no"] = (last.serial_no or 0) + 1 if last else 1
         return super().create(vals)
+class SoilFreeSwell(models.Model):
+    _name = "soil.free.swell"
+
+    parent_id = fields.Many2one("mechanical.soil1", string="Parent Test", ondelete="cascade", required=True)
+    serial_no = fields.Integer(string="Sr.No", readonly=True)
+    lab_id = fields.Char(string="Lab No.")
+
+    vd = fields.Float(string="Vd")  
+    vk = fields.Float(string="Vk") 
+
+    free_swell = fields.Float(string="Free swell (%)", compute="_compute_free_swell", store=True, readonly=True)
+    is_ok = fields.Boolean(string="TRUE/FALSE", compute="_compute_is_ok", store=True, readonly=True)
+
+    @api.depends("vd", "vk")
+    def _compute_free_swell(self):
+        for rec in self:
+            if rec.vk and rec.vk != 0:
+                rec.free_swell = max(0.0, (rec.vd - rec.vk) / rec.vk * 100.0)
+            else:
+                rec.free_swell = 0.0
+
+    @api.depends("free_swell")
+    def _compute_is_ok(self):
+        for rec in self:
+            rec.is_ok = bool(rec.free_swell and rec.free_swell <= 50.0)
+
+    @api.model
+    def create(self, vals):
+        if vals.get("parent_id") and not vals.get("serial_no"):
+            last = self.search(
+                [("parent_id", "=", vals["parent_id"])],
+                order="serial_no desc",
+                limit=1,
+            )
+            vals["serial_no"] = (last.serial_no or 0) + 1 if last else 1
+        return super().create(vals)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 class ConsolidationLoadingLine(models.Model):
@@ -7783,7 +7886,7 @@ class LLLine(models.Model):
 
     ll_line_ids = fields.One2many('lab.atterberg.ll.line', 'parent_id')
 
-    liquid_avg = fields.Float( string='Liquid Limit Avg %' , digits=(16,6) ,compute='_compute_liquid_avg',store=True)
+    liquid_avg = fields.Float( string='Liquid Limit Avg %' , digits=(16,1) ,compute='_compute_liquid_avg',store=True)
 
     ll_graph = fields.Binary("Liquid Limit Graph", compute="_compute_ll_graph", store=True)
     ll_value = fields.Float("Liquid Limit (%)", digits=(10, 2), compute="_compute_ll_graph", store=True)
