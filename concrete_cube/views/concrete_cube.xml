@@ -18,6 +18,27 @@
                              <field name="size_id" readonly="1"/>
                         </group>
 
+
+                         <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+
+
                         <div class="custom_table_borders" style="margin-top: 15px;">
                             <field name="sample_parameters" nolabel="1">
                                 <tree>
@@ -71,15 +92,15 @@
                             <tbody>
                                 <tr>
                                     <td><label for="date_of_casting">Date of Casting</label></td>
-                                    <td><field name="date_of_casting"/></td>
+                                    <td><field name="date_of_casting" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="date_of_testing">Date of Testing</label></td>
-                                    <td><field name="date_of_testing"/></td>
+                                    <td><field name="date_of_testing" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="age_of_test">Age of Test, days</label></td>
-                                    <td><field name="age_of_test"/></td>
+                                    <td><field name="age_of_test" class="blue-input"/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -88,15 +109,15 @@
                             <tbody>
                                 <tr>
                                     <td><label for="age_of_days">Age of Cubes</label></td>
-                                    <td><field name="age_of_days"/></td>
+                                    <td><field name="age_of_days" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="area_of_cube">Area of Cube</label></td>
-                                    <td><field name="area_of_cube"/></td>
+                                    <td><field name="area_of_cube" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="difference">Difference</label></td>
-                                    <td><field name="difference"/></td>
+                                    <td><field name="difference" class="blue-input"/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -106,11 +127,11 @@
                         <tree editable="bottom">
                             <field name='sr_no' string="Sr. NO"/>
                             <field name='id_mark' />
-                            <field name='wt_sample'  widget="char"/>
-                            <field name='dt_of_casting' widget="date" options="{'format': 'dd-MM-yy'}" readonly="1"/>
-                            <field name='days'/>
-                            <field name='dt_of_testing1'  widget="date" options="{'format': 'dd-MM-yy'}" readonly="1"/>
-                            <field name="load"  widget="char"/>
+                            <field name='wt_sample'  widget="char" class="blue-input" decoration-info="wt_sample != 0"/>
+                            <field name='dt_of_casting' widget="date" options="{'format': 'dd-MM-yy'}" readonly="1" class="blue-input" decoration-info="dt_of_casting != 0"/>
+                            <field name='days' class="blue-input" decoration-info="days != 0"/>
+                            <field name='dt_of_testing1'  widget="date" options="{'format': 'dd-MM-yy'}" readonly="1" class="blue-input" decoration-info="dt_of_testing1 != 0"/>
+                            <field name="load"  widget="char" class="blue-input" decoration-info="load != 0"/>
                             <field name='compressive_strength'/>
                             <field name='avg_compressive_strength'/>
                         </tree>
@@ -122,10 +143,7 @@
                         
                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                         <tbody>
-                            <!-- <tr>
-                                <td><label for="average_strength">Average Compressive Strength in </label></td>
-                                <td><field name="average_strength"/><span> N/mm2</span></td>
-                            </tr> -->
+                           
                             <tr>
                                 <td><label for="confirmity">confirmity</label></td>
                                 <td>

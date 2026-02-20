@@ -24,6 +24,7 @@ class MechanicalConcreteCube(models.Model):
 
 
 
+
     def action_calculate_avg_strength(self):
         for rec in self:
             lines = rec.child_lines.sorted(key=lambda l: l.sr_no)  # sr_no ने sort करायचं

@@ -403,13 +403,23 @@ class ChequeredTile(models.Model):
                 print("Internal Ids",sample.internal_id)
 
                
-                if sample.internal_id == "25687f82-79c0-44a8-9379-f40dd3323rg34":
+                # if sample.internal_id == "25687f82-79c0-44a8-9379-f40dd3323rg34":
+                #     record.chequered_tiles_visible = True
+
+                # if sample.internal_id == "26579pi7-ef96-446d-9108-c13d740424ca":
+                #     record.chequered_water_absorption_visible = True
+
+                # if sample.internal_id == "3258li68-d457-4f5d-a912-48c756bb7837":
+                #     record.chequeredwet_transver_visible = True
+
+
+                if sample.internal_id == "b0d3008e-918a-4602-a329-835d38f63c34":
                     record.chequered_tiles_visible = True
 
-                if sample.internal_id == "26579pi7-ef96-446d-9108-c13d740424ca":
+                if sample.internal_id == "15784955-ef96-446d-9108-c13d740424ca":
                     record.chequered_water_absorption_visible = True
 
-                if sample.internal_id == "3258li68-d457-4f5d-a912-48c756bb7837":
+                if sample.internal_id == "6d833bd3-d457-4f5d-a912-48c756bb7837":
                     record.chequeredwet_transver_visible = True
 
                
@@ -419,7 +429,72 @@ class ChequeredTile(models.Model):
 
 
     def open_eln_page(self):
-        # import wdb; wdb.set_trace()
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+            # import wdb;wdb.set_trace()
+
+            
+            # Chequered Tiles 
+            if result.parameter.internal_id == 'b0d3008e-918a-4602-a329-835d38f63c34':
+                result.calculated = True
+
+            # Water Absorption
+            if result.parameter.internal_id == '15784955-ef96-446d-9108-c13d740424ca':
+                result.result_char = round(self.average_water_absorption,2)
+                result.calculated = True
+                if self.average_water_absorption_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # WET TRANSVERSE STRENGTH TEST
+            if result.parameter.internal_id == '6d833bd3-d457-4f5d-a912-48c756bb7837':
+                result.result_char = round(self.average_wet_transver,2)
+                result.calculated = True
+                if self.average_wet_transver_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Flatness Avg in  (mm)
+            if result.parameter.internal_id == '19999f82-79c0-44a8-9379-f40dd3323rg34':
+                result.result_char = round(self.average_flatness,2)
+                result.calculated = True
+                if self.average_flatness_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Perpendicularity Avg in %
+            if result.parameter.internal_id == 'rtgh4569f82-79c0-44a8-9379-f40dd3323rg34':
+                result.result_char = round(self.average_perpendicularity,2)
+                result.calculated = True
+                if self.average_perpendicularity_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Straightness Avg in %
+            if result.parameter.internal_id == 'hjty5678469f82-79c0-44a8-9379-f40dd3323rg34':
+                result.result_char = round(self.average_straightness,2)
+                result.calculated = True
+                if self.average_straightness_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+        
 
         return {
                 'view_mode': 'form',

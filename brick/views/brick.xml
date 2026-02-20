@@ -28,6 +28,26 @@
                       <field name="test_end_date"/>
                     </group> -->
 
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+                    <!-- Dimension -->
+
                     <table class="table o_form_table custom_table_borders">
                         <thead>
                             <tr>
@@ -40,9 +60,9 @@
                         <tbody>
                             <tr>
                                 <td>Size of the Brick :- (mm)</td>
-                                <td style="text-align: center;"><field name="length_in_mm" nolabel="1"/></td>
-                                <td style="text-align: center;"><field name="width_in_mm" nolabel="1"/></td>
-                                <td style="text-align: center;"><field name="height_in_mm" nolabel="1"/></td>
+                                <td style="text-align: center;"><field name="length_in_mm" nolabel="1" class="blue-input"/></td>
+                                <td style="text-align: center;"><field name="width_in_mm" nolabel="1" class="blue-input"/></td>
+                                <td style="text-align: center;"><field name="height_in_mm" nolabel="1" class="blue-input"/></td>
                             </tr>
                         </tbody>
                     </table>
@@ -71,27 +91,27 @@
                             <tbody>
                                 <tr>
                                     <td><strong>Length (mm)</strong></td>
-                                    <td><field name="length" nolabel="1"/></td>
-                                    <td><field name="length_2" nolabel="1"/></td>
-                                    <td><field name="length_3" nolabel="1"/></td>
-                                    <td><field name="length_4" nolabel="1"/></td>
-                                    <td><field name="length_5" nolabel="1"/></td>
+                                    <td><field name="length" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="length_2" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="length_3" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="length_4" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="length_5" nolabel="1" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Width (mm)</strong></td>
-                                    <td><field name="width" nolabel="1"/></td>
-                                    <td><field name="width_2" nolabel="1"/></td>
-                                    <td><field name="width_3" nolabel="1"/></td>
-                                    <td><field name="width_4" nolabel="1"/></td>
-                                    <td><field name="width_5" nolabel="1"/></td>
+                                    <td><field name="width" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="width_2" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="width_3" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="width_4" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="width_5" nolabel="1" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Height (mm)</strong></td>
-                                    <td><field name="height" nolabel="1"/></td>
-                                    <td><field name="height_2" nolabel="1"/></td>
-                                    <td><field name="height_3" nolabel="1"/></td>
-                                    <td><field name="height_4" nolabel="1"/></td>
-                                    <td><field name="height_5" nolabel="1"/></td>
+                                    <td><field name="height" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="height_2" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="height_3" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="height_4" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="height_5" nolabel="1" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Area (mm²)</strong></td>
@@ -103,11 +123,11 @@
                                 </tr>
                                 <tr>
                                     <td><strong>Load (Kn)</strong></td>
-                                    <td><field name="load" nolabel="1"/></td>
-                                    <td><field name="load_2" nolabel="1"/></td>
-                                    <td><field name="load_3" nolabel="1"/></td>
-                                    <td><field name="load_4" nolabel="1"/></td>
-                                    <td><field name="load_5" nolabel="1"/></td>
+                                    <td><field name="load" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="load_2" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="load_3" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="load_4" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="load_5" nolabel="1" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Compressive Strength (MPa)</strong></td>
@@ -150,66 +170,7 @@
                         </tbody>
                     </table>
 
-                    <!-- visual_observation -->
-                    <!-- <div invisible="efflorescence_visible == False" style="text-align:center">
-                        <h1>
-                            <field name="visual_observation_name_efflorescence" readonly="1" nolabel="1"/>
-                            <field name="efflorescence_visible" invisible='1'/>
-                        </h1>
-                    </div>
-
-                    <div invisible="efflorescence_visible == False" class="mb-3">
-                        <table class="table custom_table_borders o_form_table">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Observation 1</th>
-                                    <th>Observation 2</th>
-                                    <th>Observation 3</th>
-                                    <th>Observation 4</th>
-                                    <th>Observation 5</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                            </tbody>
-                        </table>
-                    </div> -->
-
-                    <!--Dimension -->
-
-                    <!-- <div invisible="dimension_visible == False" style="text-align:center">
-                        <h1>
-                          <field name="dimension_name1" readonly="1" nolabel="1"/>
-                          20 Bricks
-                        </h1>
-                        <field name="dimension_visible" invisible='1'/>
-                    </div>
-
-                    <div invisible="dimension_visible == False" class="mb-3">
-                        <table class="table custom_table_borders o_form_table">
-                            <thead>
-                                <tr>
-                                    <th>Dimension Type</th>
-                                    <th>Value (mm)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><strong>Length</strong></td>
-                                    <td><field name="avrg_length" nolabel="1"/></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Width</strong></td>
-                                    <td><field name="avrg_width" nolabel="1"/></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Height</strong></td>
-                                    <td><field name="avrg_height" nolabel="1"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div> -->
+                
 
                     <!-- Water Absorbtion -->                      
                     <div invisible="water_absorbtion_visible == False" style="text-align:center">
@@ -234,19 +195,19 @@
                           <tbody>
                                 <tr>
                                     <td><strong>Dry wt (W1)</strong></td>
-                                    <td><field name="initial_wt" nolabel="1"/></td>
-                                    <td><field name="initial_wt_2" nolabel="1"/></td>
-                                    <td><field name="initial_wt_3" nolabel="1"/></td>
-                                    <td><field name="initial_wt_4" nolabel="1"/></td>
-                                    <td><field name="initial_wt_5" nolabel="1"/></td>
+                                    <td><field name="initial_wt" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="initial_wt_2" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="initial_wt_3" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="initial_wt_4" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="initial_wt_5" nolabel="1" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Wet wt (W2)</strong></td>
-                                    <td><field name="final_wt" nolabel="1"/></td>
-                                    <td><field name="final_wt_2" nolabel="1"/></td>
-                                    <td><field name="final_wt_3" nolabel="1"/></td>
-                                    <td><field name="final_wt_4" nolabel="1"/></td>
-                                    <td><field name="final_wt_5" nolabel="1"/></td>
+                                    <td><field name="final_wt" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="final_wt_2" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="final_wt_3" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="final_wt_4" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="final_wt_5" nolabel="1" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Water Absorption %</strong></td>
@@ -258,11 +219,11 @@
                                 </tr>
                                 <tr>
                                     <td><strong>Observation</strong></td>
-                                    <td><field name="visual_observation_1" nolabel="1"/></td>
-                                    <td><field name="visual_observation_2" nolabel="1"/></td>
-                                    <td><field name="visual_observation_3" nolabel="1"/></td>
-                                    <td><field name="visual_observation_4" nolabel="1"/></td>
-                                    <td><field name="visual_observation_5" nolabel="1"/></td>
+                                    <td><field name="visual_observation_1" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="visual_observation_2" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="visual_observation_3" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="visual_observation_4" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="visual_observation_5" nolabel="1" class="blue-input"/></td>
                                 </tr>
                           </tbody>
                       </table>

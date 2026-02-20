@@ -396,12 +396,19 @@ class MechanicalBricks(models.Model):
                     record.dimension_visible = True 
      
     def open_eln_page(self):
-        # import wdb; wdb.set_trace()
-        for result in self.eln_ref.parameters_result:
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
             
-            # crushing 
+            # Compressive Strength 
             if result.parameter.internal_id == '31478fghht-9287-48c7-a607-bf1b64a8115d':
                 result.result_char = round(self.avrg_compressive_strength,2)
+                result.calculated = True
                 if self.comp_strength_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -411,11 +418,22 @@ class MechanicalBricks(models.Model):
             # water absorbtion
             if result.parameter.internal_id == '321475gfet1-f3ab-4b19-af25-91a4671baf5f':
                 result.result_char = round(self.avrg_water_absorption,2)
+                result.calculated = True
                 if self.water_absorption_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue 
+
+            # Efflorence
+            if result.parameter.internal_id == '3214598fgrt-d27d-4ef9-9b27-e8eb4e7ae6ac':
+                # result.result_char = round(self.avrg_water_absorption,2)
+                result.calculated = True
+
+            # Dimension
+            if result.parameter.internal_id == '125478bvf3-8d5d-4f45-8afb-b911f9cafe41':
+                # result.result_char = round(self.avrg_water_absorption,2)
+                result.calculated = True
 
         return {
                 'view_mode': 'form',
