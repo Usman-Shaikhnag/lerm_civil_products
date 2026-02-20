@@ -1,43 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-  <template id="custom_layout_header_footer">
-    <div t-attf-class="header article" t-att-style="report_header_style">
-      <div class="row">
-        <div class="col-12 imageContainer">
-          <img t-attf-src="/lerm_civil_inv/static/src/img/kes_letterHead.jpg" alt="Image"/>
+<template id="custom_layout_header_footer">
+    <div class="header article" t-att-style="report_header_style">
+        <div class="row">
+            <div class="col-12 text-center">
+                <t t-if="o.company_id.inv_header">
+                    <img t-att-src="'data:image/png;base64,' + o.company_id.inv_header.decode('utf-8')"
+                         style="width:100%; max-height:150px;"/>
+                </t>
+            </div>
         </div>
-      </div>
     </div>
-    <div t-attf-class="article" t-att-style="report_header_style">
-      <t t-out="0"/>
+
+    <div class="article">
+        <t t-out="0"/>
     </div>
-    <div t-attf-class="footer o_standard_footer">
-      <div class="text-center" style="border-top: 1px solid black;">
-        <ul class="list-inline mb4">
-          <div class="footertext">
-						Regd. Office: Shop No. 3, Building B1, Wadala Truck Terminal, MMRDA Compound, Antop Hill, Mumbai - 400037, Tel.: +91 22 2401 0040 Chemical Testing Department : Shramjivan Bldg., B-5, Office No. 109, First Floor, Wadala Truck Terminal, Mumbai - 400037.
-          </div>
-          <div class="footertext">
-						Email : sales@knackengineeringservices.com             <![CDATA[&nbsp;]]><![CDATA[&nbsp;]]> Website :  www.knackengineeringservices.com 
-          </div>
-          <div class="footertext">
-						CIN No.: U45209MH2017PTC291168
-          </div>
-        </ul>
-        <div t-if="report_type == 'pdf'" class="footertext">
-                    Page: <span class="page"/>
- /        <span class="topage"/>
-      </div>
+
+    <div class="footer o_standard_footer">
+        <div class="text-center">
+            <t t-if="o.company_id.inv_footer">
+                <img t-att-src="'data:image/png;base64,' + o.company_id.inv_footer.decode('utf-8')"
+                     style="width:100%; max-height:120px;"/>
+            </t>
+        </div>
+
+        <div t-if="report_type == 'pdf'" class="text-center">
+            Page: <span class="page"/> / <span class="topage"/>
+        </div>
     </div>
-  </div>
 </template>
 <template id="kes_custom_invoice">
   <t t-call="web.html_container">
     <!-- <t t-call="web.basic_layout"> -->
-    <t t-call="lerm_civil_inv.custom_layout_header_footer">
 
-      <div t-foreach="data" t-as="o" class="container_kes">
+      <t t-call="lerm_civil_inv.custom_layout_header_footer">
+        <div t-foreach="data" t-as="o" class="container_kes">
         <!-- <div class="imageContainer">
               <img t-attf-src="/lerm_civil_inv/static/src/img/letterHead.jpg" class="company_logo" alt="Image"/>
           </div> -->
@@ -567,8 +565,8 @@
             </td>
           </tr>
         </table>
-      </div>
-    </t>
+    </div>
+      </t>
   </t>
 </template>
 
