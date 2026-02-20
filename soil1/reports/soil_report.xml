@@ -1529,10 +1529,10 @@
 							</tr>
 
 							<tr>
-								<td colspan="2" style="border:1px solid black; padding:4px;">
+								<td colspan="1" style="border:1px solid black; padding:4px;">
 									<b>Room Temperature (°C)</b>
 								</td>
-								<td  colspan="2"  style="border:1px solid black; padding:4px; text-align:center;">
+								<td  colspan="1"  style="border:1px solid black; padding:4px; text-align:center;">
 									<t t-esc="cbr.room_temp"/>
 								</td>
 								<td colspan="1" style="border:1px solid black; padding:4px;">
@@ -1540,6 +1540,13 @@
 								</td>
 								<td colspan="1" style="border:1px solid black; padding:4px; text-align:center;">
 									<t t-esc="cbr.humidity"/>
+								</td>
+								<td colspan="1" style="border:1px solid black; padding:4px;">
+									<b>Load Gauge Constant</b>
+								</td>
+								<td colspan="1" style="border:1px solid black; padding:4px; text-align:center;">
+									<!-- <t t-esc="cbr.humidity"/> -->
+									<b>[0.0133 x Deflection] + 0.0331</b>
 								</td>
 							</tr>
 
@@ -1556,7 +1563,7 @@
 								<td style="border:1px solid black; padding:4px;">
 								</td>
 								<td style="border:1px solid black; padding:4px;">
-									Type of compaction
+									<b>Type of compaction</b>
 								</td>
 								<td style="border:1px solid black; padding:4px;">
 								</td>
@@ -1568,8 +1575,8 @@
 								</td>
 								<td style="border:1px solid black; padding:4px;">
 								</td>
-								<td style="border:1px solid black; padding:4px; text-align:center;">
-								   Period of soaking(days)
+								<td style="border:1px solid black; padding:4px; ">
+								   <b>Period of soaking(days)</b>
 								</td>
 								<td style="border:1px solid black; padding:4px; text-align:center;">
 								</td>

@@ -13082,40 +13082,70 @@ class CbrLine(models.Model):
 
     soil_table = fields.One2many('mechanical.cbr.line1','parent_id_cbr',string="CBR",default=lambda self: self._default_cbr_child_lines())
 
-    cbr_2_5_mm = fields.Float(string="CBR At Penetration Of 2.5 mm",compute="_compute_cbr_values",store=True) 
-    cbr_5_mm = fields.Float(string="CBR At Penetration Of 5 mm",compute="_compute_cbr_values",store=True)
+    cbr_2_5_mm = fields.Float(string="CBR At Penetration Of 2.5 mm",compute="_compute_cbr_values") 
+    cbr_5_mm = fields.Float(string="CBR At Penetration Of 5 mm",compute="_compute_cbr_values")
 
     # --- SEPARATE COMPUTE FUNCTION ---
-    @api.depends('soil_table', 'soil_table.penetration', 'soil_table.avg_load')
-    def _compute_cbr_values(self):
-        for record in self:
-            # Default values (jar data nasel tar 0.0)
-            val_2_5 = 0.0
-            val_5_0 = 0.0
+    # @api.depends('soil_table', 'soil_table.penetration', 'soil_table.avg_load')
+    # def _compute_cbr_values(self):
+    #     for record in self:
+    #         # Default values (jar data nasel tar 0.0)
+    #         val_2_5 = 0.0
+    #         val_5_0 = 0.0
             
-            # Data sort kara (Penetration nusar)
-            lines = record.soil_table.sorted(key=lambda l: l.penetration)
-            x_values = [line.penetration for line in lines]
-            y_values = [line.avg_load for line in lines]
+    #         # Data sort kara (Penetration nusar)
+    #         lines = record.soil_table.sorted(key=lambda l: l.penetration)
+    #         x_values = [line.penetration for line in lines]
+    #         y_values = [line.avg_load for line in lines]
 
-            # Logic: Jar data asel ani values 2.5/5.0 chya range madhe astil
-            if len(x_values) > 1:
-                target_x = [2.5, 5.0]
+    #         # Logic: Jar data asel ani values 2.5/5.0 chya range madhe astil
+    #         if len(x_values) > 1:
+    #             target_x = [2.5, 5.0]
                 
-                # Interpolation (Exact Load kadhnyasathi)
-                target_y = np.interp(target_x, x_values, y_values)
+    #             # Interpolation (Exact Load kadhnyasathi)
+    #             target_y = np.interp(target_x, x_values, y_values)
                 
-                load_at_2_5 = target_y[0]
-                load_at_5_0 = target_y[1]
+    #             load_at_2_5 = target_y[0]
+    #             load_at_5_0 = target_y[1]
 
-                # --- MAIN CALCULATION FORMULA ---
-                # Formula: (Load * 100) / Standard Load
-                val_2_5 = (load_at_2_5 * 100) / 13.781
-                val_5_0 = (load_at_5_0 * 100) / 20.55
+    #             # --- MAIN CALCULATION FORMULA ---
+    #             # Formula: (Load * 100) / Standard Load
+    #             val_2_5 = (load_at_2_5 * 100) / 13.781
+    #             val_5_0 = (load_at_5_0 * 100) / 20.55
 
-            # Field la value assign kara
-            record.cbr_2_5_mm = val_2_5
-            record.cbr_5_mm = val_5_0
+    #         # Field la value assign kara
+    #         record.cbr_2_5_mm = val_2_5
+    #         record.cbr_5_mm = val_5_0
+
+
+    @api.depends('soil_table.penetration', 'soil_table.avg_load')
+    def _compute_cbr_values(self):
+     for record in self:
+        val_2_5 = 0.0
+        val_5_0 = 0.0
+
+        lines = record.soil_table.sorted(key=lambda l: l.penetration)
+
+        def interpolate(x):
+            for i in range(len(lines) - 1):
+                x1 = lines[i].penetration
+                x2 = lines[i + 1].penetration
+                y1 = lines[i].avg_load
+                y2 = lines[i + 1].avg_load
+
+                if x1 <= x <= x2:
+                    return y1 + (x - x1) * (y2 - y1) / (x2 - x1)
+            return 0.0
+
+        if len(lines) >= 2:
+            load_2_5 = interpolate(2.5)
+            load_5_0 = interpolate(5.0)
+
+            val_2_5 = round((load_2_5 * 100) / 13.781, 2)
+            val_5_0 = round((load_5_0 * 100) / 20.55, 2)
+
+        record.cbr_2_5_mm = val_2_5
+        record.cbr_5_mm = val_5_0
 
     # --- NEW FIELDS FOR GRAPH ---
     cbr_graph = fields.Binary(string="CBR Graph") 
@@ -13123,71 +13153,155 @@ class CbrLine(models.Model):
 
 
 
+    # def action_generate_cbr_graph(self):
+    #     for record in self:
+    #         if not record.soil_table:
+    #             continue
+
+    #         # 1. Data Prepare kara
+    #         lines = record.soil_table.sorted(key=lambda l: l.penetration)
+            
+    #         x_values = [line.penetration for line in lines]
+    #         y_values = [line.avg_load for line in lines]
+
+    #         if not x_values or not y_values:
+    #             continue
+
+    #         # 2. Plot Setup
+    #         plt.figure(figsize=(10, 6))
+    #         ax = plt.gca()
+
+    #         # 3. Main Curve Plot kara (Black line with dots)
+    #         # 'ko-' mhanje Black color, Circle marker, Solid line
+    #         plt.plot(x_values, y_values, 'ko-', linewidth=1.5, markersize=6, label='CBR Curve')
+
+    #         # 4. 2.5mm ani 5.0mm sathi Logic (Lines ani Labels)
+    #         target_x = [2.5, 5.0]
+            
+    #         if len(x_values) > 1:
+    #             # Interpolation karun exact Y value kadha
+    #             target_y = np.interp(target_x, x_values, y_values)
+
+    #             for tx, ty in zip(target_x, target_y):
+    #                 if tx <= max(x_values):
+    #                     # Blue Vertical Line (Ubhi line)
+    #                     plt.plot([tx, tx], [0, ty], color='blue', linewidth=1)
+                        
+    #                     # Blue Horizontal Line (Advi line)
+    #                     plt.plot([0, tx], [ty, ty], color='blue', linewidth=1)
+                        
+    #                     # Intersection var Blue Dot (Point)
+    #                     plt.plot(tx, ty, 'bo', markersize=5)  # 'bo' mhanje Blue Circle
+
+    #                     # Label (Text Value)
+    #                     # Point chya javal value lihun yeil (Ex: 4.65 kN)
+    #                     label_text = f"{ty:.2f}"
+    #                     plt.text(tx - 0.5, ty + 0.2, label_text, color='blue', fontsize=10, fontweight='bold')
+
+    #         # 5. Graph Formatting (Styling)
+    #         plt.xlabel('Penetration in mm', fontweight='bold', fontsize=12)
+    #         plt.ylabel('Average Load in kN', fontweight='bold', fontsize=12)
+            
+    #         # X-Axis 0 te 14 range
+    #         plt.xlim(0, 14)
+    #         plt.ylim(bottom=0)
+            
+    #         # X-Axis var sagale numbers (0, 1, 2...14) disnyasathi
+    #         plt.xticks(np.arange(0, 15, 1))
+            
+    #         # Grid (Optional - jar havi asel tar uncomment kara)
+    #         # plt.grid(True, linestyle='--', alpha=0.5)
+
+    #         # 6. Graph Save kara
+    #         buf = io.BytesIO()
+    #         plt.savefig(buf, format='png', dpi=100, bbox_inches='tight')
+    #         plt.close()
+            
+    #         record.cbr_graph = base64.b64encode(buf.getvalue())
+
+
     def action_generate_cbr_graph(self):
-        for record in self:
-            if not record.soil_table:
-                continue
+     import matplotlib.pyplot as plt
+     import numpy as np
+     import io
+     import base64
 
-            # 1. Data Prepare kara
-            lines = record.soil_table.sorted(key=lambda l: l.penetration)
-            
-            x_values = [line.penetration for line in lines]
-            y_values = [line.avg_load for line in lines]
+     for record in self:
+        if not record.soil_table:
+            continue
 
-            if not x_values or not y_values:
-                continue
+        # Sort data by penetration
+        lines = record.soil_table.sorted(key=lambda l: l.penetration)
 
-            # 2. Plot Setup
-            plt.figure(figsize=(10, 6))
-            ax = plt.gca()
+        x_values = [line.penetration for line in lines]
+        y_values = [line.avg_load for line in lines]
 
-            # 3. Main Curve Plot kara (Black line with dots)
-            # 'ko-' mhanje Black color, Circle marker, Solid line
-            plt.plot(x_values, y_values, 'ko-', linewidth=1.5, markersize=6, label='CBR Curve')
+        if not x_values or not y_values:
+            continue
 
-            # 4. 2.5mm ani 5.0mm sathi Logic (Lines ani Labels)
-            target_x = [2.5, 5.0]
-            
-            if len(x_values) > 1:
-                # Interpolation karun exact Y value kadha
-                target_y = np.interp(target_x, x_values, y_values)
+        fig, ax = plt.subplots(figsize=(10, 6), dpi=100)
 
-                for tx, ty in zip(target_x, target_y):
-                    if tx <= max(x_values):
-                        # Blue Vertical Line (Ubhi line)
-                        plt.plot([tx, tx], [0, ty], color='blue', linewidth=1)
-                        
-                        # Blue Horizontal Line (Advi line)
-                        plt.plot([0, tx], [ty, ty], color='blue', linewidth=1)
-                        
-                        # Intersection var Blue Dot (Point)
-                        plt.plot(tx, ty, 'bo', markersize=5)  # 'bo' mhanje Blue Circle
+        # Main CBR curve (black line with dots)
+        ax.plot(x_values, y_values, 'ko-', linewidth=1.5, markersize=6)
 
-                        # Label (Text Value)
-                        # Point chya javal value lihun yeil (Ex: 4.65 kN)
-                        label_text = f"{ty:.2f}"
-                        plt.text(tx - 0.5, ty + 0.2, label_text, color='blue', fontsize=10, fontweight='bold')
+        # Target penetrations
+        target_x = [2.5, 5.0]
 
-            # 5. Graph Formatting (Styling)
-            plt.xlabel('Penetration in mm', fontweight='bold', fontsize=12)
-            plt.ylabel('Average Load in kN', fontweight='bold', fontsize=12)
-            
-            # X-Axis 0 te 14 range
-            plt.xlim(0, 14)
-            plt.ylim(bottom=0)
-            
-            # X-Axis var sagale numbers (0, 1, 2...14) disnyasathi
-            plt.xticks(np.arange(0, 15, 1))
-            
-            # Grid (Optional - jar havi asel tar uncomment kara)
-            # plt.grid(True, linestyle='--', alpha=0.5)
+        # Interpolation for exact Y values
+        target_y = np.interp(target_x, x_values, y_values)
 
-            # 6. Graph Save kara
-            buf = io.BytesIO()
-            plt.savefig(buf, format='png', dpi=100, bbox_inches='tight')
-            plt.close()
-            
-            record.cbr_graph = base64.b64encode(buf.getvalue())
+        for tx, ty in zip(target_x, target_y):
+            if tx <= max(x_values):
+                # Vertical blue line
+                ax.plot([tx, tx], [0, ty], color='blue', linewidth=1)
+
+                # Horizontal blue line
+                ax.plot([0, tx], [ty, ty], color='blue', linewidth=1)
+
+                # Intersection point
+                
+                ax.plot(tx, ty, 'bo', markersize=5)
+
+                # Numeric value near intersection
+                # ax.text(tx + 0.1, ty + 0.01, f"{ty:.2f}",
+                #         color='blue', fontsize=10, fontweight='bold')
+
+                # Penetration label ON horizontal line
+                ax.text(0.3, ty + (ax.get_ylim()[1] * 0.02),
+        f"{tx} mm Penetration",
+        fontsize=10,
+        color='black',
+        ha='left')
+
+        # Axis labels
+        ax.set_xlabel('Penetration in mm', fontweight='bold', fontsize=12)
+        ax.set_ylabel('Average Load in kN', fontweight='bold', fontsize=12)
+
+        # Axis limits
+        ax.set_xlim(0, max(x_values))
+        ax.set_ylim(bottom=0)
+
+        # X ticks every 1 mm
+        ax.set_xticks(np.arange(0, int(max(x_values)) + 2, 1))
+
+        # Excel-like grid
+        ax.grid(True, alpha=0.4)
+
+        # Axes crossing at zero
+        ax.spines['left'].set_position(('data', 0))
+        ax.spines['bottom'].set_position(('data', 0))
+        ax.spines['right'].set_color('none')
+        ax.spines['top'].set_color('none')
+
+        ax.xaxis.set_ticks_position('bottom')
+        ax.yaxis.set_ticks_position('left')
+
+        # Save image
+        buf = io.BytesIO()
+        plt.savefig(buf, format='png', bbox_inches='tight')
+        plt.close(fig)
+
+        record.cbr_graph = base64.b64encode(buf.getvalue())
 
     
 
