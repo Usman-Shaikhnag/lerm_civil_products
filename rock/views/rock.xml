@@ -106,7 +106,7 @@
                       
    
    
-                 <div class="d-flex gap-2" invisible="not usc_visible ">
+                 <!-- <div class="d-flex gap-2" invisible="not usc_visible ">
                   <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
@@ -126,7 +126,7 @@
                                 
                             </tbody>
                         </table>
-                    </div>  
+                    </div>   -->
 
 
 
@@ -141,7 +141,7 @@
 
 
 
-                    <div class="d-flex gap-4" invisible = "usc_visible == False">
+                    <!-- <div class="d-flex gap-2" invisible = "usc_visible == False">
                         
 
                          <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders">
@@ -186,7 +186,7 @@
                            
                             </tbody>
                         </table>
-                    </div>
+                    </div> -->
 
 
         
@@ -380,8 +380,8 @@
                             <tree editable="bottom" class="custom_table_borders">
                              <!-- <field name="blue_input" invisible="1"/> -->
                                 <field name='sr_no'/>
-                                <field name='d_mm'  class="blue-input" decoration-info="d_mm != 0"/>
-                                <field name='room_temp' class="blue-input" decoration-info="room_temp != 0"/>
+                                <field name='d_mm'  class="blue-input" decoration-info="d_mm != 0" width="100px"/>
+                                <field name="room_temp1" class="blue-input" decoration-info="room_temp1 != 0"/>
                                 <field name='pin1_intial' width="120" class="blue-input" decoration-info="pin1_intial != 0"/>
                                 <field name='pon1_final' width="120" class="blue-input" decoration-info="pon1_final != 0"/>
                                 <field name='pin_result' width="120" />
@@ -472,6 +472,20 @@
                                 <td><label for="overall_avg_pin_result"></label></td>
                                 <td><field name='overall_avg_pin_result' col="1" /></td>
                             </tr>
+                            <tr>
+                                <td><label for="avg_hrc"></label></td>
+                                <td><field name='avg_hrc' col="1" /></td>
+                            </tr>
+
+                            <tr>
+                                <td><label for="cai"></label></td>
+                                <td><field name='cai' col="1" /></td>
+                            </tr>
+                            
+                            <tr>
+                                <td><label for="cai_prime"></label></td>
+                                <td><field name='cai_prime' col="1" /></td>
+                            </tr>
                             
                             
                             </tbody>
@@ -552,7 +566,7 @@
                                 <field name='wt_drum_d' class="blue-input" decoration-info="wt_drum_d != 0"/>
                                 <field name='slake_second' class="blue-input" />
                                 <field name='slake_first'  class="blue-input" />
-                                <field name='classification' class="blue-input" decoration-info="classification != 0"/>
+                                <field name='classification1' class="blue-input" decoration-info="classification1 != 0"/>
                                
                             </tree>
                         </field>

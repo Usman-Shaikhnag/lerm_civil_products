@@ -714,61 +714,19 @@ class MechanicalRockLine(models.Model):
             else:
                 rec.comp_strength2 = 0.0
 
-    # @api.depends('point_load', 'avg_dia','parent_id.point_load_constant')
-    # def _compute_point_load_strength(self):
-    #     for rec in self:
-    #         if rec.point_load and rec.avg_dia and rec.avg_dia > 0:
-    #             rec.point_load_strength = (1000 * rec.point_load) / (math.sqrt(rec.parent_id.point_load_constant) * (rec.avg_dia ** 1.5))
-    #         else:
-    #             rec.point_load_strength = 0.0
-    # @api.depends('point_load', 'avg_dia', 'parent_id.point_load_constant')
-    # def _compute_point_load_strength(self):
-    #     for rec in self:
-    #         if (
-    #             rec.point_load
-    #             and rec.avg_dia
-    #             and rec.avg_dia > 0
-    #             and rec.parent_id.point_load_constant
-    #             and rec.parent_id.point_load_constant > 0
-    #         ):
-    #             rec.point_load_strength = (
-    #                 (1000 * rec.point_load)
-    #                 / (
-    #                     math.sqrt(rec.parent_id.point_load_constant)
-    #                     * (rec.avg_dia ** 1.5)
-    #                 )
-    #             )
-    #         else:
-    #             rec.point_load_strength = 0.0
 
-    # @api.depends('point_load', 'avg_dia', 'parent_id.point_load_constant')
-    # def _compute_point_load_strength(self):
-    #  for rec in self:
-    #     point_load = rec.point_load or 0
-    #     avg_dia = rec.avg_dia or 0
-    #     constant = rec.parent_id.point_load_constant or 0
-
-    #     if point_load > 0 and avg_dia > 0 and constant > 0:
-    #         rec.point_load_strength = (
-    #             1000 * point_load
-    #         ) / (
-    #             math.sqrt(50) * (avg_dia ** constant)
-    #         )
-    #     else:
-    #         rec.point_load_strength = 0.0
-
-    @api.depends('point_load', 'avg_dia', 'parent_id.point_load_constant')
+    @api.depends('point_load', 'avg_dia')
     def _compute_point_load_strength(self):
      for rec in self:
         point_load = rec.point_load or 0
         avg_dia = rec.avg_dia or 0
-        constant = rec.parent_id.point_load_constant or 0
+        
 
-        if point_load > 0 and avg_dia > 0 and constant > 0:
+        if point_load > 0 and avg_dia > 0 :
             rec.point_load_strength = (
                 1000 * point_load
             ) / (
-                math.sqrt(50) * (avg_dia ** constant)
+                math.sqrt(50) * (avg_dia ** 1.5)
             )
         else:
             rec.point_load_strength = 0.0
@@ -786,48 +744,47 @@ class MechanicalRockLine(models.Model):
     @api.depends(
     'point_load',
     'avg_dia',
-    'avg_height',
-    'parent_id.point_load_constant_2'
+    'avg_height'
 )
     def _compute_point_load_index(self):
      for rec in self:
         point_load = rec.point_load or 0
         avg_dia = rec.avg_dia or 0
         avg_height = rec.avg_height or 0
-        constant = rec.parent_id.point_load_constant_2 or 0
+        
 
-        if avg_dia > 0 and avg_height > 0 and constant > 0 and point_load > 0:
+        if avg_dia > 0 and avg_height > 0 and  point_load > 0:
             area = avg_dia * avg_height
 
             rec.point_load_index = (
                 1000 * point_load
             ) / (
-                math.sqrt(50) * (area ** constant)
+                math.sqrt(50) * (area ** 0.75)
             )
         else:
             rec.point_load_index = 0.0 
 
 
-    @api.depends('point_load_strength','parent_id.compressive_strength_constant')
+    @api.depends('point_load_strength')
     def _compute_comp_strength4(self):
         for rec in self:
-            rec.comp_strength4 = rec.parent_id.compressive_strength_constant * rec.point_load_strength if rec.point_load_strength else 0.0
+            rec.comp_strength4 = 20 * rec.point_load_strength if rec.point_load_strength else 0.0
 
-    @api.depends('point_load_index','parent_id.compressive_strength_constant')
+    @api.depends('point_load_index')
     def _compute_comp_strength5(self):
         for rec in self:
-            rec.comp_strength5 = rec.parent_id.compressive_strength_constant * rec.point_load_index if rec.point_load_index else 0.0
+            rec.comp_strength5 = 20 * rec.point_load_index if rec.point_load_index else 0.0
 
 
-    @api.depends('comp_strength1','parent_id.compressive_strength_constant_hd')
+    @api.depends('comp_strength1')
     def _compute_comp_rock(self):
         for rec in self:
-            rec.comp_rock = rec.parent_id.compressive_strength_constant_hd * rec.comp_strength1 if rec.comp_strength1 else 0.0
+            rec.comp_rock = 0.098 * rec.comp_strength1 if rec.comp_strength1 else 0.0
 
-    @api.depends('comp_strength2','parent_id.compressive_strength_constant_hd')
+    @api.depends('comp_strength2')
     def _compute_comp_rock1(self):
         for rec in self:
-            rec.comp_rock1 = rec.parent_id.compressive_strength_constant_hd * rec.comp_strength2 if rec.comp_strength2 else 0.0
+            rec.comp_rock1 = 0.098 * rec.comp_strength2 if rec.comp_strength2 else 0.0
 
     @api.depends('comp_rock1', 'duration_of_test')
     def _compute_stress_rate(self):
@@ -887,8 +844,8 @@ class MechanicalCercharLine(models.Model):
     
    
     sr_no = fields.Integer(string="Sr. No.", readonly=True, copy=False, default=1)
-    d_mm = fields.Date(string="d (mm)")
-    room_temp = fields.Date(string="Room Temperature (°C)")
+    d_mm = fields.Char(string="d (mm)")
+    room_temp1 = fields.Float(string="Room Temperature (°C)")
    
     pin1_intial = fields.Float(string="Initial Reading(mm)")
     pon1_final = fields.Float(string="Final Reading(mm)")
@@ -1034,7 +991,17 @@ class AercharAbrasivityLine(models.Model):
                 line.depth = review_line.depth        
 
 
-    cerchar_abrasivity_lines = fields.One2many('mechanical.cerchar.line','parent_id_cerchar',string="Parameter")
+    cerchar_abrasivity_lines = fields.One2many('mechanical.cerchar.line','parent_id_cerchar',string="Parameter",default=lambda self: self._default_cerchar_abrasivity_lines())
+
+    @api.model
+    def _default_cerchar_abrasivity_lines(self):
+        default_lines = [
+            (0, 0, {'d_mm': 'd1'}),
+            (0, 0, {'d_mm': 'd2 '}),
+            (0, 0, {'d_mm': 'd3'}),
+            (0, 0, {'d_mm': 'd4'}),
+        ]
+        return default_lines
 
     classification = fields.Selection(
     [
@@ -1171,6 +1138,46 @@ class AercharAbrasivityLine(models.Model):
             else:
                 rec.overall_avg_pin_result = 0.0
 
+
+    cai = fields.Float(
+    string="CERCHAR Abrasivity Index (CAI) (a x 10)",
+    digits=(16, 2),
+    compute="_compute_cai",
+    store=True
+)
+    
+    @api.depends('overall_avg_pin_result')
+    def _compute_cai(self):
+     for rec in self:
+        rec.cai = (rec.overall_avg_pin_result or 0.0) * 10
+
+    avg_hrc = fields.Float(
+    string="Average HRC",
+    digits=(16, 2),
+    compute="_compute_avg_hrc",
+    store=True
+)
+    
+    def _compute_avg_hrc(self):
+     for rec in self:
+        hrc_values = [55.3, 55.7, 55.5, 55.9, 55.3]
+        rec.avg_hrc = round(sum(hrc_values) / len(hrc_values), 2)
+
+    cai_prime = fields.Float(
+    string="CAI'",
+    digits=(16, 2),
+    compute="_compute_cai_prime",
+    store=True
+)
+    
+    @api.depends('cai', 'avg_hrc')
+    def _compute_cai_prime(self):
+     for rec in self:
+        if rec.avg_hrc:
+            rec.cai_prime = (0.415 * rec.cai) / (1 - (0.0107 * rec.avg_hrc))
+        else:
+            rec.cai_prime = 0.0
+
         
     
 
@@ -1217,15 +1224,38 @@ class MechanicalSlakeLine(models.Model):
     slake_first = fields.Float(string=" Slake durability Index percent (First cycle) = (B-D)/(A-D)*100",digits=(16, 2),compute="_compute_slake_index",store=True
     )
 
-    classification = fields.Selection(
+    classification1 = fields.Selection(
     [
+        ('very_low', 'VERY LOW'),
         ('low', 'LOW'),
         ('medium', 'MEDIUM'),
         ('high', 'HIGH'),
         ('very_high', 'VERY HIGH'),
+        ('extremely_high', 'EXTREMELY HIGH'),
     ],
-    string="Classification"
-    )
+    string="Classification",
+    compute="_compute_classification1",
+    store=True
+)
+    
+
+    @api.depends('slake_second')
+    def _compute_classification1(self):
+     for rec in self:
+        val = rec.slake_second or 0.0
+
+        if val <= 25:
+            rec.classification1 = 'very_low'
+        elif val <= 50:
+            rec.classification1 = 'low'
+        elif val <= 75:
+            rec.classification1 = 'medium'
+        elif val <= 90:
+            rec.classification1 = 'high'
+        elif val <= 95:
+            rec.classification1 = 'very_high'
+        else:
+            rec.classification1 = 'extremely_high'
 
    
     @api.depends(
