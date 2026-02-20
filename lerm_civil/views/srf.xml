@@ -375,9 +375,9 @@
                         <field name="material_id" invisible="1"/>
                         <field name="doc_name"/>
                         <field name="completion_date"/>
-                        <field name="issue_no" />
-                        <field name="issue_date1"/>
-                        <field name="doc_no"/>
+                        <field name="issue_no" invisible="1"/>
+                        <field name="issue_date1" invisible="1"/>
+                        <field name="doc_no" invisible="1"/>
 
                     </group>
                     <group>
@@ -387,14 +387,14 @@
                         <field name="resource_availability_remark"/>
                         <field name="test_performed_remark"/>
                          <!-- <field name="lab_id" /> -->
-                         <field name="quantity" />
+                         <field name="quantity" invisible="1"/>
                         
 
                         <field name="sample_id" invisible="1"/>
-                        <field name="parameters" widget="many2many_tags" />
+                        <field name="parameters" widget="many2many_tags"  invisible="1"/>
                         <field name="group_id"  invisible="1"/>
-                        <field name="rev_no"  />
-                        <field name="rev_date1" />
+                        <field name="rev_no"  invisible="1"/>
+                        <field name="rev_date1" invisible="1"/>
                         <field name="w_o" />
                         <field name="no_samples" />
 
@@ -460,6 +460,7 @@
         <field name="model">sample.request.review</field>
         <field name="arch" type="xml">
             <tree create="false" delete="false">
+               <field name="lab_id"/>
                 <field name="sample_id"/>
                 <field name="receipt_date"/>
                 <field name="lot_detail"/>
