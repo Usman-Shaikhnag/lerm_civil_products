@@ -4837,23 +4837,60 @@ class SoilGSALINE(models.Model):
 
         return record
 
-    def calculate_sieve_gsa(self): 
-        for record in self:
+    # def calculate_sieve_gsa(self): 
+    #     for record in self:
 
         
 
-            previous_cumulative = 0  
-            for line in record.sieve_analysis_child_lines_gsa:
-                print("Rows", str(line.percent_retained))
-                previous_line = line.serial_no - 1
-                if previous_line == 0:
-                    cumulative_retained = line.percent_retained
-                else:
-                    previous_line_record = self.env['gsa.lab.sieve.analysis.line'].sudo().search([("serial_no", "=", previous_line),("parent_id", "=", record.id)], limit=1)
+    #         previous_cumulative = 0  
+    #         for line in record.sieve_analysis_child_lines_gsa:
+    #             print("Rows", str(line.percent_retained))
+    #             previous_line = line.serial_no - 1
+    #             if previous_line == 0:
+    #                 cumulative_retained = line.percent_retained
+    #             else:
+    #                 previous_line_record = self.env['gsa.lab.sieve.analysis.line'].sudo().search([("serial_no", "=", previous_line),("parent_id", "=", record.id)], limit=1)
                     
+    #                 if previous_line_record:
+    #                     previous_cumulative = previous_line_record.cumulative_retained
+    #                 cumulative_retained = previous_cumulative + line.percent_retained
+
+    #             passing_percent = 100 - cumulative_retained
+
+    #             line.write({
+    #                 'cumulative_retained': round(cumulative_retained, 2),
+    #                 'passing_percent': round(passing_percent, 2),
+    #             })
+                
+    #             print("Updated Cumulative Retained:", cumulative_retained)
+    #             print("Updated Passing Percent:", passing_percent)
+
+    #             previous_cumulative = cumulative_retained
+
+    def calculate_sieve_gsa(self): 
+        for record in self:
+
+            previous_cumulative = 0.0  
+
+            for line in record.sieve_analysis_child_lines_gsa:
+
+                print("Rows", str(line.percent_retained))
+
+                previous_line = line.serial_no - 1
+
+                if previous_line == 0:
+                    cumulative_retained = line.percent_retained or 0.0
+
+                else:
+                    previous_line_record = self.env['gsa.lab.sieve.analysis.line'].sudo().search([
+                        ("serial_no", "=", previous_line),
+                        ("parent_id_gsa", "=", record.id)   # ✅ FIX HERE
+                    ], limit=1)
+
                     if previous_line_record:
-                        previous_cumulative = previous_line_record.cumulative_retained
-                    cumulative_retained = previous_cumulative + line.percent_retained
+                        previous_cumulative = previous_line_record.cumulative_retained or 0.0
+
+                    cumulative_retained = previous_cumulative + (line.percent_retained or 0.0)
 
                 passing_percent = 100 - cumulative_retained
 
@@ -4861,7 +4898,7 @@ class SoilGSALINE(models.Model):
                     'cumulative_retained': round(cumulative_retained, 2),
                     'passing_percent': round(passing_percent, 2),
                 })
-                
+
                 print("Updated Cumulative Retained:", cumulative_retained)
                 print("Updated Passing Percent:", passing_percent)
 
