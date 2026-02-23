@@ -452,6 +452,9 @@ class MechanicalRock(models.Model):
             if result.parameter.internal_id == '214jht3mhh2277j-0bc7-41a6-a2bb-0fe9211321ytrbe':
                 result.calculated = True
 
+            if result.parameter.internal_id == '6315f914-f6f5-4b5b-bfc2-34792cf1a237':
+                result.calculated = True
+
         return {
                 'view_mode': 'form',
                 'res_model': "lerm.eln",
