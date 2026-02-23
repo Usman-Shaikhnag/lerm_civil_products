@@ -111,7 +111,7 @@ class MechanicalRock(models.Model):
 
 
     rock_child_lines = fields.One2many('mechanical.rock.line','parent_id',string="Parameter")
-    usc_visible = fields.Boolean("USC Visible",compute="_compute_visible")
+    # usc_visible = fields.Boolean("USC Visible",compute="_compute_visible")
 
     
 
@@ -297,7 +297,7 @@ class MechanicalRock(models.Model):
     def _compute_visible(self):
         
         for record in self:
-            record.usc_visible = False
+            # record.usc_visible = False
             record.avg_dia_visible = False
             record.avg_height_visible = False
             record.hd_visible = False
@@ -328,8 +328,8 @@ class MechanicalRock(models.Model):
             for sample in record.sample_parameters:
                 print("Internal Ids",sample.internal_id)
 
-                if sample.internal_id == "a1f9c5d0-0bc7-41a6-a2bb-0fe9d898008d":
-                    record.usc_visible = True
+                # if sample.internal_id == "a1f9c5d0-0bc7-41a6-a2bb-0fe9d898008d":
+                #     record.usc_visible = True
                 if sample.internal_id == "a1f9c5d0-0bc7-41a6-a2bb-0fe9214587uytf":
                     record.avg_dia_visible = True
                 if sample.internal_id == "a1f9c5d0-0bc7-41a6-a2bb-0fe921147852gh":
