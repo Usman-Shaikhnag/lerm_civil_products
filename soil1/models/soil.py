@@ -4578,6 +4578,12 @@ class SoilGSALINE(models.Model):
     temp_corre = fields.Float(string="Temperature Correction, Mt",compute="_compute_temp_corre",digits=(12,4))
     specific_gravity = fields.Float(string="Specific gravity",digits=(12,3))
 
+    m_4 = fields.Float(string="M",digits=(12,4))
+    c_4 = fields.Float(string="C",digits=(12,4))
+
+    after_m_4 = fields.Float(string="M",digits=(12,4))
+    after_c_4 = fields.Float(string="C",digits=(12,4))
+
 
     
 
@@ -4831,23 +4837,60 @@ class SoilGSALINE(models.Model):
 
         return record
 
-    def calculate_sieve_gsa(self): 
-        for record in self:
+    # def calculate_sieve_gsa(self): 
+    #     for record in self:
 
         
 
-            previous_cumulative = 0  
-            for line in record.sieve_analysis_child_lines_gsa:
-                print("Rows", str(line.percent_retained))
-                previous_line = line.serial_no - 1
-                if previous_line == 0:
-                    cumulative_retained = line.percent_retained
-                else:
-                    previous_line_record = self.env['gsa.lab.sieve.analysis.line'].sudo().search([("serial_no", "=", previous_line),("parent_id", "=", record.id)], limit=1)
+    #         previous_cumulative = 0  
+    #         for line in record.sieve_analysis_child_lines_gsa:
+    #             print("Rows", str(line.percent_retained))
+    #             previous_line = line.serial_no - 1
+    #             if previous_line == 0:
+    #                 cumulative_retained = line.percent_retained
+    #             else:
+    #                 previous_line_record = self.env['gsa.lab.sieve.analysis.line'].sudo().search([("serial_no", "=", previous_line),("parent_id", "=", record.id)], limit=1)
                     
+    #                 if previous_line_record:
+    #                     previous_cumulative = previous_line_record.cumulative_retained
+    #                 cumulative_retained = previous_cumulative + line.percent_retained
+
+    #             passing_percent = 100 - cumulative_retained
+
+    #             line.write({
+    #                 'cumulative_retained': round(cumulative_retained, 2),
+    #                 'passing_percent': round(passing_percent, 2),
+    #             })
+                
+    #             print("Updated Cumulative Retained:", cumulative_retained)
+    #             print("Updated Passing Percent:", passing_percent)
+
+    #             previous_cumulative = cumulative_retained
+
+    def calculate_sieve_gsa(self): 
+        for record in self:
+
+            previous_cumulative = 0.0  
+
+            for line in record.sieve_analysis_child_lines_gsa:
+
+                print("Rows", str(line.percent_retained))
+
+                previous_line = line.serial_no - 1
+
+                if previous_line == 0:
+                    cumulative_retained = line.percent_retained or 0.0
+
+                else:
+                    previous_line_record = self.env['gsa.lab.sieve.analysis.line'].sudo().search([
+                        ("serial_no", "=", previous_line),
+                        ("parent_id_gsa", "=", record.id)   # ✅ FIX HERE
+                    ], limit=1)
+
                     if previous_line_record:
-                        previous_cumulative = previous_line_record.cumulative_retained
-                    cumulative_retained = previous_cumulative + line.percent_retained
+                        previous_cumulative = previous_line_record.cumulative_retained or 0.0
+
+                    cumulative_retained = previous_cumulative + (line.percent_retained or 0.0)
 
                 passing_percent = 100 - cumulative_retained
 
@@ -4855,7 +4898,7 @@ class SoilGSALINE(models.Model):
                     'cumulative_retained': round(cumulative_retained, 2),
                     'passing_percent': round(passing_percent, 2),
                 })
-                
+
                 print("Updated Cumulative Retained:", cumulative_retained)
                 print("Updated Passing Percent:", passing_percent)
 
@@ -4989,6 +5032,12 @@ class SoilHydrometerLineGSA(models.Model):
 
     temp = fields.Float("Temp °c" )
 
+    m_4 = fields.Float(string="M",digits=(12,4))
+    c_4 = fields.Float(string="C",digits=(12,4))
+
+    after_m_4 = fields.Float(string="M",digits=(12,4))
+    after_c_4 = fields.Float(string="C",digits=(12,4))
+
 
     @api.depends('parent_id_gsa.temp')
     def _compute_vescosity_water(self):
@@ -5020,7 +5069,7 @@ class SoilHydrometerLineGSA(models.Model):
     time = fields.Float(string="Time ")
     hydrometer_reading = fields.Float(string="Hydrometer Reading",digits=(12,1))
     men_corrected = fields.Float(string="Meniscus Corrected",digits=(12,1),compute="_compute_men_corrected")
-    eff_depth = fields.Float(string='Effective Depth',digits=(12,1) ,compute="_compute_eff_depth")
+    eff_depth = fields.Float(string='Effective Depth',digits=(12,1) ,compute="_compute_eff_depth",store=True)
     velocity = fields.Float(string="Velocity" , store=True,compute="_compute_velocity",digits=(12,2))
     temp_combined = fields.Float(string="Temp. + Dispersion Combined ",digits=(12,2),compute="_compute_temp_combined",store=True)
 
@@ -5038,16 +5087,43 @@ class SoilHydrometerLineGSA(models.Model):
                 (rec.parent_id_gsa.meniscus_corre or 0.0)
             )
 
-    @api.depends('men_corrected', 'time')
+    # @api.depends('men_corrected', 'time')
+    # def _compute_eff_depth(self):
+    #     for rec in self:
+    #         if rec.men_corrected:
+    #             rec.eff_depth = (-0.3444 * rec.men_corrected) + (
+    #                 21.736 if rec.time in (8.0, 15.0, 30.0, 60.0, 120.0, 240.0, 1440.0)
+    #                 else 20.256
+    #             )
+    #         else:
+    #             rec.eff_depth = 0.0
+
+    @api.depends(
+    'men_corrected',
+    'time',
+    'parent_id_gsa.m_4',
+    'parent_id_gsa.c_4',
+    'parent_id_gsa.after_m_4',
+    'parent_id_gsa.after_c_4'
+    )
     def _compute_eff_depth(self):
+
+        valid_times = (8, 15, 30, 60, 120, 240, 1440)
+
         for rec in self:
-            if rec.men_corrected:
-                rec.eff_depth = (-0.3444 * rec.men_corrected) + (
-                    21.736 if rec.time in (8.0, 15.0, 30.0, 60.0, 120.0, 240.0, 1440.0)
-                    else 20.256
-                )
-            else:
+
+            if not rec.men_corrected:
                 rec.eff_depth = 0.0
+                continue
+
+            if int(rec.time or 0) in valid_times:
+                rec.eff_depth = (
+                    (rec.parent_id_gsa.m_4 or 0.0) * rec.men_corrected
+                ) + (rec.parent_id_gsa.c_4 or 0.0)
+            else:
+                rec.eff_depth = (
+                    (rec.parent_id_gsa.after_m_4 or 0.0) * rec.men_corrected
+                ) + (rec.parent_id_gsa.after_c_4 or 0.0)
 
     @api.depends('eff_depth', 'time')
     def _compute_velocity(self):
