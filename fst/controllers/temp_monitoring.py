@@ -188,4 +188,20 @@ class TemperatureMonitoringController(http.Controller):
             "sections_data": form.sections_data,
             "graph1": bool(form.graph1),  # True if present
             "graph2": bool(form.graph2),
+            "chart1_cols": form.chart1_cols,
+            "chart2_cols": form.chart2_cols,
+            "customer":form.eln_ref.srf_id.customer.name,
+            "project":form.eln_ref.srf_id.name_work.project_name,
+            "sample_description":form.eln_ref.sample_id.sample_description,
+            "test_start":form.eln_ref.start_date,
+            "test_end":form.eln_ref.end_date,
+            "client_name":form.eln_ref.srf_id.client,
+            "consultant_name":form.eln_ref.srf_id.consultant_name1,
+            "group":form.eln_ref.group.group,
+            "test_name":form.eln_ref.material.name,
+            "reference":form.eln_ref.material.specifications, #will add this later
+            "grade": form.grade.grade,
+            "size": form.size.size,
+            "test_report_no":form.eln_ref.kes_no,
+            "report_issue_date":form.eln_ref.end_date
         }
