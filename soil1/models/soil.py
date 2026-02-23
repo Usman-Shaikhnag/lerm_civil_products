@@ -5336,60 +5336,6 @@ class SpecificGravity(models.Model):
 
 # Atterbergs Limits (Free Swell)
 
- 
-# class SoilFreeSwell(models.Model):
-#     _name = "soil.free.swell"
-
-
-#     parent_id = fields.Many2one( "mechanical.soil1", string="Parent Test", ondelete="cascade", required=True,)
-#     serial_no = fields.Integer(string="Sr.No", readonly=True)
-#     lab_id = fields.Char(string="Lab No.")
-
-#     vd = fields.Float(string="Vd")  
-#     vk = fields.Float(string="Vk") 
-
-#     free_swell = fields.Float( string="Free swell (%)", compute="_compute_free_swell", store=True, readonly=True,)
-#     is_ok = fields.Boolean( string="TRUE/FALSE",  compute="_compute_is_ok",  store=True, readonly=True,)
-
-   
-#     @api.depends("vd", "vk")
-#     def _compute_free_swell(self):
-#         for rec in self:
-#             if rec.vk:
-#                 rec.free_swell = (rec.vd - rec.vk) / rec.vk * 100.0
-#             else:
-#                 rec.free_swell = 0.0
-
-    
-#     @api.depends("free_swell")
-#     def _compute_is_ok(self):
-#         for rec in self:
-#             rec.is_ok = bool(rec.free_swell and rec.free_swell <= 50.0)
-
-#     @api.model
-#     def create(self, vals):
-#         if vals.get("parent_id") and not vals.get("serial_no"):
-#             last = self.search(
-#                 [("parent_id", "=", vals["parent_id"])],
-#                 order="serial_no desc",
-#                 limit=1,
-#             )
-#             vals["serial_no"] = (last.serial_no or 0) + 1 if last else 1
-#         return super().create(vals)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 class SoilFreeSwell(models.Model):
     _name = "soil.free.swell"
@@ -5402,56 +5348,41 @@ class SoilFreeSwell(models.Model):
     vk = fields.Float(string="Vk") 
 
     free_swell = fields.Float(string="Free swell (%)", compute="_compute_free_swell", store=True, readonly=True)
-    is_ok = fields.Boolean(string="TRUE/FALSE", compute="_compute_is_ok", store=True, readonly=True)
+
+    is_ok = fields.Boolean(string="TRUE/FALSE",compute="_compute_is_ok",store=True,
+    readonly=True)
+
+    is_ok_display = fields.Char(string="TRUE/FALSE",compute="_compute_is_ok_display")
+
+    free_swell_display = fields.Char(string="Free Swell (%)",compute="_compute_free_swell_display")
+
+    @api.depends("free_swell")
+    def _compute_free_swell_display(self):
+     for rec in self:
+        if rec.free_swell is False or rec.free_swell < 0:
+            rec.free_swell_display = "--"
+        else:
+            rec.free_swell_display = "%.2f" % rec.free_swell
 
     @api.depends("vd", "vk")
     def _compute_free_swell(self):
-        for rec in self:
-            if rec.vk and rec.vk != 0:
-                rec.free_swell = max(0.0, (rec.vd - rec.vk) / rec.vk * 100.0)
-            else:
-                rec.free_swell = 0.0
+     for rec in self:
+        if rec.vk:
+            rec.free_swell = ((rec.vd or 0.0) - rec.vk) / rec.vk * 100
+        else:
+            rec.free_swell = 0.0
 
     @api.depends("free_swell")
     def _compute_is_ok(self):
-        for rec in self:
-            rec.is_ok = bool(rec.free_swell and rec.free_swell <= 50.0)
+      for rec in self:
+        val = rec.free_swell
 
-    @api.model
-    def create(self, vals):
-        if vals.get("parent_id") and not vals.get("serial_no"):
-            last = self.search(
-                [("parent_id", "=", vals["parent_id"])],
-                order="serial_no desc",
-                limit=1,
-            )
-            vals["serial_no"] = (last.serial_no or 0) + 1 if last else 1
-        return super().create(vals)
-class SoilFreeSwell(models.Model):
-    _name = "soil.free.swell"
+        rec.is_ok = bool(val is not None and val >= 1 and val <= 200)
 
-    parent_id = fields.Many2one("mechanical.soil1", string="Parent Test", ondelete="cascade", required=True)
-    serial_no = fields.Integer(string="Sr.No", readonly=True)
-    lab_id = fields.Char(string="Lab No.")
-
-    vd = fields.Float(string="Vd")  
-    vk = fields.Float(string="Vk") 
-
-    free_swell = fields.Float(string="Free swell (%)", compute="_compute_free_swell", store=True, readonly=True)
-    is_ok = fields.Boolean(string="TRUE/FALSE", compute="_compute_is_ok", store=True, readonly=True)
-
-    @api.depends("vd", "vk")
-    def _compute_free_swell(self):
-        for rec in self:
-            if rec.vk and rec.vk != 0:
-                rec.free_swell = max(0.0, (rec.vd - rec.vk) / rec.vk * 100.0)
-            else:
-                rec.free_swell = 0.0
-
-    @api.depends("free_swell")
-    def _compute_is_ok(self):
-        for rec in self:
-            rec.is_ok = bool(rec.free_swell and rec.free_swell <= 50.0)
+    @api.depends("is_ok")
+    def _compute_is_ok_display(self):
+     for rec in self:
+        rec.is_ok_display = "TRUE" if rec.is_ok else "FALSE"
 
     @api.model
     def create(self, vals):
