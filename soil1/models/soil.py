@@ -13534,8 +13534,8 @@ class CbrLine(models.Model):
     cbr_2_5_mm = fields.Float(string="CBR At Penetration Of 2.5 mm",compute="_compute_cbr_values") 
     cbr_5_mm = fields.Float(string="CBR At Penetration Of 5 mm",compute="_compute_cbr_values")
 
-    m = fields.Float(string="Applied force (kN) First", digits=(10,4))
-    c = fields.Float(string="Applied force (kN) Second", digits=(10,4))
+    m = fields.Float(string="Applied force (kN) (m)", digits=(10,4))
+    c = fields.Float(string="Applied force (kN) (c)", digits=(10,4))
 
     # --- SEPARATE COMPUTE FUNCTION ---
     # @api.depends('soil_table', 'soil_table.penetration', 'soil_table.avg_load')
