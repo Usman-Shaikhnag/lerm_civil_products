@@ -1154,10 +1154,9 @@ class AercharAbrasivityLine(models.Model):
     avg_hrc = fields.Float(
     string="Average HRC",
     digits=(16, 2),
-    compute="_compute_avg_hrc",
-    store=True
+    compute="_compute_avg_hrc"
 )
-    
+
     def _compute_avg_hrc(self):
      for rec in self:
         hrc_values = [55.3, 55.7, 55.5, 55.9, 55.3]
@@ -1167,7 +1166,7 @@ class AercharAbrasivityLine(models.Model):
     string="CAI'",
     digits=(16, 2),
     compute="_compute_cai_prime",
-    store=True
+    
 )
     
     @api.depends('cai', 'avg_hrc')
