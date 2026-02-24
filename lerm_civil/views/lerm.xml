@@ -272,6 +272,12 @@
       <field name="view_mode">tree,form</field>
     </record>
     
+    <record id="srf_form_id" model="ir.actions.act_window">
+        <field name="name">SRF</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">lerm.civil.srf</field>
+        <field name="view_mode">tree,kanban,form,graph</field>
+    </record>
     
 
     <!-- <menuitem id="menu_partner_document_root"
@@ -328,6 +334,7 @@
     <menuitem id="lerm_product_item_param_master"
         parent="lerm_menu"
         name="Product Master"
+        groups="lerm_civil.lerm_access_product_master"
         action="lerm_product_action"
         sequence="11" />
     
@@ -347,6 +354,7 @@
     <menuitem id="lab_master"
         name="Lab Master"
         parent="lerm_menu"
+        groups="lerm_civil.lerm_access_lab_master"
         action="lab_master_action"
         sequence="14" />
 
@@ -372,9 +380,17 @@
         parent="lerm_root"
         sequence="10" /> -->
 
+    <menuitem id="srf_form" 
+        name="SRF" 
+        parent="lerm_transaction_data" 
+        groups="lerm_civil.lerm_access_create_srf,lerm_civil.lerm_access_confirm_srf,lerm_civil.lerm_access_update_srf,lerm_civil.kes_srf_backdate_creation_group,lerm_civil.lerm_access_delete_srf"
+        action="srf_form_id" 
+        sequence="10"/>
+
     <menuitem id="lerm_sample"
         name="Sample"
         parent="lerm_transaction_data"
+        groups="lerm_civil.lerm_sample_approval,lerm_civil.lerm_sample_verification,lerm_civil.lerm_access_update_sample,lerm_civil.lerm_access_delete_sample"
         action="test_sample_action"
         sequence="15" />
 
@@ -387,6 +403,7 @@
     <menuitem id="lerm_eln"
         name="Lab Notebook"
         parent="lerm_transaction_data"
+        groups="lerm_civil.kes_technician_access_group"
         action="test_eln_action"
         sequence="16" />
 
@@ -418,12 +435,14 @@
     <menuitem id="sample_status_pending_verification"
         name="Pending Verification"
         parent="sample_status"
+        groups="lerm_civil.lerm_sample_verification"
         action="sample_pending_verification_action"
         sequence="22" />
     
     <menuitem id="sample_status_pending_approval"
         name="Pending Approval"
         parent="sample_status"
+        groups="lerm_civil.lerm_sample_approval"
         action="sample_pending_approval_action"
         sequence="23" />
 
