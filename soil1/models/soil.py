@@ -920,7 +920,7 @@ class Soil(models.Model):
 # Atterbergs Limits (Free Swell)
 
 
-    freeswell_name = fields.Char(string="Name", default= "Free Swell")
+    freeswell_name = fields.Char(string="Name", default= "Free Swell Index")
     freeswell_visible = fields.Boolean(string="Free Swell Visible", default=True)
     freeswell_line_ids = fields.One2many('soil.free.swell', 'parent_id', string="Free Swell Lines")
 
