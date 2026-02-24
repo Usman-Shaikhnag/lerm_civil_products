@@ -1022,15 +1022,7 @@ class Soil(models.Model):
             if record.pl_child_lines:
                 record.show_sieve = True
 
-            # 🔹 Reload the current record in form view
-            # return {
-            #     'type': 'ir.actions.act_window',
-            #     'name': 'Soil Form',
-            #     'res_model': 'mechanical.soil1',
-            #     'res_id': record.id,  # ✅ Use record.id instead of self.id
-            #     'view_mode': 'form',
-            #     'target': 'current',
-            # }
+           
     
     Atterbergs_name_sl = fields.Char(string="Name", default="Shrinkage Limits")
 
@@ -1060,15 +1052,7 @@ class Soil(models.Model):
             if record.sl_child_lines:
                 record.show_sieve = True
 
-            # 🔹 Reload the current record in form view
-            # return {
-            #     'type': 'ir.actions.act_window',
-            #     'name': 'Soil Form',
-            #     'res_model': 'mechanical.soil1',
-            #     'res_id': record.id,  # ✅ Use record.id instead of self.id
-            #     'view_mode': 'form',
-            #     'target': 'current',
-            # }
+            
 
 
     Atterbergs_visible = fields.Boolean('Show Atterberg', default=True)
@@ -1091,45 +1075,6 @@ class Soil(models.Model):
 
     ll_line_ids = fields.One2many('lab.atterberg.ll.line', 'parent_id')
 
-
-
-    
-
-
-
-
-    # plastic_avg = fields.Float('plastic Limit (%)', digits=(10,0),compute="_compute_plastic_avg")
-
-
-    # @api.depends('pl_line_ids.water_content')
-    # def _compute_plastic_avg(self):
-    #     for line in self:
-    #         if line.pl_line_ids:
-    #             vals = line.pl_line_ids.mapped("water_content")
-    #             line.plastic_avg = sum(vals) / len(vals)
-                
-
-    #         else:
-    #             line.plastic_avg = 0.0
-
-
-
-     
-    # shrinkage_avg = fields.Float('shrinkage Limit (%)', digits=(10,0),compute="_compute_shrinkage_avg")
-
-
-    # @api.depends('sl_line_ids.water_content')
-    # def _compute_shrinkage_avg(self):
-    #     for line in self:
-    #         if line.sl_line_ids:
-    #             vals = line.sl_line_ids.mapped("water_content")
-    #             line.shrinkage_avg = sum(vals) / len(vals)
-                
-
-    #         else:
-    #             line.shrinkage_avg = 0.0
-
-           
 
 
 
@@ -2237,31 +2182,13 @@ class Soil(models.Model):
 
     gsa_child_lines = fields.One2many('mechanical.gsa.line','parent_id')
 
-    # --- Button Action Logic ---
-    # def action_fetch_review_details(self):
-    #     # Loop through all child lines
-    #     for line in self.gsa_child_lines:
-    #         if line.lab_no:
-    #             # Search in Sample Request Review Lines
-    #             source_line = self.env['sample.request.review.lines'].search([
-    #                 ('lab_id', '=', line.lab_no)
-    #             ], limit=1)
-
-    #             if source_line:
-    #                 # Update line values
-    #                 line.bh_id = source_line.source
-    #                 line.sample_depth = source_line.depth
-    #                 line.sample_details = source_line.sample_details
-    #                 line.wt_of_samp = source_line.weight
+   
 
     def action_fetch_review_details(self):
-        # Loop through all child lines (GSA Lines)
+       
         for line in self.gsa_child_lines:
             if line.lab_no:
-                # ---------------------------------------------------------
-                # 1. Fetch from Sample Request Review (Existing Logic)
-                # ---------------------------------------------------------
-                # Ithe 'lab_id' barobar aahe karan 'sample.request.review.lines' madhe 'lab_id' field aahe.
+               
                 source_line = self.env['sample.request.review.lines'].search([
                     ('lab_id', '=', line.lab_no)
                 ], limit=1)
@@ -2272,22 +2199,18 @@ class Soil(models.Model):
                     line.sample_details = source_line.sample_details
                     line.wt_of_samp = source_line.weight
 
-                # ---------------------------------------------------------
-                # 2. 🔥 FIXED LOGIC: Fetch Specific Gravity 🔥
-                # ---------------------------------------------------------
-                # Error ithe hota. 'lab_id' chya jagi 'lab_no' vapara.
+               
                 sg_record = self.env['specific.gravity'].search([
-                    ('lab_no', '=', line.lab_no)  # <--- FIXED HERE
+                    ('lab_no', '=', line.lab_no) 
                 ], limit=1)
 
                 if sg_record:
                     fetched_sg = sg_record.avg_corr_specific_gravity
                     
-                    # A. Update Parent Field (GSA Line)
+                   
                     line.specific_gravity = fetched_sg
 
-                    # B. Update Child Lines (Hydrometer Analysis)
-                    # Check if lines exist
+                   
                     if line.hydrometer_analysis_lines_gsa:
                         for hydro_line in line.hydrometer_analysis_lines_gsa:
                             hydro_line.specific_gravity = fetched_sg
@@ -2423,15 +2346,7 @@ class Soil(models.Model):
             if record.gsa_child_lines:
                 record.show_sieve = True
 
-            # 🔹 Reload the current record in form view
-            # return {
-            #     'type': 'ir.actions.act_window',
-            #     'name': 'Soil Form',
-            #     'res_model': 'mechanical.soil1',
-            #     'res_id': record.id,  # ✅ Use record.id instead of self.id
-            #     'view_mode': 'form',
-            #     'target': 'current',
-            # }
+           
 
     
 
@@ -2543,14 +2458,7 @@ class Soil(models.Model):
             record.gsa_graph_image = base64.b64encode(buffer.read())
             buffer.close()
 
-        # return {
-        #     'type': 'ir.actions.act_window',
-        #     'name': 'Soil Form',
-        #     'res_model': 'mechanical.soil1',
-        #     'res_id': record.id,
-        #     'view_mode': 'form',
-        #     'target': 'current',
-        # }
+       
 
     
 
@@ -2587,18 +2495,7 @@ class Soil(models.Model):
             if record.consolidation_lines:
                 record.show_sieve = True
 
-            # 🔹 Reload the current record in form view
-            # return {
-            #     'type': 'ir.actions.act_window',
-            #     'name': 'Soil Form',
-            #     'res_model': 'mechanical.soil1',
-            #     'res_id': record.id,  # ✅ Use record.id instead of self.id
-            #     'view_mode': 'form',
-            #     'target': 'current',
-            # }
-
-    
-
+           
 
 
 
@@ -2636,16 +2533,7 @@ class Soil(models.Model):
             if record.swelling_pressure_ids:
                 record.show_sieve = True
 
-            # 🔹 Reload the current record in form view
-            # return {
-            #     'type': 'ir.actions.act_window',
-            #     'name': 'Soil Form',
-            #     'res_model': 'mechanical.soil1',
-            #     'res_id': record.id,  # ✅ Use record.id instead of self.id
-            #     'view_mode': 'form',
-            #     'target': 'current',
-            # }
-
+           
 
 
 
@@ -2688,17 +2576,7 @@ class Soil(models.Model):
             if record.permeability_falling_ids:
                 record.show_sieve = True
 
-            # 🔹 Reload the current record in form view
-            # return {
-            #     'type': 'ir.actions.act_window',
-            #     'name': 'Soil Form',
-            #     'res_model': 'mechanical.soil1',
-            #     'res_id': record.id,  # ✅ Use record.id instead of self.id
-            #     'view_mode': 'form',
-            #     'target': 'current',
-            # }
-
-    
+            
 
 
 
@@ -2741,15 +2619,7 @@ class Soil(models.Model):
             if record.triaxial_test_ids:
                 record.show_sieve = True
 
-            # 🔹 Reload the current record in form view
-            # return {
-            #     'type': 'ir.actions.act_window',
-            #     'name': 'Soil Form',
-            #     'res_model': 'mechanical.soil1',
-            #     'res_id': record.id,  # ✅ Use record.id instead of self.id
-            #     'view_mode': 'form',
-            #     'target': 'current',
-            # }
+          
 
     
 
@@ -5246,6 +5116,8 @@ class SoilGSALINE1(models.Model):
 
 
 
+
+
 # specific gravity
 
 
@@ -5293,7 +5165,7 @@ class SpecificGravity(models.Model):
     )
     def _compute_specific_gravity(self):
         for rec in self:
-            W1 = rec.wt_empty_bottle or 0.0
+            W1 = rec.wt_empty_bottle or 3.0
             W2 = rec.wt_bottle_dry_soil or 0.0
             W3 = rec.wt_bottle_dry_soil_water or 0.0
             W4 = rec.wt_bottle_water or 0.0
@@ -5330,6 +5202,25 @@ class SpecificGravity(models.Model):
             )
             vals["serial_no"] = (last.serial_no or 0) + 1 if last else 1
         return super().create(vals)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8007,7 +7898,7 @@ class LLLine(models.Model):
     
     liquid_avg = fields.Float(
         string='Liquid Limit Avg %', 
-        digits=(16, 6),  # ✅ Exact 6 decimals
+        digits=(16, 1), 
         compute='_compute_liquid_avg',
         store=True,
     )
@@ -12737,64 +12628,7 @@ class ConsolidationLine(models.Model):
 
    
 
-    # -------------------------------------------------
-    # GRAPH BUTTON (FINAL – AS PER YOUR LAST MESSAGE)
-    # -------------------------------------------------
-    # def action_generate_consolidation_graph(self):
-    #     self.ensure_one()
-
-    #     # 1️⃣ Loading ani Unloading Data Segregate kara
-    #     loading, unloading = [], []
-    #     last_p = 0
-    #     unload = False
-    #     for l in self.consolidation_output_ids.sorted('id'):
-    #         if not unload and l.applied_pressure >= last_p:
-    #             loading.append((l.applied_pressure, l.e_void))
-    #             last_p = l.applied_pressure
-    #         else:
-    #             unload = True
-    #             unloading.append((l.applied_pressure, l.e_void))
-
-    #     if not loading: return
-
-    #     # 2️⃣ Plotting suru kara
-    #     plt.figure(figsize=(9, 5))
-
-    #     # Loading Curve (BLACK)
-    #     p = np.array([x[0] for x in loading])
-    #     e = np.array([x[1] for x in loading])
-    #     plt.plot(p, e, '-ok', linewidth=1.5, markersize=5)
-
-    #     # Unloading Curve (BLACK)
-    #     if unloading:
-    #         pu = np.array([x[0] for x in unloading])
-    #         eu = np.array([x[1] for x in unloading])
-    #         plt.plot(pu, eu, '-ok', linewidth=1.5, markersize=5)
-
-    #         # 3️⃣ DON POINT JOIN KARA (Loading cha shevatchya aani Unloading cha pahila point)
-    #         # Hey don points ekmekanna joitle jatil
-    #         plt.plot([p[-1], pu[0]], [e[-1], eu[0]], '-k', linewidth=1.5)
-
-    #     # 4️⃣ Styling (Red lines remove kelya aahet)
-    #     plt.xscale('log')
-    #     plt.xlim(0.01, 10.00)
-    #     plt.ylim(0.65, 0.95)
-        
-    #     plt.xlabel("Pressure (kg/cm2)", fontweight='bold')
-    #     plt.ylabel("Void Ratio", fontweight='bold')
-    #     plt.grid(True, which="both", color='gray', linestyle='-', linewidth=0.3)
-        
-    #     # Tick Formatting
-    #     plt.gca().xaxis.set_major_formatter(plt.FormatStrFormatter('%.2f'))
-    #     plt.gca().yaxis.set_major_formatter(plt.FormatStrFormatter('%.3f'))
-
-    #     # 5️⃣ Save Image
-    #     buf = BytesIO()
-    #     plt.tight_layout()
-    #     plt.savefig(buf, format='png', dpi=160)
-    #     self.consolidation_graph = base64.b64encode(buf.getvalue())
-    #     buf.close()
-    #     plt.close()
+    
 
     import numpy as np
     import matplotlib.pyplot as plt
@@ -12805,108 +12639,7 @@ class ConsolidationLine(models.Model):
 
     _logger = logging.getLogger(__name__)
 
-    # def action_generate_consolidation_graph(self):
-    #     self.ensure_one()
-
-    #     # 1️⃣ Loading ani Unloading Data Segregate करा
-    #     loading, unloading = [], []
-    #     last_p = 0
-    #     unload = False
-        
-    #     # consolidation_output_ids मधून डेटा घेणे
-    #     for l in self.consolidation_output_ids.sorted('id'):
-    #         if not unload and l.applied_pressure >= last_p:
-    #             loading.append((l.applied_pressure, l.e_void))
-    #             last_p = l.applied_pressure
-    #         else:
-    #             unload = True
-    #             unloading.append((l.applied_pressure, l.e_void))
-
-    #     if not loading:
-    #         return
-
-    #     # डेटा प्लॉट्ससाठी तयार करणे
-    #     p = np.array([x[0] for x in loading])
-    #     e = np.array([x[1] for x in loading])
-    #     log_p = np.log10(p)
-
-    #     plt.figure(figsize=(9, 5))
-
-    #     # Loading Curve (BLACK)
-    #     plt.plot(p, e, '-ok', linewidth=1.5, markersize=5)
-
-    #     # Unloading Curve (BLACK)
-    #     if unloading:
-    #         pu = np.array([x[0] for x in unloading])
-    #         eu = np.array([x[1] for x in unloading])
-    #         plt.plot(pu, eu, '-ok', linewidth=1.5, markersize=5)
-    #         # Loading चा शेवटचा आणि Unloading चा पहिला पॉइंट जोडणे
-    #         plt.plot([p[-1], pu[0]], [e[-1], eu[0]], '-k', linewidth=1.5)
-
-    #     # --- 2️⃣ CASAGRANDE CONSTRUCTION (RED LINES) ---
-    #     try:
-    #         # A) Max Curvature Point (Point A) शोधणे
-    #         dy = np.gradient(e, log_p)
-    #         ddy = np.gradient(dy, log_p)
-    #         idx = np.argmax(np.abs(ddy))
-    #         p_max, e_max = p[idx], e[idx]
-
-    #         # रेषांची लांबी ठरवण्यासाठी (X-axis च्या शेवटपर्यंत)
-    #         x_end = 10.0 
-
-    #         # B) Horizontal Line (आडवी लाल रेषा)
-    #         plt.hlines(y=e_max, xmin=p_max, xmax=x_end, colors='r', linewidth=1.2)
-
-    #         # C) Tangent Line (स्पर्शिका - पूर्ण लांबीची)
-    #         slope = dy[idx]
-    #         x_range = np.logspace(np.log10(p_max), np.log10(x_end), 100)
-    #         y_tangent = e_max + slope * (np.log10(x_range) - np.log10(p_max))
-    #         plt.plot(x_range, y_tangent, 'r-', linewidth=1.2)
-
-    #         # D) Bisector Line (कोन दुभाजक - पूर्ण लांबीची)
-    #         angle_tangent = np.arctan(slope)
-    #         bisector_slope = np.tan(angle_tangent / 2)
-    #         y_bisector = e_max + bisector_slope * (np.log10(x_range) - np.log10(p_max))
-    #         plt.plot(x_range, y_bisector, 'r-', linewidth=1.2)
-
-    #         # E) Virgin Compression Line (VCL) Extrapolation
-    #         # शेवटच्या दोन पॉइंट्सचा स्लोप घेऊन डावीकडे वाढवणे
-    #         vcl_slope = (e[-1] - e[-2]) / (np.log10(p[-1]) - np.log10(p[-2]))
-    #         # बायसेक्टरला छेदण्यासाठी मागे ओढणे
-    #         x_vcl = np.logspace(np.log10(p_max * 0.4), np.log10(p[-1]), 100)
-    #         y_vcl = e[-1] + vcl_slope * (np.log10(x_vcl) - np.log10(p[-1]))
-    #         plt.plot(x_vcl, y_vcl, 'r-', linewidth=1.2)
-
-    #         # F) Vertical Line for Pc (Pre-consolidation Pressure)
-    #         # ही व्हॅल्यू तुमच्या कॅल्क्युलेशन फील्ड मधून घ्या (उदा. self.pc_value)
-    #         pc_val = 0.90 # Temporary value
-    #         plt.vlines(x=pc_val, ymin=0.65, ymax=e_max, colors='r', linewidth=1.5)
-
-    #     except Exception as ex:
-    #         _logger.error("Error generating tangent lines: %s", ex)
-
-    #     # 3️⃣ Styling
-    #     plt.xscale('log')
-    #     plt.xlim(0.01, 10.00)
-    #     plt.ylim(0.65, 0.95)
-        
-    #     plt.xlabel("Pressure (kg/cm2)", fontweight='bold')
-    #     plt.ylabel("Void Ratio", fontweight='bold')
-    #     plt.grid(True, which="both", color='gray', linestyle='-', linewidth=0.3)
-        
-    #     # Tick Formatting
-    #     plt.gca().xaxis.set_major_formatter(plt.FormatStrFormatter('%.2f'))
-    #     plt.gca().yaxis.set_major_formatter(plt.FormatStrFormatter('%.3f'))
-
-    #     # 4️⃣ Save Image
-    #     buf = BytesIO()
-    #     plt.tight_layout()
-    #     plt.savefig(buf, format='png', dpi=160)
-    #     self.consolidation_graph = base64.b64encode(buf.getvalue())
-    #     buf.close()
-    #     plt.close()
-
-
+   
     def action_generate_consolidation_graph(self):
      import numpy as np
      import matplotlib.pyplot as plt
@@ -12918,9 +12651,7 @@ class ConsolidationLine(models.Model):
      _logger = logging.getLogger(__name__)
      self.ensure_one()
  
-    # --------------------------------------------------
-    # 1️⃣ SEPARATE LOADING / UNLOADING
-    # --------------------------------------------------
+   
      loading, unloading = [], []
      last_p = 0
      unloading_started = False
@@ -12940,15 +12671,10 @@ class ConsolidationLine(models.Model):
      e = np.array([x[1] for x in loading])
      log_p = np.log10(p)
 
-    # --------------------------------------------------
-    # 2️⃣ SMOOTH CURVE (Excel-like)
-    # --------------------------------------------------
+    
      e_smooth = savgol_filter(e, 3, 1)
 
-    # --------------------------------------------------
-    # 3️⃣ CURVATURE (LIMITED SEARCH → KEY FIX)
-    #     Ignore high-stress end (Excel behavior)
-    # --------------------------------------------------
+   
      dy = np.gradient(e_smooth, log_p)
      ddy = np.gradient(dy, log_p)
 
@@ -12979,9 +12705,7 @@ class ConsolidationLine(models.Model):
      angle_tan = np.arctan(slope_tangent)
      bisector_slope = np.tan(angle_tan / 2)
 
-    # --------------------------------------------------
-    # 6️⃣ INTERSECTION → Pc
-    # --------------------------------------------------
+   
      log_pc = (
         e_A
         - bisector_slope * np.log10(p_A)
