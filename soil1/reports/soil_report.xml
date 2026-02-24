@@ -1443,9 +1443,9 @@
 								<td colspan="9" style="padding-left: 10px;">Laboratory test results- California bearing ratio test (CBR)</td>
 
 							
-							</tr>
+							 </tr>
 
-							   <tr>
+							 <!--  <tr>
 								<td colspan="3"><strong>Doc. No.</strong>: </td>
 								<td colspan="9" style="padding-left: 10px;">
 								<span>
@@ -1462,7 +1462,7 @@
 								<td colspan="9" style="padding-left: 10px;">
 									<span t-esc="o.material.test_format_no"/>
 								</td>
-							</tr>
+							</tr> -->
 
 							<tr>
 								<td colspan="6" style="border:1px solid black; padding:4px;">
@@ -1495,7 +1495,7 @@
 									<b>Proving ring capacity (kN)</b>
 								</td>
 								<td style="border:1px solid black; padding:4px; text-align:center;">
-									<!-- <t t-esc="data.proving_ring_capacity"/> -->
+									<t t-esc="cbr.proving_ring_capacity"/>
 								</td>
 								<td style="border:1px solid black; padding:4px;">
 									<b>Test No.</b>
@@ -1509,20 +1509,20 @@
 								<td style="border:1px solid black; padding:4px;">
 									<b>Date Sample Received</b>
 								</td>
-								<td style="border:1px solid black; padding:4px;">
+								<td style="border:1px solid black; padding:4px;text-align:center;">
 									<span t-field="o.sample_id.sample_received_date"/>
 								</td>
 								<td style="border:1px solid black; padding:4px;">
 									<b>Start date of testing</b>
 								</td>
-								<td style="border:1px solid black; padding:4px;">
+								<td style="border:1px solid black; padding:4px;text-align:center;">
 									<span t-field="cbr.start_date" />
 								
 								</td>
 								<td style="border:1px solid black; padding:4px;">
 									<b>End date of testing</b>
 								</td>
-								<td style="border:1px solid black; padding:4px;">
+								<td style="border:1px solid black; padding:4px;text-align:center;">
 									<span t-field="cbr.end_date" style="margin-right:10px;"/>
 									
 								</td>
@@ -1546,7 +1546,7 @@
 								</td>
 								<td colspan="1" style="border:1px solid black; padding:4px; text-align:center;">
 									<!-- <t t-esc="cbr.humidity"/> -->
-									<b>[0.0133 x Deflection] + 0.0331</b>
+									[0.0133 x Deflection] + 0.0331
 								</td>
 							</tr>
 
@@ -1554,18 +1554,21 @@
 								<td  style="border:1px solid black; padding:4px;">
 									<b>Condition of specimen at test :</b>
 								</td>
-								<td  style="border:1px solid black; padding:4px;">
+								<td  style="border:1px solid black; padding:4px;text-align:center;">
+								  <t t-esc="cbr.condition_specimen"/>
 									
 								</td>
 								<td style="border:1px solid black; padding:4px;">
 									<b>Sample Type</b>
 								</td>
-								<td style="border:1px solid black; padding:4px;">
+								<td style="border:1px solid black; padding:4px;text-align:center;">
+								   <t t-esc="cbr.sample_type"/>
 								</td>
 								<td style="border:1px solid black; padding:4px;">
 									<b>Type of compaction</b>
 								</td>
-								<td style="border:1px solid black; padding:4px;">
+								<td style="border:1px solid black; padding:4px;text-align:center;">
+								   <t t-esc="cbr.type_compact"/>
 								</td>
 							</tr>
 
@@ -1573,17 +1576,20 @@
 								<td style="border:1px solid black; padding:4px;">
 									<b>Soil fraction above 20mm replaced, (Kg)</b>
 								</td>
-								<td style="border:1px solid black; padding:4px;">
+								<td style="border:1px solid black; padding:4px;text-align:center;">
+								   <t t-esc="cbr.soil_fract_20mm"/>
 								</td>
 								<td style="border:1px solid black; padding:4px; ">
 								   <b>Period of soaking(days)</b>
 								</td>
 								<td style="border:1px solid black; padding:4px; text-align:center;">
+								   <t t-esc="cbr.period_soaked"/>
 								</td>
 								<td style="border:1px solid black; padding:4px;">
 									<b>Surcharge weight (kg)</b>
 								</td>
-								<td style="border:1px solid black; padding:4px;">
+								<td style="border:1px solid black; padding:4px;text-align:center;">
+								   <t t-esc="cbr.surcharge_weight"/>
 								</td>
 							
 							</tr>
@@ -1613,14 +1619,14 @@
 
 							<tr colspan="6">
 								<th colspan="2" style="border:1px solid black; padding:6px;"></th>
-								<th style="border:1px solid black; padding:6px;">Avg. water content</th>
-								<th style="border:1px solid black; padding:6px;">Volume of the specimen (cc)</th>
-								<th style="border:1px solid black; padding:6px;">Bulk density (g/cc)</th>
-								<th style="border:1px solid black; padding:6px;">Dry density (g/cc)</th>
+								<th style="border:1px solid black; padding:6px;text-align:center;"><b>Avg. water content</b></th>
+								<th style="border:1px solid black; padding:6px;text-align:center;"><b>Volume of the specimen (cc)</b></th>
+								<th style="border:1px solid black; padding:6px;text-align:center;"><b>Bulk density (g/cc)</b></th>
+								<th style="border:1px solid black; padding:6px;text-align:center;"><b>Dry density (g/cc)</b></th>
 							</tr>
 
 							<tr colspan="6">
-								<td  colspan="2" style="border:1px solid black; padding:6px;"><b>Before soaking</b></td>
+								<td  colspan="2" style="border:1px solid black; padding:6px;text-align:center;"><b>Before soaking</b></td>
 								<td style="border:1px solid black; padding:6px; text-align:center;">
 									<t t-esc="cbr.before_avg_mc" t-options='{"widget": "float", "precision": 2}'/>
 								</td>
@@ -1634,7 +1640,7 @@
 							</tr>
 
 							<tr >
-								<td colspan="2" style="border:1px solid black; padding:6px;"><b>After test</b></td>
+								<td colspan="2" style="border:1px solid black; padding:6px;text-align:center;"><b>After test</b></td>
 								<td colspan="1" style="border:1px solid black; padding:6px; text-align:center;">
 									<t t-esc="cbr.avg_mc" t-options='{"widget": "float", "precision": 2}'/>
 								</td>
@@ -1648,10 +1654,10 @@
 							</tr>
 
 							<tr>
-								<th colspan="2" style="border:1px solid black; padding:6px;text-align:center;">Penetration in (mm)</th>
-								<th colspan="2" style="border:1px solid black; padding:6px;text-align:center;">Dial Gauge Reading</th>
-								<th style="border:1px solid black; padding:6px;text-align:center;">Number of Division</th>
-								<th style="border:1px solid black; padding:6px;text-align:center;">Average Load in kN</th>
+								<th colspan="2" style="border:1px solid black; padding:6px;text-align:center;"><b>Penetration in (mm)</b></th>
+								<th colspan="2" style="border:1px solid black; padding:6px;text-align:center;"><b>Dial Gauge Reading</b></th>
+								<th style="border:1px solid black; padding:6px;text-align:center;"><b>Number of Division</b></th>
+								<th style="border:1px solid black; padding:6px;text-align:center;"><b>Average Load in kN</b></th>
 							</tr>
 
 							<t t-foreach="cbr.soil_table" t-as="line">
@@ -1859,6 +1865,7 @@
 									Type of compaction
 								</td>
 								<td style="border:1px solid black; padding:6px;">
+								   <t t-esc="proctor.type_of_compaction"/>
 								
 								</td>
 								<td style="border:1px solid black; padding:6px; font-weight:bold;">
@@ -2316,12 +2323,14 @@
 									Type of Test
 								</td>
 								<td style="border:1px solid black; padding:6px;">
+								    <t t-esc="direct.drainage_condition"/>
 								
 								</td>
 								<td style="border:1px solid black; padding:6px; font-weight:bold;">
 									Type of Sample 
 								</td>
 								<td style="border:1px solid black; padding:6px;">
+								    <t t-esc="direct.sample_type"/>
 									
 								</td>
 							</tr>
@@ -2332,14 +2341,14 @@
 								</td>
 								<td style="border:1px solid black; padding:6px;">
 
-								 <!-- <t t-esc="proctor.empty_wt_proctor"/> -->
+								 <t t-esc="direct.proving_ring_capacity"/>
 									
 								</td>
 								<td style="border:1px solid black; padding:6px; font-weight:bold;">
 									Load Gauge Constant 
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-								<!-- <t t-esc="proctor.volumn_proctor"/> -->
+								    [0.0133 x Deflection] + 0.0331
 									
 								</td>
 							</tr>
@@ -2357,7 +2366,9 @@
 									Dimesnions of sample (mm)
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-								<span t-field="o.sample_id.size_id.size"/>
+								<!-- <span t-field="o.sample_id.size_id.size"/> -->
+
+								<t t-esc="direct.dimension_sample"/>
 									
 								</td>
 							</tr>

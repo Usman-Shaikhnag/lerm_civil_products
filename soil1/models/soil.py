@@ -920,7 +920,7 @@ class Soil(models.Model):
 # Atterbergs Limits (Free Swell)
 
 
-    freeswell_name = fields.Char(string="Name", default= "Free Swell")
+    freeswell_name = fields.Char(string="Name", default= "Free Swell Index")
     freeswell_visible = fields.Boolean(string="Free Swell Visible", default=True)
     freeswell_line_ids = fields.One2many('soil.free.swell', 'parent_id', string="Free Swell Lines")
 
@@ -5371,6 +5371,7 @@ class SoilFreeSwell(models.Model):
             rec.free_swell = ((rec.vd or 0.0) - rec.vk) / rec.vk * 100
         else:
             rec.free_swell = 0.0
+            
 
     @api.depends("free_swell")
     def _compute_is_ok(self):
@@ -10161,6 +10162,21 @@ class DrirectShearLine(models.Model):
         store=True
     )
 
+
+    proving_ring_capacity = fields.Float(string="Proving ring capacity (kN)", digits=(10,0))
+
+    dimension_sample = fields.Char(string="Dimesnions of sample (mm)",default="60 x 60 x 25") 
+
+    sample_type = fields.Char(string="Sample Type",default="Remolded")
+
+    type_compact = fields.Char(string="Type of compaction")
+
+    soil_fract_20mm = fields.Char(string="Soil fraction above 20mm replaced, (Kg)")
+
+    period_soaked = fields.Float(string="Period of soaking(days)", digits=(10,0))
+
+    surcharge_weight = fields.Float(string="Surcharge weight (kg)", digits=(10,2))
+
     
     @api.depends('lab_id')
     def _compute_direct(self):
@@ -11979,70 +11995,105 @@ class SwellingPressureLine(models.Model):
                 record.graph_image_swell = False
 
 
-
     # def generate_line_chart_swell(self):
     #  self.ensure_one()
 
-    #  lines = self.swelling_table_ids.sorted('applied_pressure')
-    #  x_vals = np.array(
-    #     [l.applied_pressure for l in lines if l.applied_pressure is not None],
-    #     dtype=float
-    #  )
-    #  y_vals = np.array(
-    #     [l.delta_h for l in lines if l.delta_h is not None],
-    #     dtype=float
-    #  )
-    #  if x_vals.size < 3:
-    #     return False    # need at least 3 points for a curve
-
-    #  # swelling pressure (same as before) ...
-    #  sp = 0.0
-    #  for i in range(len(x_vals) - 1):
-    #     d1 = y_vals[i]
-    #     d2 = y_vals[i + 1]
-    #     if d1 >= 0 and d2 <= 0 and (d2 - d1) != 0:
-    #         p1 = x_vals[i]
-    #         p2 = x_vals[i + 1]
-    #         sp = p1 + (p2 - p1) * (0.0 - d1) / (d2 - d1)
-    #         break
-
-    #  # ---- cubic spline for smooth curve ----
-    #  from scipy.interpolate import CubicSpline   # needs SciPy installed [web:72][web:74]
-    #  cs = CubicSpline(x_vals, y_vals, bc_type='natural')
-    #  x_smooth = np.linspace(x_vals.min(), x_vals.max(), 400)
-    #  y_smooth = cs(x_smooth)
-
+    #  import numpy as np
+    #  import base64
+    #  from io import BytesIO
     #  import matplotlib
     #  matplotlib.use('Agg')
-    
+    #  import matplotlib.pyplot as plt
+    #  from scipy.interpolate import CubicSpline
+    #  from matplotlib.ticker import LogLocator, LogFormatterMathtext
 
-    #  fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
+    # # -----------------------------
+    # # Data
+    # # -----------------------------
+    #  lines = self.swelling_table_ids.sorted('applied_pressure')
 
-    #  # smooth cubic‑spline curve
-    #  ax.plot(x_smooth, y_smooth, color='steelblue', linewidth=2)
+    #  x = np.array([l.applied_pressure for l in lines if l.applied_pressure > 0], float)
+    #  y = np.array([l.delta_h for l in lines if l.delta_h is not None], float)
 
-    #  # original points
-    #  ax.scatter(x_vals, y_vals, color='steelblue')
-    #  for x, y in zip(x_vals, y_vals):
-    #     ax.annotate(f"{y:.3f}", (x, y),
-    #                 textcoords="offset points", xytext=(0, 5),
-    #                 ha='center', fontsize=8)
+    #  if len(x) < 3:
+    #     return False
 
-    #  ax.axhline(0, color='tab:blue', linewidth=1)
-    #  if sp:
-    #     ax.axvline(sp, color='red', linewidth=1)
+    # # -----------------------------
+    # # Swelling pressure
+    # # -----------------------------
+    #  sp = 0
+    #  for i in range(len(x)-1):
+    #     if y[i] >= 0 and y[i+1] <= 0:
+    #         sp = x[i] + (x[i+1]-x[i])*(0-y[i])/(y[i+1]-y[i])
+    #         break
 
-    #  ax.set_xlabel('Pressure kg/cm²')
-    #  ax.set_ylabel('Deformation, mm')
-    #  ax.set_ylim(-0.75, 2.50)
-    #  ax.set_yticks([-0.75, 0.0, 0.75, 1.50, 2.25])
-    #  ax.grid(True)
+    # # -----------------------------
+    # # Excel-style spline (log domain)
+    # # -----------------------------
+    #  lx = np.log10(x)
+    #  cs = CubicSpline(lx, y, bc_type='natural')
 
+    #  lx_s = np.linspace(lx.min(), lx.max(), 500)
+    #  xs = 10**lx_s
+    #  ys = cs(lx_s)
+
+    # # -----------------------------
+    # # Figure
+    # # -----------------------------
+    #  fig, ax = plt.subplots(figsize=(10,5), dpi=100)
+
+    # # Curve
+    #  ax.plot(xs, ys, color='#4472C4', linewidth=2.5)
+
+    # # Markers
+    #  ax.scatter(x, y, color='#4472C4', s=30, zorder=5)
+
+    # # Point labels
+    #  for xi, yi in zip(x, y):
+    #     ax.text(xi, yi+0.05, f"{yi:.3f}", ha='center', fontsize=8)
+
+    # # Zero line
+    #  ax.axhline(0, color='#4472C4', linewidth=1.5)
+
+    # # X-axis on zero
+    #  ax.spines['bottom'].set_position(('data',0))
+
+    # # Swelling pressure
+    #  ax.axvline(sp, color='red', linewidth=1.5)
+
+    # # Log X
+    #  ax.set_xscale('log')
+    #  ax.set_xlim(0.1,10)
+
+    #  ax.xaxis.set_major_locator(LogLocator(base=10))
+    #  ax.xaxis.set_major_formatter(LogFormatterMathtext())
+    #  ax.xaxis.set_minor_locator(LogLocator(base=10, subs=np.arange(2,10)*0.1))
+
+    # # Y limits
+    #  ax.set_ylim(-0.75, 2.25)
+    #  ax.set_yticks(np.arange(-0.75, 2.26, 0.50))
+
+    # # Grid (Excel density)
+    #  ax.grid(which='major', color='#A6A6A6', linewidth=0.8)
+    #  ax.grid(which='minor', color='#D9D9D9', linewidth=0.5)
+
+    # # Labels
+    #  ax.set_xlabel('Pressure kg/cm2', fontsize=10)
+    #  ax.set_ylabel('Deformation, mm', fontsize=10)
+
+    # # Borders
+    #  ax.spines['top'].set_visible(True)
+    #  ax.spines['right'].set_visible(True)
+
+    # # -----------------------------
+    # # Export
+    # # -----------------------------
     #  buf = BytesIO()
     #  fig.tight_layout()
     #  fig.savefig(buf, format='png')
     #  plt.close(fig)
     #  buf.seek(0)
+
     #  return base64.b64encode(buf.read())
 
     def generate_line_chart_swell(self):
@@ -12054,8 +12105,8 @@ class SwellingPressureLine(models.Model):
      import matplotlib
      matplotlib.use('Agg')
      import matplotlib.pyplot as plt
-     from scipy.interpolate import CubicSpline
-     from matplotlib.ticker import LogLocator, LogFormatterMathtext
+     from scipy.interpolate import PchipInterpolator
+     from matplotlib.ticker import LogLocator, LogFormatter
 
     # -----------------------------
     # Data
@@ -12069,28 +12120,28 @@ class SwellingPressureLine(models.Model):
         return False
 
     # -----------------------------
-    # Swelling pressure
+    # Swelling Pressure (Zero Crossing)
     # -----------------------------
      sp = 0
-     for i in range(len(x)-1):
-        if y[i] >= 0 and y[i+1] <= 0:
-            sp = x[i] + (x[i+1]-x[i])*(0-y[i])/(y[i+1]-y[i])
+     for i in range(len(x) - 1):
+        if y[i] >= 0 and y[i + 1] <= 0:
+            sp = x[i] + (x[i + 1] - x[i]) * (0 - y[i]) / (y[i + 1] - y[i])
             break
 
     # -----------------------------
-    # Excel-style spline (log domain)
+    # Excel-style smooth curve (LOG DOMAIN)
     # -----------------------------
      lx = np.log10(x)
-     cs = CubicSpline(lx, y, bc_type='natural')
+     cs = PchipInterpolator(lx, y)
 
      lx_s = np.linspace(lx.min(), lx.max(), 500)
-     xs = 10**lx_s
+     xs = 10 ** lx_s
      ys = cs(lx_s)
 
     # -----------------------------
     # Figure
     # -----------------------------
-     fig, ax = plt.subplots(figsize=(10,5), dpi=100)
+     fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
 
     # Curve
      ax.plot(xs, ys, color='#4472C4', linewidth=2.5)
@@ -12100,32 +12151,76 @@ class SwellingPressureLine(models.Model):
 
     # Point labels
      for xi, yi in zip(x, y):
-        ax.text(xi, yi+0.05, f"{yi:.3f}", ha='center', fontsize=8)
+        ax.text(xi, yi + 0.05, f"{yi:.3f}", ha='center', fontsize=8)
 
-    # Zero line
-     ax.axhline(0, color='#4472C4', linewidth=1.5)
+    # Zero horizontal line
+     ax.axhline(0, color='#4472C4', linewidth=1)
 
-    # X-axis on zero
-     ax.spines['bottom'].set_position(('data',0))
+    # X axis crosses at Y=0
+     ax.spines['bottom'].set_position(('data', 0))
 
-    # Swelling pressure
+    # Swelling pressure vertical line
      ax.axvline(sp, color='red', linewidth=1.5)
 
-    # Log X
+    # -----------------------------
+    # LOG X AXIS 0.10 → 100
+    # -----------------------------
      ax.set_xscale('log')
-     ax.set_xlim(0.1,10)
+     ax.set_xlim(0.1, 100)
 
+    # Major ticks: 0.1 1 10 100
      ax.xaxis.set_major_locator(LogLocator(base=10))
-     ax.xaxis.set_major_formatter(LogFormatterMathtext())
-     ax.xaxis.set_minor_locator(LogLocator(base=10, subs=np.arange(2,10)*0.1))
+     ax.xaxis.set_major_formatter(LogFormatter())
 
-    # Y limits
-     ax.set_ylim(-0.75, 2.25)
-     ax.set_yticks(np.arange(-0.75, 2.26, 0.50))
+    # Minor ticks (Excel density)
+     ax.xaxis.set_minor_locator(
+        LogLocator(base=10, subs=np.arange(1, 10) * 0.1)
+    )
 
-    # Grid (Excel density)
+    # -----------------------------
+    # Y Axis
+    # -----------------------------
+    #  ax.set_ylim(-0.75, 2.25)
+    #  ax.set_yticks(np.arange(-0.75, 2.26, 0.50))
+
+    # -----------------------------
+# Y Axis (Dynamic based on data)
+# -----------------------------
+     y_min = min(y.min(), ys.min())
+     y_max = max(y.max(), ys.max())
+
+# Add small padding
+     padding = (y_max - y_min) * 0.10
+     y_min -= padding
+     y_max += padding
+
+# Round limits nicely (like Excel)
+     y_min = np.floor(y_min * 2) / 2
+     y_max = np.ceil(y_max * 2) / 2
+
+     ax.set_ylim(y_min, y_max)
+
+# Auto step (0.5 or 0.25 depending on range)
+     y_range = y_max - y_min
+
+     if y_range <= 2:
+        step = 0.25
+     elif y_range <= 5:
+        step = 0.5
+     else:
+        step = 1.0
+
+     ax.set_yticks(np.arange(y_min, y_max + step, step))
+ 
+    # -----------------------------
+    # Grid (Excel style)
+    # -----------------------------
      ax.grid(which='major', color='#A6A6A6', linewidth=0.8)
      ax.grid(which='minor', color='#D9D9D9', linewidth=0.5)
+
+    # Background
+     ax.set_facecolor('#F2F2F2')
+     fig.patch.set_facecolor('white')
 
     # Labels
      ax.set_xlabel('Pressure kg/cm2', fontsize=10)
@@ -13465,8 +13560,22 @@ class CbrLine(models.Model):
     cbr_2_5_mm = fields.Float(string="CBR At Penetration Of 2.5 mm",compute="_compute_cbr_values") 
     cbr_5_mm = fields.Float(string="CBR At Penetration Of 5 mm",compute="_compute_cbr_values")
 
-    m = fields.Float(string="Applied force (kN) (m)", digits=(10,4))
-    c = fields.Float(string="Applied force (kN) (c)", digits=(10,4))
+    m = fields.Float(string="Applied force (kN) (m)",default=0.0133, digits=(10,4))
+    c = fields.Float(string="Applied force (kN) (c)",default=0.0404 , digits=(10,4))
+
+    proving_ring_capacity = fields.Float(string="Proving ring capacity (kN)", digits=(10,0))
+
+    condition_specimen = fields.Char(string="Condition of specimen at test")
+
+    sample_type = fields.Char(string="Sample Type",default="Remolded")
+
+    type_compact = fields.Char(string="Type of compaction")
+
+    soil_fract_20mm = fields.Char(string="Soil fraction above 20mm replaced, (Kg)")
+
+    period_soaked = fields.Float(string="Period of soaking(days)", digits=(10,0))
+
+    surcharge_weight = fields.Float(string="Surcharge weight (kg)", digits=(10,2))
 
     # --- SEPARATE COMPUTE FUNCTION ---
     # @api.depends('soil_table', 'soil_table.penetration', 'soil_table.avg_load')
