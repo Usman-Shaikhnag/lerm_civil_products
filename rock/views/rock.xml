@@ -64,17 +64,17 @@
                      <div>
 
                      <h1 class="text-center">
-                            <field name="name"  readonly="1" nolabel="1"/>
+                            <field name="name_rock"  readonly="1" nolabel="1"/>
                     </h1>
                     </div>
                     <group/>
 
-                      <div invisible = "usc_visible == False" style="margin-bottom: 10px;">
+                      <div  style="margin-bottom: 10px;">
                             <field name= 'rock_lines_generated' invisible="1" />
                             <button name="action_generate_rock_lines"
                             
                                 type="object"
-                                string="Rock Lab Lines"
+                                string="Show Lab ID"
                                 class="oe_highlight"
                                 invisible="rock_lines_generated == True"/>
 
@@ -132,10 +132,10 @@
 
 
 
-                         <div invisible = "usc_visible == False">
+                         <div >
                         <h1 class="text-center">
                             <!-- <field name="uu_triaxial_cohesion_name" readonly="1" nolabel="1"/> -->
-                            <field name="usc_visible" invisible="1"/>
+                            <!-- <field name="usc_visible" invisible="1"/> -->
                         </h1>
                     </div>
 
@@ -191,7 +191,7 @@
 
         
 
-                    <div invisible = "usc_visible == False">
+                    <div >
                         <field name="rock_child_lines">
                             <tree editable="bottom" class="custom_table_borders">
                              <!-- <field name="blue_input" invisible="1"/> -->

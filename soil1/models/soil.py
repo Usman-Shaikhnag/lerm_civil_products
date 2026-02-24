@@ -3886,15 +3886,47 @@ class SoilCBRLine(models.Model):
         for rec in self:
             rec.no_division = rec.proving_reading * 5
 
-    @api.depends('no_division')
+    # @api.depends('no_division')
+    # def _compute_applied_force(self):
+    #     for rec in self:
+    #         # rec.applied_force = (0.0133 * rec.no_division) + 0.0404 if rec.no_division else 0.0404
+    #         rec.applied_force = (0.0133 * rec.no_division) + 0.0404 if rec.no_division else 0.0404
+
+    # @api.depends('no_division', 'parent_id_cbr.m', 'parent_id_cbr.c')
+    # def _compute_applied_force(self):
+    #  for rec in self:
+    #     m = rec.parent_id_cbr.m or 0.0
+    #     c = rec.parent_id_cbr.c or 0.0
+    #     n = rec.no_division or 0.0
+
+    #     rec.applied_force = (m * n) + c
+
+    @api.depends('no_division', 'parent_id_cbr.m', 'parent_id_cbr.c')
     def _compute_applied_force(self):
-        for rec in self:
-            rec.applied_force = (0.0133 * rec.no_division) + 0.0404 if rec.no_division else 0.0404
+     for rec in self:
+        m = rec.parent_id_cbr.m or 0.0
+        c = rec.parent_id_cbr.c or 0.0
+        n = rec.no_division or 0.0
+
+        if n == 0:
+            rec.applied_force = 0.0
+        else:
+            rec.applied_force = (m * n) + c
+
+    # @api.depends('applied_force', 'parent_id_cbr.rise_force')
+    # def _compute_avg_load(self):
+    #     for rec in self:
+    #         rise_force = rec.parent_id_cbr.rise_force or 0.0
+    #         rec.avg_load = rec.applied_force + (rec.applied_force * rise_force)
 
     @api.depends('applied_force', 'parent_id_cbr.rise_force')
     def _compute_avg_load(self):
-        for rec in self:
-            rise_force = rec.parent_id_cbr.rise_force or 0.0
+     for rec in self:
+        rise_force = rec.parent_id_cbr.rise_force or 0.0
+
+        if rec.applied_force == 0:
+            rec.avg_load = 0.0
+        else:
             rec.avg_load = rec.applied_force + (rec.applied_force * rise_force)
 
    
@@ -4546,6 +4578,12 @@ class SoilGSALINE(models.Model):
     temp_corre = fields.Float(string="Temperature Correction, Mt",compute="_compute_temp_corre",digits=(12,4))
     specific_gravity = fields.Float(string="Specific gravity",digits=(12,3))
 
+    m_4 = fields.Float(string="M",digits=(12,4))
+    c_4 = fields.Float(string="C",digits=(12,4))
+
+    after_m_4 = fields.Float(string="M",digits=(12,4))
+    after_c_4 = fields.Float(string="C",digits=(12,4))
+
 
     
 
@@ -4799,23 +4837,60 @@ class SoilGSALINE(models.Model):
 
         return record
 
-    def calculate_sieve_gsa(self): 
-        for record in self:
+    # def calculate_sieve_gsa(self): 
+    #     for record in self:
 
         
 
-            previous_cumulative = 0  
-            for line in record.sieve_analysis_child_lines_gsa:
-                print("Rows", str(line.percent_retained))
-                previous_line = line.serial_no - 1
-                if previous_line == 0:
-                    cumulative_retained = line.percent_retained
-                else:
-                    previous_line_record = self.env['gsa.lab.sieve.analysis.line'].sudo().search([("serial_no", "=", previous_line),("parent_id", "=", record.id)], limit=1)
+    #         previous_cumulative = 0  
+    #         for line in record.sieve_analysis_child_lines_gsa:
+    #             print("Rows", str(line.percent_retained))
+    #             previous_line = line.serial_no - 1
+    #             if previous_line == 0:
+    #                 cumulative_retained = line.percent_retained
+    #             else:
+    #                 previous_line_record = self.env['gsa.lab.sieve.analysis.line'].sudo().search([("serial_no", "=", previous_line),("parent_id", "=", record.id)], limit=1)
                     
+    #                 if previous_line_record:
+    #                     previous_cumulative = previous_line_record.cumulative_retained
+    #                 cumulative_retained = previous_cumulative + line.percent_retained
+
+    #             passing_percent = 100 - cumulative_retained
+
+    #             line.write({
+    #                 'cumulative_retained': round(cumulative_retained, 2),
+    #                 'passing_percent': round(passing_percent, 2),
+    #             })
+                
+    #             print("Updated Cumulative Retained:", cumulative_retained)
+    #             print("Updated Passing Percent:", passing_percent)
+
+    #             previous_cumulative = cumulative_retained
+
+    def calculate_sieve_gsa(self): 
+        for record in self:
+
+            previous_cumulative = 0.0  
+
+            for line in record.sieve_analysis_child_lines_gsa:
+
+                print("Rows", str(line.percent_retained))
+
+                previous_line = line.serial_no - 1
+
+                if previous_line == 0:
+                    cumulative_retained = line.percent_retained or 0.0
+
+                else:
+                    previous_line_record = self.env['gsa.lab.sieve.analysis.line'].sudo().search([
+                        ("serial_no", "=", previous_line),
+                        ("parent_id_gsa", "=", record.id)   # ✅ FIX HERE
+                    ], limit=1)
+
                     if previous_line_record:
-                        previous_cumulative = previous_line_record.cumulative_retained
-                    cumulative_retained = previous_cumulative + line.percent_retained
+                        previous_cumulative = previous_line_record.cumulative_retained or 0.0
+
+                    cumulative_retained = previous_cumulative + (line.percent_retained or 0.0)
 
                 passing_percent = 100 - cumulative_retained
 
@@ -4823,7 +4898,7 @@ class SoilGSALINE(models.Model):
                     'cumulative_retained': round(cumulative_retained, 2),
                     'passing_percent': round(passing_percent, 2),
                 })
-                
+
                 print("Updated Cumulative Retained:", cumulative_retained)
                 print("Updated Passing Percent:", passing_percent)
 
@@ -4957,6 +5032,12 @@ class SoilHydrometerLineGSA(models.Model):
 
     temp = fields.Float("Temp °c" )
 
+    m_4 = fields.Float(string="M",digits=(12,4))
+    c_4 = fields.Float(string="C",digits=(12,4))
+
+    after_m_4 = fields.Float(string="M",digits=(12,4))
+    after_c_4 = fields.Float(string="C",digits=(12,4))
+
 
     @api.depends('parent_id_gsa.temp')
     def _compute_vescosity_water(self):
@@ -4988,7 +5069,7 @@ class SoilHydrometerLineGSA(models.Model):
     time = fields.Float(string="Time ")
     hydrometer_reading = fields.Float(string="Hydrometer Reading",digits=(12,1))
     men_corrected = fields.Float(string="Meniscus Corrected",digits=(12,1),compute="_compute_men_corrected")
-    eff_depth = fields.Float(string='Effective Depth',digits=(12,1) ,compute="_compute_eff_depth")
+    eff_depth = fields.Float(string='Effective Depth',digits=(12,1) ,compute="_compute_eff_depth",store=True)
     velocity = fields.Float(string="Velocity" , store=True,compute="_compute_velocity",digits=(12,2))
     temp_combined = fields.Float(string="Temp. + Dispersion Combined ",digits=(12,2),compute="_compute_temp_combined",store=True)
 
@@ -5006,16 +5087,43 @@ class SoilHydrometerLineGSA(models.Model):
                 (rec.parent_id_gsa.meniscus_corre or 0.0)
             )
 
-    @api.depends('men_corrected', 'time')
+    # @api.depends('men_corrected', 'time')
+    # def _compute_eff_depth(self):
+    #     for rec in self:
+    #         if rec.men_corrected:
+    #             rec.eff_depth = (-0.3444 * rec.men_corrected) + (
+    #                 21.736 if rec.time in (8.0, 15.0, 30.0, 60.0, 120.0, 240.0, 1440.0)
+    #                 else 20.256
+    #             )
+    #         else:
+    #             rec.eff_depth = 0.0
+
+    @api.depends(
+    'men_corrected',
+    'time',
+    'parent_id_gsa.m_4',
+    'parent_id_gsa.c_4',
+    'parent_id_gsa.after_m_4',
+    'parent_id_gsa.after_c_4'
+    )
     def _compute_eff_depth(self):
+
+        valid_times = (8, 15, 30, 60, 120, 240, 1440)
+
         for rec in self:
-            if rec.men_corrected:
-                rec.eff_depth = (-0.3444 * rec.men_corrected) + (
-                    21.736 if rec.time in (8.0, 15.0, 30.0, 60.0, 120.0, 240.0, 1440.0)
-                    else 20.256
-                )
-            else:
+
+            if not rec.men_corrected:
                 rec.eff_depth = 0.0
+                continue
+
+            if int(rec.time or 0) in valid_times:
+                rec.eff_depth = (
+                    (rec.parent_id_gsa.m_4 or 0.0) * rec.men_corrected
+                ) + (rec.parent_id_gsa.c_4 or 0.0)
+            else:
+                rec.eff_depth = (
+                    (rec.parent_id_gsa.after_m_4 or 0.0) * rec.men_corrected
+                ) + (rec.parent_id_gsa.after_c_4 or 0.0)
 
     @api.depends('eff_depth', 'time')
     def _compute_velocity(self):
@@ -5228,60 +5336,6 @@ class SpecificGravity(models.Model):
 
 # Atterbergs Limits (Free Swell)
 
- 
-# class SoilFreeSwell(models.Model):
-#     _name = "soil.free.swell"
-
-
-#     parent_id = fields.Many2one( "mechanical.soil1", string="Parent Test", ondelete="cascade", required=True,)
-#     serial_no = fields.Integer(string="Sr.No", readonly=True)
-#     lab_id = fields.Char(string="Lab No.")
-
-#     vd = fields.Float(string="Vd")  
-#     vk = fields.Float(string="Vk") 
-
-#     free_swell = fields.Float( string="Free swell (%)", compute="_compute_free_swell", store=True, readonly=True,)
-#     is_ok = fields.Boolean( string="TRUE/FALSE",  compute="_compute_is_ok",  store=True, readonly=True,)
-
-   
-#     @api.depends("vd", "vk")
-#     def _compute_free_swell(self):
-#         for rec in self:
-#             if rec.vk:
-#                 rec.free_swell = (rec.vd - rec.vk) / rec.vk * 100.0
-#             else:
-#                 rec.free_swell = 0.0
-
-    
-#     @api.depends("free_swell")
-#     def _compute_is_ok(self):
-#         for rec in self:
-#             rec.is_ok = bool(rec.free_swell and rec.free_swell <= 50.0)
-
-#     @api.model
-#     def create(self, vals):
-#         if vals.get("parent_id") and not vals.get("serial_no"):
-#             last = self.search(
-#                 [("parent_id", "=", vals["parent_id"])],
-#                 order="serial_no desc",
-#                 limit=1,
-#             )
-#             vals["serial_no"] = (last.serial_no or 0) + 1 if last else 1
-#         return super().create(vals)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 class SoilFreeSwell(models.Model):
     _name = "soil.free.swell"
@@ -5294,56 +5348,41 @@ class SoilFreeSwell(models.Model):
     vk = fields.Float(string="Vk") 
 
     free_swell = fields.Float(string="Free swell (%)", compute="_compute_free_swell", store=True, readonly=True)
-    is_ok = fields.Boolean(string="TRUE/FALSE", compute="_compute_is_ok", store=True, readonly=True)
+
+    is_ok = fields.Boolean(string="TRUE/FALSE",compute="_compute_is_ok",store=True,
+    readonly=True)
+
+    is_ok_display = fields.Char(string="TRUE/FALSE",compute="_compute_is_ok_display")
+
+    free_swell_display = fields.Char(string="Free Swell (%)",compute="_compute_free_swell_display")
+
+    @api.depends("free_swell")
+    def _compute_free_swell_display(self):
+     for rec in self:
+        if rec.free_swell is False or rec.free_swell < 0:
+            rec.free_swell_display = "--"
+        else:
+            rec.free_swell_display = "%.2f" % rec.free_swell
 
     @api.depends("vd", "vk")
     def _compute_free_swell(self):
-        for rec in self:
-            if rec.vk and rec.vk != 0:
-                rec.free_swell = max(0.0, (rec.vd - rec.vk) / rec.vk * 100.0)
-            else:
-                rec.free_swell = 0.0
+     for rec in self:
+        if rec.vk:
+            rec.free_swell = ((rec.vd or 0.0) - rec.vk) / rec.vk * 100
+        else:
+            rec.free_swell = 0.0
 
     @api.depends("free_swell")
     def _compute_is_ok(self):
-        for rec in self:
-            rec.is_ok = bool(rec.free_swell and rec.free_swell <= 50.0)
+      for rec in self:
+        val = rec.free_swell
 
-    @api.model
-    def create(self, vals):
-        if vals.get("parent_id") and not vals.get("serial_no"):
-            last = self.search(
-                [("parent_id", "=", vals["parent_id"])],
-                order="serial_no desc",
-                limit=1,
-            )
-            vals["serial_no"] = (last.serial_no or 0) + 1 if last else 1
-        return super().create(vals)
-class SoilFreeSwell(models.Model):
-    _name = "soil.free.swell"
+        rec.is_ok = bool(val is not None and val >= 1 and val <= 200)
 
-    parent_id = fields.Many2one("mechanical.soil1", string="Parent Test", ondelete="cascade", required=True)
-    serial_no = fields.Integer(string="Sr.No", readonly=True)
-    lab_id = fields.Char(string="Lab No.")
-
-    vd = fields.Float(string="Vd")  
-    vk = fields.Float(string="Vk") 
-
-    free_swell = fields.Float(string="Free swell (%)", compute="_compute_free_swell", store=True, readonly=True)
-    is_ok = fields.Boolean(string="TRUE/FALSE", compute="_compute_is_ok", store=True, readonly=True)
-
-    @api.depends("vd", "vk")
-    def _compute_free_swell(self):
-        for rec in self:
-            if rec.vk and rec.vk != 0:
-                rec.free_swell = max(0.0, (rec.vd - rec.vk) / rec.vk * 100.0)
-            else:
-                rec.free_swell = 0.0
-
-    @api.depends("free_swell")
-    def _compute_is_ok(self):
-        for rec in self:
-            rec.is_ok = bool(rec.free_swell and rec.free_swell <= 50.0)
+    @api.depends("is_ok")
+    def _compute_is_ok_display(self):
+     for rec in self:
+        rec.is_ok_display = "TRUE" if rec.is_ok else "FALSE"
 
     @api.model
     def create(self, vals):
@@ -13425,6 +13464,9 @@ class CbrLine(models.Model):
 
     cbr_2_5_mm = fields.Float(string="CBR At Penetration Of 2.5 mm",compute="_compute_cbr_values") 
     cbr_5_mm = fields.Float(string="CBR At Penetration Of 5 mm",compute="_compute_cbr_values")
+
+    m = fields.Float(string="Applied force (kN) (m)", digits=(10,4))
+    c = fields.Float(string="Applied force (kN) (c)", digits=(10,4))
 
     # --- SEPARATE COMPUTE FUNCTION ---
     # @api.depends('soil_table', 'soil_table.penetration', 'soil_table.avg_load')
