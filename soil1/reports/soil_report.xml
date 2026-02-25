@@ -1143,6 +1143,45 @@
 							</tr>
 
 							<tr>
+								<td colspan="3" style="border:1px solid black; padding:4px;">
+									<b>Test Method/Reference Code :</b> 
+								</td>
+								<td colspan="3" style="border:1px solid black; padding:4px;">
+									<span>
+									
+									<t t-if="not eln.grade_id">
+										<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','tyer4fgr-5c56-475b-9arty156878965uut')]).test_method.test_method"/>
+									</t>
+
+								
+									<t t-if="eln.grade_id">
+										<t t-set="printed" t-value="False"/>
+
+										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','tyer4fgr-5c56-475b-9arty156878965uut')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade and parameter.grade.id == eln.grade_id.id">
+												<span t-field="parameter.specification"/>
+												<t t-set="printed" t-value="True"/>
+											</t>
+										</t>
+
+									
+										<t t-if="printed == False">
+											<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','tyer4fgr-5c56-475b-9arty156878965uut')]).test_method.test_method"/>
+										</t>
+									</t>
+								</span>
+								</td>
+								<td colspan="3" style="border:1px solid black; padding:4px;">
+									<b>Annexure- II to ULR</b>
+								</td>
+								<td colspan="3" style="border:1px solid black; padding:4px;">
+									<span style="background-color:yellow; padding:2px 6px;">
+										<!-- <t t-esc="data.ulr_no"/> -->
+									</span>
+								</td>
+							</tr>
+
+							<tr>
 								<td colspan="3"><strong>Project Name</strong>: </td>
 								<td colspan="9" style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
 
@@ -1152,7 +1191,7 @@
 						
 							<tr>
 								<td colspan="3"><strong>Doc. Name</strong>: </td>
-								<td colspan="9" style="padding-left: 10px;">Laboratory test results- Grain Size Analysis (GSA)</td>
+								<td colspan="9" style="padding-left: 10px;">Laboratory test results- <span t-field="data.doc_name"/></td>
 
 							
 							</tr>
@@ -1167,14 +1206,16 @@
 
 							
 							</tr>
-                          <tr>
+
+							
+                          <!-- <tr>
 							<td colspan="3">
 								<strong>	Report No.</strong>
 								</td>
 								<td colspan="9" style="padding-left: 10px;">
 									<span t-esc="o.material.test_format_no"/>
 								</td>
-							</tr>
+							</tr> -->
 						
 							
 						
@@ -1417,9 +1458,29 @@
 								<td colspan="3" style="border:1px solid black; padding:4px;">
 									<b>Test Method/Reference Code :</b> 
 									<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')]).parameter_table" t-as="parameter">
+									<!-- <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
 												<span t-field="parameter.specification"/>
+										</t>
+									</t> -->
+									<t t-if="not eln.grade_id">
+										<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')]).test_method.test_method"/>
+									</t>
+
+								
+									<t t-if="eln.grade_id">
+										<t t-set="printed" t-value="False"/>
+
+										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade and parameter.grade.id == eln.grade_id.id">
+												<span t-field="parameter.specification"/>
+												<t t-set="printed" t-value="True"/>
+											</t>
+										</t>
+
+									
+										<t t-if="printed == False">
+											<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')]).test_method.test_method"/>
 										</t>
 									</t>
 								</span>
@@ -1440,12 +1501,12 @@
 							</tr>
 							<tr>
 								<td colspan="3"><strong>Doc. Name</strong>: </td>
-								<td colspan="9" style="padding-left: 10px;">Laboratory test results- California bearing ratio test (CBR)</td>
+								<td colspan="9" style="padding-left: 10px;">Laboratory test results - <span t-field="env['lerm.parameter.master'].search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')]).parameter_name"/></td>
 
 							
 							 </tr>
 
-							 <!--  <tr>
+							  <tr>
 								<td colspan="3"><strong>Doc. No.</strong>: </td>
 								<td colspan="9" style="padding-left: 10px;">
 								<span>
@@ -1455,14 +1516,7 @@
 
 							
 							</tr>
-                          <tr>
-							<td colspan="3">
-								<strong>	Report No.</strong>
-								</td>
-								<td colspan="9" style="padding-left: 10px;">
-									<span t-esc="o.material.test_format_no"/>
-								</td>
-							</tr> -->
+                          
 
 							<tr>
 								<td colspan="6" style="border:1px solid black; padding:4px;">
@@ -1741,9 +1795,29 @@
 								<td colspan="3" style="border:1px solid black; padding:4px;">
 									<b>Test Method/Reference Code :</b>
 									<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','c800e59a-b847-4049-9e2b-673fcd1fcde5')]).parameter_table" t-as="parameter">
+									<!-- <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','c800e59a-b847-4049-9e2b-673fcd1fcde5')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
 												<span t-field="parameter.specification"/>
+										</t>
+									</t> -->
+									<t t-if="not eln.grade_id">
+										<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','c800e59a-b847-4049-9e2b-673fcd1fcde5')]).test_method.test_method"/>
+									</t>
+
+								
+									<t t-if="eln.grade_id">
+										<t t-set="printed" t-value="False"/>
+
+										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','c800e59a-b847-4049-9e2b-673fcd1fcde5')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade and parameter.grade.id == eln.grade_id.id">
+												<span t-field="parameter.specification"/>
+												<t t-set="printed" t-value="True"/>
+											</t>
+										</t>
+
+									
+										<t t-if="printed == False">
+											<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','c800e59a-b847-4049-9e2b-673fcd1fcde5')]).test_method.test_method"/>
 										</t>
 									</t>
 								</span>
@@ -1764,7 +1838,7 @@
 							</tr>
 							<tr>
 								<td colspan="3"><strong>Doc. Name</strong>: </td>
-								<td colspan="9" style="padding-left: 10px;">Laboratory test results-Proctor test on soil</td>
+								<td colspan="9" style="padding-left: 10px;">Laboratory test results - <span t-field="data.doc_name_proctor"/></td>
 
 							
 							</tr>
@@ -1799,17 +1873,12 @@
 
 							
 
-							<tr>
-								<td style="border:1px solid black; padding:6px; font-weight:bold;">
-									Report No.
-								</td>
-								<td style="border:1px solid black; padding:6px;">
-									<span t-esc="o.material.test_format_no"/>
-								</td>
-								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+							<tr >
+								
+								<td colspan="3" style="border:1px solid black; padding:6px; font-weight:bold;">
 									Date Sample Received
 								</td>
-								<td style="border:1px solid black; padding:6px;">
+								<td colspan="3" style="border:1px solid black; padding:6px;">
 									<span t-field="o.sample_id.sample_received_date"/>
 								</td>
 							</tr>
@@ -1872,7 +1941,7 @@
 									Sample type and condition
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-									
+									<t t-esc="proctor.type_of_sample_proctor"/>
 								</td>
 							</tr>
 
@@ -1966,7 +2035,7 @@
 							</tr>
 							<tr>
 								<td colspan="3"><strong>Doc. Name</strong>: </td>
-								<td colspan="9" style="padding-left: 10px;"></td>
+								<td colspan="9" style="padding-left: 10px;"><span t-field="data.swelling_pressure_doc_name"/></td>
 
 							
 							</tr>
@@ -1981,14 +2050,14 @@
 
 							
 							</tr>
-                          <tr>
+                          <!-- <tr>
 							<td colspan="3">
 								<strong>	Report No.</strong>
 								</td>
 								<td colspan="9" style="padding-left: 10px;">
 									<span t-esc="o.material.test_format_no"/>
 								</td>
-							</tr>
+							</tr> -->
 
 							<tr>
 								<td colspan="10" style="border:1px solid black; padding:4px;">
@@ -2010,7 +2079,7 @@
 
 						<tr>
 								<td colspan="7" style="border:1px solid black; padding:6px;">
-									<b>Sample Type and Condition:</b> DS
+									<b>Sample Type and Condition:</b> <span t-esc="sweeling.sample_type_swelling"/>
 								</td>
 								<td colspan="2" style="border:1px solid black; padding:6px; text-align:right;" >
 									<b>Depth (m):</b>
@@ -2200,9 +2269,26 @@
 								<td colspan="3" style="border:1px solid black; padding:4px;">
 									<b>Test Method/Reference Code :</b> 
 									<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
+									
+
+									<t t-if="not eln.grade_id">
+										<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')]).test_method.test_method"/>
+									</t>
+
+								
+									<t t-if="eln.grade_id">
+										<t t-set="printed" t-value="False"/>
+
+										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade and parameter.grade.id == eln.grade_id.id">
 												<span t-field="parameter.specification"/>
+												<t t-set="printed" t-value="True"/>
+											</t>
+										</t>
+
+									
+										<t t-if="printed == False">
+											<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')]).test_method.test_method"/>
 										</t>
 									</t>
 								</span>
@@ -2223,7 +2309,7 @@
 							</tr>
 							<tr>
 								<td colspan="3"><strong>Doc. Name</strong>: </td>
-								<td colspan="9" style="padding-left: 10px;">Laboratory test results- Direct Shear Test (DST)</td>
+								<td colspan="9" style="padding-left: 10px;">Laboratory test results- <span t-field="data.direct_shear_doc_name"/></td>
 
 							
 							</tr>
@@ -2259,16 +2345,16 @@
 							
 
 							<tr>
-								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+								<!-- <td style="border:1px solid black; padding:6px; font-weight:bold;">
 									Report No.
 								</td>
 								<td style="border:1px solid black; padding:6px;">
 									<span t-esc="o.material.test_format_no"/>
-								</td>
-								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+								</td> -->
+								<td colspan="3" style="border:1px solid black; padding:6px; font-weight:bold;">
 									Date Sample Received
 								</td>
-								<td style="border:1px solid black; padding:6px;">
+								<td colspan="9" style="border:1px solid black; padding:6px;">
 									<span t-field="o.sample_id.sample_received_date"/>
 								</td>
 							</tr>
@@ -2528,9 +2614,29 @@
 								<td colspan="3" style="border:1px solid black; padding:4px;">
 									<b>Test Method/Reference Code :</b>
 									<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','yt25ec57-11f8-4249-9fa8-788889999rtt')]).parameter_table" t-as="parameter">
+									<!-- <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','c800e59a-b847-4049-9e2b-673fcd1fcde5')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
 												<span t-field="parameter.specification"/>
+										</t>
+									</t> -->
+									<t t-if="not eln.grade_id">
+										<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','yt25ec57-11f8-4249-9fa8-788889999rtt')]).test_method.test_method"/>
+									</t>
+
+								
+									<t t-if="eln.grade_id">
+										<t t-set="printed" t-value="False"/>
+
+										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','yt25ec57-11f8-4249-9fa8-788889999rtt')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade and parameter.grade.id == eln.grade_id.id">
+												<span t-field="parameter.specification"/>
+												<t t-set="printed" t-value="True"/>
+											</t>
+										</t>
+
+									
+										<t t-if="printed == False">
+											<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','yt25ec57-11f8-4249-9fa8-788889999rtt')]).test_method.test_method"/>
 										</t>
 									</t>
 								</span>
@@ -2551,7 +2657,7 @@
 							</tr>
 							<tr>
 								<td colspan="3"><strong>Doc. Name</strong>: </td>
-								<td colspan="9" style="padding-left: 10px;">Laboratory test results- Triaxial Shear Test (UU)</td>
+								<td colspan="9" style="padding-left: 10px;">Laboratory test results - <span t-field="data.triaxial_doc_name"/></td>
 
 							
 							</tr>
@@ -2583,12 +2689,12 @@
 								<!-- </td> -->
 								</td>
 							</tr>
-							<tr>
+							<!-- <tr>
 							<td colspan="6" style="border:1px solid black; padding:6px; font-weight:bold;">
 									Report No : <span t-esc="o.material.test_format_no"/>
 								</td>
 								
-							</tr>
+							</tr> -->
 
 							
 
@@ -2657,13 +2763,13 @@
 									Type of Test
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-								
+								 <t t-esc="triaxial.type_of_test_traxial"/>
 								</td>
 								<td style="border:1px solid black; padding:6px; font-weight:bold;">
 									Type of Sample 
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-									
+									 <t t-esc="triaxial.type_of_sample_traxial"/>
 								</td>
 							</tr>
 
@@ -2770,7 +2876,7 @@
 									Load Gauge Constant 
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-								<!-- <t t-esc="direct.dry_density_soil_shear"/> -->
+								[<t t-esc="triaxial.m_traxial"  />* Deflection ] + <t t-esc="triaxial.c_traxial"  />
 									
 								</td>
 							</tr>
@@ -2899,6 +3005,46 @@
 
 								
 							</tr>
+
+
+							<tr>
+								<td colspan="3" style="border:1px solid black; padding:4px;">
+									<b>Test Method/Reference Code :</b>
+									<span>
+									<!-- <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','c800e59a-b847-4049-9e2b-673fcd1fcde5')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+												<span t-field="parameter.specification"/>
+										</t>
+									</t> -->
+									<t t-if="not eln.grade_id">
+										<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')]).test_method.test_method"/>
+									</t>
+
+								
+									<t t-if="eln.grade_id">
+										<t t-set="printed" t-value="False"/>
+
+										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade and parameter.grade.id == eln.grade_id.id">
+												<span t-field="parameter.specification"/>
+												<t t-set="printed" t-value="True"/>
+											</t>
+										</t>
+
+									
+										<t t-if="printed == False">
+											<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')]).test_method.test_method"/>
+										</t>
+									</t>
+								</span>
+								</td>
+								<td colspan="3" style="border:1px solid black; padding:4px;">
+									<b>Annexure- II to ULR</b>
+									<span style="background-color:yellow; padding:2px 6px;">
+										<!-- <t t-esc="data.ulr_no"/> -->
+									</span>
+								</td>
+							</tr>
 							
 
 							
@@ -2911,7 +3057,7 @@
 							</tr>
 							<tr>
 								<td colspan="3"><strong>Doc. Name</strong>: </td>
-								<td colspan="9" style="padding-left: 10px;"></td>
+								<td colspan="9" style="padding-left: 10px;"><span t-field="data.doc_consolidation_name"/></td>
 
 							
 							</tr>
@@ -2943,12 +3089,12 @@
 								<!-- </td> -->
 								</td>
 							</tr>
-							<tr>
+							<!-- <tr>
 							<td colspan="6" style="border:1px solid black; padding:6px; font-weight:bold;">
 									Report No : <span t-esc="o.material.test_format_no"/>
 								</td>
 								
-							</tr>
+							</tr> -->
 
 							
 
@@ -2999,17 +3145,24 @@
 								</td>
 							</tr>
 
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Specific Gravity :
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								 <t t-esc="consolidation.consolidation_specific_gravity"/>
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Sample Type and Condition:
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+										<span t-field="consolidation.sample_type_consolidation" />
+								</td>
+							</tr>
+
 							
 
-							<tr >
-								<td colspan="6" style="border:1px solid black; padding:6px; font-weight:bold;">
-									Specific Gravity : <span><t t-esc="consolidation.consolidation_specific_gravity"/></span>
-								</td>
-								
-								
-									
-								
-							</tr>
+							
 
 						
 

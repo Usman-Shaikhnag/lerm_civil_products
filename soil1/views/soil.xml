@@ -230,6 +230,8 @@
 
                         </div>
 
+                       
+
                          <field name="cbr_ids" class="custom_table_borders" nolabel="1" invisible = "soil_visible == False" >
                             <tree string="CBR" decoration-info="lab_id">
                                 <field name="serial_no"/>
@@ -1114,6 +1116,28 @@
                     invisible="gsa_lines_generated == True"/>
 
                 </div>
+
+                 <div class="d-flex gap-2"  invisible = "gsa_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="doc_name">Doc Name</label></td>
+                                            <td><field name="doc_name" class="blue-input" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                                
+                                <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="doc_no">Doc No</label></td>
+                                            <td><field name="doc_no" class="blue-input"/></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table> -->
+                            </div>  
                   <!-- <div style="margin-top: 10px;" invisible = "gsa_visible == False">
                 <button name="action_fetch_review_details"
                     type="object"
@@ -2071,6 +2095,18 @@
 
                         </div>
 
+                        <div class="d-flex gap-2"  invisible = "consolidation_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="doc_consolidation_name"></label></td>
+                                    <td ><field name="doc_consolidation_name" class="blue-input"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        </div>
+
                         <field name="consolidation_lines" class="custom_table_borders" nolabel="1" invisible = "consolidation_visible == False">
                             <tree string="Consolidation" decoration-info="lab_id">
                                 <field name="serial_no"/>
@@ -2152,6 +2188,16 @@
                                 <tr>
                                     <td><label for="lab_id"></label></td>
                                     <td ><field name="lab_id" class="blue-input"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+
+                         <table class="table table-sm o_form_table table-bordered w-40 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="sample_type_consolidation"></label></td>
+                                    <td ><field name="sample_type_consolidation" class="blue-input"/></td>
                                 </tr>
                               
                             </tbody>
@@ -2600,6 +2646,18 @@
 
                         </div>
 
+                        <div class="d-flex gap-2" invisible = "swelling_pressure_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="swelling_pressure_doc_name"></label></td>
+                                    <td ><field name="swelling_pressure_doc_name" class="blue-input"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        </div>
+
                         <field name="swelling_pressure_ids" class="custom_table_borders" nolabel="1" invisible = "swelling_pressure_visible == False">
                             <tree string="Swelling" decoration-info="lab_id">
                                 <field name="serial_no"/>
@@ -2673,6 +2731,16 @@
                                 <tr>
                                     <td><label for="lab_id"></label></td>
                                     <td><field name="lab_id" class="blue-input" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="sample_type_swelling"></label></td>
+                                    <td><field name="sample_type_swelling" class="blue-input" /></td>
                                 </tr>
                                 
                             </tbody>
@@ -3222,6 +3290,18 @@
 
                         </div>
 
+                         <div class="d-flex gap-2" invisible = "triaxial_test_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="triaxial_doc_name"></label></td>
+                                    <td ><field name="triaxial_doc_name" class="blue-input"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        </div>
+
 
                         <field name="triaxial_test_ids" class="custom_table_borders" nolabel="1" invisible = "triaxial_test_visible == False">
                             <tree string="Triaxial" decoration-info="lab_id">
@@ -3280,6 +3360,30 @@
                                 <tr>
                                     <td><label for="end_date"></label></td>
                                     <td><field name="end_date" readonly="1" /></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+                        
+                    </div>
+
+                     <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="type_of_test_traxial"></label></td>
+                                    <td ><field name="type_of_test_traxial" class="blue-input"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="type_of_sample_traxial"></label></td>
+                                    <td><field name="type_of_sample_traxial"  /></td>
                                 </tr>
                                 
                                 
@@ -3389,28 +3493,7 @@
                     </div>
 
 
-                     <div class="d-flex gap-2" >
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                    <td><label for="start_date_traxial"></label></td>
-                                    <td ><field name="start_date_traxial" class="blue-input"/></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-                        
-                        <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
-                            <tbody>
-                                <tr>
-                                    <td><label for="humidity_triaxial"></label></td>
-                                    <td><field name="humidity_triaxial"  /></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table> -->
-                    </div>
-
+                     
 
 
 
@@ -3609,6 +3692,29 @@
                         </table>
                     </div>
 
+                    <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="m_traxial"></label></td>
+                                    <td ><field name="m_traxial" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="c_traxial"></label></td>
+                                    <td><field name="c_traxial"  /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+
                     <field name="triaxial_test_line_ids" >
                         <tree editable="bottom" class="custom_table_borders">
                             <field name="horizontal_dial"/>
@@ -3785,6 +3891,30 @@
 
                         </div>
 
+                         <div class="d-flex gap-2" invisible = "soil_light_heavy_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="doc_name_proctor"></label></td>
+                                    <td ><field name="doc_name_proctor" class="blue-input"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        
+                        <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="end_date"></label></td>
+                                    <td><field name="end_date" readonly="1" /></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table> -->
+                        
+                    </div>
+
                          <field name="soil_light_heavy_ids" class="custom_table_borders" nolabel="1" invisible = "triaxial_test_visible == False">
                             <tree string="Heavy Compaction" decoration-info="lab_id">
                                 <field name="serial_no"/>
@@ -3915,6 +4045,10 @@
                      
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  >
                             <tbody>
+                            <tr>
+                                    <td><label for="type_of_sample_proctor"></label></td>
+                                    <td ><field name="type_of_sample_proctor" class="blue-input"/></td>
+                                </tr>
                                 <tr>
                                     <td><label for="empty_wt_proctor">Empty weight of Proctor mould in gm. M</label></td>
                                     <td ><field name="empty_wt_proctor" class="blue-input"/></td>
@@ -3932,6 +4066,7 @@
                         </table>
 
                     <div >
+                     
                     
                         <field name="soil_light_heavy_lines">
                             <tree editable="bottom" class="custom_table_borders">
@@ -4363,6 +4498,18 @@
                             class="oe_highlight"
                             invisible="direct_shear_generated == True"/>
 
+                        </div>
+
+                          <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="direct_shear_doc_name"></label></td>
+                                    <td ><field name="direct_shear_doc_name" class="blue-input"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
                         </div>
 
                          <field name="direct_shear_line" class="custom_table_borders" nolabel="1" invisible = "direct_shear_visible == False">
