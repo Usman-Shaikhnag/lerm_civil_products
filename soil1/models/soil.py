@@ -668,6 +668,8 @@ class Soil(models.Model):
     start_date = fields.Date(string="Start Date")  # manually fill
     end_date = fields.Date(string="End Date")      # auto fill on submit
 
+
+
     def action_submit(self):
         self.ensure_one()
         
@@ -682,13 +684,31 @@ class Soil(models.Model):
     
     
 
-    @api.constrains('start_date')
-    def _check_start_date(self):
+    # @api.constrains('start_date')
+    # def _check_start_date(self):
+    #     for rec in self:
+    #         if rec.start_date and rec.eln_ref.srf_date:
+    #             if rec.start_date < rec.eln_ref.srf_date:
+    #                 raise ValidationError(
+    #                     "Start Date cannot be earlier than SRF Date."
+    #                 )
+
+    @api.constrains('start_date', 'end_date')
+    def _check_dates_sg(self):
         for rec in self:
+
+            # 1️⃣ Start Date should not be before SRF Date
             if rec.start_date and rec.eln_ref.srf_date:
                 if rec.start_date < rec.eln_ref.srf_date:
                     raise ValidationError(
                         "Start Date cannot be earlier than SRF Date."
+                    )
+
+            # 2️⃣ End Date should not be before Start Date
+            if rec.start_date and rec.end_date:
+                if rec.end_date < rec.start_date:
+                    raise ValidationError(
+                        "End Date cannot be earlier than Start Date."
                     )
    
 
@@ -736,13 +756,31 @@ class Soil(models.Model):
     end_date_mnc = fields.Date(string="End Date")      # auto fill on submit
 
 
-    @api.constrains('start_date_mnc')
-    def _check_start_date_mnc(self):
+    # @api.constrains('start_date_mnc')
+    # def _check_start_date_mnc(self):
+    #     for rec in self:
+    #         if rec.start_date_mnc and rec.eln_ref.srf_date:
+    #             if rec.start_date_mnc < rec.eln_ref.srf_date:
+    #                 raise ValidationError(
+    #                     "Start Date cannot be earlier than SRF Date."
+    #                 )
+
+    @api.constrains('start_date_mnc', 'end_date_mnc')
+    def _check_dates_sg(self):
         for rec in self:
+
+            # 1️⃣ Start Date should not be before SRF Date
             if rec.start_date_mnc and rec.eln_ref.srf_date:
                 if rec.start_date_mnc < rec.eln_ref.srf_date:
                     raise ValidationError(
                         "Start Date cannot be earlier than SRF Date."
+                    )
+
+            # 2️⃣ End Date should not be before Start Date
+            if rec.start_date_mnc and rec.end_date_mnc:
+                if rec.end_date_mnc < rec.start_date_mnc:
+                    raise ValidationError(
+                        "End Date cannot be earlier than Start Date."
                     )
 
 
@@ -829,14 +867,34 @@ class Soil(models.Model):
     start_date_sg = fields.Date(string="Start Date")  # manually fill
     end_date_sg = fields.Date(string="End Date")      # auto fill on submit
 
+    
 
-    @api.constrains('start_date_sg')
-    def _check_start_date_sg(self):
+
+    # @api.constrains('start_date_sg')
+    # def _check_start_date_sg(self):
+    #     for rec in self:
+    #         if rec.start_date_sg and rec.eln_ref.srf_date:
+    #             if rec.start_date_sg < rec.eln_ref.srf_date:
+    #                 raise ValidationError(
+    #                     "Start Date cannot be earlier than SRF Date."
+    #                 )
+
+    @api.constrains('start_date_sg', 'end_date_sg')
+    def _check_dates_sg(self):
         for rec in self:
+
+            # 1️⃣ Start Date should not be before SRF Date
             if rec.start_date_sg and rec.eln_ref.srf_date:
                 if rec.start_date_sg < rec.eln_ref.srf_date:
                     raise ValidationError(
                         "Start Date cannot be earlier than SRF Date."
+                    )
+
+            # 2️⃣ End Date should not be before Start Date
+            if rec.start_date_sg and rec.end_date_sg:
+                if rec.end_date_sg < rec.start_date_sg:
+                    raise ValidationError(
+                        "End Date cannot be earlier than Start Date."
                     )
 
     # selected_lab_id12 = fields.Many2one(
@@ -1719,6 +1777,7 @@ class Soil(models.Model):
         string="Select Lab ID",
         domain="[('id', 'in', lab_option_ids)]"
     )
+    doc_name = fields.Char("Doc Name",default="Laboratory test results- California bearing ratio test (CBR)")
 
     cbr_generated = fields.Boolean(string="GSA Lines Generated",default=False)
     cbr_ids = fields.One2many('cbr.line', 'parent_id',ondelete='cascade')
@@ -2180,6 +2239,8 @@ class Soil(models.Model):
 #    Start GSA Parameter
     gsa_name = fields.Char("Name",default="Grain Size Analysis (GSA)")
 
+    doc_name = fields.Char("Doc Name",default="Grain Size Analysis (GSA)")
+
     gsa_child_lines = fields.One2many('mechanical.gsa.line','parent_id')
 
    
@@ -2466,6 +2527,8 @@ class Soil(models.Model):
     consolidation_name = fields.Char("Name",default="DETERMINATION OF CONSOLIDATION PROPERTIES")
     consolidation_visible = fields.Boolean("DETERMINATION OF CONSOLIDATION PROPERTIES",compute="_compute_visible")	
 
+    doc_consolidation_name = fields.Char("Doc Name",default="CONSOLIDATION TEST")
+
     selected_lab_id7 = fields.Many2one(
         'lab.option.line',
         string="Select Lab ID",
@@ -2503,6 +2566,8 @@ class Soil(models.Model):
     
     swelling_pressure_name = fields.Char("Name",default="DETERMINATION OF SWELLING PRESSURE OF SOILS BY CONSOLIDOMETER METHOD")
     swelling_pressure_visible = fields.Boolean("DETERMINATION OF SWELLING PRESSURE OF SOILS BY CONSOLIDOMETER METHOD",compute="_compute_visible")
+
+    swelling_pressure_doc_name = fields.Char("Doc. Name",default="DETERMINATION OF SWELLING PRESSURE OF SOILS BY CONSOLIDOMETER METHOD")
 
     selected_lab_id5 = fields.Many2one(
         'lab.option.line',
@@ -2585,6 +2650,8 @@ class Soil(models.Model):
     triaxial_test_name = fields.Char("Name",default="DETERMINE THE SHEAR STRENGTH BY TRIAXIAL SHEAR TEST")
     triaxial_test_visible = fields.Boolean("DETERMINE THE SHEAR STRENGTH BY TRIAXIAL SHEAR TEST",compute="_compute_visible")
 
+    triaxial_doc_name = fields.Char("Doc. Name",default="Triaxial Shear Test (UU)")
+
 
 
     selected_lab_id1 = fields.Many2one(
@@ -2598,6 +2665,8 @@ class Soil(models.Model):
 
     triaxial_test_generated = fields.Boolean(string="GSA Lines Generated",default=False)
     triaxial_test_ids = fields.One2many('triaxial.shear.line', 'parent_id',ondelete='cascade')
+
+    
 
     def action_generate_triaxial_test_lines(self):
         for record in self:
@@ -2633,6 +2702,8 @@ class Soil(models.Model):
 
     soil_light_heavy_name = fields.Char("Name",default="DETERMINATION OF WATER CONTENT–DRY DENSITY RELATION USING LIGHT/HEAVY COMPACTION")
     soil_light_heavy_visible = fields.Boolean("DETERMINATION OF WATER CONTENT–DRY DENSITY RELATION USING LIGHT/HEAVY COMPACTION",compute="_compute_visible")
+
+    doc_name_proctor = fields.Char("Doc Name",default="Proctor test on soil")
 
     selected_lab_id8 = fields.Many2one(
         'lab.option.line',
@@ -2711,6 +2782,8 @@ class Soil(models.Model):
     # DETERMINE SHEAR STRENGTH BY DIRECT SHEAR TEST									
 
     direct_shear_name = fields.Char("Name",default="DETERMINE SHEAR STRENGTH BY DIRECT SHEAR TEST")
+
+    direct_shear_doc_name = fields.Char("Doc.Name",default="Direct Shear Test (DST)")
     direct_shear_visible = fields.Boolean("Direct Shear Test Visible",compute="_compute_visible")
 
     selected_lab_id10 = fields.Many2one(
@@ -5262,6 +5335,7 @@ class SoilFreeSwell(models.Model):
             rec.free_swell = ((rec.vd or 0.0) - rec.vk) / rec.vk * 100
         else:
             rec.free_swell = 0.0
+            
 
     @api.depends("free_swell")
     def _compute_is_ok(self):
@@ -6505,6 +6579,8 @@ class SwellingPressureGraphLine(models.Model):
 
     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
 
+    
+
     cylces=  fields.Char(string="Cycles" )
 
     applied_pressure = fields.Float(string="Applied Pressure kg/cm²" , digits=(8,2))
@@ -6627,6 +6703,8 @@ class TriaxialTestLine(models.Model):
 
     parent_id_triaxial = fields.Many2one('triaxial.shear.line', string="Parent")
 
+    
+
     # 1. Displacement / Strain
     horizontal_dial = fields.Float(string="Horizantal Dial Reading",compute="_compute_dial_reading",store=True)
     strain = fields.Float(string="Strain",  digits=(10, 4))
@@ -6657,7 +6735,7 @@ class TriaxialTestLine(models.Model):
     pr_1_5 = fields.Float(string="1.5",compute="_compute_pr_1_5_calculation",store=True,digits=(12,9))
 
 
-    @api.depends('pr_05', 'corrected_area', 'parent_id_triaxial.triaxial_test_line_ids')
+    @api.depends('pr_05', 'corrected_area', 'parent_id_triaxial.triaxial_test_line_ids','parent_id_triaxial.m_traxial','parent_id_triaxial.c_traxial')
     def _compute_pr_5_calculation(self):
         # Parent wise group kara (Optimization sathi)
         for parent in self.mapped('parent_id_triaxial'):
@@ -6671,7 +6749,7 @@ class TriaxialTestLine(models.Model):
                 
                 else:
                  
-                    numerator = (((line.pr_05 * 5.0) * 1.682) + 13.644)
+                    numerator = (((line.pr_05 * 5.0) * line.parent_id_triaxial.m_traxial) + line.parent_id_triaxial.c_traxial)
                     
                 
                     denominator = 9.81 * line.corrected_area
@@ -6682,7 +6760,7 @@ class TriaxialTestLine(models.Model):
                     else:
                         line.pr_5 = 0.0
 
-    @api.depends('pr_10', 'corrected_area', 'parent_id_triaxial.triaxial_test_line_ids')
+    @api.depends('pr_10', 'corrected_area', 'parent_id_triaxial.triaxial_test_line_ids','parent_id_triaxial.m_traxial','parent_id_triaxial.c_traxial')
     def _compute_pr_1_calculation(self):
         # Optimization sathi Parent wise group kara
         for parent in self.mapped('parent_id_triaxial'):
@@ -6699,7 +6777,7 @@ class TriaxialTestLine(models.Model):
                     # Logic same as pr_5, but using pr_10
                     # Formula: (((pr_10 * 5) * 1.682) + 13.644) / (9.81 * corrected_area)
                     
-                    numerator = (((line.pr_10 * 5.0) * 1.682) + 13.644)
+                    numerator = (((line.pr_10 * 5.0) * line.parent_id_triaxial.m_traxial) + line.parent_id_triaxial.c_traxial)
                     denominator = 9.81 * line.corrected_area
                     
                     if denominator > 0:
@@ -6707,7 +6785,7 @@ class TriaxialTestLine(models.Model):
                     else:
                         line.pr_1 = 0.0
 
-    @api.depends('pr_15', 'corrected_area', 'parent_id_triaxial.triaxial_test_line_ids')
+    @api.depends('pr_15', 'corrected_area', 'parent_id_triaxial.triaxial_test_line_ids','parent_id_triaxial.m_traxial','parent_id_triaxial.c_traxial')
     def _compute_pr_1_5_calculation(self):
         # Optimization sathi Parent wise group kara
         for parent in self.mapped('parent_id_triaxial'):
@@ -6724,7 +6802,7 @@ class TriaxialTestLine(models.Model):
                     # Logic same as pr_5, but using pr_15
                     # Formula: (((pr_15 * 5) * 1.682) + 13.644) / (9.81 * corrected_area)
                     
-                    numerator = (((line.pr_15 * 5.0) * 1.682) + 13.644)
+                    numerator = (((line.pr_15 * 5.0) * line.parent_id_triaxial.m_traxial) + line.parent_id_triaxial.c_traxial)
                     denominator = 9.81 * line.corrected_area
                     
                     if denominator > 0:
@@ -8462,6 +8540,23 @@ class TriaxialShearLine(models.Model):
     start_date = fields.Date(string="Start Date")  # manually fill
     end_date = fields.Date(string="End Date")      # auto fill on submit
 
+    m_traxial = fields.Float(string="M",digits=(12,3),difault="1.682")
+    c_traxial = fields.Float(string="C",digits=(12,3),difault="13.644")
+
+    type_of_test_traxial = fields.Char(string="Type of Test:",digits=(12,3),difault="UU")
+    type_of_sample_traxial = fields.Char(string="Type of Sample ",digits=(12,3),difault="UDS-01")
+
+    
+
+    @api.constrains('start_date', 'end_date')
+    def _check_dates(self):
+        for rec in self:
+            if rec.start_date and rec.end_date:
+                if rec.start_date > rec.end_date:
+                    raise ValidationError(
+                        "Start Date cannot be greater than End Date."
+                    )
+
     
 
     def action_submit(self):
@@ -8535,9 +8630,9 @@ class TriaxialShearLine(models.Model):
 
     dia_triaxial = fields.Float(string="Diameter (mm)", digits=(8, 1))
 
-    proving_triaxial = fields.Float(string="Proving Ring Capacity", digits=(8, 1))
-    least_count_triaxial = fields.Float(string="Least Count of dial guage", digits=(8, 1))
-    displacement_triaxial = fields.Float(string="Displacement Rate (mm/min)", digits=(8, 1))
+    proving_triaxial = fields.Float(string="Proving Ring Capacity", digits=(8, 2))
+    least_count_triaxial = fields.Float(string="Least Count of dial guage", digits=(8, 2))
+    displacement_triaxial = fields.Float(string="Displacement Rate (mm/min)", digits=(8, 2))
     
 
     # Area automatically calculate hoil
@@ -9137,6 +9232,15 @@ class HeavyCompactionLine(models.Model):
     start_date = fields.Date(string="Start Date")  # manually fill
     end_date = fields.Date(string="End Date")      # auto fill on submit
 
+    @api.constrains('start_date', 'end_date')
+    def _check_dates(self):
+        for rec in self:
+            if rec.start_date and rec.end_date:
+                if rec.start_date > rec.end_date:
+                    raise ValidationError(
+                        "Start Date cannot be greater than End Date."
+                    )
+
     
 
     def action_submit(self):
@@ -9207,6 +9311,8 @@ class HeavyCompactionLine(models.Model):
 
     room_temp_proctor = fields.Float(string="Room Temp.°C" )
     humidity_proctor = fields.Float(string="Humidity %" )
+
+    type_of_sample_proctor = fields.Char(string="Sample type and condition" ,default="DS")
 
     
 
@@ -10023,6 +10129,14 @@ class DrirectShearLine(models.Model):
     )
     start_date = fields.Date(string="Start Date")  # manually fill
     end_date = fields.Date(string="End Date")      # auto fill on submit
+    @api.constrains('start_date', 'end_date')
+    def _check_dates(self):
+        for rec in self:
+            if rec.start_date and rec.end_date:
+                if rec.start_date > rec.end_date:
+                    raise ValidationError(
+                        "Start Date cannot be greater than End Date."
+                    )
 
     
 
@@ -10051,6 +10165,21 @@ class DrirectShearLine(models.Model):
         compute="_compute_direct",
         store=True
     )
+
+
+    proving_ring_capacity = fields.Float(string="Proving ring capacity (kN)", digits=(10,0))
+
+    dimension_sample = fields.Char(string="Dimesnions of sample (mm)",default="60 x 60 x 25") 
+
+    sample_type = fields.Char(string="Sample Type",default="Remolded")
+
+    type_compact = fields.Char(string="Type of compaction")
+
+    soil_fract_20mm = fields.Char(string="Soil fraction above 20mm replaced, (Kg)")
+
+    period_soaked = fields.Float(string="Period of soaking(days)", digits=(10,0))
+
+    surcharge_weight = fields.Float(string="Surcharge weight (kg)", digits=(10,2))
 
     
     @api.depends('lab_id')
@@ -11466,6 +11595,16 @@ class SwellingPressureLine(models.Model):
     )
     start_date = fields.Date(string="Start Date")  # manually fill
     end_date = fields.Date(string="End Date")      # auto fill on submit
+    sample_type_swelling=  fields.Char(string="Sample Type and Condtion:",default="DS" )
+    
+    @api.constrains('start_date', 'end_date')
+    def _check_dates(self):
+        for rec in self:
+            if rec.start_date and rec.end_date:
+                if rec.start_date > rec.end_date:
+                    raise ValidationError(
+                        "Start Date cannot be greater than End Date."
+                    )
 
     
 
@@ -11870,70 +12009,105 @@ class SwellingPressureLine(models.Model):
                 record.graph_image_swell = False
 
 
-
     # def generate_line_chart_swell(self):
     #  self.ensure_one()
 
-    #  lines = self.swelling_table_ids.sorted('applied_pressure')
-    #  x_vals = np.array(
-    #     [l.applied_pressure for l in lines if l.applied_pressure is not None],
-    #     dtype=float
-    #  )
-    #  y_vals = np.array(
-    #     [l.delta_h for l in lines if l.delta_h is not None],
-    #     dtype=float
-    #  )
-    #  if x_vals.size < 3:
-    #     return False    # need at least 3 points for a curve
-
-    #  # swelling pressure (same as before) ...
-    #  sp = 0.0
-    #  for i in range(len(x_vals) - 1):
-    #     d1 = y_vals[i]
-    #     d2 = y_vals[i + 1]
-    #     if d1 >= 0 and d2 <= 0 and (d2 - d1) != 0:
-    #         p1 = x_vals[i]
-    #         p2 = x_vals[i + 1]
-    #         sp = p1 + (p2 - p1) * (0.0 - d1) / (d2 - d1)
-    #         break
-
-    #  # ---- cubic spline for smooth curve ----
-    #  from scipy.interpolate import CubicSpline   # needs SciPy installed [web:72][web:74]
-    #  cs = CubicSpline(x_vals, y_vals, bc_type='natural')
-    #  x_smooth = np.linspace(x_vals.min(), x_vals.max(), 400)
-    #  y_smooth = cs(x_smooth)
-
+    #  import numpy as np
+    #  import base64
+    #  from io import BytesIO
     #  import matplotlib
     #  matplotlib.use('Agg')
-    
+    #  import matplotlib.pyplot as plt
+    #  from scipy.interpolate import CubicSpline
+    #  from matplotlib.ticker import LogLocator, LogFormatterMathtext
 
-    #  fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
+    # # -----------------------------
+    # # Data
+    # # -----------------------------
+    #  lines = self.swelling_table_ids.sorted('applied_pressure')
 
-    #  # smooth cubic‑spline curve
-    #  ax.plot(x_smooth, y_smooth, color='steelblue', linewidth=2)
+    #  x = np.array([l.applied_pressure for l in lines if l.applied_pressure > 0], float)
+    #  y = np.array([l.delta_h for l in lines if l.delta_h is not None], float)
 
-    #  # original points
-    #  ax.scatter(x_vals, y_vals, color='steelblue')
-    #  for x, y in zip(x_vals, y_vals):
-    #     ax.annotate(f"{y:.3f}", (x, y),
-    #                 textcoords="offset points", xytext=(0, 5),
-    #                 ha='center', fontsize=8)
+    #  if len(x) < 3:
+    #     return False
 
-    #  ax.axhline(0, color='tab:blue', linewidth=1)
-    #  if sp:
-    #     ax.axvline(sp, color='red', linewidth=1)
+    # # -----------------------------
+    # # Swelling pressure
+    # # -----------------------------
+    #  sp = 0
+    #  for i in range(len(x)-1):
+    #     if y[i] >= 0 and y[i+1] <= 0:
+    #         sp = x[i] + (x[i+1]-x[i])*(0-y[i])/(y[i+1]-y[i])
+    #         break
 
-    #  ax.set_xlabel('Pressure kg/cm²')
-    #  ax.set_ylabel('Deformation, mm')
-    #  ax.set_ylim(-0.75, 2.50)
-    #  ax.set_yticks([-0.75, 0.0, 0.75, 1.50, 2.25])
-    #  ax.grid(True)
+    # # -----------------------------
+    # # Excel-style spline (log domain)
+    # # -----------------------------
+    #  lx = np.log10(x)
+    #  cs = CubicSpline(lx, y, bc_type='natural')
 
+    #  lx_s = np.linspace(lx.min(), lx.max(), 500)
+    #  xs = 10**lx_s
+    #  ys = cs(lx_s)
+
+    # # -----------------------------
+    # # Figure
+    # # -----------------------------
+    #  fig, ax = plt.subplots(figsize=(10,5), dpi=100)
+
+    # # Curve
+    #  ax.plot(xs, ys, color='#4472C4', linewidth=2.5)
+
+    # # Markers
+    #  ax.scatter(x, y, color='#4472C4', s=30, zorder=5)
+
+    # # Point labels
+    #  for xi, yi in zip(x, y):
+    #     ax.text(xi, yi+0.05, f"{yi:.3f}", ha='center', fontsize=8)
+
+    # # Zero line
+    #  ax.axhline(0, color='#4472C4', linewidth=1.5)
+
+    # # X-axis on zero
+    #  ax.spines['bottom'].set_position(('data',0))
+
+    # # Swelling pressure
+    #  ax.axvline(sp, color='red', linewidth=1.5)
+
+    # # Log X
+    #  ax.set_xscale('log')
+    #  ax.set_xlim(0.1,10)
+
+    #  ax.xaxis.set_major_locator(LogLocator(base=10))
+    #  ax.xaxis.set_major_formatter(LogFormatterMathtext())
+    #  ax.xaxis.set_minor_locator(LogLocator(base=10, subs=np.arange(2,10)*0.1))
+
+    # # Y limits
+    #  ax.set_ylim(-0.75, 2.25)
+    #  ax.set_yticks(np.arange(-0.75, 2.26, 0.50))
+
+    # # Grid (Excel density)
+    #  ax.grid(which='major', color='#A6A6A6', linewidth=0.8)
+    #  ax.grid(which='minor', color='#D9D9D9', linewidth=0.5)
+
+    # # Labels
+    #  ax.set_xlabel('Pressure kg/cm2', fontsize=10)
+    #  ax.set_ylabel('Deformation, mm', fontsize=10)
+
+    # # Borders
+    #  ax.spines['top'].set_visible(True)
+    #  ax.spines['right'].set_visible(True)
+
+    # # -----------------------------
+    # # Export
+    # # -----------------------------
     #  buf = BytesIO()
     #  fig.tight_layout()
     #  fig.savefig(buf, format='png')
     #  plt.close(fig)
     #  buf.seek(0)
+
     #  return base64.b64encode(buf.read())
 
     def generate_line_chart_swell(self):
@@ -11945,8 +12119,8 @@ class SwellingPressureLine(models.Model):
      import matplotlib
      matplotlib.use('Agg')
      import matplotlib.pyplot as plt
-     from scipy.interpolate import CubicSpline
-     from matplotlib.ticker import LogLocator, LogFormatterMathtext
+     from scipy.interpolate import PchipInterpolator
+     from matplotlib.ticker import LogLocator, LogFormatter
 
     # -----------------------------
     # Data
@@ -11960,28 +12134,28 @@ class SwellingPressureLine(models.Model):
         return False
 
     # -----------------------------
-    # Swelling pressure
+    # Swelling Pressure (Zero Crossing)
     # -----------------------------
      sp = 0
-     for i in range(len(x)-1):
-        if y[i] >= 0 and y[i+1] <= 0:
-            sp = x[i] + (x[i+1]-x[i])*(0-y[i])/(y[i+1]-y[i])
+     for i in range(len(x) - 1):
+        if y[i] >= 0 and y[i + 1] <= 0:
+            sp = x[i] + (x[i + 1] - x[i]) * (0 - y[i]) / (y[i + 1] - y[i])
             break
 
     # -----------------------------
-    # Excel-style spline (log domain)
+    # Excel-style smooth curve (LOG DOMAIN)
     # -----------------------------
      lx = np.log10(x)
-     cs = CubicSpline(lx, y, bc_type='natural')
+     cs = PchipInterpolator(lx, y)
 
      lx_s = np.linspace(lx.min(), lx.max(), 500)
-     xs = 10**lx_s
+     xs = 10 ** lx_s
      ys = cs(lx_s)
 
     # -----------------------------
     # Figure
     # -----------------------------
-     fig, ax = plt.subplots(figsize=(10,5), dpi=100)
+     fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
 
     # Curve
      ax.plot(xs, ys, color='#4472C4', linewidth=2.5)
@@ -11991,32 +12165,76 @@ class SwellingPressureLine(models.Model):
 
     # Point labels
      for xi, yi in zip(x, y):
-        ax.text(xi, yi+0.05, f"{yi:.3f}", ha='center', fontsize=8)
+        ax.text(xi, yi + 0.05, f"{yi:.3f}", ha='center', fontsize=8)
 
-    # Zero line
-     ax.axhline(0, color='#4472C4', linewidth=1.5)
+    # Zero horizontal line
+     ax.axhline(0, color='#4472C4', linewidth=1)
 
-    # X-axis on zero
-     ax.spines['bottom'].set_position(('data',0))
+    # X axis crosses at Y=0
+     ax.spines['bottom'].set_position(('data', 0))
 
-    # Swelling pressure
+    # Swelling pressure vertical line
      ax.axvline(sp, color='red', linewidth=1.5)
 
-    # Log X
+    # -----------------------------
+    # LOG X AXIS 0.10 → 100
+    # -----------------------------
      ax.set_xscale('log')
-     ax.set_xlim(0.1,10)
+     ax.set_xlim(0.1, 100)
 
+    # Major ticks: 0.1 1 10 100
      ax.xaxis.set_major_locator(LogLocator(base=10))
-     ax.xaxis.set_major_formatter(LogFormatterMathtext())
-     ax.xaxis.set_minor_locator(LogLocator(base=10, subs=np.arange(2,10)*0.1))
+     ax.xaxis.set_major_formatter(LogFormatter())
 
-    # Y limits
-     ax.set_ylim(-0.75, 2.25)
-     ax.set_yticks(np.arange(-0.75, 2.26, 0.50))
+    # Minor ticks (Excel density)
+     ax.xaxis.set_minor_locator(
+        LogLocator(base=10, subs=np.arange(1, 10) * 0.1)
+    )
 
-    # Grid (Excel density)
+    # -----------------------------
+    # Y Axis
+    # -----------------------------
+    #  ax.set_ylim(-0.75, 2.25)
+    #  ax.set_yticks(np.arange(-0.75, 2.26, 0.50))
+
+    # -----------------------------
+# Y Axis (Dynamic based on data)
+# -----------------------------
+     y_min = min(y.min(), ys.min())
+     y_max = max(y.max(), ys.max())
+
+# Add small padding
+     padding = (y_max - y_min) * 0.10
+     y_min -= padding
+     y_max += padding
+
+# Round limits nicely (like Excel)
+     y_min = np.floor(y_min * 2) / 2
+     y_max = np.ceil(y_max * 2) / 2
+
+     ax.set_ylim(y_min, y_max)
+
+# Auto step (0.5 or 0.25 depending on range)
+     y_range = y_max - y_min
+
+     if y_range <= 2:
+        step = 0.25
+     elif y_range <= 5:
+        step = 0.5
+     else:
+        step = 1.0
+
+     ax.set_yticks(np.arange(y_min, y_max + step, step))
+ 
+    # -----------------------------
+    # Grid (Excel style)
+    # -----------------------------
      ax.grid(which='major', color='#A6A6A6', linewidth=0.8)
      ax.grid(which='minor', color='#D9D9D9', linewidth=0.5)
+
+    # Background
+     ax.set_facecolor('#F2F2F2')
+     fig.patch.set_facecolor('white')
 
     # Labels
      ax.set_xlabel('Pressure kg/cm2', fontsize=10)
@@ -12066,8 +12284,19 @@ class ConsolidationLine(models.Model):
         string="Calculated",
         default=False
     )
+
+    sample_type_consolidation = fields.Char(string="Sample Type and Condition:",default="UDS-01")      # auto fill on submit
     start_date = fields.Date(string="Start Date")  # manually fill
     end_date = fields.Date(string="End Date")      # auto fill on submit
+
+    @api.constrains('start_date', 'end_date')
+    def _check_dates(self):
+        for rec in self:
+            if rec.start_date and rec.end_date:
+                if rec.start_date > rec.end_date:
+                    raise ValidationError(
+                        "Start Date cannot be greater than End Date."
+                    )
 
     
 
@@ -13189,8 +13418,22 @@ class CbrLine(models.Model):
     cbr_2_5_mm = fields.Float(string="CBR At Penetration Of 2.5 mm",compute="_compute_cbr_values") 
     cbr_5_mm = fields.Float(string="CBR At Penetration Of 5 mm",compute="_compute_cbr_values")
 
-    m = fields.Float(string="Applied force (kN) (m)", digits=(10,4))
-    c = fields.Float(string="Applied force (kN) (c)", digits=(10,4))
+    m = fields.Float(string="Applied force (kN) (m)",default=0.0133, digits=(10,4))
+    c = fields.Float(string="Applied force (kN) (c)",default=0.0404 , digits=(10,4))
+
+    proving_ring_capacity = fields.Float(string="Proving ring capacity (kN)", digits=(10,0))
+
+    condition_specimen = fields.Char(string="Condition of specimen at test")
+
+    sample_type = fields.Char(string="Sample Type",default="Remolded")
+
+    type_compact = fields.Char(string="Type of compaction")
+
+    soil_fract_20mm = fields.Char(string="Soil fraction above 20mm replaced, (Kg)")
+
+    period_soaked = fields.Float(string="Period of soaking(days)", digits=(10,0))
+
+    surcharge_weight = fields.Float(string="Surcharge weight (kg)", digits=(10,2))
 
     # --- SEPARATE COMPUTE FUNCTION ---
     # @api.depends('soil_table', 'soil_table.penetration', 'soil_table.avg_load')
