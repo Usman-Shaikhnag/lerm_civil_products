@@ -668,6 +668,8 @@ class Soil(models.Model):
     start_date = fields.Date(string="Start Date")  # manually fill
     end_date = fields.Date(string="End Date")      # auto fill on submit
 
+
+
     def action_submit(self):
         self.ensure_one()
         
@@ -682,13 +684,31 @@ class Soil(models.Model):
     
     
 
-    @api.constrains('start_date')
-    def _check_start_date(self):
+    # @api.constrains('start_date')
+    # def _check_start_date(self):
+    #     for rec in self:
+    #         if rec.start_date and rec.eln_ref.srf_date:
+    #             if rec.start_date < rec.eln_ref.srf_date:
+    #                 raise ValidationError(
+    #                     "Start Date cannot be earlier than SRF Date."
+    #                 )
+
+    @api.constrains('start_date', 'end_date')
+    def _check_dates_sg(self):
         for rec in self:
+
+            # 1️⃣ Start Date should not be before SRF Date
             if rec.start_date and rec.eln_ref.srf_date:
                 if rec.start_date < rec.eln_ref.srf_date:
                     raise ValidationError(
                         "Start Date cannot be earlier than SRF Date."
+                    )
+
+            # 2️⃣ End Date should not be before Start Date
+            if rec.start_date and rec.end_date:
+                if rec.end_date < rec.start_date:
+                    raise ValidationError(
+                        "End Date cannot be earlier than Start Date."
                     )
    
 
@@ -736,13 +756,31 @@ class Soil(models.Model):
     end_date_mnc = fields.Date(string="End Date")      # auto fill on submit
 
 
-    @api.constrains('start_date_mnc')
-    def _check_start_date_mnc(self):
+    # @api.constrains('start_date_mnc')
+    # def _check_start_date_mnc(self):
+    #     for rec in self:
+    #         if rec.start_date_mnc and rec.eln_ref.srf_date:
+    #             if rec.start_date_mnc < rec.eln_ref.srf_date:
+    #                 raise ValidationError(
+    #                     "Start Date cannot be earlier than SRF Date."
+    #                 )
+
+    @api.constrains('start_date_mnc', 'end_date_mnc')
+    def _check_dates_sg(self):
         for rec in self:
+
+            # 1️⃣ Start Date should not be before SRF Date
             if rec.start_date_mnc and rec.eln_ref.srf_date:
                 if rec.start_date_mnc < rec.eln_ref.srf_date:
                     raise ValidationError(
                         "Start Date cannot be earlier than SRF Date."
+                    )
+
+            # 2️⃣ End Date should not be before Start Date
+            if rec.start_date_mnc and rec.end_date_mnc:
+                if rec.end_date_mnc < rec.start_date_mnc:
+                    raise ValidationError(
+                        "End Date cannot be earlier than Start Date."
                     )
 
 
@@ -829,14 +867,34 @@ class Soil(models.Model):
     start_date_sg = fields.Date(string="Start Date")  # manually fill
     end_date_sg = fields.Date(string="End Date")      # auto fill on submit
 
+    
 
-    @api.constrains('start_date_sg')
-    def _check_start_date_sg(self):
+
+    # @api.constrains('start_date_sg')
+    # def _check_start_date_sg(self):
+    #     for rec in self:
+    #         if rec.start_date_sg and rec.eln_ref.srf_date:
+    #             if rec.start_date_sg < rec.eln_ref.srf_date:
+    #                 raise ValidationError(
+    #                     "Start Date cannot be earlier than SRF Date."
+    #                 )
+
+    @api.constrains('start_date_sg', 'end_date_sg')
+    def _check_dates_sg(self):
         for rec in self:
+
+            # 1️⃣ Start Date should not be before SRF Date
             if rec.start_date_sg and rec.eln_ref.srf_date:
                 if rec.start_date_sg < rec.eln_ref.srf_date:
                     raise ValidationError(
                         "Start Date cannot be earlier than SRF Date."
+                    )
+
+            # 2️⃣ End Date should not be before Start Date
+            if rec.start_date_sg and rec.end_date_sg:
+                if rec.end_date_sg < rec.start_date_sg:
+                    raise ValidationError(
+                        "End Date cannot be earlier than Start Date."
                     )
 
     # selected_lab_id12 = fields.Many2one(
@@ -1719,6 +1777,7 @@ class Soil(models.Model):
         string="Select Lab ID",
         domain="[('id', 'in', lab_option_ids)]"
     )
+    doc_name = fields.Char("Doc Name",default="Laboratory test results- California bearing ratio test (CBR)")
 
     cbr_generated = fields.Boolean(string="GSA Lines Generated",default=False)
     cbr_ids = fields.One2many('cbr.line', 'parent_id',ondelete='cascade')
@@ -2180,6 +2239,8 @@ class Soil(models.Model):
 #    Start GSA Parameter
     gsa_name = fields.Char("Name",default="Grain Size Analysis (GSA)")
 
+    doc_name = fields.Char("Doc Name",default="Grain Size Analysis (GSA)")
+
     gsa_child_lines = fields.One2many('mechanical.gsa.line','parent_id')
 
    
@@ -2466,6 +2527,8 @@ class Soil(models.Model):
     consolidation_name = fields.Char("Name",default="DETERMINATION OF CONSOLIDATION PROPERTIES")
     consolidation_visible = fields.Boolean("DETERMINATION OF CONSOLIDATION PROPERTIES",compute="_compute_visible")	
 
+    doc_consolidation_name = fields.Char("Doc Name",default="CONSOLIDATION TEST")
+
     selected_lab_id7 = fields.Many2one(
         'lab.option.line',
         string="Select Lab ID",
@@ -2503,6 +2566,8 @@ class Soil(models.Model):
     
     swelling_pressure_name = fields.Char("Name",default="DETERMINATION OF SWELLING PRESSURE OF SOILS BY CONSOLIDOMETER METHOD")
     swelling_pressure_visible = fields.Boolean("DETERMINATION OF SWELLING PRESSURE OF SOILS BY CONSOLIDOMETER METHOD",compute="_compute_visible")
+
+    swelling_pressure_doc_name = fields.Char("Doc. Name",default="DETERMINATION OF SWELLING PRESSURE OF SOILS BY CONSOLIDOMETER METHOD")
 
     selected_lab_id5 = fields.Many2one(
         'lab.option.line',
@@ -2585,6 +2650,8 @@ class Soil(models.Model):
     triaxial_test_name = fields.Char("Name",default="DETERMINE THE SHEAR STRENGTH BY TRIAXIAL SHEAR TEST")
     triaxial_test_visible = fields.Boolean("DETERMINE THE SHEAR STRENGTH BY TRIAXIAL SHEAR TEST",compute="_compute_visible")
 
+    triaxial_doc_name = fields.Char("Doc. Name",default="Triaxial Shear Test (UU)")
+
 
 
     selected_lab_id1 = fields.Many2one(
@@ -2598,6 +2665,8 @@ class Soil(models.Model):
 
     triaxial_test_generated = fields.Boolean(string="GSA Lines Generated",default=False)
     triaxial_test_ids = fields.One2many('triaxial.shear.line', 'parent_id',ondelete='cascade')
+
+    
 
     def action_generate_triaxial_test_lines(self):
         for record in self:
@@ -2633,6 +2702,8 @@ class Soil(models.Model):
 
     soil_light_heavy_name = fields.Char("Name",default="DETERMINATION OF WATER CONTENT–DRY DENSITY RELATION USING LIGHT/HEAVY COMPACTION")
     soil_light_heavy_visible = fields.Boolean("DETERMINATION OF WATER CONTENT–DRY DENSITY RELATION USING LIGHT/HEAVY COMPACTION",compute="_compute_visible")
+
+    doc_name_proctor = fields.Char("Doc Name",default="Proctor test on soil")
 
     selected_lab_id8 = fields.Many2one(
         'lab.option.line',
@@ -2711,6 +2782,8 @@ class Soil(models.Model):
     # DETERMINE SHEAR STRENGTH BY DIRECT SHEAR TEST									
 
     direct_shear_name = fields.Char("Name",default="DETERMINE SHEAR STRENGTH BY DIRECT SHEAR TEST")
+
+    direct_shear_doc_name = fields.Char("Doc.Name",default="Direct Shear Test (DST)")
     direct_shear_visible = fields.Boolean("Direct Shear Test Visible",compute="_compute_visible")
 
     selected_lab_id10 = fields.Many2one(
@@ -6506,6 +6579,8 @@ class SwellingPressureGraphLine(models.Model):
 
     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
 
+    
+
     cylces=  fields.Char(string="Cycles" )
 
     applied_pressure = fields.Float(string="Applied Pressure kg/cm²" , digits=(8,2))
@@ -6628,6 +6703,8 @@ class TriaxialTestLine(models.Model):
 
     parent_id_triaxial = fields.Many2one('triaxial.shear.line', string="Parent")
 
+    
+
     # 1. Displacement / Strain
     horizontal_dial = fields.Float(string="Horizantal Dial Reading",compute="_compute_dial_reading",store=True)
     strain = fields.Float(string="Strain",  digits=(10, 4))
@@ -6658,7 +6735,7 @@ class TriaxialTestLine(models.Model):
     pr_1_5 = fields.Float(string="1.5",compute="_compute_pr_1_5_calculation",store=True,digits=(12,9))
 
 
-    @api.depends('pr_05', 'corrected_area', 'parent_id_triaxial.triaxial_test_line_ids')
+    @api.depends('pr_05', 'corrected_area', 'parent_id_triaxial.triaxial_test_line_ids','parent_id_triaxial.m_traxial','parent_id_triaxial.c_traxial')
     def _compute_pr_5_calculation(self):
         # Parent wise group kara (Optimization sathi)
         for parent in self.mapped('parent_id_triaxial'):
@@ -6672,7 +6749,7 @@ class TriaxialTestLine(models.Model):
                 
                 else:
                  
-                    numerator = (((line.pr_05 * 5.0) * 1.682) + 13.644)
+                    numerator = (((line.pr_05 * 5.0) * line.parent_id_triaxial.m_traxial) + line.parent_id_triaxial.c_traxial)
                     
                 
                     denominator = 9.81 * line.corrected_area
@@ -6683,7 +6760,7 @@ class TriaxialTestLine(models.Model):
                     else:
                         line.pr_5 = 0.0
 
-    @api.depends('pr_10', 'corrected_area', 'parent_id_triaxial.triaxial_test_line_ids')
+    @api.depends('pr_10', 'corrected_area', 'parent_id_triaxial.triaxial_test_line_ids','parent_id_triaxial.m_traxial','parent_id_triaxial.c_traxial')
     def _compute_pr_1_calculation(self):
         # Optimization sathi Parent wise group kara
         for parent in self.mapped('parent_id_triaxial'):
@@ -6700,7 +6777,7 @@ class TriaxialTestLine(models.Model):
                     # Logic same as pr_5, but using pr_10
                     # Formula: (((pr_10 * 5) * 1.682) + 13.644) / (9.81 * corrected_area)
                     
-                    numerator = (((line.pr_10 * 5.0) * 1.682) + 13.644)
+                    numerator = (((line.pr_10 * 5.0) * line.parent_id_triaxial.m_traxial) + line.parent_id_triaxial.c_traxial)
                     denominator = 9.81 * line.corrected_area
                     
                     if denominator > 0:
@@ -6708,7 +6785,7 @@ class TriaxialTestLine(models.Model):
                     else:
                         line.pr_1 = 0.0
 
-    @api.depends('pr_15', 'corrected_area', 'parent_id_triaxial.triaxial_test_line_ids')
+    @api.depends('pr_15', 'corrected_area', 'parent_id_triaxial.triaxial_test_line_ids','parent_id_triaxial.m_traxial','parent_id_triaxial.c_traxial')
     def _compute_pr_1_5_calculation(self):
         # Optimization sathi Parent wise group kara
         for parent in self.mapped('parent_id_triaxial'):
@@ -6725,7 +6802,7 @@ class TriaxialTestLine(models.Model):
                     # Logic same as pr_5, but using pr_15
                     # Formula: (((pr_15 * 5) * 1.682) + 13.644) / (9.81 * corrected_area)
                     
-                    numerator = (((line.pr_15 * 5.0) * 1.682) + 13.644)
+                    numerator = (((line.pr_15 * 5.0) * line.parent_id_triaxial.m_traxial) + line.parent_id_triaxial.c_traxial)
                     denominator = 9.81 * line.corrected_area
                     
                     if denominator > 0:
@@ -8463,6 +8540,23 @@ class TriaxialShearLine(models.Model):
     start_date = fields.Date(string="Start Date")  # manually fill
     end_date = fields.Date(string="End Date")      # auto fill on submit
 
+    m_traxial = fields.Float(string="M",digits=(12,3),difault="1.682")
+    c_traxial = fields.Float(string="C",digits=(12,3),difault="13.644")
+
+    type_of_test_traxial = fields.Char(string="Type of Test:",digits=(12,3),difault="UU")
+    type_of_sample_traxial = fields.Char(string="Type of Sample ",digits=(12,3),difault="UDS-01")
+
+    
+
+    @api.constrains('start_date', 'end_date')
+    def _check_dates(self):
+        for rec in self:
+            if rec.start_date and rec.end_date:
+                if rec.start_date > rec.end_date:
+                    raise ValidationError(
+                        "Start Date cannot be greater than End Date."
+                    )
+
     
 
     def action_submit(self):
@@ -8536,9 +8630,9 @@ class TriaxialShearLine(models.Model):
 
     dia_triaxial = fields.Float(string="Diameter (mm)", digits=(8, 1))
 
-    proving_triaxial = fields.Float(string="Proving Ring Capacity", digits=(8, 1))
-    least_count_triaxial = fields.Float(string="Least Count of dial guage", digits=(8, 1))
-    displacement_triaxial = fields.Float(string="Displacement Rate (mm/min)", digits=(8, 1))
+    proving_triaxial = fields.Float(string="Proving Ring Capacity", digits=(8, 2))
+    least_count_triaxial = fields.Float(string="Least Count of dial guage", digits=(8, 2))
+    displacement_triaxial = fields.Float(string="Displacement Rate (mm/min)", digits=(8, 2))
     
 
     # Area automatically calculate hoil
@@ -9138,6 +9232,15 @@ class HeavyCompactionLine(models.Model):
     start_date = fields.Date(string="Start Date")  # manually fill
     end_date = fields.Date(string="End Date")      # auto fill on submit
 
+    @api.constrains('start_date', 'end_date')
+    def _check_dates(self):
+        for rec in self:
+            if rec.start_date and rec.end_date:
+                if rec.start_date > rec.end_date:
+                    raise ValidationError(
+                        "Start Date cannot be greater than End Date."
+                    )
+
     
 
     def action_submit(self):
@@ -9208,6 +9311,8 @@ class HeavyCompactionLine(models.Model):
 
     room_temp_proctor = fields.Float(string="Room Temp.°C" )
     humidity_proctor = fields.Float(string="Humidity %" )
+
+    type_of_sample_proctor = fields.Char(string="Sample type and condition" ,default="DS")
 
     
 
@@ -10024,6 +10129,14 @@ class DrirectShearLine(models.Model):
     )
     start_date = fields.Date(string="Start Date")  # manually fill
     end_date = fields.Date(string="End Date")      # auto fill on submit
+    @api.constrains('start_date', 'end_date')
+    def _check_dates(self):
+        for rec in self:
+            if rec.start_date and rec.end_date:
+                if rec.start_date > rec.end_date:
+                    raise ValidationError(
+                        "Start Date cannot be greater than End Date."
+                    )
 
     
 
@@ -11482,6 +11595,16 @@ class SwellingPressureLine(models.Model):
     )
     start_date = fields.Date(string="Start Date")  # manually fill
     end_date = fields.Date(string="End Date")      # auto fill on submit
+    sample_type_swelling=  fields.Char(string="Sample Type and Condtion:",default="DS" )
+    
+    @api.constrains('start_date', 'end_date')
+    def _check_dates(self):
+        for rec in self:
+            if rec.start_date and rec.end_date:
+                if rec.start_date > rec.end_date:
+                    raise ValidationError(
+                        "Start Date cannot be greater than End Date."
+                    )
 
     
 
@@ -12161,8 +12284,19 @@ class ConsolidationLine(models.Model):
         string="Calculated",
         default=False
     )
+
+    sample_type_consolidation = fields.Char(string="Sample Type and Condition:",default="UDS-01")      # auto fill on submit
     start_date = fields.Date(string="Start Date")  # manually fill
     end_date = fields.Date(string="End Date")      # auto fill on submit
+
+    @api.constrains('start_date', 'end_date')
+    def _check_dates(self):
+        for rec in self:
+            if rec.start_date and rec.end_date:
+                if rec.start_date > rec.end_date:
+                    raise ValidationError(
+                        "Start Date cannot be greater than End Date."
+                    )
 
     
 
