@@ -7293,7 +7293,7 @@ class UcsSoilLine(models.Model):
                     current_val = new_val
 
     @api.depends('serial_no', 'prove_ring_read',
-                 'parent_id_ucs.ucs_area', 'parent_id_ucs.ucs_dial_gauge', 'parent_id_ucs.ucs_height')
+                 'parent_id_ucs.ucs_area', 'parent_id_ucs.ucs_dial_gauge', 'parent_id_ucs.ucs_height','parent_id_ucs.m','parent_id_ucs.c')
     def _compute_all(self):
         """Reproduce Excel sheet: horiz → deform → strain → Ac → shear"""
         for rec in self:
@@ -7324,10 +7324,12 @@ class UcsSoilLine(models.Model):
             # 5) Shear stress = ((PR*5)*1.682+13.644)/(9.81*Ac)
             pr = rec.prove_ring_read or 0.0
             ac = rec.corrected_area or 1.0
+            m = rec.parent_id_ucs.m
+            c = rec.parent_id_ucs.c
             if rec.serial_no == 1 or horiz <= 0:
                 rec.shear_stress = 0
             else:
-               rec.shear_stress = (((pr * 5.0) * 1.682) + 13.644) / (9.81 * ac)
+               rec.shear_stress = (((pr * 5.0) * m) + c) / (9.81 * ac)
 
 
 
@@ -9901,7 +9903,10 @@ class USCNewLine(models.Model):
             line.degree_saturation = (w / (line.gamma_ratio - line.inv_specific_gravity)) * 100
         else:
             line.degree_saturation = 0.0
-   
+
+    
+    m = fields.Float(string=" (m)",default=1.6820, digits=(10,4))
+    c = fields.Float(string=" (c)",default=13.644 , digits=(10,4))
   
     ucs_lines = fields.One2many('ucs.soil.line', 'parent_id_ucs',  string="DETERMINE THE UNCONFINED COMPRESSIVE STRENGTH",default=lambda self: self.default_ucs_reading())	
 
