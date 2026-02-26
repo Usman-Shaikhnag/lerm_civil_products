@@ -92,104 +92,15 @@
                                     <td><label for="calc_mode"></label></td>
                                     <td><field name="calc_mode"   /></td>
                                 </tr>
-                                
-
 
                             </tbody>
                         </table>
-
-
-
-             
-
-
-                      
-   
-   
-                 <!-- <div class="d-flex gap-2" invisible="not usc_visible ">
-                  <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                    <td><label for="temp_rock">Temp.°C</label></td>
-                                    <td><field name="temp_rock" class="blue-input" invisible="not usc_visible"  required = "calc_mode == False or rock_lines_generated == True "/></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-                        
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
-                            <tbody>
-                                <tr>
-                                    <td><label for="humidity_rock">Humidity %</label></td>
-                                    <td><field name="humidity_rock" class="blue-input" invisible="not usc_visible" required = "calc_mode == False or rock_lines_generated == True "/></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-                    </div>   -->
-
-
-
-
-
                          <div >
                         <h1 class="text-center">
-                            <!-- <field name="uu_triaxial_cohesion_name" readonly="1" nolabel="1"/> -->
-                            <!-- <field name="usc_visible" invisible="1"/> -->
+                            
                         </h1>
                     </div>
 
-
-
-                    <!-- <div class="d-flex gap-2" invisible = "usc_visible == False">
-                        
-
-                         <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders">
-                            <tbody>
-                            <tr>
-                                <td><span>Point Load  Constant</span></td>
-                                <td><field name='point_load_constant' col="1" class="blue-input"/></td>
-                            </tr>
-                            
-                            
-                            </tbody>
-                        </table>
-
-						<table class="table table-sm o_form_table table-bordered w-30 custom_table_borders">
-                            <tbody>
-                            <tr>
-                                <td><span>Point Load  Constant Lump</span></td>
-                                <td><field name='point_load_constant_2' col="1" class="blue-input"/></td>
-                            </tr>
-                            
-                            
-                            </tbody>
-                        </table>
-
-
-                        <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders">
-                            <tbody>
-                            <tr>
-                                <td><span>Compressive Strength  Constant</span></td>
-                                <td><field name='compressive_strength_constant' col="1" class="blue-input"/></td>
-                            </tr>
-                           
-                            </tbody>
-                        </table>
-
-                        <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders">
-                            <tbody>
-                            <tr>
-                                <td><span>Compressive Strength HD  Constant</span></td>
-                                <td><field name='compressive_strength_constant_hd' col="1" class="blue-input"/></td>
-                            </tr>
-                           
-                            </tbody>
-                        </table>
-                    </div> -->
-
-
-        
 
                     <div >
                         <field name="rock_child_lines">
@@ -199,8 +110,7 @@
                                 <field name='date_received'  class="blue-input" decoration-info="date_received != 0"/>
                                 <field name='date_testing' class="blue-input" decoration-info="date_testing != 0"/>
                                 <field name='lab_id' width="120" class="blue-input" decoration-info="lab_id != 0"/>
-                                <!-- <field name='bh_no' width="120" class="blue-input" decoration-info="bh_no != 0"/> -->
-                                <!-- <field name='depth' width="120" class="blue-input" decoration-info="depth != 0"/> -->
+                                
                                 <field name='piece_no'  width="120" class="blue-input" decoration-info="piece_no != 0"/>
                                 <field name='lithological' width="120" class="blue-input" decoration-info="lithological != 0"/>
                                 <field name='room_temp' class="blue-input" decoration-info="room_temp != 0"/>
@@ -243,11 +153,7 @@
                                 <field name='comp_rock'/>
                                 <field name='comp_rock1'/>
                                 <field name='stress_rate'/>
-                                <field name='moisture_content'/>
-                               
-
-                              
-                                
+                                <field name='moisture_content'/>    
                               
                             </tree>
                         </field>
@@ -342,17 +248,11 @@
                                         
                                     </tbody>
                                 </table>
-                                
-                                <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="1">
-                                    <tbody>
-                                        <tr>
-                                            <td><label for="bh_id">BH ID</label></td>
-                                            <td><field name="bh_id" class="blue-input"/></td>
-                                        </tr>
-                                        
-                                    </tbody>
-                                </table> -->
                             </div>  
+
+
+
+
 
                             <div class="d-flex gap-2" >
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
@@ -552,11 +452,11 @@
                     <div invisible = "slake_durability_visible == False">
                         <field name="slake_durability_child_lines">
                             <tree editable="bottom" class="custom_table_borders">
-                             <!-- <field name="blue_input" invisible="1"/> -->
+
                                 <field name='sr_no'/>
+
                                 <field name='lab_id'  class="blue-input" decoration-info="lab_id != 0"/>
                                 <field name='date' class="blue-input" decoration-info="date != 0"/>
-                                <!-- <field name='bh_no' width="120" class="blue-input" decoration-info="bh_no != 0"/> -->
                                 <field name='room_temp' width="120" class="blue-input" decoration-info="room_temp != 0"/>
                                 <field name='relative_humidity' width="120" class="blue-input" decoration-info="relative_humidity != 0"/>
                                 <field name='water_temperature'  width="120" class="blue-input" decoration-info="water_temperature != 0"/>
@@ -577,8 +477,8 @@
 
                     <div invisible = "triaxial_visible == False">
                         <h1 class="text-center">
-                            <field name="triaxial_name" readonly="1" />
-                            <field name="triaxial_visible" invisible="1"/>
+                            <!-- <field name="triaxial_name" readonly="1" /> -->
+                            <!-- <field name="triaxial_visible" invisible="1"/> -->
                         </h1>
                     </div>
 
@@ -796,15 +696,7 @@
                                     </tbody>
                                 </table>
                                 
-                                <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
-                                    <tbody>
-                                        <tr>
-                                            <td><label for="dry_et"></label></td>
-                                            <td><field name="dry_et"  readonly="1"/></td>
-                                        </tr>
-                                        
-                                    </tbody>
-                                </table> -->
+
                             </div>  
 
 
@@ -859,7 +751,7 @@
                             </div>  
 
                             <div class="d-flex gap-2"  >
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                                     <tbody>
                                         <tr>
                                             <td><label for="intercept_staright"></label></td>
@@ -879,6 +771,135 @@
                                     </tbody>
                                 </table>
                             </div>  
+
+
+
+
+
+      
+
+
+
+
+
+
+
+
+<!-- <record id="view_stress_strain_form" model="ir.ui.view">
+    <field name="name">stress.strain.form</field>
+    <field name="model">stress.strain</field>
+    <field name="arch" type="xml">
+        <form>
+
+            <header>
+                <button name="action_generate_graph"
+                        type="object"
+                        string="Generate Graph"
+                        class="btn-primary"/>
+            </header>
+
+            <sheet>
+
+                <group col="2">
+
+                  
+                    <group string="Tangent Modulus">
+                        <field name="stress_range" readonly="1"/>
+                        <field name="modulus_e" readonly="1"/>
+                        <field name="poisson_ratio"/>
+                    </group>
+
+                   
+                    <group>
+                        <field name="graph_image"
+                               widget="image"
+                               options="{'size':[600,400]}"/>
+                    </group>
+
+                </group>
+
+                <notebook>
+                    <page string="Stress Strain Data">
+                        <field name="line_ids">
+                            <tree editable="bottom">
+                                <field name="stress"/>
+                                <field name="strain"/>
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
+
+            </sheet>
+        </form>
+    </field>
+</record> -->
+
+
+
+
+
+<record id="view_stress_strain_form" model="ir.ui.view">
+    <field name="name">stress.strain.form</field>
+    <field name="model">stress.strain</field>
+    <field name="arch" type="xml">
+        <form string="Stress Strain">
+
+            <header>
+                <button name="action_generate_graph"
+                        type="object"
+                        string="Generate Graph"
+                        class="btn-primary"/>
+            </header>
+
+            <sheet>
+
+                <!-- Top Section -->
+                <group>
+                    <group string="Tangent Modulus" col="1">
+                        <field name="stress_range" readonly="1"/>
+                        <field name="modulus_e" readonly="1"/>
+                        <field name="poisson_ratio"/>
+                    </group>
+
+                    <group string="Graph">
+                        <field name="graph_image"
+                               widget="image"
+                               class="oe_avatar"
+                               options="{'size': [600, 400]}"/>
+                    </group>
+                </group>
+
+                <!-- Notebook Section -->
+                <notebook>
+                    <page string="Stress Strain Data">
+                        <field name="line_ids" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="stress"/>
+                                <field name="strain"/>
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
+
+            </sheet>
+        </form>
+    </field>
+</record>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                             </sheet>
                        <footer>
                             <button name="action_submit"
@@ -890,17 +911,10 @@
                             <button string="Back" special="save" class="btn btn-success"/>
 
 
-                              
-
 
                         </footer>
-                      
                         </form>
-
                         </field>
-
-
-
                        <notebook>
 
                         <page string="Notes">

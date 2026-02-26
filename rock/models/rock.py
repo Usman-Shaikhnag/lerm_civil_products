@@ -111,10 +111,7 @@ class MechanicalRock(models.Model):
 
 
     rock_child_lines = fields.One2many('mechanical.rock.line','parent_id',string="Parameter")
-    # usc_visible = fields.Boolean("USC Visible",compute="_compute_visible")
-
     
-
     point_load_constant = fields.Float(string="Point Load Constant Core")
 
     point_load_constant_2 = fields.Float(string="Point Load Constant Lump")
@@ -203,15 +200,6 @@ class MechanicalRock(models.Model):
             if record.cerchar_abrasivity_ids:
                 record.show_sieve = True
 
-            # 🔹 Reload the current record in form view
-            # return {
-            #     'type': 'ir.actions.act_window',
-            #     'name': 'Soil Form',
-            #     'res_model': 'mechanical.soil1',
-            #     'res_id': record.id,  # ✅ Use record.id instead of self.id
-            #     'view_mode': 'form',
-            #     'target': 'current',
-            # }
 
 
     slake_durability_child_lines = fields.One2many('mechanical.slake.line','parent_id',string="Parameter")
@@ -245,13 +233,46 @@ class MechanicalRock(models.Model):
                 record.show_sieve = True
 
 
-    
+
+
+
+
+    # MODULUS OF ELASTICITY AND POISSON'S RATIO OF ROCK  
+
+ 
+    # parent_id = fields.Many2one( "stress.strain", string="Parent", ondelete="cascade", required=True )
+    # stress = fields.Float(string="Stress (MPa)")
+    # strain = fields.Float(string="Strain")
+    # StressStrain_visible = fields.Boolean("Stress Range",compute="_compute_visible")
+
+
+
+class StressStrainLine(models.Model):
+    _name = "stress.strain.line"
+    _description = "Stress Strain Line"
+
+    parent_id = fields.Many2one(
+        "stress.strain",
+        string="Parent",
+        ondelete="cascade",
+        required=True
+    )
+
+    stress = fields.Float(string="Stress (MPa)")
+    strain = fields.Float(string="Strain")
+    StressStrain_visible = fields.Boolean("Stress Range",compute="_compute_visible")
+
+
+
+
+
+
+
+    # triaxial 
+
     triaxial_visible = fields.Boolean("Triaxial Shear Test (Rock)",compute="_compute_visible")
-
     triaxial_name = fields.Char("Name",default="Triaxial Shear Test (Rock)")
-
     show_sieve = fields.Boolean(default=False)
-
     triaxial_generated = fields.Boolean(string="GSA Lines Generated",default=False)
     triaxial_ids = fields.One2many('triaxial.line', 'parent_id',ondelete='cascade')
 
@@ -276,15 +297,6 @@ class MechanicalRock(models.Model):
             if record.triaxial_ids:
                 record.show_sieve = True
 
-            # 🔹 Reload the current record in form view
-            # return {
-            #     'type': 'ir.actions.act_window',
-            #     'name': 'Soil Form',
-            #     'res_model': 'mechanical.soil1',
-            #     'res_id': record.id,  # ✅ Use record.id instead of self.id
-            #     'view_mode': 'form',
-            #     'target': 'current',
-            # }
 
 
     
@@ -323,6 +335,10 @@ class MechanicalRock(models.Model):
             record.triaxial_visible = False
 
 
+
+            record.StressStrain_visible = False
+
+
           
             
             for sample in record.sample_parameters:
@@ -350,6 +366,7 @@ class MechanicalRock(models.Model):
                     record.moisture_content_visible = True
                 if sample.internal_id == "88rrty222vv33-0bc7-41a6-a2bb-0fe92114rr445t":
                     record.compressive_strength_visible = True
+
 
                 if sample.internal_id == "5578gghty214-0bc7-41a6-a2bb-0fe92114rr445t":
                     record.compressive_strength_visible1 = True
@@ -379,6 +396,13 @@ class MechanicalRock(models.Model):
 
                 if sample.internal_id == "214jht3mhh2277j-0bc7-41a6-a2bb-0fe9211321ytrbe":
                     record.triaxial_visible = True
+
+
+
+
+
+                if sample.internal_id == "6315f914-f6f5-4b5b-bfc2-34792cf1a237e":
+                    record.StressStrain_visible = True
 
               
                
@@ -454,6 +478,16 @@ class MechanicalRock(models.Model):
 
             if result.parameter.internal_id == '6315f914-f6f5-4b5b-bfc2-34792cf1a237':
                 result.calculated = True
+
+            if result.parameter.internal_id == '6315f914-f6f5-4b5b-bfc2-34792cf1a237e':
+                result.calculated = True
+
+
+
+
+
+           
+
 
         return {
                 'view_mode': 'form',
@@ -807,7 +841,8 @@ class MechanicalRockLine(models.Model):
 
 
 
-          
+
+
 
 
 
@@ -1199,6 +1234,214 @@ class AercharAbrasivityLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
+
+
+
+
+# MODULUS OF ELASTICITY AND POISSON'S RATIO OF ROCK  
+
+
+
+
+# ==============================
+# CHILD MODEL
+# ==============================
+class StressStrainLine(models.Model):
+    _name = "stress.strain.line"
+    _description = "Stress Strain Line"
+
+    parent_id = fields.Many2one(
+        "stress.strain",
+        string="Parent",
+        ondelete="cascade",
+        required=True
+    )
+
+    stress = fields.Float(string="Stress (MPa)")
+    strain = fields.Float(string="Strain")
+
+
+# ==============================
+# PARENT MODEL
+# ==============================
+class StressStrain(models.Model):
+    _name = "stress.strain"
+    _description = "Stress Strain"
+
+    line_ids = fields.One2many(
+        "stress.strain.line",
+        "parent_id",
+        string="Stress Strain Data"
+    )
+
+    stress_range = fields.Float(
+        string="Stress Range (MPa)",
+        compute="_compute_values",
+        store=True
+    )
+
+    modulus_e = fields.Float(
+        string="Modulus, E (GPa)",
+        compute="_compute_values",
+        store=True
+    )
+
+    poisson_ratio = fields.Float(string="Poisson Ratio")
+    graph_image = fields.Binary(string="Graph")
+
+    # ==========================
+    # COMPUTE METHOD
+    # ==========================
+    @api.depends("line_ids.stress", "line_ids.strain")
+    def _compute_values(self):
+        for rec in self:
+
+            valid_lines = rec.line_ids.filtered(
+                lambda l: l.stress and l.strain
+            )
+
+            if len(valid_lines) < 2:
+                rec.stress_range = 0
+                rec.modulus_e = 0
+                continue
+
+            strain = np.array([l.strain for l in valid_lines])
+            stress = np.array([l.stress for l in valid_lines])
+
+            rec.stress_range = float(max(stress) - min(stress))
+
+            slope, intercept = np.polyfit(strain, stress, 1)
+            rec.modulus_e = float(slope / 1000)
+
+    # ==========================
+    # GRAPH BUTTON
+    # ==========================
+    def action_generate_graph(self):
+        for rec in self:
+
+            valid_lines = rec.line_ids.filtered(
+                lambda l: l.stress and l.strain
+            )
+
+            if len(valid_lines) < 2:
+                rec.graph_image = False
+                continue
+
+            strain = np.array([l.strain for l in valid_lines])
+            stress = np.array([l.stress for l in valid_lines])
+
+            slope, intercept = np.polyfit(strain, stress, 1)
+            x_line = np.linspace(min(strain), max(strain), 100)
+            y_line = slope * x_line + intercept
+
+            plt.figure(figsize=(6, 4))
+            plt.plot(strain, stress, marker="o")
+            plt.plot(x_line, y_line, linestyle="--")
+            plt.xlabel("Strain")
+            plt.ylabel("Stress (MPa)")
+            plt.grid(True)
+
+            buffer = io.BytesIO()
+            plt.tight_layout()
+            plt.savefig(buffer, format="png", dpi=150)
+            plt.close()
+
+            rec.graph_image = base64.b64encode(buffer.getvalue())
+
+
+
+
+
+
+
+
+# class StressStrain(models.Model):
+#     _name = "stress.strain"
+#     line_ids = fields.One2many( "stress.strain.line","parent_id", string="Stress Strain Data" )
+#     stress_range = fields.Float(
+#         string="Stress Range (MPa)",
+#         compute="_compute_values",
+#         store=True
+#     )
+
+#     modulus_e = fields.Float(
+#         string="Modulus, E (GPa)",
+#         compute="_compute_values",
+#         store=True
+#     )
+
+#     poisson_ratio = fields.Float(string="Poisson Ratio")
+#     graph_image = fields.Binary(string="Graph")
+
+#     # ✅ COMPUTE METHOD
+#     @api.depends("line_ids.stress", "line_ids.strain")
+#     def _compute_values(self):
+#         for rec in self:
+
+#             valid_lines = rec.line_ids.filtered(
+#                 lambda l: l.stress is not None and l.strain is not None
+#             )
+
+#             if len(valid_lines) < 2:
+#                 rec.stress_range = 0
+#                 rec.modulus_e = 0
+#                 continue
+
+#             strain = np.array([l.strain for l in valid_lines])
+#             stress = np.array([l.stress for l in valid_lines])
+
+#             # Stress Range
+#             rec.stress_range = float(max(stress) - min(stress))
+
+#             # Linear Regression
+#             slope, intercept = np.polyfit(strain, stress, 1)
+
+#             # MPa → GPa
+#             rec.modulus_e = float(slope / 1000)
+
+#     # ✅ SEPARATE GRAPH METHOD
+#     def action_generate_graph(self):
+#         for rec in self:
+
+#             valid_lines = rec.line_ids.filtered(
+#                 lambda l: l.stress is not None and l.strain is not None
+#             )
+
+#             if len(valid_lines) < 2:
+#                 rec.graph_image = False
+#                 continue
+
+#             strain = np.array([l.strain for l in valid_lines])
+#             stress = np.array([l.stress for l in valid_lines])
+
+#             slope, intercept = np.polyfit(strain, stress, 1)
+#             x_line = np.linspace(min(strain), max(strain), 100)
+#             y_line = slope * x_line + intercept
+
+#             plt.figure(figsize=(6, 4))
+#             plt.plot(strain, stress, marker="o")
+#             plt.plot(x_line, y_line, linestyle="--")
+#             plt.xlabel("Strain")
+#             plt.ylabel("Stress (MPa)")
+#             plt.grid(True)
+
+#             buffer = io.BytesIO()
+#             plt.tight_layout()
+#             plt.savefig(buffer, format="png", dpi=150)
+#             plt.close()
+
+#             rec.graph_image = base64.b64encode(buffer.getvalue())
+
+
+
+
+
+
+
+
+
+    
 
 
 class MechanicalSlakeLine(models.Model):
