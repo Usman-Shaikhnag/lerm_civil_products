@@ -250,9 +250,8 @@
                                         
                                     </tbody>
                                 </table>
-<<<<<<< HEAD
-=======
                                 
+
                                 <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
                                     <tbody>
                                         <tr>
@@ -262,7 +261,6 @@
                                         
                                     </tbody>
                                 </table> -->
->>>>>>> a2aa90dede12e0e9217c75abb5aca683e1220484
                             </div>  
 
 
@@ -549,8 +547,8 @@
 
                     <div invisible = "triaxial_visible == False">
                         <h1 class="text-center">
-                            <!-- <field name="triaxial_name" readonly="1" /> -->
-                            <!-- <field name="triaxial_visible" invisible="1"/> -->
+                            <field name="triaxial_name" readonly="1" />
+                            <field name="triaxial_visible" invisible="1"/>
                         </h1>
                     </div>
 
@@ -857,60 +855,10 @@
 
 
 
+<!-- stress strain  -->
+
+
 <!-- <record id="view_stress_strain_form" model="ir.ui.view">
-    <field name="name">stress.strain.form</field>
-    <field name="model">stress.strain</field>
-    <field name="arch" type="xml">
-        <form>
-
-            <header>
-                <button name="action_generate_graph"
-                        type="object"
-                        string="Generate Graph"
-                        class="btn-primary"/>
-            </header>
-
-            <sheet>
-
-                <group col="2">
-
-                  
-                    <group string="Tangent Modulus">
-                        <field name="stress_range" readonly="1"/>
-                        <field name="modulus_e" readonly="1"/>
-                        <field name="poisson_ratio"/>
-                    </group>
-
-                   
-                    <group>
-                        <field name="graph_image"
-                               widget="image"
-                               options="{'size':[600,400]}"/>
-                    </group>
-
-                </group>
-
-                <notebook>
-                    <page string="Stress Strain Data">
-                        <field name="line_ids">
-                            <tree editable="bottom">
-                                <field name="stress"/>
-                                <field name="strain"/>
-                            </tree>
-                        </field>
-                    </page>
-                </notebook>
-
-            </sheet>
-        </form>
-    </field>
-</record> -->
-
-
-
-
-
-<record id="view_stress_strain_form" model="ir.ui.view">
     <field name="name">stress.strain.form</field>
     <field name="model">stress.strain</field>
     <field name="arch" type="xml">
@@ -925,7 +873,7 @@
 
             <sheet>
 
-                <!-- Top Section -->
+
                 <group>
                     <group string="Tangent Modulus" col="1">
                         <field name="stress_range" readonly="1"/>
@@ -941,7 +889,7 @@
                     </group>
                 </group>
 
-                <!-- Notebook Section -->
+
                 <notebook>
                     <page string="Stress Strain Data">
                         <field name="line_ids" nolabel="1">
@@ -956,7 +904,7 @@
             </sheet>
         </form>
     </field>
-</record>
+</record> -->
 
 
 
