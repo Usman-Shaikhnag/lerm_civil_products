@@ -672,6 +672,17 @@ class Soil(models.Model):
 
 
 
+    @api.constrains('start_date', 'end_date')
+    def _check_dates(self):
+        for rec in self:
+            if rec.start_date and rec.end_date:
+                if rec.start_date > rec.end_date:
+                    raise ValidationError(
+                        "Start Date cannot be greater than End Date."
+                    )
+
+
+
     def action_submit(self):
         self.ensure_one()
         
@@ -686,14 +697,7 @@ class Soil(models.Model):
     
     
 
-    # @api.constrains('start_date')
-    # def _check_start_date(self):
-    #     for rec in self:
-    #         if rec.start_date and rec.eln_ref.srf_date:
-    #             if rec.start_date < rec.eln_ref.srf_date:
-    #                 raise ValidationError(
-    #                     "Start Date cannot be earlier than SRF Date."
-    #                 )
+
 
     @api.constrains('start_date', 'end_date')
     def _check_dates_sg(self):
@@ -757,15 +761,6 @@ class Soil(models.Model):
     start_date_mnc = fields.Date(string="Start Date")  # manually fill
     end_date_mnc = fields.Date(string="End Date")      # auto fill on submit
 
-
-    # @api.constrains('start_date_mnc')
-    # def _check_start_date_mnc(self):
-    #     for rec in self:
-    #         if rec.start_date_mnc and rec.eln_ref.srf_date:
-    #             if rec.start_date_mnc < rec.eln_ref.srf_date:
-    #                 raise ValidationError(
-    #                     "Start Date cannot be earlier than SRF Date."
-    #                 )
 
     @api.constrains('start_date_mnc', 'end_date_mnc')
     def _check_dates_sg(self):
@@ -872,15 +867,7 @@ class Soil(models.Model):
     
 
 
-    # @api.constrains('start_date_sg')
-    # def _check_start_date_sg(self):
-    #     for rec in self:
-    #         if rec.start_date_sg and rec.eln_ref.srf_date:
-    #             if rec.start_date_sg < rec.eln_ref.srf_date:
-    #                 raise ValidationError(
-    #                     "Start Date cannot be earlier than SRF Date."
-    #                 )
-
+    
     @api.constrains('start_date_sg', 'end_date_sg')
     def _check_dates_sg(self):
         for rec in self:
@@ -930,14 +917,7 @@ class Soil(models.Model):
             if record.gravity_line_ids:
                 record.show_sieve = True
 
-            # return {
-            #     'type': 'ir.actions.act_window',
-            #     'name': 'Soil Form',
-            #     'res_model': 'mechanical.soil1',
-            #     'res_id': record.id,
-            #     'view_mode': 'form',
-            #     'target': 'current',
-            # }
+           
 
 
 
@@ -1011,15 +991,7 @@ class Soil(models.Model):
             if record.freeswell_line_ids:
                 record.show_sieve = True
 
-            # 🔹 Reload the current record in form view
-            # return {
-            #     'type': 'ir.actions.act_window',
-            #     'name': 'Soil Form',
-            #     'res_model': 'mechanical.soil1',
-            #     'res_id': record.id,  # ✅ Use record.id instead of self.id
-            #     'view_mode': 'form',
-            #     'target': 'current',
-            # }
+          
     
     # ATTERBERG LIMITS
     Atterbergs_name = fields.Char(string="Name", default="Atterbergs Limits (LL, PL, SL)")
@@ -1281,8 +1253,7 @@ class Soil(models.Model):
             record.plastic_limit_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','120vbf14-2ff0-4b81-aca1-0e07dab7cd87')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','120vbf14-2ff0-4b81-aca1-0e07dab7cd87')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
+           
             lab_min = line.lab_min_value
             lab_max = line.lab_max_value
             mu_value = line.mu_value
@@ -1807,22 +1778,8 @@ class Soil(models.Model):
             if record.cbr_ids:
                 record.show_sieve = True
 
-            # 🔹 Reload the current record in form view
-            # return {
-            #     'type': 'ir.actions.act_window',
-            #     'name': 'Soil Form',
-            #     'res_model': 'mechanical.soil1',
-            #     'res_id': record.id,  # ✅ Use record.id instead of self.id
-            #     'view_mode': 'form',
-            #     'target': 'current',
-            # }
-
+          
    
-    
-
-
-
-
 
        # FSI
     fsi_name = fields.Char("Name",default="Free Swell Index")
@@ -2088,8 +2045,7 @@ class Soil(models.Model):
             record.phi_deg_uu_triaxial_angle_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65478h88hhhllly1-ca64-44dd-b0ae-89745785gt41d')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65478h88hhhllly1-ca64-44dd-b0ae-89745785gt41d')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
+            
             lab_min = line.lab_min_value
             lab_max = line.lab_max_value
             mu_value = line.mu_value
@@ -2188,8 +2144,7 @@ class Soil(models.Model):
             record.cohesion_uu_triaxial_cohesion_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2r478h88hhhllly1-ca64-44dd-b0ae-897897gghtre0')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2r478h88hhhllly1-ca64-44dd-b0ae-897897gghtre0')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
+           
             lab_min = line.lab_min_value
             lab_max = line.lab_max_value
             mu_value = line.mu_value
@@ -3837,20 +3792,7 @@ class SoilCBRLine(models.Model):
         for rec in self:
             rec.no_division = rec.proving_reading * 5
 
-    # @api.depends('no_division')
-    # def _compute_applied_force(self):
-    #     for rec in self:
-    #         # rec.applied_force = (0.0133 * rec.no_division) + 0.0404 if rec.no_division else 0.0404
-    #         rec.applied_force = (0.0133 * rec.no_division) + 0.0404 if rec.no_division else 0.0404
-
-    # @api.depends('no_division', 'parent_id_cbr.m', 'parent_id_cbr.c')
-    # def _compute_applied_force(self):
-    #  for rec in self:
-    #     m = rec.parent_id_cbr.m or 0.0
-    #     c = rec.parent_id_cbr.c or 0.0
-    #     n = rec.no_division or 0.0
-
-    #     rec.applied_force = (m * n) + c
+   
 
     @api.depends('no_division', 'parent_id_cbr.m', 'parent_id_cbr.c')
     def _compute_applied_force(self):
@@ -3864,11 +3806,7 @@ class SoilCBRLine(models.Model):
         else:
             rec.applied_force = (m * n) + c
 
-    # @api.depends('applied_force', 'parent_id_cbr.rise_force')
-    # def _compute_avg_load(self):
-    #     for rec in self:
-    #         rise_force = rec.parent_id_cbr.rise_force or 0.0
-    #         rec.avg_load = rec.applied_force + (rec.applied_force * rise_force)
+    
 
     @api.depends('applied_force', 'parent_id_cbr.rise_force')
     def _compute_avg_load(self):
@@ -4451,6 +4389,16 @@ class SoilGSALINE(models.Model):
     start_date = fields.Date(string="Start Date")  # manually fill
     end_date = fields.Date(string="End Date")      # auto fill on submit
 
+
+    @api.constrains('start_date', 'end_date')
+    def _check_dates(self):
+        for rec in self:
+            if rec.start_date and rec.end_date:
+                if rec.start_date > rec.end_date:
+                    raise ValidationError(
+                        "Start Date cannot be greater than End Date."
+                    )
+
     
 
     def action_submit(self):
@@ -4788,35 +4736,7 @@ class SoilGSALINE(models.Model):
 
         return record
 
-    # def calculate_sieve_gsa(self): 
-    #     for record in self:
-
-        
-
-    #         previous_cumulative = 0  
-    #         for line in record.sieve_analysis_child_lines_gsa:
-    #             print("Rows", str(line.percent_retained))
-    #             previous_line = line.serial_no - 1
-    #             if previous_line == 0:
-    #                 cumulative_retained = line.percent_retained
-    #             else:
-    #                 previous_line_record = self.env['gsa.lab.sieve.analysis.line'].sudo().search([("serial_no", "=", previous_line),("parent_id", "=", record.id)], limit=1)
-                    
-    #                 if previous_line_record:
-    #                     previous_cumulative = previous_line_record.cumulative_retained
-    #                 cumulative_retained = previous_cumulative + line.percent_retained
-
-    #             passing_percent = 100 - cumulative_retained
-
-    #             line.write({
-    #                 'cumulative_retained': round(cumulative_retained, 2),
-    #                 'passing_percent': round(passing_percent, 2),
-    #             })
-                
-    #             print("Updated Cumulative Retained:", cumulative_retained)
-    #             print("Updated Passing Percent:", passing_percent)
-
-    #             previous_cumulative = cumulative_retained
+    
 
     def calculate_sieve_gsa(self): 
         for record in self:
@@ -6782,9 +6702,7 @@ class TriaxialTestLine(models.Model):
                 
                 # --- SECOND LINE ONWARDS ---
                 else:
-                    # Logic same as pr_5, but using pr_10
-                    # Formula: (((pr_10 * 5) * 1.682) + 13.644) / (9.81 * corrected_area)
-                    
+                   
                     numerator = (((line.pr_10 * 5.0) * line.parent_id_triaxial.m_traxial) + line.parent_id_triaxial.c_traxial)
                     denominator = 9.81 * line.corrected_area
                     
@@ -6807,8 +6725,7 @@ class TriaxialTestLine(models.Model):
                 
                 # --- SECOND LINE ONWARDS ---
                 else:
-                    # Logic same as pr_5, but using pr_15
-                    # Formula: (((pr_15 * 5) * 1.682) + 13.644) / (9.81 * corrected_area)
+
                     
                     numerator = (((line.pr_15 * 5.0) * line.parent_id_triaxial.m_traxial) + line.parent_id_triaxial.c_traxial)
                     denominator = 9.81 * line.corrected_area
@@ -6869,8 +6786,7 @@ class TriaxialTestLine(models.Model):
                     else:
                         strain = 0.0
 
-                    # 2. Corrected Area Formula: (A0 / (1 - Strain)) / 100
-                    # (1 - Strain) check kara, zero nako
+                  
                     if (1 - strain) > 0:
                         corrected_area_val = A0 / (1 - strain)
                         line.corrected_area = corrected_area_val / 100.0
@@ -6882,14 +6798,12 @@ class TriaxialTestLine(models.Model):
     @api.depends('pr_5', 'parent_id_triaxial.rise_force_triaxial_test')
     def _compute_shear_stress_05(self):
         for line in self:
-            # 1. Parent madhun Rise Force value ghene
-            # Jar parent set nasel tar 0.0 consider kara
+           
             rise_force = line.parent_id_triaxial.rise_force_triaxial_test or 0.0
             
-            # 2. Formula Apply Kara
-            # Formula: pr_5 + (pr_5 * rise_force)
+           
             if line.pr_5:
-                # Calculation logic
+              
                 extra_force = line.pr_5 * rise_force
                 line.shear_stress_05 = line.pr_5 + extra_force
             else:
@@ -6899,14 +6813,12 @@ class TriaxialTestLine(models.Model):
     @api.depends('pr_1', 'parent_id_triaxial.rise_force_triaxial_test')
     def _compute_shear_stress_10(self):
         for line in self:
-            # 1. Parent madhun Rise Force value ghene
-            # Jar parent set nasel tar 0.0 consider kara
+           
             rise_force = line.parent_id_triaxial.rise_force_triaxial_test or 0.0
             
-            # 2. Formula Apply Kara
-            # Formula: pr_1 + (pr_1 * rise_force)
+           
             if line.pr_1:
-                # Calculation logic
+               
                 extra_force = line.pr_1 * rise_force
                 line.shear_stress_10 = line.pr_1 + extra_force
             else:
@@ -6915,14 +6827,12 @@ class TriaxialTestLine(models.Model):
     @api.depends('pr_1_5', 'parent_id_triaxial.rise_force_triaxial_test')
     def _compute_shear_stress_15(self):
         for line in self:
-            # 1. Parent madhun Rise Force value ghene
-            # Jar parent set nasel tar 0.0 consider kara
+           
             rise_force = line.parent_id_triaxial.rise_force_triaxial_test or 0.0
             
-            # 2. Formula Apply Kara
-            # Formula: pr_1_5 + (pr_1_5 * rise_force)
+           
             if line.pr_1_5:
-                # Calculation logic
+              
                 extra_force = line.pr_1_5 * rise_force
                 line.shear_stress_15 = line.pr_1_5 + extra_force
             else:
@@ -7301,7 +7211,7 @@ class UcsSoilLine(models.Model):
                     current_val = new_val
 
     @api.depends('serial_no', 'prove_ring_read',
-                 'parent_id_ucs.ucs_area', 'parent_id_ucs.ucs_dial_gauge', 'parent_id_ucs.ucs_height')
+                 'parent_id_ucs.ucs_area', 'parent_id_ucs.ucs_dial_gauge', 'parent_id_ucs.ucs_height','parent_id_ucs.m','parent_id_ucs.c')
     def _compute_all(self):
         """Reproduce Excel sheet: horiz → deform → strain → Ac → shear"""
         for rec in self:
@@ -7332,10 +7242,12 @@ class UcsSoilLine(models.Model):
             # 5) Shear stress = ((PR*5)*1.682+13.644)/(9.81*Ac)
             pr = rec.prove_ring_read or 0.0
             ac = rec.corrected_area or 1.0
+            m = rec.parent_id_ucs.m
+            c = rec.parent_id_ucs.c
             if rec.serial_no == 1 or horiz <= 0:
                 rec.shear_stress = 0
             else:
-               rec.shear_stress = (((pr * 5.0) * 1.682) + 13.644) / (9.81 * ac)
+               rec.shear_stress = (((pr * 5.0) * m) + c) / (9.81 * ac)
 
 
 
@@ -7659,186 +7571,7 @@ class DirectShearTestThreeLine(models.Model):
             record.serial_no = index + 1
 
 
-# class LLLine(models.Model):
-#     _name = "ll.line"
-#     parent_id = fields.Many2one('mechanical.soil1',string="Parent Id")
 
-#     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
-
-#     lab_id=  fields.Char(string="Lab ID" )
-
-#     is_checked = fields.Boolean(
-#         string="Calculated",
-#         default=False
-#     )
-#     start_date = fields.Date(string="Start Date")  # manually fill
-#     end_date = fields.Date(string="End Date")      # auto fill on submit
-
-    
-#     def action_submit(self):
-#         self.ensure_one()
-        
-#         # 1️⃣ Boolean True + End Date = current date
-#         self.write({
-#             'is_checked': True,
-#             'end_date': fields.Date.context_today(self),
-#         })
-
-#         # 2️⃣ Reset serial numbers of child lines (1,2,3...)
-#         if self.ll_line_ids:
-#             for index, line in enumerate(self.ll_line_ids.sorted(key=lambda r: r.id)):
-#                 line.serial_no = index + 1
-
-#         # 3️⃣ Close inline editor → Save-like back
-#         return {'type': 'ir.actions.act_window_close'}
-
-
-#     ll_line_ids = fields.One2many('lab.atterberg.ll.line', 'parent_id')
-
-#     liquid_avg = fields.Float( string='Liquid Limit Avg %' , digits=(16,1) ,compute='_compute_liquid_avg',store=True,)
-
-#     ll_graph = fields.Binary(
-#     "Liquid Limit Graph",
-#     compute="_compute_ll_graph",
-#     store=True
-# )
-
-#     ll_value = fields.Float(
-#     "Liquid Limit (%)",
-#     digits=(10, 2),
-#     compute="_compute_ll_graph",
-#     store=True
-# )
-    
-#     @api.depends('ll_line_ids.blows', 'll_line_ids.water_content')
-#     def _compute_ll_graph(self):
-#      for rec in self:
-#         if rec.ll_line_ids:
-#             image, ll = rec._generate_line_chart_liquid()
-#             rec.ll_graph = image
-#             rec.ll_value = ll
-#         else:
-#             rec.ll_graph = False
-#             rec.ll_value = 0.0
-
-#     def _generate_line_chart_liquid(self):
-    
-  
-#      data = [
-#         (l.blows, l.water_content)
-#         for l in self.ll_line_ids
-#         if l.blows and l.water_content
-#      ]
-
-#      if len(data) < 3:
-#         return False, 0.0
-
-#      data.sort(key=lambda x: x[0])
-
-#      blows = np.array([d[0] for d in data], dtype=float)
-#      water = np.array([d[1] for d in data], dtype=float)
-
-   
-#      log_blows = np.log10(blows)
-#      slope, intercept = np.polyfit(log_blows, water, 1)
-
- 
-#      ll_value = round(slope * np.log10(25) + intercept, 2)
-
-  
-#      x_fit = np.linspace(log_blows.min(), log_blows.max(), 200)
-#      y_fit = slope * x_fit + intercept
-
-    
-#      y_pred = slope * log_blows + intercept
-#      ss_res = np.sum((water - y_pred) ** 2)
-#      ss_tot = np.sum((water - np.mean(water)) ** 2)
-#      r2 = 1 - ss_res / ss_tot
-
-  
-#      fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
-
-
-#      ax.plot(
-#         blows,
-#         water,
-#         color='#4472C4',
-#         marker='o',
-#         linewidth=2.5
-#     )
-
-  
-#      ax.plot(
-#         10 ** x_fit,
-#         y_fit,
-#         color='black',
-#         linewidth=1.5
-#     )
-
-   
-#      ax.axvline(25, color='green', linestyle='--', linewidth=1)
-
-#      ax.set_xscale('log')
-#      ax.set_xlim(10, 100)
-#      ax.set_ylim(min(water) - 1, max(water) + 1)
-
-#      ax.set_xlabel("No. of Blows", fontsize=11)
-#      ax.set_ylabel("Moisture Content (%)", fontsize=11)
-
-  
-#      ax.yaxis.grid(True, color='#BFBFBF', linewidth=0.8)
-#      ax.xaxis.grid(False)
-
-#      for spine in ax.spines.values():
-#         spine.set_color('black')
-#         spine.set_linewidth(1)
-
-#      eq_text = f"y = {slope:.4f}x + {intercept:.3f}\nR² = {r2:.4f}"
-#      ax.text(30, max(water) - 0.4, eq_text, fontsize=10)
-
-  
-#      buffer = BytesIO()
-#      fig.savefig(buffer, format='png', bbox_inches='tight',  facecolor='white')
-#      buffer.seek(0)
-
-#      image = base64.b64encode(buffer.read())
-
-#      buffer.close()
-#      plt.close(fig)
-
-#      return image, ll_value
-
-   
-
-#     @api.depends('ll_line_ids.water_content')
-#     def _compute_liquid_avg(self):
-#         for line in self:
-#             if line.ll_line_ids:
-#                 vals = line.ll_line_ids.mapped("water_content")
-#                 line.liquid_avg = sum(vals) / len(vals)
-                
-
-#             else:
-#                 line.liquid_avg = 0.0
-
-   
-
-#     @api.model
-#     def create(self, vals):
-#         # Set the serial_no based on the existing records for the same parent
-#         if vals.get('parent_id'):
-#             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-#             if existing_records:
-#                 max_serial_no = max(existing_records.mapped('serial_no'))
-#                 vals['serial_no'] = max_serial_no + 1
-
-#         return super(LLLine, self).create(vals)
-
-#     def _reorder_serial_numbers(self):
-#         # Reorder the serial numbers based on the positions of the records in child_lines
-#         records = self.sorted('id')
-#         for index, record in enumerate(records):
-#             record.serial_no = index + 1
 
 
 
@@ -7856,6 +7589,16 @@ class LLLine(models.Model):
 
     blows = fields.Float(string="No. of Blows", digits=(10, 0))
     water_content = fields.Float(string="Water Content (%)", digits=(16, 2))
+
+
+    @api.constrains('start_date', 'end_date')
+    def _check_dates(self):
+        for rec in self:
+            if rec.start_date and rec.end_date:
+                if rec.start_date > rec.end_date:
+                    raise ValidationError(
+                        "Start Date cannot be greater than End Date."
+                    )
 
     def action_submit(self):
         self.ensure_one()
@@ -8108,14 +7851,14 @@ class PLLine(models.Model):
         string="Calculated",
         default=False
     )
-    start_date = fields.Date(string="Start Date")  # manually fill
-    end_date = fields.Date(string="End Date")      # auto fill on submit
+    start_date = fields.Date(string="Start Date") 
+    end_date = fields.Date(string="End Date")      
 
     
     def action_submit(self):
         self.ensure_one()
         
-        # 1️⃣ Boolean True + End Date = current date
+      
         self.write({
             'is_checked': True,
             'end_date': fields.Date.context_today(self),
@@ -8180,14 +7923,14 @@ class SLLine(models.Model):
         string="Calculated",
         default=False
     )
-    start_date = fields.Date(string="Start Date")  # manually fill
-    end_date = fields.Date(string="End Date")      # auto fill on submit
+    start_date = fields.Date(string="Start Date")  
+    end_date = fields.Date(string="End Date")      
 
     
     def action_submit(self):
         self.ensure_one()
         
-        # 🔹 Boolean True + End Date = current user date (timezone safe)
+        
         self.write({
             'is_checked': True,
             'end_date': fields.Date.context_today(self),
@@ -8218,20 +7961,7 @@ class SLLine(models.Model):
             else:
                 line.shrinkage_avg = 0.0
 
-    # shrinkage_avg = fields.Float('shrinkage Limit (%)', digits=(10,0))
-
-    
-
-    # @api.depends('sl_line_ids.water_content')
-    # def _compute_shrinkage_avg(self):
-    #     for line in self:
-    #         if line.sl_line_ids:
-    #             vals = line.sl_line_ids.mapped("water_content")
-    #             line.shrinkage_avg = sum(vals) / len(vals)
-                
-
-    #         else:
-    #             line.shrinkage_avg = 0.0
+ 
 
     
 
@@ -9909,7 +9639,10 @@ class USCNewLine(models.Model):
             line.degree_saturation = (w / (line.gamma_ratio - line.inv_specific_gravity)) * 100
         else:
             line.degree_saturation = 0.0
-   
+
+    
+    m = fields.Float(string=" (m)",default=1.6820, digits=(10,4))
+    c = fields.Float(string=" (c)",default=13.644 , digits=(10,4))
   
     ucs_lines = fields.One2many('ucs.soil.line', 'parent_id_ucs',  string="DETERMINE THE UNCONFINED COMPRESSIVE STRENGTH",default=lambda self: self.default_ucs_reading())	
 
@@ -12017,107 +11750,7 @@ class SwellingPressureLine(models.Model):
                 record.graph_image_swell = False
 
 
-    # def generate_line_chart_swell(self):
-    #  self.ensure_one()
-
-    #  import numpy as np
-    #  import base64
-    #  from io import BytesIO
-    #  import matplotlib
-    #  matplotlib.use('Agg')
-    #  import matplotlib.pyplot as plt
-    #  from scipy.interpolate import CubicSpline
-    #  from matplotlib.ticker import LogLocator, LogFormatterMathtext
-
-    # # -----------------------------
-    # # Data
-    # # -----------------------------
-    #  lines = self.swelling_table_ids.sorted('applied_pressure')
-
-    #  x = np.array([l.applied_pressure for l in lines if l.applied_pressure > 0], float)
-    #  y = np.array([l.delta_h for l in lines if l.delta_h is not None], float)
-
-    #  if len(x) < 3:
-    #     return False
-
-    # # -----------------------------
-    # # Swelling pressure
-    # # -----------------------------
-    #  sp = 0
-    #  for i in range(len(x)-1):
-    #     if y[i] >= 0 and y[i+1] <= 0:
-    #         sp = x[i] + (x[i+1]-x[i])*(0-y[i])/(y[i+1]-y[i])
-    #         break
-
-    # # -----------------------------
-    # # Excel-style spline (log domain)
-    # # -----------------------------
-    #  lx = np.log10(x)
-    #  cs = CubicSpline(lx, y, bc_type='natural')
-
-    #  lx_s = np.linspace(lx.min(), lx.max(), 500)
-    #  xs = 10**lx_s
-    #  ys = cs(lx_s)
-
-    # # -----------------------------
-    # # Figure
-    # # -----------------------------
-    #  fig, ax = plt.subplots(figsize=(10,5), dpi=100)
-
-    # # Curve
-    #  ax.plot(xs, ys, color='#4472C4', linewidth=2.5)
-
-    # # Markers
-    #  ax.scatter(x, y, color='#4472C4', s=30, zorder=5)
-
-    # # Point labels
-    #  for xi, yi in zip(x, y):
-    #     ax.text(xi, yi+0.05, f"{yi:.3f}", ha='center', fontsize=8)
-
-    # # Zero line
-    #  ax.axhline(0, color='#4472C4', linewidth=1.5)
-
-    # # X-axis on zero
-    #  ax.spines['bottom'].set_position(('data',0))
-
-    # # Swelling pressure
-    #  ax.axvline(sp, color='red', linewidth=1.5)
-
-    # # Log X
-    #  ax.set_xscale('log')
-    #  ax.set_xlim(0.1,10)
-
-    #  ax.xaxis.set_major_locator(LogLocator(base=10))
-    #  ax.xaxis.set_major_formatter(LogFormatterMathtext())
-    #  ax.xaxis.set_minor_locator(LogLocator(base=10, subs=np.arange(2,10)*0.1))
-
-    # # Y limits
-    #  ax.set_ylim(-0.75, 2.25)
-    #  ax.set_yticks(np.arange(-0.75, 2.26, 0.50))
-
-    # # Grid (Excel density)
-    #  ax.grid(which='major', color='#A6A6A6', linewidth=0.8)
-    #  ax.grid(which='minor', color='#D9D9D9', linewidth=0.5)
-
-    # # Labels
-    #  ax.set_xlabel('Pressure kg/cm2', fontsize=10)
-    #  ax.set_ylabel('Deformation, mm', fontsize=10)
-
-    # # Borders
-    #  ax.spines['top'].set_visible(True)
-    #  ax.spines['right'].set_visible(True)
-
-    # # -----------------------------
-    # # Export
-    # # -----------------------------
-    #  buf = BytesIO()
-    #  fig.tight_layout()
-    #  fig.savefig(buf, format='png')
-    #  plt.close(fig)
-    #  buf.seek(0)
-
-    #  return base64.b64encode(buf.read())
-
+  
     def generate_line_chart_swell(self):
      self.ensure_one()
 
@@ -12130,9 +11763,7 @@ class SwellingPressureLine(models.Model):
      from scipy.interpolate import PchipInterpolator
      from matplotlib.ticker import LogLocator, LogFormatter
 
-    # -----------------------------
-    # Data
-    # -----------------------------
+    
      lines = self.swelling_table_ids.sorted('applied_pressure')
 
      x = np.array([l.applied_pressure for l in lines if l.applied_pressure > 0], float)
@@ -12141,18 +11772,13 @@ class SwellingPressureLine(models.Model):
      if len(x) < 3:
         return False
 
-    # -----------------------------
-    # Swelling Pressure (Zero Crossing)
-    # -----------------------------
+   
      sp = 0
      for i in range(len(x) - 1):
         if y[i] >= 0 and y[i + 1] <= 0:
             sp = x[i] + (x[i + 1] - x[i]) * (0 - y[i]) / (y[i + 1] - y[i])
             break
 
-    # -----------------------------
-    # Excel-style smooth curve (LOG DOMAIN)
-    # -----------------------------
      lx = np.log10(x)
      cs = PchipInterpolator(lx, y)
 
@@ -12160,9 +11786,7 @@ class SwellingPressureLine(models.Model):
      xs = 10 ** lx_s
      ys = cs(lx_s)
 
-    # -----------------------------
-    # Figure
-    # -----------------------------
+   
      fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
 
     # Curve
@@ -12199,15 +11823,7 @@ class SwellingPressureLine(models.Model):
         LogLocator(base=10, subs=np.arange(1, 10) * 0.1)
     )
 
-    # -----------------------------
-    # Y Axis
-    # -----------------------------
-    #  ax.set_ylim(-0.75, 2.25)
-    #  ax.set_yticks(np.arange(-0.75, 2.26, 0.50))
-
-    # -----------------------------
-# Y Axis (Dynamic based on data)
-# -----------------------------
+    
      y_min = min(y.min(), ys.min())
      y_max = max(y.max(), ys.max())
 
@@ -12521,9 +12137,7 @@ class ConsolidationLine(models.Model):
                 ('load_0_2_0_5',  '1st Cycle Loading - (0.2 - 0.5)',  'consolidation_graph_2_5', (10, 5)),
                 ('load_0_5_1_0',  '1st Cycle Loading - (0.5 - 1.0)',  'consolidation_graph_5_10', (10, 5)),
                 
-                # ('load_1_0_2_0',  '1st Cycle Loading - (1.0 - 2.0)',  'consolidation_graph_10_20', (20, 6)),
-                # ('load_2_0_4_0',  '1st Cycle Loading - (2.0 - 4.0)',  'consolidation_graph_20_40', (20, 6)),
-                # ('load_4_0_8_0',  '1st Cycle Loading - (4.0 - 8.0)',  'consolidation_graph_40_80', (20, 6)),
+               
             ]
 
             for line_field, title, image_field, fig_size in graph_configs:
@@ -13336,25 +12950,7 @@ class CbrLine(models.Model):
     start_date = fields.Date(string="Start Date")  # manually fill
     end_date = fields.Date(string="End Date")      # auto fill on submit
 
-    # def action_submit_line(self):
-    #     self.ensure_one()
-
-    #     # 1️⃣ Boolean True
-    #     self.write({
-    #         'is_checked': True,
-    #         'end_date': date.today(),  # current date auto fill
-    #     })
-
-    #     # 2️⃣ Parent form वर return / open
-    #     return {
-    #         'type': 'ir.actions.act_window',
-    #         'name': 'Soil Test',
-    #         'res_model': 'mechanical.soil1',
-    #         'view_mode': 'form',
-    #         'res_id': self.parent_id.id if self.parent_id else False,
-    #         'target': 'current',
-    #     }
-
+    
     def action_submit(self):
         self.ensure_one()
         
@@ -13443,39 +13039,7 @@ class CbrLine(models.Model):
 
     surcharge_weight = fields.Float(string="Surcharge weight (kg)", digits=(10,2))
 
-    # --- SEPARATE COMPUTE FUNCTION ---
-    # @api.depends('soil_table', 'soil_table.penetration', 'soil_table.avg_load')
-    # def _compute_cbr_values(self):
-    #     for record in self:
-    #         # Default values (jar data nasel tar 0.0)
-    #         val_2_5 = 0.0
-    #         val_5_0 = 0.0
-            
-    #         # Data sort kara (Penetration nusar)
-    #         lines = record.soil_table.sorted(key=lambda l: l.penetration)
-    #         x_values = [line.penetration for line in lines]
-    #         y_values = [line.avg_load for line in lines]
-
-    #         # Logic: Jar data asel ani values 2.5/5.0 chya range madhe astil
-    #         if len(x_values) > 1:
-    #             target_x = [2.5, 5.0]
-                
-    #             # Interpolation (Exact Load kadhnyasathi)
-    #             target_y = np.interp(target_x, x_values, y_values)
-                
-    #             load_at_2_5 = target_y[0]
-    #             load_at_5_0 = target_y[1]
-
-    #             # --- MAIN CALCULATION FORMULA ---
-    #             # Formula: (Load * 100) / Standard Load
-    #             val_2_5 = (load_at_2_5 * 100) / 13.781
-    #             val_5_0 = (load_at_5_0 * 100) / 20.55
-
-    #         # Field la value assign kara
-    #         record.cbr_2_5_mm = val_2_5
-    #         record.cbr_5_mm = val_5_0
-
-
+    
     @api.depends('soil_table.penetration', 'soil_table.avg_load')
     def _compute_cbr_values(self):
      for record in self:
@@ -13505,77 +13069,13 @@ class CbrLine(models.Model):
         record.cbr_2_5_mm = val_2_5
         record.cbr_5_mm = val_5_0
 
-    # --- NEW FIELDS FOR GRAPH ---
+   
     cbr_graph = fields.Binary(string="CBR Graph") 
     cbr_graph_name = fields.Char(default="cbr_graph.png")
 
 
 
-    # def action_generate_cbr_graph(self):
-    #     for record in self:
-    #         if not record.soil_table:
-    #             continue
 
-    #         # 1. Data Prepare kara
-    #         lines = record.soil_table.sorted(key=lambda l: l.penetration)
-            
-    #         x_values = [line.penetration for line in lines]
-    #         y_values = [line.avg_load for line in lines]
-
-    #         if not x_values or not y_values:
-    #             continue
-
-    #         # 2. Plot Setup
-    #         plt.figure(figsize=(10, 6))
-    #         ax = plt.gca()
-
-    #         # 3. Main Curve Plot kara (Black line with dots)
-    #         # 'ko-' mhanje Black color, Circle marker, Solid line
-    #         plt.plot(x_values, y_values, 'ko-', linewidth=1.5, markersize=6, label='CBR Curve')
-
-    #         # 4. 2.5mm ani 5.0mm sathi Logic (Lines ani Labels)
-    #         target_x = [2.5, 5.0]
-            
-    #         if len(x_values) > 1:
-    #             # Interpolation karun exact Y value kadha
-    #             target_y = np.interp(target_x, x_values, y_values)
-
-    #             for tx, ty in zip(target_x, target_y):
-    #                 if tx <= max(x_values):
-    #                     # Blue Vertical Line (Ubhi line)
-    #                     plt.plot([tx, tx], [0, ty], color='blue', linewidth=1)
-                        
-    #                     # Blue Horizontal Line (Advi line)
-    #                     plt.plot([0, tx], [ty, ty], color='blue', linewidth=1)
-                        
-    #                     # Intersection var Blue Dot (Point)
-    #                     plt.plot(tx, ty, 'bo', markersize=5)  # 'bo' mhanje Blue Circle
-
-    #                     # Label (Text Value)
-    #                     # Point chya javal value lihun yeil (Ex: 4.65 kN)
-    #                     label_text = f"{ty:.2f}"
-    #                     plt.text(tx - 0.5, ty + 0.2, label_text, color='blue', fontsize=10, fontweight='bold')
-
-    #         # 5. Graph Formatting (Styling)
-    #         plt.xlabel('Penetration in mm', fontweight='bold', fontsize=12)
-    #         plt.ylabel('Average Load in kN', fontweight='bold', fontsize=12)
-            
-    #         # X-Axis 0 te 14 range
-    #         plt.xlim(0, 14)
-    #         plt.ylim(bottom=0)
-            
-    #         # X-Axis var sagale numbers (0, 1, 2...14) disnyasathi
-    #         plt.xticks(np.arange(0, 15, 1))
-            
-    #         # Grid (Optional - jar havi asel tar uncomment kara)
-    #         # plt.grid(True, linestyle='--', alpha=0.5)
-
-    #         # 6. Graph Save kara
-    #         buf = io.BytesIO()
-    #         plt.savefig(buf, format='png', dpi=100, bbox_inches='tight')
-    #         plt.close()
-            
-    #         record.cbr_graph = base64.b64encode(buf.getvalue())
 
 
     def action_generate_cbr_graph(self):
