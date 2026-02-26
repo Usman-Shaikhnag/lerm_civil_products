@@ -75,6 +75,12 @@ class Soil(models.Model):
     name_soil = fields.Char("Name",default="Soil")
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 
+    image = fields.Image(
+        string="Image",
+        max_width=1024,
+        max_height=1024
+    )
+
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)

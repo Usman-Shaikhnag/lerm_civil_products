@@ -1255,11 +1255,17 @@
 								<tr>
 
 									<!-- LOGO -->
-									<td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
+									<!-- <td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
 										<img t-if="logo_base64"
 											t-att-src="'data:image/png;base64,%s' % logo_base64"
 											style="height:50px;"/>
-									</td>
+									</td> -->
+									<t t-if="data.image">
+										<td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
+											<img t-att-src="'data:image/png;base64,%s' % data.image.decode('utf-8')"
+												style="width: 100%; height: auto; max-height: 900px; object-fit: contain;"/>
+										</td>
+									</t>
 
 									<!-- COMPANY HEADER -->
 									<td style="width:77%; border:1px solid #000; padding:0;">
@@ -1287,24 +1293,45 @@
 
 												<td style="border:1px solid #000; padding:3px;"><b>Issue No</b></td>
 												<td style="border:1px solid #000; padding:3px;">
-													<!-- <span t-esc="first_review.issue_no if first_review else ''"/> -->
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')], limit=1).issue_no"/>
 												</td>
 											</tr>
 
-											<tr>
+											<!-- <tr>
 												<td style="border:1px solid #000; padding:3px;"><b>Rev. No</b></td>
 												<td style="border:1px solid #000; padding:3px;">
-													<!-- <span t-esc="first_review.rev_no if first_review else ''"/> -->
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')], limit=1).issue_date.strftime('%d/%m/%y')"/>
 												</td>
 
 												<td style="border:1px solid #000; padding:3px;"><b>Rev. Dt</b></td>
 												<td style="border:1px solid #000; padding:3px;">
-													<!-- <span t-esc="first_review.rev_date1 if first_review else ''"/> -->
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')], limit=1).revision_no"/>
 												</td>
 
 												<td style="border:1px solid #000; padding:3px;"><b>Issue Dt</b></td>
 												<td style="border:1px solid #000; padding:3px;">
-													<!-- <span t-esc="first_review.issue_date1 if first_review else ''"/> -->
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')], limit=1).revision_date.strftime('%d/%m/%y')"/>
+												</td>
+											</tr> -->
+
+											<t t-set="param"
+											t-value="env['lerm.parameter.master']
+											.search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')], limit=1)"/>
+
+											<tr>
+												<td style="border:1px solid #000; padding:3px;"><b>Rev. No</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+													<span t-esc="param.revision_no or ''"/>
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Rev. Dt</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+													<span t-esc="param.revision_date.strftime('%d/%m/%y') if param and param.revision_date else ''"/>
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Issue Dt</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+													<span t-esc="param.issue_date.strftime('%d/%m/%y') if param and param.issue_date else ''"/>
 												</td>
 											</tr>
 
@@ -1641,11 +1668,18 @@
 								<tr>
 
 									<!-- LOGO -->
-									<td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
+									<!-- <td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
 										<img t-if="logo_base64"
 											t-att-src="'data:image/png;base64,%s' % logo_base64"
 											style="height:50px;"/>
-									</td>
+									</td> -->
+
+									<t t-if="data.image">
+										<td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
+											<img t-att-src="'data:image/png;base64,%s' % data.image.decode('utf-8')"
+												style="width: 100%; height: auto; max-height: 900px; object-fit: contain;"/>
+										</td>
+									</t>
 
 									<!-- COMPANY HEADER -->
 									<td style="width:77%; border:1px solid #000; padding:0;">
@@ -1673,24 +1707,28 @@
 
 												<td style="border:1px solid #000; padding:3px;"><b>Issue No</b></td>
 												<td style="border:1px solid #000; padding:3px;">
-													<!-- <span t-esc="first_review.issue_no if first_review else ''"/> -->
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','tyer4fgr-5c56-475b-9arty156878965uut')], limit=1).issue_no"/>
 												</td>
 											</tr>
+
+											<t t-set="param"
+											t-value="env['lerm.parameter.master']
+											.search([('internal_id','=','tyer4fgr-5c56-475b-9arty156878965uut')], limit=1)"/>
 
 											<tr>
 												<td style="border:1px solid #000; padding:3px;"><b>Rev. No</b></td>
 												<td style="border:1px solid #000; padding:3px;">
-													<!-- <span t-esc="first_review.rev_no if first_review else ''"/> -->
+													<span t-esc="param.revision_no or ''"/>
 												</td>
 
 												<td style="border:1px solid #000; padding:3px;"><b>Rev. Dt</b></td>
 												<td style="border:1px solid #000; padding:3px;">
-													<!-- <span t-esc="first_review.rev_date1 if first_review else ''"/> -->
+													<span t-esc="param.revision_date.strftime('%d/%m/%y') if param and param.revision_date else ''"/>
 												</td>
 
 												<td style="border:1px solid #000; padding:3px;"><b>Issue Dt</b></td>
 												<td style="border:1px solid #000; padding:3px;">
-													<!-- <span t-esc="first_review.issue_date1 if first_review else ''"/> -->
+													<span t-esc="param.issue_date.strftime('%d/%m/%y') if param and param.issue_date else ''"/>
 												</td>
 											</tr>
 
@@ -1984,11 +2022,17 @@
 								<tr>
 
 									<!-- LOGO -->
-									<td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
+									<!-- <td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
 										<img t-if="logo_base64"
 											t-att-src="'data:image/png;base64,%s' % logo_base64"
 											style="height:50px;"/>
-									</td>
+									</td> -->
+									<t t-if="data.image">
+										<td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
+											<img t-att-src="'data:image/png;base64,%s' % data.image.decode('utf-8')"
+												style="width: 100%; height: auto; max-height: 900px; object-fit: contain;"/>
+										</td>
+									</t>
 
 									<!-- COMPANY HEADER -->
 									<td style="width:77%; border:1px solid #000; padding:0;">
@@ -2016,24 +2060,28 @@
 
 												<td style="border:1px solid #000; padding:3px;"><b>Issue No</b></td>
 												<td style="border:1px solid #000; padding:3px;">
-													<!-- <span t-esc="first_review.issue_no if first_review else ''"/> -->
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','c800e59a-b847-4049-9e2b-673fcd1fcde5')], limit=1).issue_no"/>
 												</td>
 											</tr>
+
+											<t t-set="param"
+											t-value="env['lerm.parameter.master']
+											.search([('internal_id','=','c800e59a-b847-4049-9e2b-673fcd1fcde5')], limit=1)"/>
 
 											<tr>
 												<td style="border:1px solid #000; padding:3px;"><b>Rev. No</b></td>
 												<td style="border:1px solid #000; padding:3px;">
-													<!-- <span t-esc="first_review.rev_no if first_review else ''"/> -->
+													<span t-esc="param.revision_no or ''"/>
 												</td>
 
 												<td style="border:1px solid #000; padding:3px;"><b>Rev. Dt</b></td>
 												<td style="border:1px solid #000; padding:3px;">
-													<!-- <span t-esc="first_review.rev_date1 if first_review else ''"/> -->
+													<span t-esc="param.revision_date.strftime('%d/%m/%y') if param and param.revision_date else ''"/>
 												</td>
 
 												<td style="border:1px solid #000; padding:3px;"><b>Issue Dt</b></td>
 												<td style="border:1px solid #000; padding:3px;">
-													<!-- <span t-esc="first_review.issue_date1 if first_review else ''"/> -->
+													<span t-esc="param.issue_date.strftime('%d/%m/%y') if param and param.issue_date else ''"/>
 												</td>
 											</tr>
 
@@ -2268,11 +2316,17 @@
 								<tr>
 
 									<!-- LOGO -->
-									<td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
+									<!-- <td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
 										<img t-if="logo_base64"
 											t-att-src="'data:image/png;base64,%s' % logo_base64"
 											style="height:50px;"/>
-									</td>
+									</td> -->
+									<t t-if="data.image">
+										<td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
+											<img t-att-src="'data:image/png;base64,%s' % data.image.decode('utf-8')"
+												style="width: 100%; height: auto; max-height: 900px; object-fit: contain;"/>
+										</td>
+									</t>
 
 									<!-- COMPANY HEADER -->
 									<td style="width:77%; border:1px solid #000; padding:0;">
@@ -2300,24 +2354,46 @@
 
 												<td style="border:1px solid #000; padding:3px;"><b>Issue No</b></td>
 												<td style="border:1px solid #000; padding:3px;">
-													<!-- <span t-esc="first_review.issue_no if first_review else ''"/> -->
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','yt25ec57-11f8-4249-9fa8-788889999rtt')], limit=1).issue_no"/>
 												</td>
 											</tr>
 
-											<tr>
+											<!-- <tr>
 												<td style="border:1px solid #000; padding:3px;"><b>Rev. No</b></td>
 												<td style="border:1px solid #000; padding:3px;">
-													<!-- <span t-esc="first_review.rev_no if first_review else ''"/> -->
+												
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','yt25ec57-11f8-4249-9fa8-788889999rtt')], limit=1).revision_no"/>
 												</td>
 
 												<td style="border:1px solid #000; padding:3px;"><b>Rev. Dt</b></td>
 												<td style="border:1px solid #000; padding:3px;">
-													<!-- <span t-esc="first_review.rev_date1 if first_review else ''"/> -->
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','yt25ec57-11f8-4249-9fa8-788889999rtt')], limit=1).issue_date.strftime('%d/%m/%y')"/>
+												
 												</td>
 
 												<td style="border:1px solid #000; padding:3px;"><b>Issue Dt</b></td>
 												<td style="border:1px solid #000; padding:3px;">
-													<!-- <span t-esc="first_review.issue_date1 if first_review else ''"/> -->
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','yt25ec57-11f8-4249-9fa8-788889999rtt')], limit=1).revision_date.strftime('%d/%m/%y')"/>
+												</td>
+											</tr> -->
+											<t t-set="param"
+											t-value="env['lerm.parameter.master']
+											.search([('internal_id','=','yt25ec57-11f8-4249-9fa8-788889999rtt')], limit=1)"/>
+
+											<tr>
+												<td style="border:1px solid #000; padding:3px;"><b>Rev. No</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+													<span t-esc="param.revision_no or ''"/>
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Rev. Dt</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+													<span t-esc="param.revision_date.strftime('%d/%m/%y') if param and param.revision_date else ''"/>
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Issue Dt</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+													<span t-esc="param.issue_date.strftime('%d/%m/%y') if param and param.issue_date else ''"/>
 												</td>
 											</tr>
 
@@ -2736,11 +2812,17 @@
 								<tr>
 
 								
-									<td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
+									<!-- <td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
 										<img t-if="logo_base64"
 											t-att-src="'data:image/png;base64,%s' % logo_base64"
 											style="height:50px;"/>
-									</td>
+									</td> -->
+									<t t-if="data.image">
+										<td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
+											<img t-att-src="'data:image/png;base64,%s' % data.image.decode('utf-8')"
+												style="width: 100%; height: auto; max-height: 900px; object-fit: contain;"/>
+										</td>
+									</t>
 
 									<td style="width:77%; border:1px solid #000; padding:0;">
 										<table style="width:100%; border-collapse:collapse; font-size:12px;">
@@ -2767,22 +2849,47 @@
 
 												<td style="border:1px solid #000; padding:3px;"><b>Issue No</b></td>
 												<td style="border:1px solid #000; padding:3px;">
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')], limit=1).issue_no"/>
 												</td>
 											</tr>
 
-											<tr>
+											<!-- <tr>
 												<td style="border:1px solid #000; padding:3px;"><b>Rev. No</b></td>
 												<td style="border:1px solid #000; padding:3px;">
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')], limit=1).revision_no"/>
+												
 												</td>
 
 												<td style="border:1px solid #000; padding:3px;"><b>Rev. Dt</b></td>
 												<td style="border:1px solid #000; padding:3px;">
-													
+												
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')], limit=1).issue_date.strftime('%d/%m/%y')"/>
 												</td>
 
 												<td style="border:1px solid #000; padding:3px;"><b>Issue Dt</b></td>
 												<td style="border:1px solid #000; padding:3px;">
-													
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')], limit=1).revision_date.strftime('%d/%m/%y')"/>
+												</td>
+											</tr> -->
+
+											<t t-set="param"
+											t-value="env['lerm.parameter.master']
+											.search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')], limit=1)"/>
+
+											<tr>
+												<td style="border:1px solid #000; padding:3px;"><b>Rev. No</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+													<span t-esc="param.revision_no or ''"/>
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Rev. Dt</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+													<span t-esc="param.revision_date.strftime('%d/%m/%y') if param and param.revision_date else ''"/>
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Issue Dt</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+													<span t-esc="param.issue_date.strftime('%d/%m/%y') if param and param.issue_date else ''"/>
 												</td>
 											</tr>
 
@@ -3045,11 +3152,17 @@
 								<tr>
 
 									<!-- LOGO -->
-									<td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
+									<!-- <td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
 										<img t-if="logo_base64"
 											t-att-src="'data:image/png;base64,%s' % logo_base64"
 											style="height:50px;"/>
-									</td>
+									</td> -->
+									<t t-if="data.image">
+										<td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
+											<img t-att-src="'data:image/png;base64,%s' % data.image.decode('utf-8')"
+												style="width: 100%; height: auto; max-height: 900px; object-fit: contain;"/>
+										</td>
+									</t>
 
 									<!-- COMPANY HEADER -->
 									<td style="width:77%; border:1px solid #000; padding:0;">
@@ -3077,24 +3190,47 @@
 
 												<td style="border:1px solid #000; padding:3px;"><b>Issue No</b></td>
 												<td style="border:1px solid #000; padding:3px;">
-													<!-- <span t-esc="first_review.issue_no if first_review else ''"/> -->
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')], limit=1).issue_no"/>
 												</td>
 											</tr>
 
-											<tr>
+											<!-- <tr>
 												<td style="border:1px solid #000; padding:3px;"><b>Rev. No</b></td>
 												<td style="border:1px solid #000; padding:3px;">
-													<!-- <span t-esc="first_review.rev_no if first_review else ''"/> -->
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')], limit=1).revision_no"/>
+												
 												</td>
 
 												<td style="border:1px solid #000; padding:3px;"><b>Rev. Dt</b></td>
 												<td style="border:1px solid #000; padding:3px;">
-													<!-- <span t-esc="first_review.rev_date1 if first_review else ''"/> -->
+												
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')], limit=1).issue_date.strftime('%d/%m/%y')"/>
 												</td>
 
 												<td style="border:1px solid #000; padding:3px;"><b>Issue Dt</b></td>
 												<td style="border:1px solid #000; padding:3px;">
-													<!-- <span t-esc="first_review.issue_date1 if first_review else ''"/> -->
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')], limit=1).revision_date.strftime('%d/%m/%y')"/>
+												</td>
+											</tr> -->
+
+											<t t-set="param"
+											t-value="env['lerm.parameter.master']
+											.search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')], limit=1)"/>
+
+											<tr>
+												<td style="border:1px solid #000; padding:3px;"><b>Rev. No</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+													<span t-esc="param.revision_no or ''"/>
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Rev. Dt</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+													<span t-esc="param.revision_date.strftime('%d/%m/%y') if param and param.revision_date else ''"/>
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Issue Dt</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+													<span t-esc="param.issue_date.strftime('%d/%m/%y') if param and param.issue_date else ''"/>
 												</td>
 											</tr>
 
@@ -3454,11 +3590,17 @@
 							<table style="width:100%; border-collapse:collapse; border:1px solid #000; font-size:12px;">
 								<tr>
 
-									<td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
+									<!-- <td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
 										<img t-if="logo_base64"
 											t-att-src="'data:image/png;base64,%s' % logo_base64"
 											style="height:50px;"/>
-									</td>
+									</td> -->
+									<t t-if="data.image">
+										<td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
+											<img t-att-src="'data:image/png;base64,%s' % data.image.decode('utf-8')"
+												style="width: 100%; height: auto; max-height: 900px; object-fit: contain;"/>
+										</td>
+									</t>
 
 									<td style="width:77%; border:1px solid #000; padding:0;">
 										<table style="width:100%; border-collapse:collapse; font-size:12px;">
@@ -3484,20 +3626,47 @@
 
 												<td style="border:1px solid #000; padding:3px;"><b>Issue No</b></td>
 												<td style="border:1px solid #000; padding:3px;">
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')], limit=1).issue_no"/>
 												</td>
 											</tr>
 
-											<tr>
+											<!-- <tr>
 												<td style="border:1px solid #000; padding:3px;"><b>Rev. No</b></td>
 												<td style="border:1px solid #000; padding:3px;">
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')], limit=1).revision_no"/>
+												
 												</td>
 
 												<td style="border:1px solid #000; padding:3px;"><b>Rev. Dt</b></td>
 												<td style="border:1px solid #000; padding:3px;">
+												
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')], limit=1).issue_date.strftime('%d/%m/%y')"/>
 												</td>
 
 												<td style="border:1px solid #000; padding:3px;"><b>Issue Dt</b></td>
 												<td style="border:1px solid #000; padding:3px;">
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')], limit=1).revision_date.strftime('%d/%m/%y')"/>
+												</td>
+											</tr> -->
+
+											<t t-set="param"
+											t-value="env['lerm.parameter.master']
+											.search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')], limit=1)"/>
+
+											<tr>
+												<td style="border:1px solid #000; padding:3px;"><b>Rev. No</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+													<span t-esc="param.revision_no or ''"/>
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Rev. Dt</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+													<span t-esc="param.revision_date.strftime('%d/%m/%y') if param and param.revision_date else ''"/>
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Issue Dt</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+													<span t-esc="param.issue_date.strftime('%d/%m/%y') if param and param.issue_date else ''"/>
 												</td>
 											</tr>
 
