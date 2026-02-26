@@ -1043,13 +1043,43 @@ class AercharAbrasivityLine(models.Model):
 
     classification = fields.Selection(
     [
-        ('low', 'LOW'),
-        ('medium', 'MEDIUM'),
-        ('high', 'HIGH'),
-        ('very_high', 'VERY HIGH'),
+        ('very_low', 'Very Low Abrasiveness'),
+        ('low', 'Low Abrasiveness'),
+        ('medium', 'Medium Abrasiveness'),
+        ('high', 'High Abrasiveness'),
+        ('extreme', 'Extreme Abrasiveness'),
+        ('quartzite', 'Quartzite'),
     ],
-    string="Classification"
-    )
+    string="CAI Classification",
+    compute="_compute_classification",
+    store=True
+)
+    
+
+    @api.depends('cai_prime')
+    def _compute_classification(self):
+     for rec in self:
+        cai_prime = rec.cai_prime or 0.0
+
+        if cai_prime >= 6.0:
+            rec.classification = 'quartzite'
+        elif cai_prime >= 4.0:
+            rec.classification = 'extreme'
+        elif cai_prime >= 2.0:
+            rec.classification = 'high'
+        elif cai_prime >= 1.0:
+            rec.classification = 'medium'
+        elif cai_prime >= 0.5:
+            rec.classification = 'low'
+        elif cai_prime >= 0.3:
+            rec.classification = 'very_low'
+        else:
+            rec.classification = False
+
+
+    # point_load = fields.Selection([
+    # ('Core', 'Core'),
+    # ('Lump', 'Lump'),], string="Point Load Core/Lump")
 
     avg_pin_result = fields.Float(
         string="Average Pin 1 Result",
@@ -1189,16 +1219,39 @@ class AercharAbrasivityLine(models.Model):
      for rec in self:
         rec.cai = (rec.overall_avg_pin_result or 0.0) * 10
 
+    hrc_1 = fields.Float(string="HRC 1", digits=(16, 2) ,default=(55.3))
+    hrc_2 = fields.Float(string="HRC 2", digits=(16, 2) ,default=(55.7))
+    hrc_3 = fields.Float(string="HRC 3", digits=(16, 2) ,default=(55.5))
+    hrc_4 = fields.Float(string="HRC 4", digits=(16, 2) ,default=(55.9))
+    hrc_5 = fields.Float(string="HRC 5", digits=(16, 2) ,default=(55.3)) 
+
     avg_hrc = fields.Float(
     string="Average HRC",
     digits=(16, 2),
-    compute="_compute_avg_hrc"
+    compute="_compute_avg_hrc",
+    store=True
 )
 
+    @api.depends('hrc_1', 'hrc_2', 'hrc_3', 'hrc_4', 'hrc_5')
     def _compute_avg_hrc(self):
      for rec in self:
-        hrc_values = [55.3, 55.7, 55.5, 55.9, 55.3]
-        rec.avg_hrc = round(sum(hrc_values) / len(hrc_values), 2)
+        values = [
+            rec.hrc_1 or 0.0,
+            rec.hrc_2 or 0.0,
+            rec.hrc_3 or 0.0,
+            rec.hrc_4 or 0.0,
+            rec.hrc_5 or 0.0,
+        ]
+
+        # Count only filled values
+        filled_values = [v for v in values if v > 0]
+
+        if filled_values:
+            rec.avg_hrc = round(sum(filled_values) / len(filled_values), 2)
+        else:
+            rec.avg_hrc = 0.0
+
+    
 
     cai_prime = fields.Float(
     string="CAI'",
@@ -1814,44 +1867,143 @@ class TriaxialLine(models.Model):
    
     triaxial_graph = fields.Binary(string="Triaxial Graph")
 
+    # def action_generate_triaxial_graph(self):
+    #     for rec in self:
+    #         lines = rec.triaxial_child_lines.filtered(
+    #             lambda l: l.con_pressure and l.axial
+    #         )
+
+    #         if not lines:
+    #             rec.triaxial_graph = False
+    #             continue
+
+    #         x = [l.con_pressure for l in lines]
+    #         y = [l.axial for l in lines]
+
+    #         # Linear fit (y = mx + c)
+    #         m, c = np.polyfit(x, y, 1)
+
+    #         x_line = np.linspace(min(x), max(x), 100)
+    #         y_line = m * x_line + c
+
+    #         # Plot
+    #         plt.figure(figsize=(6, 4))
+    #         plt.plot(x, y, marker='o', linestyle='-', linewidth=1)
+    #         plt.plot(x_line, y_line, linestyle='--')
+
+    #         plt.xlabel("Confining Pressure (MPa)")
+    #         plt.ylabel("Axial Strength (MPa)")
+    #         plt.grid(True)
+
+    #         eq_text = f"f(x) = {m:.3f}x + {c:.3f}"
+    #         plt.text(min(x), max(y), eq_text, fontsize=6)
+
+    #         buf = io.BytesIO()
+    #         plt.tight_layout()
+    #         plt.savefig(buf, format='png', dpi=150)
+    #         plt.close()
+
+    #         rec.triaxial_graph = base64.b64encode(buf.getvalue())
+
     def action_generate_triaxial_graph(self):
-        for rec in self:
-            lines = rec.triaxial_child_lines.filtered(
-                lambda l: l.con_pressure and l.axial
-            )
+     import numpy as np
+     import matplotlib
+     matplotlib.use('Agg')
+     import matplotlib.pyplot as plt
+     import base64
+     import io
 
-            if not lines:
-                rec.triaxial_graph = False
-                continue
+     for rec in self:
+        lines = rec.triaxial_child_lines.filtered(
+            lambda l: l.con_pressure and l.axial
+        )
 
-            x = [l.con_pressure for l in lines]
-            y = [l.axial for l in lines]
+        if not lines:
+            rec.triaxial_graph = False
+            continue
 
-            # Linear fit (y = mx + c)
-            m, c = np.polyfit(x, y, 1)
+        # -----------------------------
+        # Data
+        # -----------------------------
+        x = np.array([l.con_pressure for l in lines], float)
+        y = np.array([l.axial for l in lines], float)
 
-            x_line = np.linspace(min(x), max(x), 100)
-            y_line = m * x_line + c
+        # -----------------------------
+        # Linear regression
+        # -----------------------------
+        m, c = np.polyfit(x, y, 1)
 
-            # Plot
-            plt.figure(figsize=(6, 4))
-            plt.plot(x, y, marker='o', linestyle='-', linewidth=1)
-            plt.plot(x_line, y_line, linestyle='--')
+        # Use real X values so line passes through points
+        # Line THROUGH actual points
+        order = np.argsort(x)
+        x_line = x[order]
+        y_line = y[order]
 
-            plt.xlabel("Confining Pressure (MPa)")
-            plt.ylabel("Axial Strength (MPa)")
-            plt.grid(True)
+        # -----------------------------
+        # Figure
+        # -----------------------------
+        fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
 
-            eq_text = f"f(x) = {m:.3f}x + {c:.3f}"
-            plt.text(min(x), max(y), eq_text, fontsize=6)
+        excel_blue = '#4472C4'
 
-            buf = io.BytesIO()
-            plt.tight_layout()
-            plt.savefig(buf, format='png', dpi=150)
-            plt.close()
+        # Scatter points
+        ax.scatter(x, y, color=excel_blue, s=60, zorder=3)
 
-            rec.triaxial_graph = base64.b64encode(buf.getvalue())
+        # Dotted regression line (Excel style)
+        ax.plot(
+            x_line,
+            y_line,
+            linestyle=(0, (1, 2)),
+            linewidth=3.5,
+            color=excel_blue,
+            solid_capstyle='round'
+        )
 
+        # Labels
+        ax.set_xlabel("Confining Pressure (MPa)")
+        ax.set_ylabel("Axial Strength (MPa)")
+
+        # -----------------------------
+        # Auto Y scaling (tight)
+        # -----------------------------
+        y_pad = (max(y) - min(y)) * 0.15 if max(y) != min(y) else 1
+        ax.set_ylim(min(y) - y_pad, max(y) + y_pad)
+
+        # -----------------------------
+        # Grid
+        # -----------------------------
+        ax.grid(True, linewidth=0.8, alpha=0.7)
+
+        # Dark borders
+        for spine in ax.spines.values():
+            spine.set_linewidth(1.2)
+
+        # -----------------------------
+        # Equation ON the line
+        # -----------------------------
+        x_eq = np.mean(x)
+        y_eq = m * x_eq + c
+
+        eq = f"y = {m:.3f}x + {c:.3f}"
+
+        ax.text(
+    x_eq,
+    y_eq + y_pad * 0.9,   # small vertical lift
+    eq,
+    fontsize=10,
+    ha='center',
+    va='bottom'
+)
+
+        # -----------------------------
+        # Export
+        # -----------------------------
+        buf = io.BytesIO()
+        fig.tight_layout()
+        fig.savefig(buf, format='png')
+        plt.close(fig)
+
+        rec.triaxial_graph = base64.b64encode(buf.getvalue())
 
 
            

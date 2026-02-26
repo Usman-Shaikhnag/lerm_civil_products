@@ -69,9 +69,17 @@ class Soil(models.Model):
     _inherit = "lerm.eln"
     _rec_name = "name_soil"
 
+    
+
 
     name_soil = fields.Char("Name",default="Soil")
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
+
+    image = fields.Image(
+        string="Image",
+        max_width=1024,
+        max_height=1024
+    )
 
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
@@ -1743,12 +1751,15 @@ class Soil(models.Model):
     soil_name = fields.Char("Name",default="California Bearing Ratio")
     soil_visible = fields.Boolean("California Bearing Ratio Visible",compute="_compute_visible")
 
+    def action_print_cbr(self):
+        return self.env.ref('soil1.action_report_cbr').report_action(self)
+
     selected_lab_id = fields.Many2one(
         'lab.option.line',
         string="Select Lab ID",
         domain="[('id', 'in', lab_option_ids)]"
     )
-    doc_name = fields.Char("Doc Name",default="Laboratory test results- California bearing ratio test (CBR)")
+    doc_name1 = fields.Char("Doc Name",default="Laboratory test results- California bearing ratio test (CBR)")
 
     cbr_generated = fields.Boolean(string="GSA Lines Generated",default=False)
     cbr_ids = fields.One2many('cbr.line', 'parent_id',ondelete='cascade')
@@ -2197,6 +2208,9 @@ class Soil(models.Model):
     doc_name = fields.Char("Doc Name",default="Grain Size Analysis (GSA)")
 
     gsa_child_lines = fields.One2many('mechanical.gsa.line','parent_id')
+
+    def action_print_gsa(self):
+        return self.env.ref('soil1.action_report_gsa').report_action(self)
 
    
 
@@ -7203,7 +7217,7 @@ class UcsSoilLine(models.Model):
                     current_val = new_val
 
     @api.depends('serial_no', 'prove_ring_read',
-                 'parent_id_ucs.ucs_area', 'parent_id_ucs.ucs_dial_gauge', 'parent_id_ucs.ucs_height')
+                 'parent_id_ucs.ucs_area', 'parent_id_ucs.ucs_dial_gauge', 'parent_id_ucs.ucs_height','parent_id_ucs.m','parent_id_ucs.c')
     def _compute_all(self):
         """Reproduce Excel sheet: horiz → deform → strain → Ac → shear"""
         for rec in self:
@@ -7234,10 +7248,12 @@ class UcsSoilLine(models.Model):
             # 5) Shear stress = ((PR*5)*1.682+13.644)/(9.81*Ac)
             pr = rec.prove_ring_read or 0.0
             ac = rec.corrected_area or 1.0
+            m = rec.parent_id_ucs.m
+            c = rec.parent_id_ucs.c
             if rec.serial_no == 1 or horiz <= 0:
                 rec.shear_stress = 0
             else:
-               rec.shear_stress = (((pr * 5.0) * 1.682) + 13.644) / (9.81 * ac)
+               rec.shear_stress = (((pr * 5.0) * m) + c) / (9.81 * ac)
 
 
 
@@ -9629,7 +9645,10 @@ class USCNewLine(models.Model):
             line.degree_saturation = (w / (line.gamma_ratio - line.inv_specific_gravity)) * 100
         else:
             line.degree_saturation = 0.0
-   
+
+    
+    m = fields.Float(string=" (m)",default=1.6820, digits=(10,4))
+    c = fields.Float(string=" (c)",default=13.644 , digits=(10,4))
   
     ucs_lines = fields.One2many('ucs.soil.line', 'parent_id_ucs',  string="DETERMINE THE UNCONFINED COMPRESSIVE STRENGTH",default=lambda self: self.default_ucs_reading())	
 
