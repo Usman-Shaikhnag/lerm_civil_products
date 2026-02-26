@@ -69,6 +69,8 @@ class Soil(models.Model):
     _inherit = "lerm.eln"
     _rec_name = "name_soil"
 
+    
+
 
     name_soil = fields.Char("Name",default="Soil")
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
@@ -1772,12 +1774,15 @@ class Soil(models.Model):
     soil_name = fields.Char("Name",default="California Bearing Ratio")
     soil_visible = fields.Boolean("California Bearing Ratio Visible",compute="_compute_visible")
 
+    def action_print_cbr(self):
+        return self.env.ref('soil1.action_report_cbr').report_action(self)
+
     selected_lab_id = fields.Many2one(
         'lab.option.line',
         string="Select Lab ID",
         domain="[('id', 'in', lab_option_ids)]"
     )
-    doc_name = fields.Char("Doc Name",default="Laboratory test results- California bearing ratio test (CBR)")
+    doc_name1 = fields.Char("Doc Name",default="Laboratory test results- California bearing ratio test (CBR)")
 
     cbr_generated = fields.Boolean(string="GSA Lines Generated",default=False)
     cbr_ids = fields.One2many('cbr.line', 'parent_id',ondelete='cascade')
@@ -2242,6 +2247,9 @@ class Soil(models.Model):
     doc_name = fields.Char("Doc Name",default="Grain Size Analysis (GSA)")
 
     gsa_child_lines = fields.One2many('mechanical.gsa.line','parent_id')
+
+    def action_print_gsa(self):
+        return self.env.ref('soil1.action_report_gsa').report_action(self)
 
    
 
