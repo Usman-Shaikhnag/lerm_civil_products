@@ -753,3 +753,163 @@ class SoilReportGSA(models.AbstractModel):
             'eln': eln_records,
             'logo_base64': logo_base64,
         }
+
+
+class SoilReportProctor(models.AbstractModel):
+    _name = 'report.soil1.report_proctor_template'
+    _description = 'CBR Report Parser'
+
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        # Mechanical Soil records fetch kara
+        docs = self.env['mechanical.soil1'].browse(docids)
+        
+        # ELN records shodha
+        eln_records = self.env['lerm.eln'].search([
+            ('sample_id', 'in', docs.ids)
+        ])
+
+        # Logo Fetching Logic
+        # Module name 'soil1' asne garjeche ahe
+        logo_path = get_module_resource('soil1', 'static', 'src', 'img', 'genstru_logo.png')
+        logo_base64 = False
+        if logo_path:
+            with open(logo_path, 'rb') as f:
+                logo_base64 = base64.b64encode(f.read()).decode('utf-8')
+
+        return {
+            'doc_ids': docids,
+            'doc_model': 'mechanical.soil1',
+            'data': docs,
+            'eln': eln_records,
+            'logo_base64': logo_base64,
+        }
+
+
+
+class SoilReportTriaxial(models.AbstractModel):
+    _name = 'report.soil1.report_triaxial_template'
+    _description = 'CBR Report Parser'
+
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        # Mechanical Soil records fetch kara
+        docs = self.env['mechanical.soil1'].browse(docids)
+        
+        # ELN records shodha
+        eln_records = self.env['lerm.eln'].search([
+            ('sample_id', 'in', docs.ids)
+        ])
+
+        # Logo Fetching Logic
+        # Module name 'soil1' asne garjeche ahe
+        logo_path = get_module_resource('soil1', 'static', 'src', 'img', 'genstru_logo.png')
+        logo_base64 = False
+        if logo_path:
+            with open(logo_path, 'rb') as f:
+                logo_base64 = base64.b64encode(f.read()).decode('utf-8')
+
+        return {
+            'doc_ids': docids,
+            'doc_model': 'mechanical.soil1',
+            'data': docs,
+            'eln': eln_records,
+            'logo_base64': logo_base64,
+        }
+
+
+
+
+class SoilReportSwelling(models.AbstractModel):
+    _name = 'report.soil1.report_swelling_template'
+    _description = 'CBR Report Parser'
+
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        # Mechanical Soil records fetch kara
+        docs = self.env['mechanical.soil1'].browse(docids)
+        
+        # ELN records shodha
+        eln_records = self.env['lerm.eln'].search([
+            ('sample_id', 'in', docs.ids)
+        ])
+
+        # Logo Fetching Logic
+        # Module name 'soil1' asne garjeche ahe
+        logo_path = get_module_resource('soil1', 'static', 'src', 'img', 'genstru_logo.png')
+        logo_base64 = False
+        if logo_path:
+            with open(logo_path, 'rb') as f:
+                logo_base64 = base64.b64encode(f.read()).decode('utf-8')
+
+        return {
+            'doc_ids': docids,
+            'doc_model': 'mechanical.soil1',
+            'data': docs,
+            'eln': eln_records,
+            'logo_base64': logo_base64,
+        }
+
+
+class SoilReportDirect(models.AbstractModel):
+    _name = 'report.soil1.report_direct_template'
+    _description = 'CBR Report Parser'
+
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        # Mechanical Soil records fetch kara
+        docs = self.env['mechanical.soil1'].browse(docids)
+        
+        # ELN records shodha
+        eln_records = self.env['lerm.eln'].search([
+            ('sample_id', 'in', docs.ids)
+        ])
+
+        # Logo Fetching Logic
+        # Module name 'soil1' asne garjeche ahe
+        logo_path = get_module_resource('soil1', 'static', 'src', 'img', 'genstru_logo.png')
+        logo_base64 = False
+        if logo_path:
+            with open(logo_path, 'rb') as f:
+                logo_base64 = base64.b64encode(f.read()).decode('utf-8')
+
+        return {
+            'doc_ids': docids,
+            'doc_model': 'mechanical.soil1',
+            'data': docs,
+            'eln': eln_records,
+            'logo_base64': logo_base64,
+        }
+
+
+
+class SoilReportConsolidation(models.AbstractModel):
+    _name = 'report.soil1.report_consoilidation_template'
+    _description = 'CBR Report Parser'
+
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        # Mechanical Soil records fetch kara
+        docs = self.env['mechanical.soil1'].browse(docids)
+        
+        # ELN records shodha
+        eln_records = self.env['lerm.eln'].search([
+            ('sample_id', 'in', docs.ids)
+        ])
+
+        # Logo Fetching Logic
+        # Module name 'soil1' asne garjeche ahe
+        logo_path = get_module_resource('soil1', 'static', 'src', 'img', 'genstru_logo.png')
+        logo_base64 = False
+        if logo_path:
+            with open(logo_path, 'rb') as f:
+                logo_base64 = base64.b64encode(f.read()).decode('utf-8')
+
+        return {
+            'doc_ids': docids,
+            'doc_model': 'mechanical.soil1',
+            'data': docs,
+            'eln': eln_records,
+            'logo_base64': logo_base64,
+        }
+
