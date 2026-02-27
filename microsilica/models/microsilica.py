@@ -901,12 +901,41 @@ class Microsilica(models.Model):
             if sample.internal_id == '658874seqa-bfaf-4667-aca6-b69c321af63b':
                 record.oversize_percent_retain_visible = True
                 print("oversize percent retained",record.oversize_percent_retain_visible)
-            # bulk density
+
+            # bulk density 
             if sample.internal_id == '14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a':
-                record.bulk_density_visible = True
+                record.bulk_density_visible = True 
 
     def open_eln_page(self):
-        # import wdb; wdb.set_trace()
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+            # import wdb;wdb.set_trace()
+            # Elongation
+
+
+            if result.parameter.internal_id == 'ddd2525aw-19f0-48b6-8e09-e7076a4b04b5':
+                result.calculated = True
+
+            if result.parameter.internal_id == '52147fgtre-5f8c-44a2-984b-6ad2a17d250c':
+                result.calculated = True
+
+            if result.parameter.internal_id == '658fgtrcd-80ef-4de0-96ba-a279f27b9ede':
+                result.calculated = True
+
+            if result.parameter.internal_id == '658798cvfd-889b-477c-a355-0476f6bcd0d7':
+                result.calculated = True
+
+            if result.parameter.internal_id == '658874seqa-bfaf-4667-aca6-b69c321af63b':
+                result.calculated = True
+
+            if result.parameter.internal_id == '14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a':
+                result.calculated = True
 
         return {
                 'view_mode': 'form',
