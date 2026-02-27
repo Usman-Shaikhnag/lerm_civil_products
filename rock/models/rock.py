@@ -602,6 +602,38 @@ class MechanicalRockLine(models.Model):
     stress_rate = fields.Float(string="Stress Rate",digits=(16, 2),store=True,compute="_compute_stress_rate")
     moisture_content = fields.Float(string="Moisture Content %",digits=(16, 2),store=True,compute="_compute_moisture_content")
 
+    point_load_type = fields.Selection(
+    [
+        ('core', 'Core'),
+        ('lump', 'Lump'),
+    ],
+    string="Point Load Type",
+    required=True)
+
+    point_load_index1 = fields.Float(string="Point Load",digits=(16, 2),store=True,compute="_compute_point_load_index1")
+
+   
+
+    @api.depends('point_load', 'avg_dia', 'avg_height', 'point_load_type')
+    def _compute_point_load_index1(self):
+     for rec in self:
+        P = rec.point_load or 0.0
+
+        if rec.point_load_type == 'core' and rec.avg_dia:
+            D = rec.avg_dia
+            rec.point_load_index1 = (
+                1000 * P
+            ) / (math.sqrt(50) * (D ** 1.5))
+
+        elif rec.point_load_type == 'lump' and rec.avg_dia and rec.avg_height:
+            De = rec.avg_dia * rec.avg_height
+            rec.point_load_index1 = (
+                1000 * P
+            ) / (math.sqrt(50) * (De ** 0.75))
+
+        else:
+            rec.point_load_index1 = 0.0
+
 
     @api.depends('dia_rock1', 'dia_rock2', 'dia_rock3')
     def _compute_avg_dia(self):
