@@ -77,26 +77,28 @@
                     </div>
                     <group style="width:100%">
                         <group style="width:50%">
-                            <field name="srf_id" readonly="1"/>
-                            <field name="srf_date" readonly="state == '2-confirm' and date_editable == False"/>
+                            <field name="srf_id" readonly="1"  string="Order Request No"/>
+                            <field name="srf_date" readonly="state == '2-confirm' and date_editable == False" string="OR Date"/>
                             <field name="kes_number" invisible='1'/>
                             <field name="customer" readonly="state == '2-confirm'"/>
                             <field name="contact_person" domain="[('id', 'in', contact_site_ids)]" readonly="state == '2-confirm'"/>
                             <field name="site_address"/>
-                            <field name="client_refrence" readonly="state == '2-confirm'"/>
+                            <field name="client_refrence" readonly="state == '2-confirm'"  string="Reference (letter/W.O./Mail)"/>
                             <field name="date_editable" invisible='1'/>
                             <field name="active" invisible='1'/>
                         </group>
 
                         <group style="width:50%">
                             <field name="name_work" domain="[('id', 'in', name_works)]"  readonly="state == '2-confirm'"/>
-                            <field name="client" readonly="state == '2-confirm'"/>
+                            <field name="client" readonly="state == '2-confirm'" string="End Customer, if any: "/>
                             <field name="contractor" domain="[('id', 'in', contractor_ids)]"/>
+                            <field name="report_issued" />
                             <field name="contractor_ids" invisible='1'/>
                             <field name="contact_other_ids" invisible='1'/>
-                            <field name="billing_customer" readonly="state == '2-confirm'"/>
+                            <field name="billing_customer" readonly="state == '2-confirm'" string="Name of Billing Customer"/>
                             <field name="name_works" invisible='1'/>
                             <field name="consultant_name1"/>
+                            <field name="request_date"/>
                             <field name="lab_id1"  invisible="1"/>
                              <field name="quantity" invisible="1"/>
                                <field name="sample_qty" invisible="1"/>
@@ -138,6 +140,7 @@
                             <field name="quantity"/>
                             <field name="lab_id" column_invisible="1"/>
                             <!-- <field name="lab_ids_raw"  /> -->
+                            <!-- column_invisible="1" -->
 
 
                             
@@ -187,13 +190,13 @@
         <field name="model">lerm.civil.srf</field>
         <field name="arch" type="xml">
             <tree default_order='create_date desc' >
-                <field name="srf_id"/>
-                <field name="srf_date" optional="show"/>
+                <field name="srf_id" string="Order Request No"/>
+                <field name="srf_date" optional="show" string="OR Date"/>
                 <field name="customer" optional="show"/>
                 <field name="contact_person" optional="show"/>
-                <field name="billing_customer" optional="show"/>
+                <field name="billing_customer" optional="show" string="Name of Billing Customer"/>
                 <!-- <field name="name_work" optional="show"/> -->
-                <field name="client_refrence" optional="show"/>
+                <field name="client_refrence" optional="show" string="Reference (letter/W.O./Mail)"/>
             </tree>
         </field>
     </record>
@@ -247,10 +250,10 @@
                             <field name="material_id" context="{'lab_name': True}" domain="[('id', 'in', material_ids)]" options="{'no_create': True}"/>
                             <field name="brand"/>
                             <field name="grade_id" domain="[('id', 'in', grade_ids)]" options="{'no_create': True}"/>
-                            <field name="client_sample_id"/>
-                            <field name="source_sample"/>
+                            <field name="client_sample_id" invisible="1"/>
+                            <field name="source_sample" invisible="1"/>
                             <field name="received_by_id"/>
-                            <field name="sample_condition"/>
+                            <field name="sample_condition" invisible="1"/>
                             <field name="material_ids" invisible='1'/>
                             <field name="grade_ids" invisible='1'/>
                             <field name="conformity"/>
@@ -265,7 +268,7 @@
                             <field name="main_name" invisible='1'/>
                             <field name="price" invisible='1'/>
                             <field name="size_id" domain="[('id', 'in', size_ids)]" options="{'no_create': True}"/>
-                            <field name="sample_qty" readonly="is_update == True"/>
+                            <field name="sample_qty" readonly="is_update == True" string="No. of ULR Required"/>
                             <field name="sample_received_date" readonly="1"/>
                             <field name="location"/>
                             <field name="casting"/>
@@ -285,7 +288,7 @@
                         <field name="scope" readonly="is_update == True"/>
                     </group>
                     <group style="width:100%">
-                        <field name="sample_description"/>
+                        <field name="sample_description" invisible="1"/>
                     </group>
                     
                     <group>
@@ -313,7 +316,7 @@
                         <tbody>
                             <tr>
                                 <td><field name="uom_id"/></td>
-                                <td><field name="quantity_received"/></td>
+                                <td><field name="quantity_received" readonly="1"/></td>
                                 <td><field name="quantity_consumed"/></td>
                                 <td><field name="quantity_balance"/></td>
                             </tr>
@@ -367,13 +370,13 @@
                 <group>
                     <group>
                         <field name="receipt_date"/>
-                        <field name="disturbes_samples"/>
+                        <field name="disturbes_samples" invisible="1"/>
                         <field name="equipment_availability"/>
                         <field name="resource_availability"/>
                         <field name="test_performed" string="Whether all requested tests can be performed: "/>
                         
                         <field name="material_id" invisible="1"/>
-                        <field name="doc_name"/>
+                        <field name="doc_name" invisible="1"/>
                         <field name="completion_date"/>
                         <field name="issue_no" invisible="1"/>
                         <field name="issue_date1" invisible="1"/>
@@ -382,11 +385,11 @@
                     </group>
                     <group>
                         <field name="lot_detail"/>
-                        <field name="undisturbes_samples"/>
+                        <field name="undisturbes_samples" invisible="1"/>
                         <field name="equipment_availability_remark"/>
                         <field name="resource_availability_remark"/>
                         <field name="test_performed_remark"/>
-                         <!-- <field name="lab_id" /> -->
+                         <field name="lab_id"  invisible="1"/>
                          <field name="quantity" invisible="1"/>
                         
 
@@ -406,12 +409,15 @@
                     string="Assign Lab ID"
                     type="object"
                     class="btn-primary"
-                    invisible="split_done == True"/>
+                    invisible="1"  />
+
+                   
 
                 </div>
                 
                 <field name="review_line_ids" create="false" delete="false">
                     <tree create="false" editable="bottom" delete="false">
+                       <field name="split_done" column_invisible="1" />
                         <field name="lab_id" readonly="1"/>
                         <field name="weight"/>
                         <field name="uom"/>
@@ -422,6 +428,15 @@
                         <field name="quantity"/>
                         <field name="approved"/>
                         <field name="remarks"/>
+
+                         <button name="action_generate_lab_id"
+                                string="Show Lab ID"
+                                type="object"
+                                class="btn-primary"
+                                invisible="not approved or split_done"/>
+
+                             
+                                
                         
 
 
@@ -469,6 +484,8 @@
                 <field name="equipment_availability"/>
                 <field name="resource_availability"/>
                 <field name="test_performed"/>
+
+               
 
             </tree>
         </field>
