@@ -1,0 +1,576 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="plate_load_test_template">
+    <t t-call="web.html_container">
+    <t t-foreach="docs" t-as="o">
+
+        <!-- ════════════════════════════════════════
+             HEADER  (logo left, accreditation right)
+             ════════════════════════════════════════ -->
+    <div class="header">
+        <table class="header" style="margin-top:0;">
+          <tr>
+            <td class="header-logo-main">
+              <img t-att-src="'%s/fst/static/src/img/Knack_Header.png' % request.env['ir.config_parameter'].sudo().get_param('web.base.url')"
+                   style="width:100%; max-height:70px;"/>
+            </td>
+            <td class="header-logo-accred">
+              <!-- Accreditation logo placeholder — replace src as needed -->
+              <img t-att-src="'%s/fst/static/src/img/Knack_Accred.png' % request.env['ir.config_parameter'].sudo().get_param('web.base.url')"
+                   style="max-height:70px;" onerror="this.style.display='none'"/>
+            </td>
+          </tr>
+        </table>
+    </div>
+        
+        <!-- ════════════════════════════════════════
+             FOOTER (appears at bottom via CSS @page if wkhtmltopdf used)
+             ════════════════════════════════════════ -->
+        <div class="footer">
+            <span clas>
+                Testing Location: Taloja Laboratory [Shop No 11, Skyline Sapphire, Sector 7, Taloja Phase 1, Navi Mumbai- 410208]<br/>
+            </span>
+            <span>
+                Regd. Office: Shop no. 3 &amp; 105 Bldg. B1, Wadala Truck Terminal, MMRDA Compound, Antop Hill, Mumbai- 400037<br/>
+            </span>
+            <span>
+                Tel.: +91 22 2401 0040 | Email: sales@knackengineeringservices.com | Website: www.knackengineeringservices.com<br/>
+            </span>
+            Page <span class="page"/> of <span class="topage"/>
+        </div>
+      <!-- ═══ GLOBAL STYLES ═══ -->
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          font-size: 10pt;
+          color: #000000;
+          margin: 0;
+          padding: 0;
+        }
+
+        /* ── Header ── */
+        .report-header {
+          width: 100%;
+          margin-bottom: 12px;
+          border-collapse: collapse;
+        }
+        .report-header td {
+          vertical-align: middle;
+          padding: 0;
+        }
+        .header-logo-main {
+          width: 85%;
+        }
+        .header-logo-accred {
+          width: 15%;
+          text-align: right;
+        }
+        .header-logo-main img,
+        .header-logo-accred img {
+          display: block;
+          max-height: 70px;
+        }
+
+        /* ── Footer ── */
+        .report-footer {
+          text-align: center;
+          font-size: 8pt;
+          color: #000000;
+          border-top: 1px solid #000000;
+          padding-top: 4px;
+          margin-top: 6px;
+        }
+
+        /* ── Section headings ── */
+        h2.report-title {
+          text-align: center;
+          font-size: 14pt;
+          font-weight: bold;
+          margin: 12px 0 8px 0;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+        }
+        h3.section-heading {
+          font-size: 11pt;
+          font-weight: bold;
+          margin: 14px 0 6px 0;
+          text-transform: uppercase;
+        }
+        h4.sub-heading {
+          font-size: 10pt;
+          font-weight: bold;
+          margin: 10px 0 4px 0;
+          text-align: center;
+          text-transform: uppercase;
+        }
+
+        /* ── General table base ── */
+        table.data-table {
+          width: 100%;
+          border-collapse: collapse;
+          font-size: 10pt;
+          margin-bottom: 10px;
+        }
+        table.data-table td,
+        table.data-table th {
+          border: 1px solid #000000;
+          padding: 4px 6px;
+          vertical-align: middle;
+        }
+
+        /* ── Dark navy header row (matching #244061 from docx) ── */
+        table.data-table thead tr th,
+        tr.tbl-header td,
+        tr.tbl-header th {
+          background-color: #244061;
+          color: #ffffff;
+          font-weight: bold;
+          text-align: center;
+        }
+
+        /* ── Meta / cover table ── */
+        table.meta-table {
+          width: 100%;
+          border-collapse: collapse;
+          font-size: 10pt;
+          margin-bottom: 8px;
+        }
+        table.meta-table td {
+          border: 1px solid #000000;
+          padding: 4px 6px;
+          vertical-align: middle;
+        }
+        table.meta-table td.label {
+          font-weight: bold;
+          white-space: nowrap;
+          width: 28%;
+        }
+
+        /* ── TOC ── */
+        table.toc-table {
+          width: 100%;
+          border-collapse: collapse;
+          font-size: 10pt;
+          margin-bottom: 10px;
+        }
+        table.toc-table th {
+          background-color: #244061;
+          color: #ffffff;
+          font-weight: bold;
+          border: 1px solid #000000;
+          padding: 5px 6px;
+          text-align: center;
+        }
+        table.toc-table td {
+          border: 1px solid #000000;
+          padding: 4px 6px;
+          vertical-align: middle;
+        }
+        table.toc-table td.toc-srno {
+          text-align: center;
+          width: 8%;
+        }
+        table.toc-table td.toc-page {
+          text-align: center;
+          width: 10%;
+        }
+
+        /* ── Load vs Settlement ── */
+        table.settlement-table {
+          width: 60%;
+          border-collapse: collapse;
+          font-size: 10pt;
+          margin-bottom: 10px;
+        }
+        table.settlement-table th {
+          background-color: #244061;
+          color: #ffffff;
+          border: 1px solid #000000;
+          padding: 5px 8px;
+          text-align: center;
+        }
+        table.settlement-table td {
+          border: 1px solid #000000;
+          padding: 4px 8px;
+          text-align: center;
+        }
+
+        /* ── Summary table ── */
+        table.summary-table {
+          width: 55%;
+          border-collapse: collapse;
+          font-size: 10pt;
+          margin-bottom: 10px;
+        }
+        table.summary-table th {
+          background-color: #244061;
+          color: #ffffff;
+          border: 1px solid #000000;
+          padding: 5px 8px;
+          text-align: center;
+        }
+        table.summary-table td {
+          border: 1px solid #000000;
+          padding: 4px 8px;
+        }
+        table.summary-table td:last-child {
+          text-align: center;
+        }
+
+        /* ── Signature block ── */
+        table.signature-table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 30px;
+          font-size: 10pt;
+        }
+        table.signature-table td {
+          border: 1px solid #000000;
+          padding: 12px 10px;
+          text-align: center;
+          vertical-align: top;
+          width: 45%;
+        }
+        table.signature-table td.spacer {
+          border: none;
+          width: 10%;
+        }
+
+        /* ── Graph annexure ── */
+        table.graph-meta {
+          width: 100%;
+          border-collapse: collapse;
+          font-size: 10pt;
+          margin-bottom: 10px;
+        }
+        table.graph-meta td {
+          border: 1px solid #000000;
+          padding: 3px 6px;
+          vertical-align: middle;
+        }
+        table.graph-points {
+          width: 45%;
+          border-collapse: collapse;
+          font-size: 10pt;
+          margin-bottom: 10px;
+        }
+        table.graph-points th {
+          background-color: #244061;
+          color: #ffffff;
+          border: 1px solid #000000;
+          padding: 4px 6px;
+          text-align: center;
+        }
+        table.graph-points td {
+          border: 1px solid #000000;
+          padding: 3px 6px;
+          text-align: center;
+        }
+
+        /* ── Utilities ── */
+        .page-break { page-break-after: always; }
+        .text-center { text-align: center; }
+        .bold { font-weight: bold; }
+        p.section-text {
+          font-size: 10pt;
+          margin: 6px 0 10px 0;
+          line-height: 1.5;
+        }
+        .end-of-report {
+          text-align: center;
+          font-weight: bold;
+          margin-top: 20px;
+          font-size: 11pt;
+        }
+      </style>
+
+      <div class="page">
+
+
+        <!-- ════════════════════════════════════════
+             COVER PAGE TITLE
+             ════════════════════════════════════════ -->
+        <h2 class="report-title">Plate Load Test Report</h2>
+
+        <!-- ════════════════════════════════════════
+             COVER META TABLE
+             ════════════════════════════════════════ -->
+        <table class="meta-table">
+          <!-- Row 1: Project / Site Address (full width) -->
+          <tr>
+            <td class="label">Project / Site Address :</td>
+            <td colspan="3"><t t-esc="o.site_address"/></td>
+          </tr>
+          <!-- Row 2: Test Start / End Date -->
+          <tr>
+            <td class="label">Test Start Date :</td>
+            <td style="width:22%;"><t t-esc="o.test_start_date"/></td>
+            <td class="label" style="width:20%;">Test End Date :</td>
+            <td><t t-esc="o.test_end_date"/></td>
+          </tr>
+          <!-- Row 3: Location / Strata -->
+          <tr>
+            <td class="label">Location :</td>
+            <td><t t-esc="o.location"/></td>
+            <td class="label">Strata :</td>
+            <td><t t-esc="o.strata"/></td>
+          </tr>
+          <!-- Row 4: Size of Plate / Concessionaire -->
+          <tr>
+            <td class="label">Size of Plate :</td>
+            <td><t t-esc="o.plate_size"/></td>
+            <td class="label">Concessionaire :</td>
+            <td><t t-esc="o.concessionaire"/></td>
+          </tr>
+          <!-- Row 5: PMC Name -->
+          <tr>
+            <td class="label">PMC Name :</td>
+            <td colspan="3"><t t-esc="o.pmc_name"/></td>
+          </tr>
+          <!-- Row 6: EPC Contractor / Letter Dated -->
+          <tr>
+            <td class="label">EPC Contractor :</td>
+            <td><t t-esc="o.epc_contractor"/></td>
+            <td class="label">Letter Dated On :</td>
+            <td><t t-esc="o.letter_dated"/></td>
+          </tr>
+          <!-- Row 7: Discipline / Group -->
+          <tr>
+            <td class="label">Discipline :</td>
+            <td><t t-esc="o.discipline"/></td>
+            <td class="label">Group :</td>
+            <td><t t-esc="o.group"/></td>
+          </tr>
+          <!-- Row 8: References / Test Name -->
+          <tr>
+            <td class="label">References :</td>
+            <td><t t-esc="o.references"/></td>
+            <td class="label">Test Name :</td>
+            <td><t t-esc="o.test_name"/></td>
+          </tr>
+          <!-- Row 9: Test Report No / Report Issue Date -->
+          <tr>
+            <td class="label">Test Report No :</td>
+            <td><t t-esc="o.report_no"/></td>
+            <td class="label">Report Issue Date :</td>
+            <td><t t-esc="o.create_date"/></td>
+          </tr>
+        </table>
+
+        <hr style="border:none; border-top:1px solid #000000; margin:10px 0;"/>
+
+        <!-- ════════════════════════════════════════
+             TABLE OF CONTENTS
+             ════════════════════════════════════════ -->
+        <h3 class="section-heading" style="text-align:center;">Contents</h3>
+        <table class="toc-table">
+          <thead>
+            <tr>
+              <th class="toc-srno">Sr. No.</th>
+              <th>Item</th>
+              <th class="toc-page">Page</th>
+            </tr>
+          </thead>
+          <tbody>
+            <t t-foreach="o.contents_ids" t-as="line">
+              <tr>
+                <td class="toc-srno"><t t-esc="line.sr_no"/></td>
+                <td><t t-esc="line.item"/></td>
+                <td class="toc-page"><t t-esc="line.page"/></td>
+              </tr>
+            </t>
+          </tbody>
+        </table>
+
+        <div class="page-break"></div>
+
+        <!-- ════════════════════════════════════════
+             1. INTRODUCTION
+             ════════════════════════════════════════ -->
+        <h3 class="section-heading">1. Introduction</h3>
+        <p class="section-text"><t t-esc="o.sections_data.get('introduction')"/></p>
+
+        <!-- ════════════════════════════════════════
+             2. OBJECTIVE
+             ════════════════════════════════════════ -->
+        <h3 class="section-heading">2. Objective</h3>
+        <p class="section-text"><t t-esc="o.sections_data.get('objective')"/></p>
+
+        <!-- ════════════════════════════════════════
+             3. APPARATUS
+             ════════════════════════════════════════ -->
+        <h3 class="section-heading">3. Apparatus</h3>
+        <p class="section-text"><t t-esc="o.sections_data.get('apparatus')"/></p>
+
+        <!-- ════════════════════════════════════════
+             4. SETUP & TEST PROCEDURE
+             ════════════════════════════════════════ -->
+        <h3 class="section-heading">4. Setup &amp; Test Procedure</h3>
+        <p class="section-text"><t t-esc="o.sections_data.get('procedure')"/></p>
+
+        <div class="page-break"></div>
+
+        <!-- ════════════════════════════════════════
+             5. LOAD VS SETTLEMENT TABLE
+             ════════════════════════════════════════ -->
+        <h3 class="section-heading">5. Load vs. Settlement Data &amp; Safe Bearing Capacity</h3>
+
+        <p class="bold">TABLE NO. 1</p>
+        <table class="settlement-table" style="margin: 0 auto;">
+          <thead>
+            <tr>
+              <th>Load Applied<br/>(t/m²)</th>
+              <th>Average Cumulative Plate Settlement<br/>(mm)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <t t-foreach="computed[o.id]['average_table']" t-as="row">
+              <t t-if="row.get('load') is not None or row.get('settlement') is not None">
+                <tr>
+                  <td><t t-esc="row['load']"/></td>
+                  <td><t t-esc="row['settlement']"/></td>
+                </tr>
+              </t>
+            </t>
+          </tbody>
+        </table>
+
+        <!-- Conclusion paragraph -->
+        <p class="section-text"><t t-esc="o.sections_data.get('conclusion')"/></p>
+
+        <!-- ── Summary Table (TABLE NO. 2) ── -->
+        <p class="bold">TABLE NO. 2</p>
+        <table class="summary-table" style="margin: 0 auto;">
+          <thead>
+            <tr>
+              <th colspan="2">Summary of Test</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Safe Bearing Capacity</td>
+              <td><t t-esc="o.safe_bearing_capacity"/> t/m²</td>
+            </tr>
+            <tr>
+              <td>Factor of Safety</td>
+              <td><t t-esc="o.factor_of_safety"/></td>
+            </tr>
+            <tr>
+              <td>Ultimate Bearing Capacity</td>
+              <td><t t-esc="o.ultimate_bearing_capacity"/> t/m²</td>
+            </tr>
+            <tr>
+              <td>Maximum Load Intensity on Plate</td>
+              <td><t t-esc="o.max_load_intensity"/> t/m²</td>
+            </tr>
+            <tr>
+              <td>Allowable Bearing Capacity of Soil</td>
+              <td><t t-esc="o.allowable_bearing_capacity"/> t/m²</td>
+            </tr>
+            <tr>
+              <td>Total Settlement of Plate</td>
+              <td><t t-esc="o.total_settlement"/> mm</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- ════════════════════════════════════════
+             SIGNATURE BLOCK
+             ════════════════════════════════════════ -->
+        <table class="signature-table">
+          <tr>
+            <td>
+              <span class="bold">Checked By</span><br/><br/>
+              <t t-esc="o.checked_by_name"/><br/>
+              (<t t-esc="o.checked_by_title"/>)
+            </td>
+            <td class="spacer"></td>
+            <td>
+              <span class="bold">Approved By</span><br/><br/>
+              <t t-esc="o.approved_by_name"/><br/>
+              (<t t-esc="o.approved_by_title"/>)<br/>
+              Authorized Signatory
+            </td>
+          </tr>
+        </table>
+
+        <p class="end-of-report">*END OF REPORT*</p>
+
+        <div class="page-break"></div>
+
+        <!-- ════════════════════════════════════════
+             ANNEXURE — LOAD SETTLEMENT CURVE
+             ════════════════════════════════════════ -->
+        <h2 class="report-title">Annexure</h2>
+        <h3 class="section-heading" style="text-align:center;">Load Settlement Curve</h3>
+
+        <!-- Graph header metadata table -->
+        <table class="graph-meta">
+          <tr>
+            <td colspan="3"><span class="bold">Project:</span> <t t-esc="o.project_name"/></td>
+          </tr>
+          <tr>
+            <td style="width:33%;">Test No: 01</td>
+            <td style="width:33%;"><span class="bold">Client:</span></td>
+            <td style="width:34%;"><span class="bold">Test Date:</span> <t t-esc="o.test_start_date"/></td>
+          </tr>
+          <tr>
+            <td><span class="bold">Size of Plate:</span> <t t-esc="o.plate_size"/></td>
+            <td colspan="2"><span class="bold">Location:</span> <t t-esc="o.location"/></td>
+          </tr>
+          <tr>
+            <td><span class="bold">Report No:</span> <t t-esc="o.report_no"/></td>
+            <td><span class="bold">Report Date:</span> <t t-esc="o.create_date"/></td>
+            <td><span class="bold">ULR No:</span> <t t-esc="o.ulr_no"/></td>
+          </tr>
+        </table>
+
+        <!-- Graph data points table -->
+        <div style="text-align:center; margin-top:16px;">
+            <table class="graph-points">
+                <thead>
+                    <tr>
+                    <th>Sr. No.</th>
+                    <th>Applied Pressure (kg/cm²)</th>
+                    <th>Settlement (mm)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-set="g_sr_no" t-value="1"/>
+                    <t t-foreach="computed[o.id]['combined_graph_points']" t-as="row">
+                    <t t-if="row.get('load') is not None or row.get('settlement') is not None">
+                        <tr>
+                        <td><t t-esc="g_sr_no"/><t t-set="g_sr_no" t-value="g_sr_no + 1"/></td>
+                        <td><t t-esc="row['load']"/></td>
+                        <td><t t-esc="row['settlement']"/></td>
+                        </tr>
+                    </t>
+                    </t>
+                </tbody>
+            </table>
+
+        <!-- Graph Image -->
+          <img t-if="o.graph"
+               t-att-src="'data:image/png;base64,%s' % o.graph.decode('utf-8')"
+               style="width:80%; border:1px solid #cccccc;"/>
+        </div>
+
+        <!-- ════════════════════════════════════════
+             IMAGE ANNEXURES (Site Datasheet, Photos, etc.)
+             ════════════════════════════════════════ -->
+        <t t-foreach="o.image_sections" t-as="section">
+          <div class="page-break"></div>
+          <h3 class="section-heading"><t t-esc="section.get('title')"/></h3>
+          <t t-foreach="section.get('images')" t-as="img">
+            <div style="margin:16px 0; text-align:center;">
+              <img t-att-src="'data:image/png;base64,%s' % img" style="width:70%;"/>
+            </div>
+          </t>
+        </t>
+
+      </div><!-- /.page -->
+
+    </t>
+    </t>
+  </template>
+</odoo>
