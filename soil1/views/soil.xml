@@ -63,6 +63,8 @@
                         </field>
                     </div>
 
+                    <field name="image" widget="image" class="oe_avatar"/>
+
 
                     <button name="action_generate_options" 
                             type="object" 
@@ -229,6 +231,24 @@
                             invisible="cbr_generated == True"/>
 
                         </div>
+
+                         <div class="d-flex gap-2" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                    <tbody>
+                                        <tr>
+                                            <td><label for="doc_name1"></label></td>
+                                            <td><field name="doc_name1" class="blue-input" /></td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        <button name="action_print_cbr"
+                            string="Print CBR Report"
+                            type="object"
+                            class="btn-primary"
+                            icon="fa-print" />
 
                        
 
@@ -1116,6 +1136,11 @@
                     invisible="gsa_lines_generated == True"/>
 
                 </div>
+                <button name="action_print_gsa"
+                            string="Print CBR Report"
+                            type="object"
+                            class="btn-primary"
+                            icon="fa-print" />
 
                  <div class="d-flex gap-2"  invisible = "gsa_visible == False" >
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
@@ -1213,6 +1238,26 @@
                                     width: 100% !important;
                                 }
                             </style>
+
+                             <div class="d-flex gap-2">
+                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                        <tbody>
+                                            <tr>
+                                                <td><label for="start_date"/></td>
+                                                <td><field name="start_date" class="blue-input" /></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                        <tbody>
+                                            <tr>
+                                                <td><label for="end_date"/></td>
+                                                <td><field name="end_date" /></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
                                 <div class="d-flex gap-2">
                                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                                         <tbody>

@@ -84,3 +84,52 @@ class RockReport(models.AbstractModel):
             'qrcode': qr_code,
             'nabl' : nabl
         }
+
+
+class SoilReportTriaxial(models.AbstractModel):
+    _name = 'report.rock.report_triaxial_template'
+    _description = 'CBR Report Parser'
+
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        # Mechanical Soil records fetch kara
+        docs = self.env['mechanical.rock'].browse(docids)
+        
+        # ELN records shodha
+        eln_records = self.env['lerm.eln'].search([
+            ('sample_id', 'in', docs.ids)
+        ])
+
+        
+
+        return {
+            'doc_ids': docids,
+            'doc_model': 'mechanical.rock',
+            'data': docs,
+            'eln': eln_records,
+        }
+
+
+
+class SoilReportTriaxial(models.AbstractModel):
+    _name = 'report.rock.report_elasticity_template'
+    _description = 'CBR Report Parser'
+
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        # Mechanical Soil records fetch kara
+        docs = self.env['mechanical.rock'].browse(docids)
+        
+        # ELN records shodha
+        eln_records = self.env['lerm.eln'].search([
+            ('sample_id', 'in', docs.ids)
+        ])
+
+        
+
+        return {
+            'doc_ids': docids,
+            'doc_model': 'mechanical.rock',
+            'data': docs,
+            'eln': eln_records,
+        }
