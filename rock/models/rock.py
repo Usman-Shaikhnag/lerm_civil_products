@@ -322,6 +322,8 @@ class MechanicalRock(models.Model):
     elasticity_generated = fields.Boolean(string="GSA Lines Generated",default=False)
     elasticity_ids = fields.One2many('elasticity.line', 'parent_id',ondelete='cascade')
 
+    doc_name2 = fields.Char("Doc Name",default="MODULUS OF ELASTICITY AND POISSON'S RATIO OF ROCK")
+
 
     def action_generate_elasticity_lines(self):
         for record in self:
