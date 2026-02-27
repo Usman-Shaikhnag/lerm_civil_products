@@ -8,6 +8,12 @@ import base64
 import matplotlib.pyplot as plt
 import numpy as np
 
+import base64
+from io import BytesIO
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+
 
 
 class MechanicalRock(models.Model):
@@ -22,6 +28,12 @@ class MechanicalRock(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
     sample_id = fields.Many2one('lerm.srf.sample',string="Sample")
+
+    image = fields.Image(
+        string="Image",
+        max_width=1024,
+        max_height=1024
+    )
 
 
     notes_id = fields.One2many('rock.notes','parent_id',string="Notes")
@@ -279,6 +291,8 @@ class MechanicalRock(models.Model):
     triaxial_generated = fields.Boolean(string="GSA Lines Generated",default=False)
     triaxial_ids = fields.One2many('triaxial.line', 'parent_id',ondelete='cascade')
 
+    doc_name1 = fields.Char("Doc Name",default="Triaxial Shear Test (Rock)")
+
 
     def action_generate_triaxial_lines(self):
         for record in self:
@@ -298,6 +312,35 @@ class MechanicalRock(models.Model):
 
             # 🔹 Set flag to show sieve analysis
             if record.triaxial_ids:
+                record.show_sieve = True
+
+
+    elasticity_visible = fields.Boolean("MODULUS OF ELASTICITY AND POISSON'S RATIO OF ROCK",compute="_compute_visible")
+    elasticity_name = fields.Char("Name",default="MODULUS OF ELASTICITY AND POISSON'S RATIO OF ROCK")
+
+    show_sieve = fields.Boolean(default=False)
+    elasticity_generated = fields.Boolean(string="GSA Lines Generated",default=False)
+    elasticity_ids = fields.One2many('elasticity.line', 'parent_id',ondelete='cascade')
+
+
+    def action_generate_elasticity_lines(self):
+        for record in self:
+            if record.lab_id and ' - ' in record.lab_id:
+                start_str, end_str = record.lab_id.split(' - ')
+                prefix = '-'.join(start_str.split('-')[:2])
+                start = int(start_str.split('-')[2])
+                end = int(end_str.split('-')[2])
+
+                lines = []
+                for i in range(start, end + 1):
+                    lab_id = f"{prefix}-{str(i).zfill(3)}"
+                    lines.append((0, 0, {'lab_id': lab_id}))
+
+                record.elasticity_ids = lines
+                record.elasticity_generated = True
+
+            # 🔹 Set flag to show sieve analysis
+            if record.elasticity_ids:
                 record.show_sieve = True
 
 
@@ -339,7 +382,7 @@ class MechanicalRock(models.Model):
 
 
 
-            # record.StressStrain_visible = False
+            record.elasticity_visible = False
 
 
           
@@ -404,8 +447,8 @@ class MechanicalRock(models.Model):
 
 
 
-                # if sample.internal_id == "6315f914-f6f5-4b5b-bfc2-34792cf1a237e":
-                #     record.StressStrain_visible = True
+                if sample.internal_id == "22145-f6f5-4b5b-bfc2-34792cf1a235265555677":
+                    record.elasticity_visible = True
 
               
                
@@ -483,6 +526,9 @@ class MechanicalRock(models.Model):
                 result.calculated = True
 
             if result.parameter.internal_id == '6315f914-f6f5-4b5b-bfc2-34792cf1a237e':
+                result.calculated = True
+
+            if result.parameter.internal_id == '22145-f6f5-4b5b-bfc2-34792cf1a235265555677':
                 result.calculated = True
 
 
@@ -1767,43 +1813,7 @@ class TriaxialLine(models.Model):
    
     triaxial_graph = fields.Binary(string="Triaxial Graph")
 
-    # def action_generate_triaxial_graph(self):
-    #     for rec in self:
-    #         lines = rec.triaxial_child_lines.filtered(
-    #             lambda l: l.con_pressure and l.axial
-    #         )
 
-    #         if not lines:
-    #             rec.triaxial_graph = False
-    #             continue
-
-    #         x = [l.con_pressure for l in lines]
-    #         y = [l.axial for l in lines]
-
-    #         # Linear fit (y = mx + c)
-    #         m, c = np.polyfit(x, y, 1)
-
-    #         x_line = np.linspace(min(x), max(x), 100)
-    #         y_line = m * x_line + c
-
-    #         # Plot
-    #         plt.figure(figsize=(6, 4))
-    #         plt.plot(x, y, marker='o', linestyle='-', linewidth=1)
-    #         plt.plot(x_line, y_line, linestyle='--')
-
-    #         plt.xlabel("Confining Pressure (MPa)")
-    #         plt.ylabel("Axial Strength (MPa)")
-    #         plt.grid(True)
-
-    #         eq_text = f"f(x) = {m:.3f}x + {c:.3f}"
-    #         plt.text(min(x), max(y), eq_text, fontsize=6)
-
-    #         buf = io.BytesIO()
-    #         plt.tight_layout()
-    #         plt.savefig(buf, format='png', dpi=150)
-    #         plt.close()
-
-    #         rec.triaxial_graph = base64.b64encode(buf.getvalue())
 
     def action_generate_triaxial_graph(self):
      import numpy as np
@@ -1927,6 +1937,185 @@ class TriaxialLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
+class MechanicalElasticityLine(models.Model):
+    _name = "mechanical.elasticity.line"
+    parent_id_elasticity = fields.Many2one('elasticity.line',string="Parent Id")
+
+    # blue_input = fields.Boolean(default=True,invisible=True)
+   
+    sr_no = fields.Integer(string="Sr No.", readonly=True, copy=False, default=1)
+    
+   
+
+    stress = fields.Float(string="Stress (mPa)",digits=(16, 2))
+    strain = fields.Float(string="Strain",digits=(16, 6))
+    
+
+
+   
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id_elasticity'):
+            existing_records = self.search([('parent_id_elasticity', '=', vals['parent_id_elasticity'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sr_no'))
+                vals['sr_no'] = max_serial_no + 1
+
+        return super(MechanicalElasticityLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.sr_no = index + 1
+
+class ElasticityLine(models.Model):
+    _name = "elasticity.line"
+    parent_id = fields.Many2one('mechanical.rock',string="Parent Id",ondelete='cascade')
+
+    serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
+    is_checked = fields.Boolean(
+        string="Calculated",
+        default=False
+    )
+    start_date = fields.Date(string="Start Date")  # manually fill
+    end_date = fields.Date(string="End Date")      # auto fill on submit
+
+    
+
+    def action_submit(self):
+        self.ensure_one()
+        
+        # Boolean True save
+        self.write({
+            'is_checked': True,
+            'end_date': fields.Date.context_today(self),  # current date auto fill
+        })
+        
+        # Close inline editor → Save-like back
+        return {'type': 'ir.actions.act_window_close'}
+
+    lab_id=  fields.Char(string="Lab ID" )
+
+    bh_id = fields.Char(
+        string="BH ID",
+        compute="_compute_triaxial",
+        store=True
+    )
+
+    depth = fields.Char(
+        string="Depth (m)",
+        compute="_compute_triaxial",
+        store=True
+    )
+
+    
+    @api.depends('lab_id')
+    def _compute_triaxial(self):
+        ReviewLine = self.env['sample.request.review.lines']
+
+        for line in self:
+            line.bh_id = False
+            line.depth = False
+
+            if not line.lab_id:
+                continue
+
+            review_line = ReviewLine.search(
+                [('lab_id', '=', line.lab_id)],
+                order='id desc',
+                limit=1
+            )
+
+            if review_line:
+                line.bh_id = review_line.source        # BH ID / Location
+                line.depth = review_line.depth         # Depth (m)
+
+    elasticity_child_lines = fields.One2many('mechanical.elasticity.line','parent_id_elasticity',string="Parameter")
+
+    elasticity_graph = fields.Binary("Stress-Strain Graph")
+
+    def action_generate_graph(self):
+        for record in self:
+
+            x_vals = []
+            y_vals = []
+
+            for line in record.elasticity_child_lines:
+                if line.strain and line.stress:
+                    x_vals.append(line.strain)
+                    y_vals.append(line.stress)
+
+            if not x_vals:
+                return
+
+            plt.figure()
+            plt.plot(x_vals, y_vals, marker='o')
+            plt.xlabel("Strain")
+            plt.ylabel("Stress (mPa)")
+            plt.title("Stress vs Strain")
+            plt.grid(True)
+
+            buffer = BytesIO()
+            plt.savefig(buffer, format='png')
+            plt.close()
+
+            record.elasticity_graph = base64.b64encode(buffer.getvalue())
+
+    lithologic_dic = fields.Char(string="Lithologic description of rock")
+
+    avg_dia = fields.Float(string="Average Diameter (D) mm",)
+    avg_height = fields.Float(string="Average Height (H) mm",)
+    hd = fields.Float(string="H/D",digits=(16, 2),store=True)
+
+    bulk_density = fields.Float(string="Bulk Density g/cc",digits=(16, 2),store=True)
+    sat_density = fields.Float(string="Sat Density g/cc",digits=(16, 2),store=True)
+    dry_density = fields.Float(string="Dry Density g/cc",digits=(16, 2),store=True,)
+    water_absorption = fields.Float(string="Water Absorption %",digits=(16, 2))
+
+    room_temp_elasticity = fields.Float(string="Room Temperature")
+    relative_humidity_elasticity = fields.Float(string="Relative humidity",digits=(16, 2))
+    
+    machine_used = fields.Char(string="Type of Sample & Condition")
+
+
+    sp_gravity = fields.Float(string="Sp. Gravity",digits=(16, 2),store=True)
+    
+    porosity = fields.Float(string="Porosity",digits=(16, 2),store=True)
+    water_content = fields.Float(string="Water Content",digits=(16, 2))
+
+    duration_of_test = fields.Float(string="Duration of the test (Sec)",digits=(16, 2))
+    stress_rate = fields.Float(string="Stress Rate",digits=(16, 2),store=True)
+    mode_of_failure = fields.Char(string="Mode of failure",digits=(16, 2))
+
+
+    comp_strength1 = fields.Float(string="Compressive Strength qc ",digits=(16, 2),store=True)
+    comp_strength2 = fields.Float(string="Compressive Strength  qc at H/D=2",digits=(16, 2),store=True)
+    
+
+    
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(ElasticityLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
     
 
 
