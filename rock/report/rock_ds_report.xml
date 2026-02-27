@@ -2475,7 +2475,9 @@
 									Report No 
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-									<span t-esc="o.material.test_format_no"/>
+									<span t-field="o.sample_id.kes_no"/>
+									
+									
 								</td>
 								<td style="border:1px solid black; padding:6px; font-weight:bold;">
 									Date Sample Received
@@ -2678,19 +2680,19 @@
 										<t t-esc="i"/>
 									</td>
 
-									<td style="border:1px solid black; background:#eef1c6;">
+									<td style="border:1px solid black;">
 										<t t-esc="line.con_pressure"/>
 									</td>
 
-									<td style="border:1px solid black; background:#eef1c6;">
+									<td style="border:1px solid black;">
 										<t t-esc="line.failure_load"/>
 									</td>
 
-									<td style="border:1px solid black; background:#eef1c6;">
+									<td style="border:1px solid black; ">
 										<t t-esc="line.duration_test"/>
 									</td>
 
-									<td style="border:1px solid black; background:#eef1c6;">
+									<td style="border:1px solid black;">
 										<t t-esc="line.height"/>
 									</td>
 
@@ -2999,7 +3001,7 @@
 
 							<tr>
 								<td colspan="6" style="border:1px solid black; padding:4px;">
-									<b>Report No.:</b> <span t-field="o.name"/> </td>
+									<b>Report No.:   </b><span t-field="o.sample_id.kes_no"/> </td>
 								<td colspan="3" style="border:1px solid black; padding:4px;">
 									<b>Starting Date:</b> <span></span> </td>
 							</tr>
