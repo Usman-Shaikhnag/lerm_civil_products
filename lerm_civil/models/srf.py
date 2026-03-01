@@ -143,7 +143,7 @@ class SrfForm(models.Model):
 
 
 
-    srf_id = fields.Char(string="SRF ID",tracking=True)
+    srf_id = fields.Char(string="Order Request",tracking=True)
     kes_number = fields.Char(string="UID",tracking=True)
     # job_no = fields.Char(string="Job NO.")
     srf_date = fields.Date(string="SRF Date",default=lambda self: self._get_default_date(),tracking=True)

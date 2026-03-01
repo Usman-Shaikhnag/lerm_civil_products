@@ -145,6 +145,7 @@
                         <tr>
                             <td style="width:25%;"><b>Order Request No.</b></td>
                             <td style="width:45%;">
+                            <span t-field="o.srf_id"/>
                             </td>
 
                             <td style="width:10%;"><b>Date:</b></td>
@@ -171,12 +172,14 @@
                         <tr>
                             <td><b>For (End Customer, if any):</b></td>
                             <td colspan="3">
+                             <span t-field="o.client"/>
                             </td>
                         </tr>
 
                         <tr>
                             <td><b>Report to be issued in the name of:</b></td>
                             <td colspan="3">
+                            <span t-field="o.report_issued"/>
                             </td>
                         </tr>
 

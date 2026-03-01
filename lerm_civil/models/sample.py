@@ -960,6 +960,8 @@ class SampleRequestReview(models.Model):
         string="Review Lines"
     )
 
+    srf_id = fields.Many2one('lerm.civil.srf',ondelete="cascade", string="SRF ID" ,tracking=True)
+
     receipt_date = fields.Date("Date of Receipt",store=True,)
     lot_detail = fields.Integer("Lot Detail")
     disturbes_samples = fields.Integer("No of disturbed samples")
@@ -973,12 +975,11 @@ class SampleRequestReview(models.Model):
 
     completion_date = fields.Date("Expected completion Date")
     w_o = fields.Char("Reference (W.O / Mail)",compute="_compute_w_o",store=True)
-    srf_id = fields.Many2one('lerm.civil.srf', string="SRF")
 
-    @api.depends('srf_id', 'srf_id.client_refrence')
+    @api.depends('sample_id', 'sample_id.srf_id', 'sample_id.srf_id.client_refrence')
     def _compute_w_o(self):
         for rec in self:
-            rec.w_o = rec.srf_id.client_refrence if rec.srf_id else False
+            rec.w_o = rec.sample_id.srf_id.client_refrence if rec.sample_id and rec.sample_id.srf_id else False
 
 
     no_samples = fields.Integer("Number of  samples")
@@ -1243,97 +1244,6 @@ class SampleRequestReviewLine(models.Model):
 
 
 
-    # def action_generate_lab_id(self):
-    #     for rec in self:
-
-    #         if rec.split_done:
-    #             raise UserError("Lab ID already generated for this line!")
-
-    #         if not rec.parent_id or not rec.parent_id.sample_id:
-    #             raise UserError("Sample not linked!")
-
-    #         sample = rec.parent_id.sample_id
-    #         parent = rec.parent_id
-
-    #         seq_code = sample._get_lab_sequence_code(sample.material_id)
-
-    #         if not seq_code:
-    #             raise UserError("Sequence not configured!")
-
-    #         new_lab = self.env['ir.sequence'].next_by_code(seq_code)
-
-    #         if not new_lab:
-    #             raise UserError("Sequence not generating!")
-
-    #         # ✅ Line la set kara
-    #         rec.lab_id = new_lab
-    #         rec.split_done = True
-
-    #         # -----------------------------------------
-    #         # ✅ Parent cha range calculate kara
-    #         # -----------------------------------------
-    #         labs = parent.review_line_ids.mapped('lab_id')
-    #         labs = [l for l in labs if l]
-
-    #         if labs:
-    #             labs.sort()
-
-    #             if len(labs) == 1:
-    #                 range_value = labs[0]
-    #             else:
-    #                 range_value = f"{labs[0]} - {labs[-1]}"
-
-    #             # Parent var set
-    #             parent.lab_id = range_value
-
-    #             # ✅ Sample var pan same range update kara
-    #             sample.lab_id = range_value
-    #             sample.lab_ids_raw = ",".join(labs)
-    #             sample.show_lab_id = True
-
-    # def action_generate_lab_id(self):
-    #     self.ensure_one()
-    #     rec = self
-
-    #     if rec.split_done:
-    #         raise UserError("Lab ID already generated for this line!")
-
-    #     if not rec.parent_id or not rec.parent_id.sample_id:
-    #         raise UserError("Sample not linked!")
-
-    #     sample = rec.parent_id.sample_id
-    #     parent = rec.parent_id
-
-    #     seq_code = sample._get_lab_sequence_code(sample.material_id)
-
-    #     if not seq_code:
-    #         raise UserError("Sequence not configured!")
-
-    #     new_lab = self.env['ir.sequence'].next_by_code(seq_code)
-
-    #     if not new_lab:
-    #         raise UserError("Sequence not generating!")
-
-    #     rec.write({
-    #         'lab_id': new_lab,
-    #         'split_done': True
-    #     })
-
-    #     labs = parent.review_line_ids.mapped('lab_id')
-    #     labs = [l for l in labs if l]
-
-    #     if labs:
-    #         labs.sort()
-    #         range_value = labs[0] if len(labs) == 1 else f"{labs[0]} - {labs[-1]}"
-
-    #         parent.write({'lab_id': range_value})
-
-    #         sample.write({
-    #             'lab_id': range_value,
-    #             'lab_ids_raw': ",".join(labs),
-    #             'show_lab_id': True
-    #         })
-    #     return True
 
     def action_generate_lab_id(self):
         self.ensure_one()
