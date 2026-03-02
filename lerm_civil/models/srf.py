@@ -143,7 +143,7 @@ class SrfForm(models.Model):
 
 
 
-    srf_id = fields.Char(string="SRF ID",tracking=True)
+    srf_id = fields.Char(string="Order Request",tracking=True)
     kes_number = fields.Char(string="UID",tracking=True)
     # job_no = fields.Char(string="Job NO.")
     srf_date = fields.Date(string="SRF Date",default=lambda self: self._get_default_date(),tracking=True)
@@ -179,8 +179,11 @@ class SrfForm(models.Model):
     eln_count = fields.Integer(string="ELN Count", compute='compute_eln_count')
     sample_range_table = fields.One2many('sample.range.line','srf_id',string="Sample Range")
     contractor = fields.Many2one('lerm.contractor.line',string="Contractor")
+    report_issued = fields.Char(string="Report to be issued in the")
     contractor_ids = fields.Many2many('lerm.contractor.line')
     casting = fields.Boolean(string="Casting")
+
+    request_date = fields.Date(string="Date of test request:")
     
     days_casting = fields.Selection([
         ('1', '1 Days'),
