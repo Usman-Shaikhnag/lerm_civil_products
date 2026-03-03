@@ -58,7 +58,7 @@
                         </div>
                         <group>
                             <group>
-                                <field name="srf_id" readonly="1"/>
+                                <field name="srf_id" readonly="1" string="OR ID"/>
                                 <field name="technicians" readonly="1" invisible="1"/>
                                 <field name="department_id"/>
                                 <field name="discipline_id" readonly="state != '1-allotment_pending'"/>
@@ -278,7 +278,7 @@
                 </header>
                       <field name="sample_received_date" optional="show"/>
                       <field name='kes_no' width="400px"/>
-                      <field name="srf_id" optional="show" />
+                      <field name="srf_id" optional="show" string="OR ID"/>
                       <!-- <field name="client_reference1" optional="show" /> -->
                       <field name="activity_ids" widget="list_activity" optional="show"/>
                       <!-- <field name="sample_no" optional="show"/> -->
@@ -318,10 +318,10 @@
     <field name="type">search</field>
         <field name="arch" type="xml">
             <search>
-                <field name="srf_id" string="SRF ID" />
+                <field name="srf_id" string="OR ID" />
                 <field name="casting" string="Casting" />
                 <field name="discipline_id" string="Discipline" />
-                <field name="kes_no" string="SSL NO" />
+                <field name="kes_no" string="OR NO" />
                 <field name="lab_no_value" optional="show" invisible="1"/>
                 <!-- <field name="lab_l_id" string="Discipline" /> -->
                 <field name="group_id" string="Group" />
