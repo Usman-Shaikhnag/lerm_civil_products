@@ -9,6 +9,8 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from scipy.interpolate import make_interp_spline
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib import colors
@@ -135,7 +137,7 @@ class PlateLoadTest(models.Model):
             json.dumps({"data": data, "sig": signature}).encode()
         ).decode()
 
-        react_url = f"http://147.93.154.53:5173/plate_load_test?token={token}"
+        react_url = f"http://localhost:3000/plate_load_test?token={token}"
 
         return {
             'type': 'ir.actions.act_url',
@@ -153,12 +155,15 @@ class PlateLoadTest(models.Model):
 
             for row in data:
                 try:
-                    p = float(row.get("t/m2", 0) or 0)
-                    s = float(row.get("mm", 0) or 0)
+                    # Robust key picking
+                    p = row.get("t/m2") or row.get("t/m\u00B2") or row.get("load") or row.get("Load") or row.get("applied_pressure")
+                    s = row.get("mm") or row.get("settlement") or row.get("Settlement") or row.get("cumulative_settlement")
 
-                    # 🔥 CRITICAL FIX
-                    if p == 0 and s == 0:
+                    if p is None or s is None:
                         continue
+
+                    p = float(p)
+                    s = float(s)
 
                     x_vals.append(p)
                     y_vals.append(s)
@@ -166,8 +171,15 @@ class PlateLoadTest(models.Model):
                 except:
                     continue
 
+            # Sort by pressure just in case
+            if x_vals:
+                combined = sorted(zip(x_vals, y_vals))
+                x_vals, y_vals = zip(*combined)
+                x_vals = list(x_vals)
+                y_vals = list(y_vals)
+
             if force_zero_start:
-                if x_vals and (x_vals[0] != 0 or y_vals[0] != 0):
+                if not x_vals or (x_vals[0] != 0 or y_vals[0] != 0):
                     x_vals.insert(0, 0)
                     y_vals.insert(0, 0)
 
@@ -206,224 +218,43 @@ class PlateLoadTest(models.Model):
         x_up_s, y_up_s = smooth(x_loading, y_loading)
         x_down_s, y_down_s = smooth(x_unloading, y_unloading)
 
-        # -------- Plot --------
-        plt.figure(figsize=(7, 4))
+        # -------- Plot (Thread-Safe OO API) --------
+        fig = Figure(figsize=(8, 5))
+        canvas = FigureCanvas(fig)
+        ax = fig.add_subplot(111)
 
         # Loading curve
-        plt.plot(x_up_s, y_up_s, color="#1e3a5f", linewidth=2.5)
-        plt.scatter(x_loading, y_loading, color='black', s=25, marker='D')
+        ax.plot(x_up_s, y_up_s, color="#1e3a5f", linewidth=2.5, label="Loading")
+        ax.scatter(x_loading, y_loading, color='black', s=25, marker='D', zorder=5)
 
         # Unloading curve
         if x_unloading:
-            plt.plot(x_down_s, y_down_s, color="#1e3a5f", linewidth=2.5)
-            plt.scatter(x_unloading, y_unloading, color='gray', s=25, marker='D')
+            ax.plot(x_down_s, y_down_s, color="#1e3a5f", linewidth=2.5, label="Unloading")
+            ax.scatter(x_unloading, y_unloading, color='black', s=25, marker='D', zorder=5)
 
-        plt.gca().invert_yaxis()
-        ax = plt.gca()
+        ax.invert_yaxis()
 
         # Move x-axis to top
         ax.xaxis.set_label_position('top')
         ax.xaxis.tick_top()
-
-        # ax.set_xlim(left=0)
-        # ax.margins(x=0)
-
         ax.tick_params(bottom=False)
-        plt.xlabel('Pressure under Plate (T/m²)', fontsize=10)
-        plt.ylabel('Cumulative Settlement (mm)', fontsize=10)
-        plt.title('LOAD SETTLEMENT CURVE', fontsize=14, fontweight='bold')
 
-        plt.grid(True, linestyle='--', alpha=0.4)
-        plt.tight_layout()
+        ax.set_xlabel('Load Intensity (T/m\u00B2)', fontsize=10, fontweight='bold', labelpad=10)
+        ax.set_ylabel('Cumulative Settlement (mm)', fontsize=10, fontweight='bold')
+        
+        fig.suptitle('LOAD SETTLEMENT CURVE', fontsize=14, fontweight='bold', y=0.05)
+
+        ax.grid(True, linestyle='--', alpha=0.4)
+        fig.tight_layout(rect=[0, 0.08, 1, 0.95])
 
         buffer = io.BytesIO()
-        plt.savefig(buffer, format='png', dpi=200)
-        plt.close()
-        buffer.seek(0)
-
-        return base64.b64encode(buffer.read()).decode('utf-8')
+        canvas.print_png(buffer)
+        return base64.b64encode(buffer.getvalue()).decode('utf-8')
     # ---------------- PDF GENERATION ---------------- #
 
-    def generate_pdf_report(self):
-        import os
-        buffer = io.BytesIO()
-
-        # Adjust margins to allow header/footer space
-        doc = SimpleDocTemplate(
-            buffer,
-            pagesize=A4,
-            topMargin=1.6 * inch,
-            bottomMargin=1.2 * inch,
-            leftMargin=0.8 * inch,
-            rightMargin=0.8 * inch,
-        )
-
-        elements = []
-        styles = getSampleStyleSheet()
-
-        # ---------- STYLES ----------
-        title_style = ParagraphStyle(
-            'TitleStyle',
-            parent=styles['Title'],
-            fontSize=18,
-            textColor=colors.HexColor('#1e3a5f'),
-            alignment=1,
-            spaceAfter=12,
-        )
-
-        heading_style = ParagraphStyle(
-            'HeadingStyle',
-            parent=styles['Heading2'],
-            fontSize=13,
-            textColor=colors.HexColor('#1e3a5f'),
-            spaceBefore=12,
-            spaceAfter=6,
-        )
-
-        body_style = ParagraphStyle(
-            'BodyStyle',
-            parent=styles['Normal'],
-            fontSize=10,
-            leading=14,
-            textColor=colors.HexColor('#333333'),
-            spaceAfter=8,
-        )
-
-        table_header_style = ParagraphStyle(
-            'TableHeader',
-            parent=styles['Normal'],
-            fontSize=9,
-            textColor=colors.white,
-            alignment=1,
-            fontName='Helvetica-Bold',
-        )
-
-        table_cell_style = ParagraphStyle(
-            'TableCell',
-            parent=styles['Normal'],
-            fontSize=9,
-            alignment=1,
-        )
-
-        # ---------- HEADER + FOOTER ----------
-        def add_header_footer(canvas, doc):
-            width, height = A4
-
-            # --- HEADER IMAGE ---
-            module_path = os.path.dirname(os.path.abspath(__file__))
-            header_path = os.path.join(module_path, 'static', 'src', 'img', 'Knack_Header.png')
-
-            if os.path.exists(header_path):
-                canvas.drawImage(
-                    header_path,
-                    x=0.6 * inch,
-                    y=height - 1.2 * inch,
-                    width=7 * inch,
-                    height=0.9 * inch,
-                    preserveAspectRatio=True,
-                    mask='auto'
-                )
-
-            # --- FOOTER TEXT ---
-            footer_text_1 = "Testing Location: Taloja Laboratory [Shop No 11, Skyline Sapphire, Sector 7, Taloja Phase 1, Navi Mumbai- 410208]"
-            footer_text_2 = "Regd. Office: Shop no. 3 & 105 Bldg. B1, Wadala Truck Terminal, MMRDA Compound, Antop Hill, Mumbai- 400037"
-            footer_text_3 = "Tel.: +91 22 2401 0040 | Email: sales@knackengineeringservices.com | Website: www.knackengineeringservices.com | CIN: U45209MH2017PTC291168"
-
-            canvas.setFont("Helvetica", 8)
-            canvas.drawCentredString(width / 2, 0.9 * inch, footer_text_1)
-            canvas.drawCentredString(width / 2, 0.7 * inch, footer_text_2)
-            canvas.drawCentredString(width / 2, 0.5 * inch, footer_text_3)
-
-            # --- PAGE NUMBER ---
-            page_number_text = f"Page {doc.page}"
-            canvas.drawRightString(width - 0.6 * inch, 0.3 * inch, page_number_text)
-
-        # ---------- TITLE ----------
-        elements.append(Paragraph("<b>PLATE LOAD TEST REPORT</b>", title_style))
-        elements.append(Spacer(1, 12))
-
-        # ---------- SECTIONS ----------
-        sections = self.sections_data or {}
-
-        for key in ["objective", "introduction", "procedure"]:
-            text = sections.get(key)
-            if text:
-                elements.append(Paragraph(f"<b>{key.title()}</b>", heading_style))
-                elements.append(Paragraph(text, body_style))
-
-        # ---------- TABLE FUNCTION ----------
-        def add_table(data, cols_data, title):
-            if not data:
-                return
-
-            elements.append(Paragraph(f"<b>{title}</b>", heading_style))
-            elements.append(Spacer(1, 6))
-
-            if cols_data:
-                headers = [col.get('headerName', '') for col in cols_data]
-                fields = [col.get('field', '') for col in cols_data]
-            else:
-                fields = list(data[0].keys())
-                headers = fields
-
-            header_row = [Paragraph(h, table_header_style) for h in headers]
-
-            body_rows = []
-            for row in data:
-                body_rows.append([
-                    Paragraph(str(row.get(f, "")), table_cell_style)
-                    for f in fields
-                ])
-
-            table_data = [header_row] + body_rows
-
-            table = Table(table_data, repeatRows=1)
-
-            table.setStyle(TableStyle([
-                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1e3a5f')),
-                ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-                ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-                ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#cbd5e1')),
-            ]))
-
-            elements.append(table)
-            elements.append(Spacer(1, 16))
-
-        # ---------- TABLES ----------
-        add_table(self.loading_table_data, self.loading_columns_data, "Loading Test Data")
-        add_table(self.unloading_table_data, self.unloading_columns_data, "Unloading Test Data")
-
-        # ---------- GRAPH ----------
-        if self.graph:
-            elements.append(Paragraph("<b>Load Settlement Curve</b>", heading_style))
-            elements.append(Spacer(1, 6))
-            img_data = base64.b64decode(self.graph)
-            image = Image(io.BytesIO(img_data), width=5.5 * inch, height=3.2 * inch)
-            elements.append(image)
-            elements.append(Spacer(1, 16))
-
-        # ---------- IMAGE SECTIONS ----------
-        for section in self.image_sections or []:
-            title = section.get('title', 'Images')
-            elements.append(Paragraph(f"<b>{title}</b>", heading_style))
-            elements.append(Spacer(1, 6))
-
-            for img in section.get("images", []):
-                img_data = base64.b64decode(img)
-                image = Image(io.BytesIO(img_data), width=4.5 * inch, height=3 * inch)
-                elements.append(image)
-                elements.append(Spacer(1, 10))
-
-        # ---------- BUILD DOCUMENT ----------
-        doc.build(
-            elements,
-            onFirstPage=add_header_footer,
-            onLaterPages=add_header_footer
-        )
-
-        buffer.seek(0)
-        return base64.b64encode(buffer.read())
+    def print_report(self):
+        return self.env.ref('fst.plate_load_test_pdf').report_action(self)
+        
 
 class PlateLoadTestContents(models.Model):
     _name = "lerm.plate.load.test.contents"
@@ -461,7 +292,32 @@ class ReportPlateLoadTest(models.AbstractModel):
                 load_t = row.get('t') or row.get('load_t') or row.get('load_plate')
 
                 # Only include if at least one value is present and not empty
-                if (load is not None and str(load).strip() != "") or (settlement is not None and str(settlement).strip() != ""):
+                average_table = []
+                seen_first_zero = False
+
+                for row in doc.loading_table_data or []:
+                    load = row.get('t/m2') or row.get('load') or row.get('applied_pressure')
+                    settlement = row.get('mm') or row.get('settlement') or row.get('cumulative_settlement')
+                    load_t = row.get('t') or row.get('load_t') or row.get('load_plate')
+
+                    # Normalize to check if both are effectively zero/empty
+                    load_val = str(load).strip() if load is not None else ''
+                    settlement_val = str(settlement).strip() if settlement is not None else ''
+
+                    both_zero = (load_val in ('', '0', '0.0')) and (settlement_val in ('', '0', '0.0'))
+                    both_empty = load_val == '' and settlement_val == ''
+
+                    if both_empty:
+                        continue  # skip fully empty rows always
+
+                    if both_zero and not seen_first_zero:
+                        seen_first_zero = True  # keep only the first 0/0 row
+                        average_table.append({'load': '0.00', 'settlement': '0.00', 'load_t': load_t})
+                        continue
+
+                    if both_zero:
+                        continue  # skip subsequent 0/0 rows
+
                     average_table.append({
                         'load': load,
                         'settlement': settlement,

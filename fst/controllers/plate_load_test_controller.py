@@ -79,8 +79,8 @@ class PlateLoadTestController(http.Controller):
                 "graph": graph,
             })
 
-            pdf = record.generate_pdf_report()
-            record.write({"pdf_report": pdf})
+            # pdf = record.generate_pdf_report()
+            # record.write({"pdf_report": pdf})
 
             return {"success": True, "graph": graph}
         except Exception as e:
@@ -113,6 +113,15 @@ class PlateLoadTestController(http.Controller):
 
             _logger.info(f"Returning data for record {form_id}")
             graph = record.generate_pressure_line_chart(record.loading_table_data, record.unloading_table_data)
+            summary_data = {
+                "safe_bearing_capacity": record.safe_bearing_capacity,
+                "factor_of_safety": record.factor_of_safety,
+                "ultimate_bearing_capacity": record.ultimate_bearing_capacity,
+                "max_load_intensity": record.max_load_intensity,
+                "allowable_bearing_capacity": record.allowable_bearing_capacity,
+                "total_settlement": record.total_settlement,
+            }
+            # import wdb;wdb.set_trace()
             return {
                 "valid": True,
                 "form_id": form_id,
@@ -123,6 +132,8 @@ class PlateLoadTestController(http.Controller):
                 "unloading_rows": record.unloading_table_data,
                 "image_sections": record.image_sections,
                 "graph": graph, 
+                "summary_data": summary_data,
+
             }
         except Exception as e:
             _logger.error(f"Plate Load Test Verify Error: {str(e)}")
@@ -143,6 +154,7 @@ class PlateLoadTestController(http.Controller):
             token = data.get("token")
 
             verified = self._verify_token(token)
+            # import wdb;wdb.set_trace()
             if not verified:
                 return request.make_response(
                     json.dumps({"error": "Invalid token"}),
@@ -151,27 +163,24 @@ class PlateLoadTestController(http.Controller):
 
             form_id = verified.get("form_id")
             record = request.env['lerm.plate.load.test'].sudo().browse(form_id)
+            action = record.print_report()
 
-            if not record.pdf_report:
-                return request.make_response(
-                    json.dumps({"error": "No PDF report available"}),
-                    headers={'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'}
-                )
+            # Then render using the action data
+            report_ref = action.get('report_name') or 'fst.plate_load_test_template'
+            pdf_content, _ = request.env['ir.actions.report'].sudo()._render_qweb_pdf(report_ref, [form_id])
+            _logger.info(f"PDF rendered for record {form_id}, size: {len(pdf_content)} bytes")
 
-            pdf_data = base64.b64decode(record.pdf_report)
-            filename = record.pdf_filename or 'Plate_Load_Test_Report.pdf'
-
-            _logger.info(f"Serving PDF for record {form_id}")
             return request.make_response(
-                pdf_data,
+                pdf_content,
                 headers={
                     'Content-Type': 'application/pdf',
-                    'Content-Disposition': f'attachment; filename="{filename}"',
+                    'Content-Disposition': 'attachment; filename="Plate_Load_Test_Report.pdf"',
                     'Access-Control-Allow-Origin': '*'
                 }
             )
+
         except Exception as e:
-            _logger.error(f"Plate Load Test Download PDF Error: {str(e)}")
+            _logger.error(f"Plate Load Test Download PDF Error: {str(e)}", exc_info=True)
             return request.make_response(
                 json.dumps({"error": str(e)}),
                 headers={'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'}
