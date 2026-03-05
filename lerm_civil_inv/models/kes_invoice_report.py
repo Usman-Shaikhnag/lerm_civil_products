@@ -9,10 +9,12 @@ class KesCustomInvoiceReport(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         docs1 = self.env['account.move'].sudo().browse(docids)
         print(docs1 , 'afzal khan ')
-        tax_totals_json = docs1.tax_totals_json
+        # import wdb;wdb.set_trace()
+        # tax_totals_json = docs1.tax_totals
 
         # Parse the tax_totals_json string into a Python object
-        tax_totals = json.loads(tax_totals_json)
+        # tax_totals = json.loads(tax_totals_json)
+        tax_totals = docs1.tax_totals
         # Pass the tax_totals to the report context
         report_data = {'tax_totals': tax_totals}
         amount_total = 0
@@ -39,10 +41,11 @@ class KesCustomInvoiceReportWithoutHeader(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         docs1 = self.env['account.move'].sudo().browse(docids)
         print(docs1 , 'afzal khan ')
-        tax_totals_json = docs1.tax_totals_json
+        # tax_totals_json = docs1.tax_totals_json
 
         # Parse the tax_totals_json string into a Python object
-        tax_totals = json.loads(tax_totals_json)
+        # tax_totals = json.loads(tax_totals_json)
+        tax_totals = docs1.tax_totals
         # Pass the tax_totals to the report context
         report_data = {'tax_totals': tax_totals}
         amount_total = 0
