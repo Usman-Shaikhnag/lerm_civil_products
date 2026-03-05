@@ -181,4 +181,30 @@
         <field name="binding_model_id" ref="model_routine_lateral_pile_load_test_parent"/>
     </record>
 
+    <!-- <record id="paperformat_plt_report" model="report.paperformat">
+        <field name="name">PLT Report A4</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">0</field>
+        <field name="margin_bottom">15</field>
+        <field name="margin_left">15</field>
+        <field name="margin_right">15</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record> -->
+
+    <record id="plate_load_test_pdf" model="ir.actions.report">
+        <field name="name">Plate Load Test Report</field>
+        <field name="model">lerm.plate.load.test</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">fst.plate_load_test_template</field>
+        <field name="report_file">fst.plate_load_test_template</field>
+        <field name="print_report_name">'Plate_Load_Test_Report'</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" ref="model_lerm_plate_load_test"/>
+    </record>
 </odoo>
