@@ -34,16 +34,30 @@
                                     </tree>
                                 </field>
                             </group>
-                            <!-- <group>
-                                    <field name='tests' options="{'no_create':True}" invisible="1"/>
-                            </group> -->
+                             <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
 
                             <field name="bar_test_line_ids">
                                 <tree editable="botttom"> 
-                                    <field name="dia_of_bar"/>
-                                    <field name="yield_stress"/>
-                                    <field name="ultimate_tensile_stress"/>
-                                    <field name="elongation"/>
+                                    <field name="dia_of_bar"  class="blue-input" decoration-info="dia_of_bar != 0"/>
+                                    <field name="yield_stress"  class="blue-input" decoration-info="yield_stress != 0"/>
+                                    <field name="ultimate_tensile_stress"  class="blue-input" decoration-info="ultimate_tensile_stress != 0" />
+                                    <field name="elongation"  class="blue-input" decoration-info="elongation != 0" />
                                     <field name="weight_per_meter"/>
                                     <field name="weight_kg_min"/>
                                     <field name="bend_test"/>
@@ -76,10 +90,10 @@
         <field name="arch" type="xml">
             <form string="Add TMT Bar Line">
                 <group>
-                    <field name="dia_of_bar"/>
-                    <field name="yield_stress"/>
-                    <field name="ultimate_tensile_stress"/>
-                    <field name="elongation"/>
+                    <field name="dia_of_bar"  class="blue-input" decoration-info="dia_of_bar != 0"/>
+                    <field name="yield_stress"  class="blue-input" decoration-info="yield_stress != 0"/>
+                    <field name="ultimate_tensile_stress"  class="blue-input" decoration-info="ultimate_tensile_stress != 0"/>
+                    <field name="elongation"  class="blue-input" decoration-info="elongation != 0"/>
                 </group>
                 <footer>
                     <button name="action_add_bar_line" type="object" string="Add Line" class="btn-primary"/>
