@@ -1,23 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
-
 <odoo>
 <template id="wmm_mech_datasheet">
 		<t t-call="web.html_container">
-			<!-- <t t-call="web.basic_layout"> -->
+			
 			<t t-call="lerm_civil.data_sheet_header_generaltemplate">
                 <div style="text-align:center;font-size:18px">
                  WMM 
-				<!-- <span>
-				<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','5a0ac62b-5c56-475b-9a89-93a59c9ee3a2')]).parameter_table" t-as="parameter">
-				<t t-if="parameter.grade.id == eln.grade_id.id">
-				<span t-field="parameter.specification"/>
-				</t>
-				</t>
-				</span> -->
+				
                 </div>
 				
+
                 <div class="container_eln" style="margin-top:5px">
 
 				   <table style="margin-top:20px">
@@ -53,11 +45,11 @@
                     </td>
                 </tr>
 			</table>
-				<!-- Dry Gradation  -->
+			
 				<div t-if="data.dry_gradation_visible" style="margin-top:20px">
 					<div style="text-align:center;font-size:18px">
 						Dry Gradation
-						<!-- added -->
+					
 						<span>
 								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','32145ghty-6741-4817-95f4-5e53a0676c5f')]).parameter_table" t-as="parameter">
 									<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -127,11 +119,62 @@
 
 				</div>
 
+
+
+
+				 	<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+
+
+
+
 				<!-- Elongation and Flakiness Index  -->
-				<div t-if="data.elongation_visible | data.flakiness_visible" style="margin-top:20px">
+				<div t-if="data.elongation_visible | data.flakiness_visible" style="margin-top:20px; page-break-before: always;">
 					<div style="text-align:center;font-size:18px">
 						Elongation and Flakiness Index
-						<!-- added -->
+						
 						<span>
 								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','312gthdvfe-3e7e-4fff-b912-f7b046f5099c')]).parameter_table" t-as="parameter">
 									<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -241,10 +284,60 @@
 				</div>
 
 
+ 	<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+
+
+
+
+
+
 
          
 				<!-- Impact Value  -->
-				<div t-if="data.impact_visible" style="margin-top:20px">
+				<div t-if="data.impact_visible" style="margin-top:20px; page-break-before: always;">
 					<div style="text-align:center;font-size:18px">
 						Impact Value
 						<!-- added -->
@@ -324,9 +417,61 @@
 
 				</div>
 
+
+
+
+				 	<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+
+
+
+
+
                 <!-- Abrasion Value  -->
 
-                <div t-if="data.abrasion_visible" style="margin-top:20px">
+                <div t-if="data.abrasion_visible" style="margin-top:20px; page-break-before: always;">
 						<div style="text-align:center;font-size:18px">
 							Abrasion Value
 							<!-- added -->
@@ -380,9 +525,63 @@
 					</div>
 
 
+
+
+
+
+					 	<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+
+
+
+
+
+
                 <!-- Water Absorbtion  -->
 
-                <div t-if="data.water_absorbtion_visible" style="margin-top:20px">
+                <div t-if="data.water_absorbtion_visible" style="margin-top:20px; page-break-before: always;">
 						<div style="text-align:center;font-size:18px">
 							Water Absorbtion
 							<!-- added -->
@@ -422,15 +621,65 @@
 									<span t-field="data.water_absorbtion"/>
 								</td>
 							</tr>
-                            
-                            
 						</table>
 					</div>
 
 
 
+
+					 	<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+
+
+
+
+
+
+
                 <!-- Liquid Limit -->
-				<div t-if="data.liquid_limit_visible" style="margin-top:20px">
+				<div t-if="data.liquid_limit_visible" style="margin-top:20px; page-break-before: always;">
 					<div style="text-align:center;font-size:18px">
 						Liquid Limit
 						<!-- added -->
@@ -520,9 +769,62 @@
 
 				</div>
 
+
+
+				 	<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+
+
+
+
+
+
+
                 <!-- Plastic Limit  -->
 
-                <div t-if="data.plastic_visible" style="margin-top:20px">
+                <div t-if="data.plastic_visible" style="margin-top:20px; page-break-before: always;">
 					<div style="text-align:center;font-size:18px">
 						Plastic Limit
 						<!-- added -->
@@ -607,9 +909,61 @@
 
 				</div>
 
+
+
+
+				 	<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+
+
+
+
+
                 <!-- Plasticity Index  -->
 
-                <div t-if="data.plasticity_index_visible" style="margin-top:20px">
+                <div t-if="data.plasticity_index_visible" style="margin-top:20px; page-break-before: always;">
 					<div style="text-align:center;font-size:18px">
 						Plasticity Index
 						<!-- added -->
@@ -648,9 +1002,61 @@
 
 				</div>
 
+
+
+				 	<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+
+
+
+
+
+
                 <!-- Density Relation Using Heavy Compaction  -->
 
-                <div t-if="data.density_relation_visible" style="margin-top:20px">
+                <div t-if="data.density_relation_visible" style="margin-top:20px; page-break-before: always;">
 					<div style="text-align:center;font-size:18px">
 						Density Relation Using Heavy Compaction
 					</div>
@@ -757,8 +1163,58 @@
 				</div>
 
 
+
+				 	<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+
+
+
+
+
                 <!-- CBR  -->
-                <div t-if="data.cbr_visible" style="margin-top:20px">
+                <div t-if="data.cbr_visible" style="margin-top:20px; page-break-before: always;">
 					<div style="text-align:center;font-size:18px">
 						CBR
 					</div>
