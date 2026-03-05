@@ -17,6 +17,7 @@ class Tile(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
 
+
     product_id = fields.Many2one('product.template', string="Product", compute="_compute_product_id",store=True)
 
 

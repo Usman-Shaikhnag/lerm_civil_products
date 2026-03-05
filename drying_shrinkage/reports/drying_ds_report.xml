@@ -10,6 +10,7 @@
                 <div class="container_eln" style="margin-top:5px;">
                     <table style="margin-top:20px">
                         <tr cols="12">
+
                             
                             <td colspan="6">Job No :
                                 <![CDATA[&nbsp;]]>
@@ -21,7 +22,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="6">Material: <span t-field="eln.material"></span>
+                            <td colspan="6">Material: <span t-field="eln.m1aterial"></span>
                             </td>
                             <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
                             </td>
@@ -58,17 +59,7 @@
 							</span>
 
                             
-							<!-- <span t-field="env['lerm.parameter.master'].search([('internal_id','=','20246345-407d-4ce8-ae0d-566bd4e3b52f')]).parameter_name"/>
-							<span style="font-weight: bold;" t-esc="eln.material.test_parameter"/> -->
-						    
-                            <!-- <span>
-                                <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','20246345-407d-4ce8-ae0d-566bd4e3b52f')]).parameter_table" t-as="parameter">
-                                    <t t-if="parameter.grade.id == eln.grade_id.id">
-                                        <span t-field="parameter.specification"/>
-                                        
-                                    </t>
-                                </t>
-                            </span> -->
+							
                         </div>
                         <table >
                             <tr cols="12">
@@ -115,6 +106,57 @@
 
 
 
+
+
+
+					<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+
+
+
+
                     <div style="margin-top:20px" t-if="data.moisture_movement_visible">
                         <div style="text-align:center;font-size:18px">
                          Moisture Movement 
@@ -127,18 +169,7 @@
 									</t>
 							</span>
                           
-                        <!-- <span t-field="env['lerm.parameter.master'].search([('internal_id','=','3e59cd18-c281-4737-aa89-5b1190808804')]).parameter_name"/>
-							<span style="font-weight: bold;" t-esc="eln.material.test_parameter"/>
-						     -->
-
-                            <!-- <b>Moisture Movement</b>
-                            <span>
-                                <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3e59cd18-c281-4737-aa89-5b1190808804')]).parameter_table" t-as="parameter">
-                                    <t t-if="parameter.grade.id == eln.grade_id.id">
-                                        <span t-field="parameter.specification"/>
-                                    </t>
-                                </t>
-                            </span> -->
+                        
                         </div>
                         <table>
                             <tr cols="12">
@@ -250,9 +281,7 @@
 			<!-- <t t-call="web.basic_layout"> -->
 			
 			<t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
-				<!-- <div style="text-align:center;margin-top:10px">
-					<p style="font-size:15px"><b>TEST REPORT</b></p>
-				</div> -->
+				
 				<div class="container_eln">
 					<div t-foreach="eln" t-as="o">
 						<table style="margin-top:10px;">
@@ -347,22 +376,11 @@
 									<span t-field="o.material.name"/>
 								</td>
 							</tr>
-							<!-- <tr>
-								<td colspan="6">Age in Days :
-									<![CDATA[&nbsp;]]>
-									<span t-field="rcmt.age_of_test"/>
-								</td>
-								<td colspan="6">Date of Casting :
-									<![CDATA[&nbsp;]]>
-									<span t-field="rcmt.date_of_casting"/>
-								</td>
-							</tr> -->
+							
 							
 						</table>
 					</div>
-					<!-- <div style="margin-top:20px;">
-						<p><strong>Results</strong>:<![CDATA[&nbsp;]]></p>
-					</div> -->
+					
 
 						<!-- 1 Compressive strength  -->
 					
@@ -382,25 +400,17 @@
 									</th>
 									<th style="text-align: center;">
 									<span t-esc="eln.material.test_parameter"/>
-										<!-- <span style="font-weight: bold;">
-											Name Of Test
-										</span> -->
+										
 									</th>
                                     <th style="text-align: center;">
 									<span t-esc="eln.material.unit"/>
-									 <!-- <span style="font-weight: bold;">
-									Unit
-
-									</span> -->
-									 
+									
 									</th>
 									
 									
 									<th style="text-align: center;">
 									<span t-esc="eln.material.results"/>
-										<!-- <span style="font-weight: bold;">
-											Test Result
-										</span> -->
+										
 									</th>
 								
 									
@@ -533,57 +543,7 @@
 					</div>
 				</div>
 
-						<!-- <div class="signatureContainer girdgird" style="page-break-inside: avoid;">
-							<div>
-								<div>
-									<b>
-										Checked By
-									</b>
-								</div>
-								<div style="height:20px">
-
-								</div>
-								<div>
-									<b>
-										<span t-esc="eln.sample_id.check_by.name"/>
-									</b>
-								</div>
-								<div>
-									<b>
-										(Authorized Signatory)
-									</b>
-								</div>
-							</div>
-							<div>
-								<div t-if="stamp and stamp == '4-in_report'">
-									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
-								</div>
-								<div style="padding-top:5px">
-									Format No. <span t-esc="eln.material.test_format_no"/>
-								</div>
-							</div>
-							<div>
-								<div>
-									<b>
-										Approved By 
-									</b>
-									
-								</div>
-								<div style="height:20px">
-
-								</div>
-								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
-								<div>
-									<b>
-										(Authorized Signatory)
-									</b>
-								</div>
-							</div>
-						</div> -->
+						
 				<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
 					
 					<div>

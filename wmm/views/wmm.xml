@@ -22,6 +22,32 @@
                         <field name="grade" readonly="1"/>
                         <field name="parameter_id" invisible="1"/>
                     </group>
+
+
+
+
+
+                        <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+
+
+
                     <div class="custom_table_borders" >
                       <field name="sample_parameters">
                         <tree>
@@ -50,8 +76,8 @@
                         <field name="dry_gradation_table" colspan="2" nolabel="1">
                         <tree editable="bottom">
                           <field name="sieve_size"/>
-                          <field name="wt_retained"/>
-                          <field name="percent_retained"/>
+                          <field name="wt_retained" class="blue-input" decoration-info="wt_retained != 0"/>
+                          <field name="percent_retained" class="blue-input" decoration-info="percent_retained != 0"/>
                           <field name="cumulative_retained" readonly="1"/>
                           <field name="passing_percent" readonly="1"/>
                           </tree>
@@ -88,6 +114,8 @@
 
 
                     
+
+
                     <!-- Water Absorption -->
                     <div>
                         <h1>
@@ -102,11 +130,11 @@
                     <tbody>
                       <tr>
                         <td><span>Weight of saturated surface dry (SSD) sample in air in gms, A</span></td>
-                        <td><field name="wt_ssd_sample"/></td>
+                        <td><field name="wt_ssd_sample" class="blue-input"/></td>
                       </tr>
                       <tr>
                         <td><span> Oven dried weight of sample in gms, C</span></td>
-                        <td> <field name="oven_dried_wt"/></td>
+                        <td> <field name="oven_dried_wt" class="blue-input"/></td>
                       </tr>
                       <tr>
                         <td><span>Water absorption %</span></td>
@@ -154,9 +182,9 @@
                         <field name="elongation_table" colspan="2" nolabel="1">
                         <tree editable="bottom" class="table-bordered o_list_view">
                           <field name="sieve_size"/>
-                          <field name="wt_retained"/>
-                          <field name="elongated_retained"/>
-                          <field name="flakiness_retained"/>
+                          <field name="wt_retained" class="blue-input" decoration-info="wt_retained != 0"/>
+                          <field name="elongated_retained" class="blue-input" decoration-info="elongated_retained != 0"/>
+                          <field name="flakiness_retained" class="blue-input" decoration-info="flakiness_retained != 0"/>
                         </tree>
                         </field>
                     </group>
@@ -244,10 +272,10 @@
                     <field name="impact_value_child_lines" nolabel="1" colspan="2">
                             <tree editable="bottom" >
                                 <field name='sample_no'/>
-                                <field name='wt_of_cylinder'/>
-                                <field name='total_wt_of_dried'/>
+                                <field name='wt_of_cylinder' class="blue-input" decoration-info="wt_of_cylinder != 0"/>
+                                <field name='total_wt_of_dried' class="blue-input" decoration-info="total_wt_of_dried != 0"/>
                                 <field name='total_wt_aggregate'/>
-                                <field name='wt_of_aggregate_passing'/>
+                                <field name='wt_of_aggregate_passing' class="blue-input" decoration-info="wt_of_aggregate_passing != 0"/>
                                 <field name='wt_of_aggregate_retained'/>
                                 <field name='impact_value'/>
                             </tree>
@@ -295,11 +323,11 @@
                     <tbody>
                     <tr>
                         <td><span>Total weight of Sample in gms</span></td>
-                        <td><field name="total_weight_sample_abrasion"/></td>
+                        <td><field name="total_weight_sample_abrasion"  class="blue-input"/></td>
                       </tr>
                       <tr>
                         <td><span>Weight of Passing sample in 1.70 mm IS sieve in gms</span></td>
-                        <td><field name="weight_passing_sample_abrasion"/></td>
+                        <td><field name="weight_passing_sample_abrasion"  class="blue-input"/></td>
                       </tr>
                       <tr>
                         <td><span> Weight of Retain sample in 1.70 mm IS sieve in gms</span></td>
@@ -352,13 +380,13 @@
                     <field name="liquid_limit_table" nolabel="1" colspan="2">
                             <tree editable="bottom">
                                 <field name='container_no'/>
-                                <field name='blows'/>
-                                <field name='mass_wet_sample_container'/>
-                                <field name='mass_dry_sample_container'/>
-                                <field name='mass_container'/>
-                                <field name='mass_moisture'/>
-                                <field name='mass_dry_sample'/>
-                                <field name='moisture_percent'/>
+                                <field name='blows' class="blue-input" decoration-info="blows != 0"/>
+                                <field name='mass_wet_sample_container' class="blue-input" decoration-info="mass_wet_sample_container != 0"/>
+                                <field name='mass_dry_sample_container' class="blue-input" decoration-info="mass_dry_sample_container != 0"/>
+                                <field name='mass_container' class="blue-input" decoration-info="mass_container != 0"/>
+                                <field name='mass_moisture' class="blue-input" decoration-info="mass_moisture != 0"/>
+                                <field name='mass_dry_sample' class="blue-input" decoration-info="mass_dry_sample != 0"/>
+                                <field name='moisture_percent' class="blue-input" decoration-info="moisture_percent != 0"/>
                             </tree>      
                     </field> 
                 </div>
@@ -384,7 +412,7 @@
                         <tbody>
                            <tr>
                            <td><span>Liquid Limit</span></td>
-                            <td><field name="liquid_limit" /></td>
+                            <td><field name="liquid_limit" class="blue-input"/></td>
                            </tr>
                      </tbody>
                           </table>
@@ -395,13 +423,14 @@
                         <tbody>
                            <tr>
                            <td><span>Remarks</span></td>
-                            <td><field name="remarks_liquid_limit"/></td>
+                            <td><field name="remarks_liquid_limit" class="blue-input"/></td>
                            </tr>
                      </tbody>
                           </table>
                 </div>
                 </div>
                 <group/>
+
 
 
                 <div style="display:flex;">
@@ -447,12 +476,12 @@
                     <field name="plastic_table" nolabel="1" colspan="2">
                             <tree editable="bottom">
                                 <field name='container_no'/>
-                                <field name='mass_wet_sample_container'/>
-                                <field name='mass_dry_sample_container'/>
-                                <field name='mass_container'/>
-                                <field name='mass_moisture'/>
-                                <field name='mass_dry_sample'/>
-                                <field name='moisture_percent'/>
+                                <field name='mass_wet_sample_container' class="blue-input" decoration-info="mass_wet_sample_container != 0"/>
+                                <field name='mass_dry_sample_container' class="blue-input" decoration-info="mass_dry_sample_container != 0"/>
+                                <field name='mass_container' class="blue-input" decoration-info="mass_container != 0"/>
+                                <field name='mass_moisture' class="blue-input" decoration-info="mass_moisture != 0"/>
+                                <field name='mass_dry_sample' class="blue-input" decoration-info="mass_dry_sample != 0"/>
+                                <field name='moisture_percent' class="blue-input" decoration-info="moisture_percent != 0"/>
                             </tree>     
                     </field> 
                 </div>
@@ -462,36 +491,19 @@
                         <tbody>
                            <tr>
                              <td><span>Average</span></td>
-                              <td> <field name="average_plastic_moisture"/>
+                              <td> <field name="average_plastic_moisture" class="blue-input"/>
                             </td>
                            </tr>
                            <tr>
                             <td><span>Remarks</span></td>
-                            <td><field name="remarks_plastic"/></td>
+                            <td><field name="remarks_plastic" class="blue-input"/></td>
                            </tr>
                            </tbody>
                           </table>
                       </div>
                       <group/>
 
-                    <!-- <group invisible="not plastic_visible">
-                        <field name="average_plastic_moisture"/>
-                        <field name="remarks_plastic"/>
-                    </group> -->
-
-                <!-- Plasticity index  -->
-
-                <!-- <div>
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                        <tbody>
-                           <tr>
-                             <td><span>Plasticity Index</span></td>
-                              <td><field name="plasticity_index"/>
-                            </td>
-                           </tr>
-                           </tbody>
-                          </table>
-                      </div> -->
+                   
                       <group/>
 
                       <div>
@@ -522,21 +534,7 @@
 
 
                       
-                <!-- Plasticity index  -->
-                <!-- <group invisible="not plasticity_index_visible">
-                    <field name="plasticity_index"/>
-                    <field name="remarks_plasticity_index" style="width:30%"/>
-                    <field name="plasticity_index_visible" invisible="1"/>
-                </group>
-                 <group invisible="not plasticity_index_visible">
-                       
-                        <field  name="plasticity_index_conformity"
-                                        decoration-success="plasticity_index_conformity == 'pass'" 
-                                        decoration-danger="plasticity_index_conformity == 'fail'" 
-                                        readonly="1" />
-                        <field  name="plasticity_index_nabl" />
-                         
-                    </group> -->
+               
 
 
 
@@ -556,38 +554,35 @@
                         <tbody>
                            <tr>
                              <td><span>Weight of Mould in gm</span></td>
-                              <td><field name="wt_of_modul" />
+                              <td><field name="wt_of_modul" class="blue-input"/>
                             </td>
                            </tr>
                            <tr>
                             <td><span>Volume of Mould in cc</span></td>
-                            <td><field name="vl_of_modul" /></td>
+                            <td><field name="vl_of_modul" class="blue-input"/></td>
                            </tr>
                            </tbody>
                           </table>
                       </div>
                       <group/>
 
-                <!-- <group invisible="not density_relation_visible">
-                    <field name="wt_of_modul" />
-                    <field name="vl_of_modul" />
-                </group> -->
+               
 
                 <div class=" custom_table_borders" >
                     <field name="density_relation_table" nolabel="1" colspan="2" >
                             <tree editable="bottom">
                                 <field name='determination_no'/>
-                                <field name='wt_of_modul_compact'/>
-                                <field name='wt_of_compact'/>
-                                <field name='bulk_density'/>
-                                <field name='container_no'/>
-                                <field name='wt_of_container'/>
-                                <field name='wt_of_container_wet'/>
-                                <field name='wt_of_container_dry'/>
-                                <field name='wt_of_dry_sample'/>
-                                <field name='wt_of_moisture'/>
-                                <field name='moisture'/>
-                                <field name='dry_density'/>
+                                <field name='wt_of_modul_compact' class="blue-input" decoration-info="wt_of_modul_compact != 0"/>
+                                <field name='wt_of_compact' class="blue-input" decoration-info="wt_of_compact != 0"/>
+                                <field name='bulk_density' class="blue-input" decoration-info="bulk_density != 0"/>
+                                <field name='container_no' class="blue-input" decoration-info="container_no != 0"/>
+                                <field name='wt_of_container' class="blue-input" decoration-info="wt_of_container != 0"/>
+                                <field name='wt_of_container_wet' class="blue-input" decoration-info="wt_of_container_wet != 0"/>
+                                <field name='wt_of_container_dry' class="blue-input" decoration-info="wt_of_container_dry != 0"/>
+                                <field name='wt_of_dry_sample' class="blue-input" decoration-info="wt_of_dry_sample != 0"/>
+                                <field name='wt_of_moisture' class="blue-input" decoration-info="wt_of_moisture != 0"/>
+                                <field name='moisture' class="blue-input" decoration-info="moisture != 0"/>
+                                <field name='dry_density' class="blue-input" decoration-info="dry_density != 0"/>
                             </tree>
                     </field> 
                     </div>
@@ -614,8 +609,8 @@
                 <div class=" custom_table_borders">
                     <field name="cbr_table" nolabel="1" colspan="2" >
                             <tree editable="bottom">
-                                <field name='penetration'/>
-                                <field name='proving_reading'/>
+                                <field name='penetration' class="blue-input" decoration-info="penetration != 0"/>
+                                <field name='proving_reading' class="blue-input" decoration-info="proving_reading != 0"/>
                                 <field name='load'/>
                             </tree>      
                     </field> 
