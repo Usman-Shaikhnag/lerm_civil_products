@@ -151,8 +151,8 @@ class SrfForm(models.Model):
     customer = fields.Many2one('res.partner',string="Customer",tracking=True)
     billing_customer = fields.Many2one('res.partner',string="Billing Customer")
     contact_person = fields.Many2one('res.partner',string="Contact Person")
-    client = fields.Char("Client")
-    # site_address = fields.Many2one('res.partner',string="Site Address")
+    # client = fields.Char("Client")
+    client = fields.Many2one('res.partner',string="Client")
     site_address = fields.Char(string="Site Address",compute="_compute_site_address")
     name_work = fields.Many2one('res.partner.project',string="Name of Work")
 
