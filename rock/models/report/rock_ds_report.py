@@ -103,13 +103,19 @@ class SoilReportTriaxial(models.AbstractModel):
         ])
 
         logo_path = get_module_resource(
-            'lerm_civil', 'static/src/img', 'genstru_logo.png'
-        )
+       'lerm_civil',
+       'static',
+       'src',
+       'img',
+       'genstru_logo.png')   
 
         logo_base64 = False
         if logo_path:
             with open(logo_path, 'rb') as f:
                 logo_base64 = base64.b64encode(f.read()).decode('utf-8')
+        
+        print("LOGO PATH:", logo_path)
+        print("LOGO BASE64 EXISTS:", bool(logo_base64))
 
         
 
