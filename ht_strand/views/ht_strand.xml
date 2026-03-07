@@ -37,10 +37,29 @@
                                 </field>
                             </div>
 
+
+                            <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
                                 <field name="ht_strand_lines" nolabel="1" >
                                     <tree editable="bottom" class="custom_table_borders">
                                         <field name='sr_no'/>
-                                        <field name='individual_dia1'/>
+                                        <field name='individual_dia1' class="blue-input" decoration-info="individual_dia1 != 0"/>
                                         <field name='individual_area'/>
 
                                         
@@ -59,7 +78,7 @@
                             <tbody>
                                 <tr>
                                     <td style="width:30%;"><label for="diameter">Outer Strand Dia</label></td>
-                                    <td style="width:30%;"><field name="diameter"/></td>
+                                    <td style="width:30%;"><field name="diameter" class="blue-input"/></td>
                                 </tr>
                               
                             </tbody>
@@ -83,7 +102,7 @@
                             <tbody>
                                 <tr>
                                     <td style="width:50%;"><label for="requirement_crossectional_area">Requirement</label></td>
-                                    <td style="width:50%;"><field name="requirement_crossectional_area"/></td>
+                                    <td style="width:50%;"><field name="requirement_crossectional_area" class="blue-input"/></td>
                                 </tr>
                               
                             
@@ -133,7 +152,7 @@
                             <tbody>
                                 <tr>
                                     <td style="width:50%;"><label for="requirement_per_diff_dia">Requirement</label></td>
-                                    <td style="width:50%;"><field name="requirement_per_diff_dia"/></td>
+                                    <td style="width:50%;"><field name="requirement_per_diff_dia" class="blue-input"/></td>
                                 </tr>
 
                             </tbody>
@@ -173,7 +192,7 @@
                             <tbody>
                                 <tr>
                                     <td style="width:30%;"><label for="weight">Weight, gm</label></td>
-                                    <td style="width:30%;"><field name="weight"/></td>
+                                    <td style="width:30%;"><field name="weight" class="blue-input"/></td>
                                 </tr>
 
                             </tbody>
@@ -187,7 +206,7 @@
                             <tbody>
                                 <tr>
                                     <td style="width:30%;"><label for="lenght">Length, mm</label></td>
-                                    <td style="width:30%;"><field name="lenght"/></td>
+                                    <td style="width:30%;"><field name="lenght" class="blue-input"/></td>
                                 </tr>
                               
                             </tbody>
@@ -213,7 +232,7 @@
                             <tbody>
                                 <tr>
                                     <td style="width:50%;"><label for="requirement_weight_per_meter">Requirement</label></td>
-                                    <td style="width:50%;"><field name="requirement_weight_per_meter"/></td>
+                                    <td style="width:50%;"><field name="requirement_weight_per_meter" class="blue-input"/></td>
                                 </tr>
 
                             </tbody>
@@ -256,8 +275,8 @@
                             <tbody>
                                 <tr>
                                     <td style="width:50%;"><label for="lay_length">Lay Length mm</label></td>
-                                    <td style="width:50%;"><field name="lay_length"/></td>
-                                    <field name="lay_length_visible" invisible="1"/>
+                                    <td style="width:50%;"><field name="lay_length" class="blue-input"/></td>
+                                    <field name="lay_length_visible" invisible="1" />
                                 </tr>
                               
                             </tbody>
@@ -267,7 +286,7 @@
                             <tbody>
                                 <tr>
                                     <td style="width:50%;"><label for="requirement_lay_length">Requirement</label></td>
-                                    <td style="width:50%;"><field name="requirement_lay_length"/></td>
+                                    <td style="width:50%;"><field name="requirement_lay_length" class="blue-input"/></td>
                                 </tr>
                               
                             
@@ -309,7 +328,7 @@
                             <tbody>
                                 <tr>
                                     <td style="width:30%;"><label for="gauge_length">Guage Length mm</label></td>
-                                    <td style="width:30%;"><field name="gauge_length"/></td>
+                                    <td style="width:30%;"><field name="gauge_length" class="blue-input"/></td>
                                 </tr>
                               
                             </tbody>
@@ -325,7 +344,7 @@
                             <tbody>
                                 <tr>
                                     <td style="width:50%;"><label for="proof_stress2per">0.2 % Proof Load, (kN)</label></td>
-                                    <td style="width:50%;"><field name="proof_stress2per"/></td>
+                                    <td style="width:50%;"><field name="proof_stress2per" class="blue-input"/></td>
                                     <field name="proof_stress2per_visible" invisible="1"/>
                                 </tr>
                               
@@ -336,7 +355,7 @@
                             <tbody>
                                 <tr>
                                     <td style="width:50%;"><label for="requirement_proof_stress2per">Requirement</label></td>
-                                    <td style="width:50%;"><field name="requirement_proof_stress2per"/></td>
+                                    <td style="width:50%;"><field name="requirement_proof_stress2per" class="blue-input"/></td>
                                 </tr>
                               
                             
@@ -380,7 +399,7 @@
                             <tbody>
                                 <tr>
                                     <td style="width:50%;"><label for="breaking_load">Breaking Load,  (kN)</label></td>
-                                    <td style="width:50%;"><field name="breaking_load"/></td>
+                                    <td style="width:50%;"><field name="breaking_load" class="blue-input"/></td>
                                     <field name="breaking_load_visible" invisible="1"/>
                                 </tr>
                               
@@ -391,7 +410,7 @@
                             <tbody>
                                 <tr>
                                     <td style="width:50%;"><label for="requirement_breaking_load">Requirement</label></td>
-                                    <td style="width:50%;"><field name="requirement_breaking_load"/></td>
+                                    <td style="width:50%;"><field name="requirement_breaking_load" class="blue-input"/></td>
                                 </tr>
                               
                             
@@ -432,7 +451,7 @@
                             <tbody>
                                 <tr>
                                     <td style="width:50%;"><label for="tensile_strength">Tensile Strength Mpa</label></td>
-                                    <td style="width:50%;"><field name="tensile_strength"/></td>
+                                    <td style="width:50%;"><field name="tensile_strength" /></td>
                                     <field name="tensile_strength_visible" invisible="1"/>
                                 </tr>
                               
@@ -443,7 +462,7 @@
                             <tbody>
                                 <tr>
                                     <td style="width:50%;"><label for="requirement_tensile_strength">Requirement</label></td>
-                                    <td style="width:50%;"><field name="requirement_tensile_strength"/></td>
+                                    <td style="width:50%;"><field name="requirement_tensile_strength" class="blue-input"/></td>
                                 </tr>
                               
                             
@@ -484,7 +503,7 @@
                             <tbody>
                                 <tr>
                                     <td style="width:50%;"><label for="elongation">Elongation %</label></td>
-                                    <td style="width:50%;"><field name="elongation"/></td>
+                                    <td style="width:50%;"><field name="elongation" class="blue-input"/></td>
                                     <field name="elongation_visible" invisible="1"/>
                                 </tr>
                               
@@ -495,7 +514,7 @@
                             <tbody>
                                 <tr>
                                     <td style="width:50%;"><label for="requirement_elongation">Requirement</label></td>
-                                    <td style="width:50%;"><field name="requirement_elongation"/></td>
+                                    <td style="width:50%;"><field name="requirement_elongation" class="blue-input"/></td>
                                 </tr>
                               
                             
@@ -588,7 +607,7 @@
                             <tbody>
                                 <tr>
                                     <td style="width:50%;"><label for="modulus_of_ela">Modulus of Elasticity (GPa)</label></td>
-                                    <td style="width:50%;"><field name="modulus_of_ela"/></td>
+                                    <td style="width:50%;"><field name="modulus_of_ela" class="blue-input"/></td>
                                     <field name="modulus_of_ela_visible" invisible="1"/>
                                 </tr>
                               
@@ -599,7 +618,7 @@
                             <tbody>
                                 <tr>
                                     <td style="width:50%;"><label for="requirement_modulus_of_ela">Requirement</label></td>
-                                    <td style="width:50%;"><field name="requirement_modulus_of_ela"/></td>
+                                    <td style="width:50%;"><field name="requirement_modulus_of_ela" class="blue-input"/></td>
                                 </tr>
                               
                             

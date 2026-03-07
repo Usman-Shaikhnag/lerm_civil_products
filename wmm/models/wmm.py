@@ -14,6 +14,7 @@ class WmmMechanical(models.Model):
 
 
     name = fields.Char("Name",default="WMM")
+
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
@@ -77,13 +78,7 @@ class WmmMechanical(models.Model):
             self.grade = self.eln_ref.grade_id.id
 
 
-    # @api.depends('eln_ref')
-    # def _compute_sample_parameters(self):
-        
-    #     for record in self:
-    #         records = record.eln_ref.parameters_result.parameter.ids
-    #         record.sample_parameters = records
-    #         print("Records",records)
+   
 
     @api.depends('eln_ref','sample_parameters')
     def _compute_visible(self):

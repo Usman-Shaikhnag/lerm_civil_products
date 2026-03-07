@@ -57,7 +57,7 @@ class StainlessSteelTmtBar(models.AbstractModel):
 
         # Convert to list of tuples for sorted access in QWeb
         grouped_bar_lines = sorted(grouped_lines.items(), key=lambda x: x[0])  # sort by dia_of_bar
-        import wdb; wdb.set_trace()
+        # import wdb; wdb.set_trace()
         return {
             'eln': eln,
             'data' : general_data,
