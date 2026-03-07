@@ -53,7 +53,7 @@ class Discipline(models.Model):
         # record.eln_ref.write({'model_id':record.id})
         return record
     # @api.model
-    # def create(self, vals):
+    # def create(self, vals):'default_billing_customer': self.billing_customer.id,
     #     record = super(Discipline, self).create(vals)
     #     record.get_all_fields()
     #     return record
@@ -179,7 +179,8 @@ class SrfForm(models.Model):
     eln_count = fields.Integer(string="ELN Count", compute='compute_eln_count')
     sample_range_table = fields.One2many('sample.range.line','srf_id',string="Sample Range")
     contractor = fields.Many2one('lerm.contractor.line',string="Contractor")
-    report_issued = fields.Char(string="Report to be issued in the")
+    # report_issued = fields.Char(string="Report to be issued in the")
+    report_issued = fields.Many2one('res.partner',string="Report to be issued in the name of:")
     contractor_ids = fields.Many2many('lerm.contractor.line')
     casting = fields.Boolean(string="Casting")
 
@@ -1149,7 +1150,7 @@ class SrfForm(models.Model):
         action = self.env.ref('lerm_civil.edit_srf_wizard_form')
         
         return {
-            'name': "Edit SRF Header",
+            'name': "Edit OR Header",
             'type': 'ir.actions.act_window',
             'view_type': 'form',
             'view_mode': 'form',
@@ -1160,14 +1161,16 @@ class SrfForm(models.Model):
                 'default_srf_id' : self.id,
                 'default_customer': self.customer.id,
             'default_srf_date': self.srf_date,
-            'default_client': self.client,
+            'default_client': self.client.id,
             'default_contact_person': self.contact_person.id,
             'default_contractor': self.contractor.id,
             'default_billing_customer': self.billing_customer.id,
             'default_client_refrence': self.client_refrence,
             'default_name_work': self.name_work.id,
             'default_attachment':self.attachment,
-            'default_attachment_name':self.attachment_name
+            'default_attachment_name':self.attachment_name,
+            'default_report_issued': self.report_issued.id,
+            'default_request_date':self.request_date
             }
             }
         
