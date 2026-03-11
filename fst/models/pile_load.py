@@ -17,8 +17,14 @@ class PileLoadTestParent(models.Model):
     _order = "rec_date desc, id desc"
 
     work_name = fields.Char("Name of Work")
-    contractor = fields.Char("Contractor")
-    client = fields.Char("Client")
+
+    client = fields.Many2one("res.partner", string="Client")
+    contractor = fields.Many2one(
+        "lerm.contractor.line",
+        string="Contractor",
+        domain="[('partner_id', '=', client)]"
+    )
+
     cover_image = fields.Binary("Cover Image")
 
     ulr = fields.Char("ULR No", copy=False, readonly=True)
