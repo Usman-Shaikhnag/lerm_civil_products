@@ -259,6 +259,42 @@
                         </tbody>
                     </table>
 
+
+                    <!--  -->
+
+                     <div invisible="ini_rate_absorption_visible == False" style="text-align:center">
+                      <h1>
+                          <field name="ini_rate_absorption_name" readonly="1" nolabel="1"/>
+                          <field name="ini_rate_absorption_visible" invisible='1'/>
+                      </h1>
+                    </div>
+                    
+                   
+                     <div invisible = "ini_rate_absorption_visible == False"  >
+                    <field name="absorption_line_ids" nolabel="1" >
+                            <tree editable="bottom"  class="custom_table_borders">
+                                <field name="serial_no" />
+                                <field name="iW1" class="blue-input" decoration-info="iW1 != 0"/>
+                                <field name='W2' class="blue-input" decoration-info="W2 != 0"/>
+                                <field name='W2_W1'/>
+                                <field name='area'/>
+                                <field name='initial_rate_absorp' />
+                                
+                            </tree>
+                    </field>
+                    </div>
+
+                    <table class="table o_form_table w-50 mt-2 custom_table_borders" invisible="not ini_rate_absorption_visible">
+                        <tbody>
+                            <tr>
+                                <td><strong>Average Initial Rate of Absorption (g/min/100 cm²)</strong></td>
+                                <td>
+                                    <field name="average_ira" readonly="1" nolabel="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
                   <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
                 </sheet>
             </form>
