@@ -230,9 +230,41 @@ class MechanicalBricksBurntClay(models.Model):
                     record.efflorescence_visible = True
                 if sample.internal_id == "9f1689be-107d-4e30-9d3d-2aff6292264d":
                     record.dimension_visible = True 
+
+                
      
     def open_eln_page(self):
         # import wdb; wdb.set_trace()
+        current_user = self.env.user
+            # 🔹 Only results assigned to current technician
+        if current_user.has_group('lerm_civil.lerm_discipline_group'):
+            technician_results = self.eln_ref.parameters_result
+        else:
+            technician_results = self.eln_ref.parameters_result.filtered(
+                lambda r: r.technician == current_user
+            )
+
+        for result in technician_results:
+
+           # Compressive Strength
+            if result.parameter.internal_id == '97928829-9b1f-4091-aa7f-4b76f98eb47f':
+                result.result_char = round(self.avrg_compressive_strength,2)
+                result.calculated = True
+                if self.comp_strength_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+             #  Efforescence
+            if result.parameter.internal_id == '1ddc7095-da2d-44a2-a70a-ab97216aee77':
+                result.result_char = round(self.avrg_water_absorption,2)
+                result.calculated = True
+                if self.water_absorption_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
 
         return {
                 'view_mode': 'form',
