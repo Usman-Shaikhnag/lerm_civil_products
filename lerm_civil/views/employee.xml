@@ -14,6 +14,11 @@
                     </page>
                     
                 </xpath>
+
+                <xpath expr="//field[@name='work_email']" position="after">
+                    <field name="lab_ids" widget="many2many_tags"/>
+                    <field name="company_ids" widget="many2many_tags"/>
+                </xpath>
             </field>
         </record>
 
