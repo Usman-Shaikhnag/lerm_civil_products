@@ -32,6 +32,24 @@
                         </field>
                     </div>
 
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
                      <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
                             <div style="width: 100%;">
                                 <table style="width: 100%; border-collapse: collapse;">
@@ -44,7 +62,7 @@
 
                                             <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
                                                 <div style="display: block; width: 100%;">
-                                                    <field name="location" nolabel="1" style="width: 100%;" class="o_input"/>
+                                                    <field name="location" nolabel="1" style="width: 100%;" class="o_input" />
                                                 </div>
                                             </td>
                                           
@@ -78,7 +96,7 @@
                                            Description
                                         </th>
                                         <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
-                                            <field name="location_heding" nolabel="1" style="width: 100%;" class="o_input"/>
+                                            <field name="location_heding" nolabel="1" style="width: 100%;" class="o_input" />
                                         </th>
                                         <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
                                             Unit
@@ -94,7 +112,7 @@
                                             <label for="wt_of_samplew1"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="wt_of_samplew1" nolabel="1"/>
+                                            <field name="wt_of_samplew1" nolabel="1" class="blue-input"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
                                            grams
@@ -108,7 +126,7 @@
                                             <label for="wt_of_intial"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="wt_of_intial" nolabel="1"/>
+                                            <field name="wt_of_intial" nolabel="1" class="blue-input"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
                                            grams
@@ -122,7 +140,7 @@
                                             <label for="wt_of_aggregate"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="wt_of_aggregate" nolabel="1"/>
+                                            <field name="wt_of_aggregate" nolabel="1" class="blue-input"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
                                            grams
@@ -136,7 +154,7 @@
                                             <label for="wt_of_extraction"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="wt_of_extraction" nolabel="1"/>
+                                            <field name="wt_of_extraction" nolabel="1" class="blue-input"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
                                            grams
@@ -151,7 +169,7 @@
                                             Increased weight of filter W3 = (F2-F1)
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="wt_of_filter" nolabel="1"/>
+                                            <field name="wt_of_filter" nolabel="1" class="blue-input"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
                                            grams
@@ -242,10 +260,10 @@
                     <field name="specific_gravity_lines" nolabel="1" >
                             <tree editable="bottom"  class="custom_table_borders">
                                 <field name="serial_no" />
-                                <field name='wt_of_sp_stoper'/>
-                                <field name='wt_of_sp_bottle' />
-                                <field name='wt_of_sp_material' />
-                                <field name='wt_of_sp_water' />
+                                <field name='wt_of_sp_stoper' class="blue-input" decoration-info="wt_of_sp_stoper != 0"/>
+                                <field name='wt_of_sp_bottle' class="blue-input" decoration-info="wt_of_sp_bottle != 0"/>
+                                <field name='wt_of_sp_material' class="blue-input" decoration-info="wt_of_sp_material != 0"/>
+                                <field name='wt_of_sp_water' class="blue-input" decoration-info="wt_of_sp_water != 0"/>
                                 <field name='sp_bitumen' />
                                 
                             </tree>
@@ -305,135 +323,7 @@
                     </table>
 
 
-                         <!-- <div class="custom_table_borders" style="width:100%;" invisible = "specific_gravity_visible == False">
-                            <table style="width: 100%; border-collapse: collapse;">
-                                <thead>
-                                    <tr>
-                                     <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
-                                           S.No
-                                        </th>
-                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
-                                           Description
-                                        </th>
-                                       
-                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
-                                            Unit
-                                        </th>
-                                         <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
-                                           sample 1
-                                        </th>
-                                         <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
-                                           sample 2
-                                        </th>
-
-                                          <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;" rowspan="5">
-                                         Avg
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                    <td style="border: 1px solid black; color: black; padding: 8px 10px;text-align: center">
-                                           A
-                                        </td>
-                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;">
-                                             weight the specific gravity bottle alongwith the stopper (Weight 'A')
-                                        </td>
-                                       
-                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                          gm
-                                        </td>
-
-                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="wt_of_sp_stoper" nolabel="1"/>
-                                        </td>
-                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="wt_of_sp_stoper1" nolabel="1"/>
-                                        </td>
-                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;" rowspan="5">
-                                            <field name="avg_sp_bitumen" nolabel="1"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                    <td style="border: 1px solid black; color: black; padding: 8px 10px;text-align: center">
-                                           B
-                                        </td>
-                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;">
-                                              weight specific gravity bottle + distilled water
-                                        </td>
-                                       
-                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                          gm
-                                        </td>
-
-                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="wt_of_sp_bottle" nolabel="1"/>
-                                        </td>
-                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="wt_of_sp_bottle1" nolabel="1"/>
-                                        </td>
-                                    </tr>
-                                       <tr>
-                                    <td style="border: 1px solid black; color: black; padding: 8px 10px;text-align: center">
-                                           C
-                                        </td>
-                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;">
-                                               Weight  the specific gravity bottle + half-filled with the material
-                                        </td>
-                                       
-                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                          gm
-                                        </td>
-
-                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="wt_of_sp_material" nolabel="1"/>
-                                        </td>
-                                          <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="wt_of_sp_material1" nolabel="1"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                      
-                                    <td style="border: 1px solid black; color: black; padding: 8px 10px;text-align: center">
-                                           D
-                                        </td>
-                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;">
-                                             Weight the specific gravity bottle + half-filled with the material + half with distilled water
-                                        </td>
-                                       
-                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                          gm
-                                        </td>
-
-                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="wt_of_sp_water" nolabel="1"/>
-                                        </td>
-                                          <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="wt_of_sp_water1" nolabel="1"/>
-                                        </td>
-                                    </tr>
-                                      <tr>
-                                    <td style="border: 1px solid black; color: black; padding: 8px 10px;text-align: center">
-                                        
-                                        </td>
-                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;">
-                                            Specific gravity of bitumen =(C-A)/(B-A)-(D-C)
-                                        </td>
-                                       
-                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                      
-                                        </td>
-
-                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="sp_bitumen" nolabel="1"/>
-                                        </td>
-                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="sp_bitumen1" nolabel="1"/>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div> -->
+                      
 
 
                         <group invisible = "flash_and_fire_visible == False" style="white-space: nowrap; width:70%;margin-top: 20px;" >
@@ -448,65 +338,14 @@
                     <field name="flash_and_fire_lines" nolabel="1" >
                             <tree editable="bottom"  class="custom_table_borders">
                                 <field name="serial_no" />
-                                <field name='flash_point'/>
-                                <field name='fire_point' />
+                                <field name='flash_point' class="blue-input" decoration-info="flash_point != 0"/>
+                                <field name='fire_point' class="blue-input" decoration-info="fire_point != 0"/>
                                
                             </tree>
                     </field>
                     </div>
 
-               <!-- <group>
-                     <group style="white-space: nowrap; width:100%;"  invisible = "flash_and_fire_visible == False" string="Result">
-                            <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 100%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
-                                          Mean Value  Flash
-                                            </td>
-                                          
-                                          
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 80px;">
-                                                    <field name="mean_flash" nolabel="1"/>
-                                                </div>
-                                            </td>
-
-                                             
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        </group>
-
-
-                         <group style="white-space: nowrap; width:100%;"  invisible = "flash_and_fire_visible == False" >
-                            <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 100%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
-                                          Mean Value Fire
-                                            </td>
-                                          
-                                          
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 80px;">
-                                                    <field name="mean_fire" nolabel="1"/>
-                                                </div>
-                                            </td>
-
-                                           
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        </group>
-                  </group> -->
+             
 
                      <div class="d-flex gap-2" invisible = "flash_and_fire_visible == False">
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
@@ -597,7 +436,7 @@
                     <field name="softining_point_lines" nolabel="1" >
                             <tree editable="bottom"  class="custom_table_borders">
                                 <field name="serial_no" />
-                                <field name='softining_point'/>
+                                <field name='softining_point' class="blue-input" decoration-info="softining_point != 0"/>
                                
                             </tree>
                     </field>
@@ -669,10 +508,10 @@
                     <field name="penetration_lines" nolabel="1" >
                             <tree editable="bottom"  class="custom_table_borders">
                                 <field name="serial_no" />
-                                <field name='penetration_c'/>
-                                <field name='penetration_sec'/>
-                                <field name='penetration_initial'/>
-                                <field name='penetration_final'/>
+                                <field name='penetration_c' class="blue-input" decoration-info="penetration_c != 0"/>
+                                <field name='penetration_sec' class="blue-input" decoration-info="penetration_sec != 0"/>
+                                <field name='penetration_initial' class="blue-input" decoration-info="penetration_initial != 0"/>
+                                <field name='penetration_final' class="blue-input" decoration-info="penetration_final != 0"/>
                                 <field name='penetration'/>
                                
                             </tree>
@@ -757,7 +596,7 @@
                                             </td>
                                             <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
                                                 <div style="display: inline-block; min-width: 80px;">
-                                                    <field name="wt_of_sample" nolabel="1"/>
+                                                    <field name="wt_of_sample" nolabel="1" class="blue-input" />
                                                 </div>
                                             </td>
                                             <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
@@ -777,12 +616,12 @@
                     <field name="sieve_analysis_child_lines" nolabel="1" >
                             <tree editable="bottom"  class="custom_table_borders">
                                 <field name="serial_no" string="Sr.No"/>
-                                <field name='sieve_size' string="IS Sieve Size"/>
-                                <field name='wt_retained' string="Wt. Retained in gms"/>
+                                <field name='sieve_size' string="IS Sieve Size" class="blue-input" decoration-info="sieve_size != 0"/>
+                                <field name='wt_retained' string="Wt. Retained in gms" class="blue-input" decoration-info="wt_retained != 0"/>
                                 <field name='percent_retained' string="% Retained"/>
                                 <field name='cumulative_retained' context="{'default_cumulative_retained': cumulative_retained}" string="Cum. Retained %"/>
                                 <field name='passing_percent' string="Passing %" readonly="1"/>
-                                  <field name='specific_limt' string="Specified Limits" class="oe_center"/>
+                                  <field name='specific_limt' string="Specified Limits" class="oe_center" />
                                 
                             </tree>
                     </field>
