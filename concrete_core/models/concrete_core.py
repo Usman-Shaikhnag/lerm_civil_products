@@ -195,6 +195,156 @@ class ConcreteCore(models.Model):
     #         record.average = round((total_value / len(record.child_lines) if record.child_lines else 0.0),2)
 
 
+    wpt_name = fields.Char("Name",default=" Water Permeability Test")
+    wpt_visible = fields.Boolean("WPT Visible",compute="_compute_visible") 
+
+    wpt_child_lines = fields.One2many('mechanical.core.wpt.line','parent_id',string="Parameter")
+
+    average_of_wpt = fields.Float(string="Average of WPT", compute="_compute_average_of_averages")
+
+    @api.depends('wpt_child_lines.average')
+    def _compute_average_of_averages(self):
+        for record in self:
+            if record.wpt_child_lines:
+                record.average_of_wpt = round(sum(line.average for line in record.wpt_child_lines) / len(record.wpt_child_lines), 3)
+            else:
+                record.average_of_wpt = 0.0
+
+
+    wpt_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Conformity", compute="_compute_wpt_conformity", store=True)
+
+    @api.depends('average_of_wpt','eln_ref','grade')
+    def _compute_wpt_conformity(self):
+        
+        for record in self:
+            record.wpt_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].search([('internal_id','=','30214uy-0268-46ef-ba88-9c04532103012t')])
+            materials = self.env['lerm.parameter.master'].search([('internal_id','=','30214uy-0268-46ef-ba88-9c04532103012t')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.average_of_wpt - record.average_of_wpt*mu_value
+                    upper = record.average_of_wpt + record.average_of_wpt*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.wpt_conformity = 'pass'
+                        break
+                    else:
+                        record.wpt_conformity = 'fail'
+
+
+    wpt_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'NON NABL')], string="NABL", default='fail',compute="_compute_wpt_nabl", store=True)
+
+    @api.depends('average_of_wpt','eln_ref','grade')
+    def _compute_wpt_nabl(self):
+        
+        for record in self:
+            record.wpt_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].search([('internal_id','=','30214uy-0268-46ef-ba88-9c04532103012t')])
+            materials = self.env['lerm.parameter.master'].search([('internal_id','=','30214uy-0268-46ef-ba88-9c04532103012t')]).parameter_table
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.average_of_wpt - record.average_of_wpt*mu_value
+            upper = record.average_of_wpt + record.average_of_wpt*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.wpt_nabl = 'pass'
+                break
+            else:
+                record.wpt_nabl = 'fail'
+
+
+
+    temp_wpt = fields.Float("Temperature °C")
+    humidity_percent_wpt = fields.Float("Humidity %")
+    quantity = fields.Char("Quantity")
+
+
+
+
+    # 3. Water Absorption
+
+    water_absorption_name = fields.Char("Name",default="Water Absorption ")
+    water_absorption_visible = fields.Boolean("Water Absorption Visible",compute="_compute_visible")
+
+    water_absorption_child_lines = fields.One2many('core.water.absorption.line','parent_id',string="Water Line")
+
+    avg_water_absorption = fields.Float(
+        string="Avg. Water Absorption (%)",
+        compute="_compute_avg_water_absorption", store=True
+    )
+
+    @api.depends('water_absorption_child_lines.water_absorption')
+    def _compute_avg_water_absorption(self):
+        for rec in self:
+            lines = rec.water_absorption_child_lines
+            if lines:
+                total = sum(line.water_absorption for line in lines)
+                rec.avg_water_absorption = round(total / len(lines), 2)
+            else:
+                rec.avg_water_absorption = 0.0
+
+    avg_water_absorption_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
+
+    @api.depends('avg_water_absorption','eln_ref','grade')
+    def _compute_avg_water_absorption_conformity(self):
+        
+        for record in self:
+            record.avg_water_absorption_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','02145jj-eba3-4f15-b33d-679b39f73301')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','02145jj-eba3-4f15-b33d-679b39f73301')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_water_absorption - record.avg_water_absorption*mu_value
+                    upper = record.avg_water_absorption + record.avg_water_absorption*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.avg_water_absorption_conformity = 'pass'
+                        break
+                    else:
+                        record.avg_water_absorption_conformity = 'fail'
+
+    avg_water_absorption_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_avg_water_absorption_nabl", store=True)
+
+    @api.depends('avg_water_absorption','eln_ref','grade')
+    def _compute_avg_water_absorption_nabl(self):
+        
+        for record in self:
+            record.avg_water_absorption_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','02145jj-eba3-4f15-b33d-679b39f73301')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','02145jj-eba3-4f15-b33d-679b39f73301')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_water_absorption - record.avg_water_absorption*mu_value
+                    upper = record.avg_water_absorption + record.avg_water_absorption*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.avg_water_absorption_nabl = 'pass'
+                        break
+                    else:
+                        record.avg_water_absorption_nabl = 'fail'
+
+
+
 
 
 
@@ -205,6 +355,8 @@ class ConcreteCore(models.Model):
         for record in self:
 
             record.concrete_visible = False
+            record.wpt_visible = False
+            record.water_absorption_visible = False
           
             
             for sample in record.sample_parameters:
@@ -213,6 +365,12 @@ class ConcreteCore(models.Model):
                
                 if sample.internal_id == "254187-47c9-4662-9298-3095ac900ffc":
                     record.concrete_visible = True
+
+                if sample.internal_id == "30214uy-0268-46ef-ba88-9c04532103012t":
+                    record.wpt_visible = True
+
+                if sample.internal_id == "02145jj-eba3-4f15-b33d-679b39f73301":
+                    record.water_absorption_visible = True
                 
              
 
@@ -413,4 +571,77 @@ class ConcreteCoreDiaLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
+
+class WptMechanicalLine(models.Model):
+    _name = "mechanical.core.wpt.line"
+    parent_id = fields.Many2one('mechanical.concrete.core',string="Parent Id")
+
+    sample = fields.Char(string="Sample")
+    depth1 = fields.Float(string="Specimen 1")
+    depth2 = fields.Float(string="Specimen 2")
+    depth3 = fields.Float(string="Specimen 3")
+    average = fields.Float(string="Average",compute="_compute_average")
+
+    @api.depends('depth1','depth2','depth3')
+    def _compute_average(self):
+        for record in self:
+            average = round(((record.depth1 + record.depth2 + record.depth3)/3),2)
+            record.average = average
+
+
+    # @api.depends('parent_id')
+    # def _compute_sample_id(self):
+    #     for record in self:
+    #         try:
+    #             record.sample = record.parent_id.eln_ref.sample_id.client_sample_id
+    #         except:
+    #             record.sample = None
+
+    # @api.depends('parent_id')
+    # def _compute_sample_id(self):
+    #     for record in self:
+    #         try:
+    #             record.sample = record.parent_id.eln_ref.sample_id.client_sample_id
+    #         except:
+    #             record.sample = None
+
+
+class WaterLine(models.Model):
+    _name = "core.water.absorption.line"
+    parent_id = fields.Many2one('mechanical.concrete.core',string="Parent Id")
+
+    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
+    sample_identification = fields.Float(string="Sample Identification")
+    dry_wt_w1 = fields.Float(string="Dry wt (W1)")
+    wet_w2 = fields.Float(string="Wet wt (W2)")
+    water_absorption = fields.Float(string="  Water Absorption %",compute="_compute_water_absorption")
+
+    @api.depends('dry_wt_w1', 'wet_w2')
+    def _compute_water_absorption(self):
+        for rec in self:
+            if rec.dry_wt_w1:  # avoid division by zero
+                rec.water_absorption = round(((rec.wet_w2 - rec.dry_wt_w1) / rec.dry_wt_w1) * 100, 2)
+            else:
+                rec.water_absorption = 0.0
+
+   
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(WaterLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
    
