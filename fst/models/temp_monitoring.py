@@ -15,13 +15,20 @@ class TempMonitoring(models.Model):
     graph1 = fields.Binary()
     graph2 = fields.Binary()
 
+    chart1_cols = fields.Json(string="Chart 1 Columns", default=list)
+    chart2_cols = fields.Json(string="Chart 2 Columns", default=list)
+
+
     eln_ref = fields.Many2one('lerm.eln',string="ELN")
     grade = fields.Char(string="Grade")
-    size = fields.Many2one('lerm.size.line',string="Size",store=True)
+    size = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
 
 
     thickness = fields.Char('Thickness/Depth')
     data_logger_label = fields.Char('Data Logger Label')
+    reference = fields.Char('Reference')
+
+    thermocouple_locations = fields.Text(string="Thermocouple Locations", default=list)
     
 
 
@@ -74,13 +81,13 @@ class TempMonitoring(models.Model):
         ).decode()
 
         # Step 4: React app URL
-        react_url = f"http://147.93.154.53:5173/temp_monitoring?token={token}"
+        # react_url = f"http://147.93.154.53:5173/temp_monitoring?token={token}"
 
         # later replace with this 
-        # react_url = (
-        #     "https://demo17.lerm.in/"
-        #     f"temp_monitoring?token={token}"
-        # )
+        react_url = (
+            "https://demo17.lerm.in/"
+            f"temp_monitoring?token={token}"
+        )
 
         # Step 5: Redirect to React app
         return {
