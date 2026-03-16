@@ -19,6 +19,48 @@ class Microsilica(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
+
+
+    # Moisture Content
+
+    moisture_name = fields.Char("Name",default="Moisture Content")
+    moisture_visible = fields.Boolean("Moisture Content",compute="_compute_visible")
+
+
+    moisture_line_ids = fields.One2many(
+        'silica.moisture.test.line',
+        'test_id',
+        string="Sample Lines"
+    )
+
+    avg_moisture = fields.Float(
+        string="Average Moisture %",
+        compute="_compute_avg_moisture",
+        store=True
+    )
+
+    @api.depends('moisture_line_ids.moisture_content')
+    def _compute_avg_moisture(self):
+        for rec in self:
+            if rec.moisture_line_ids:
+                total = sum(rec.moisture_line_ids.mapped('moisture_content'))
+                rec.avg_moisture = total / len(rec.moisture_line_ids)
+            else:
+                rec.avg_moisture = 0
+    def prefill_data(self):
+        # import wdb; wdb.set_trace()
+        return {
+            'name': 'Prefill Data',
+            'type': 'ir.actions.act_window',
+            'res_model': 'mech.microsilica.prefill.data',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+                },
+        }
+
    
     # 1 Accelerated pozzolanic activity index with portland cement , 7 Days in %
 
@@ -844,6 +886,8 @@ class Microsilica(models.Model):
             record.oversize_percent_retain_visible = False
         for record in self:
             record.bulk_density_visible = False
+        for record in self:
+            record.moisture_visible = False
           
     #     compressive_test = self.env['mechanical.cement.test'].sudo().search([('name', '=', 'Accelerated pozzolanic activity index with portland cement')])
     #     oversize_retain_test = self.env['mechanical.cement.test'].sudo().search([('name', '=', 'Oversize % Retained on 45 Micron IS sieve')])
@@ -853,21 +897,6 @@ class Microsilica(models.Model):
     #     bulk_density_test = self.env['mechanical.cement.test'].sudo().search([('name', '=', 'Dry Loose Bulk Density')])
 
 
-   
-          
-           
-            # if compressive_test in record.tests:
-            #     record.compressive_visible = True
-            # if oversize_retain_test in record.tests:
-            #     record.compressive_visible = True
-            # if specific_gravity_test in record.tests:
-            #     record.specific_gravity_visible = True
-            # if compressive_strength_test in record.tests:
-            #     record.compressive_strength_visible = True
-            # if oversize_percent_retain_test in record.tests:
-            #     record.oversize_percent_retain_visible = True
-            # if bulk_density_test in record.tests:
-            #     record.bulk_density_visible = True
 
         for sample in record.sample_parameters:
             print("Samples internal id",sample.internal_id)
@@ -891,6 +920,10 @@ class Microsilica(models.Model):
             # bulk density 
             if sample.internal_id == '14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a':
                 record.bulk_density_visible = True 
+            
+            # Moisture Content 
+            if sample.internal_id == 'd62e47c1-64b1-4589-b412-677f1e21377b':
+                record.moisture_visible = True 
 
     def open_eln_page(self):
         # parameter_based_assignment
@@ -921,6 +954,9 @@ class Microsilica(models.Model):
                 result.calculated = True
 
             if result.parameter.internal_id == '14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a':
+                result.calculated = True
+            
+            if result.parameter.internal_id == 'd62e47c1-64b1-4589-b412-677f1e21377b':
                 result.calculated = True
 
         return {
@@ -1256,3 +1292,54 @@ class LooseBulkDensityLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.sr_no = index + 1
+
+
+class SilicaMoistureTestLine(models.Model):
+    _name = 'silica.moisture.test.line'
+    _description = 'Silica Moisture Test Line'
+
+    test_id = fields.Many2one(
+        'mechanical.microsilica',
+        string="Test Reference",
+        ondelete="cascade"
+    )
+
+    sr_no = fields.Integer("S.No",readonly=True, copy=False, default=1)
+
+    w1 = fields.Float(string="W1 Empty Container (g)")
+    w2 = fields.Float(string="W2 Container + Wet Sample (g)")
+    w3 = fields.Float(string="W3 Container + Dry Sample (g)")
+
+    sample_weight = fields.Float(
+        string="Sample Weight",
+        compute="_compute_values",
+        store=True
+    )
+
+    water_loss = fields.Float(
+        string="Water Loss",
+        compute="_compute_values",
+        store=True
+    )
+
+    moisture_content = fields.Float(
+        string="Moisture %",
+        compute="_compute_values",
+        store=True
+    )
+
+    @api.depends('w1', 'w2', 'w3')
+    def _compute_values(self):
+        for rec in self:
+            rec.sample_weight = rec.w2 - rec.w1
+            rec.water_loss = rec.w2 - rec.w3
+
+            if rec.sample_weight != 0:
+                rec.moisture_content = (rec.water_loss / rec.sample_weight) * 100
+            else:
+                rec.moisture_content = 0
+
+    @api.model
+    def create(self, vals):
+     vals['sr_no'] = self.search_count([]) + 1
+     return super().create(vals)

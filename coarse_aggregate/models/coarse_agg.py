@@ -2018,6 +2018,141 @@ class CoarseAggregateMechanical(models.Model):
             else:
                 record.avg_void_loose_density_nabl = 'fail'
 
+
+    # Deleterious Material (Soft Fragments)
+
+    deleterious_soft_name = fields.Char("Name", default="Deleterious Material (Soft Fragments)")
+    deleterious_soft_visible = fields.Boolean("Deleterious Material (Soft Fragments)",compute="_compute_visible")
+
+    sample_weight = fields.Float(
+        string="Weight of Sample W1 (g)",
+        required=True
+    )
+
+    soft_fragment_weight = fields.Float(
+        string="Weight of Soft Fragments W2 (g)",
+        required=True
+    )
+
+    percentage = fields.Float(
+        string="Soft Fragment (%)",
+        compute="_compute_percentage",
+        store=True
+    )
+
+    @api.depends('sample_weight', 'soft_fragment_weight')
+    def _compute_percentage(self):
+        for rec in self:
+            if rec.sample_weight:
+                rec.percentage = (rec.soft_fragment_weight / rec.sample_weight) * 100
+            else:
+                rec.percentage = 0
+
+
+
+    # Deleterious Material - Soft Particles
+
+    deleterious_soft_par_name = fields.Char("Name", default="Deleterious Material - Soft Particles")
+    deleterious_soft_par_visible = fields.Boolean("Deleterious Material - Soft Particles",compute="_compute_visible")
+
+
+    par_sample_weight = fields.Float(
+        string="Total Sample Weight (W) g"
+    )
+
+    soft_particles_weight = fields.Float(
+        string="Weight of Soft Particles (Ws) g"
+    )
+
+    soft_particles_percent = fields.Float(
+        string="Soft Particles %",
+        compute="_compute_soft_particles",
+        store=True
+    )
+
+    @api.depends('par_sample_weight', 'soft_particles_weight')
+    def _compute_soft_particles(self):
+        for rec in self:
+            if rec.par_sample_weight:
+                rec.soft_particles_percent = (
+                    rec.soft_particles_weight / rec.par_sample_weight
+                ) * 100
+            else:
+                rec.soft_particles_percent = 0
+
+
+    # Stripping Value
+
+    stripping_value_name = fields.Char("Name", default="Stripping Value")
+    stripping_value_visible = fields.Boolean("Stripping Value",compute="_compute_visible")
+
+    total_aggregate = fields.Float(
+        string="Total aggregates observed"
+    )
+
+    stripped_aggregate = fields.Float(
+        string="Stripped aggregates"
+    )
+
+    stripping_value = fields.Float(string="Stripping Value (%)", compute="_compute_stripping")
+
+    @api.depends('total_aggregate', 'stripped_aggregate')
+    def _compute_stripping(self):
+     for rec in self:
+        if rec.total_aggregate:
+            rec.stripping_value = (rec.stripped_aggregate / rec.total_aggregate) * 100
+        else:
+            rec.stripping_value = 0
+
+    # Clay and Lumps
+
+    clay_lumps_name = fields.Char("Name", default="Clay and Lumps")
+    clay_lumps_visible = fields.Boolean("Clay and Lumps",compute="_compute_visible")
+
+
+    clay_sample_weight = fields.Float(string="Weight of Sample W1 (g)")
+    clay_lumps_weight = fields.Float(string="Weight of Clay Lumps W2 (g)")
+    clay_lumps_percents = fields.Float(
+        string="Clay Lumps %",
+        compute="_compute_clay_lumps_percents",
+        store=True
+    )
+
+    @api.depends('clay_sample_weight','clay_lumps_weight')
+    def _compute_clay_lumps_percents(self):
+        for rec in self:
+            if rec.clay_sample_weight > 0:
+                rec.clay_lumps_percents = (rec.clay_lumps_weight / rec.clay_sample_weight) * 100
+            else:
+                rec.clay_lumps_percents = 0
+
+
+    # Wet Impact Value
+
+    wet_impact_name = fields.Char("Name", default="Wet Impact Value")
+    wet_impact_visible = fields.Boolean("Wet Impact Value",compute="_compute_visible")
+
+
+    wt_oven_dry = fields.Float(string="Weight of oven dry aggregate sample (g)")
+    wt_fine_passing = fields.Float(string="Weight of fines passing 2.36 mm sieve after impact (g)")
+
+    wet_impact_value = fields.Float(
+        string="Wet Impact Value %",
+        compute="_compute_wet_impact_value",
+        store=True
+    )
+
+
+    @api.depends('wt_oven_dry', 'wt_fine_passing')
+    def _compute_wet_impact_value(self):
+        for rec in self:
+            if rec.wt_oven_dry > 0:
+                rec.wet_impact_value = (rec.wt_fine_passing / rec.wt_oven_dry) * 100
+            else:
+                rec.wet_impact_value = 0
+
+
+
     
     
     
@@ -2052,6 +2187,11 @@ class CoarseAggregateMechanical(models.Model):
             record.compacted_density_visible = False
             record.void_compacted_density_visible = False
             record.void_loose_density_visible = False
+            record.deleterious_soft_visible = False
+            record.deleterious_soft_par_visible = False
+            record.stripping_value_visible = False
+            record.clay_lumps_visible = False
+            record.wet_impact_visible = False
 
 
 
@@ -2109,6 +2249,20 @@ class CoarseAggregateMechanical(models.Model):
                 if sample.internal_id == '919587f2-5b45-4da1-bb73-10164b861833':
                     record.void_loose_density_visible = True
 
+                if sample.internal_id == '9cfd630e-a9b9-4c1d-a2d8-ee8d2b3925bb':
+                    record.deleterious_soft_visible = True
+
+                if sample.internal_id == 'c1939888-01d5-4f55-a2bf-40b8ad754a19':
+                    record.deleterious_soft_par_visible = True
+
+                if sample.internal_id == 'd8b6942a-6349-482a-be8b-fbc3433bedf1':
+                    record.stripping_value_visible = True
+
+                if sample.internal_id == 'd58fd5b9-5254-49b7-a2f9-d793cc047a2b':
+                    record.clay_lumps_visible = True
+
+                if sample.internal_id == 'a14bc765-e75a-45f8-b8bb-c7c1bf5644ab':
+                    record.wet_impact_visible = True
 
 
 
@@ -2315,6 +2469,26 @@ class CoarseAggregateMechanical(models.Model):
             # Angularity Number
             if result.parameter.internal_id == '5c163fc2-c88c-4233-921e-1eae56c3ba23':
                 result.calculated = True
+
+            # Deleterious Material (Soft Fragments)
+            if result.parameter.internal_id == '9cfd630e-a9b9-4c1d-a2d8-ee8d2b3925bb':
+                result.calculated = True
+
+            # Deleterious Material - Soft Particles
+            if result.parameter.internal_id == 'c1939888-01d5-4f55-a2bf-40b8ad754a19':
+                    result.calculated = True
+            
+            # Stripping Value
+            if result.parameter.internal_id == 'd8b6942a-6349-482a-be8b-fbc3433bedf1':
+                    result.calculated = True
+
+            # Clay and Lumps
+            if result.parameter.internal_id == 'd58fd5b9-5254-49b7-a2f9-d793cc047a2b':
+                    result.calculated = True
+
+            # Wet Impact Value
+            if result.parameter.internal_id == 'a14bc765-e75a-45f8-b8bb-c7c1bf5644ab':
+                    result.calculated = True
                
 
 

@@ -21,14 +21,14 @@ from reportlab.lib.utils import ImageReader
 
 
 class PlateLoadTest(models.Model):
-    _name = "lerm.plate.load.test"
+    _name = "lerm.plate.load.test1"
     _rec_name = "project_name"
 
     # --- Meta / Cover Block ---
-    project_name = fields.Char("Project Name")
-    site_address = fields.Char("Site Address")
-    test_start_date = fields.Date("Test Start Date")
-    test_end_date = fields.Date("Test End Date")
+    project_name = fields.Char("Project Name", compute="_compute_eln_data", store=True)
+    site_address = fields.Char("Site Address", compute="_compute_eln_data", store=True)
+    test_start_date = fields.Date("Test Start Date", compute="_compute_eln_data", store=True)
+    test_end_date = fields.Date("Test End Date", compute="_compute_eln_data", store=True)
     location = fields.Char("Location")
     strata = fields.Char("Strata")
     plate_size = fields.Char("Size of Plate", default="300 x 300 mm")
@@ -36,12 +36,38 @@ class PlateLoadTest(models.Model):
     pmc_name = fields.Char("PMC Name")
     epc_contractor = fields.Char("EPC Contractor")
     letter_dated = fields.Date("Letter Dated On")
-    discipline = fields.Char("Discipline")
-    group = fields.Char("Group")
     references = fields.Char("References", default="IS 1888: 1982")
-    test_name = fields.Char("Test Name", default="Plate Load Test")
-    report_no = fields.Char("Report No")
-    ulr_no = fields.Char("ULR No")
+    discipline = fields.Char("Discipline", compute="_compute_eln_data", store=True)
+    group = fields.Char("Group", compute="_compute_eln_data", store=True)
+    test_name = fields.Char("Test Name", compute="_compute_eln_data", store=True)
+    report_no = fields.Char("Report No", compute="_compute_eln_data", store=True)
+    ulr_no = fields.Char("ULR No", compute="_compute_eln_data", store=True)
+    report_issue_date = fields.Date("Report Issue Date", compute="_compute_eln_data", store=True)
+    plate_test_id = fields.Many2one('mechanical.plate.test1', string="Plate Test Reference")
+
+    @api.depends('plate_test_id')
+    def _compute_eln_data(self):
+        for record in self:
+            if record.plate_test_id:
+                pt = record.plate_test_id
+                record.project_name = pt.srf_id.name_work.project_name if pt.srf_id.name_work else ""
+                record.site_address = pt.srf_id.site_address
+                record.test_start_date = pt.start_date
+                record.test_end_date = pt.end_date
+                record.discipline = pt.discipline.discipline
+                record.group = pt.group.group
+                record.test_name = pt.material.name
+                record.report_no = pt.eln_id
+                record.ulr_no = pt.sample_id.ulr_no
+                record.report_issue_date = pt.sample_id.report_issued_date
+            else:
+                # Keep existing values or set defaults if not already set
+                if not record.test_name:
+                    record.test_name = "Plate Load Test"
+                if not record.references:
+                    record.references = "IS 1888: 1982"
+                if not record.plate_size:
+                    record.plate_size = "300 x 300 mm"
 
     # --- Sections (text blocks) ---
     sections_data = fields.Json(default=dict)
@@ -257,7 +283,7 @@ class PlateLoadTest(models.Model):
         
 
 class PlateLoadTestContents(models.Model):
-    _name = "lerm.plate.load.test.contents"
+    _name = "lerm.plate.load.test.contents1"
     _description = "Plate Load Test - Table of Contents"
 
     plate_load_test_id = fields.Many2one(

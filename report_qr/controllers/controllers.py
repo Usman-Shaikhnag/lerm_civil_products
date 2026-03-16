@@ -6,7 +6,7 @@ from werkzeug.exceptions import NotFound
 
 class LabReportDownload(http.Controller):
 
-    @http.route('/lab_report_qr/download/<int:report_id>', type='http', auth='public',website=True)
+    @http.route('/lab_report_qr/download/<int:report_id>', type='http', auth='public', website=True)
     def download_report(self, report_id, filename=None, **kwargs):
         """
         Internal download URL used by the Download button.

@@ -131,6 +131,27 @@
     <field name="binding_type">report</field>
 </record>
 
+
+<record id="crusher_run_mac_datasheet_action" model="ir.actions.report">
+    <field name="name">Crusher Run Macadam DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">crusher_run_mac.crusher_run_mac_datasheet</field>
+    <field name="report_file">crusher_run_mac.crusher_run_mac_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="crusher_run_mac_report_action" model="ir.actions.report">
+    <field name="name">Crusher Run Macadam Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">crusher_run_mac.crusher_run_mac_report</field>
+    <field name="report_file">crusher_run_mac.crusher_run_mac_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
 <record id="action_report_bitumen_datasheet" model="ir.actions.report">
     <field name="name">Bitumen DataSheet</field>
     <field name="model">lerm.eln</field>
@@ -1103,6 +1124,65 @@
         <field name="binding_model_id" ref="model_lerm_eln"/>
         <field name="binding_type">report</field>
     </record>
+
+    <record id="precast_kerb_mech_datasheet_action" model="ir.actions.report">
+        <field name="name">Precast Kerb Stone Datasheet</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">kerb_stone.precast_mech_datasheet</field>
+        <field name="report_file">kerb_stone.precast_mech_datasheet</field>
+        <!-- <field name="binding_model_id" ref="model_lerm_eln"/> -->
+        <field name="binding_model_id" eval="False"/>
+        <field name="binding_type">report</field>
+</record>
+
+<record id="precast_kerb_mech_report_action" model="ir.actions.report">
+    <field name="name">Precast Kerb Stone Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">kerb_stone.precast_mech_report</field>
+    <field name="report_file">kerb_stone.precast_mech_report</field>
+    <field name="print_report_name">report_name</field>
+    <!-- <field name="binding_model_id" ref="model_lerm_eln"/> -->
+    <field name="binding_model_id" eval="False"/>
+    <field name="binding_type">report</field>
+</record>
+
+
+<record id="concrete_cylinder_datasheet_action" model="ir.actions.report">
+        <field name="name">Concrete Cylinder Datasheet</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">concrete_cylinder.concrete_cylinder_datasheet</field>
+        <field name="report_file">concrete_cylinder.concrete_cylinder_datasheet</field>
+        <!-- <field name="binding_model_id" ref="model_lerm_eln"/> -->
+        <field name="binding_model_id" eval="False"/>
+        <field name="binding_type">report</field>
+</record>
+
+
+<record id="concrete_beam_report_action" model="ir.actions.report">
+        <field name="name">Concrete Beam Report</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">concrete_beam.lerm_cocncrete_beam_report</field>
+        <field name="report_file">concrete_beam.lerm_cocncrete_beam_report</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <!-- <field name="binding_model_id" eval="False"/> -->
+        <field name="binding_type">report</field>
+    </record>
+    
+   <record id="concrete_beam_datasheet_action" model="ir.actions.report">
+        <field name="name">Concrete Beam Datasheet</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">concrete_beam.lerm_cocncrete_beam_datasheet</field>
+        <field name="report_file">concrete_beam.lerm_cocncrete_beam_datasheet</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <!-- <field name="binding_model_id" eval="False"/> -->
+        <field name="binding_type">report</field>
+    </record>
+
 
 
 </odoo>
