@@ -1031,6 +1031,84 @@
                     </table>
 
 
+                    <!--Soundness By Le-Chatelier Test  -->
+                    <div invisible=" not soundness_visible">
+                        <h1 class="text-center">
+                            <field name="soundness_name" readonly="1" nolabel="1"/>
+                            <field name="soundness_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                     
+
+                    <div class="d-flex gap-2" invisible="not soundness_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="temp_soundness">Temp.°C</label></td>
+                                    <td><field name="temp_soundness" class="blue-input" invisible="not soundness_visible" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="humidity_soundness">Humidity %</label></td>
+                                    <td><field name="humidity_soundness" class="blue-input" invisible="not soundness_visible" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div invisible="soundness_visible == False" class="custom_table_borders">
+                        <field name="soundness_child_lines" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="sr_no" width="40px"/>
+                                <field name='mould_no' width="80px" class="blue-input" decoration-info="mould_no != 0"/>
+                                <field name='initial_read' class="blue-input" decoration-info="initial_read != 0"/>
+                                <field name='final_read' class="blue-input" decoration-info="final_read != 0"/>
+                                <field name='expansion'/> 
+                            </tree>
+                        </field>
+                    </div>
+
+                    
+
+                     
+                     <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" invisible="not soundness_visible" style="white-space:nowrap;">
+                        <tbody>
+                        <tr>
+                                <td><label class="fw-bold" for="avg_expansion">Average Expansion (mm)</label></td>
+                                <td>
+                                    <field name="avg_expansion"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_expansion_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="avg_expansion_conformity"
+                                        decoration-success="avg_expansion_conformity == 'pass'" 
+                                        decoration-danger="avg_expansion_conformity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_expansion_nabl">NABL</label></td>
+                                <td>
+                                    <field name="avg_expansion_nabl"
+                                        decoration-success="avg_expansion_nabl == 'pass'" 
+                                        decoration-danger="avg_expansion_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <group/>
+
+
                     <button
                             type="object"
                             class="oe_highlight" 

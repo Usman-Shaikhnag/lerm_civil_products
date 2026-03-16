@@ -1245,6 +1245,143 @@
 						</div>
 					</div>
 
+					<!-- Soundness By Le-Chatelier Test -->
+
+					<div t-if="data.soundness_visible " style="margin-top:10px; page-break-before: always;">
+						<div style="text-align:center; font-size:18px;font-weight: bold; margin-bottom: 15px;">
+							Soundness By Le-Chatelier Test
+						</div>
+						
+						
+						<table tyle="width: 100%; border-collapse: collapse; font-size: 14px;">
+						<thead>
+
+							<tr style="background-color:#f9f9f9; text-align: center;" >
+							<th style="border: 1px solid black; font-weight: bold;padding: 8px;" colspan="3">Sr. No.
+								</th>
+								
+								<th style="border: 1px solid black; font-weight: bold;padding: 8px;" colspan="3">Mould No.
+								</th>
+								<th style="border: 1px solid black; font-weight: bold;padding: 8px;"  colspan="3">Initial Reading of Indicator Point Before Boiling (A) in mm
+								</th>
+								<th style="border: 1px solid black; font-weight: bold;padding: 8px;"  colspan="3">Final Reading of Indicator Point After 3 Hrs. Boiling (B) in mm
+								</th>
+								<th style="border: 1px solid black; font-weight: bold;padding: 8px;"  colspan="3">Expansion (B – A) mm
+								</th>
+								
+							</tr>
+							</thead>
+							<tbody>
+
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.soundness_child_lines" t-as="r" style="text-align: center;">
+								<td style="border: 1px solid black; padding: 6px;" colspan="3">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+                  				</td>
+								<td style="border: 1px solid black; padding: 6px;" colspan="3">
+									<span t-esc="r['mould_no']"/>
+								</td>
+								<td style="border: 1px solid black; padding: 6px;" colspan="3">
+									<span t-esc="r['initial_read']"/>
+								</td>
+								<td style="border: 1px solid black; padding: 6px;" colspan="3">
+									<span t-esc="r['final_read']"/>
+								</td>
+								<td style="border: 1px solid black; padding: 6px;" colspan="3">
+									<span t-esc="r['expansion']"/>
+								</td>
+
+							</tr>
+						</tbody>
+						</table>
+
+						<table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;">
+							<tr style="font-weight: bold; background-color: #f9f9f9;" cols="12">
+								
+								<td colspan="6"  style="text-align: left; padding: 8px; border: 1px solid black;">Average Expansion (mm) :
+									<![CDATA[&nbsp;]]>
+									</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid black;">
+									<span t-field="data.avg_expansion" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+						</table>
+						
+					</div>
+
+
+
+
+					<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<div style="height: 40px;">
+						<!-- <t t-if="eln.sample_id.testedby_signature_required"> -->
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div>
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+								<!-- <div>
+									<b>
+										(Authorized Signatory)
+									</b>
+								</div> -->
+							<!-- </div> -->
+						</div>
+                    
+                    </div>
+                
+
 
 					<!-- Fineness By Blaine Air Permeability Method -->
 					<div t-if="data.fineness_visible" style="margin-top:20px;page-break-before: always;">

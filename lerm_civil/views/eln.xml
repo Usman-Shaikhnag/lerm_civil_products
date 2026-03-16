@@ -61,8 +61,11 @@
                         <!-- <field name='attachment' filename='attachment_name'/> -->
 
                         <!-- <field name='attachment_name' invisible="1"/> -->
-                        <field name='casting_date'/>
-                        <field name='date_testing'/>
+                        <field name='casting' invisible="1"/>
+
+                        <field name='casting_date' readonly="1" invisible="casting == False"/>
+                        <field name='days_casting' readonly="1" invisible="casting == False"/>
+                        <field name='date_testing' readonly="1" invisible="casting == False"/>
                         <field name='instrument'/>
                         <field name='tested_by_signature_datasheet'/>
                         <field name='grade_ids' invisible="1"/>

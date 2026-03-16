@@ -1501,6 +1501,60 @@
 									</td>
 								</tr>
 
+
+
+								<tr t-if="ggbs.soundness_visible and (ggbs.avg_expansion_nabl == 'pass' and nabl or (ggbs.avg_expansion_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+									<td style="text-align: center;">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+										
+									</td>
+									<td style="text-align: center;">
+										
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','78luytr-91b0-4153-87ef-11b6954a9837')]).parameter_name"/>
+										</span>
+										
+									</td>
+									<td style="text-align: center;">
+										<span>
+										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','78luytr-91b0-4153-87ef-11b6954a9837')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+											</t>
+										</t>
+										</span>
+									</td>
+
+										<td style="text-align: center;">
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','78luytr-91b0-4153-87ef-11b6954a9837')]).unit.name"/>
+										</span>
+									</td>
+									
+									
+									<td style="text-align: center;">
+										<span>
+											<span t-field="ggbs.avg_expansion" />
+										</span>									
+									</td>
+									
+									<td style="text-align: center;">
+										<span>
+										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','78luytr-91b0-4153-87ef-11b6954a9837')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+											</t>
+										</t>
+										</span>
+									</td>
+								
+									
+									<td t-if="eln.conformity" style="text-align: center;">
+										<span t-field="ggbs.avg_expansion_conformity"/>
+									</td>
+								</tr>
+
 								
 						
 						</tbody>

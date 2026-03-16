@@ -201,6 +201,9 @@ class MechanicalConcreteCube(models.Model):
     def _compute_date_testing(self):
         if self.eln_ref:
             self.date_of_testing = self.eln_ref.date_testing
+        else:
+            self.date_of_testing = ''
+            
 
     confirmity = fields.Selection([
         ('pass', 'Pass'),

@@ -51,8 +51,9 @@ class Material(models.Model):
         action['context'] = {'default_material_id': self.id}
         action['name'] = 'Product Reports'
         return action
-        
 
+    
+    
     @api.depends('is_sample', 'is_product_based_calculation')
     def _compute_visibility_flags(self):
         for rec in self:
