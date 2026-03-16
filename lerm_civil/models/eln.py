@@ -207,7 +207,9 @@ class ELN(models.Model):
             try:
                 if record.material:
                     record.grade_ids = self.env['product.template'].search([('id','=', record.material.id)]).grade_table
-            except:
+                else:
+                    record.grade_ids = False
+            except Exception as e:
                 record.grade_ids = False
 
 
@@ -217,8 +219,11 @@ class ELN(models.Model):
             try:
                 if record.material:
                     record.size_ids = self.env['product.template'].search([('id','=', record.material.id)]).size_table
-            except:
+                else:
+                    record.size_ids = False
+            except Exception as e:
                 record.size_ids = False
+
 
     @api.onchange('witness')
     def update_witness_name(self):
