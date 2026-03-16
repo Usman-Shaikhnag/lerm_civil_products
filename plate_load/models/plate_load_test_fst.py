@@ -1,5 +1,5 @@
 from odoo import models, fields, api
-from ..json_field import JsonField
+# from ..json_field import JsonField
 import json
 import hmac
 import hashlib
@@ -75,16 +75,16 @@ class PlateLoadTest(models.Model):
                 record.plate_size = eln.size_id.size if eln.size_id else ""
 
     # --- Sections (text blocks) ---
-    sections_data = JsonField(default=dict)
+    sections_data = fields.Json(default=dict)
     # Keys: 'introduction', 'objective', 'apparatus', 'procedure', 'conclusion'
 
     # --- Loading Table ---
-    loading_columns_data = JsonField(string="Loading Columns", default=list)
-    loading_table_data = JsonField(string="Loading Table", default=list)
+    loading_columns_data = fields.Json(string="Loading Columns", default=list)
+    loading_table_data = fields.Json(string="Loading Table", default=list)
 
     # --- Unloading Table (Annexure - combined load/unload) ---
-    unloading_columns_data = JsonField(string="Unloading Columns", default=list)
-    unloading_table_data = JsonField(string="Unloading Table", default=list)
+    unloading_columns_data = fields.Json(string="Unloading Columns", default=list)
+    unloading_table_data = fields.Json(string="Unloading Table", default=list)
 
     # --- Summary / Safe Bearing Capacity ---
     safe_bearing_capacity = fields.Float("Safe Bearing Capacity (t/m²)")
@@ -102,7 +102,7 @@ class PlateLoadTest(models.Model):
 
     # --- Annexures ---
     graph = fields.Binary("Load Settlement Graph")
-    image_sections = JsonField(default=list)
+    image_sections = fields.Json(default=list)
     # Each item: { 'title': 'Site Photographs', 'images': [base64, ...] }
     # Add a 'Site Datasheet' section the same way
 
@@ -172,6 +172,7 @@ class PlateLoadTest(models.Model):
         ).decode()
 
         react_url = f"http://147.93.154.53:5173/plate_load_test?token={token}"
+        # react_url = f"http://localhost:3000/plate_load_test?token={token}"
 
         return {
             'type': 'ir.actions.act_url',

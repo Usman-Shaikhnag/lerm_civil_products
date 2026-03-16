@@ -21,7 +21,7 @@ from reportlab.lib.utils import ImageReader
 
 
 class PlateLoadTest(models.Model):
-    _name = "lerm.plate.load.test"
+    _name = "lerm.plate.load.test1"
     _rec_name = "project_name"
 
     # --- Meta / Cover Block ---
@@ -283,7 +283,7 @@ class PlateLoadTest(models.Model):
         
 
 class PlateLoadTestContents(models.Model):
-    _name = "lerm.plate.load.test.contents"
+    _name = "lerm.plate.load.test.contents1"
     _description = "Plate Load Test - Table of Contents"
 
     plate_load_test_id = fields.Many2one(
