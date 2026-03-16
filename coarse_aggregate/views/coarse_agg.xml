@@ -1462,6 +1462,153 @@
 
 
 
+                        <!-- Deleterious Material (Soft Fragments) -->
+
+
+                         <div class="text-center" invisible="deleterious_soft_visible == False">
+                        <h1>
+                            <field name="deleterious_soft_name" readonly="1" nolabel="1"/>
+                            <field name="deleterious_soft_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+
+                     <table class="table table-sm table-bordered custom_table_borders" invisible="not deleterious_soft_visible" style="white-space:nowrap;">
+                     <tbody>
+                            <tr>
+                                <td><span class="fw-bold"> Weight of Sample W1 (g)</span></td>
+                                <td><field name="sample_weight" class="blue-input" /></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Weight of Soft Fragments W2 (g)</span></td>
+                                <td><field name="soft_fragment_weight" class="blue-input"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Soft Fragment (%)</span></td>
+                                <td><field name="percentage"  /></td>
+                            </tr>
+                            </tbody>
+                    </table>
+
+
+
+
+                    <!-- Deleterious Material - Soft Particles -->
+
+                    <div class="text-center" invisible="deleterious_soft_par_visible == False">
+                        <h1>
+                            <field name="deleterious_soft_par_name" readonly="1" nolabel="1"/>
+                            <field name="deleterious_soft_par_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+
+                     <table class="table table-sm table-bordered custom_table_borders" invisible="not deleterious_soft_par_visible" style="white-space:nowrap;">
+                     <tbody>
+                            <tr>
+                                <td><span class="fw-bold"> Weight of Sample W1 (g)</span></td>
+                                <td><field name="par_sample_weight" class="blue-input" /></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Weight of Soft Fragments W2 (g)</span></td>
+                                <td><field name="soft_particles_weight" class="blue-input"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Soft Particles (%)</span></td>
+                                <td><field name="soft_particles_percent"  /></td>
+                            </tr>
+                            </tbody>
+                    </table>
+
+
+
+                    <!-- Stripping Value -->
+
+                    <div class="text-center" invisible="stripping_value_visible == False">
+                        <h1>
+                            <field name="stripping_value_name" readonly="1" nolabel="1"/>
+                            <field name="stripping_value_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+
+                     <table class="table table-sm table-bordered custom_table_borders" invisible="not stripping_value_visible" style="white-space:nowrap;">
+                     <tbody>
+                            <tr>
+                                <td><span class="fw-bold"> Total aggregates observed</span></td>
+                                <td><field name="total_aggregate" class="blue-input" /></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Stripped aggregates</span></td>
+                                <td><field name="stripped_aggregate" class="blue-input"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Stripping Value (%)</span></td>
+                                <td><field name="stripping_value"  /></td>
+                            </tr>
+                            </tbody>
+                    </table>
+
+                    <!-- Clay and Lumps -->
+
+                    <div class="text-center" invisible="clay_lumps_visible == False">
+                        <h1>
+                            <field name="clay_lumps_name" readonly="1" nolabel="1"/>
+                            <field name="clay_lumps_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+
+                     <table class="table table-sm table-bordered custom_table_borders" invisible="not clay_lumps_visible" style="white-space:nowrap;">
+                     <tbody>
+                            <tr>
+                                <td><span class="fw-bold"> Weight of Sample W1 (g)</span></td>
+                                <td><field name="clay_sample_weight" class="blue-input" /></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Weight of Clay Lumps W2 (g)</span></td>
+                                <td><field name="clay_lumps_weight" class="blue-input"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Clay Lumps %</span></td>
+                                <td><field name="clay_lumps_percents"  /></td>
+                            </tr>
+                            </tbody>
+                    </table>
+
+
+
+                    <!-- Wet Impact Value -->
+
+                    <div class="text-center" invisible="wet_impact_visible == False">
+                        <h1>
+                            <field name="wet_impact_name" readonly="1" nolabel="1"/>
+                            <field name="wet_impact_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+
+                     <table class="table table-sm table-bordered custom_table_borders" invisible="not wet_impact_visible" style="white-space:nowrap;">
+                     <tbody>
+                            <tr>
+                                <td><span class="fw-bold"> Weight of oven dry aggregate sample (g)</span></td>
+                                <td><field name="wt_oven_dry" class="blue-input" /></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Weight of fines passing 2.36 mm sieve after impact (g)</span></td>
+                                <td><field name="wt_fine_passing" class="blue-input"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Wet Impact Value %</span></td>
+                                <td><field name="wet_impact_value"  /></td>
+                            </tr>
+                            </tbody>
+                    </table>
+
+
+
+
+
 
 
 
