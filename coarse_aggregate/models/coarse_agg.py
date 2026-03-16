@@ -96,10 +96,10 @@ class CoarseAggregateMechanical(models.Model):
 
 
     # Crushing Value
-    crushing_value_name = fields.Char("Name",default="Crushing Value")
+    crushing_name = fields.Char("Name",default="Crushing Value")
     crushing_visible = fields.Boolean("Crushing Visible",compute="_compute_visible")
     # parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
-    crushing_value_child_lines = fields.One2many('mechanical.crushing.value.coarse.aggregate.line','parent_id',string="Parameter")
+    crushing_child_lines = fields.One2many('mechanical.crushing.value.coarse.aggregate.line','parent_id',string="Parameter")
 
     average_crushing_value = fields.Float(string="Average Aggregate Crushing Value", compute="_compute_average_crushing_value")
 
@@ -156,12 +156,12 @@ class CoarseAggregateMechanical(models.Model):
 
 
 
-    @api.depends('crushing_value_child_lines.crushing_value')
+    @api.depends('crushing_child_lines.crushing_value')
     def _compute_average_crushing_value(self):
         for record in self:
-            if record.crushing_value_child_lines:
-                sum_crushing_values = sum(record.crushing_value_child_lines.mapped('crushing_value'))
-                record.average_crushing_value = sum_crushing_values / len(record.crushing_value_child_lines)
+            if record.crushing_child_lines:
+                sum_crushing_values = sum(record.crushing_child_lines.mapped('crushing_value'))
+                record.average_crushing_value = sum_crushing_values / len(record.crushing_child_lines)
             else:
                 record.average_crushing_value = 0.0
    
