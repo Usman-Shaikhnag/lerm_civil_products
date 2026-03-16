@@ -47,6 +47,19 @@ class Microsilica(models.Model):
                 rec.avg_moisture = total / len(rec.moisture_line_ids)
             else:
                 rec.avg_moisture = 0
+    def prefill_data(self):
+        # import wdb; wdb.set_trace()
+        return {
+            'name': 'Prefill Data',
+            'type': 'ir.actions.act_window',
+            'res_model': 'mech.microsilica.prefill.data',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+                },
+        }
 
    
     # 1 Accelerated pozzolanic activity index with portland cement , 7 Days in %

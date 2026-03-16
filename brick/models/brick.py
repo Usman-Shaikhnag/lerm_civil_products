@@ -14,6 +14,20 @@ class MechanicalBricks(models.Model):
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
+
+    def prefill_data(self):
+        # import wdb; wdb.set_trace()
+        return {
+            'name': 'Prefill Data',
+            'type': 'ir.actions.act_window',
+            'res_model': 'bricks.prefill.data',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+                },
+        }
     # child_lines = fields.One2many('mechanical.water.absorption.bricks.line','parent_id',string="Parameter")
     # test_start_date = fields.Date("Test Start Date")
     # test_end_date = fields.Date("Test End Date")
