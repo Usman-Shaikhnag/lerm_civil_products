@@ -18,12 +18,16 @@ class MainDashboard extends Component {
       state_data: [],
 
       technician_data: [],
+      labs: [],
+      companies: [],
     });
     this.filter_state = useState({
       // <-- NEW REACTIVE STATE OBJECT
       start_date: this._getDateXDaysAgo(30),
       end_date: this._today(),
       activeDiscipline: "ALL", // <-- CORRECTLY PLACED HERE
+      activeLab: "ALL",
+      activeCompany: "ALL",
       isLoading: true, // <-- Also placed here
       activeDays: 30,
     });
@@ -42,10 +46,16 @@ class MainDashboard extends Component {
     this.stateChartType = "bar";
 
     onWillStart(async () => {
+      const filterOptions = await jsonrpc("/dashboard/get_filter_options", {});
+      this.dashboard_state.labs = filterOptions.labs || [];
+      this.dashboard_state.companies = filterOptions.companies || [];
+
       await this.fetchData(
         this.filter_state.start_date,
         this.filter_state.end_date,
-        this.filter_state.activeDiscipline // <-- PASSING THE NEW PARAMETER
+        this.filter_state.activeDiscipline,
+        this.filter_state.activeLab,
+        this.filter_state.activeCompany,
       );
     });
 
@@ -55,11 +65,19 @@ class MainDashboard extends Component {
     });
   }
 
-  async fetchData(start_date, end_date, discipline) {
+  async fetchData(
+    start_date,
+    end_date,
+    discipline,
+    lab_id = "ALL",
+    company_id = "ALL",
+  ) {
     const data_result = await jsonrpc("/dashboard/getdata", {
       start_date,
       end_date,
       discipline,
+      lab_id,
+      company_id,
     });
 
     if (!data_result.error) {
@@ -79,10 +97,10 @@ class MainDashboard extends Component {
 
       // build arrays for chart (labels + counts)
       this.dashboard_state.state_labels = data_result.state_data.map(
-        (item) => item.state_label
+        (item) => item.state_label,
       );
       this.dashboard_state.state_counts = data_result.state_data.map(
-        (item) => item.count
+        (item) => item.count,
       );
     }
 
@@ -90,6 +108,8 @@ class MainDashboard extends Component {
       start_date,
       end_date,
       discipline,
+      lab_id,
+      company_id,
     });
     this.dashboard_state.technician_data = tech_data_result;
   }
@@ -98,6 +118,55 @@ class MainDashboard extends Component {
     const field = ev.target.dataset.field; // 'start_date' or 'end_date'
     this.filter_state[field] = ev.target.value;
     // console.log(`Updated ${field} to: ${ev.target.value}`); // Optional debug
+  }
+
+  async _onLabFilter(ev) {
+    const labId = ev.target.value;
+    this.filter_state.activeLab = labId;
+    await this.fetchData(
+      this.filter_state.start_date,
+      this.filter_state.end_date,
+      this.filter_state.activeDiscipline,
+      this.filter_state.activeLab,
+      this.filter_state.activeCompany,
+    );
+    this.renderTimeChart();
+    this.renderStateChart();
+  }
+
+  async _onCompanyFilter(ev) {
+    const companyId = ev.target.value;
+    this.filter_state.activeCompany = companyId;
+
+    // Reset Lab filter if the currently active lab isn't in the new company's list
+    if (companyId !== "ALL") {
+      const labs = this.dashboard_state.labs.filter(
+        (l) => l.company_id === parseInt(companyId),
+      );
+      if (!labs.some((l) => l.id == this.filter_state.activeLab)) {
+        this.filter_state.activeLab = "ALL";
+      }
+    }
+
+    await this.fetchData(
+      this.filter_state.start_date,
+      this.filter_state.end_date,
+      this.filter_state.activeDiscipline,
+      this.filter_state.activeLab,
+      this.filter_state.activeCompany,
+    );
+    this.renderTimeChart();
+    this.renderStateChart();
+  }
+
+  get filteredLabs() {
+    if (this.filter_state.activeCompany === "ALL") {
+      return this.dashboard_state.labs;
+    }
+    const companyId = parseInt(this.filter_state.activeCompany);
+    return this.dashboard_state.labs.filter(
+      (lab) => lab.company_id === companyId,
+    );
   }
   // --- END NEW HANDLER ---
 
@@ -113,7 +182,9 @@ class MainDashboard extends Component {
     await this.fetchData(
       this.filter_state.start_date,
       this.filter_state.end_date,
-      this.filter_state.activeDiscipline // Pass the current discipline filter
+      this.filter_state.activeDiscipline,
+      this.filter_state.activeLab,
+      this.filter_state.activeCompany,
     );
     this.renderTimeChart();
     this.renderStateChart();
@@ -133,7 +204,9 @@ class MainDashboard extends Component {
       await this.fetchData(
         start,
         end,
-        this.filter_state.activeDiscipline // Pass the current discipline filter
+        this.filter_state.activeDiscipline,
+        this.filter_state.activeLab,
+        this.filter_state.activeCompany,
       );
 
       // Charts are only rendered if data was successfully fetched (start and end were set)
@@ -141,7 +214,7 @@ class MainDashboard extends Component {
       this.renderStateChart();
     } else {
       console.warn(
-        "Custom date filter requires both start and end dates to be set."
+        "Custom date filter requires both start and end dates to be set.",
       );
     }
   }
@@ -203,7 +276,9 @@ class MainDashboard extends Component {
       // <-- ADDED AWAIT HERE
       this.filter_state.start_date,
       this.filter_state.end_date,
-      this.filter_state.activeDiscipline
+      this.filter_state.activeDiscipline,
+      this.filter_state.activeLab,
+      this.filter_state.activeCompany,
     );
     this.renderTimeChart();
     this.renderStateChart();
@@ -214,18 +289,33 @@ class MainDashboard extends Component {
   async _onTechnicianCardClick(technicianId) {
     // Construct the action to open the 'Sample' model filtered by the technician
     const domain = [
-      ["technicians", "in", [technicianId]], // Changed field from technician_id to technicians (assuming it's a many2many field based on backend logic)
+      "|",
+      ["technicians", "in", [technicianId]],
+      "|",
+      ["eln_id.technician", "=", technicianId],
+      ["eln_id.technician_ids", "in", [technicianId]],
       // Use the current dates from the filter_state
       ["sample_received_date", ">=", this.filter_state.start_date],
       ["sample_received_date", "<=", this.filter_state.end_date],
 
-      // Conditionally add the discipline filter if it's not 'ALL'
       ...(this.filter_state.activeDiscipline !== "ALL"
         ? [
             [
               "discipline_id.discipline",
               "=",
               this.filter_state.activeDiscipline,
+            ],
+          ]
+        : []),
+      ...(this.filter_state.activeLab !== "ALL"
+        ? [["lab_location", "=", parseInt(this.filter_state.activeLab)]]
+        : []),
+      ...(this.filter_state.activeCompany !== "ALL"
+        ? [
+            [
+              "lab_location.company_id",
+              "=",
+              parseInt(this.filter_state.activeCompany),
             ],
           ]
         : []),

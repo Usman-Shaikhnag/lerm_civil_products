@@ -9,6 +9,7 @@ class LabMaster(models.Model):
     lab_location = fields.Char("Lab Location")
     lab_certificate_no = fields.Char('Lab Certificate No')
     upi_id = fields.Char("UPI Id")
+    company_id = fields.Many2one('res.company', string="Company")
     ulr_sequence = fields.Many2one('ir.sequence')
 
     gst = fields.Char("GST")
