@@ -10,7 +10,7 @@ class MechanicalBricks(models.Model):
     _rec_name = "name"
 
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
-    name = fields.Char("Name",default="Clay Bricks")
+    name = fields.Char("Name",default="Fly Ash Bricks")
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
@@ -35,6 +35,50 @@ class MechanicalBricks(models.Model):
     length_in_mm = fields.Float(string="Length in mm")
     width_in_mm = fields.Float(string="Width in mm")
     height_in_mm = fields.Float(string="Height in mm")
+
+
+    # Initial Rate Of Absorption
+
+    ini_rate_absorption_visible = fields.Boolean("Initial Rate Of Absorption",compute="_compute_visible")
+    ini_rate_absorption_name = fields.Char("Name",default="Initial Rate Of Absorption")
+    
+    absorption_line_ids = fields.One2many(
+        'brick.initial.rate.absorption.line',
+        'parent_id',
+        string="IRA Test Lines"
+    )
+
+    average_ira = fields.Float(
+        string="Average Initial Rate of Absorption (g/min/100 cm²)",
+        compute="_compute_average_ira",
+        store=True
+    )
+
+    @api.depends('absorption_line_ids.initial_rate_absorp')
+    def _compute_average_ira(self):
+        for rec in self:
+            if rec.absorption_line_ids:
+                total = sum(rec.absorption_line_ids.mapped('initial_rate_absorp'))
+                rec.average_ira = total / len(rec.absorption_line_ids)
+            else:
+                rec.average_ira = 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         #1------------ Compressive Strength
 
     compressive_strength_visible = fields.Boolean("Compressive Strengt Visible",compute="_compute_visible")
@@ -383,6 +427,7 @@ class MechanicalBricks(models.Model):
             record.water_absorbtion_visible = False
             record.efflorescence_visible = False
             record.dimension_visible = False
+            record.ini_rate_absorption_visible = False
 
             for sample in record.sample_parameters:
                 print("Internal Ids",sample.internal_id)
@@ -394,6 +439,10 @@ class MechanicalBricks(models.Model):
                     record.efflorescence_visible = True
                 if sample.internal_id == "125478bvf3-8d5d-4f45-8afb-b911f9cafe41":
                     record.dimension_visible = True 
+                if sample.internal_id == "bd2bda15-78fa-400d-8643-d9d2b9551bcf":
+                    record.ini_rate_absorption_visible = True 
+
+
      
     def open_eln_page(self):
         # parameter_based_assignment
@@ -432,6 +481,11 @@ class MechanicalBricks(models.Model):
 
             # Dimension
             if result.parameter.internal_id == '125478bvf3-8d5d-4f45-8afb-b911f9cafe41':
+                # result.result_char = round(self.avrg_water_absorption,2)
+                result.calculated = True
+            
+            # Rate Of Absorption
+            if result.parameter.internal_id == 'bd2bda15-78fa-400d-8643-d9d2b9551bcf':
                 # result.result_char = round(self.avrg_water_absorption,2)
                 result.calculated = True
 
@@ -476,3 +530,42 @@ class MechanicalBricks(models.Model):
             field_values[field_name] = field_value
 
         return field_values
+    
+
+
+class BrickInitialRateAbsorptionLine(models.Model):
+    _name = "brick.initial.rate.absorption.line"
+    parent_id = fields.Many2one('mechanical.bricks',string="Parent Id")
+
+    serial_no = fields.Integer(string="sample", readonly=True, copy=False, default=1)
+    iW1 = fields.Float("Weight of dry brick (g) ")
+    W2 = fields.Float("Weight of brick after 1 minute immersion (g) ")
+    W2_W1 = fields.Float("Water Absorbed (W₂–W₁) g ",compute="_compute_initial_rate_absorp",
+        store=True)
+    area = fields.Float("Area of immersed surface (cm²) ",compute="_compute_area", store=True)
+    initial_rate_absorp = fields.Float("Initial Rate of Absorption (g/min/100 cm²)",compute="_compute_initial_rate_absorp",store=True)
+
+    @api.depends('parent_id.length_in_mm', 'parent_id.width_in_mm')
+    def _compute_area(self):
+        for rec in self:
+            length = rec.parent_id.length_in_mm or 0
+            breadth = rec.parent_id.width_in_mm or 0
+            rec.area = length * breadth
+
+    @api.depends('iW1', 'W2', 'area')
+    def _compute_initial_rate_absorp(self):
+        for rec in self:
+
+            # Water absorbed
+            rec.W2_W1 = rec.W2 - rec.iW1
+
+            # Initial Rate Absorption
+            if rec.area:
+                rec.initial_rate_absorp = (rec.W2_W1 * 100) / rec.area
+            else:
+                rec.initial_rate_absorp = 0
+
+    @api.model
+    def create(self, vals):
+     vals['serial_no'] = self.search_count([]) + 1
+     return super().create(vals)
