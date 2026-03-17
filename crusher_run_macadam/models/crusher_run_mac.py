@@ -63,8 +63,7 @@ class CrusherRunMacadamMechanical(models.Model):
             # 'avg_bulk_density_unit':   self._get_unit("65a41d1f-d557-438e-8fd1-2c619a334d02"),
             # 'aggregate_elongation_unit':   self._get_unit("70ef993d-d2f8-424c-9729-4e081d647bb1"),
             # 'aggregate_flakiness_unit':   self._get_unit("c8a5f37e-1449-4794-a854-cdb169493a1a"),
-            # 'avg_specific_gravity_unit':   self._get_unit("2113f38a-d129-4efe-bac4-ff5826dface8"),
-            # 'avg_water_absorption_unit':   self._get_unit("22ee804f-41a3-4fd1-a301-a8d9180fba10"),
+            # 'avg_water_absorption_unit':   self._get_unit("2113f38a-d129-4efe-bac4-ff5826dface8"),
         })
         return res
 
@@ -209,7 +208,7 @@ class CrusherRunMacadamMechanical(models.Model):
             ('pass', 'Pass'),
             ('fail', 'Fail')], string="Conformity", compute="_compute_water_absorp_conformity", store=True)
 
-    @api.depends('specific_gravity','eln_ref','grade')
+    @api.depends('water_absorption','eln_ref','grade')
     def _compute_water_absorp_conformity(self):
         
         for record in self:
@@ -222,8 +221,8 @@ class CrusherRunMacadamMechanical(models.Model):
                     req_max = material.req_max
                     mu_value = line.mu_value
                     
-                    lower = record.specific_gravity - record.specific_gravity*mu_value
-                    upper = record.specific_gravity + record.specific_gravity*mu_value
+                    lower = record.water_absorption - record.water_absorption*mu_value
+                    upper = record.water_absorption + record.water_absorption*mu_value
                     if lower >= req_min and upper <= req_max:
                         record.water_absorp_conformity = 'pass'
                         break
@@ -234,7 +233,7 @@ class CrusherRunMacadamMechanical(models.Model):
         ('pass', 'NABL'),
         ('fail', 'Non-NABL')], string="NABL", compute="_compute_water_absorp_nabl", store=True)
 
-    @api.depends('specific_gravity','eln_ref','grade')
+    @api.depends('water_absorption','eln_ref','grade')
     def _compute_water_absorp_nabl(self):
         
         for record in self:
@@ -247,8 +246,8 @@ class CrusherRunMacadamMechanical(models.Model):
                     lab_max = line.lab_max_value
                     mu_value = line.mu_value
                     
-                    lower = record.specific_gravity - record.specific_gravity*mu_value
-                    upper = record.specific_gravity + record.specific_gravity*mu_value
+                    lower = record.water_absorption - record.water_absorption*mu_value
+                    upper = record.water_absorption + record.water_absorption*mu_value
                     if lower >= lab_min and upper <= lab_max:
                         record.water_absorp_nabl = 'pass'
                         break
@@ -777,7 +776,7 @@ class CrusherRunMacadamMechanical(models.Model):
             if result.parameter.internal_id == '70ef993d-d2f8-424c-9729-4e081d647bb1':
                 result.result_char = round(self.aggregate_elongation,2)
                 result.calculated = True
-                if self.aggregate_combine_conformity == 'pass':
+                if self.aggregate_combine_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -787,7 +786,7 @@ class CrusherRunMacadamMechanical(models.Model):
             if result.parameter.internal_id == 'c8a5f37e-1449-4794-a854-cdb169493a1a':
                 result.result_char = round(self.aggregate_flakiness,2)
                 result.calculated = True
-                if self.aggregate_combine_conformity == 'pass':
+                if self.aggregate_combine_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -795,18 +794,18 @@ class CrusherRunMacadamMechanical(models.Model):
 
             
 
-            # specific gravity 
-            if result.parameter.internal_id == '2113f38a-d129-4efe-bac4-ff5826dface8':
-                result.calculated = True
-                result.result_char = round(self.specific_gravity,2)
-                if self.water_absorp_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
+            # # specific gravity 
+            # if result.parameter.internal_id == '2113f38a-d129-4efe-bac4-ff5826dface8':
+            #     result.calculated = True
+            #     result.result_char = round(self.specific_gravity,2)
+            #     if self.water_absorp_nabl == 'pass':
+            #         result.nabl_status = 'nabl'
+            #     else:
+            #         result.nabl_status = 'non-nabl'
+            #     continue
 
             # water absorbtion
-            if result.parameter.internal_id == '22ee804f-41a3-4fd1-a301-a8d9180fba10':
+            if result.parameter.internal_id == '2113f38a-d129-4efe-bac4-ff5826dface8':
                 result.calculated = True
                 result.result_char = round(self.water_absorption,2)
                 if self.water_absorp_nabl == 'pass':
@@ -930,7 +929,7 @@ class CrusherRunMacadamMechanical(models.Model):
 
 
 
-class SieveAnalysisLine(models.Model):
+class SieveAnalysisRunLine(models.Model):
     _name = "mechanical.crusher.run.macadam.sieve.analysis.line"
     parent_id = fields.Many2one('mechanical.crusher.run.macadam', string="Parent Id")
     
@@ -953,7 +952,7 @@ class SieveAnalysisLine(models.Model):
                 max_serial_no = max(existing_records.mapped('serial_no'))
                 vals['serial_no'] = max_serial_no + 1
 
-        return super(SieveAnalysisLine, self).create(vals)
+        return super(SieveAnalysisRunLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines
@@ -968,7 +967,7 @@ class SieveAnalysisLine(models.Model):
                 if record.parent_id and record.parent_id == vals.get('parent_id') and 'wt_retained' in vals:
                     record.percent_retained = vals['wt_retained'] / record.parent_id.total * 100 if record.parent_id.total else 0
 
-            new_self = super(SieveAnalysisLine, self).write(vals)
+            new_self = super(SieveAnalysisRunLine, self).write(vals)
 
             if 'wt_retained' in vals:
                 for record in self:
@@ -977,13 +976,13 @@ class SieveAnalysisLine(models.Model):
 
             return new_self
 
-        return super(SieveAnalysisLine, self).write(vals)
+        return super(SieveAnalysisRunLine, self).write(vals)
 
     def unlink(self):
         # Get the parent_id before the deletion
         parent_id = self[0].parent_id
 
-        res = super(SieveAnalysisLine, self).unlink()
+        res = super(SieveAnalysisRunLine, self).unlink()
 
         if parent_id:
             parent_id.sieve_analysis_child_lines._reorder_serial_numbers()
