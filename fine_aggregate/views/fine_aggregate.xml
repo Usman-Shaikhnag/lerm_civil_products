@@ -111,6 +111,207 @@
                         </tr>
                     </tbody>
                 </table>
+
+
+
+
+
+
+                 <!-- Determination of Clay Lumps -->
+
+
+                    <div invisible="clay_lump_visible == False">
+                        <h1 class="text-center">
+                            <field name="name_clay_lumps" readonly="1" nolabel="1"/>
+                            <field name="clay_lump_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+                    <table class="table table-sm table-bordered w-100 mt-2 custom_table_borders" invisible="clay_lump_visible == False" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><span class="fw-bold">Weight of Sample in gms</span></td>
+                                <td>
+                                    <field name='wt_sample_clay_lumps' class="blue-input" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Weight of dry sample after retained in 75 microns</span></td>
+                                <td>
+                                    <field name='wt_dry_sample_clay_lumps' class="blue-input" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Clay Lumps in %</span></td>
+                                <td>
+                                    <field name='clay_lumps_percent'/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" invisible="clay_lump_visible == False" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><span class="fw-bold">Conformity</span></td>
+                                <td>
+                                    <field  name="clay_lumps_percent_conformity"
+                                    decoration-success="clay_lumps_percent_conformity == 'pass'" 
+                                    decoration-danger="clay_lumps_percent_conformity == 'fail'" 
+                                    readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">NABL</span></td>
+                                <td>
+                                    <field  name="clay_lumps_percent_nabl"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                  
+
+
+
+
+
+         <!-- Deleterious Material (Coal & Lignite) -->
+
+                    <div invisible="light_weight_visible == False">
+                        <h1 class="text-center">
+                            <field name="name_light_weight" readonly="1" nolabel="1"/>
+                            <field name="light_weight_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+
+                    <table class="table table-sm table-bordered w-100 mt-2 custom_table_borders" invisible="light_weight_visible == False" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><span class="fw-bold">Weight of Sample in gms</span></td>
+                                <td>
+                                    <field name='wt_sample_light_weight' class="blue-input" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Weight of dry sample after retained in 75 microns</span></td>
+                                <td>
+                                    <field name='wt_dry_sample_light_weight' class="blue-input" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Light Weight Particle in %</span></td>
+                                <td>
+                                     <field name='light_weight_percent'/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" invisible="light_weight_visible == False" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><span class="fw-bold">Conformity</span></td>
+                                <td>
+                                    <field  name="light_weight_percent_conformity"
+                                    decoration-success="light_weight_percent_conformity == 'pass'" 
+                                    decoration-danger="light_weight_percent_conformity == 'fail'" 
+                                    readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">NABL</span></td>
+                                <td>
+                                     <field  name="light_weight_percent_nabl"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+            
+
+           <!-- Deleterious Material - Soft Particles -->
+
+                     <div class="text-center" invisible="deleterious_soft_par_visible == False">
+                        <h1>
+                            <field name="deleterious_soft_par_name" readonly="1" nolabel="1"/>
+                            <field name="deleterious_soft_par_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+
+                     <table class="table table-sm table-bordered custom_table_borders" invisible="not deleterious_soft_par_visible" style="white-space:nowrap;">
+                     <tbody>
+                            <tr>
+                                <td><span class="fw-bold"> Weight of Sample W1 (g)</span></td>
+                                <td><field name="par_sample_weight" class="blue-input" /></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Weight of Soft Fragments W2 (g)</span></td>
+                                <td><field name="soft_particles_weight" class="blue-input"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Soft Particles (%)</span></td>
+                                <td><field name="soft_particles_percent"  /></td>
+                            </tr>
+                            </tbody>
+                    </table>
+
+
+
+
+
+                  <!-- Deleterious Material - Organic Impurities -->
+
+<div class="text-center" invisible="organic_impurities_visible == False">
+    <h1>
+        <field name="organic_impurities_name" readonly="1" nolabel="1"/>
+        <field name="organic_impurities_visible" invisible="1"/>
+    </h1>
+</div>
+
+<table class="table table-sm table-bordered custom_table_borders"
+       invisible="not organic_impurities_visible"
+       style="white-space:nowrap;">
+    <tbody>
+
+        <tr>
+            <td>
+                <span class="fw-bold">Sample Color</span>
+            </td>
+            <td>
+                <field name="sample_color" class="blue-input"/>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <span class="fw-bold">Result</span>
+            </td>
+            <td>
+                <field name="organic_impurities_result"/>
+            </td>
+        </tr>
+
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     
 
 
