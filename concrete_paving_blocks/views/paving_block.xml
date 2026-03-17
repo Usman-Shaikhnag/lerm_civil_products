@@ -3,14 +3,14 @@
     <data>
 
         <record id="mechanical_pever_block1" model="ir.ui.view">
-        <field name="name">mechanical.paver.block.form</field>
-        <field name="model">mechanical.paver.block</field>
+        <field name="name">mechanical.concrete.paving.block.form</field>
+        <field name="model">mechanical.concrete.paving.block</field>
         <field name="arch" type="xml">
             <form create="false">
                 <sheet>
                    <group style="white-space: nowrap; width:70%;">
                         <h1>
-                            <field name="name_paver" readonly="1" nolabel="1"/>
+                            <field name="name_paving" readonly="1" nolabel="1"/>
                         </h1>
                     </group>
                     <group >
@@ -50,14 +50,14 @@
                             }
                     </style>
 
-                     <group invisible = "paver_visible == False"  style="white-space: nowrap; width:70%;text-align: center">
+                     <group invisible = "paving_visible == False"  style="white-space: nowrap; width:70%;text-align: center">
                         <h1>
-                            <field name="paver_name" readonly="1" nolabel="1"/>
-                            <field name="paver_visible" invisible="1"/>
+                            <field name="paving_name" readonly="1" nolabel="1"/>
+                            <field name="paving_visible" invisible="1"/>
                         </h1>
                     </group>
 
-                     <group invisible = "paver_visible == False" >
+                     <group invisible = "paving_visible == False" >
                     <field name="thickness_child_lines" mode="tree"  invisible="1">
                             <tree editable="bottom" class="custom_table_borders">
                               
@@ -75,7 +75,7 @@
 
 
 
-                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "paver_visible == False">
+                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "paving_visible == False">
                         <tbody>
                           
                              <tr>
@@ -148,7 +148,7 @@
                        
 
                         <!-- Right Table -->
-                            <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  style="width: 100%; border-collapse: collapse;" invisible="paver_visible == False">
+                            <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  style="width: 100%; border-collapse: collapse;" invisible="paving_visible == False">
                                 <thead>
                                     <tr>
                                         <th style="text-align: center; border: 1px solid black;">Gms</th>
@@ -183,7 +183,7 @@
 
                     
 
-                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "paver_visible == False">
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "paving_visible == False">
                         <tbody>
                           
                              <tr>
