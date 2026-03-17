@@ -9,7 +9,7 @@ from lxml import etree
 
 
 class CrusherRunMacadamReport(models.AbstractModel):
-    _name = 'report.crusher_run_mac.crusher_run_mac_report'
+    _name = 'report.crusher_run_macadam.crusher_run_mac_report'
     _description = 'Crusher Run Macadam Report'
     
     @api.model
@@ -72,7 +72,7 @@ class CrusherRunMacadamReport(models.AbstractModel):
 
 
 class CrusherRunMacadamDataSheet(models.AbstractModel):
-    _name = 'report.crusher_run_mac.crusher_run_mac_datasheet'
+    _name = 'report.crusher_run_macadam.crusher_run_mac_datasheet'
     _description = 'Crusher Run Macadam DataSheet'
     
     @api.model
