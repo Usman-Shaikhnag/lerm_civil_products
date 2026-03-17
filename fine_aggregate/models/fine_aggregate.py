@@ -313,6 +313,83 @@ class FineAggregate(models.Model):
 
 
 
+
+
+
+
+                
+# clay lumps
+    
+    name_clay_lumps = fields.Char("Name",default="Determination of Clay Lumps")
+    clay_lump_visible = fields.Boolean("Clay Lump Visible",compute="_compute_visible")
+
+    wt_sample_clay_lumps = fields.Float("Weight of Sample in gms")
+    wt_dry_sample_clay_lumps = fields.Float("Weight of dry sample after retained in 75 microns")
+    clay_lumps_percent = fields.Float("Clay Lumps in %",compute="_compute_clay_lumps")
+
+    clay_lumps_percent_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Conformity", compute="_compute_clay_lumps_percent_conformity", store=True)
+
+    @api.depends('clay_lumps_percent','eln_ref','grade')
+    def _compute_clay_lumps_percent_conformity(self):
+        
+        for record in self:
+            record.clay_lumps_percent_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d7e389bc-21ad-41eb-a602-f448f996eb2f')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d7e389bc-21ad-41eb-a602-f448f996eb2f')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.clay_lumps_percent - record.clay_lumps_percent*mu_value
+                    upper = record.clay_lumps_percent + record.clay_lumps_percent*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.clay_lumps_percent_conformity = 'pass'
+                        break
+                    else:
+                        record.clay_lumps_percent_conformity = 'fail'
+
+    clay_lumps_percent_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_clay_lumps_percent_nabl", store=True)
+
+    @api.depends('clay_lumps_percent','eln_ref','grade')
+    def _compute_clay_lumps_percent_nabl(self):
+        
+        for record in self:
+            record.clay_lumps_percent_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d7e389bc-21ad-41eb-a602-f448f996eb2f')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d7e389bc-21ad-41eb-a602-f448f996eb2f')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.clay_lumps_percent - record.clay_lumps_percent*mu_value
+                    upper = record.clay_lumps_percent + record.clay_lumps_percent*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.clay_lumps_percent_nabl = 'pass'
+                        break
+                    else:
+                        record.clay_lumps_percent_nabl = 'fail'
+
+    @api.depends('wt_sample_clay_lumps','wt_dry_sample_clay_lumps')
+    def _compute_clay_lumps(self):
+        for record in self:
+            if record.wt_sample_clay_lumps != 0:
+                record.clay_lumps_percent = ((record.wt_sample_clay_lumps - record.wt_dry_sample_clay_lumps)/record.wt_sample_clay_lumps * 100)
+            else:
+                record.clay_lumps_percent = 0
+
+
+
+
+
+                
       # Specific Gravity
 
     specific_gravity_name = fields.Char("Name",default="Specific Gravity & Water Absorption")
