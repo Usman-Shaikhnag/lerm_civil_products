@@ -799,6 +799,316 @@
                     </table>
                     <group/>
 
+                    <!-- Setting Time Start -->
+                    <div invisible="not initial_setting_time_visible or not final_setting_time_visible">
+                        <field name="initial_setting_time_visible" readonly="1" invisible="1" />
+                        <field name="final_setting_time_visible" readonly="1" invisible="1" />
+                        <h1 class="text-center">
+                            <field name="setting_time_name" readonly="1" nolabel="1"   invisible="not initial_setting_time_visible or not final_setting_time_visible"/>
+                        </h1>
+                    </div>
+
+                     <div class="d-flex" style="gap:10px; margin-bottom:20px; align-items:stretch;"  invisible="not initial_setting_time_visible or not final_setting_time_visible">
+
+                        <!-- Left side -->
+                       <div style="width:50%; text-align:center;" class="equal-box">
+                            <div class="o_form_label"
+                                style="font-weight:bold; background:#f0f0f0; padding:6px; margin-bottom:0; border:1px solid #ccc; border-bottom:0;">
+                                Initial Setting Time
+                            </div>
+                            <field name="intial_time_lines" class="custom_table_borders" style="margin-top:0; margin-bottom:0; width:100%;">
+                                <tree editable="bottom">
+                                    <field name="serial_no"/>
+                                    <field name="clock_time" class="blue-input" decoration-info="clock_time != 0"/>
+                                    <field name="penetration_intial" class="blue-input" decoration-info="penetration_intial != 0"/>
+                                </tree>
+                            </field>
+                        </div>
+
+
+                  
+
+
+                        <!-- Right side -->
+
+                         <div style="width:50%; text-align:center;" class="equal-box">
+                            <div class="o_form_label"
+                                style="font-weight:bold; background:#f0f0f0; padding:6px; margin-bottom:0; border:1px solid #ccc; border-bottom:0;">
+                              Final Setting Time
+                            </div>
+                            <field name="final_time_lines" class="custom_table_borders" style="margin-top:0; margin-bottom:0; width:100%;">
+                                <tree editable="bottom">
+                                    <field name="serial_no"/>
+                                    <field name="clock_time1" class="blue-input" decoration-info="clock_time1 != 0"/>
+                                    <field name="impression_intial1" class="blue-input" decoration-info="impression_intial1 != 0"/>
+                                </tree>
+                            </field>
+                        </div>
+
+                       
+
+                    </div>
+
+                    <div class="d-flex gap-2 align-items-start" style="width:100%;">
+    
+                            <!-- Initial Setting Time Table -->
+                            <table class="table table-sm o_form_table table-bordered custom_table_borders flex-fill"
+                                invisible="initial_setting_time_visible == False">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2" class="text-center">
+                                            <field name="initial_setting_time_name" readonly="1" nolabel="1"
+                                                invisible="initial_setting_time_visible == False"/>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><label for="time_water_added">The Time When water is added to cement (t1)</label></td>
+                                        <td><field name="time_water_added"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="time_needle_fails">The time at which needle fails to penetrate the test block to a point 5 ± 0.5 mm (t2)</label></td>
+                                        <td><field name="time_needle_fails"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="initial_setting_time_hours">Initial Setting Time (t2-t1) (Hours)</label></td>
+                                        <td><field name="initial_setting_time_hours"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="initial_setting_time_minutes_unrounded">Initial Setting Time</label></td>
+                                        <td><field name="initial_setting_time_minutes_unrounded"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="initial_setting_time_minutes">Initial Setting Time Rounded</label></td>
+                                        <td><field name="initial_setting_time_minutes"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- Final Setting Time Table -->
+                            <table class="table table-sm o_form_table table-bordered custom_table_borders flex-fill"
+                                invisible="final_setting_time_visible == False">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2" class="text-center">
+                                            <field name="final_setting_time_name" readonly="1" nolabel="1"
+                                                invisible="final_setting_time_visible == False"/>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><label for="time_needle_make_impression">The Time at which the needle make an impression on the surface of test block while attachment fails to do (t3)</label></td>
+                                        <td><field name="time_needle_make_impression"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="final_setting_time_hours">Final Setting Time (t2-t1) (Hours)</label></td>
+                                        <td><field name="final_setting_time_hours"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="final_setting_time_minutes_unrounded">Final Setting Time</label></td>
+                                        <td><field name="final_setting_time_minutes_unrounded"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="final_setting_time_minutes">Final Setting Time Rounded</label></td>
+                                        <td><field name="final_setting_time_minutes"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                    <div class="d-flex gap-2 align-items-start" style="width:100%;">
+                        <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" invisible="initial_setting_time_visible == False">
+                        <tbody>
+                           
+                            <tr>
+                                <td><label class="fw-bold" for="initial_setting_conformity">Initial Setting Time Conformity</label></td>
+                                <td>
+                                    <field name="initial_setting_conformity"
+                                        decoration-success="initial_setting_conformity == 'pass'"
+                                        decoration-danger="initial_setting_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="initial_setting_nabl">Initial Setting Time NABL</label></td>
+                                <td>
+                                    <field name="initial_setting_nabl"
+                                        decoration-success="initial_setting_nabl == 'pass'"
+                                        decoration-danger="initial_setting_nabl == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                     <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" invisible="final_setting_time_visible == False">
+                        <tbody>
+                           
+                            <tr>
+                                <td><label class="fw-bold" for="final_setting_conformity">Final Setting Time Conformity</label></td>
+                                <td>
+                                    <field name="final_setting_conformity"
+                                        decoration-success="final_setting_conformity == 'pass'"
+                                        decoration-danger="final_setting_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="final_setting_nabl">Final Setting Time NABL</label></td>
+                                <td>
+                                    <field name="final_setting_nabl"
+                                        decoration-success="final_setting_nabl == 'pass'"
+                                        decoration-danger="final_setting_nabl == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+
+                    <!-- Moisture Content -->
+                    <div invisible = "moisture_content_visible == False">
+                        <h1 class="text-center">
+                            <field name="moisture_content_name1" readonly="1" nolabel="1"/>
+                            <field name="moisture_content_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div invisible = "moisture_content_visible == False">
+                        <field name="moisture_content_child_lines" nolabel="1" >
+                            <tree editable="bottom"  class="custom_table_borders">
+                                <field name="serial_no"/>
+                                <field name="wt_sand"/>
+                                <field name="wt_dry" />
+                                <field name="diff_wet_sand"/>
+                                <!-- <field name="moisture_content"/> -->
+                            </tree>
+                        </field>
+                    </div>
+
+                    <table invisible="moisture_content_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="wet_dry">Weight of Wet Sand Sample (W1)</label></td>
+                                <td><field name="wet_dry" nolabel="1"/></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="wet_sand">Weight of Dry Sand Sample (W2)</label></td>
+                                <td><field name="wet_sand" nolabel="1"/></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="diff_wd">Diff. Between Wet and Dry Sand (W1 - W2)</label></td>
+                                <td><field name="diff_wd" nolabel="1"/></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_moisture">Average Moisture Content</label></td>
+                                <td>
+                                    <div class="d-flex">
+                                        <field name="avg_moisture" nolabel="1"/>
+                                        <span class="ms-2">%</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_moisture_conformity">Moisture Content Conformity</label></td>
+                                <td>
+                                    <field name="avg_moisture_conformity"
+                                        decoration-success="avg_moisture_conformity == 'pass'"
+                                        decoration-danger="avg_moisture_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_moisture_nabl">Moisture Content NABL</label></td>
+                                <td><field name="avg_moisture_nabl" 
+                                            decoration-success="avg_moisture_nabl == 'pass'"
+                                            decoration-danger="avg_moisture_nabl == 'fail'" readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                    <!--Soundness By Le-Chatelier Test  -->
+                    <div invisible=" not soundness_visible">
+                        <h1 class="text-center">
+                            <field name="soundness_name" readonly="1" nolabel="1"/>
+                            <field name="soundness_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                     
+
+                    <div class="d-flex gap-2" invisible="not soundness_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="temp_soundness">Temp.°C</label></td>
+                                    <td><field name="temp_soundness" class="blue-input" invisible="not soundness_visible" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="humidity_soundness">Humidity %</label></td>
+                                    <td><field name="humidity_soundness" class="blue-input" invisible="not soundness_visible" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div invisible="soundness_visible == False" class="custom_table_borders">
+                        <field name="soundness_child_lines" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="sr_no" width="40px"/>
+                                <field name='mould_no' width="80px" class="blue-input" decoration-info="mould_no != 0"/>
+                                <field name='initial_read' class="blue-input" decoration-info="initial_read != 0"/>
+                                <field name='final_read' class="blue-input" decoration-info="final_read != 0"/>
+                                <field name='expansion'/> 
+                            </tree>
+                        </field>
+                    </div>
+
+                    
+
+                     
+                     <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" invisible="not soundness_visible" style="white-space:nowrap;">
+                        <tbody>
+                        <tr>
+                                <td><label class="fw-bold" for="avg_expansion">Average Expansion (mm)</label></td>
+                                <td>
+                                    <field name="avg_expansion"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_expansion_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="avg_expansion_conformity"
+                                        decoration-success="avg_expansion_conformity == 'pass'" 
+                                        decoration-danger="avg_expansion_conformity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_expansion_nabl">NABL</label></td>
+                                <td>
+                                    <field name="avg_expansion_nabl"
+                                        decoration-success="avg_expansion_nabl == 'pass'" 
+                                        decoration-danger="avg_expansion_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <group/>
+
+
                     <button
                             type="object"
                             class="oe_highlight" 
