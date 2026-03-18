@@ -29,6 +29,25 @@
                         </tree>
                       </field>
                     </div>
+
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
                     
                   <!-- Plastic Limit -->
                 <group invisible = "moisture_content_visible == False"  style="white-space: nowrap; width:70%;">
@@ -42,15 +61,13 @@
                     <field name="wood_child_lines" class="custom_table_borders" nolabel="1">
                             <tree editable="bottom">
                                 <field name='sr_no'/>
-                                <field name='initial_we'/>
-                                <field name='oven_dry'/>
+                                <field name='initial_we' class="blue-input" decoration-info="initial_we != 0"/>
+                                <field name='oven_dry' class="blue-input" decoration-info="oven_dry != 0"/>
                                 <field name='per_moisture'/>
                             </tree>
                     </field> 
                 </div>
-                  <!-- <group invisible = "moisture_content_visible == False" style="white-space: nowrap; width:70%;">
-                       <field name='average_moisture'/>
-                </group> -->
+                 
                 <group  invisible = "specific_gravity_visible == False" string="Result"  style="white-space: nowrap; width:70%;"/>
                     <div>
                      <table style="border: 2px solid black; width: 50%;">
@@ -61,24 +78,7 @@
                           </table>
                         </div>
                     <group/>
-                <!-- <group  invisible = "specific_gravity_visible == False" string="Result"  style="white-space: nowrap; width:70%;">
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 50%;">
-                                <table style="width: 100%; ">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px;">
-                                          Average Moisture Content
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px;"><field name="average_moisture" nolabel="1"/>
-                                            </td>
-                                            
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group> -->
+                
 
                     <div>
                           <table style="width: 50%; margin-top:10px;">
@@ -98,15 +98,7 @@
                         <group/>
                         <group/>
                  
-                 <!-- <group invisible = "moisture_content_visible == False" >
-                       
-                        <field  name="moisture_content_conformity"
-                                        decoration-success="moisture_content_conformity == 'pass'" 
-                                        decoration-danger="moisture_content_conformity == 'fail'" 
-                                        readonly="1" />
-                        <field  name="moisture_content_nabl" />
-                         
-                    </group> -->
+                 
 
 
 
@@ -122,19 +114,17 @@
                     <field name="specific_gravity_child_lines"  class="custom_table_borders" nolabel="1" colspan="2">
                             <tree editable="bottom">
                                 <field name='sr_no'/>
-                                <field name='length'/>
-                                <field name='width'/>
-                                <field name='thickness'/>
+                                <field name='length' class="blue-input" decoration-info="length != 0" />
+                                <field name='width' class="blue-input" decoration-info="width != 0" />
+                                <field name='thickness' class="blue-input" decoration-info="thickness != 0" />
                                   <field name='volume'/>
-                                <field name='oven_dry'/>
+                                <field name='oven_dry' class="blue-input" decoration-info="oven_dry != 0" />
                                 <field name='specific_gravity'/>
                             </tree>
                     </field> 
                 </group>
 
-                  <!-- <group invisible = "specific_gravity_visible == False" style="white-space: nowrap; width:70%;">
-                       <field name='average_specific_gravity'/>
-                </group> -->
+                 
                 <group  invisible = "specific_gravity_visible == False" string="Result"  style="white-space: nowrap; width:70%;"/>
                     <div>
                      <table style="border: 2px solid black; width: 50%;">
@@ -145,28 +135,7 @@
                           </table>
                         </div>
                     <group/>
-                <!-- <group  invisible = "specific_gravity_visible == False" string="Result"  style="white-space: nowrap; width:70%;">
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 50%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
-                                             Average Specific Gravity
-
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 80px;">
-                                                    <field name="average_specific_gravity" nolabel="1"/>
-                                                </div>
-                                            </td>
-                                            
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group> -->
+               
 
                     <div>
                           <table style="width: 50%; margin-top:10px;">
@@ -186,14 +155,7 @@
                         <group/>
                         <group/>
                  
-                 <!-- <group invisible = "specific_gravity_visible == False">
-                        <field  name="specific_gravity_conformity"
-                                        decoration-success="specific_gravity_conformity == 'pass'" 
-                                        decoration-danger="specific_gravity_conformity == 'fail'" 
-                                        readonly="1" />
-                        <field  name="specific_gravity_nabl" />
-                    </group> -->
-              
+                
 
                   <button
                             type="object"
