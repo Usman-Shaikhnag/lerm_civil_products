@@ -29,6 +29,12 @@ class ChequeredTile(models.Model):
 
      # Dimension
 
+    dimension_name = fields.Char(default="Dimension")
+    dimension_visible = fields.Boolean(compute="_compute_visible")
+    length = fields.Float('Length')
+    thickness = fields.Float('Thickness')
+    width = fields.Float('Width')
+
     chequered_tiles_name1 = fields.Char("Name",default=" Chequered Tiles")
     chequered_tiles_visible = fields.Boolean("Chequered Visible",compute="_compute_visible")   
 
@@ -397,6 +403,7 @@ class ChequeredTile(models.Model):
             record.chequered_tiles_visible = False
             record.chequered_water_absorption_visible = False
             record.chequeredwet_transver_visible = False
+            record.dimension_visible = False
             
             
             for sample in record.sample_parameters:
@@ -421,6 +428,9 @@ class ChequeredTile(models.Model):
 
                 if sample.internal_id == "6d833bd3-d457-4f5d-a912-48c756bb7837":
                     record.chequeredwet_transver_visible = True
+
+                if sample.internal_id == "6dytrbv-d457-4f5d-a912-48c7302145tyr":
+                    record.dimension_visible = True
 
                
 

@@ -11,6 +11,7 @@
                         <h1>
                             <field name="name" readonly="1" nolabel="1"/>
                         </h1>
+                        <button type="object" class="oe_highlight" name="prefill_data" string="Prefill Data"/>
                     </group>
                     <group>
                         <field name="srf_id" invisible="1"/>
@@ -877,17 +878,42 @@
                           <group/>
                           <group/>
 
-                        <!-- <group>
-                            <field name='avrg_bulk_density'/>
-                            <field name='bulk_density_conformity'
-                            decoration-success="bulk_density_conformity == 'pass'" 
-                            decoration-danger="bulk_density_conformity == 'fail'" 
-                            readonly="1"
-                            />
-                            <field name='bulk_density_nabl'/>
-                        </group>  -->
-                        
-                    <!-- </group> -->
+                        <!-- Moisture Content -->
+
+                     <div invisible="moisture_visible == False" style="text-align:center">
+                      <h1>
+                          <field name="moisture_name" readonly="1" nolabel="1"/>
+                          <field name="moisture_visible" invisible='1'/>
+                      </h1>
+                    </div>
+                    
+                   
+                     <div invisible = "moisture_visible == False"  >
+                    <field name="moisture_line_ids" nolabel="1" >
+                            <tree editable="bottom"  class="custom_table_borders">
+                                <field name="sr_no" />
+                                <field name="w1" class="blue-input" decoration-info="w1 != 0"/>
+                                <field name='w2' class="blue-input" decoration-info="w2 != 0"/>
+                                <field name='w3' class="blue-input" decoration-info="w3 != 0"/>
+                                <field name='sample_weight'/>
+                                <field name='water_loss'/>
+                                <field name='moisture_content' />
+                                
+                            </tree>
+                    </field>
+                    </div>
+
+                    <table class="table o_form_table w-50 mt-2 custom_table_borders" invisible="not moisture_visible">
+                        <tbody>
+                            <tr>
+                                <td><strong>Average Moisture Content</strong></td>
+                                <td>
+                                    <field name="avg_moisture" readonly="1" nolabel="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
                     
                      <button
                             type="object"
@@ -900,6 +926,34 @@
             </form>
             </field>
         </record>
+
+        <record id="view_microsilica_prefill_data_form" model="ir.ui.view">
+            <field name="name">mech.microsilica.prefill.data.form</field>
+            <field name="model">mech.microsilica.prefill.data</field>
+            <field name="arch" type="xml">
+                <form string="Prefill Data">
+                    <group>
+                        <field name="product_id" readonly="1"/>
+                        <field name="sample_id"/>
+
+                    </group>
+                    <footer>
+                        <button name="prefill_data" string="Prefill Data" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_microsilica_prefill_data_wizard" model="ir.actions.act_window">
+            <field name="name">Prefill Data</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mech.microsilica.prefill.data</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_microsilica_prefill_data_form"/>
+            <field name="target">new</field>
+        </record>
+
 
     </data>
 </odoo>

@@ -34,6 +34,34 @@
                       </field>
                     </group>
 
+
+
+
+                      <style>
+                      
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+
+                    </style>
+
+
+
+
+
+
                     <!-- Drying Skrinkage Start -->
                     <div invisible = "not drying_shrinkage_visible">
                         <h1>
@@ -79,18 +107,7 @@
                       </div>
                       <group/>
 
-                    <!-- <group invisible = "not drying_shrinkage_visible">
-                        <field name='average1'/>
-                    </group>
-                    <group invisible = "not drying_shrinkage_visible">
-                          <group>
-                            <field  name="drying_shrinkage_conformity"
-                                           decoration-success="drying_shrinkage_conformity == 'pass'" 
-                                           decoration-danger="drying_shrinkage_conformity == 'fail'" 
-                                           readonly="1"/>
-                            <field  name="drying_shrinkage_nabl"/>
-                          </group>
-                    </group> -->
+                  
 
 
                     <!-- Moisture Movement -->
@@ -134,18 +151,7 @@
                       </div>
                       <group/>
 
-                    <!-- <group invisible = "not moisture_movement_visible">
-                        <field name='average2'/>
-                    </group> -->
-                     <!-- <group invisible = "not moisture_movement_visible">
-                          <group>
-                            <field  name="moisture_movement_conformity"
-                                           decoration-success="moisture_movement_conformity == 'pass'" 
-                                           decoration-danger="moisture_movement_conformity == 'fail'" 
-                                           readonly="1"/>
-                            <field  name="moisture_movement_nabl"/>
-                          </group>
-                    </group> -->
+                    
 
                     
                     <button
@@ -153,7 +159,7 @@
                             class="oe_highlight" 
                             name="open_eln_page"
                             string="Submit"
-                    />
+                            />
 
                 </sheet>
             </form>

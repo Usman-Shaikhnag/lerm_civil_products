@@ -954,6 +954,49 @@
 								</t>
 							</td>
 						</tr>
+
+						<!--  -->
+
+						<tr t-if="microsilica.moisture_visible ">
+							
+							<td style="text-align: center; vertical-align: middle;">
+								<span t-esc="i + 1" />
+								<t t-set="i" t-value="i+1"/>
+							</td>
+							<td style="text-align: center;vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','d62e47c1-64b1-4589-b412-677f1e21377b')]).parameter_name"/>
+							</td>
+							<td style="text-align: center;vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','d62e47c1-64b1-4589-b412-677f1e21377b')]).unit"/>
+							</td>
+							
+							<td style="text-align: center;vertical-align: middle;">
+								<span style="text-align: center;" >
+									<span t-field="microsilica.avg_moisture" t-options='{"widget": "float", "precision": 2}'/>
+								</span>									
+							</td>
+							<td style="text-align: center; vertical-align: middle;">
+								<span>
+									
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','d62e47c1-64b1-4589-b412-677f1e21377b')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
+									</t>
+								</span>
+							</td>
+							<td style="text-align: center; vertical-align: middle;">
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','d62e47c1-64b1-4589-b412-677f1e21377b')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.permissable_limit"/>
+									</t>
+								</t>
+							</td>
+						</tr>
+
+
+
+
 					</tbody>
 				</table>
 				<div>
@@ -2273,7 +2316,7 @@
 
 			  <!--6 Dry Loose Bulk Density -->
 
-			<div t-if="data.bulk_density_visible" style="margin-top:20px">
+			<div t-if="data.bulk_density_visible" style="margin-top:20px;page-break-before: always;">
 				<!-- <div style="text-align:center;font-size:18px">
 						Dry Loose Bulk Density
 				</div> -->
@@ -2350,7 +2393,154 @@
 						<td style="text-align: center;"><span t-field="data.avrg_bulk_density" t-options='{"widget": "float", "precision": 2}'/></td>
 					</tr>
 				</table>
+
+				<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<!-- <div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div> -->
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<!-- <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div> -->
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>	
 					
+			</div>
+
+			<!--3 Specific Gravity -->
+
+			<div t-if="data.moisture_visible" style="margin-top:20px;page-break-before: always;">
+				<!-- <div style="text-align:center;font-size:18px">
+						Specific Gravity
+				</div> -->
+				<div style="text-align:center;font-size:18px">
+					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','d62e47c1-64b1-4589-b412-677f1e21377b')]).parameter_name"/>
+				</div>
+				<!-- <table>
+					<tr cols="12">
+						<td colspan="6">Temperature :
+							<![CDATA[&nbsp;]]>
+							<span t-field="data.temp_percent_specific"/>
+						</td>
+						<td colspan="6">Test Start Date :
+							<![CDATA[&nbsp;]]>
+							<span t-field="data.start_date_specific"/>
+						</td>
+					</tr>
+					<tr cols="12">
+						<td colspan="6">Humidity :
+							<![CDATA[&nbsp;]]>
+							<span t-field="data.humidity_percent_specific"/>
+						</td>
+						<td colspan="6">Test End Date :
+							<![CDATA[&nbsp;]]>
+							<span t-field="data.end_date_specific"/>
+						</td>
+					</tr>
+				</table> -->
+				<table style="margin-top:20px">
+
+					<tr cols="12">
+						<td colspan="3">Sr.No
+						</td>
+						<td colspan="3">W1 Empty Container (g)
+						</td>
+						<td colspan="3">W2 Container + Wet Sample (g)
+						</td>
+						<td colspan="3">W3 Container + Dry Sample (g)
+						</td>
+						<td colspan="3">Sample Weight
+						</td>
+						<td colspan="3">Water Loss
+						</td>
+						<td colspan="3">Moisture %
+						</td>
+					</tr>
+
+					<t t-set="i" t-value="0"/>
+					<tr t-foreach="data.moisture_line_ids" t-as="r">
+						<td colspan="3" style="text-align: center;">
+							<div>
+								<span t-esc="i + 1" />
+								<t t-set="i" t-value="i+1"/>
+							</div>
+						</td>
+						<td colspan="3" style="text-align: center;">
+							<span t-esc="r['w1']"/>
+						</td>
+						<td colspan="3" style="text-align: center;">
+							<span t-esc="r['w2']"/>
+						</td>
+						<td colspan="3" style="text-align: center;">
+							<span t-esc="r['w3']"/>
+						</td>
+						<td colspan="3" style="text-align: center;">
+							<span t-esc="r['sample_weight']" t-options='{"widget": "float", "precision": 2}'/>
+						</td>
+						<td colspan="3" style="text-align: center;">
+							<span t-esc="r['water_loss']" t-options='{"widget": "float", "precision": 2}'/>
+						</td>
+						<td colspan="3" style="text-align: center;">
+							<span t-esc="r['moisture_content']" t-options='{"widget": "float", "precision": 2}'/>
+						</td>
+					</tr>
+				</table>
+				<table style="margin-top: 20px">
+					<tr>
+						<td style="font-weight: bold;">Average Moisture %</td>
+						<td style="text-align: center;"><span t-field="data.avg_moisture" t-options='{"widget": "float", "precision": 2}'/></td>
+					</tr>
+				</table>
+
+				
 			</div>
 
 				<!-- authorizeRowDataSheet -->

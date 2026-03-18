@@ -32,6 +32,24 @@
                         </field>
                     </div>
 
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
                      <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
                             <div style="width: 100%;">
                                 <table style="width: 100%; border-collapse: collapse;">
@@ -94,7 +112,7 @@
                                             <label for="wt_of_samplew1"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="wt_of_samplew1" nolabel="1"/>
+                                            <field name="wt_of_samplew1" nolabel="1" class="blue-input"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
                                            grams
@@ -108,7 +126,7 @@
                                             <label for="wt_of_intial"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="wt_of_intial" nolabel="1"/>
+                                            <field name="wt_of_intial" nolabel="1" class="blue-input"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
                                            grams
@@ -122,7 +140,7 @@
                                             <label for="wt_of_aggregate"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="wt_of_aggregate" nolabel="1"/>
+                                            <field name="wt_of_aggregate" nolabel="1" class="blue-input"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
                                            grams
@@ -133,10 +151,10 @@
                                             4
                                         </td>
                                         <td style="border: 1px solid black; color: black; padding: 8px 10px;">
-                                            <label for="wt_of_extraction"/>
+                                            <label for="wt_of_extraction" class="blue-input"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="wt_of_extraction" nolabel="1"/>
+                                            <field name="wt_of_extraction" nolabel="1" class="blue-input"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
                                            grams
@@ -151,7 +169,7 @@
                                             Increased weight of filter W3 = (F2-F1)
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="wt_of_filter" nolabel="1"/>
+                                            <field name="wt_of_filter" nolabel="1" class="blue-input"/>
                                         </td>
                                         <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
                                            grams
@@ -238,7 +256,7 @@
                                             </td>
                                             <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
                                                 <div style="display: inline-block; min-width: 80px;">
-                                                    <field name="wt_of_sample" nolabel="1"/>
+                                                    <field name="wt_of_sample" nolabel="1" class="blue-input"/>
                                                 </div>
                                             </td>
                                             <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
@@ -258,12 +276,12 @@
                     <field name="sieve_analysis_child_lines" nolabel="1" >
                             <tree editable="bottom"  class="custom_table_borders">
                                 <field name="serial_no" string="Sr.No"/>
-                                <field name='sieve_size' string="IS Sieve Size"/>
-                                <field name='wt_retained' string="Wt. Retained in gms"/>
+                                <field name='sieve_size' string="IS Sieve Size" class="blue-input" decoration-info="sieve_size != 0"/>
+                                <field name='wt_retained' string="Wt. Retained in gms" class="blue-input" decoration-info="wt_retained != 0"/>
                                 <field name='percent_retained' string="% Retained"/>
                                 <field name='cumulative_retained' context="{'default_cumulative_retained': cumulative_retained}" string="Cum. Retained %"/>
                                 <field name='passing_percent' string="Passing %" readonly="1"/>
-                                  <field name='specific_limt' string="Specified Limits" class="oe_center"/>
+                                  <field name='specific_limt' string="Specified Limits" class="oe_center" />
                                 
                             </tree>
                     </field>

@@ -1059,7 +1059,7 @@ class CoarseAggregateMechanical(models.Model):
 
 
                 
-# 
+   # clay and lump
     
     name_clay_lumps = fields.Char("Name",default="Determination of Clay Lumps")
     clay_lump_visible = fields.Boolean("Clay Lump Visible",compute="_compute_visible")
@@ -1128,7 +1128,12 @@ class CoarseAggregateMechanical(models.Model):
 
 
 
-# 
+
+
+
+# light weight
+
+
     name_light_weight = fields.Char("Name",default="Determination of Light Weight Particles")
     light_weight_visible = fields.Boolean("Light Weight Visible",compute="_compute_visible")
 
@@ -2018,6 +2023,141 @@ class CoarseAggregateMechanical(models.Model):
             else:
                 record.avg_void_loose_density_nabl = 'fail'
 
+
+    # Deleterious Material (Soft Fragments)
+
+    deleterious_soft_name = fields.Char("Name", default="Deleterious Material (Soft Fragments)")
+    deleterious_soft_visible = fields.Boolean("Deleterious Material (Soft Fragments)",compute="_compute_visible")
+
+    sample_weight = fields.Float(
+        string="Weight of Sample W1 (g)",
+        required=True
+    )
+
+    soft_fragment_weight = fields.Float(
+        string="Weight of Soft Fragments W2 (g)",
+        required=True
+    )
+
+    percentage = fields.Float(
+        string="Soft Fragment (%)",
+        compute="_compute_percentage",
+        store=True
+    )
+
+    @api.depends('sample_weight', 'soft_fragment_weight')
+    def _compute_percentage(self):
+        for rec in self:
+            if rec.sample_weight:
+                rec.percentage = (rec.soft_fragment_weight / rec.sample_weight) * 100
+            else:
+                rec.percentage = 0
+
+
+
+    # Deleterious Material - Soft Particles
+
+    deleterious_soft_par_name = fields.Char("Name", default="Deleterious Material - Soft Particles")
+    deleterious_soft_par_visible = fields.Boolean("Deleterious Material - Soft Particles",compute="_compute_visible")
+
+
+    par_sample_weight = fields.Float(
+        string="Total Sample Weight (W) g"
+    )
+
+    soft_particles_weight = fields.Float(
+        string="Weight of Soft Particles (Ws) g"
+    )
+
+    soft_particles_percent = fields.Float(
+        string="Soft Particles %",
+        compute="_compute_soft_particles",
+        store=True
+    )
+
+    @api.depends('par_sample_weight', 'soft_particles_weight')
+    def _compute_soft_particles(self):
+        for rec in self:
+            if rec.par_sample_weight:
+                rec.soft_particles_percent = (
+                    rec.soft_particles_weight / rec.par_sample_weight
+                ) * 100
+            else:
+                rec.soft_particles_percent = 0
+
+
+    # Stripping Value
+
+    stripping_value_name = fields.Char("Name", default="Stripping Value")
+    stripping_value_visible = fields.Boolean("Stripping Value",compute="_compute_visible")
+
+    total_aggregate = fields.Float(
+        string="Total aggregates observed"
+    )
+
+    stripped_aggregate = fields.Float(
+        string="Stripped aggregates"
+    )
+
+    stripping_value = fields.Float(string="Stripping Value (%)", compute="_compute_stripping")
+
+    @api.depends('total_aggregate', 'stripped_aggregate')
+    def _compute_stripping(self):
+     for rec in self:
+        if rec.total_aggregate:
+            rec.stripping_value = (rec.stripped_aggregate / rec.total_aggregate) * 100
+        else:
+            rec.stripping_value = 0
+
+    # Clay and Lumps
+
+    clay_lumps_name = fields.Char("Name", default="Clay and Lumps")
+    clay_lumps_visible = fields.Boolean("Clay and Lumps",compute="_compute_visible")
+
+
+    clay_sample_weight = fields.Float(string="Weight of Sample W1 (g)")
+    clay_lumps_weight = fields.Float(string="Weight of Clay Lumps W2 (g)")
+    clay_lumps_percents = fields.Float(
+        string="Clay Lumps %",
+        compute="_compute_clay_lumps_percents",
+        store=True
+    )
+
+    @api.depends('clay_sample_weight','clay_lumps_weight')
+    def _compute_clay_lumps_percents(self):
+        for rec in self:
+            if rec.clay_sample_weight > 0:
+                rec.clay_lumps_percents = (rec.clay_lumps_weight / rec.clay_sample_weight) * 100
+            else:
+                rec.clay_lumps_percents = 0
+
+
+    # Wet Impact Value
+
+    wet_impact_name = fields.Char("Name", default="Wet Impact Value")
+    wet_impact_visible = fields.Boolean("Wet Impact Value",compute="_compute_visible")
+
+
+    wt_oven_dry = fields.Float(string="Weight of oven dry aggregate sample (g)")
+    wt_fine_passing = fields.Float(string="Weight of fines passing 2.36 mm sieve after impact (g)")
+
+    wet_impact_value = fields.Float(
+        string="Wet Impact Value %",
+        compute="_compute_wet_impact_value",
+        store=True
+    )
+
+
+    @api.depends('wt_oven_dry', 'wt_fine_passing')
+    def _compute_wet_impact_value(self):
+        for rec in self:
+            if rec.wt_oven_dry > 0:
+                rec.wet_impact_value = (rec.wt_fine_passing / rec.wt_oven_dry) * 100
+            else:
+                rec.wet_impact_value = 0
+
+
+
     
     
     
@@ -2052,6 +2192,11 @@ class CoarseAggregateMechanical(models.Model):
             record.compacted_density_visible = False
             record.void_compacted_density_visible = False
             record.void_loose_density_visible = False
+            record.deleterious_soft_visible = False
+            record.deleterious_soft_par_visible = False
+            record.stripping_value_visible = False
+            record.clay_lumps_visible = False
+            record.wet_impact_visible = False
 
 
 
@@ -2109,6 +2254,20 @@ class CoarseAggregateMechanical(models.Model):
                 if sample.internal_id == '919587f2-5b45-4da1-bb73-10164b861833':
                     record.void_loose_density_visible = True
 
+                if sample.internal_id == '9cfd630e-a9b9-4c1d-a2d8-ee8d2b3925bb':
+                    record.deleterious_soft_visible = True
+
+                if sample.internal_id == 'c1939888-01d5-4f55-a2bf-40b8ad754a19':
+                    record.deleterious_soft_par_visible = True
+
+                if sample.internal_id == 'd8b6942a-6349-482a-be8b-fbc3433bedf1':
+                    record.stripping_value_visible = True
+
+                if sample.internal_id == 'd58fd5b9-5254-49b7-a2f9-d793cc047a2b':
+                    record.clay_lumps_visible = True
+
+                if sample.internal_id == 'a14bc765-e75a-45f8-b8bb-c7c1bf5644ab':
+                    record.wet_impact_visible = True
 
 
 
@@ -2315,6 +2474,26 @@ class CoarseAggregateMechanical(models.Model):
             # Angularity Number
             if result.parameter.internal_id == '5c163fc2-c88c-4233-921e-1eae56c3ba23':
                 result.calculated = True
+
+            # Deleterious Material (Soft Fragments)
+            if result.parameter.internal_id == '9cfd630e-a9b9-4c1d-a2d8-ee8d2b3925bb':
+                result.calculated = True
+
+            # Deleterious Material - Soft Particles
+            if result.parameter.internal_id == 'c1939888-01d5-4f55-a2bf-40b8ad754a19':
+                    result.calculated = True
+            
+            # Stripping Value
+            if result.parameter.internal_id == 'd8b6942a-6349-482a-be8b-fbc3433bedf1':
+                    result.calculated = True
+
+            # Clay and Lumps
+            if result.parameter.internal_id == 'd58fd5b9-5254-49b7-a2f9-d793cc047a2b':
+                    result.calculated = True
+
+            # Wet Impact Value
+            if result.parameter.internal_id == 'a14bc765-e75a-45f8-b8bb-c7c1bf5644ab':
+                    result.calculated = True
                
 
 
@@ -2557,58 +2736,7 @@ class SieveAnalysisLine(models.Model):
         for record in self:
             # import wdb; wdb.set_trace()
             sorted_lines = sorted(record.parent_id.sieve_analysis_child_lines, key=lambda r: r.id)
-            # index = sorted_lines.index(record)
-            # print("Working")
-
-
-
-       
-
-
-# class LooseBulkDensityLine(models.Model):
-#     _name = "coarse.aggregate.loose.bulk.density.line"
-#     parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
-   
-#     sr_no = fields.Integer(string="Sr.No.", readonly=True, copy=False, default=1)
-    # weight_empty_bucket = fields.Float(string="Weight of Empty Bucket in kg")
-    # volume_of_bucket = fields.Float(string="Volume of Bucket in cubic meter")
-    # sample_plus_bucket = fields.Float(string="[Sample Weight + Bucket  Weight] in kg")
-    # sample_weight = fields.Float(string="Sample Weight in kg",compute="_compute_sample_weight")
-    # loose_bulk_density = fields.Float(string="Loose Bulk Density in kg per cubic meter",compute="_compute_loose_bulk_density")
-
-
-    # @api.depends('sample_plus_bucket', 'weight_empty_bucket')
-    # def _compute_sample_weight(self):
-    #     for record in self:
-    #         record.sample_weight = record.sample_plus_bucket - record.weight_empty_bucket
-
-    
-
-    # @api.depends('sample_weight', 'volume_of_bucket')
-    # def _compute_loose_bulk_density(self):
-    #     for record in self:
-    #         if record.volume_of_bucket:
-    #             record.loose_bulk_density = record.sample_weight / record.volume_of_bucket
-    #         else:
-    #             record.loose_bulk_density = 0.0
-
-
-    # @api.model
-    # def create(self, vals):
-    #     # Set the serial_no based on the existing records for the same parent
-    #     if vals.get('parent_id'):
-    #         existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-    #         if existing_records:
-    #             max_serial_no = max(existing_records.mapped('sr_no'))
-    #             vals['sr_no'] = max_serial_no + 1
-
-    #     return super(LooseBulkDensityLine, self).create(vals)
-
-    # def _reorder_serial_numbers(self):
-    #     # Reorder the serial numbers based on the positions of the records in child_lines
-    #     records = self.sorted('id')
-    #     for index, record in enumerate(records):
-    #         record.sr_no = index + 1
+           
 
 class RoddedBulkDensityLine(models.Model):
     _name = "coarse.aggregate.rodded.bulk.density.line"
@@ -2640,83 +2768,14 @@ class RoddedBulkDensityLine(models.Model):
 
 
 
-    # @api.model
-    # def create(self, vals):
-    #     # Set the serial_no based on the existing records for the same parent
-    #     if vals.get('parent_id'):
-    #         existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-    #         if existing_records:
-    #             max_serial_no = max(existing_records.mapped('sr_no'))
-    #             vals['sr_no'] = max_serial_no + 1
-
-    #     return super(RoddedBulkDensityLine, self).create(vals)
-
+   
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.sr_no = index + 1
 
-# class ElongationIndexLine(models.Model):
-#     _name = "mechanical.elongation.index.line"
-#     parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
-   
-#     sr_no = fields.Integer(string="Sr No", readonly=True, copy=False, default=1)
-#     sieve_size = fields.Char(string="I.S Sieve Size")
-#     wt_retained = fields.Integer(string="Wt Retained (in gms)")
-#     elongated_retain = fields.Float(string="Elongated Retained (in gms)")
-#     # flaky_passing = fields.Float(string="Flaky Passing (in gms)")
-    
 
-    
-
-#     @api.model
-#     def create(self, vals):
-#         # Set the serial_no based on the existing records for the same parent
-#         if vals.get('parent_id'):
-#             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-#             if existing_records:
-#                 max_serial_no = max(existing_records.mapped('sr_no'))
-#                 vals['sr_no'] = max_serial_no + 1
-
-#         return super(ElongationIndexLine, self).create(vals)
-
-#     def _reorder_serial_numbers(self):
-#         # Reorder the serial numbers based on the positions of the records in child_lines
-#         records = self.sorted('id')
-#         for index, record in enumerate(records):
-#             record.sr_no = index + 1
-
-# class FlakinessIndexLine(models.Model):
-#     _name = "mechanical.flakiness.index.line"
-#     parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
-   
-#     sr_no = fields.Integer(string="Sr No", readonly=True, copy=False, default=1)
-#     sieve_size = fields.Char(string="I.S Sieve Size")
-#     wt_retained = fields.Integer(string="Wt Retained (in gms)")
-#     # elongated_retain = fields.Float(string="Elongated Retained (in gms)")
-#     flaky_passing = fields.Float(string="Flaky Passing (in gms)")
-    
-
-    
-
-   
-#     @api.model
-#     def create(self, vals):
-#         # Set the serial_no based on the existing records for the same parent
-#         if vals.get('parent_id'):
-#             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-#             if existing_records:
-#                 max_serial_no = max(existing_records.mapped('sr_no'))
-#                 vals['sr_no'] = max_serial_no + 1
-
-#         return super(FlakinessIndexLine, self).create(vals)
-
-#     def _reorder_serial_numbers(self):
-#         # Reorder the serial numbers based on the positions of the records in child_lines
-#         records = self.sorted('id')
-#         for index, record in enumerate(records):
-#             record.sr_no = index + 1
 
 class ElongationFlacnessLine(models.Model):
     _name = "mechanical.elongation.flakiness.line"
@@ -2898,100 +2957,4 @@ class CrushingValueLine(models.Model):
             record.sample_no = index + 1
 
 
-
-# class SpecificGravityAndWaterAbsorptionLine(models.Model):
-#     _name = "mechanical.specific.gravity.and.water.absorption.line"
-#     parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
-   
-#     sr_no = fields.Integer(string="Test", readonly=True, copy=False, default=1)
-#     wt_surface_dry = fields.Integer(string="Weight of saturated surface dry (SSD) sample in air in gms")
-#     wt_sample_inwater = fields.Integer(string="Weight of saturated sample in water in gms")
-#     oven_dried_wt = fields.Integer(string="Oven dried weight of sample in gms")
-#     specific_gravity = fields.Float(string="Specific Gravity",compute="_compute_specific_gravity")
-#     water_absorption = fields.Float(string="Water absorption  %",compute="_compute_water_absorption")
-
-
-#     @api.depends('wt_surface_dry', 'wt_sample_inwater', 'oven_dried_wt')
-#     def _compute_specific_gravity(self):
-#         for line in self:
-#             if line.wt_surface_dry - line.wt_sample_inwater != 0:
-#                 line.specific_gravity = line.oven_dried_wt / (line.wt_surface_dry - line.wt_sample_inwater)
-#             else:
-#                 line.specific_gravity = 0.0
-
-
-
-#     @api.depends('wt_surface_dry', 'oven_dried_wt')
-#     def _compute_water_absorption(self):
-#         for line in self:
-#             if line.oven_dried_wt != 0:
-#                 line.water_absorption = ((line.wt_surface_dry - line.oven_dried_wt) / line.oven_dried_wt) * 100
-#             else:
-#                 line.water_absorption = 0.0
-
-
-
-    # @api.model
-    # def create(self, vals):
-    #     # Set the serial_no based on the existing records for the same parent
-    #     if vals.get('parent_id'):
-    #         existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-    #         if existing_records:
-    #             max_serial_no = max(existing_records.mapped('sr_no'))
-    #             vals['sr_no'] = max_serial_no + 1
-
-    #     return super(SpecificGravityAndWaterAbsorptionLine, self).create(vals)
-
-    # def _reorder_serial_numbers(self):
-    #     # Reorder the serial numbers based on the positions of the records in child_lines
-    #     records = self.sorted('id')
-    #     for index, record in enumerate(records):
-    #         record.sr_no = index + 1
-
-
-
-
-
-# class AbrasionValueCoarseAggregateLine(models.Model):
-#     _name = "mechanical.abrasion.value.coarse.aggregate.line"
-#     parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
-   
-#     sr_no = fields.Integer(string="Test", readonly=True, copy=False, default=1)
-#     total_weight_sample = fields.Integer(string="Total weight of Sample in gms")
-#     weight_passing_sample = fields.Integer(string="Weight of Passing sample in 1.70 mm IS sieve in gms")
-#     weight_retain_sample = fields.Integer(string="Weight of Retain sample in 1.70 mm IS sieve in gms",compute="_compute_weight_retain_sample")
-#     abrasion_value_percentage = fields.Float(string="Abrasion Value (in %)",compute="_compute_sample_weight")
-
-
-#     @api.depends('total_weight_sample', 'weight_passing_sample')
-#     def _compute_weight_retain_sample(self):
-#         for line in self:
-#             line.weight_retain_sample = line.total_weight_sample - line.weight_passing_sample
-
-
-#     @api.depends('total_weight_sample', 'weight_passing_sample')
-#     def _compute_sample_weight(self):
-#         for line in self:
-#             if line.total_weight_sample != 0:
-#                 line.abrasion_value_percentage = (line.weight_passing_sample / line.total_weight_sample) * 100
-#             else:
-#                 line.abrasion_value_percentage = 0.0
-
-
-    # @api.model
-    # def create(self, vals):
-    #     # Set the serial_no based on the existing records for the same parent
-    #     if vals.get('parent_id'):
-    #         existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-    #         if existing_records:
-    #             max_serial_no = max(existing_records.mapped('sr_no'))
-    #             vals['sr_no'] = max_serial_no + 1
-
-    #     return super(AbrasionValueCoarseAggregateLine, self).create(vals)
-
-    # def _reorder_serial_numbers(self):
-    #     # Reorder the serial numbers based on the positions of the records in child_lines
-    #     records = self.sorted('id')
-    #     for index, record in enumerate(records):
-    #         record.sr_no = index + 1
 
