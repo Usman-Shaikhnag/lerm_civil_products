@@ -119,7 +119,7 @@ class GsbMechanical(models.Model):
                 if sample.internal_id == 'rt14752hyt-b27e-48c6-81b8-900521446761':
                     record.cbr_visible = True
 
-
+#  ff
     def open_eln_page(self):
         # parameter_based_assignment
         current_user = self.env.user
