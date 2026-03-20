@@ -29,7 +29,61 @@ class CoverblockMechanical(models.Model):
 
 
 
- # Crushing Value
+
+
+       # Water Absorption
+    water_absorption_name = fields.Char("Name", default="Water Absorption")
+
+    water_absorption_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
+    wt_surface_dry = fields.Float(string="Wt of Saturated surface dry Aggregate in Air (B)")
+    wt_sample_inwater = fields.Float(string="Wt of Saturated Aggregate in Water (A)")
+    oven_dried_wt = fields.Float(string="Wt of Oven Dried Aggregate in Air (C)")
+
+     # Trial 2
+    wt_surface_dry_2 = fields.Float(string="Wt of Saturated surface dry Aggregate in Air (B) [Trial 2]")
+    wt_sample_inwater_2 = fields.Float(string="Wt of Saturated Aggregate in Water (A) [Trial 2]")
+    oven_dried_wt_2 = fields.Float(string="Wt of Oven Dried Aggregate in Air (C) [Trial 2]")
+
+      # Average Results
+    result_wt_surface_dry = fields.Float(string="Average SSD Weight (B)", compute="_compute_result")
+    result_wt_sample_inwater = fields.Float(string="Average Water Weight (A)", compute="_compute_result")
+    result_oven_dried_wt = fields.Float(string="Average Oven Dry Weight (C)", compute="_compute_result")
+
+    water_absorption = fields.Float(string="Water Absorption (%)", compute="_compute_water_absorption")
+
+
+       # Compute Average
+    @api.depends(
+    'wt_surface_dry', 'wt_sample_inwater', 'oven_dried_wt',
+    'wt_surface_dry_2', 'wt_sample_inwater_2', 'oven_dried_wt_2'
+     )
+    def _compute_result(self):
+     for line in self:
+        line.result_wt_surface_dry = (line.wt_surface_dry + line.wt_surface_dry_2) / 2
+        line.result_wt_sample_inwater = (line.wt_sample_inwater + line.wt_sample_inwater_2) / 2
+        line.result_oven_dried_wt = (line.oven_dried_wt + line.oven_dried_wt_2) / 2
+
+
+      # Water Absorption Formula
+
+    @api.depends(
+    'result_wt_surface_dry',
+    'result_oven_dried_wt'
+      )
+    def _compute_water_absorption(self):
+      for line in self:
+        if line.result_oven_dried_wt:
+            wa = ((line.result_wt_surface_dry - line.result_oven_dried_wt) / line.result_oven_dried_wt) * 100
+            line.water_absorption = round(wa, 2)
+        else:
+            line.water_absorption = 0.0
+
+
+
+
+
+
+     # Crushing Value
 
     crushing_name = fields.Char("Name",default="Crushing Value")
     crushing_visible = fields.Boolean("Crushing Visible",compute="_compute_visible")
@@ -100,6 +154,7 @@ class CoverblockMechanical(models.Model):
 
     
 
+
  
     # COMPUTE METHODS
    
@@ -108,6 +163,9 @@ class CoverblockMechanical(models.Model):
             rec.avg_compacted_unit = rec._get_unit(
                 "357f579d-a310-4015-bc11-28a85c53ac83"
             )
+
+
+    
 
     @api.depends("eln_ref")
     def _compute_size_id(self):
@@ -140,7 +198,7 @@ class CoverblockMechanical(models.Model):
     # VISIBILITY
    
     crushing_visible = fields.Boolean(compute="_compute_visible")
-    abrasion_visible = fields.Boolean(compute="_compute_visible")
+    water_absorption_visible = fields.Boolean(compute="_compute_visible")
 
     @api.depends("sample_parameters")
     def _compute_visible(self):
@@ -148,15 +206,15 @@ class CoverblockMechanical(models.Model):
         for rec in self:
 
             rec.crushing_visible = False
-            rec.abrasion_visible = False
+            rec.water_absorption_visible = False
 
             for param in rec.sample_parameters:
 
                 if param.internal_id == "3dea9034-e36c-4bfb-9e1a-f9ed5101d49b":
                     rec.crushing_visible = True
 
-                if param.internal_id == "37f2161e-5cc0-413f-b76c-10478c65baf9":
-                    rec.abrasion_visible = True
+                if param.internal_id == "a43a33a4-834e-40d4-afb3-80a4e61ece05":
+                    rec.water_absorption_visible = True
 
 
 
@@ -189,13 +247,8 @@ class CoverblockMechanical(models.Model):
 
         return super(CoverblockMechanical, self).read(fields=fields, load=load)
 
-   
-    # @api.depends('eln_ref')
-    # def _compute_sample_parameters(self):
-    #     for record in self:
-    #         records = record.eln_ref.parameters_result.parameter.ids
-    #         record.sample_parameters = records
-    #         print("Records",records)
+
+
 
     @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
@@ -233,9 +286,13 @@ class CoverblockMechanical(models.Model):
             self.grade = self.eln_ref.grade_id.id
 
 
+
+           
+
+
    
     # CRUSHING VALUE
-   
+
 
 
 class CrushingValueLine(models.Model):
@@ -286,121 +343,6 @@ class CrushingValueLine(models.Model):
 
 
    
-    # ABRASION VALUE
+    
    
-    total_weight_sample_abrasion = fields.Float( "Total weight of Sample" )
-    weight_passing_sample_abrasion = fields.Float( "Weight Passing Sample")
-    weight_retain_sample_abrasion = fields.Float(  compute="_compute_weight_retain_sample_abrasion")
-    abrasion_value_percentage = fields.Float( compute="_compute_abrasion" )
-
-    @api.depends(
-        "total_weight_sample_abrasion",
-        "weight_passing_sample_abrasion"
-    )
-    def _compute_weight_retain_sample_abrasion(self):
-
-        for rec in self:
-
-            rec.weight_retain_sample_abrasion = (
-                rec.total_weight_sample_abrasion
-                - rec.weight_passing_sample_abrasion
-            )
-
-    @api.depends(
-        "total_weight_sample_abrasion",
-        "weight_passing_sample_abrasion"
-    )
-    def _compute_abrasion(self):
-
-        for rec in self:
-
-            if rec.total_weight_sample_abrasion:
-
-                rec.abrasion_value_percentage = (
-                    rec.weight_passing_sample_abrasion
-                    / rec.total_weight_sample_abrasion
-                ) * 100
-
-            else:
-                rec.abrasion_value_percentage = 0
-
-    # -------------------------------------------------------
-    # CREATE FIX
-    # -------------------------------------------------------
-
-    @api.model
-    def create(self, vals):
-
-        record = super().create(vals)
-
-        if record.eln_ref:
-            record.eln_ref.write({
-                "model_id": record.id
-            })
-
-        return record
-
-
-
-# CHILD MODEL
-
-
-
-# class CrushingValueLine(models.Model):
-
-#     _name = "mechanical.crushing.value.line"
-
-#     parent_id = fields.Many2one(
-#         "mechanical.cover.block",
-#         string="Parent"
-#     )
-
-#     sample_no = fields.Integer(default=1)
-#     total_wt_aggregate = fields.Float("Wt Aggregate (W1)")
-#     wt_of_aggregate_retained = fields.Float( "Wt Retained (W2)" )
-#     wt_of_aggregate_passing = fields.Float( compute="_compute_passing"  )
-#     crushing_value = fields.Float( compute="_compute_crushing" )
-
-#     @api.depends(
-#         "total_wt_aggregate",
-#         "wt_of_aggregate_retained"
-#     )
-#     def _compute_passing(self):
-
-#         for rec in self:
-
-#             rec.wt_of_aggregate_passing = (
-#                 rec.total_wt_aggregate
-#                 - rec.wt_of_aggregate_retained
-#             )
-
-#     @api.depends(
-#         "wt_of_aggregate_passing",
-#         "total_wt_aggregate"
-#     )
-#     def _compute_crushing(self):
-
-#         for rec in self:
-
-#             if rec.total_wt_aggregate:
-
-#                 rec.crushing_value = (
-#                     rec.wt_of_aggregate_passing
-#                     / rec.total_wt_aggregate
-#                 ) * 100
-
-#             else:
-#                 rec.crushing_value = 0
-
-#     @api.model
-#     def create(self, vals):
-
-#         if vals.get("parent_id"):
-
-#             records = self.search([
-#                 ("parent_id", "=", vals["parent_id"])
-#             ])
-
-#             vals["sample_no"] = len(records) + 1
-
-#         return super().create(vals)
+   

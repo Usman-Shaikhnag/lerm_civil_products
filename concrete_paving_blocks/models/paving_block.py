@@ -9,6 +9,7 @@ _logger = logging.getLogger(__name__)
 
 
 
+
 class PavingBlock(models.Model):
     _name = "mechanical.concrete.paving.block"
     _inherit = "lerm.eln"
