@@ -220,7 +220,7 @@ class PavingBlock(models.Model):
     commpressive_name = fields.Char("Name",default="Compressive Strength")
     commpressive_visible = fields.Boolean("Plan Area Visible",compute="_compute_visible")
 
-    commpressive_child_lines = fields.One2many('paver.compressive.line','parent_id',string="Compressive Line")
+    commpressive_child_lines = fields.One2many('paving.compressive.line','parent_id',string="Compressive Line")
 
     avg_commpressive = fields.Float(
         string="Avg. Compressive Strength (N/mm2)",compute="_compute_avg_commpressive")
@@ -523,7 +523,7 @@ class WaterLine(models.Model):
 
 
 class CompressiveLine(models.Model):
-    _name = "paver.compressive.line"
+    _name = "paving.compressive.line"
     parent_id = fields.Many2one('mechanical.concrete.paving.block',string="Parent Id")
 
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
