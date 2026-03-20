@@ -41,7 +41,7 @@ class LermSampleForm(models.Model):
         ('non_satisfactory', 'Non-Satisfactory'),
     ], string='Sample Condition', default='satisfactory')
     technicians = fields.Many2one("res.users",string="Technicians",tracking=5)
-    location = fields.Char(string="Location")
+    location = fields.Integer(string="Location Code")
     sample_reject_reason = fields.Char(string="Sample Reject Reason")
     has_witness = fields.Boolean(string="Witness")
     witness = fields.Char(string="Witness Name")
@@ -102,7 +102,7 @@ class LermSampleForm(models.Model):
 
     print_button_visible = fields.Boolean("Print Nabl visible",compute="_compute_print_nabl_visible")
    
-    lab_location = fields.Many2one('lerm.lab.master',string="Lab Location")
+    lab_location = fields.Many2one('lerm.lab.master',string="Lab Name")
     location_name = fields.Many2one('lerm.lab.location.master',string="Location Name")
 
     file_upload = fields.Many2many(
