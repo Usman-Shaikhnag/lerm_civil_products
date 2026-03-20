@@ -474,10 +474,10 @@ class MechanicalConcreteCube(models.Model):
                 
     def open_eln_page(self):
         # import wdb; wdb.set_trace()
-        for record in self:
-            # Sample ला target कर
-            if record.sample_id:
-                record.sample_id.state = '7-calculated'
+        # for record in self:
+        #     # Sample ला target कर
+        #     if record.sample_id:
+        #         record.sample_id.state = '7-calculated'
                 
         for result in self.eln_ref.parameters_result:
             if result.parameter.internal_id == '23545tur-17c1-48ac-8462-9671e4d3d09f':
