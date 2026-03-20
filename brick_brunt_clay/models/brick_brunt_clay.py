@@ -21,6 +21,32 @@ class MechanicalBricksBurntClay(models.Model):
         compute="_compute_units", store=False
     )
 
+    lab_id = fields.Many2one(
+    'lerm.lab.master',
+    string="Lab",
+    default=lambda self: self.env['lerm.lab.master'].search([], limit=1)
+)
+
+    def to_roman(self, num):
+      val = [
+        1000, 900, 500, 400,
+        100, 90, 50, 40,
+        10, 9, 5, 4, 1
+    ]
+      syb = [
+        "m", "cm", "d", "cd",
+        "c", "xc", "l", "xl",
+        "x", "ix", "v", "iv", "i"
+    ]
+      roman = ''
+      i = 0
+      while num > 0:
+        for _ in range(num // val[i]):
+            roman += syb[i]
+            num -= val[i]
+        i += 1
+      return roman
+
     def _compute_units(self):
         for rec in self:
             comp_param = self.env['lerm.parameter.master'].search([
