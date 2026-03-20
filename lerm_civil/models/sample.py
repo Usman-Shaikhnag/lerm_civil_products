@@ -139,7 +139,7 @@ class LermSampleForm(models.Model):
         ('5-pending_approval','Pending Approval'),
         ('4-in_report', 'In-Report'),
         ('6-cancelled', 'Cancelled'),
-    ], string='State',default='1-allotment_pending')
+    ], string='State',default='1-allotment_pending',tracking=True)
     conformity = fields.Boolean(string="Conformity")
     parameters_result = fields.One2many('sample.parameters.result','sample_id',string="Parameters Result")
     volume = fields.Char(string="Volume")

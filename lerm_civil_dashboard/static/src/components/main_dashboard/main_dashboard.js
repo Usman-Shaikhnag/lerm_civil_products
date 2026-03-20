@@ -168,7 +168,37 @@ class MainDashboard extends Component {
       (lab) => lab.company_id === companyId,
     );
   }
-  // --- END NEW HANDLER ---
+  get kpiData() {
+    const styleMap = {
+      "1-allotment_pending": { icon: "fa-hourglass-o", color: "#fd7e14", label: "Allotment Pending" },
+      "2-alloted": { icon: "fa-play-circle", color: "#0066ff", label: "Alloted" },
+      "3-pending_verification": { icon: "fa-hourglass-half", color: "#d97706", label: "Pending Verification" },
+      "5-pending_approval": { icon: "fa-clock-o", color: "#dc2626", label: "Pending Approval" },
+      "4-in_report": { icon: "fa-file-text-o", color: "#16a34a", label: "In Report" },
+      "cancelled": { icon: "fa-times-circle", color: "#9ca3af", label: "Cancelled" },
+    };
+
+    const data = [{
+      state: 'total',
+      state_label: 'Total Samples',
+      count: this.dashboard_state.projects_count,
+      icon: "fa-bar-chart",
+      color: "#007bff",
+      isTotal: true
+    }];
+
+    this.dashboard_state.state_data.forEach(item => {
+      const style = styleMap[item.state] || { icon: "fa-question-circle", color: "#6c757d", label: item.state_label };
+      data.push({
+        ...item,
+        icon: style.icon,
+        color: style.color,
+        state_label: style.label || item.state_label
+      });
+    });
+
+    return data;
+  }
 
   async _onDateFilter(ev) {
     const days = parseInt(ev.target.dataset.days);

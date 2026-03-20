@@ -104,7 +104,7 @@ class PlateLoadTest(models.Model):
     pdf_report = fields.Binary("PDF Report")
     pdf_filename = fields.Char(default="Plate_Load_Test_Report.pdf")
     contents_ids = fields.One2many(
-        "lerm.plate.load.test.contents",
+        "lerm.plate.load.test.contents1",
         "plate_load_test_id",
         string="Table of Contents"
     )
@@ -287,7 +287,7 @@ class PlateLoadTestContents(models.Model):
     _description = "Plate Load Test - Table of Contents"
 
     plate_load_test_id = fields.Many2one(
-        "lerm.plate.load.test",
+        "lerm.plate.load.test1",
         string="Plate Load Test",
         ondelete="cascade"
     )
