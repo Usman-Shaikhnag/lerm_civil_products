@@ -15,6 +15,7 @@ class ConcreteCore(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
+    sample_id = fields.Many2one('lerm.srf.sample',string='Sample')
 
     def prefill_data(self):
         # import wdb; wdb.set_trace()
@@ -395,6 +396,10 @@ class ConcreteCore(models.Model):
 
     def open_eln_page(self):
         # import wdb; wdb.set_trace()
+        # for record in self:
+        #     # Sample ला target कर
+        #     if record.sample_id:
+        #         record.sample_id.state = '7-calculated'
 
         return {
                 'view_mode': 'form',

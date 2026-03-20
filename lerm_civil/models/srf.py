@@ -971,7 +971,7 @@ class CreateSampleWizard(models.TransientModel):
         ('satisfactory', 'Satisfactory'),
         ('non_satisfactory', 'Non-Satisfactory'),
     ], string='Sample Condition', default='satisfactory')
-    location = fields.Char(string="Location")
+    location = fields.Char(string="Location Code")
     sample_reject_reason = fields.Char(string="Sample Reject Reason")
     has_witness = fields.Boolean(string="Witness")
     witness = fields.Char(string="Witness name")
@@ -1011,7 +1011,7 @@ class CreateSampleWizard(models.TransientModel):
     is_update = fields.Boolean('Is Update')
 
     department_id = fields.Char(string='Department')
-    lab_location = fields.Many2one('lerm.lab.master',string="Lab Location",default=lambda self: self._get_oldest_lab())
+    lab_location = fields.Many2one('lerm.lab.master',string="Lab Name",default=lambda self: self._get_oldest_lab())
     location_name = fields.Many2one('lerm.lab.location.master',string="Location Name")
     customer = fields.Many2one('res.partner', string="Customer")
 
@@ -1036,6 +1036,22 @@ class CreateSampleWizard(models.TransientModel):
         for record in self:
             if record.lab_location and len(record.lab_location.lab_location_line) > 0:
                 record.location_name = record.lab_location.lab_location_line[0]
+
+    # @api.onchange('lab_location')
+    # def _default_location(self):
+    #     for record in self:
+    #         if record.lab_location and len(record.lab_location.lab_location_line) > 0:
+    #             record.location = record.lab_location.lab_location_line[0]
+
+    @api.onchange('lab_location')
+    def _default_location(self):
+        for record in self:
+            location_code = False
+            if record.lab_location and record.lab_location.lab_location_line:
+                location_line = record.lab_location.lab_location_line[0]
+                location_code = location_line.location_code
+
+            record.location = location_code
 
 
     @api.depends('material_id')

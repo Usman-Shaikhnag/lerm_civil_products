@@ -1,55 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates>
     <t t-name="lerm_civil_dashboard.MainDashboard" owl="1">
-        <div class="scrollable-dashboard container-fluid py-4 bg-light">
-            
-            <!-- KPI Section -->
-            <div class="row g-3 mb-5 justify-content-center">
-                <div class="col-12 text-center">
-                    <div class="d-flex flex-wrap justify-content-center gap-4">
-                        <!-- Total Samples -->
-                        <div class="kpi-card">
-    <div class="kpi-icon bg-primary">
-        <i class="fa fa-flask"/>
-    </div>
-    <div class="kpi-content">
-        <div class="kpi-number" t-esc="this.dashboard_state.projects_count"/>
-        <div class="kpi-title">Total Samples</div>
-    </div>
-</div>
+        <div class="lerm-dashboard scrollable-dashboard container-fluid py-4">
 
-                        <!-- Dynamic States -->
-                        <t t-foreach="this.dashboard_state.state_data" t-as="item" t-key="item.state">
-                            <div class="kpi-card clickable"
-     t-on-click="() => this.onKpiClick(item.state)">
-                                <div class="kpi-icon bg-success">
-    <i class="fa fa-tasks"/>
-</div>
-
-<div class="kpi-content">
-    <div class="kpi-number" t-esc="item.count"/>
-    <div class="kpi-title" t-esc="item.state_label"/>
-</div>
-                            </div>
-                        </t>
+            <!-- KPI CARDS -->
+            <div class="row g-3 mb-4 px-1">
+                <t t-foreach="this.kpiData" t-as="kpi" t-key="kpi.state">
+                    <div class="col-6 col-md-4 col-lg">
+                        <div class="lerm-kpi-card"
+                             t-on-click="() => kpi.isTotal ? null : this.onKpiClick(kpi.state)">
+                            <div class="kpi-accent-bar" t-att-style="'background: ' + kpi.color"/>
+                            <i t-attf-class="fa #{kpi.icon} kpi-icon" t-att-style="'color: ' + kpi.color"/>
+                            <div class="kpi-count" t-att-style="'color: ' + kpi.color" t-esc="kpi.count"/>
+                            <div class="kpi-label"><t t-esc="kpi.state_label"/></div>
+                        </div>
                     </div>
-                </div>
+                </t>
             </div>
 
-            <!-- Match Reference Filter UI -->
-            <div class="card shadow-sm border-0 mb-4 rounded-3 bg-white">
-                <div class="card-body p-4">
-                    <!-- Title -->
-                    <div class="d-flex align-items-center mb-4">
-                        <i class="fa fa-filter me-2" style="color: #5d3a9b; font-size: 1.1rem;"/>
-                        <h6 class="mb-0 fw-bold" style="color: #5d3a9b; letter-spacing: 0.8px; font-size: 0.9rem;">DASHBOARD FILTERS</h6>
-                    </div>
+            <!-- FILTER PANEL -->
+            <div class="lerm-filter-panel mb-4">
+                <div class="panel-heading">
+                    <i class="fa fa-sliders"/>
+                    <h6>Dashboard Filters</h6>
+                </div>
 
+                <div class="lerm-date-section">
                     <!-- Row 1: Company | Lab | Discipline -->
-                    <div class="row g-4 mb-4 align-items-end">
+                    <div class="row g-3 mb-4 align-items-end">
                         <div class="col-lg-3 col-md-6">
-                            <label class="fw-bold mb-2 d-block" style="color: #333; font-size: 0.85rem;">COMPANY</label>
-                            <select class="form-select border-start-0 border-end-0 border-top-0 rounded-0 bg-transparent px-0" style="font-size: 0.9rem; border-bottom: 1px solid #ced4da;" t-on-change="_onCompanyFilter">
+                            <label class="lerm-field-label">Company</label>
+                            <select class="lerm-select" t-on-change="_onCompanyFilter">
                                 <option value="ALL">All Companies</option>
                                 <t t-foreach="this.dashboard_state.companies" t-as="company" t-key="company.id">
                                     <option t-att-value="company.id" t-att-selected="this.filter_state.activeCompany == company.id">
@@ -59,8 +40,8 @@
                             </select>
                         </div>
                         <div class="col-lg-4 col-md-6">
-                            <label class="fw-bold mb-2 d-block" style="color: #333; font-size: 0.85rem;">LAB</label>
-                            <select class="form-select border-start-0 border-end-0 border-top-0 rounded-0 bg-transparent px-0" style="font-size: 0.9rem; border-bottom: 1px solid #ced4da;" t-on-change="_onLabFilter">
+                            <label class="lerm-field-label">Lab</label>
+                            <select class="lerm-select" t-on-change="_onLabFilter">
                                 <option value="ALL">All Labs</option>
                                 <t t-foreach="this.filteredLabs" t-as="lab" t-key="lab.id">
                                     <option t-att-value="lab.id" t-att-selected="this.filter_state.activeLab == lab.id">
@@ -70,321 +51,295 @@
                             </select>
                         </div>
                         <div class="col-lg-5">
-                            <label class="fw-bold mb-2 d-block" style="color: #333; font-size: 0.85rem;">DISCIPLINE</label>
-                            <div class="btn-group w-100 shadow-sm" style="border: 1px solid #5d3a9b; border-radius: 4px; overflow: hidden;">
-                                <button class="btn btn-sm border-0 py-2" t-on-click="_onDisciplineFilter" data-discipline="ALL"
-                                        t-att-style="this.filter_state.activeDiscipline === 'ALL' ? 'background: #007bff; color: white;' : 'background: white; color: #5d3a9b;'">ALL</button>
-                                <button class="btn btn-sm border-0 py-2" t-on-click="_onDisciplineFilter" data-discipline="MECHANICAL"
-                                        t-att-style="this.filter_state.activeDiscipline === 'MECHANICAL' ? 'background: #007bff; color: white;' : 'background: white; color: #5d3a9b;'">MECH</button>
-                                <button class="btn btn-sm border-0 py-2 border-start" t-on-click="_onDisciplineFilter" data-discipline="NDT"
-                                        t-att-style="this.filter_state.activeDiscipline === 'NDT' ? 'background: #007bff; color: white;' : 'background: white; color: #5d3a9b;'">NDT</button>
-                                <button class="btn btn-sm border-0 py-2 border-start" t-on-click="_onDisciplineFilter" data-discipline="CHEMICAL"
-                                        t-att-style="this.filter_state.activeDiscipline === 'CHEMICAL' ? 'background: #007bff; color: white;' : 'background: white; color: #5d3a9b;'">CHEM</button>
+                            <label class="lerm-field-label">Discipline</label>
+                            <div class="lerm-btn-group">
+                                <button class="lerm-toggle-btn" t-on-click="_onDisciplineFilter" data-discipline="ALL"
+                                        t-att-style="this.filter_state.activeDiscipline === 'ALL' ? 'background:#0066ff;color:#fff;' : ''">ALL</button>
+                                <button class="lerm-toggle-btn" t-on-click="_onDisciplineFilter" data-discipline="MECHANICAL"
+                                        t-att-style="this.filter_state.activeDiscipline === 'MECHANICAL' ? 'background:#0066ff;color:#fff;' : ''">Mechanical</button>
+                                <button class="lerm-toggle-btn" t-on-click="_onDisciplineFilter" data-discipline="NDT"
+                                        t-att-style="this.filter_state.activeDiscipline === 'NDT' ? 'background:#0066ff;color:#fff;' : ''">NDT</button>
+                                <button class="lerm-toggle-btn" t-on-click="_onDisciplineFilter" data-discipline="CHEMICAL"
+                                        t-att-style="this.filter_state.activeDiscipline === 'CHEMICAL' ? 'background:#0066ff;color:#fff;' : ''">Chemical</button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Row 2: Date Range Presets -->
-                    <div class="mb-4">
-                        <div class="d-flex align-items-center mb-2">
-                            <i class="fa fa-calendar me-2" style="color: #5d3a9b;"/>
-                            <label class="small fw-bold mb-0 text-uppercase" style="color: #5d3a9b; letter-spacing: 0.5px;">DATE RANGE</label>
+                    <!-- Row 2: Date Range -->
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="fa fa-calendar" style="color:#5d3a9b;font-size:0.85rem;"/>
+                        <span class="date-label">Date Range</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-3 flex-wrap">
+                        <div class="lerm-btn-group" style="width:auto; flex-shrink:0;">
+                            <button class="lerm-toggle-btn" style="padding:0.4rem 1rem;" t-on-click="_onDateFilter" data-days="30"
+                                    t-att-style="filter_state.activeDays == 30 ? 'background:#0066ff;color:#fff;' : ''">30 days</button>
+                            <button class="lerm-toggle-btn" style="padding:0.4rem 1rem;" t-on-click="_onDateFilter" data-days="180"
+                                    t-att-style="filter_state.activeDays == 180 ? 'background:#0066ff;color:#fff;' : ''">180 days</button>
+                            <button class="lerm-toggle-btn" style="padding:0.4rem 1rem;" t-on-click="_onDateFilter" data-days="365"
+                                    t-att-style="filter_state.activeDays == 365 ? 'background:#0066ff;color:#fff;' : ''">365 days</button>
                         </div>
-                        <div class="btn-group shadow-sm" style="border: 1px solid #5d3a9b; border-radius: 4px; overflow: hidden; width: fit-content; min-width: 60%;">
-                            <button t-attf-class="btn btn-sm border-0 py-2 px-5 #{filter_state.activeDays == 30 ? 'active' : ''}"
-                                    t-att-style="filter_state.activeDays == 30 ? 'background: #007bff; color: white;' : 'background: white; color: #5d3a9b;'"
-                                    t-on-click="_onDateFilter" data-days="30">30 Days</button>
-                            <button t-attf-class="btn btn-sm border-0 py-2 px-5 border-start #{filter_state.activeDays == 180 ? 'active' : ''}"
-                                    t-att-style="filter_state.activeDays == 180 ? 'background: #007bff; color: white;' : 'background: white; color: #5d3a9b;'"
-                                    t-on-click="_onDateFilter" data-days="180">180 Days</button>
-                            <button t-attf-class="btn btn-sm border-0 py-2 px-5 border-start #{filter_state.activeDays == 365 ? 'active' : ''}"
-                                    t-att-style="filter_state.activeDays == 365 ? 'background: #007bff; color: white;' : 'background: white; color: #5d3a9b;'"
-                                    t-on-click="_onDateFilter" data-days="365">365 Days</button>
+                        <div class="d-flex align-items-center gap-2 px-2 py-1 rounded" style="background:#fff;border:1px solid #e0d9f3;">
+                            <span class="lerm-date-separator">From</span>
+                            <input type="date" class="lerm-date-input"
+                                   t-att-value="filter_state.start_date" t-on-change="_onDateInputChange" data-field="start_date"/>
+                            <span class="lerm-date-separator">To</span>
+                            <input type="date" class="lerm-date-input"
+                                   t-att-value="filter_state.end_date" t-on-change="_onDateInputChange" data-field="end_date"/>
+                            <button class="lerm-refresh-btn" t-on-click="_onCustomDate" title="Apply range">
+                                <i class="fa fa-search" style="font-size:0.75rem;"/>
+                            </button>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <!-- Row 3: Custom Date Selector -->
-                    <div>
-                        <div class="d-flex align-items-center mb-2">
-                            <i class="fa fa-th me-2" style="color: #5d3a9b;"/>
-                            <label class="small fw-bold mb-0 text-uppercase" style="color: #5d3a9b; letter-spacing: 0.5px;">DATE RANGE</label>
-                        </div>
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="flex-grow-0" style="min-width: 250px;">
-                                <select class="form-select border shadow-sm py-2" style="font-size: 0.9rem;" t-on-change="_onDateFilter" t-att-value="filter_state.activeDays">
-                                    <option value="30" t-att-selected="filter_state.activeDays == 30">30 Days</option>
-                                    <option value="180" t-att-selected="filter_state.activeDays == 180">180 Days</option>
-                                    <option value="365" t-att-selected="filter_state.activeDays == 365">365 Days</option>
-                                </select>
+            <!-- TECHNICIAN SAMPLE OVERVIEW -->
+            <div class="lerm-section-header mt-4">
+                <i class="fa fa-users"/>
+                <h2>Technician Sample Overview</h2>
+            </div>
+
+            <t t-if="dashboard_state.technician_data.length">
+                <div class="row g-3">
+                    <t t-foreach="dashboard_state.technician_data" t-as="tech" t-key="tech.technician_id">
+                        <div class="col-lg-3 col-md-6">
+                            <div class="lerm-tech-card">
+
+                                <div class="tech-header" t-on-click="() => this._onTechnicianCardClick(tech.technician_id)">
+                                    <div class="tech-avatar"><i class="fa fa-user"/></div>
+                                    <span class="tech-name"><t t-esc="tech.technician_name"/></span>
+                                </div>
+
+                                <div class="tech-total-block">
+                                    <span class="tech-total-count"><t t-esc="tech.total_samples"/></span>
+                                    <span class="tech-total-label">total samples assigned</span>
+                                </div>
+
+                                <div class="tech-status-list">
+
+                                    <!-- ALLOTED -->
+                                    <t t-set="status_id" t-value="'alloted-' + tech.technician_id"/>
+                                    <t t-if="tech.alloted > 0">
+                                        <button class="lerm-status-row collapsed" type="button"
+                                                t-att-data-bs-target="'#' + status_id"
+                                                data-bs-toggle="collapse" t-att-aria-controls="status_id" aria-expanded="false">
+                                            <span class="status-label">
+                                                <i class="fa fa-play-circle" style="color:#0066ff;font-size:0.8rem;"/>
+                                                Alloted
+                                            </span>
+                                            <span class="status-badge" style="background:#dbeafe;color:#1d4ed8;">
+                                                <t t-esc="tech.alloted"/>
+                                                <i class="fa fa-chevron-down" style="font-size:0.65rem;"/>
+                                            </span>
+                                        </button>
+                                        <div class="collapse" t-att-id="status_id">
+                                            <div class="lerm-sub-list">
+                                                <t t-foreach="tech.product_breakdown" t-as="product_data" t-key="product_data.product_id">
+                                                    <t t-if="product_data.alloted > 0">
+                                                        <div class="lerm-sub-item">
+                                                            <span><t t-esc="product_data.product_name"/></span>
+                                                            <span class="badge" style="background:#e5e7eb;color:#374151;"><t t-esc="product_data.alloted"/></span>
+                                                        </div>
+                                                    </t>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </t>
+                                    <t t-else="">
+                                        <div class="lerm-status-row" disabled="disabled">
+                                            <span class="status-label">
+                                                <i class="fa fa-play-circle" style="color:#0066ff;font-size:0.8rem;"/>Alloted
+                                            </span>
+                                            <span class="status-badge" style="background:#f3f4f6;color:#9ca3af;">0</span>
+                                        </div>
+                                    </t>
+
+                                    <!-- PENDING VERIFICATION -->
+                                    <t t-set="status_id" t-value="'pending-verification-' + tech.technician_id"/>
+                                    <t t-if="tech.pending_verification > 0">
+                                        <button class="lerm-status-row collapsed" type="button"
+                                                t-att-data-bs-target="'#' + status_id"
+                                                data-bs-toggle="collapse" t-att-aria-controls="status_id" aria-expanded="false">
+                                            <span class="status-label">
+                                                <i class="fa fa-hourglass-half" style="color:#d97706;font-size:0.8rem;"/>
+                                                Pending Verification
+                                            </span>
+                                            <span class="status-badge" style="background:#fef3c7;color:#92400e;">
+                                                <t t-esc="tech.pending_verification"/>
+                                                <i class="fa fa-chevron-down" style="font-size:0.65rem;"/>
+                                            </span>
+                                        </button>
+                                        <div class="collapse" t-att-id="status_id">
+                                            <div class="lerm-sub-list">
+                                                <t t-foreach="tech.product_breakdown" t-as="product_data" t-key="product_data.product_id">
+                                                    <t t-if="product_data.pending_verification > 0">
+                                                        <div class="lerm-sub-item">
+                                                            <span><t t-esc="product_data.product_name"/></span>
+                                                            <span class="badge" style="background:#e5e7eb;color:#374151;"><t t-esc="product_data.pending_verification"/></span>
+                                                        </div>
+                                                    </t>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </t>
+                                    <t t-else="">
+                                        <div class="lerm-status-row" disabled="disabled">
+                                            <span class="status-label">
+                                                <i class="fa fa-hourglass-half" style="color:#d97706;font-size:0.8rem;"/>Pending Verification
+                                            </span>
+                                            <span class="status-badge" style="background:#f3f4f6;color:#9ca3af;">0</span>
+                                        </div>
+                                    </t>
+
+                                    <!-- PENDING APPROVAL -->
+                                    <t t-set="status_id" t-value="'pending-approval-' + tech.technician_id"/>
+                                    <t t-if="tech.pending_approval > 0">
+                                        <button class="lerm-status-row collapsed" type="button"
+                                                t-att-data-bs-target="'#' + status_id"
+                                                data-bs-toggle="collapse" t-att-aria-controls="status_id" aria-expanded="false">
+                                            <span class="status-label">
+                                                <i class="fa fa-clock-o" style="color:#dc2626;font-size:0.8rem;"/>
+                                                Pending Approval
+                                            </span>
+                                            <span class="status-badge" style="background:#fee2e2;color:#991b1b;">
+                                                <t t-esc="tech.pending_approval"/>
+                                                <i class="fa fa-chevron-down" style="font-size:0.65rem;"/>
+                                            </span>
+                                        </button>
+                                        <div class="collapse" t-att-id="status_id">
+                                            <div class="lerm-sub-list">
+                                                <t t-foreach="tech.product_breakdown" t-as="product_data" t-key="product_data.product_id">
+                                                    <t t-if="product_data.pending_approval > 0">
+                                                        <div class="lerm-sub-item">
+                                                            <span><t t-esc="product_data.product_name"/></span>
+                                                            <span class="badge" style="background:#e5e7eb;color:#374151;"><t t-esc="product_data.pending_approval"/></span>
+                                                        </div>
+                                                    </t>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </t>
+                                    <t t-else="">
+                                        <div class="lerm-status-row" disabled="disabled">
+                                            <span class="status-label">
+                                                <i class="fa fa-clock-o" style="color:#dc2626;font-size:0.8rem;"/>Pending Approval
+                                            </span>
+                                            <span class="status-badge" style="background:#f3f4f6;color:#9ca3af;">0</span>
+                                        </div>
+                                    </t>
+
+                                    <!-- IN REPORT -->
+                                    <t t-set="status_id" t-value="'in-report-' + tech.technician_id"/>
+                                    <t t-if="tech.in_report > 0">
+                                        <button class="lerm-status-row collapsed" type="button"
+                                                t-att-data-bs-target="'#' + status_id"
+                                                data-bs-toggle="collapse" t-att-aria-controls="status_id" aria-expanded="false">
+                                            <span class="status-label">
+                                                <i class="fa fa-file-text-o" style="color:#16a34a;font-size:0.8rem;"/>
+                                                In Report
+                                            </span>
+                                            <span class="status-badge" style="background:#dcfce7;color:#166534;">
+                                                <t t-esc="tech.in_report"/>
+                                                <i class="fa fa-chevron-down" style="font-size:0.65rem;"/>
+                                            </span>
+                                        </button>
+                                        <div class="collapse" t-att-id="status_id">
+                                            <div class="lerm-sub-list">
+                                                <t t-foreach="tech.product_breakdown" t-as="product_data" t-key="product_data.product_id">
+                                                    <t t-if="product_data.in_report > 0">
+                                                        <div class="lerm-sub-item">
+                                                            <span><t t-esc="product_data.product_name"/></span>
+                                                            <span class="badge" style="background:#e5e7eb;color:#374151;"><t t-esc="product_data.in_report"/></span>
+                                                        </div>
+                                                    </t>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </t>
+                                    <t t-else="">
+                                        <div class="lerm-status-row" disabled="disabled">
+                                            <span class="status-label">
+                                                <i class="fa fa-file-text-o" style="color:#16a34a;font-size:0.8rem;"/>In Report
+                                            </span>
+                                            <span class="status-badge" style="background:#f3f4f6;color:#9ca3af;">0</span>
+                                        </div>
+                                    </t>
+
+                                    <!-- CANCELLED -->
+                                    <div class="lerm-status-row" style="cursor:default;opacity:0.6;">
+                                        <span class="status-label">
+                                            <i class="fa fa-times-circle" style="color:#9ca3af;font-size:0.8rem;"/>
+                                            Cancelled
+                                        </span>
+                                        <span class="status-badge" style="background:#f3f4f6;color:#6b7280;">
+                                            <t t-esc="tech.cancelled || 0"/>
+                                        </span>
+                                    </div>
+
+                                </div>
                             </div>
-                            <div class="d-flex align-items-center gap-2 flex-grow-1 bg-white p-2 rounded shadow-sm border">
-                                <span class="small fw-bold text-muted px-2">FROM</span>
-                                <input type="date" t-att-value="filter_state.start_date" t-on-change="_onDateInputChange"
-                                        data-field="start_date" class="form-control border-0 p-0" style="font-size: 0.9rem;"/>
-                                <span class="small fw-bold text-muted px-2">TO</span>
-                                <input type="date" t-att-value="filter_state.end_date" t-on-change="_onDateInputChange"
-                                        data-field="end_date" class="form-control border-0 p-0" style="font-size: 0.9rem;"/>
-                                <button class="btn btn-primary d-flex align-items-center justify-content-center" t-on-click="_onCustomDate" style="width: 32px; height: 32px;">
-                                    <i class="fa fa-refresh"/>
+                        </div>
+                    </t>
+                </div>
+            </t>
+            <t t-else="">
+                <div class="lerm-empty-state">
+                    <i class="fa fa-info-circle me-2"/>No technician data found for the selected filters.
+                </div>
+            </t>
+
+            <!-- CHARTS -->
+            <div class="lerm-section-header mt-5">
+                <i class="fa fa-bar-chart"/>
+                <h2>Analytics</h2>
+            </div>
+
+            <div class="row g-3 mb-5">
+                <div class="col-md-6">
+                    <div class="lerm-chart-card">
+                        <div class="chart-header">
+                            <h6 class="chart-title">Samples Over Time</h6>
+                            <div class="chart-toggle-group">
+                                <button class="btn" t-on-click="() => this.switchTimeChart('line')">
+                                    <i class="fa fa-line-chart me-1"/>Line
+                                </button>
+                                <button class="btn" t-on-click="() => this.switchTimeChart('bar')">
+                                    <i class="fa fa-bar-chart me-1"/>Bar
+                                </button>
+                                <button class="btn" t-on-click="() => this.switchTimeChart('pie')">
+                                    <i class="fa fa-pie-chart me-1"/>Pie
                                 </button>
                             </div>
                         </div>
+                        <div class="chart-body">
+                            <canvas t-ref="chartCanvas" style="width:100%;height:100%;"/>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <!-- Technician Samples Overview -->
-            <h2 class="mb-4 mt-5 border-top pt-4 text-primary text-center">Technician Sample Overview</h2>
-
-            <!-- <div t-if="dashboard_state.technician_data.length" class="row">
-                <t t-foreach="dashboard_state.technician_data" t-as="tech" t-key="tech.technician_id">
-                    <div class="col-lg-3 col-md-6 mb-4">
-                        <div class="card shadow hover-lift h-100" 
-                             style="border-radius: 1rem; cursor: pointer;" 
-                             t-on-click="() => this._onTechnicianCardClick(tech.technician_id)">
-                            <div class="card-body">
-                                <h5 class="card-title text-primary border-bottom pb-2">
-                                    <i class="fa fa-user me-2"/> <t t-esc="tech.technician_name"/>
-                                </h5>
-                                <div class="mb-3">
-                                    <span class="text-muted small">Total Samples Assigned</span>
-                                    <h3 class="fw-bold text-dark mt-1"><t t-esc="tech.total_samples"/></h3>
-                                </div>
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item d-flex justify-content-between align-items-center small">
-                                        <span><i class="fa fa-play-circle text-primary me-2"/>Alloted</span>
-                                        <span class="badge text-bg-primary"><t t-esc="tech.alloted"/></span>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center small">
-                                        <span><i class="fa fa-hourglass-half text-warning me-2"/>Pending Verification</span>
-                                        <span class="badge text-bg-warning"><t t-esc="tech.pending_verification"/></span>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center small">
-                                        <span><i class="fa fa-clock-o text-danger me-2"/>Pending Approval</span>
-                                        <span class="badge text-bg-danger"><t t-esc="tech.pending_approval"/></span>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center small">
-                                        <span><i class="fa fa-file-text-o text-success me-2"/>In Report</span>
-                                        <span class="badge text-bg-success"><t t-esc="tech.in_report"/></span>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center small text-muted">
-                                        <span><i class="fa fa-times-circle me-2"/>Cancelled</span>
-                                        <span class="badge text-bg-light border"><t t-esc="tech.cancelled"/></span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </t>
-            </div> -->
-                    <!-- 3. Technician Cards -->
-        <t t-if="dashboard_state.technician_data.length">
-            <div class="row">
-                <t t-foreach="dashboard_state.technician_data" t-as="tech" t-key="tech.technician_id">
-                    <div class="col-lg-3 col-md-6 mb-4">
-                        <div class="card shadow hover-lift d-flex flex-column" 
-                        style="border-radius: 1rem; cursor: pointer; height: 400px;">
-                            <div class="card-body d-flex flex-column p-3">
-                                <!-- Technician Name and Click Handler -->
-                                <h5 class="card-title text-primary border-bottom pb-2 flex-shrink-0" 
-                                t-on-click="() => this._onTechnicianCardClick(tech.technician_id)">
-                                    <i class="fa fa-user me-2"/> <t t-esc="tech.technician_name"/>
-                                </h5>
-                                <!-- Total Samples Assigned Block -->
-                                <div class="mb-3 flex-shrink-0">
-                                    <span class="text-muted small">Total Samples Assigned</span>
-                                    <h3 class="fw-bold text-dark mt-1"><t t-esc="tech.total_samples"/></h3>
-                                </div>
-                                <!-- Scrollable List Container: Removed fixed max-height. flex-grow-1 now consumes remaining vertical space. -->
-                                <div class="overflow-y-auto" style="max-height: 250px;">
-                                    <ul class="list-group list-group-flush">
-                                        
-                                        <!-- ALLOTED Status Block -->
-                                        <li class="list-group-item p-0">
-                                            <t t-set="status_id" t-value="'alloted-' + tech.technician_id"/>
-                                            <t t-set="is_collapsible" t-value="tech.alloted > 0"/>
-                                            <t t-if="is_collapsible">
-                                                <button class="btn btn-sm w-100 text-start d-flex justify-content-between align-items-center py-2 collapsed" type="button" 
-                                                    t-att-data-bs-target="'#' + status_id" data-bs-toggle="collapse" t-att-aria-controls="status_id" aria-expanded="false" style="box-shadow: none;">
-                                                    <span><i class="fa fa-play-circle text-primary me-2"/>Alloted</span>
-                                                    <span class="badge text-bg-primary d-flex align-items-center">
-                                                        <t t-esc="tech.alloted"/>
-                                                        <i class="fa fa-chevron-down ms-2" style="font-size: 0.75rem; transition: transform 0.2s;"/>
-                                                    </span>
-                                                </button>
-                                                <div class="collapse" t-att-id="status_id">
-                                                    <ul class="list-group list-group-flush ms-3 border-start">
-                                                        <t t-foreach="tech.product_breakdown" t-as="product_data" t-key="product_data.product_id">
-                                                            <t t-if="product_data.alloted > 0">
-                                                                <li class="list-group-item d-flex justify-content-between align-items-center small py-1 px-2">
-                                                                    <span class="fw-medium text-dark"><t t-esc="product_data.product_name"/></span>
-                                                                    <span class="badge text-bg-secondary"><t t-esc="product_data.alloted"/></span>
-                                                                </li>
-                                                            </t>
-                                                        </t>
-                                                    </ul>
-                                                </div>
-                                            </t>
-                                            <t t-else="">
-                                                <button class="btn btn-sm w-100 text-start d-flex justify-content-between align-items-center py-2 text-muted" type="button" disabled="disabled" style="box-shadow: none; cursor: default;">
-                                                    <span><i class="fa fa-play-circle text-primary me-2"/>Alloted</span>
-                                                    <span class="badge text-bg-light border text-muted d-flex align-items-center"><t t-esc="tech.alloted || 0"/></span>
-                                                </button>
-                                            </t>
-                                        </li>
-
-                                        <!-- PENDING VERIFICATION Status Block -->
-                                        <li class="list-group-item p-0">
-                                            <t t-set="status_id" t-value="'pending-verification-' + tech.technician_id"/>
-                                            <t t-set="is_collapsible" t-value="tech.pending_verification > 0"/>
-                                            <t t-if="is_collapsible">
-                                                <button class="btn btn-sm w-100 text-start d-flex justify-content-between align-items-center py-2 collapsed" type="button" 
-                                                    t-att-data-bs-target="'#' + status_id" data-bs-toggle="collapse" t-att-aria-controls="status_id" aria-expanded="false" style="box-shadow: none;">
-                                                    <span><i class="fa fa-hourglass-half text-warning me-2"/>Pending Verification</span>
-                                                    <span class="badge text-bg-warning d-flex align-items-center">
-                                                        <t t-esc="tech.pending_verification"/>
-                                                        <i class="fa fa-chevron-down ms-2" style="font-size: 0.75rem; transition: transform 0.2s;"/>
-                                                    </span>
-                                                </button>
-                                                <div class="collapse" t-att-id="status_id">
-                                                    <ul class="list-group list-group-flush ms-3 border-start">
-                                                        <t t-foreach="tech.product_breakdown" t-as="product_data" t-key="product_data.product_id">
-                                                            <t t-if="product_data.pending_verification > 0">
-                                                                <li class="list-group-item d-flex justify-content-between align-items-center small py-1 px-2">
-                                                                    <span class="fw-medium text-dark"><t t-esc="product_data.product_name"/></span>
-                                                                    <span class="badge text-bg-secondary"><t t-esc="product_data.pending_verification"/></span>
-                                                                </li>
-                                                            </t>
-                                                        </t>
-                                                    </ul>
-                                                </div>
-                                            </t>
-                                            <t t-else="">
-                                                <button class="btn btn-sm w-100 text-start d-flex justify-content-between align-items-center py-2 text-muted" type="button" disabled="disabled" style="box-shadow: none; cursor: default;">
-                                                    <span><i class="fa fa-hourglass-half text-warning me-2"/>Pending Verification</span>
-                                                    <span class="badge text-bg-light border text-muted d-flex align-items-center"><t t-esc="tech.pending_verification || 0"/></span>
-                                                </button>
-                                            </t>
-                                        </li>
-
-                                        <!-- PENDING APPROVAL Status Block -->
-                                        <li class="list-group-item p-0">
-                                            <t t-set="status_id" t-value="'pending-approval-' + tech.technician_id"/>
-                                            <t t-set="is_collapsible" t-value="tech.pending_approval > 0"/>
-                                            <t t-if="is_collapsible">
-                                                <button class="btn btn-sm w-100 text-start d-flex justify-content-between align-items-center py-2 collapsed" type="button" 
-                                                    t-att-data-bs-target="'#' + status_id" data-bs-toggle="collapse" t-att-aria-controls="status_id" aria-expanded="false" style="box-shadow: none;">
-                                                    <span><i class="fa fa-clock-o text-danger me-2"/>Pending Approval</span>
-                                                    <span class="badge text-bg-danger d-flex align-items-center">
-                                                        <t t-esc="tech.pending_approval"/>
-                                                        <i class="fa fa-chevron-down ms-2" style="font-size: 0.75rem; transition: transform 0.2s;"/>
-                                                    </span>
-                                                </button>
-                                                <div class="collapse" t-att-id="status_id">
-                                                    <ul class="list-group list-group-flush ms-3 border-start">
-                                                        <t t-foreach="tech.product_breakdown" t-as="product_data" t-key="product_data.product_id">
-                                                            <t t-if="product_data.pending_approval > 0">
-                                                                <li class="list-group-item d-flex justify-content-between align-items-center small py-1 px-2">
-                                                                    <span class="fw-medium text-dark"><t t-esc="product_data.product_name"/></span>
-                                                                    <span class="badge text-bg-secondary"><t t-esc="product_data.pending_approval"/></span>
-                                                                </li>
-                                                            </t>
-                                                        </t>
-                                                    </ul>
-                                                </div>
-                                            </t>
-                                            <t t-else="">
-                                                <button class="btn btn-sm w-100 text-start d-flex justify-content-between align-items-center py-2 text-muted" type="button" disabled="disabled" style="box-shadow: none; cursor: default;">
-                                                    <span><i class="fa fa-clock-o text-danger me-2"/>Pending Approval</span>
-                                                    <span class="badge text-bg-light border text-muted d-flex align-items-center"><t t-esc="tech.pending_approval || 0"/></span>
-                                                </button>
-                                            </t>
-                                        </li>
-
-                                        <!-- IN REPORT Status Block -->
-                                        <li class="list-group-item p-0">
-                                            <t t-set="status_id" t-value="'in-report-' + tech.technician_id"/>
-                                            <t t-set="is_collapsible" t-value="tech.in_report > 0"/>
-                                            <t t-if="is_collapsible">
-                                                <button class="btn btn-sm w-100 text-start d-flex justify-content-between align-items-center py-2 collapsed" type="button" 
-                                                    t-att-data-bs-target="'#' + status_id" data-bs-toggle="collapse" t-att-aria-controls="status_id" aria-expanded="false" style="box-shadow: none;">
-                                                    <span><i class="fa fa-file-text-o text-success me-2"/>In Report</span>
-                                                    <span class="badge text-bg-success d-flex align-items-center">
-                                                        <t t-esc="tech.in_report"/>
-                                                        <i class="fa fa-chevron-down ms-2" style="font-size: 0.75rem; transition: transform 0.2s;"/>
-                                                    </span>
-                                                </button>
-                                                <div class="collapse" t-att-id="status_id">
-                                                    <ul class="list-group list-group-flush ms-3 border-start">
-                                                        <t t-foreach="tech.product_breakdown" t-as="product_data" t-key="product_data.product_id">
-                                                            <t t-if="product_data.in_report > 0">
-                                                                <li class="list-group-item d-flex justify-content-between align-items-center small py-1 px-2">
-                                                                    <span class="fw-medium text-dark"><t t-esc="product_data.product_name"/></span>
-                                                                    <span class="badge text-bg-secondary"><t t-esc="product_data.in_report"/></span>
-                                                                </li>
-                                                            </t>
-                                                        </t>
-                                                    </ul>
-                                                </div>
-                                            </t>
-                                            <t t-else="">
-                                                <button class="btn btn-sm w-100 text-start d-flex justify-content-between align-items-center py-2 text-muted" type="button" disabled="disabled" style="box-shadow: none; cursor: default;">
-                                                    <span><i class="fa fa-file-text-o text-success me-2"/>In Report</span>
-                                                    <span class="badge text-bg-light border text-muted d-flex align-items-center"><t t-esc="tech.in_report || 0"/></span>
-                                                </button>
-                                            </t>
-                                        </li>
-
-                                        <!-- CANCELLED Status Block (Non-collapsible) -->
-                                        <li class="list-group-item d-flex justify-content-between align-items-center small text-muted py-2 px-0">
-                                            <span><i class="fa fa-times-circle me-2"/>Cancelled</span>
-                                            <span class="badge text-bg-light border"><t t-esc="tech.cancelled || 0"/></span>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </t>
-            </div>
-        </t>
-        <t t-else="">
-            <div class="alert alert-info mt-3 text-center" role="alert"><i class="fa fa-info-circle me-2"/> No technician data found. </div>
-        </t>
-
-            <!-- Charts -->
-            <div class="row g-4 mt-5">
                 <div class="col-md-6">
-                    <div class="card shadow-sm rounded-3 h-100 border-0">
-                        <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                            <h6 class="mb-0">Samples Over Time</h6>
-                            <div class="btn-group btn-group-sm">
-                                <button class="btn btn-outline-secondary" t-on-click="() => this.switchTimeChart('line')">Line</button>
-                                <button class="btn btn-outline-secondary" t-on-click="() => this.switchTimeChart('bar')">Bar</button>
-                                <button class="btn btn-outline-secondary" t-on-click="() => this.switchTimeChart('pie')">Pie</button>
+                    <div class="lerm-chart-card">
+                        <div class="chart-header">
+                            <h6 class="chart-title">Samples by State</h6>
+                            <div class="chart-toggle-group">
+                                <button class="btn" t-on-click="() => this.switchStateChart('line')">
+                                    <i class="fa fa-line-chart me-1"/>Line
+                                </button>
+                                <button class="btn" t-on-click="() => this.switchStateChart('bar')">
+                                    <i class="fa fa-bar-chart me-1"/>Bar
+                                </button>
+                                <button class="btn" t-on-click="() => this.switchStateChart('pie')">
+                                    <i class="fa fa-pie-chart me-1"/>Pie
+                                </button>
                             </div>
                         </div>
-                        <div class="card-body text-center" style="height:350px;">
-                            <canvas t-ref="chartCanvas"></canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="card shadow-sm rounded-3 h-100 border-0">
-                        <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                            <h6 class="mb-0">Samples by State</h6>
-                            <div class="btn-group btn-group-sm">
-                                <button class="btn btn-outline-secondary" t-on-click="() => this.switchStateChart('line')">Line</button>
-                                <button class="btn btn-outline-secondary" t-on-click="() => this.switchStateChart('bar')">Bar</button>
-                                <button class="btn btn-outline-secondary" t-on-click="() => this.switchStateChart('pie')">Pie</button>
-                            </div>
-                        </div>
-                        <div class="card-body text-center" style="height:350px;">
-                            <canvas t-ref="stateChartCanvas"></canvas>
+                        <div class="chart-body">
+                            <canvas t-ref="stateChartCanvas" style="width:100%;height:100%;"/>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
     </t>
 </templates>

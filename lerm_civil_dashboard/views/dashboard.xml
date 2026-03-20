@@ -11,10 +11,16 @@
             <field name="tag">customer_dashboard</field>
         </record>
 
+        <record id="product_dashboard_action" model="ir.actions.client">
+            <field name="name">Product Dashboard</field>
+            <field name="tag">product_dashboard</field>
+        </record>
+
         <menuitem name="Lerm Dashboard" id="menu_dashboard" web_icon="lerm_civil_dashboard,static/description/icon.png">
             <menuitem name="Overview" id="overview_dashboard" sequence="10" action="lerm_dashboard_action"/>    
             <!-- <menuitem name="LERM" id="main_dashboard" sequence="10" action="lerm_dashboard_action"/>     -->
         </menuitem> 
         <menuitem name="Customer" id="customer_dashboard" parent="menu_dashboard" sequence="11" action="customer_dashboard_action"/>    
+        <menuitem name="Products" id="product_dashboard_menu" parent="menu_dashboard" sequence="12" action="product_dashboard_action"/>    
     </data>
 </odoo>

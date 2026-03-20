@@ -359,7 +359,7 @@ class GsbMechanical(models.Model):
                 
             }
 
-    soudness_magnesium_name = fields.Char("Name",default="Soundness Magnesium Test ")
+    soudness_magnesium_name = fields.Char("Name",default="Soundness  Test ")
     soudness_magnesium_visible = fields.Boolean("Soundness Test",compute="_compute_visible")
     soudness_visible = fields.Boolean("Soundness Test",compute="_compute_visible")
 
