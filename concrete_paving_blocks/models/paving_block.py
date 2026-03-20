@@ -148,7 +148,7 @@ class PavingBlock(models.Model):
     water_absorption_name = fields.Char("Name",default="Water Absorption ")
     water_absorption_visible = fields.Boolean("Water Absorption Visible",compute="_compute_visible")
 
-    water_absorption_child_lines = fields.One2many('paver.water.absorption.line','parent_id',string="Water Line")
+    water_absorption_child_lines = fields.One2many('paver.water.absorptionn.line','parent_id',string="Water Line")
 
     avg_water_absorption = fields.Float(
         string="Avg. Water Absorption (%)",
@@ -483,7 +483,7 @@ class PavingBlock(models.Model):
 
 
 class WaterLine(models.Model):
-    _name = "paver.water.absorption.line"
+    _name = "paver.water.absorptionn.line"
     parent_id = fields.Many2one('mechanical.concrete.paving.block',string="Parent Id")
 
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)

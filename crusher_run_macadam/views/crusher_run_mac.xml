@@ -400,7 +400,10 @@
                             <tr>
                                 <td><span class="fw-bold">NABL</span></td>
                                 <td>
-                                    <field  name="abrasion_value_percentage_nabl"/>
+                                    <field  name="abrasion_value_percentage_nabl"
+                                    decoration-success="abrasion_value_percentage_nabl == 'pass'" 
+                                    decoration-danger="abrasion_value_percentage_nabl == 'fail'" 
+                                    readonly="1"/>
                                 </td>
                             </tr>
                         </tbody>
@@ -414,114 +417,7 @@
              
 
 
-                    <!-- <group style="white-space: nowrap; width:50%"  invisible="angularity_visible == False" > 
-                        <field name="mean_wt_aggregate"/>
-                        <field name="wt_water_required_angularity"/>
-                        <field name="specific_gravity_aggregate_angularity"/>
-                        <field name="angularity_number"/>
-                    </group>
-
-                    <group  invisible="angularity_visible == False">
-                          <group>
-                            <field  name="angularity_number_conformity"
-                                           decoration-success="angularity_number_conformity == 'pass'" 
-                                           decoration-danger="angularity_number_conformity == 'fail'" 
-                                           readonly="1"/>
-                            <field  name="angularity_number_conformity_nabl"/>
-                          </group>
-                    </group> -->
-
-
-                       <!-- Aggregate Grading  -->
-                    <!-- <div invisible="aggregate_grading_visible == False">
-                        <h1 class="text-center">
-                            <field name="aggregate_grading_name" readonly="1" nolabel="1"/>
-                            <field name="aggregate_grading_visible" invisible="1"/>
-
-                        </h1>
-                    </div>
-
-                
-                    <group/>
-                    <div class=" custom_table_borders" invisible="aggregate_grading_visible == False">
-                        <field  colspan="2" nolabel="1" name="aggregate_grading_child_lines">
-                            <tree>
-                                <field name="serial_no" string="Sr.No"/>
-                                <field name="sieve_size" string="IS Sieve Size"/>
-                                <field name="wt_retained" string="Wt. Retained in gms" class="blue-input" decoration-info="wt_retained != 0"/>
-                                <field name="percent_retained" string="% Retained"/>
-                                <field name="cumulative_retained" context="{'default_cumulative_retained': cumulative_retained}" string="Cum. Retained %"/>
-                                <field name="passing_percent" string="Passing %" readonly="1"/>
-                            </tree>
-                        </field>
-                    </div>
-
-                    <div invisible="aggregate_grading_visible == False">
-                    <button type="object" string="Calculate" name="calculate_aggregate" class="btn btn-primary mb-2">
-                        <i class="fa fa-calculator mr-1"/> Calculate 
-                    </button> -->
-
-                        <!-- <button string="Calculate" type="object" name="calculate_aggregate" class="oe_highlight"/> -->
-                    <!-- </div>
                     
-                    <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" invisible="aggregate_grading_visible == False" style="white-space:nowrap;">
-                        <tbody>
-                            <tr>
-                                <td><span class="fw-bold">Total</span></td>
-                                <td>
-                                     <field name="total_aggregate_grading"/>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table> -->
-                    <!-- <group invisible="aggregate_grading_visible == False">
-                        <field name="total_aggregate_grading"/>
-                    </group> 
-                    <group/>-->
-
-
-                   
-                    
-
-
-
-                        <!-- <div class="d-flex gap-2" invisible="not compacted_density_visible and not loose_bulk_visible">
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                    <td><label for="specific_gravity1">Specific Gravity</label></td>
-                                    <td><field name="specific_gravity1"/></td>
-                                </tr>
-
-                                 <tr>
-                                    <td><label for="voids_ratio">Voids Ratio (%)</label></td>
-                                    <td><field name="voids_ratio"/></td>
-                                </tr>
-                              
-                            </tbody>
-                        </table>
-                    </div> -->
-
-
-
-                   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

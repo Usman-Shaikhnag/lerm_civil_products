@@ -134,6 +134,24 @@
             <p class="o_view_nocontent_smiling_face">Alotted Sample</p>
         </field>
     </record>
+
+    <record id="test_sample_calculated_action" model="ir.actions.act_window">
+        <field name="name">Sample Calculated</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">lerm.srf.sample</field>
+        <field name="view_mode">tree,kanban,form</field>
+
+        <!-- Correct state -->
+        <field name="domain">[
+            ('state','=','7-calculated')
+        ]</field>
+
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Calculated Sample</p>
+        </field>
+    </record>
+
+
     <record id="sample_pending_verification_action" model="ir.actions.act_window">
         <field name="name">Sample Verification Pending</field>
         <field name="type">ir.actions.act_window</field>
@@ -431,6 +449,12 @@
         parent="sample_status"
         action="test_sample_pending_allotted_action"
         sequence="21" />
+
+    <menuitem id="sample_status_calculated"
+        name="Calculated"
+        parent="sample_status"
+        action="test_sample_calculated_action"
+        sequence="26" />
 
     <menuitem id="sample_status_pending_verification"
         name="Pending Verification"

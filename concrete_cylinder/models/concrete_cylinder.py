@@ -21,6 +21,7 @@ class MechanicalConcreteCube(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="ELN")
+    sample_id = fields.Many2one('lerm.srf.sample',string='Sample')
 
 
     cube_name = fields.Char("Name",default=" Concrete Cylinder")
@@ -469,6 +470,10 @@ class MechanicalConcreteCube(models.Model):
                 
     def open_eln_page(self):
         # import wdb; wdb.set_trace()
+        for record in self:
+            # Sample ला target कर
+            if record.sample_id:
+                record.sample_id.state = '7-calculated'
         for result in self.eln_ref.parameters_result:
             if result.parameter.internal_id == '301hjtre-17c1-48ac-8462-9671e4d3d09f':
                 result.result_char = round(self.average_strength,2)
