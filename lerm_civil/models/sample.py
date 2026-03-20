@@ -135,7 +135,7 @@ class LermSampleForm(models.Model):
         ('1-allotment_pending', 'Assignment Pending'),
         ('7-partially-alloted', 'Partially Alloted'),
         ('2-alloted', 'Alloted'),
-        ('7-calculated', 'Calculated'),
+        ('7-calculated', 'In-Test'),
         ('3-pending_verification','Pending Verification'),
         ('5-pending_approval','Pending Approval'),
         ('4-in_report', 'In-Report'),

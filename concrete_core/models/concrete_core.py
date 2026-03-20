@@ -396,10 +396,10 @@ class ConcreteCore(models.Model):
 
     def open_eln_page(self):
         # import wdb; wdb.set_trace()
-        for record in self:
-            # Sample ला target कर
-            if record.sample_id:
-                record.sample_id.state = '7-calculated'
+        # for record in self:
+        #     # Sample ला target कर
+        #     if record.sample_id:
+        #         record.sample_id.state = '7-calculated'
 
         return {
                 'view_mode': 'form',

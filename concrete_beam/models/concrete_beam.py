@@ -173,10 +173,10 @@ class FlexuralStrengthConcreteBeam(models.Model):
 
     def open_eln_page(self):
         # import wdb; wdb.set_trace()
-        for record in self:
-            # Sample ला target कर
-            if record.sample_id:
-                record.sample_id.state = '7-calculated'
+        # for record in self:
+        #     # Sample ला target कर
+        #     if record.sample_id:
+        #         record.sample_id.state = '7-calculated'
                 
         for result in self.eln_ref.parameters_result:
             if result.parameter.internal_id == '19edc74f-c7b2-45b6-8696-e97c19e81993':
