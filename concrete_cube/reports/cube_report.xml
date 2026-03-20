@@ -20,12 +20,14 @@
 
 
 								<tr> 
-								   <td style="width:47%;">  <strong>Type of Sample</strong> : <span t-field="o.material.name"/></td>
+								   <td >  <strong>Type of Sample</strong> : <span t-field="o.material.name"/></td>
 
-                                  <td style="width:53%;"> <strong>Curing Condition:</strong>  <span t-field="data.curing_condition"/></td>
+                                
                                </tr>
 
-								
+								<tr>
+								<td > <strong>Curing Condition:</strong>  <span t-field="data.curing_condition"/></td>
+								</tr>
 								
 								<tr t-if="o.material.source_sample">
 									<td style="font-weight: bold;">Source of Sample</td>
@@ -43,13 +45,15 @@
 
 
 					
-					<div style="margin-top:2px">
+					<div>
 						<table class="custom_table_borders text-center">
 						<tr>
-							    <td >Location of testing :</td>
+							    <!-- <td >Location of testing :</td> -->
 
 							
 								<td>
+
+								Location of testing :
 
 								<t t-if="data.lab_id">
 								 <t t-foreach="data.lab_id.lab_location_line" t-as="loc">
@@ -61,13 +65,19 @@
                                   </t>
 								  </td>
 
+
+
+								 
+
 						
 							</tr>
 
 
 							<tr>
-							<td><strong>Date of Testing</strong> : <span t-field="o.start_date"/> </td>
-							<td><strong>Date of Completion</strong> : <span t-field="o.end_date"/></td>	
+						    	<td><strong>Date of Testing</strong> : <span t-field="o.start_date"/> </td>
+							</tr>
+							<tr>
+							   <td><strong>Date of Completion</strong> : <span t-field="o.end_date"/></td>
 							</tr>
 
 
@@ -77,10 +87,7 @@
 							</tr>
 
 
-							<!-- <tr>
-								<td><strong>Size of Cube</strong> : <span t-field="o.sample_id.size_id.size"/></td>
-								<td><strong>Area Of Cube  : </strong><span t-field="data.area_of_cube"/>  Sq.mm</td>		
-							</tr> -->
+				
 						</table>
 					</div>  
 
