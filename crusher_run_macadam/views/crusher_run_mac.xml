@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+    <record id="mechanical_crusher_run_mac_form" model="ir.ui.view">
+        <field name="name">mechanical.crusher.run.macadam.form</field>
+        <field name="model">mechanical.crusher.run.macadam</field>
+        <field name="arch" type="xml">
+            <form create="false"> 
+                <sheet>
+                    <h1>
+                        <field name="name" readonly="1" nolabel="1"/>
+                    </h1>
+                    <button type="object" class="oe_highlight" name="prefill_data" string="Prefill Data"/>
+                    <group>
+                       <field name="grade"/>
+                    </group>
+
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1" />
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="size_id"/>
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+                    <!-- <group class="custom_table_borders"> -->
+                    <div class="custom_table_borders" style="margin-top: 15px;">
+                        <field name="sample_parameters" nolabel="1">
+                            <tree>
+                                <field name="parameter_name"/>
+                                <field name="test_method"/>
+                            </tree>
+                        </field>
+                    </div>
+
+                     <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+                    <!-- Sieve Alanysis  -->
+                    <div invisible="sieve_visible == False">
+                        <h1 style="text-align: center;">
+                            <field name="sieve_analysis_name" readonly="1" nolabel="1"/>
+                            <field name="sieve_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not sieve_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="weight_of_sample">Weight of Sample in kg</label></td>
+                                <td>
+                                    <field name="weight_of_sample" class="blue-input" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div invisible="sieve_visible == False" class="custom_table_borders">
+                        <field name="sieve_analysis_child_lines" nolabel="1">
+                            <tree editable="bottom">
+                                <!-- <field name="serial_no" string="Sr.No"/> -->
+                                <field name='sieve_size'/>
+                                <field name='wt_retained' class="blue-input" decoration-info="wt_retained != 0"/>
+                                <field name='percent_retained' readonly="1"/>
+                                <field name='cumulative_retained' context="{'default_cumulative_retained': cumulative_retained}" readonly="1"/>
+                                <field name='passing_percent' readonly="1"/>
+                                <field name='specific_limits' readonly="1"/>
+                            </tree>
+                        </field>
+                    </div>
+                    
+                    <div invisible="sieve_visible == False">
+                        <button type="object" name="calculate_sieve" class="btn btn-primary">
+                            <i class="fa fa-calculator mr-1"/> Calculate
+                        </button>
+                    </div>
+
+                    <!-- Table for Total Sieve Analysis -->
+                    <table class="table table-sm o_form_table table-bordered w-50 mt-2 custom_table_borders" invisible="not sieve_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="total_sieve_analysis" class="text-bold">Total</label></td>
+                                <td><field name="total_sieve_analysis" class="text-bold"/></td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+        
+                       <!-- Specific Gravity and Water Absorbtion  -->
+
+                    <div class="text-center" invisible="water_absorp_visible == False">
+                        <h1>
+                            <field name="water_absorp_name" readonly="1" nolabel="1"/>
+                            <field name="water_absorp_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+                    
+                    <!-- Main Table: Specific Gravity Measurements -->
+                    <table class="table table-sm table-bordered custom_table_borders" invisible="not water_absorp_visible" style="white-space:nowrap;">
+                        <thead>
+                            <tr>
+                                <th>Parameters</th>
+                                <th>Trial 1</th>
+                                <th>Trial 2</th>
+                                <th>Result</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="fw-bold">Weight of Sample in Water (A)</span></td>
+                                <td><field name="wt_sample_inwater" class="blue-input" /></td>
+                                <td><field name="wt_sample_inwater_2" class="blue-input" /></td>
+                                <td><field name="result_wt_sample_inwater"  /></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Weight of Surface Dry Sample (B)</span></td>
+                                <td><field name="wt_surface_dry" class="blue-input"/></td>
+                                <td><field name="wt_surface_dry_2" class="blue-input" /></td>
+                                <td><field name="result_wt_surface_dry" /></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Oven Dried Weight (C)</span></td>
+                                <td><field name="oven_dried_wt" class="blue-input" /></td>
+                                <td><field name="oven_dried_wt_2" class="blue-input" /></td>
+                                <td><field name="result_oven_dried_wt"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table class="table table-sm table-bordered custom_table_borders" invisible="not water_absorp_visible">
+                        <tbody>
+                            <tr>
+                                 <td><span class="fw-bold">Water Absorption</span></td>
+                                <td><field name="water_absorption"/></td>
+                               
+                            </tr>
+                                <tr>
+                                <td>
+                                    <label class="fw-bold" for="water_absorp_conformity">Specific Gravity Conformity</label>
+                                </td>
+                                <td>
+                                    <field name="water_absorp_conformity"
+                                        decoration-success="water_absorp_conformity == 'pass'" 
+                                        decoration-danger="water_absorp_conformity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                
+                                <td>
+                                    <label class="fw-bold" for="water_absorp_nabl">Specific Gravity NABL</label>
+                                </td>
+                                <td>
+                                    <field name="water_absorp_nabl"
+                                        decoration-success="water_absorp_nabl == 'pass'" 
+                                        decoration-danger="water_absorp_nabl == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                     <!-- Elongation and Flakiness  -->
+                    <div class="text-center" invisible="not elongation_visible or not flakiness_visible">
+                        <h1>
+                            <field name="elongation_name" readonly="1" nolabel="1"/>
+                            <field name="elongation_visible" invisible="1"/>
+                            <field name="flakiness_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div invisible="not elongation_visible or not flakiness_visible" class="custom_table_borders">
+                        <field name="elongation_table" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="sieve_size"  />
+                                <field name="wt_retained" string="Sample Taken" class="blue-input" decoration-info="wt_retained != 0"/>
+                                <field name="flakiness_retained" string="Wt of aggregate passed in Flakiness Gauge" class="blue-input" decoration-info="flakiness_retained != 0"/>
+                                <field name="elongated_retained" string="Wt of aggregate Retained in Elongation Gauge" class="blue-input" decoration-info="elongated_retained != 0"/>
+                            </tree>
+                        </field>
+                    </div>
+                        
+                    <div class="d-flex gap-3" invisible="elongation_visible == False or flakiness_visible == False">
+                        <!-- Table 1: Retained Weights -->
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="total_wt_retained_fl_el">Total Wt. Retained (Fl + El)</label>
+                                    </td>
+                                    <td>
+                                        <field name="total_wt_retained_fl_el"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="total_elongated_retained">Total Elongated Retained</label>
+                                    </td>
+                                    <td>
+                                        <field name="total_elongated_retained"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="total_flakiness_retained">Total Flakiness Retained</label>
+                                    </td>
+                                    <td>
+                                        <field name="total_flakiness_retained"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+                        <!-- Table 2: Aggregate Indexes -->
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                <tr>
+                                    <td><span class="fw-bold">Aggregate Elongation Index</span></td>
+                                    <td><field name="aggregate_elongation"/></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="fw-bold">Aggregate Flakiness Index</span></td>
+                                    <td><field name="aggregate_flakiness"/></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="fw-bold">Combined Index</span></td>
+                                    <td><field name="aggregate_combine"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="elongation_visible == False">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <label class="fw-bold" for="aggregate_combine_conformity">Combined Index Conformity</label>
+                                </td>
+                                <td>
+                                    <field name="aggregate_combine_conformity"
+                                        decoration-success="aggregate_combine_conformity == 'pass'" 
+                                        decoration-danger="aggregate_combine_conformity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="fw-bold" for="aggregate_combine_nabl">Combined Index NABL</label>
+                                </td>
+                                <td>
+                                    <field name="aggregate_combine_nabl"
+                                        decoration-success="aggregate_combine_nabl == 'pass'" 
+                                        decoration-danger="aggregate_combine_nabl == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+
+                    
+                      <!-- Impact Value  -->
+                    <div invisible = "impact_visible == False">
+                        <h1 class="text-center">
+                            <field name="impact_value_name" readonly="1" nolabel="1"/>
+                            <field name="impact_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+
+                    <div invisible = "impact_visible == False" class="custom_table_borders">
+                        <field name="impact_value_child_lines" nolabel="1">
+                            <tree editable="bottom">
+                                <field name='sample_no'/>
+                                <field name='total_wt_aggregate' style="white-space: wrap;" class="blue-input" decoration-info="total_wt_aggregate != 0" />
+                                <field name='wt_of_aggregate_retained' style="white-space: wrap;" class="blue-input" decoration-info="wt_of_aggregate_retained != 0"/>
+                                <field name='wt_of_aggregate_passing' style="white-space: wrap;"/>
+                                <field name='impact_value'/>
+                            </tree>
+                        </field> 
+                    </div>
+                   
+
+                    <!-- Impact Value Table -->
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not impact_visible" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="average_impact_value">Average Impact Value</label></td>
+                                <td><field name="average_impact_value"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Impact Conformity & NABL Table -->
+                    <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" invisible="not impact_visible" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="average_impact_value_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="average_impact_value_conformity"
+                                        decoration-success="average_impact_value_conformity == 'pass'" 
+                                        decoration-danger="average_impact_value_conformity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="impact_value_nabl">NABL Status</label></td>
+                                <td>
+                                    <field name="impact_value_nabl"
+                                        decoration-success="impact_value_nabl == 'pass'" 
+                                        decoration-danger="impact_value_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                   
+
+                  
+                <!-- Abrasion Value  -->
+                <div invisible="abrasion_visible == False">
+                        <h1 class="text-center">
+                            <field name="abrasion_value_name" readonly="1" nolabel="1"/>
+                            <field name="abrasion_visible" invisible="1"/>
+
+                        </h1>
+                </div>
+
+                <div style="display:flex;">
+                <div style="width:50%;">
+                <table class="table table-sm table-bordered mt-2 custom_table_borders" invisible="abrasion_visible == False" style="white-space:nowrap;width:98%;">
+                        <tbody>
+                            <tr>
+                                <td><span class="fw-bold">Weight of Sample taken in gms, A</span></td>
+                                <td>
+                                    <field name="total_weight_sample_abrasion" class="blue-input" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Weight of Retain sample in 1.70 mm IS sieve in gms</span></td>
+                                <td>
+                                    <field name="weight_retain_sample_abrasion"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="width:50%;">
+                <table class="table table-sm table-bordered w-100 mt-2 custom_table_borders" invisible="abrasion_visible == False" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><span class="fw-bold">Weight of Passing sample in 1.70 mm IS sieve in gms</span></td>
+                                <td>
+                                    <field name="weight_passing_sample_abrasion" class="blue-input" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Abrasion Value (%)</span></td>
+                                <td>
+                                    <field name="abrasion_value_percentage"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+
+                <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" invisible="abrasion_visible == False" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><span class="fw-bold">Conformity</span></td>
+                                <td>
+                                    <field  name="abrasion_value_percentage_conformity"
+                                    decoration-success="abrasion_value_percentage_conformity == 'pass'" 
+                                    decoration-danger="abrasion_value_percentage_conformity == 'fail'" 
+                                    readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">NABL</span></td>
+                                <td>
+                                    <field  name="abrasion_value_percentage_nabl"
+                                    decoration-success="abrasion_value_percentage_nabl == 'pass'" 
+                                    decoration-danger="abrasion_value_percentage_nabl == 'fail'" 
+                                    readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                
+
+                
+
+               
+             
+
+
+                    
+
+
+
+
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+
+                </sheet>
+            </form>
+        </field>
+     </record>
+
+     <record id="view_coarse_aggregate_prefill_data_form" model="ir.ui.view">
+            <field name="name">coarse.aggregate.prefill.data.form</field>
+            <field name="model">coarse.aggregate.prefill.data</field>
+            <field name="arch" type="xml">
+                <form string="Prefill Data">
+                    <group>
+                        <field name="product_id" readonly="1"/>
+                        <field name="sample_id"/>
+
+                    </group>
+                    <footer>
+                        <button name="prefill_data" string="Prefill Data" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_coarse_aggregate_prefill_data_wizard" model="ir.actions.act_window">
+            <field name="name">Prefill Data</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">coarse.aggregate.prefill.data</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_coarse_aggregate_prefill_data_form"/>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

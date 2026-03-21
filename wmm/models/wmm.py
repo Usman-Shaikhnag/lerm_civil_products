@@ -14,11 +14,26 @@ class WmmMechanical(models.Model):
 
 
     name = fields.Char("Name",default="WMM")
+
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
+
+    def prefill_data(self):
+        # import wdb; wdb.set_trace()
+        return {
+            'name': 'Prefill Data',
+            'type': 'ir.actions.act_window',
+            'res_model': 'wmm.prefill.data',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+                },
+        }
 
     def open_eln_page(self):
         # import wdb; wdb.set_trace()
@@ -63,13 +78,7 @@ class WmmMechanical(models.Model):
             self.grade = self.eln_ref.grade_id.id
 
 
-    # @api.depends('eln_ref')
-    # def _compute_sample_parameters(self):
-        
-    #     for record in self:
-    #         records = record.eln_ref.parameters_result.parameter.ids
-    #         record.sample_parameters = records
-    #         print("Records",records)
+   
 
     @api.depends('eln_ref','sample_parameters')
     def _compute_visible(self):

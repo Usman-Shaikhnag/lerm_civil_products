@@ -17,6 +17,7 @@ class PileLoadTestParent(models.Model):
     _order = "rec_date desc, id desc"
 
     work_name = fields.Char("Name of Work")
+<<<<<<< HEAD
 
     client = fields.Many2one("res.partner", string="Client")
     contractor = fields.Many2one(
@@ -25,6 +26,10 @@ class PileLoadTestParent(models.Model):
         domain="[('partner_id', '=', client)]"
     )
 
+=======
+    contractor = fields.Char("Contractor")
+    client = fields.Char("Client")
+>>>>>>> lerm_17
     cover_image = fields.Binary("Cover Image")
 
     ulr = fields.Char("ULR No", copy=False, readonly=True)
@@ -45,6 +50,7 @@ class PileLoadTestParent(models.Model):
 
     signatory_name = fields.Char("Authorized Signatory")
     signatory_designation = fields.Char("Designation")
+<<<<<<< HEAD
     
     rec_date_str = fields.Char(
         "Report Date (Text)",
@@ -59,6 +65,8 @@ class PileLoadTestParent(models.Model):
                 rec.rec_date_str = rec.rec_date.strftime("%d-%m-%Y")
             else:
                 rec.rec_date_str = False
+=======
+>>>>>>> lerm_17
 
     # DIRECT One2many - no related fields!
     loading_reading_ids = fields.One2many(
@@ -123,6 +131,23 @@ class PileLoadTestParent(models.Model):
     )
 
     analysis_text = fields.Text("Analysis of Test Results")
+<<<<<<< HEAD
+=======
+    
+    rec_date_str = fields.Char(
+        "Report Date (Text)",
+        compute="_compute_rec_date_str",
+        store=True
+    )
+
+    @api.depends('rec_date')
+    def _compute_rec_date_str(self):
+        for rec in self:
+            if rec.rec_date:
+                rec.rec_date_str = rec.rec_date.strftime("%d-%m-%Y")
+            else:
+                rec.rec_date_str = False
+>>>>>>> lerm_17
 
     def action_generate_report_no(self):
         for rec in self:
@@ -359,6 +384,10 @@ class PileLoadTestParent(models.Model):
             for line in rec.unloading_reading_ids:
                 line._compute_mean()
                 line._compute_split_dt()
+<<<<<<< HEAD
+=======
+
+>>>>>>> lerm_17
             # 3️⃣ Force recompute of parent computed fields
             rec._compute_settlement_values()
             rec._compute_max_settlement()
@@ -431,6 +460,10 @@ class PileLoadTestParent(models.Model):
         copy=False
     )
 
+<<<<<<< HEAD
+=======
+    
+>>>>>>> lerm_17
     @api.depends('loading_reading_ids.reading_datetime')
     def _compute_last_reading_datetime(self):
         for rec in self:
@@ -438,6 +471,10 @@ class PileLoadTestParent(models.Model):
             dates = [d for d in dates if d]
             rec.last_reading_datetime = max(dates) if dates else False
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> lerm_17
 # NEW: Separate Loading Model
 class PileLoadReadingLoading(models.Model):
     _name = "pile.load.reading.loading"

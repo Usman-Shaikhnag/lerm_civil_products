@@ -64,6 +64,7 @@ class ELN(models.Model):
 
     update_result = fields.Integer("Update Result")
     state = fields.Selection([
+        ('5-alloted', 'Alloted'),
         ('1-draft', 'In-Test'),
         ('2-confirm', 'In-Check'),
         ('3-approved','Approved'),
@@ -85,6 +86,7 @@ class ELN(models.Model):
     temperature = fields.Float("Temperature")
     instrument = fields.Many2one('maintenance.equipment',string="Instrument")
     sop = fields.Html(string='SOP',compute="comput_sop")
+    casting = fields.Boolean(string="Casting",compute="_casting_required")
     date_testing = fields.Date("Date of Testing",compute="_compute_date_testing")
     days_casting = fields.Selection([
         ('1', '1 Days'),
@@ -96,7 +98,7 @@ class ELN(models.Model):
         ('45', '45 Days'),
         ('56', '56 Days'),
         ('112', '112 Days'),
-    ], string='Days of casting', default='3')
+    ], string='Days of casting')
     # data_sheet = fields.Binary(string="Data Sheet", attachment=True)
 
     # file_upload = fields.Many2many(
@@ -134,6 +136,11 @@ class ELN(models.Model):
     #     string='Report Upload',
     #     help='Attach multiple images to the sample',
     # )
+
+    @api.depends('sample_id')
+    def _casting_required(self):
+        for record in self:
+            record.casting = record.sample_id.casting
 
 
     @api.depends('sample_id')
@@ -201,7 +208,9 @@ class ELN(models.Model):
             try:
                 if record.material:
                     record.grade_ids = self.env['product.template'].search([('id','=', record.material.id)]).grade_table
-            except:
+                else:
+                    record.grade_ids = False
+            except Exception as e:
                 record.grade_ids = False
 
 
@@ -211,8 +220,11 @@ class ELN(models.Model):
             try:
                 if record.material:
                     record.size_ids = self.env['product.template'].search([('id','=', record.material.id)]).size_table
-            except:
+                else:
+                    record.size_ids = False
+            except Exception as e:
                 record.size_ids = False
+
 
     @api.onchange('witness')
     def update_witness_name(self):
@@ -257,6 +269,11 @@ class ELN(models.Model):
 
 
     def open_product_based_form(self):
+        for record in self:
+            # Sample ला target कर
+            if record.sample_id:
+                record.sample_id.state = '7-calculated'
+                
         model_record = self.material.product_based_calculation.filtered(lambda r: r.grade.id == self.grade_id.id)
         model = model_record.ir_model.model
 
@@ -407,6 +424,7 @@ class ELN(models.Model):
             if self.start_date < self.srf_date:
                 raise ValidationError("Start Date cannot be less than SRF Date")
 
+        # import wdb;wdb.set_trace()
         for result in self.parameters_result:
             if not result.calculated:
                 raise ValidationError("Not all parameters are calculated. Please ensure all parameters are calculated before proceeding.")
@@ -683,6 +701,7 @@ class ParameteResultCalculationWizard(models.TransientModel):
     # result_char = fields.Char(string="Result")
 
     eln_state = fields.Selection([
+        ('5-alloted', 'Alloted'),
         ('1-draft', 'In-Test'),
         ('2-confirm', 'In-Check'),
         ('3-approved','Approved'),

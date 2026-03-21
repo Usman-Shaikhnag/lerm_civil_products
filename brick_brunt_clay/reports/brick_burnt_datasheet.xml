@@ -18,6 +18,7 @@
                         <![CDATA[&nbsp;]]>
                         <span t-field="eln.start_date"></span>
                     </td>
+
 				</tr>
                 <tr>
                   <td colspan="6">Material: <span t-field="eln.material"></span>
@@ -40,11 +41,13 @@
                     </td>
                 </tr>
 			</table>
+
+
+
                 <!-- Compressive Strength -->
 
            
-
-             <div t-if="data.compressive_strength_visible" style="margin-top:20px">
+             <div t-if="data.compressive_strength_visible" style="margin-top:20px; ">
                         <div style="text-align:center;font-size:18px">
                               <span t-field="env['lerm.parameter.master'].search([('internal_id','=','97928829-9b1f-4091-aa7f-4b76f98eb47f')]).parameter_name"/>
                             <span>
@@ -196,9 +199,57 @@
                     
                     </div>
 
+
+
+                    <div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+
+
                  <!-- Visual Observation -->
 
-            <div t-if="data.efflorescence_visible" style="margin-top:20px">
+            <div t-if="data.efflorescence_visible" style="margin-top:20px; page-break-before: always;">
 				<div style="text-align:center;font-size:18px;font-weight: bold">
 						Efflorescence
                          <span>
@@ -289,9 +340,54 @@
 				</table>	
 			</div>
 
+
+            <div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
                 <!-- Dimension -->
 
-            <div t-if="data.dimension_visible" style="margin-top:20px">
+            <div t-if="data.dimension_visible" style="margin-top:20px; page-break-before: always;">
 				<div style="text-align:center;font-size:18px;font-weight: bold">
 						Dimension (mm) 
                         <span>
@@ -364,9 +460,61 @@
 				</table>	
 			</div>
 
+
+            <div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+
+
                 <!-- Water Absorption 					 -->
+<<<<<<< HEAD
          <div t-if="data.water_absorbtion_visible" style="margin-top:10px; page-break-before: always;">
              <div t-if="data.water_absorbtion_visible" style="margin-top:20px">
+=======
+
+             <div t-if="data.water_absorbtion_visible" style="margin-top:20px; page-break-before: always;">
+>>>>>>> lerm_17
                         <div style="text-align:center;font-size:18px">
                               <span t-field="env['lerm.parameter.master'].search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')]).parameter_name"/>
                             <span>
@@ -437,6 +585,7 @@
 
                     </div>
 
+<<<<<<< HEAD
                     <div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -502,6 +651,11 @@
                     
                     </div>
                     </div>
+=======
+
+
+                    
+>>>>>>> lerm_17
                 
 				<!-- authorizeRowDataSheet -->
 				

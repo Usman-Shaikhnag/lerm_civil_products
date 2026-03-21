@@ -24,6 +24,27 @@
                         <field name="parameter_id" invisible="1"/>
                     </group>
 
+
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+
+
                     <div class="custom_table_borders" style="margin-top: 15px;">
                         <field name="sample_parameters" nolabel="1">
                             <tree>
@@ -32,6 +53,27 @@
                             </tree>
                         </field>
                     </div>
+                     <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+
+
+                    <!-- Fineness of Cement by Dry Sieving -->
 
                     <div invisible = "fineness_cement_visible == False"  style="margin-top: 10px;">
                         <h1 class="text-center">
@@ -45,8 +87,8 @@
                         <field name="fneness_cement_lines" nolabel="1">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name="serial_no"/>
-                                <field name="wt_of_taken"/>
-                                <field name="wt_of_residue"/>
+                                <field name="wt_of_taken" class="blue-input" decoration-info="wt_of_taken != 0"/>
+                                <field name="wt_of_residue" class="blue-input" decoration-info="wt_of_residue != 0"/>
                                 <field name="total_passed"/>
                             </tree>
                         </field>
@@ -89,6 +131,9 @@
                         </tbody>
                     </table>
 
+
+                    <!-- Density of Cement (Le-Chatlier Flask) -->
+
                     <div invisible = "density_cement_visible == False"  style="margin-top: 20px;">
                         <h1 class="text-center">
                             <field name="density_cement_name" readonly="1" nolabel="1"/>
@@ -101,8 +146,8 @@
                         <field name="density_cement_lines">
                                 <tree editable="bottom" class="custom_table_borders">
                                     <field name="serial_no"/>
-                                    <field name="wt_of_cement"/>
-                                    <field name="displaced_volume"/>
+                                    <field name="wt_of_cement" class="blue-input" decoration-info="wt_of_cement != 0"/>
+                                    <field name="displaced_volume" class="blue-input" decoration-info="displaced_volume != 0"/>
                                     <field name="density"/>
                                 </tree>
                         </field>
@@ -141,6 +186,9 @@
                     </table>
 
 
+                    <!-- Fineness by Blaine's Air Permeability -->
+
+
                       <div invisible = "fineness_blaine_visible == False">
                         <h1 class="text-center">
                             <field name="fineness_blaine_name" readonly="1" nolabel="1"/>
@@ -152,11 +200,11 @@
                         <tbody>
                             <tr>
                                 <td><label class="fw-bold" for="k">K</label></td>
-                                <td><field name="k" nolabel="1"/></td>
+                                <td><field name="k" nolabel="1" class="blue-input" /></td>
                             </tr>
                             <tr>
                                 <td><label class="fw-bold" for="e">E</label></td>
-                                <td><field name="e" nolabel="1"/></td>
+                                <td><field name="e" nolabel="1" class="blue-input" /></td>
                             </tr>
                         </tbody>
                     </table>
@@ -165,8 +213,8 @@
                         <field name="fineness_blaine_lines">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name="serial_no"/>
-                                <field name="wt_of_cement1"/>
-                                <field name="time_sec"/>
+                                <field name="wt_of_cement1" class="blue-input" decoration-info="wt_of_cement1 != 0"/>
+                                <field name="time_sec" class="blue-input" decoration-info="time_sec != 0"/>
                                 <field name="fineness"/>
                             </tree>
                         </field>
@@ -202,6 +250,8 @@
                         </tbody>
                     </table>
 
+                    <!-- Soundness of Cement -->
+
                     <div invisible = "soundness_cement_visible == False">
                         <h1 class="text-center">
                             <field name="soundness_cement_name" readonly="1" nolabel="1"/>
@@ -214,8 +264,8 @@
                         <field name="soundness_cement_lines">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name="serial_no"/>
-                                <field name="initial_distance"/>
-                                <field name="final_distance"/>
+                                <field name="initial_distance" class="blue-input" decoration-info="initial_distance != 0"/>
+                                <field name="final_distance" class="blue-input" decoration-info="final_distance != 0"/>
                                 <field name="difference"/>
                             </tree>
                         </field>
@@ -252,6 +302,8 @@
 
 
 
+                    <!-- Consistency of cement -->
+
                     <div invisible = "consistency_cement_visible == False">
                         <h1 class="text-center">
                             <field name="consistency_cement_name" readonly="1" nolabel="1"/>
@@ -264,10 +316,10 @@
                         <field name="consistency_cement_lines" class="custom_table_borders">
                             <tree editable="bottom">
                                 <field name="serial_no"/>
-                                <field name="wt_of_cement1"  widget="char"/>
+                                <field name="wt_of_cement1"   class="blue-input" decoration-info="wt_of_cement1 != 0"/>
                                 <field name="wt_of_water"  widget="char"/>
-                                <field name="water_mix" widget="char"/>
-                                <field name="needle_penitration" widget="char"/>
+                                <field name="water_mix" class="blue-input" decoration-info="water_mix != 0"/>
+                                <field name="needle_penitration"  class="blue-input" decoration-info="needle_penitration != 0"/>
                                 <!-- <field name="duration"/> -->
                             </tree>
                         </field>
@@ -323,8 +375,8 @@
                             <field name="intial_time_lines" class="custom_table_borders" style="margin-top:0; margin-bottom:0; width:100%;">
                                 <tree editable="bottom">
                                     <field name="serial_no"/>
-                                    <field name="clock_time" />
-                                    <field name="penetration_intial"/>
+                                    <field name="clock_time" class="blue-input" decoration-info="clock_time != 0"/>
+                                    <field name="penetration_intial" class="blue-input" decoration-info="penetration_intial != 0"/>
                                 </tree>
                             </field>
                         </div>
@@ -343,8 +395,8 @@
                             <field name="final_time_lines" class="custom_table_borders" style="margin-top:0; margin-bottom:0; width:100%;">
                                 <tree editable="bottom">
                                     <field name="serial_no"/>
-                                    <field name="clock_time1" />
-                                    <field name="impression_intial1"/>
+                                    <field name="clock_time1" class="blue-input" decoration-info="clock_time1 != 0"/>
+                                    <field name="impression_intial1" class="blue-input" decoration-info="impression_intial1 != 0"/>
                                 </tree>
                             </field>
                         </div>
@@ -480,6 +532,10 @@
 
                         </h1>
                     </div>
+
+
+
+                    <!-- Specific Gravity of Cement -->
                     
                 <div  invisible="specific_gravity_visible == False">
                     <table class="table table-sm table-bordered custom_table_borders" invisible="not specific_gravity_visible" style="white-space:nowrap;">
@@ -494,30 +550,30 @@
                         <tbody>
                             <tr>
                                 <td><span class="fw-bold"> Weight of empty bottle (W₁ g)</span></td>
-                                <td><field name="wt_of_empty_bottle"/></td>
-                                <td><field name="wt_of_empty_bottle1"/></td>
+                                <td><field name="wt_of_empty_bottle" class="blue-input" decoration-info="wt_of_empty_bottle != 0"/></td>
+                                <td><field name="wt_of_empty_bottle1" class="blue-input" decoration-info="wt_of_empty_bottle1 != 0"/></td>
                             </tr>
                             <tr>
                                 <td><span class="fw-bold">Weight of bottle + Cement ( W₂ g)</span></td>
-                                <td><field name="wt_of_bottle_cement"/></td>
-                                <td><field name="wt_of_bottle_cement1"/></td>
+                                <td><field name="wt_of_bottle_cement" class="blue-input" decoration-info="wt_of_bottle_cement != 0"/></td>
+                                <td><field name="wt_of_bottle_cement1" class="blue-input" decoration-info="wt_of_bottle_cement1 != 0"/></td>
                             </tr>
                             <tr>
                                 <td><span class="fw-bold">Weight of Specific gravity bottle + Cement + Kerosene ( W₃ g)</span></td>
-                                <td><field name="wt_of_specific_bpttle"/></td>
-                                <td><field name="wt_of_specific_bpttle1"/></td>
+                                <td><field name="wt_of_specific_bpttle" class="blue-input" decoration-info="wt_of_specific_bpttle != 0"/></td>
+                                <td><field name="wt_of_specific_bpttle1" class="blue-input" decoration-info="wt_of_specific_bpttle1 != 0"/></td>
                             </tr>
 
                              <tr>
                                 <td><span class="fw-bold">Weight of bottle + Full Kerosene( W₄ g)</span></td>
-                                <td><field name="wt_of_kerosene"/></td>
-                                <td><field name="wt_of_kerosene1"/></td>
+                                <td><field name="wt_of_kerosene" class="blue-input" decoration-info="wt_of_kerosene != 0"/></td>
+                                <td><field name="wt_of_kerosene1" class="blue-input" decoration-info="wt_of_kerosene1 != 0"/></td>
                             </tr>
 
                               <tr>
                                 <td><span class="fw-bold">Weight of bottle + Full Water ( W₅ g)</span></td>
-                                <td><field name="wt_of_bottle_water"/></td>
-                                <td><field name="wt_of_bottle_water1"/></td>
+                                <td><field name="wt_of_bottle_water" class="blue-input" decoration-info="wt_of_bottle_water != 0"/></td>
+                                <td><field name="wt_of_bottle_water1" class="blue-input" decoration-info="wt_of_bottle_water1 != 0"/></td>
                             </tr>
 
                                <tr>
@@ -570,6 +626,10 @@
                 </div>
 
 
+
+                    <!-- Cement Compressive Strength -->
+                    
+
                     <div invisible = "compressive_visible == False" >
                         <h1 class="text-center">
                             <field name="compressive_name" readonly="1" nolabel="1"/>
@@ -583,11 +643,11 @@
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name="serial_no"/>
                                 <field name="dt_of_casting" />
-                                <field name="days" />
-                                <field name="dt_of_testing" />
-                                <field name="wt_of_cube" />
+                                <field name="days" class="blue-input" decoration-info="days != 0" />
+                                <field name="dt_of_testing" class="blue-input" decoration-info="dt_of_testing != 0"/>
+                                <field name="wt_of_cube" class="blue-input" decoration-info="wt_of_cube != 0"/>
                                 <field name="area" />
-                                <field name="load" />
+                                <field name="load" class="blue-input" decoration-info="load != 0"/>
                                 <field name="strenght" />
                             </tree>
                         </field>
