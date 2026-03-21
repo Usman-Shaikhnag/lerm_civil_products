@@ -23,12 +23,8 @@ class PulloutPileLoadTestParent(models.Model):
     rec_date = fields.Date("Report Date")
     
     work_name = fields.Char("Name of Work")
-    client = fields.Many2one("res.partner", string="Client")
-    contractor = fields.Many2one(
-        "lerm.contractor.line",
-        string="Contractor",
-        domain="[('partner_id', '=', client)]"
-    )
+    contractor = fields.Char("Contractor")
+    client = fields.Char("Client")
 
     ulr = fields.Char("ULR No", copy=False, readonly=True)
     report_no = fields.Char("Report No", copy=False, readonly=True)
@@ -60,13 +56,6 @@ class PulloutPileLoadTestParent(models.Model):
         string="Unloading Readings",
         copy=False
     )
-    
-    content_ids = fields.One2many(
-        "pullout.pile.load.report.content",
-        "parent_id",
-        string="Contents",
-        copy=False
-    )
 
     basic_data_ids = fields.One2many(
         "pullout.pile.load.basic.data",
@@ -85,16 +74,16 @@ class PulloutPileLoadTestParent(models.Model):
     graph_image = fields.Binary("Load Displacement Graph")
 
     # ================= DISPLACEMENT SUMMARY =================
-    gross_settlement = fields.Float(
-        compute="_compute_settlement_values",
+    gross_displacement = fields.Float(
+        compute="_compute_displacement_values",
         store=True
     )
-    net_settlement = fields.Float(
-        compute="_compute_settlement_values",
+    net_displacement = fields.Float(
+        compute="_compute_displacement_values",
         store=True
     )
     rebound = fields.Float(
-        compute="_compute_settlement_values",
+        compute="_compute_displacement_values",
         store=True
     )
     
@@ -104,7 +93,6 @@ class PulloutPileLoadTestParent(models.Model):
         store=True
     )
 
-    analysis_text = fields.Text("Analysis of Test Results")
     @api.depends('rec_date')
     def _compute_rec_date_str(self):
         for rec in self:
@@ -143,7 +131,7 @@ class PulloutPileLoadTestParent(models.Model):
 
     # ================= COMPUTE LOGIC =================
     @api.depends('loading_reading_ids.mean_mm', 'unloading_reading_ids.mean_mm')
-    def _compute_settlement_values(self):
+    def _compute_displacement_values(self):
         for rec in self:
 
             loading_map = {}
@@ -166,9 +154,9 @@ class PulloutPileLoadTestParent(models.Model):
             rebound = rebound_lines[-1].mean_mm if rebound_lines else 0.0
             net = gross - rebound
 
-            rec.gross_settlement = round(gross, 2)
+            rec.gross_displacement = round(gross, 2)
             rec.rebound = round(rebound, 2)
-            rec.net_settlement = round(net, 2)
+            rec.net_displacement = round(net, 2)
 
 
     # ================= GRAPH =================
@@ -335,14 +323,13 @@ class PulloutPileLoadTestParent(models.Model):
             for line in rec.loading_reading_ids:
                 line._compute_mean()
                 line._compute_split_dt()
-
             # 2️⃣ Recompute mean displacement on UNLOADING readings
             for line in rec.unloading_reading_ids:
                 line._compute_mean()
                 line._compute_split_dt()
 
             # 3️⃣ Recompute displacement summary on parent
-            rec._compute_settlement_values()
+            rec._compute_displacement_values()
 
     def print_report(self):
         self.ensure_one()
@@ -404,6 +391,7 @@ class PulloutPileLoadTestParent(models.Model):
         copy=False
     )
 
+    
     @api.depends('loading_reading_ids.reading_datetime')
     def _compute_last_reading_datetime(self):
         for rec in self:
@@ -651,16 +639,6 @@ class PulloutPileLoadReadingUnloading(models.Model):
 # =========================================================
 # SUPPORT TABLES
 # =========================================================
-class PulloutPileLoadReportContent(models.Model):
-    _name = "pullout.pile.load.report.content"
-    _description = "Pull-Out Pile Load Test Report Content"
-
-    parent_id = fields.Many2one("pullout.pile.load.test.parent", ondelete="cascade")
-    sequence = fields.Float("Sl. No")
-    description = fields.Char("Description")
-    page_no = fields.Char("Page No")
-
-
 class PulloutPileLoadBasicData(models.Model):
     _name = "pullout.pile.load.basic.data"
     _description = "Pull-Out Pile Load Test Basic Data"

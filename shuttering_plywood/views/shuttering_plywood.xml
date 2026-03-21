@@ -28,6 +28,24 @@
                         </tree>
                       </field>
                     </div>
+
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
                    
        
 
@@ -46,11 +64,11 @@
                         <field name="child_lines_dimensions_shuttering" nolabel="1" colspan="2" >
                             <tree editable="bottom" >
                                 <field name='sr_no'/>
-                                <field name='lenght'/>
-                                <field name='width'/>
-                                <field name='thickness'/>
-                                <field name='squareness'/>
-                                   <field name='edge_straightness'/>
+                                <field name='lenght' class="blue-input" decoration-info="lenght != 0"/>
+                                <field name='width' class="blue-input" decoration-info="width != 0"/>
+                                <field name='thickness' class="blue-input" decoration-info="thickness != 0"/>
+                                <field name='squareness' class="blue-input" decoration-info="squareness != 0"/>
+                                   <field name='edge_straightness' class="blue-input" decoration-info="edge_straightness != 0"/>
                             </tree>
                          </field>  
                     </div>
@@ -84,14 +102,7 @@
                       <group/>
                       <group/>
 
-                    <!-- <group invisible="not dimensions_shuttering_visible"  style="white-space: nowrap; width:70%;">
-                        <field name='average_length' col="4"/>
-                         <field name='average_width' col="4"/>
-                        <field name='average_thickness' col="4"/>
-                        <field name='average_squareness' col="4"/>
-                         <field name='average_edge_straightness' col="4"/>
-                       
-                    </group> -->
+                    
 
 
                     <div style="display:flex;">
@@ -192,91 +203,6 @@
 
 
 
-                    <!-- <group invisible="not dimensions_shuttering_visible" style="white-space: nowrap; width:70%;">
-
-                     <group style="width:25%" invisible="not dimensions_shuttering_visible">
-                                <field name='average_length_conformity'
-                                       decoration-success="average_length_conformity == 'pass'" 
-                                       decoration-danger="average_length_conformity == 'fail'" 
-                                       readonly="1"/>
-                        </group>
-                          <group style="width:25%" invisible="not dimensions_shuttering_visible">
-                                <field name="average_length_nabl"
-                                       decoration-success="average_length_nabl == 'pass'" 
-                                       decoration-danger="average_length_nabl == 'fail'" 
-                                       readonly="1"/>
-                            </group>
-                        </group>
-
-
-                     <group invisible="not dimensions_shuttering_visible" style="white-space: nowrap; width:70%;">
-
-                     <group style="width:25%" invisible="not dimensions_shuttering_visible">
-                                <field name='average_width_conformity'
-                                       decoration-success="average_width_conformity == 'pass'" 
-                                       decoration-danger="average_width_conformity == 'fail'" 
-                                       readonly="1"/>
-                        </group>
-                          <group style="width:25%" invisible="not dimensions_shuttering_visible">
-                                <field name="average_width_nabl"
-                                       decoration-success="average_width_nabl == 'pass'" 
-                                       decoration-danger="average_width_nabl == 'fail'" 
-                                       readonly="1"/>
-                            </group>
-                        </group>
-
-
-
-                    <group invisible="not dimensions_shuttering_visible" style="white-space: nowrap; width:70%;">
-
-                     <group style="width:25%" invisible="not dimensions_shuttering_visible">
-                                <field name='average_thickness_conformity'
-                                       decoration-success="average_thickness_conformity == 'pass'" 
-                                       decoration-danger="average_thickness_conformity == 'fail'" 
-                                       readonly="1"/>
-                        </group>
-                          <group style="width:25%" invisible="not dimensions_shuttering_visible">
-                                <field name="average_thickness_nabl"
-                                       decoration-success="average_thickness_nabl == 'pass'" 
-                                       decoration-danger="average_thickness_nabl == 'fail'" 
-                                       readonly="1"/>
-                            </group>
-                        </group>
-
-
-
-                     <group invisible="not dimensions_shuttering_visible" style="white-space: nowrap; width:70%;">
-
-                     <group style="width:25%" invisible="not dimensions_shuttering_visible">
-                                <field name='average_squareness_conformity'
-                                       decoration-success="average_squareness_conformity == 'pass'" 
-                                       decoration-danger="average_squareness_conformity == 'fail'" 
-                                       readonly="1"/>
-                        </group>
-                          <group style="width:25%" invisible="not dimensions_shuttering_visible">
-                                <field name="average_squareness_nabl"
-                                       decoration-success="average_squareness_nabl == 'pass'" 
-                                       decoration-danger="average_squareness_nabl == 'fail'" 
-                                       readonly="1"/>
-                            </group>
-                        </group>
-
-
-                    <group invisible="not dimensions_shuttering_visible" style="white-space: nowrap; width:70%;">
-
-                     <group style="width:25%" invisible="not dimensions_shuttering_visible">
-                                <field name='average_edge_straightness_conformity'
-                                       decoration-success="average_edge_straightness_conformity == 'pass'" 
-                                       decoration-danger="average_edge_straightness_conformity == 'fail'" 
-                                       readonly="1"/>
-                        </group>
-                          <group style="width:25%" invisible="not dimensions_shuttering_visible">
-                                <field name="average_edge_straightness_nabl"
-                                       decoration-success="average_edge_straightness_nabl == 'pass'" 
-                                       decoration-danger="average_edge_straightness_nabl == 'fail'" 
-                                       readonly="1"/>
-                            </group>
-                        </group> -->
 
 
 
@@ -296,17 +222,14 @@
                       <tbody>
                         <tr>
                           <td><span>Observation</span></td>
-                          <td style="width:300px"><field name='adhesion_plies' col="1"/></td>
+                          <td style="width:300px"><field name='adhesion_plies' col="1" class="blue-input" /></td>
                          </tr>
                          </tbody>
                       </table>
                     </div>
                     <group/>
 
-                    <!-- <group invisible="not adhesion_plies_visible"  style="white-space: nowrap; width:70%;">
-                        <field name='adhesion_plies' col="4"/> 
-                    </group> -->
-
+                   
 
 
                        <!--  Resistance to dry heat-->
@@ -324,15 +247,13 @@
                       <tbody>
                         <tr>
                           <td><span>Observation</span></td>
-                          <td style="width:300px"><field name='resistance_heat' col="1"/></td>
+                          <td style="width:300px"><field name='resistance_heat' col="1" class="blue-input" /></td>
                          </tr>
                          </tbody>
                       </table>
                     </div>
                     <group/>
-                    <!-- <group invisible="not resistance_heat_visible"  style="white-space: nowrap; width:70%;">
-                        <field name='resistance_heat' col="4"/>
-                    </group> -->
+                   
 
 
 
@@ -350,17 +271,14 @@
                       <tbody>
                         <tr>
                           <td><span>Observation</span></td>
-                          <td style="width:300px"><field name='water_resistance' col="1"/></td>
+                          <td style="width:300px"><field name='water_resistance' col="1" class="blue-input" /></td>
                          </tr>
                          </tbody>
                       </table>
                     </div>
                     <group/>
 
-                    <!-- <group invisible="not water_resistance_visible"  style="white-space: nowrap; width:70%;">
-                        <field name='water_resistance' col="4"/>  
-                    </group> -->
-
+                   
 
 
                      <!--  density -->
@@ -376,11 +294,11 @@
                         <field name="child_lines_density_shuttering" nolabel="1" colspan="2" >
                             <tree editable="bottom">
                                 <field name='sr_no'/>
-                                <field name='lenght'/>
-                                <field name='width'/>
-                                <field name='thickness'/>
-                                <field name='initial_weight'/>
-                                <field name='oven_dry_weight'/>
+                                <field name='lenght' class="blue-input" decoration-info="lenght != 0"/>
+                                <field name='width' class="blue-input" decoration-info="width != 0"/>
+                                <field name='thickness' class="blue-input" decoration-info="thickness != 0"/>
+                                <field name='initial_weight' class="blue-input" decoration-info="initial_weight != 0"/>
+                                <field name='oven_dry_weight' class="blue-input" decoration-info="oven_dry_weight != 0"/>
                                 <field name='density_shuttering'/>
                             </tree>
                          </field> 

@@ -115,7 +115,306 @@
 						<b>Test Method : </b> IS 1888 : 1982
 						
 					</div>
-					<div class="signatureContainer girdgird" style="margin-top:50px;page-break-inside: avoid;">
+					
+
+
+                <div class="page" style="page-break-before: always;margin-top:20px">
+					<div style="text-align:center;font-size:18px">
+			          Content
+
+		     		</div>
+					 <table style="width: 100%; border-collapse: collapse; text-align: left; margin-top: 10px;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid black;">
+                            <th style="padding: 5px; border: 1px solid black; text-align: center;">Sr. No.</th>
+                            <th style="padding: 5px; border: 1px solid black;text-align: center;">Item</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 5px; border: 1px solid black;text-align: center;">1</td>
+                            <td style="padding: 5px; border: 1px solid black;text-align: center;">Introduction</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px; border: 1px solid black;text-align: center;">2</td>
+                            <td style="padding: 5px; border: 1px solid black;text-align: center;">Objective</td>
+                            <!-- <td style="padding: 5px; border: 1px solid black;"><span class="page"/> / <span class="topage"/></td> -->
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px; border: 1px solid black;text-align: center;">3</td>
+                            <td style="padding: 5px; border: 1px solid black;text-align: center;">Apparatus</td>
+                            <!-- <td style="padding: 5px; border: 1px solid black;">9-12</td> -->
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px; border: 1px solid black;text-align: center;">4</td>
+                            <td style="padding: 5px; border: 1px solid black;text-align: center;">Setup &amp; Test Procedure</td>
+                            <!-- <td style="padding: 5px; border: 1px solid black;">13-13</td> -->
+                        </tr>
+						  <tr>
+                            <td style="padding: 5px; border: 1px solid black;text-align: center;">5</td>
+                            <td style="padding: 5px; border: 1px solid black;text-align: center;">Load vs Settlement data &amp; Safe bearing capacity</td>
+                            <!-- <td style="padding: 5px; border: 1px solid black;">13-13</td> -->
+                        </tr>
+						 <tr>
+									<td style="padding: 5px; border: 1px solid black;text-align: center;">6</td>
+									<td style="padding: 5px; border: 1px solid black;text-align: center;">ANNEXURES</td>
+							
+							</tr>
+
+						    <tr>
+							<td style="padding: 5px; border: 1px solid black;text-align: center;"></td>
+									<td style="padding: 5px; border: 1px solid black;text-align: center;">I. Calculation</td>
+								</tr>
+
+							 <tr>
+							<td style="padding: 5px; border: 1px solid black;text-align: center;"></td>
+									<td style="padding: 5px; border: 1px solid black;text-align: center;">II. Load intensity vs Settlement Graph</td>
+							</tr>
+
+						  <tr>
+                            <td style="padding: 5px; border: 1px solid black;text-align: center;">7</td>
+                            <td style="padding: 5px; border: 1px solid black;text-align: center;">Photographs</td>
+                            <!-- <td style="padding: 5px; border: 1px solid black;">13-13</td> -->
+                        </tr>
+                    </tbody>
+                </table>
+
+			
+						
+				</div>
+
+				<div class="page" style="page-break-before: always;margin-top:20px">
+				<div>
+						  <b>1. INTRODUCTION :  <br></br></b>
+						  <P><b><span t-field="data.client_name"/></b>  <b><span t-field="data.site_add"/></b><b><span t-field="data.introdution"/></b> <b><span t-field="data.months"/></b></P>
+				</div>
+				<div>
+						  <b>2. OBJECTIVE:  <br></br></b>
+						  	 <ul>
+								<t t-foreach="(data.objective or '').split('\n')" t-as="line">
+									<li><t t-esc="line"/></li>
+								</t>
+
+							</ul>
+				</div>
+
+				<div>
+						  <b>3. APPARATUS:  <br></br></b>
+						  	<!-- <ul>
+									<li>
+										Calibrated Dial Gauges of least count 0.01 mm.
+									</li>
+									<li>
+									Datum Bars
+									</li>
+								<li>
+								Plumb Bob
+								</li>
+									<li>
+								Glass Plate
+								</li>
+									<li>
+								Bearing plate  <b><span t-field="data.bearing_plate"/></b> of 25mm thickness.
+								</li>
+									<li>
+								Calibrated Jack <b><span t-field="data.jack_capacity"/> </b>capacity with pressure gauge.
+								</li>
+									<li>
+								Reaction load is applied using <b><span t-field="data.reaction_load"/> </b>bearing dead weight of <b> <span t-field="data.bearing_dead"/></b> approximately.
+
+								</li>
+									
+								</ul> -->
+								 <ul>
+								
+								<t t-foreach="(data.apparatus or '').split('\n')" t-as="line">
+									<li><t t-esc="line"/></li>
+								</t>
+							</ul>
+				</div>
+
+				<div>
+						  <b>4. SETUP &amp; TEST PROCEDURE:  <br></br></b>
+						  	<!-- <ul>
+									<li>
+										Excavator is used for applying the load on the square plate of <b><span t-field="data.bearing_plate"/></b>
+									</li>
+									<li>
+									Bearing plate was centrally aligned such that centre of plate coincide with centre of chassis of <b><span t-field="data.reaction_load"/></b>.
+									</li>
+								<li>
+								The hydraulic jack was centrally placed over plate with loading column in between jack &amp; chassis of <b><span t-field="data.reaction_load"/> </b>for transferring the load to the plate.
+								</li>
+									<li>
+								Datum bars were placed on either side of plate to hold four dial gauges, one on each corner of plate.
+                               
+								</li>
+									<li>
+								 The dial gauges were so arranged that settlement was measured continuously without any resetting in between.
+								</li>
+									<li>
+								Test Load was applied in increments of <b><span t-field="data.no_cycle1"/></b> of estimated ultimate load.
+								</li>
+									<li>
+								The load increment was kept for time until rate of settlement was reduced to 0.02mm/min.
+
+								</li>
+
+									<li>
+								The next increments of load were applied &amp; observations were repeated.
+
+
+								</li>
+
+									<li>
+								Settlement was recorded with 4 dial gauges of 0.01 mm sensitivity, held by magnetic base.
+
+								</li>
+
+									<li>
+							After completion of loading up to final, load was released from maximum to zero &amp; all readings were recorded in similar pattern to record the rebound.
+								</li>
+									
+								</ul> -->
+								 <ul>
+							
+								<t t-foreach="(data.test_procedure or '').split('\n')" t-as="line">
+									<li><t t-esc="line"/></li>
+								</t>
+							</ul>
+				</div>
+
+
+				<div class="page" style="page-break-before: always;margin-top:20px;font-size:18px">
+					<div style="font-size:18px" >
+			        1. Load vs	Settlement data &amp; Safe bearing capacity
+
+				</div>
+				<div style="text-align:center;font-size:18px">
+			       TABLE NO. 1
+
+				</div>
+				<table style="margin-top:20px">
+                <thead style="background-color: #d3d3d3;">
+                 
+                    <tr >
+						<td rowspan="2" style="text-align: center;">Sr No 
+						</td>
+						<td colspan="1" style="text-align: center;">Load Applied (t/m2) 
+						</td>
+						
+					<td  colspan="1" style="text-align: center;">Average cumulative Plate Settlement mm</td>
+					
+                       
+                    </tr>
+                   
+                </thead>
+                <tbody>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.child_lines_loadand_cumilitive" t-as="r">
+							<td style="text-align: center;">
+								<div>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</div>
+							</td>
+							<td style="text-align: center;">
+								<span t-esc="r['pressure_plate2']" t-options='{"widget": "float", "precision": 2}' />
+							</td >
+							<td colspan="1" style="text-align: center;">
+								<span t-esc="r['cumulative_sett2']" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+							
+							
+						</tr>
+                 
+                </tbody>
+            </table>
+
+			<div style="margin-top:20px">
+			 <p>Based on result of plate load test, the net allowable safe bearing capacity of </p>
+			 <p><b><span t-field="data.allowable_net"/></b> t/sq. m is achieved using factor of safety as <b><span t-field="data.factor_safty"/></b> this capacity is solely</p>
+			 <p> based on plate load test result</p>
+			</div>
+
+			<div style="text-align:center;font-size:18px">
+			       TABLE NO. 2
+
+				</div>
+				<div style="text-align:center;font-size:18px ;margin-top:20px">
+			        		Summary of test
+
+			         	</div>
+					
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6" style="text-align: center;">Safe Bearing Capacity  t/m²
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6" style="text-align: center;">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.bearing_capacity" />
+								</td>
+							</tr>
+                            <tr cols="12" >
+								<td colspan="6" style="text-align: center;">Factor of Safety
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6" style="text-align: center;">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.factore_safty" />
+								</td>
+							</tr>
+                            <tr cols="12" >
+								<td colspan="6" style="text-align: center;">Ultimate Bearing Capacity  t/m²
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6" style="text-align: center;">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.ultimate_bearing" />
+								</td>
+							</tr>
+
+
+							 <tr cols="12">
+								<td colspan="6" style="text-align: center;">Maximum load Intensity on plate , t/m²
+
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6" style="text-align: center;">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.maximum_load" />
+								</td>
+							</tr>
+							 <tr cols="12">
+								<td colspan="6" style="text-align: center;">Allowable Bearing Capacity of soil , t/m²
+
+
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6" style="text-align: center;">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.allowable" />
+								</td>
+							</tr>
+
+							 <tr cols="12">
+								<td colspan="6" style="text-align: center;">Total Settlement of plate ,mm
+
+
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6" style="text-align: center;">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.total_settlement" />
+								</td>
+							</tr>
+							 
+                            
+						</table>
+
+						<div class="signatureContainer girdgird" style="margin-top:50px;page-break-inside: avoid;">
 							<div>
 								<div>
 									<b>
@@ -168,320 +467,21 @@
 							</div>
 						</div>
 
+						<div style="text-align:center;margin-top:25px">
+							......End of Report......
+						</div>
 
-                <div class="page" style="page-break-before: always;margin-top:20px">
-					<div style="text-align:center;font-size:18px">
-			          Content
-
-		     		</div>
-					 <table style="width: 100%; border-collapse: collapse; text-align: left; margin-top: 10px;">
-                    <thead>
-                        <tr style="border-bottom: 1px solid black;">
-                            <th style="padding: 5px; border: 1px solid black;">Sr. No.</th>
-                            <th style="padding: 5px; border: 1px solid black;">Item</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td style="padding: 5px; border: 1px solid black;">1</td>
-                            <td style="padding: 5px; border: 1px solid black;">Introduction</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 5px; border: 1px solid black;">2</td>
-                            <td style="padding: 5px; border: 1px solid black;">Objective</td>
-                            <!-- <td style="padding: 5px; border: 1px solid black;"><span class="page"/> / <span class="topage"/></td> -->
-                        </tr>
-                        <tr>
-                            <td style="padding: 5px; border: 1px solid black;">3</td>
-                            <td style="padding: 5px; border: 1px solid black;">Apparatus</td>
-                            <!-- <td style="padding: 5px; border: 1px solid black;">9-12</td> -->
-                        </tr>
-                        <tr>
-                            <td style="padding: 5px; border: 1px solid black;">4</td>
-                            <td style="padding: 5px; border: 1px solid black;">Setup &amp; Test Procedure</td>
-                            <!-- <td style="padding: 5px; border: 1px solid black;">13-13</td> -->
-                        </tr>
-						  <tr>
-                            <td style="padding: 5px; border: 1px solid black;">5</td>
-                            <td style="padding: 5px; border: 1px solid black;">Load vs Settlement data &amp; Safe bearing capacity</td>
-                            <!-- <td style="padding: 5px; border: 1px solid black;">13-13</td> -->
-                        </tr>
-						 <tr>
-									<td style="padding: 5px; border: 1px solid black;">6</td>
-									<td style="padding: 5px; border: 1px solid black;">ANNEXURES</td>
-							
-							</tr>
-
-						    <tr>
-							<td style="padding: 5px; border: 1px solid black;"></td>
-									<td style="padding: 5px; border: 1px solid black;">I. Calculation</td>
-								</tr>
-
-							 <tr>
-							<td style="padding: 5px; border: 1px solid black;"></td>
-									<td style="padding: 5px; border: 1px solid black;">II. Load intensity vs Settlement Graph</td>
-							</tr>
-
-						  <tr>
-                            <td style="padding: 5px; border: 1px solid black;">7</td>
-                            <td style="padding: 5px; border: 1px solid black;">Photographs</td>
-                            <!-- <td style="padding: 5px; border: 1px solid black;">13-13</td> -->
-                        </tr>
-                    </tbody>
-                </table>
-
-			
-						
-				</div>
-
-				<div class="page" style="page-break-before: always;margin-top:20px">
-				<div>
-						  <b>1. INTRODUCTION :  <br></br></b>
-						  <P>The <b><span t-field="data.client_name"/></b> has proposed to conduct Plate Load Test at “ <b><span t-field="data.site_add"/></b>” on the proposed site as per their contractual requirements. The test was performed as per requirements of IS 1888: 1982. Knack Engineering Services Pvt. Ltd.  was commissioned for the execution. Test was conducted in month of <b><span t-field="data.months"/></b></P>
-				</div>
-				<div>
-						  <b>2. OBJECTIVE:  <br></br></b>
-						  	<ul>
-									<li>
-										The Plate Load Test was conducted as per IS 1888: 1982, and evaluate safe bearing capacity.
-									</li>
-									<li>
-									Imposition of the test load as per the design requirement.
-									</li>
-								<li>
-									he settlement of plate after the application of load was measured.
-								</li>
-								</ul>
-				</div>
-
-				<div>
-						  <b>3. APPARATUS:  <br></br></b>
-						  	<ul>
-									<li>
-										Calibrated Dial Gauges of least count 0.01 mm.
-									</li>
-									<li>
-									Datum Bars
-									</li>
-								<li>
-								Plumb Bob
-								</li>
-									<li>
-								Glass Plate
-								</li>
-									<li>
-								Bearing plate  <b><span t-field="data.bearing_plate"/></b> of 25mm thickness.
-								</li>
-									<li>
-								Calibrated Jack <b><span t-field="data.jack_capacity"/> </b>capacity with pressure gauge.
-								</li>
-									<li>
-								Reaction load is applied using <b><span t-field="data.reaction_load"/> </b>bearing dead weight of <b> <span t-field="data.bearing_dead"/></b> approximately.
-
-								</li>
-									
-								</ul>
-				</div>
-
-				<div>
-						  <b>4. SETUP &amp; TEST PROCEDURE:  <br></br></b>
-						  	<ul>
-									<li>
-										Excavator is used for applying the load on the square plate of <b><span t-field="data.bearing_plate"/></b>
-									</li>
-									<li>
-									Bearing plate was centrally aligned such that centre of plate coincide with centre of chassis of <b><span t-field="data.reaction_load"/></b>.
-									</li>
-								<li>
-								The hydraulic jack was centrally placed over plate with loading column in between jack &amp; chassis of <b><span t-field="data.reaction_load"/> </b>for transferring the load to the plate.
-								</li>
-									<li>
-								Datum bars were placed on either side of plate to hold four dial gauges, one on each corner of plate.
-                               
-								</li>
-									<li>
-								 The dial gauges were so arranged that settlement was measured continuously without any resetting in between.
-								</li>
-									<li>
-								Test Load was applied in increments of <b><span t-field="data.no_cycle1"/></b> of estimated ultimate load.
-								</li>
-									<li>
-								The load increment was kept for time until rate of settlement was reduced to 0.02mm/min.
-
-								</li>
-
-									<li>
-								The next increments of load were applied &amp; observations were repeated.
-
-
-								</li>
-
-									<li>
-								Settlement was recorded with 4 dial gauges of 0.01 mm sensitivity, held by magnetic base.
-
-								</li>
-
-									<li>
-							After completion of loading up to final, load was released from maximum to zero &amp; all readings were recorded in similar pattern to record the rebound.
-								</li>
-									
-								</ul>
-				</div>
-
-
-				<div class="page" style="page-break-before: always;margin-top:20px;font-size:18px">
-					<div style="font-size:18px" >
-			        1. Load vs	Settlement data &amp; Safe bearing capacity
-
-				</div>
-				<div style="text-align:center;font-size:18px">
-			       TABLE NO. 1
-
-				</div>
-				<table style="margin-top:20px">
-                <thead style="background-color: #d3d3d3;">
-                 
-                    <tr >
-						<td rowspan="2">Sr No 
-						</td>
-						<td colspan="1">Load Applied (t/m2) 
-						</td>
-						
-					<td  colspan="1">Average cumulative Plate Settlement mm</td>
-					
-                       
-                    </tr>
-                   
-                </thead>
-                <tbody>
-
-						<t t-set="i" t-value="0"/>
-						<tr t-foreach="data.child_lines_loadand_cumilitive" t-as="r">
-							<td >
-								<div>
-									<span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/>
-								</div>
-							</td>
-							<td >
-								<span t-esc="r['pressure_plate2']" t-options='{"widget": "float", "precision": 2}' />
-							</td>
-							<td colspan="1">
-								<span t-esc="r['cumulative_sett2']" t-options='{"widget": "float", "precision": 2}'/>
-							</td>
-							
-							
-						</tr>
-                 
-                </tbody>
-            </table>
-
-			<div style="margin-top:20px">
-			 <p>Based on result of plate load test, the net allowable safe bearing capacity of </p>
-			 <p><b><span t-field="data.allowable_net"/></b> t/sq. m is achieved using factor of safety as <b><span t-field="data.factor_safty"/></b> this capacity is solely</p>
-			 <p> based on plate load test result</p>
-			</div>
-
-			<div style="text-align:center;font-size:18px">
-			       TABLE NO. 2
-
-				</div>
-				<div style="text-align:center;font-size:18px ;margin-top:20px">
-			        		Summary of test
-
-			         	</div>
-					
-						<table style="margin-top:20px">
-							<tr cols="12">
-								<td colspan="6">Safe Bearing Capacity  t/m²
-									<![CDATA[&nbsp;]]>
-								</td>
-								<td colspan="6">
-									<![CDATA[&nbsp;]]>
-									<span t-field="data.bearing_capacity" />
-								</td>
-							</tr>
-                            <tr cols="12">
-								<td colspan="6">Factor of Safety
-									<![CDATA[&nbsp;]]>
-								</td>
-								<td colspan="6">
-									<![CDATA[&nbsp;]]>
-									<span t-field="data.factore_safty" />
-								</td>
-							</tr>
-                            <tr cols="12">
-								<td colspan="6">Ultimate Bearing Capacity  t/m²
-									<![CDATA[&nbsp;]]>
-								</td>
-								<td colspan="6">
-									<![CDATA[&nbsp;]]>
-									<span t-field="data.ultimate_bearing" />
-								</td>
-							</tr>
-
-
-							 <tr cols="12">
-								<td colspan="6">Maximum load Intensity on plate , t/m²
-
-									<![CDATA[&nbsp;]]>
-								</td>
-								<td colspan="6">
-									<![CDATA[&nbsp;]]>
-									<span t-field="data.maximum_load" />
-								</td>
-							</tr>
-							 <tr cols="12">
-								<td colspan="6">Allowable Bearing Capacity of soil , t/m²
-
-
-									<![CDATA[&nbsp;]]>
-								</td>
-								<td colspan="6">
-									<![CDATA[&nbsp;]]>
-									<span t-field="data.allowable" />
-								</td>
-							</tr>
-
-							 <tr cols="12">
-								<td colspan="6">Total Settlement of plate ,mm
-
-
-									<![CDATA[&nbsp;]]>
-								</td>
-								<td colspan="6">
-									<![CDATA[&nbsp;]]>
-									<span t-field="data.total_settlement" />
-								</td>
-							</tr>
-							 
-                            
-						</table>
 
 
 			      </div>
 
 
-				  <div class="page" style="page-break-before: always;margin-top:20px;font-size:18px">
+				  <!-- <div class="page" style="page-break-before: always;margin-top:20px;font-size:18px">
 					<div style="font-size:18px" >
 			       I.  CALCULATION FOR ALLOWABLE BEARING CAPACITY BASED ON RESULT OF PLATE LOAD TEST
 
 				</div>
-                 <!-- <div>
-				   <br>Footing Settlement:    sf = sp {Bf(Bp + 0.3)/BP (Bf + 0.3)}2</br>
-				   <br>Where,</br>
-				   <br>Bf = Size of footing in m, </br>
-				   <br>Bp= Size of plate in m,</br>
-				    <br>Sp= Settlement of test plate in mm,</br>
-					 <br>Sf= Settlement of footing in mm.</br>
-					 <br>Size of footing as 7m, Bf = 7m</br>
-					  <br>Bp = 0.30m</br>
-					   <br>Sp = 3.76 mm</br>
-					   <br>Settlement below PCC,   =   sf = sp {Bf(Bp + 0.3)/BP (Bf + 0.3)}2</br>
-
-					     <br style="text-align:center"> 3.76 {7(3 + 0.3)/0.3 (7 + 0.3)}2</br>
-						 <br style="text-align:center">  = 13.85 mm &lt; 25 mm (IS 1888-1982 clause 4.7)</br>
-				 </div> -->
+                
 				 <table >
 					
 							<div>
@@ -504,7 +504,7 @@
 					<span t-field="data.observation"/>
 				</div>
 
-				</div>
+				</div> -->
 
 
 
@@ -537,12 +537,12 @@
                 <thead style="background-color: #d3d3d3;">
                  
                     <tr >
-						<td rowspan="2">Sr No 
+						<td rowspan="2" style="text-align: center;">Sr No 
 						</td>
-						<td colspan="1">Applied  load in T/m2
+						<td colspan="1" style="text-align: center;">Applied  load in T/m2
 						</td>
 						
-					<td  colspan="1">Settlement in mm</td>
+					<td  colspan="1" style="text-align: center;">Settlement in mm</td>
 					
                        
                     </tr>
@@ -552,16 +552,16 @@
 
 						<t t-set="i" t-value="0"/>
 						<tr t-foreach="data.child_lines_loadand_cumilitive1" t-as="r">
-							<td >
+							<td  style="text-align: center;">
 								<div>
 									<span t-esc="i + 1" />
 									<t t-set="i" t-value="i+1"/>
 								</div>
 							</td>
-							<td >
+							<td style="text-align: center;">
 								<span t-esc="r['pressure_plate3']"  t-options='{"widget": "float", "precision": 2}'/>
 							</td>
-							<td colspan="1">
+							<td colspan="1" style="text-align: center;">
 								<span t-esc="r['settlement3']" t-options='{"widget": "float", "precision": 2}'/>
 							</td>
 							
@@ -605,10 +605,7 @@
 						
 						
 					    <!-- </div> -->
-						<div style="text-align:center;margin-top:25px">
-							......End of Report......
-						</div>
-
+						
 					</div>
 
 					

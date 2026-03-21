@@ -16,6 +16,7 @@
 						</div>
 						
 						
+					
 						<table style="margin-top:10px">
 
 							<tr cols="12">
@@ -86,11 +87,55 @@
 								</td>
 							</tr>
 						</table>
+
+						<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+						
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
 					</div>
 
                     <!-- Density of Cement (Le-Chatlier Flask) -->
 
-					<div t-if="data.density_cement_visible" style="margin-top:10px">
+					<div t-if="data.density_cement_visible" style="margin-top:10px;page-break-before: always;">
 						<div style="text-align:center;font-size:18px">
 							Density of Cement (Le-Chatlier Flask)
 						</div>
@@ -137,14 +182,57 @@
 									<span t-field="data.avg_density" t-options='{"widget": "float", "precision": 2}'/>
 								</td>
 							</tr>
-							
+						
 						</table>
+						<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
 					</div>
 
 
 					<!-- Fineness by Blaine's Air Permeability  -->
 
-					<div t-if="data.fineness_blaine_visible" style="margin-top:10px">
+					<div t-if="data.fineness_blaine_visible" style="margin-top:10px;page-break-before: always;">
 						<div style="text-align:center;font-size:18px">
 							Fineness by Blaine's Air Permeability
 						</div>
@@ -214,13 +302,56 @@
 								
 							</tr>
 						</table>
+						<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
 					</div>
 	
 
 					<!-- Soundness  -->
 
 
-					<div t-if="data.soundness_cement_visible" style="margin-top:10px">
+					<div t-if="data.soundness_cement_visible" style="margin-top:10px;page-break-before: always;">
 						<div style="text-align:center;font-size:18px">
 							Soundness of Cement
 						</div>
@@ -269,11 +400,54 @@
 							
 							</tr>
 						</table>
+						<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
 					</div>
 
              <!-- Consistency of cement -->
 
-					<div t-if="data.consistency_cement_visible" style="margin-top:10px">
+					<div t-if="data.consistency_cement_visible" style="margin-top:10px;page-break-before: always;">
 						<div style="text-align:center;font-size:18px">
 							Consistency of cement
 						</div>
@@ -316,25 +490,67 @@
 								<td colspan="3">
 									<span t-esc="r['needle_penitration']"/>
 								</td>
-								<!-- <td colspan="3">
-									<span t-esc="r['duration']"/>
-								</td> -->
+								
 							</tr>
 						</table>
+
+						<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
 						
 					</div>
 
-                       <!-- Setting Time -->
+                         <!-- Setting Time -->
 
-					<div  style="margin-top:10px">
+					<div  style="margin-top:10px;page-break-before: always;">
         
 							
 							   <div style="text-align:center;font-size:18px" t-if="data.initial_setting_time_visible or final_setting_time_visible" >
 									Setting Time
 								</div>
 
-
-								 <div class="d-flex" style="gap:10px; margin-bottom:20px; align-items:stretch;"  invisible="not initial_setting_time_visible or not final_setting_time_visible">
+						
+						      <div class="d-flex" style="gap:10px; margin-bottom:20px; align-items:stretch;"  invisible="not initial_setting_time_visible or not final_setting_time_visible">
 
                         <!-- Left side -->
 							     	<div style="width:50%; text-align:center;" class="equal-box">
@@ -419,7 +635,6 @@
 
                     </div>
 
-
 							<table style="width:100%; border-collapse: collapse; border:1px solid black;margin-top:10px" t-if="data.initial_setting_time_visible">
 								<thead>
 									<tr >
@@ -481,9 +696,55 @@
 									</tr>
 								</tbody>
 							</table>
+							<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
 						</div>
 
-						<div t-if="data.specific_gravity_visible" style="margin-top:10px">
+
+
+						<!--  -->
+						<div t-if="data.specific_gravity_visible" style="margin-top:10px;page-break-before: always;">
 						<div style="text-align:center;font-size:18px">
 							Specific Gravity of Cement
 						</div>
@@ -555,13 +816,57 @@
 								
 							</tr>
 						</table>
+						<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
 					</div>
 
 					
 
 					<!-- Compressive Strength  -->
 
-					<div t-if="data.compressive_visible" style="margin-top:10px">
+					<div t-if="data.compressive_visible" style="margin-top:10px;page-break-before: always;">
 						<div style="text-align:center;font-size:18px">
 							Compressive Strength
 						</div>
@@ -723,16 +1028,15 @@
 
 
 
+
 <template id="lerm_cement_report_ppc">
 		<t t-call="web.html_container">
-			<!-- <t t-call="web.basic_layout"> -->
+		
 			
 			<t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
 				
-				<!-- <div style="text-align:center;margin-top:10px">
-					<p style="font-size:15px"><b>Test Report</b></p>
-				</div> -->
 				
+
 				<div class="container_eln"  style="padding-top:70px;">
 				
 				
@@ -781,13 +1085,13 @@
 									<td style="padding-left: 10px;"><span t-field="o.grade_id.grade"/></td>
 								</tr>
 
-								<!-- Source of Sample (only if value exists) -->
+							
 								<tr t-if="o.material.source_sample">
 									<td style="font-weight: bold;">Source of Sample</td>
 									<td><span t-field="o.material.source_sample"/></td>
 								</tr>
 
-								<!-- Test method adopted (only if value exists) -->
+						
 								<tr t-if="o.material.test_method_adopted">
 									<td style="font-weight: bold;">Test method adopted:</td>
 									<td><span t-field="o.material.test_method_adopted"/></td>
@@ -795,9 +1099,7 @@
 							</tbody>
 						</table>
 					</div>
-					<!-- <div style="margin-top:20px;">
-						<u>Results</u><![CDATA[&nbsp;]]>:<![CDATA[&nbsp;]]>
-					</div> -->
+					
 					
 					<table style="margin-top:20px;">
 					<t t-set="i" t-value="0"/>
@@ -810,26 +1112,20 @@
 								</th>
 								<th style="text-align: center;">
 									<span t-esc="eln.material.test_parameter"/>
-									<!-- <span>
-										Test Parameter
-									</span> -->
+								
 								</th>
 								<th style="text-align: center;">
 									<span t-field="eln.material.method_reference"></span>
 								</th>
 								<th style="text-align: center;">
 								<span t-esc="eln.material.unit"/>
-									<!-- <span>
-										Unit
-									</span> -->
+								
 								</th>
 
 								
 								<th style="text-align: center;">
 								<span t-esc="eln.material.result_remark"/>
-									<!-- <span>
-										Test Result
-									</span> -->
+									
 								</th>
 								
 								
@@ -900,7 +1196,10 @@
 								</td>
 							</tr>
 
-<!-- Density of Cement (Le-Chatlier Flask) -->
+
+
+
+                         <!-- Density of Cement (Le-Chatlier Flask) -->
 								<tr t-if="cement.density_cement_visible and (cement.avg_density_nabl == 'pass' and nabl or (cement.avg_density_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 								<td style="text-align: center;">
 									<span t-esc="i + 1" />

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-name="lerm_civil_dashboard.ProductDashboard" owl="1">
+        <div class="lerm-dashboard scrollable-dashboard container-fluid py-4">
+            
+            <!-- FILTER PANEL -->
+            <div class="lerm-filter-panel mb-4">
+                <div class="panel-heading">
+                    <i class="fa fa-sliders"/>
+                    <h6>Product Dashboard Filters</h6>
+                </div>
+
+                <div class="lerm-date-section">
+                    <div class="row g-3 mb-4 align-items-end">
+                        <!-- Search Bar with Mode Selector -->
+                        <div class="col-lg-5 col-md-6">
+                            <label class="lerm-field-label">Search Products</label>
+                            <div class="input-group flex-nowrap" style="height: 38px; border-bottom: 1.5px solid #d1d5db;">
+                                <select class="form-select border-0 bg-light-subtle text-muted" 
+                                        style="width: 120px; font-size: 0.75rem; border-right: 1px solid #e5e7eb !important;"
+                                        t-on-change="_onSearchTypeChange">
+                                    <option value="all">Search All</option>
+                                    <option value="product">Product Name</option>
+                                    <option value="srf">SRF ID</option>
+                                    <option value="ulr">ULR No.</option>
+                                    <option value="report">Report No.</option>
+                                </select>
+                                <input type="text" class="lerm-select flex-grow-1 border-0" 
+                                       placeholder="Enter search query..."
+                                       t-att-value="filter_state.searchQuery" 
+                                       t-on-change="_onSearchProduct"
+                                       t-on-keyup="_onSearchProduct"
+                                       style="padding-left: 10px; box-shadow: none;"/>
+                                <span class="input-group-text bg-white border-0 rounded-0">
+                                    <i class="fa fa-search text-muted" style="font-size: 0.85rem;"/>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Discipline Filter -->
+                        <div class="col-lg-7 col-md-6">
+                            <label class="lerm-field-label">Discipline</label>
+                            <div class="lerm-btn-group">
+                                <button class="lerm-toggle-btn" t-on-click="_onDisciplineFilter" data-discipline="ALL"
+                                        t-att-style="this.filter_state.activeDiscipline === 'ALL' ? 'background:#0066ff;color:#fff;' : ''">ALL</button>
+                                <button class="lerm-toggle-btn" t-on-click="_onDisciplineFilter" data-discipline="MECHANICAL"
+                                        t-att-style="this.filter_state.activeDiscipline === 'MECHANICAL' ? 'background:#0066ff;color:#fff;' : ''">Mechanical</button>
+                                <button class="lerm-toggle-btn" t-on-click="_onDisciplineFilter" data-discipline="NDT"
+                                        t-att-style="this.filter_state.activeDiscipline === 'NDT' ? 'background:#0066ff;color:#fff;' : ''">NDT</button>
+                                <button class="lerm-toggle-btn" t-on-click="_onDisciplineFilter" data-discipline="CHEMICAL"
+                                        t-att-style="this.filter_state.activeDiscipline === 'CHEMICAL' ? 'background:#0066ff;color:#fff;' : ''">Chemical</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Date Range Filter -->
+                    <div class="row g-3 align-items-center">
+                        <div class="col-lg-12 d-flex align-items-center gap-3">
+                            <div class="lerm-btn-group" style="width: auto;">
+                                <button class="lerm-toggle-btn" t-on-click="_onDateFilter" data-days="30"
+                                        t-att-style="this.filter_state.activeDays == 30 ? 'background:#0066ff;color:#fff;' : ''">30 Days</button>
+                                <button class="lerm-toggle-btn" t-on-click="_onDateFilter" data-days="180"
+                                        t-att-style="this.filter_state.activeDays == 180 ? 'background:#0066ff;color:#fff;' : ''">180 Days</button>
+                                <button class="lerm-toggle-btn" t-on-click="_onDateFilter" data-days="365"
+                                        t-att-style="this.filter_state.activeDays == 365 ? 'background:#0066ff;color:#fff;' : ''">365 Days</button>
+                            </div>
+
+                            <div class="d-flex align-items-center gap-2 px-3 py-1 bg-white border rounded-2 shadow-sm">
+                                <span class="date-label text-muted small fw-bold">FROM</span>
+                                <input type="date" class="lerm-date-input" t-att-value="filter_state.start_date" 
+                                       data-field="start_date" t-on-change="_onDateInputChange"/>
+                                <span class="text-muted mx-1"><i class="fa fa-arrow-right small"/></span>
+                                <span class="date-label text-muted small fw-bold">TO</span>
+                                <input type="date" class="lerm-date-input" t-att-value="filter_state.end_date" 
+                                       data-field="end_date" t-on-change="_onDateInputChange"/>
+                                <button class="lerm-refresh-btn ms-2" t-on-click="_onCustomDate">
+                                    <i class="fa fa-search"/>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION HEADER -->
+            <div class="lerm-section-header">
+                <i class="fa fa-cube"/>
+                <h2>Product Performance Overview (<t t-esc="filter_state.totalProducts"/>)</h2>
+                
+                <!-- Compact Pagination in Header -->
+                <div class="ms-auto d-flex align-items-center gap-2">
+                    <select class="form-select border-0 bg-white" 
+                            style="width: 100px; font-size: 0.75rem; color: #6b7280; box-shadow: 0 1px 2px rgba(0,0,0,0.05);"
+                            t-on-change="_onPageSizeChange">
+                        <option value="10" t-att-selected="filter_state.pageSize == 10">10 / Page</option>
+                        <option value="25" t-att-selected="filter_state.pageSize == 25">25 / Page</option>
+                        <option value="50" t-att-selected="filter_state.pageSize == 50">50 / Page</option>
+                    </select>
+
+                    <div class="btn-group shadow-sm bg-white rounded-2 overflow-hidden border">
+                        <button class="btn btn-sm btn-light border-0 px-2" 
+                                t-att-disabled="filter_state.currentPage == 1"
+                                t-on-click="() => this._onPageChange(-1)">
+                            <i class="fa fa-chevron-left small"/>
+                        </button>
+                        <div class="d-flex align-items-center px-3 border-start border-end" style="font-size: 0.75rem; font-weight: 600; background: #fafafa;">
+                            PAGE <t t-esc="filter_state.currentPage"/> OF <t t-esc="totalPages"/>
+                        </div>
+                        <button class="btn btn-sm btn-light border-0 px-2" 
+                                t-att-disabled="filter_state.currentPage == totalPages"
+                                t-on-click="() => this._onPageChange(1)">
+                            <i class="fa fa-chevron-right small"/>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PRODUCT CARDS GRID -->
+            <div class="row g-3">
+                <t t-if="filter_state.isLoading">
+                    <div class="col-12 py-5 text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <div class="mt-2 text-muted small fw-600">FETCHING PRODUCT DATA...</div>
+                    </div>
+                </t>
+                <t t-elif="dashboard_state.product_data.length === 0">
+                    <div class="col-12">
+                        <div class="lerm-empty-state">
+                            <i class="fa fa-search fa-2x mb-3 text-muted" style="opacity: 0.5;"/>
+                            <p class="mb-0">No product found matching your current filters.</p>
+                        </div>
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="row g-3 mb-5">
+                        <t t-foreach="dashboard_state.product_data" t-as="product" t-key="product.product_id">
+                            <div class="col-lg-3 col-md-6">
+                                <div class="lerm-tech-card">
+                                    <div class="tech-header" t-on-click="() => this._onProductCardClick(product.product_id, product.product_name)">
+                                        <div class="tech-avatar">
+                                            <i class="fa fa-cube"/>
+                                        </div>
+                                        <div class="tech-info overflow-hidden">
+                                            <h5 class="tech-name text-truncate" t-att-title="product.product_name">
+                                                <t t-esc="product.product_name"/>
+                                            </h5>
+                                        </div>
+                                    </div>
+
+                                    <div class="tech-total-block">
+                                        <span class="tech-total-count"><t t-esc="product.total_samples"/></span>
+                                        <span class="tech-total-label">SAMPLES TOTAL</span>
+                                    </div>
+
+                                    <div class="tech-status-list">
+                                        <t t-foreach="[
+                                            {id: 'assignment-pending', label: 'Assignment Pending', icon: 'fa-clipboard', color: '#3b82f6', bg: '#eff6ff', text: '#1e40af', count: product.assignment_pending},
+                                            {id: 'alloted', label: 'Alloted', icon: 'fa-play-circle', color: '#0066ff', bg: '#dbeafe', text: '#1d4ed8', count: product.alloted},
+                                            {id: 'pending-verification', label: 'Verification Pending', icon: 'fa-hourglass-half', color: '#d97706', bg: '#fef3c7', text: '#92400e', count: product.pending_verification},
+                                            {id: 'pending-approval', label: 'Approval Pending', icon: 'fa-clock-o', color: '#dc2626', bg: '#fee2e2', text: '#991b1b', count: product.pending_approval},
+                                            {id: 'in-report', label: 'In Report', icon: 'fa-file-text-o', color: '#16a34a', bg: '#dcfce7', text: '#166534', count: product.in_report},
+                                            {id: 'invoiced', label: 'Invoiced', icon: 'fa-file-powerpoint-o', color: '#059669', bg: '#d1fae5', text: '#065f46', count: product.invoiced},
+                                            {id: 'uninvoiced', label: 'Uninvoiced', icon: 'fa-file-o', color: '#d97706', bg: '#fef3c7', text: '#92400e', count: product.uninvoiced},
+                                            {id: 'cancelled', label: 'Cancelled', icon: 'fa-times-circle', color: '#6b7280', bg: '#f3f4f6', text: '#374151', count: product.cancelled}
+                                        ]" t-as="st" t-key="st.id">
+                                            <div class="lerm-status-row" t-att-disabled="st.count == 0">
+                                                <div class="status-label">
+                                                    <i t-attf-class="fa #{st.icon}" t-att-style="'color: ' + st.color"/>
+                                                    <t t-esc="st.label"/>
+                                                </div>
+                                                <div class="status-badge" t-att-style="'background:' + st.bg + '; color:' + st.text">
+                                                    <t t-esc="st.count"/>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </div>
+
+        </div>
+    </t>
+</templates>

@@ -24,6 +24,20 @@ class FlyaschNormalConsistency(models.Model):
     temp_percent_normal = fields.Float("Temperature °c")
     humidity_percent_normal = fields.Float("Humidity %")
 
+    def prefill_data(self):
+        # import wdb; wdb.set_trace()
+        return {
+            'name': 'Prefill Data',
+            'type': 'ir.actions.act_window',
+            'res_model': 'mech.flyash.prefill.data',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+                },
+        }
+
      ## Normal Consistency
 
     # tests = fields.Many2many("mechanical.cement.test",string="Tests")

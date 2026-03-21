@@ -204,6 +204,7 @@
             <field name="res_model">lerm.ert.dashboard</field>
             <field name="view_mode">kanban</field>
             <field name="target">current</field>
+            <field name="limit">1</field>
         </record>
 
         <record id="action_lerm_ert_parent" model="ir.actions.act_window">
@@ -251,7 +252,11 @@
             <field name="res_model">pullout.pile.load.test.parent</field>
             <field name="view_mode">tree,form</field>
         </record>
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> lerm_17
         <record id="action_routine_pullout_pile_load_test_parent" model="ir.actions.act_window">
             <field name="name">Routine Pull-Out Pile Load Tests</field>
             <field name="res_model">routine.pullout.pile.load.test.parent</field>
@@ -270,6 +275,15 @@
             <field name="view_mode">tree,form</field>
         </record>
 
+<<<<<<< HEAD
+=======
+        <record id="action_plate_load_test" model="ir.actions.act_window">
+            <field name="name">Plate Load Test</field>
+            <field name="res_model">fst.plate.load.test</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+>>>>>>> lerm_17
 
         <menuitem id="fst_root"
             name="FST"
@@ -391,6 +405,20 @@
                                     </a>
                                 </div>
 
+<<<<<<< HEAD
+=======
+                                <!-- Plate Load Test -->
+                                <div class="card-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+                                    <h3 class="title">Plate Load Test</h3>
+                                    <a type="action"
+                                    name="%(action_plate_load_test)d"
+                                    class="btn btn-lg"
+                                    style="background:#ffb300; color:#fff;">
+                                        Records
+                                    </a>
+                                </div>
+
+>>>>>>> lerm_17
                             </div>
 
                         </t>

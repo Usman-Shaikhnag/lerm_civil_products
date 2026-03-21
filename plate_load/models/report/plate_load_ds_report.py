@@ -12,7 +12,7 @@ from scipy.interpolate import CubicSpline , interp1d , Akima1DInterpolator
 from scipy.optimize import minimize_scalar
 
 class PlateLoadDatasheet(models.AbstractModel):
-    _name = 'report.lerm_civil.plate_load_datasheet'
+    _name = 'report.plate_load.plate_load_datasheet'
     _description = 'Plate Load DataSheet'
     
     @api.model
@@ -42,7 +42,7 @@ class PlateLoadDatasheet(models.AbstractModel):
 
 
 class PlatLoadReport(models.AbstractModel):
-    _name = 'report.lerm_civil.plate_load_report'
+    _name = 'report.plate_load.plate_load_report'
     _description = 'WBM Report'
     
     @api.model
