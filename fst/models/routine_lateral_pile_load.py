@@ -21,17 +21,8 @@ class RoutineLateralPileLoadTestParent(models.Model):
 
     # ================= BASIC INFO =================
     work_name = fields.Char("Name of Work")
-<<<<<<< HEAD
-    client = fields.Many2one("res.partner", string="Client")
-    contractor = fields.Many2one(
-        "lerm.contractor.line",
-        string="Contractor",
-        domain="[('partner_id', '=', client)]"
-    )
-=======
     contractor = fields.Char("Contractor")
     client = fields.Char("Client")
->>>>>>> lerm_17
 
     ulr = fields.Char("ULR No", copy=False, readonly=True)
     report_no = fields.Char("Report No", copy=False, readonly=True)
@@ -88,15 +79,9 @@ class RoutineLateralPileLoadTestParent(models.Model):
 
     graph_image = fields.Binary("Load Settlement Graph")
     # ================= SUMMARY =================
-<<<<<<< HEAD
-    gross_settlement = fields.Float(compute="_compute_disp", store=True)
-    rebound = fields.Float(compute="_compute_disp", store=True)
-    net_settlement = fields.Float(compute="_compute_disp", store=True)
-=======
     gross_displacement = fields.Float(compute="_compute_disp", store=True)
     rebound = fields.Float(compute="_compute_disp", store=True)
     net_displacement = fields.Float(compute="_compute_disp", store=True)
->>>>>>> lerm_17
     
     rec_date_str = fields.Char(
         "Report Date (Text)",
@@ -166,15 +151,9 @@ class RoutineLateralPileLoadTestParent(models.Model):
             rebound = rebound_lines[-1].mean_mm if rebound_lines else 0.0
             net = gross - rebound
 
-<<<<<<< HEAD
-            rec.gross_settlement = round(gross, 2)
-            rec.rebound = round(rebound, 2)
-            rec.net_settlement = round(net, 2)
-=======
             rec.gross_displacement = round(gross, 2)
             rec.rebound = round(rebound, 2)
             rec.net_displacement = round(net, 2)
->>>>>>> lerm_17
 
 
     # =========================================================
@@ -400,14 +379,6 @@ class RoutineLateralPileLoadTestParent(models.Model):
         copy=False
     )
 
-<<<<<<< HEAD
-    @api.depends('loading_reading_ids.reading_datetime')
-    def _compute_last_reading_datetime(self):
-        for rec in self:
-            dates = rec.loading_reading_ids.mapped('reading_datetime')
-            dates = [d for d in dates if d]
-            rec.last_reading_datetime = max(dates) if dates else False
-=======
     
     @api.depends('loading_reading_ids.reading_datetime')
     def _compute_last_reading_datetime(self):
@@ -418,7 +389,6 @@ class RoutineLateralPileLoadTestParent(models.Model):
                 rec.last_reading_datetime = latest
             else:
                 rec.last_reading_datetime = False
->>>>>>> lerm_17
 
 class RoutineLateralLoading(models.Model):
     _name = "routine.lateral.pile.load.reading.loading"

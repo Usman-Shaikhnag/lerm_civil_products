@@ -19,17 +19,8 @@ class LateralPileLoadTestParent(models.Model):
     name = fields.Char("Project Name", required=True)
     rec_date = fields.Date("Report Date")
     work_name = fields.Char("Name of Work")
-<<<<<<< HEAD
-    client = fields.Many2one("res.partner", string="Client")
-    contractor = fields.Many2one(
-        "lerm.contractor.line",
-        string="Contractor",
-        domain="[('partner_id', '=', client)]"
-    )
-=======
     contractor = fields.Char("Contractor")
     client = fields.Char("Client")
->>>>>>> lerm_17
 
     ulr = fields.Char("ULR No", copy=False, readonly=True)
     report_no = fields.Char("Report No", copy=False, readonly=True)
@@ -88,15 +79,6 @@ class LateralPileLoadTestParent(models.Model):
     graph_image = fields.Binary("Load Displacement Graph")
 
     # ================= DISPLACEMENT SUMMARY =================
-<<<<<<< HEAD
-    gross_settlement = fields.Float(
-        compute="_compute_settlement_values",
-        store=True
-    )
-
-    net_settlement = fields.Float(
-        compute="_compute_settlement_values",
-=======
     gross_displacement = fields.Float(
         compute="_compute_displacement_values",
         store=True
@@ -104,16 +86,11 @@ class LateralPileLoadTestParent(models.Model):
 
     net_displacement = fields.Float(
         compute="_compute_displacement_values",
->>>>>>> lerm_17
         store=True
     )
 
     rebound = fields.Float(
-<<<<<<< HEAD
-        compute="_compute_settlement_values",
-=======
         compute="_compute_displacement_values",
->>>>>>> lerm_17
         store=True
     )
 
@@ -179,11 +156,7 @@ class LateralPileLoadTestParent(models.Model):
             rec.max_displacement = max(values) if values else 0.0
 
     @api.depends('loading_reading_ids.mean_mm', 'unloading_reading_ids.mean_mm')
-<<<<<<< HEAD
-    def _compute_settlement_values(self):
-=======
     def _compute_displacement_values(self):
->>>>>>> lerm_17
         for rec in self:
 
             loading_map = {}
@@ -206,15 +179,9 @@ class LateralPileLoadTestParent(models.Model):
             rebound = rebound_lines[-1].mean_mm if rebound_lines else 0.0
             net = gross - rebound
 
-<<<<<<< HEAD
-            rec.gross_settlement = round(gross, 2)
-            rec.rebound = round(rebound, 2)
-            rec.net_settlement = round(net, 2)
-=======
             rec.gross_displacement = round(gross, 2)
             rec.rebound = round(rebound, 2)
             rec.net_displacement = round(net, 2)
->>>>>>> lerm_17
 
 
 
@@ -250,10 +217,7 @@ class LateralPileLoadTestParent(models.Model):
             # import wdb;wdb.set_trace()
             return result
 
-<<<<<<< HEAD
-=======
 
->>>>>>> lerm_17
         def unloading_points(readings):
             return [
                 (r.load_tonne, r.mean_mm)
@@ -388,21 +352,13 @@ class LateralPileLoadTestParent(models.Model):
             for line in rec.loading_reading_ids:
                 line._compute_mean()
                 line._compute_split_dt()
-<<<<<<< HEAD
-
-=======
->>>>>>> lerm_17
             # 2️⃣ Recompute mean displacement on UNLOADING readings
             for line in rec.unloading_reading_ids:
                 line._compute_mean()
                 line._compute_split_dt()
 
             # 3️⃣ Force recompute of parent computed fields
-<<<<<<< HEAD
-            rec._compute_settlement_values()
-=======
             rec._compute_displacement_values()
->>>>>>> lerm_17
             rec._compute_max_displacement()
 
 
@@ -475,10 +431,7 @@ class LateralPileLoadTestParent(models.Model):
         copy=False
     )
 
-<<<<<<< HEAD
-=======
     
->>>>>>> lerm_17
     @api.depends('loading_reading_ids.reading_datetime')
     def _compute_last_reading_datetime(self):
         for rec in self:
@@ -487,10 +440,7 @@ class LateralPileLoadTestParent(models.Model):
             rec.last_reading_datetime = max(dates) if dates else False
 
 
-<<<<<<< HEAD
-=======
 
->>>>>>> lerm_17
 # ================= LOADING =================
 class LateralPileLoadReadingLoading(models.Model):
     _name = "lateral.pile.load.reading.loading"
