@@ -66,24 +66,6 @@
         <record model="res.groups" id="lerm_access_lerm_equipment">
             <field name="name">LERM Equipment Master</field>
             <field name="category_id" ref="kes_lerm_access_categories"/>
-<<<<<<< HEAD
-        </record>
-
-        <record model="res.groups" id="lerm_access_create_srf">
-            <field name="name">SRF Create</field>
-            <field name="category_id" ref="kes_lerm_access_categories"/>
-        </record>
-
-        <record model="res.groups" id="lerm_access_confirm_srf">
-            <field name="name">SRF Confirm</field>
-            <field name="category_id" ref="kes_lerm_access_categories"/>
-        </record>
-
-        <record model="res.groups" id="lerm_access_update_srf">
-            <field name="name">SRF Update</field>
-            <field name="category_id" ref="kes_lerm_access_categories"/>
-        </record>
-=======
         </record>
 
         <record model="res.groups" id="lerm_access_create_srf">
@@ -206,80 +188,19 @@
 
 
        
->>>>>>> lerm_17
 
-        <record model="res.groups" id="lerm_access_delete_srf">
-            <field name="name">SRF Delete</field>
-            <field name="category_id" ref="kes_lerm_access_categories"/>
-        </record>
-
-        <record model="res.groups" id="lerm_access_delete_sample">
-            <field name="name">Sample Delete</field>
-            <field name="category_id" ref="kes_lerm_access_categories"/>
-        </record>
-
-        <record model="res.groups" id="lerm_access_update_sample">
-            <field name="name">Sample Update</field>
-            <field name="category_id" ref="kes_lerm_access_categories"/>
-        </record>
-
-        <record model="res.groups" id="lerm_access_update_eln">
-            <field name="name">ELN Update</field>
-            <field name="category_id" ref="kes_lerm_access_categories"/>
-        </record>
-
-        <record model="res.groups" id="lerm_access_delete_eln">
-            <field name="name">ELN Delete</field>
-            <field name="category_id" ref="kes_lerm_access_categories"/>
-        </record>
-
-        <record model="res.groups" id="lerm_access_product_master">
-            <field name="name">Product Master</field>
-            <field name="category_id" ref="kes_lerm_access_categories"/>
-        </record>
-
-        <!-- <record model="res.groups" id="lerm_access_parameter_master">
-            <field name="name">Parameter Master</field>
-            <field name="category_id" ref="kes_lerm_access_categories"/>
-        </record> -->
-
-        <record model="res.groups" id="lerm_access_lab_master">
-            <field name="name">Lab Master</field>
-            <field name="category_id" ref="kes_lerm_access_categories"/>
-        </record>
-        
-        <record model="res.groups" id="kes_access_srf">
-            <field name="name">SRF</field>
-            <field name="category_id" ref="kes_lerm_access_categories"/>
-        </record>
-
-        <record model="res.groups" id="lerm_sample_verification">
-            <field name="name">Sample Verification</field>
-            <field name="category_id" ref="kes_lerm_access_categories"/>
-        </record>
-        
-        <record model="res.groups" id="lerm_sample_approval">
-            <field name="name">Sample Approval</field>
-            <field name="category_id" ref="kes_lerm_access_categories"/>
-        </record>
-
-        <!-- <delete model="res.groups" id="srf_sample_editable"/>
-        <delete model="res.groups" id="kes_verified_by"/>
-        <delete model="res.groups" id="kes_checked_by"/>
-        <delete model="res.groups" id="kes_hod_access_group"/> -->
-
-       
-
-        
-
-       
        <record id="group_no_account_access" model="res.groups">
             <field name="name">No Account Access</field>
             <field name="category_id" ref="kes_lerm_access_categories"/>
         </record>
 
-      
-
-        
+        <record id="rule_param_result_technician_read" model="ir.rule">
+            <field name="name">Parameter result: technician sees own rows</field>
+            <field name="model_id" ref="model_eln_parameters_result"/> <!-- adjust model ref -->
+            <!-- allow if technician is the user OR user is in eln header's technician_ids -->
+            <field name="domain_force">['|', ('technician','=',user.id), ('eln_id.technician_ids','in', user.id)]</field>
+            <!-- limit to technician group if desired, else use base.group_user -->
+            <field name="groups" eval="[(4, ref('kes_technician_access_group'))]"/>
+        </record>
     </data>
 </odoo>

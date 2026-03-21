@@ -21,7 +21,6 @@ class MechanicalBricksBurntClay(models.Model):
         compute="_compute_units", store=False
     )
 
-<<<<<<< HEAD
     lab_id = fields.Many2one(
     'lerm.lab.master',
     string="Lab",
@@ -47,8 +46,6 @@ class MechanicalBricksBurntClay(models.Model):
             num -= val[i]
         i += 1
       return roman
-=======
->>>>>>> lerm_17
 
     def _compute_units(self):
         for rec in self:
@@ -65,40 +62,6 @@ class MechanicalBricksBurntClay(models.Model):
     length_in_mm = fields.Float(string="Length in mm")
     width_in_mm = fields.Float(string="Width in mm")
     height_in_mm = fields.Float(string="Height in mm")
-
-
-
-    # Initial Rate Of Absorption
-
-    ini_rate_absorption_visible = fields.Boolean("Initial Rate Of Absorption",compute="_compute_visible")
-    ini_rate_absorption_name = fields.Char("Name",default="Initial Rate Of Absorption")
-    
-    absorption_line_ids = fields.One2many(
-        'initial.rate.absorption.line',
-        'parent_id',
-        string="IRA Test Lines"
-    )
-
-    average_ira = fields.Float(
-        string="Average Initial Rate of Absorption (g/min/100 cm²)",
-        compute="_compute_average_ira",
-        store=True
-    )
-
-    @api.depends('absorption_line_ids.initial_rate_absorp')
-    def _compute_average_ira(self):
-        for rec in self:
-            if rec.absorption_line_ids:
-                total = sum(rec.absorption_line_ids.mapped('initial_rate_absorp'))
-                rec.average_ira = total / len(rec.absorption_line_ids)
-            else:
-                rec.average_ira = 0
-
-  
-    
-
-
-    
 
         #1------------ Compressive Strength
 
@@ -282,7 +245,6 @@ class MechanicalBricksBurntClay(models.Model):
             record.water_absorbtion_visible = False
             record.efflorescence_visible = False
             record.dimension_visible = False
-            record.ini_rate_absorption_visible = False
 
             for sample in record.sample_parameters:
                 print("Internal Ids",sample.internal_id)
@@ -295,13 +257,7 @@ class MechanicalBricksBurntClay(models.Model):
                 if sample.internal_id == "9f1689be-107d-4e30-9d3d-2aff6292264d":
                     record.dimension_visible = True 
 
-<<<<<<< HEAD
                 
-=======
-                if sample.internal_id == "5cf180a4-0737-46c3-b647-7828747bfd37":
-                    record.ini_rate_absorption_visible = True 
-
->>>>>>> lerm_17
      
     def open_eln_page(self):
         # import wdb; wdb.set_trace()
@@ -466,62 +422,3 @@ class WaterAbsorptionLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
-
-
-class InitialRateAbsorptionLine(models.Model):
-    _name = "initial.rate.absorption.line"
-    parent_id = fields.Many2one('mechanical.bricks.burnt.clay',string="Parent Id")
-
-    serial_no = fields.Integer(string="sample", readonly=True, copy=False, default=1)
-    iW1 = fields.Float("Weight of dry brick (g) ")
-    W2 = fields.Float("Weight of brick after 1 minute immersion (g) ")
-    W2_W1 = fields.Float("Water Absorbed (W₂–W₁) g ",compute="_compute_initial_rate_absorp",
-        store=True)
-    area = fields.Float("Area of immersed surface (cm²) ",compute="_compute_area", store=True)
-    initial_rate_absorp = fields.Float("Initial Rate of Absorption (g/min/100 cm²)",compute="_compute_initial_rate_absorp",store=True)
-
-    @api.depends('parent_id.length_in_mm', 'parent_id.width_in_mm')
-    def _compute_area(self):
-        for rec in self:
-            length = rec.parent_id.length_in_mm or 0
-            breadth = rec.parent_id.width_in_mm or 0
-            rec.area = length * breadth
-
-    @api.depends('iW1', 'W2', 'area')
-    def _compute_initial_rate_absorp(self):
-        for rec in self:
-
-            # Water absorbed
-            rec.W2_W1 = rec.W2 - rec.iW1
-
-            # Initial Rate Absorption
-            if rec.area:
-                rec.initial_rate_absorp = (rec.W2_W1 * 100) / rec.area
-            else:
-                rec.initial_rate_absorp = 0
-
-    @api.model
-    def create(self, vals):
-     vals['serial_no'] = self.search_count([]) + 1
-     return super().create(vals)
-
-
-
-   
-   
-    # @api.model
-    # def create(self, vals):
-    #     # Set the serial_no based on the existing records for the same parent
-    #     if vals.get('parent_id'):
-    #         existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-    #         if existing_records:
-    #             max_serial_no = max(existing_records.mapped('serial_no'))
-    #             vals['serial_no'] = max_serial_no + 1
-
-    #     return super(InitialRateAbsorptionLine, self).create(vals)
-
-    # def _reorder_serial_numbers(self):
-    #     # Reorder the serial numbers based on the positions of the records in child_lines
-    #     records = self.sorted('id')
-    #     for index, record in enumerate(records):
-    #         record.serial_no = index + 1

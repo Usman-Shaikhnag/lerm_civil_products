@@ -32,18 +32,6 @@
                             string="Print Non-NABL Report"
                             invisible="state not in ('4-in_report')"/>
 
-<<<<<<< HEAD
-                        <button type="object" groups="lerm_civil.lerm_sample_verification" class="oe_highlight" name="approve_sample" string="Approve"
-                            invisible="state not in ('3-pending_verification')"/>
-
-                        <button type="object" groups="lerm_civil.lerm_sample_approval" class="oe_highlight" name="approve_pending_sample" string="Approve"
-                            invisible="state not in ('5-pending_approval')"/>
-
-                        <button type="object" groups="lerm_civil.lerm_sample_verification" name="reject_sample" string="Reject"
-                            invisible="state not in ('3-pending_verification', '5-pending_approval')"/>
-
-                        <button type="object" groups="lerm_civil.lerm_job_allocation" name="reallocate_sample" string="Reallocate"
-=======
                         <button type="object" class="oe_highlight" groups="lerm_civil.lerm_sample_verification" name="approve_sample" string="Approve"
                             invisible="state not in ('3-pending_verification')"/>
 
@@ -54,7 +42,6 @@
                             invisible="state not in ('3-pending_verification', '5-pending_approval')"/>
 
                         <button type="object" name="reallocate_sample" groups="lerm_civil.lerm_job_allocation" string="Reallocate"
->>>>>>> lerm_17
                             invisible="state in ('1-allotment_pending')"/>
 
                         <button type="object" name="cancel_sample" string="Cancel Sample"
@@ -94,7 +81,7 @@
                                 
                             </group>
                             <group>
-                                <field name="kes_no" />
+                                <field name="kes_no" string="Report No" />
                                 <field name='ulr_no'/>
                                 <field name="sample_received_date" readonly="state != '1-allotment_pending'"/>
                                 <field name="location" readonly="state != '1-allotment_pending'"/>

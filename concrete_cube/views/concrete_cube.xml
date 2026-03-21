@@ -19,29 +19,6 @@
                         </group>
 
 
-<<<<<<< HEAD
-=======
-                         <style>
-                        .blue-input input {
-                            background-color: #d8ecff !important;   /* हलका Blue background */
-                            border-color: #3b82f6 !important;        /* Blue border */ 
-                        }
-
-                        .o_list_view .o_data_cell.blue-input {
-                             background-color: #d8ecff !important;
-                             border-color: #3b82f6 !important;
-                             }
-
-                        /* Input when the cell goes into edit mode */
-                        .o_list_view .o_data_cell.blue-input input {
-                             background-color: #d8ecff !important;
-                             border-color: #3b82f6 !important;
-                            }
-                    </style>
-
-
-
->>>>>>> lerm_17
                         <div class="custom_table_borders" style="margin-top: 15px;">
                             <field name="sample_parameters" nolabel="1">
                                 <tree>
@@ -68,14 +45,13 @@
                             }
                     </style>
 
-                        <group  invisible="cube_visible == False">
-                        <h1>
-                            <field name="cube_name" readonly="1" nolabel="1"/>
-                            <field name="cube_visible" invisible="1"/>
-                        </h1>
-                    </group>
+                        <group style="white-space: nowrap; width:80%;">
+                            <h1>
+                                <field name="name" readonly="1" nolabel="1"/>
+                            </h1>
+                        </group>
 
-                        <group style="white-space: nowrap; width:80%;" invisible="cube_visible == False" >
+                        <group style="white-space: nowrap; width:80%;" >
                         <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;" invisible="1">
                             <div style="width: 100%;">
                                 <table style="width: 100%; border-collapse: collapse;">
@@ -108,20 +84,20 @@
                         </tree>
                     </field> 
 
-                    <div class="d-flex gap-2" invisible="cube_visible == False" >
+                    <div class="d-flex gap-2">
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 <tr>
                                     <td><label for="date_of_casting">Date of Casting</label></td>
-                                    <td><field name="date_of_casting" class="blue-input"/></td>
+                                    <td><field name="date_of_casting"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="date_of_testing">Date of Testing</label></td>
-                                    <td><field name="date_of_testing" class="blue-input"/></td>
+                                    <td><field name="date_of_testing"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="age_of_test">Age of Test, days</label></td>
-                                    <td><field name="age_of_test" class="blue-input"/></td>
+                                    <td><field name="age_of_test"/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -130,21 +106,20 @@
                             <tbody>
                                 <tr>
                                     <td><label for="age_of_days">Age of Cubes</label></td>
-                                    <td><field name="age_of_days" class="blue-input"/></td>
+                                    <td><field name="age_of_days"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="area_of_cube">Area of Cube</label></td>
-                                    <td><field name="area_of_cube" class="blue-input"/></td>
+                                    <td><field name="area_of_cube"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="difference">Difference</label></td>
-                                    <td><field name="difference" class="blue-input"/></td>
+                                    <td><field name="difference"/></td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
 
-<<<<<<< HEAD
 
                     <div>
                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
@@ -190,31 +165,22 @@
       
        
                             <!-- <field name='dt_of_testing1'  widget="date" options="{'format': 'dd-MM-yy'}" readonly="1"/> -->
-=======
-                    <field name="child_lines" nolabel="1" class="custom_table_borders" invisible="cube_visible == False" >
-                        <tree editable="bottom">
-                            <field name='sr_no' string="Sr. NO"/>
-                            <field name='id_mark' />
-                            <field name='wt_sample'  widget="char" class="blue-input" decoration-info="wt_sample != 0"/>
-                            <field name='dt_of_casting' widget="date" options="{'format': 'dd-MM-yy'}" readonly="1" class="blue-input" decoration-info="dt_of_casting != 0"/>
-                            <field name='days' class="blue-input" decoration-info="days != 0"/>
-                            <field name='dt_of_testing1'  widget="date" options="{'format': 'dd-MM-yy'}" readonly="1" class="blue-input" decoration-info="dt_of_testing1 != 0"/>
->>>>>>> lerm_17
                             <field name="load"  widget="char" class="blue-input" decoration-info="load != 0"/>
                             <field name='compressive_strength'/>
                             <field name='avg_compressive_strength'/>
                         </tree>
                     </field> 
-
-                   <div  invisible="cube_visible == False" > 
+                    
                     <button type="object" name="action_calculate_avg_strength" class="btn btn-primary mb-2">
                         <i class="fa fa-calculator mr-1"/> Calculate Average
                     </button>
-                    </div>
                         
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="cube_visible == False" >
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                         <tbody>
-                           
+                            <!-- <tr>
+                                <td><label for="average_strength">Average Compressive Strength in </label></td>
+                                <td><field name="average_strength"/><span> N/mm2</span></td>
+                            </tr> -->
                             <tr>
                                 <td><label for="confirmity">confirmity</label></td>
                                 <td>
@@ -233,7 +199,7 @@
                         </tbody>
                     </table>
 
-                        <div class="custom_table_borders" style="width:100%;" invisible="cube_visible == False" >
+                        <div class="custom_table_borders" style="width:100%;">
                             <table style="width: 100%; border-collapse: collapse;">
                                 <thead>
                                     <tr>
@@ -276,213 +242,6 @@
                                 </tbody>
                             </table>
                         </div>
-                      
-                       <group  invisible="wpt_visible == False" style="white-space: nowrap; width:80%;margin-top: 15px;">
-                        <h1>
-                            <field name="wpt_name" readonly="1" nolabel="1"/>
-                            <field name="wpt_visible" invisible="1"/>
-                        </h1>
-                    </group>
-                    <div invisible="wpt_visible == False">
-                        <div style="display:flex;">
-                    <div style="width:50%;">
-                      <table style="border: 2px solid black; border-collapse: collapse; width: 99%;">
-                         <tbody>
-                            <tr>
-                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Temperature °c</span></td>
-                              <td style="border: 1px solid black; padding: 8px;"><field name="temp_wpt"/></td>
-                            </tr>
-                            <tr>
-                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Humidity %</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field name="humidity_percent_wpt"/></td>
-                            </tr>
-                                 
-                         </tbody>
-                      </table>
-                    </div>
-
-
-                    <div style="width:50%;">
-                      <table style="border: 2px solid black; border-collapse: collapse; width: 100%;">
-                         <tbody>
-                            <tr>
-                              <td style="border: 1px solid black; padding: 12px; font-weight: bold;"><span>Quantity</span></td>
-                              <td style="border: 1px solid black; padding: 8px;width:200px;"><field name="quantity"  exception="quantity" identity="extra"/></td>
-                            </tr>
-                            <!-- <tr>
-                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Specimen Size (mm)</span></td>
-                            <td style="border: 1px solid black; padding: 8px;width:200px;"><field name="size" exception="size" identity="extra"/></td>
-                            </tr> -->
-                            
-                         </tbody>
-                      </table>
-                    </div>
-
-                    </div>
-                    <group/>
-
-                    <group/>
-                    <!-- <div style="display:flex;">
-                    <div style="width:50%;">
-                      <table style="border: 2px solid black; border-collapse: collapse; width: 99%;">
-                         <tbody>
-                            <tr>
-                              <td style="border: 1px solid black; padding: 12px; font-weight: bold;"><span>Date of Casting</span></td>
-                              <td style="border: 1px solid black; padding: 12px;width:200px;"><field name="date_of_casting" identity="extra"/></td>
-                            </tr>                                 
-                         </tbody>
-                      </table>
-                    </div>
-                  
-                    <div style="width:50%;">
-                      <table style="border: 2px solid black; border-collapse: collapse; width: 100%;">
-                         <tbody>
-                            <tr>
-                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span> Date of Testing</span></td>
-                              <td style="border: 1px solid black; padding: 8px;"><field name="date_of_testing"  identity="extra"/></td>
-                            </tr>                            
-                         </tbody>
-                      </table>
-                    </div>
-
-                    </div>
-                    <group/>
-
-                    <div>
-                      <table class="table table-bordered sm-table" style="width: 100%;font-size: 15px; margin:0px;">
-                         <tbody>
-                         <tr>
-                             <td><span>Age</span></td>
-                             <td><field name="age_of_days" identity="extra"/></td>
-                           </tr>
-                           <tr>
-                             <td><span>Age of Test, days</span></td>
-                             <td><field name="age_of_test" identity="extra"/></td>
-                           </tr>
-                           <tr>
-                             <td><span>Difference</span></td>
-                             <td><field name="difference" identity="extra"/></td>
-                           </tr>
-                         </tbody>
-                      </table>
-                    </div>
-                    <group/> -->
-
-
-
-
-
-
-                   
-                    <!-- <group/> -->
-                    <group>
-                      
-                        <field name="wpt_child_lines" colspan="2" nolabel="1">
-                        <tree editable="bottom" class="custom_table_borders">
-                            <field name="sample" string="Sample"/>
-                            <field name="depth1" string="1"/>
-                            <field name="depth2" string="2"/>
-                            <field name="depth3" string="3"/>
-                            <field name="average" string="Average"/>
-                        </tree>
-                        </field>
-                    </group>
-
-                     <div>
-                          <table style="border: 2px solid black; width: 50%; margin-top:10px;">
-                           <tr>
-                             <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Average of WPT</span></td>
-                              <td style="padding: 8px; width:248px;"><field name="average_of_wpt" identity="extra"/></td>
-                           </tr>                     
-                          </table>
-                        </div>
-                    <group/>
-
-
-                    <div>
-                          <table style="width: 50%; margin-top:10px;">
-                           <tr>
-                             <td style="border: 2px solid black;padding: 8px;font-weight: bold;"><span>Conformity</span></td>
-                              <td style="border: 2px solid black;padding: 8px;"><field name="wpt_conformity"
-                               decoration-success="wpt_conformity == 'pass'" 
-                               decoration-danger="wpt_conformity == 'fail'" 
-                               readonly="1"
-                               identity="extra"/></td>
-                           </tr>
-                           <tr>
-                            <td style="border: 2px solid black;padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="border: 2px solid black;padding: 5px;"><field name="wpt_nabl"
-                               decoration-success="wpt_nabl == 'pass'" 
-                                decoration-danger="wpt_nabl == 'fail'" 
-                               readonly="1"
-                               identity="extra"/></td>
-                           </tr>
-                          </table>
-                        </div>
-                        </div>
-
-                        <group invisible = "water_absorption_visible == False"  style="white-space: nowrap; width:80%;margin-top: 15px;">
-                        <h1>
-                            <field name="water_absorption_name" readonly="1" nolabel="1"/>
-                            <field name="water_absorption_visible" invisible="1"/>
-                        </h1>
-                    </group>
-
-
-                  
-
-
-                            <div class="custom_table_borders" style="width: 100%;"  invisible="water_absorption_visible == False">
-                                <field name="water_absorption_child_lines" mode="tree" nolabel="1">
-                                    <tree editable="bottom" class="custom_table_borders" style="width: 100%; border-collapse: collapse;">
-                                        <field name="serial_no" />
-                                        <field name="sample_identification" class="blue-input" decoration-info="sample_identification != 0"/>
-                                        <field name="dry_wt_w1"  class="blue-input" decoration-info="dry_wt_w1 != 0"/>
-                                        <field name="wet_w2"  class="blue-input" decoration-info="wet_w2 != 0"/>
-                                        <field name="water_absorption"/>
-                                    </tree>
-                                </field>
-                            </div>
-
-                     <!-- <group invisible = "water_absorption_visible == False" string="Result" colspan="4"  style="white-space: nowrap; width:70%; margin-top: 10px">
-                     
-                        <field name="avg_water_absorption" readonly="1"/>
-                        
-                  
-                    </group> -->
-
-                    
-                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "water_absorption_visible == False">
-                        <tbody>
-                          
-                             <tr>
-                                <td><label class="fw-bold" for="avg_water_absorption">Avg. Water Absorption</label></td>
-                                <td><field name="avg_water_absorption"/> <span> %</span></td>
-                            </tr>
-                           
-                        </tbody>
-                    </table>
-
-                   
-                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "water_absorption_visible == False">
-                        <tbody>
-                          
-                             <tr>
-                                <td><label class="fw-bold" for="avg_water_absorption_conformity">NABL</label></td>
-                                <td><field name="avg_water_absorption_conformity"
-                                            decoration-success="avg_water_absorption_conformity == 'pass'"
-                                            decoration-danger="avg_water_absorption_conformity == 'fail'"
-                                             readonly="1"/></td>
-                            </tr>
-                             <tr>
-                                <td><label class="fw-bold" for="avg_water_absorption_nabl">NABL</label></td>
-                                <td><field name="avg_water_absorption_nabl"
-                                            decoration-success="avg_water_absorption_nabl == 'pass'"
-                                            decoration-danger="avg_water_absorption_nabl == 'fail'"
-                                             readonly="1"/></td>
-                            </tr>
-                        </tbody>
-                    </table>
 
                         <group style="margin-top: 20px;">
 

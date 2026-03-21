@@ -16,36 +16,13 @@
                        <field name="grade"/>
                     </group>
 
-
                     <group>
                         <field name="srf_id" invisible="1"/>
                         <field name="sample_id" readonly="1" />
                         <field name="eln_ref" readonly="1"/>
-
+                        <!-- <field name="size_id"/> -->
                         <field name="parameter_id" invisible="1"/>
                     </group>
-
-
-                    <style>
-                        .blue-input input {
-                            background-color: #d8ecff !important;   /* हलका Blue background */
-                            border-color: #3b82f6 !important;        /* Blue border */ 
-                        }
-
-                        .o_list_view .o_data_cell.blue-input {
-                             background-color: #d8ecff !important;
-                             border-color: #3b82f6 !important;
-                             }
-
-                        /* Input when the cell goes into edit mode */
-                        .o_list_view .o_data_cell.blue-input input {
-                             background-color: #d8ecff !important;
-                             border-color: #3b82f6 !important;
-                            }
-                    </style>
-
-
-
                        <div class="custom_table_borders" style="margin-top: 15px;">
                         <field name="sample_parameters">
                             <tree>
@@ -86,15 +63,9 @@
                         <tbody>
                             <tr>
                                 <td>Size of the Brick :- (mm)</td>
-<<<<<<< HEAD
                                 <td style="text-align: center;"><field name="length_in_mm" nolabel="1" col="1" class="blue-input"/></td>
                                 <td style="text-align: center;"><field name="width_in_mm" nolabel="1" col="1" class="blue-input"/></td>
                                 <td style="text-align: center;"><field name="height_in_mm" nolabel="1" col="1" class="blue-input"/></td>
-=======
-                                <td style="text-align: center;"><field name="length_in_mm" nolabel="1" class="blue-input"/></td>
-                                <td style="text-align: center;"><field name="width_in_mm" nolabel="1" class="blue-input"/></td>
-                                <td style="text-align: center;"><field name="height_in_mm" nolabel="1" class="blue-input"/></td>
->>>>>>> lerm_17
                             </tr>
                         </tbody>
                     </table>
@@ -115,17 +86,10 @@
                                 <field name="serial_no" />
                                 <field name="identification_mark" class="blue-input" decoration-info="identification_mark != 0"/>
                                 <field name='length' class="blue-input" decoration-info="length != 0"/>
-<<<<<<< HEAD
                                 <field name='width'  class="blue-input" decoration-info="width != 0"/>
                                 <field name='height'  class="blue-input" decoration-info="height != 0"/>
                                 <field name='area' />
                                 <field name='load'  class="blue-input" decoration-info="load != 0" />
-=======
-                                <field name='width' class="blue-input" decoration-info="height != 0"/>
-                                <field name='height' class="blue-input" decoration-info="height != 0"/>
-                                <field name='area' />
-                                <field name='load' class="blue-input" decoration-info="load != 0"/>
->>>>>>> lerm_17
                                 <field name='comp_strength_1' />
                                 
                             </tree>
@@ -161,9 +125,6 @@
                         </tbody>
                     </table>
 
-
-                    <!--  -->
-
                   
                     <div invisible="water_absorbtion_visible == False" style="text-align:center">
                         <h1>
@@ -176,15 +137,9 @@
                             <field name="water_absorption_lines" nolabel="1" >
                                     <tree editable="bottom"  class="custom_table_borders">
                                         <field name="serial_no" />
-<<<<<<< HEAD
                                         <field name="identification_mark"  class="blue-input" decoration-info="identification_mark != 0"/>
                                         <field name='initial_wt' class="blue-input" decoration-info="initial_wt != 0"/>
                                         <field name='final_wt' class="blue-input" decoration-info="final_wt != 0" />
-=======
-                                        <field name="identification_mark" class="blue-input" decoration-info="identification_mark != 0"/>
-                                        <field name='initial_wt' class="blue-input" decoration-info="initial_wt != 0"/>
-                                        <field name='final_wt' class="blue-input" decoration-info="final_wt != 0"/>
->>>>>>> lerm_17
                                         <field name='water_absorption' />
                                     
                                     </tree>
@@ -245,51 +200,16 @@
                             
                              <tr>
                                     <td><strong>Observation</strong></td>
-                                    <td><field name="visual_observation_1" nolabel="1" class="blue-input"/></td>
-                                    <td><field name="visual_observation_2" nolabel="1" class="blue-input"/></td>
-                                    <td><field name="visual_observation_3" nolabel="1" class="blue-input"/></td>
-                                    <td><field name="visual_observation_4" nolabel="1" class="blue-input"/></td>
-                                    <td><field name="visual_observation_5" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="visual_observation_1" nolabel="1"/></td>
+                                    <td><field name="visual_observation_2" nolabel="1"/></td>
+                                    <td><field name="visual_observation_3" nolabel="1"/></td>
+                                    <td><field name="visual_observation_4" nolabel="1"/></td>
+                                    <td><field name="visual_observation_5" nolabel="1"/></td>
                                 </tr>
 
                             </tbody>
                         </table>
                     </div>
-
-                    <!-- Initial Rate Of Absorption -->
-
-                     <div invisible="ini_rate_absorption_visible == False" style="text-align:center">
-                      <h1>
-                          <field name="ini_rate_absorption_name" readonly="1" nolabel="1"/>
-                          <field name="ini_rate_absorption_visible" invisible='1'/>
-                      </h1>
-                    </div>
-                    
-                   
-                     <div invisible = "ini_rate_absorption_visible == False"  >
-                    <field name="absorption_line_ids" nolabel="1" >
-                            <tree editable="bottom"  class="custom_table_borders">
-                                <field name="serial_no" />
-                                <field name="iW1" class="blue-input" decoration-info="iW1 != 0"/>
-                                <field name='W2' class="blue-input" decoration-info="W2 != 0"/>
-                                <field name='W2_W1'/>
-                                <field name='area'/>
-                                <field name='initial_rate_absorp' />
-                                
-                            </tree>
-                    </field>
-                    </div>
-
-                    <table class="table o_form_table w-50 mt-2 custom_table_borders" invisible="not ini_rate_absorption_visible">
-                        <tbody>
-                            <tr>
-                                <td><strong>Average Initial Rate of Absorption (g/min/100 cm²)</strong></td>
-                                <td>
-                                    <field name="average_ira" readonly="1" nolabel="1"/>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
 
                   <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
                 </sheet>

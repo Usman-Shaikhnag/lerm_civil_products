@@ -162,9 +162,6 @@ class LermSampleForm(models.Model):
     tested_by_signature_datasheet = fields.Boolean(string="Tested By Signature Datasheet")
     checked_by_signature_datasheet = fields.Boolean(string="Checked By Signature Datasheet")
 
-    tested_by_signature_datasheet = fields.Boolean(string="Tested By Signature Datasheet")
-    checked_by_signature_datasheet = fields.Boolean(string="Checked By Signature Datasheet")
-
     quantity = fields.Integer(string="Quantity")
     uom_id = fields.Many2one('uom.uom', string="Unit of Measure")  # kg, mm, etc.
     quantity_received = fields.Integer(string="Quantiyty Received")
