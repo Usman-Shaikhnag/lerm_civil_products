@@ -15,11 +15,11 @@
 				<div class="container_eln" style="padding-top:20px;">
 					
 					<div t-foreach="eln" t-as="o">
-						
-						<table style="margin-top:10px;">
-							<tr>
-								<td colspan="12">#Customer Party Name :
-									<![CDATA[&nbsp;]]>
+
+					<table>
+							<tr>	
+								<td colspan="8" rowspan="6">Issued to :<br/>  
+									
 									<span t-field="o.srf_id.customer.name"/><br/>
 									<span t-field="o.srf_id.customer.street"/>
 									<span t-field="o.srf_id.customer.street2"/>
@@ -28,86 +28,113 @@
 									<span t-field="o.srf_id.customer.state_id"/>
 											,
 									<span t-field="o.srf_id.customer.country_id"/>
+								
 								</td>
+								<td colspan="5">Sample Receipt Date :</td>
+
+								<td colspan="5"><span t-field="o.sample_id.sample_received_date"/></td>
 							</tr>
+
 							<tr>
-							
-								<td colspan="12">#Project / Site Address : <![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.name_work"/>
-								</td>
+							    <td colspan="5">Date of testing :</td>
+
+								<td colspan="5"><span t-field="o.start_date"/></td>
 							</tr>
+
 							<tr>
-								<td colspan="12">#Sample Description : <![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.sample_description"/>
+								<td colspan="5"> Size :
 								</td>
-							</tr>
-						</table>
-						<table>
-							<tr>
-								<td colspan="6">Test Start Date :<![CDATA[&nbsp;]]>
-									<span t-field="o.start_date"/>
-								</td>
-								<td colspan="6">Test End Date :<![CDATA[&nbsp;]]>
-									<span t-field="o.end_date"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="6">#Sample Id Mark: <![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.client_sample_id"/>
-								</td>
-								<td colspan="6">Sample Receipt Date :<![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.sample_received_date"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="6">#Size :
-									<![CDATA[&nbsp;]]>
+								<td>
 									<span t-field="o.sample_id.size_id.size"/>
 								</td>
-								<td colspan="6">#Grade :
-									<![CDATA[&nbsp;]]>
+								
+							</tr>
+
+							<tr>
+							   <td colspan="5"> Grade :
+									</td>
+								<td>
 									<span t-field="o.sample_id.grade_id.grade"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="6">#Brand :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.brand"/>
-								</td>
-								<td colspan="6">#Consultant Name :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.consultant_name1"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="6">#Client Name :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.client"/>
-								</td>
-								<td colspan="6">#Client Reference :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.client_refrence"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="6">Discipline :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.discipline.discipline"/>
-								</td>
-								<td colspan="6">Group :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.group.group"/>
 								</td>
 							</tr>
 
 							<tr>
-								<td colspan="12">Material/Test Name :
-									<![CDATA[&nbsp;]]>
+							    <td colspan="5">Lab Id :</td>
+
+								<td colspan="5">
+								<!-- <span t-field="o.sample_id.sample_received_date"/> -->
+								</td>
+							</tr>
+
+							<tr>
+							    <td colspan="5">Tested at :</td>
+
+								<!-- <td colspan="5">
+								<span t-field="o.sample_id.sample_received_date"/>
+								</td> -->
+								<td>
+
+								<t t-if="brick.lab_id">
+								 <t t-foreach="brick.lab_id.lab_location_line" t-as="loc">
+								   <div>
+                                     <span t-esc="loc.location_name"/>
+                                       <!-- (<span t-esc="loc.location_code"/>) -->
+                                    </div>
+									 </t>
+                                  </t>
+								  </td>
+
+						
+							</tr>
+						</table>
+						
+						<table style="margin-top:10px;">
+							<tr>
+								<td colspan="12"> Contractor Name :	
+									</td>
+								<td>
+									<span t-field="o.srf_id.customer.name"/><br/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="12"> Sample Description: </td>
+								<td>
+									<span t-field="o.sample_id.sample_description"/>
+								</td>
+							</tr>
+							<tr>
+							
+								<td colspan="12"> Project Name : </td>
+								<td>
+									<span t-field="o.srf_id.name_work"/>
+								</td>
+							</tr>
+							<tr>
+							
+								<td colspan="12"> Name of Work/Subject : </td>
+								<td>
 									<span t-field="o.material.name"/>
 								</td>
 							</tr>
+							<!-- <tr>
+								<td colspan="12"> Size :
+								</td>
+								<td>
+									<span t-field="o.sample_id.size_id.size"/>
+								</td>
+								
+							</tr>
+
+							<tr>
+							   <td colspan="12"> Grade :
+									</td>
+								<td>
+									<span t-field="o.sample_id.grade_id.grade"/>
+								</td>
+							</tr> -->
+							
 						</table>
-					</div>
+					</div> 
 
 
 					<!-- 1 Compressive strength  -->
@@ -368,86 +395,79 @@
 					</div>
 
 					<!-- Water Absorption -->
-					<div t-if="brick.water_absorbtion_visible and (brick.water_absorption_nabl == 'pass' and nabl or brick.water_absorption_nabl == 'fail' and not nabl)" style="margin-top:20px; page-break-inside: avoid;">
+					
+					
 
-						<td t-if="brick.water_absorbtion_visible and (brick.water_absorption_nabl == 'pass' and nabl or brick.water_absorption_nabl == 'fail' and not nabl)">
-							<span>
-								<strong>Water Absorption :</strong><![CDATA[&nbsp;]]>
-								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')]).parameter_table" t-as="parameter">
-									<t t-if="parameter.grade.id == eln.grade_id.id">
-										<span t-field="parameter.specification"/>
-									</t>
-								</t>
-							</span>
-						</td>
 
-						<table style="margin-top:10px;" t-if="brick.water_absorbtion_visible and (brick.water_absorption_nabl == 'pass' and nabl or brick.water_absorption_nabl == 'fail' and not nabl)">
-							<t t-set="i" t-value="0"/>
-							<thead>
-								<tr>
-									<th style="text-align: center;">
-										<span style="font-weight: bold;">
-											Sr No
-										</span>
-									</th>
-									<th style="text-align: center;max-width:200px">
-										<span style="font-weight: bold;">
-											Initial wt after 24 hr emersion water
-										</span>
-									</th>
-									<th style="text-align: center;max-width:100px">
-										<span style="font-weight: bold;">
-											Final wt after 24 hr oven
-										</span>
-									</th>
-									<th style="text-align: center;">
-										<span style="font-weight: bold;">
-											Water Absorption, %
-										</span>
-									</th>
-									
-								
-								</tr>
-							</thead>
-							<tbody>
+					<div t-if="brick.water_absorbtion_visible and (brick.water_absorption_nabl == 'pass' and nabl or brick.water_absorption_nabl == 'fail' and not nabl)"
+                    style="margin-top:20px; page-break-inside: avoid;">
 
-							<t t-set="k" t-value="0"/>
+                       <table style="width:100%; border-collapse:collapse;" border="1">
+
+    
+                        <thead>
+                            <tr>
+                              <th style="text-align:center;font-weight:bold;">Sr.No.</th>
+                              <th style="text-align:center;font-weight:bold;">Test Parameters</th>
+                              <th style="text-align:center;font-weight:bold;">Results</th>
+                              <th style="text-align:center;font-weight:bold;">Test Method</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+            
+                           <tr>
+                 
+                               <td style="text-align:center;vertical-align:middle;" 
+                                 t-att-rowspan="len(brick.water_absorption_lines) + 2">
+                                     1.
+                                </td>
+
+               
+                                <td style="text-align:center; font-weight:bold;">
+                                  Water Absorption, % by wt.
+                                </td>
+
+               
+                                <td></td>
+
+                
+                                <td style="text-align:center;vertical-align:middle;"  t-att-rowspan="len(brick.water_absorption_lines) + 2">
+                                   IS 3495 (P-2):2019
+                                </td>
+                           </tr>
+
+            
+                           <t t-set="k" t-value="0"/>
                             <tr t-foreach="brick.water_absorption_lines" t-as="r">
-                                <td style="text-align: center">
-                                    <div>
-                                        <span t-esc="k + 1" />
-                                        <t t-set="k" t-value="k+1"/>
-                                    </div>
-                                </td>
-                                
-                                <td style="text-align: center">
-                                    <span t-esc="r['initial_wt']"/>
-                                </td>
-                              
-                                <td style="text-align: center">
-                                    <span t-esc="r['final_wt']"/>
-                                </td>
-                             
-                                  <td style="text-align: center">
-                                    <span t-esc="r['water_absorption']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>
-                                  
-                               </tr>
+                
+                     
+                               <td style="text-align:center;">
+                                 <span t-esc="brick.to_roman(k+1)"/>
+                                 <t t-set="k" t-value="k+1"/>
+                               </td>
 
-							
+                
+                                <td style="text-align:center;">
+                                  <span t-esc="r['water_absorption']" t-options='{"widget": "float", "precision": 2}'/> 
+							    </td>
 
-							</tbody>
-						</table>
+                           </tr>
 
-						<table style="margin-top: 20px;max-width:400px" t-if="brick.water_absorbtion_visible and (brick.water_absorption_nabl == 'pass' and nabl or brick.water_absorption_nabl == 'fail' and not nabl)">
-							<tr>
-								<td style="font-weight: bold;">Average Water Absorption, %</td>
-								<td style="text-align: center;">
-									<span t-field="brick.avrg_water_absorption" t-options='{"widget": "float", "precision": 2}'/>   <span t-field="env['lerm.parameter.master'].search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')]).unit.name"/>
-								</td>
-							</tr>
-						</table>
-					</div>
+           
+                           <tr>
+                               <td style="font-weight:bold; text-align:center;">
+                                      Average:-
+                               </td>
+                               <td style="text-align:center; font-weight:bold;">
+                                  <span t-field="brick.avrg_water_absorption" t-options='{"widget": "float", "precision": 2}'/>
+                               </td>
+                            </tr>
+ 
+                         </tbody>
+                       </table>
+
+                     </div>
 
 					<div>
 
@@ -456,7 +476,7 @@
 						<div>
 							<b>Remarks: -</b>
 						</div>
-						<div>
+						<!-- <div>
 							<ul>
 								<li>
 								The Test Report(s) is/are valid only to the sample submitted to the laboratory.
@@ -468,7 +488,36 @@
 								This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.
 								</li>
 									<li>
-										# - Information provided by the customer.
+										  - Information provided by the customer.
+									</li>
+
+								<li t-if="eln.has_witness">
+										Test witnessed by : <span t-esc="eln.witness_name"/>
+										
+									</li>
+									<li t-if="eln.remarks">
+										<span t-esc="eln.remarks"/>
+									</li>
+							</ul>
+						</div> -->
+
+
+						<div>
+							<ul>
+								<li>
+								This test report relates only to the samples tested.
+								</li>
+								<li>
+								The results are valid only for specific items and conditions tested and shall not be used to claim product certification or endorsement by the laboratory.
+								</li>
+								<li>
+								This report shall not be reproduced, except in full, without prior written approval of the laboratory.
+								</li>
+									<li>
+										 The laboratory assumes no responsibility for the selection, sampling, or interpretation of the results by any third party.
+									</li>
+									<li>
+										 Any alteration, editing, or misuse of this report will render it invalid.
 									</li>
 
 								<li t-if="eln.has_witness">
@@ -480,6 +529,8 @@
 									</li>
 							</ul>
 						</div>
+
+						
 					</div>
 
 					<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
@@ -555,7 +606,7 @@
 			</div>
 
 			<div style="margin-top: 10px; text-align: center;">
-				<p style="border-top: 1px dashed #000; padding-top: 10px;">
+				<p style="border-top: 1px dashed  000; padding-top: 10px;">
 						...... End Of Report......
 				</p>
 			</div>
