@@ -94,6 +94,71 @@
                 </div>
             </div>
 
+            <!-- SAMPLE AGING OVERVIEW -->
+            <div class="lerm-section-header mt-4">
+                <i class="fa fa-clock-o"/>
+                <h2>Sample Aging Overview</h2>
+            </div>
+            <div class="row g-3 mb-4 px-1">
+                <t t-foreach="this.agingKpiData" t-as="kpi" t-key="kpi.key">
+                    <div class="col-6 col-md-4 col-lg">
+                        <div class="lerm-kpi-card"
+                             t-on-click="() => this.onAgingClick(kpi.key)">
+                            <div class="kpi-accent-bar" t-att-style="'background: ' + kpi.color"/>
+                            <i t-attf-class="fa #{kpi.icon} kpi-icon" t-att-style="'color: ' + kpi.color"/>
+                            <div class="kpi-count" t-att-style="'color: ' + kpi.color" t-esc="kpi.count"/>
+                            <div class="kpi-label"><t t-esc="kpi.label"/></div>
+                            
+                            <!-- State Breakdown (with Collapsible Technician Breakdown) -->
+                            <div class="mt-3 w-100 px-1" t-if="kpi.states.length">
+                                <hr class="my-2" style="opacity: 0.15;"/>
+                                <div class="d-flex flex-column gap-1" style="max-height: 200px; overflow-y: auto; scrollbar-width: thin;">
+                                    <t t-foreach="kpi.states" t-as="state" t-key="state.key">
+                                        <t t-set="collapse_id" t-value="'collapse-' + kpi.key.replace('+', '-plus') + '-' + state.key"/>
+                                        
+                                        <!-- State Row (Toggle) -->
+                                        <div class="lerm-status-row py-1 px-2 rounded d-flex justify-content-between align-items-center" 
+                                             t-att-data-bs-target="'#' + collapse_id" data-bs-toggle="collapse"
+                                             t-on-click.stop=""
+                                             style="cursor: pointer; transition: background 0.15s;">
+                                            <span class="status-label d-flex align-items-center gap-2" style="font-size: 0.72rem;">
+                                                <i t-attf-class="fa #{state.icon}" t-att-style="'color: ' + state.color + '; font-size: 0.75rem;'"/>
+                                                <span class="text-truncate" t-att-title="state.label"><t t-esc="state.label"/></span>
+                                            </span>
+                                            <span class="status-badge px-2 py-0 d-flex align-items-center gap-1" 
+                                                  t-att-style="'background: ' + state.color + '20; color: ' + state.color + '; font-size: 0.7rem; font-weight: 700; border-radius: 10px; min-width: 24px; text-align: center;'">
+                                                <t t-esc="state.count"/>
+                                                <i class="fa fa-chevron-down" style="font-size: 0.6rem; opacity: 0.7;"/>
+                                            </span>
+                                        </div>
+
+                                        <!-- Technician Breakdown (Collapse) -->
+                                        <div class="collapse" t-att-id="collapse_id">
+                                            <div class="lerm-sub-list ms-2 border-start ps-2 my-1" style="border-color: #e5e7eb !important;">
+                                                <t t-foreach="state.breakdown" t-as="tech" t-key="tech.id">
+                                                    <div class="lerm-sub-item d-flex justify-content-between align-items-center py-1 rounded" 
+                                                         t-on-click.stop="() => this.onAgingClick(kpi.key, state.key, tech.id)"
+                                                         style="cursor: pointer; font-size: 0.68rem; padding: 0.2rem 0.5rem; transition: background 0.1s;">
+                                                        <span class="text-muted text-truncate" t-att-title="tech.name"><t t-esc="tech.name"/></span>
+                                                        <span class="badge rounded-pill bg-light text-dark border" style="font-size: 0.65rem;"><t t-esc="tech.count"/></span>
+                                                    </div>
+                                                </t>
+                                                <!-- "View All" option for the state -->
+                                                <div class="lerm-sub-item d-flex justify-content-center py-1 mt-1 rounded bg-light-subtle border"
+                                                     t-on-click.stop="() => this.onAgingClick(kpi.key, state.key)"
+                                                     style="cursor: pointer; font-size: 0.65rem; color: #4b5563; font-weight: 600;">
+                                                    View All <t t-esc="state.label"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </div>
+
             <!-- TECHNICIAN SAMPLE OVERVIEW -->
             <div class="lerm-section-header mt-4">
                 <i class="fa fa-users"/>
