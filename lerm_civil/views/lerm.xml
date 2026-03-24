@@ -134,6 +134,24 @@
             <p class="o_view_nocontent_smiling_face">Alotted Sample</p>
         </field>
     </record>
+
+    <record id="test_sample_calculated_action" model="ir.actions.act_window">
+        <field name="name">Sample In-Test</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">lerm.srf.sample</field>
+        <field name="view_mode">tree,kanban,form</field>
+
+        <!-- Correct state -->
+        <field name="domain">[
+            ('state','=','7-calculated')
+        ]</field>
+
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face"> Sample</p>
+        </field>
+    </record>
+
+
     <record id="sample_pending_verification_action" model="ir.actions.act_window">
         <field name="name">Sample Verification Pending</field>
         <field name="type">ir.actions.act_window</field>
@@ -432,26 +450,32 @@
         action="test_sample_pending_allotted_action"
         sequence="21" />
 
+    <menuitem id="sample_status_calculated"
+        name="In-Test"
+        parent="sample_status"
+        action="test_sample_calculated_action"
+        sequence="22" />
+
     <menuitem id="sample_status_pending_verification"
         name="Pending Verification"
         parent="sample_status"
         groups="lerm_civil.lerm_sample_verification"
         action="sample_pending_verification_action"
-        sequence="22" />
+        sequence="23" />
     
     <menuitem id="sample_status_pending_approval"
         name="Pending Approval"
         parent="sample_status"
         groups="lerm_civil.lerm_sample_approval"
         action="sample_pending_approval_action"
-        sequence="23" />
+        sequence="24" />
 
 
     <menuitem id="sample_status_in_report"
         name="In-Report"
         parent="sample_status"
         action="test_sample_pending_in_report_action"
-        sequence="24" />
+        sequence="25" />
 
    
 

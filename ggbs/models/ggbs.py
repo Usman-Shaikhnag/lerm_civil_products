@@ -709,9 +709,9 @@ class GgbsMechanical(models.Model):
 
     setting_time_name = fields.Char("Name", default="Setting Time")
 
-    intial_time_lines = fields.One2many('initial.time.line','parent_id',string="Initial Time")
+    intial_time_lines = fields.One2many('ggbs.initial.time.line','parent_id',string="Initial Time")
 
-    final_time_lines = fields.One2many('final.time.line','parent_id',string="Initial Time")
+    final_time_lines = fields.One2many('ggbs.final.time.line','parent_id',string="Initial Time")
 
     initial_setting_time_visible = fields.Boolean("Initial Setting Time Visible",compute="_compute_visible")
     initial_setting_time_name = fields.Char("Name",default="Initial Setting Time")
@@ -1388,7 +1388,7 @@ class GgbsSlagOpc28DaysLine(models.Model):
 
 
 class InitialTimeLine(models.Model):
-    _name = "initial.time.line"
+    _name = "ggbs.initial.time.line"
     parent_id = fields.Many2one('mechanical.ggbs',string="Parent Id")
 
     serial_no = fields.Integer(string="Sr.No", readonly=True, copy=False, default=1)
@@ -1425,7 +1425,7 @@ class InitialTimeLine(models.Model):
 
 
 class FinalTimeLine(models.Model):
-    _name = "final.time.line"
+    _name = "ggbs.final.time.line"
     parent_id = fields.Many2one('mechanical.ggbs',string="Parent Id")
 
     serial_no = fields.Integer(string="Sr.No", readonly=True, copy=False, default=1)
