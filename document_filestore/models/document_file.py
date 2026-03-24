@@ -74,7 +74,10 @@ class DriveFile(models.Model):
         try:
             sftp.stat(f"/home/{storage.name}")
         except FileNotFoundError:
-            raise UserError(f"Base path /home/{storage.name} does not exist on server.")
+            try:
+                sftp.mkdir(f"/home/{storage.name}", mode=0o755)
+            except Exception as e:
+                raise UserError(f"Base path /home/{storage.name} does not exist and could not be created: {str(e)}")
 
         # Make intermediate directories
         path_accum = f"/home/{storage.name}"
@@ -98,9 +101,9 @@ class DriveFile(models.Model):
 
         record = self.create({
             "name": clean_filename,
-            "type": file_data["type"],
-            "size": file_data["size"] / (1024 * 1024),
-            "folder_id": folder_id,
+            "type": file_data.get("type") or "application/octet-stream",
+            "size": file_data.get("size", 0) / (1024 * 1024),
+            "folder_id": folder_id or False,
             "external_url": relative_path,
         })
         return record.read()[0]
@@ -197,6 +200,8 @@ class DriveFile(models.Model):
         missing = []
         # import wdb;wdb.set_trace()
         for file in all_files:
+            if not file.external_url:
+                continue
             if file.external_url.startswith(storage.name):
                 remote_path = f"/home/{file.external_url}"
             else:
