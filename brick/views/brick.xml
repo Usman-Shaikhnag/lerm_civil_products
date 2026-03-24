@@ -11,6 +11,7 @@
                     <h1>
                         <field name="name" readonly="1" nolabel="1"/>
                     </h1>
+                    <button type="object" class="oe_highlight" name="prefill_data" string="Prefill Data"/>
 
                       <field name="srf_id" invisible="1"/>
                       <field name="sample_id"  readonly="1"/>
@@ -259,10 +260,73 @@
                         </tbody>
                     </table>
 
+
+                    <!--  -->
+
+                     <div invisible="ini_rate_absorption_visible == False" style="text-align:center">
+                      <h1>
+                          <field name="ini_rate_absorption_name" readonly="1" nolabel="1"/>
+                          <field name="ini_rate_absorption_visible" invisible='1'/>
+                      </h1>
+                    </div>
+                    
+                   
+                     <div invisible = "ini_rate_absorption_visible == False"  >
+                    <field name="absorption_line_ids" nolabel="1" >
+                            <tree editable="bottom"  class="custom_table_borders">
+                                <field name="serial_no" />
+                                <field name="iW1" class="blue-input" decoration-info="iW1 != 0"/>
+                                <field name='W2' class="blue-input" decoration-info="W2 != 0"/>
+                                <field name='W2_W1'/>
+                                <field name='area'/>
+                                <field name='initial_rate_absorp' />
+                                
+                            </tree>
+                    </field>
+                    </div>
+
+                    <table class="table o_form_table w-50 mt-2 custom_table_borders" invisible="not ini_rate_absorption_visible">
+                        <tbody>
+                            <tr>
+                                <td><strong>Average Initial Rate of Absorption (g/min/100 cm²)</strong></td>
+                                <td>
+                                    <field name="average_ira" readonly="1" nolabel="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
                   <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
                 </sheet>
             </form>
         </field>
+        </record>
+
+        <record id="view_bricks_prefill_data_form" model="ir.ui.view">
+            <field name="name">bricks.prefill.data.form</field>
+            <field name="model">bricks.prefill.data</field>
+            <field name="arch" type="xml">
+                <form string="Prefill Data">
+                    <group>
+                        <field name="product_id" readonly="1"/>
+                        <field name="sample_id"/>
+
+                    </group>
+                    <footer>
+                        <button name="prefill_data" string="Prefill Data" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_bricks_prefill_data_wizard" model="ir.actions.act_window">
+            <field name="name">Prefill Data</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">bricks.prefill.data</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_bricks_prefill_data_form"/>
+            <field name="target">new</field>
         </record>
 
     </data>

@@ -313,6 +313,225 @@ class FineAggregate(models.Model):
 
 
 
+
+
+
+
+# Deleterious Material (Coal & Lignite)
+
+
+    name_light_weight = fields.Char("Name",default="Deleterious Material Coal & Lignite")
+    light_weight_visible = fields.Boolean("Light Weight Visible",compute="_compute_visible")
+
+    wt_sample_light_weight = fields.Float("Weight of Sample in gms")
+    wt_dry_sample_light_weight = fields.Float("Weight of dry sample after retained in 75 microns")
+    light_weight_percent = fields.Float("Light Weight Particle in %",compute="_compute_light_weight")
+
+    light_weight_percent_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Conformity", compute="_compute_light_weight_percent_conformity", store=True)
+
+    @api.depends('light_weight_percent','eln_ref','grade')
+    def _compute_light_weight_percent_conformity(self):
+        
+        for record in self:
+            record.light_weight_percent_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b405cb5b-4e2c-4a0f-9f55-f4165258d231')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b405cb5b-4e2c-4a0f-9f55-f4165258d231')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.light_weight_percent - record.light_weight_percent*mu_value
+                    upper = record.light_weight_percent + record.light_weight_percent*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.light_weight_percent_conformity = 'pass'
+                        break
+                    else:
+                        record.light_weight_percent_conformity = 'fail'
+
+    light_weight_percent_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_light_weight_percent_nabl", store=True)
+
+    @api.depends('light_weight_percent','eln_ref','grade')
+    def _compute_light_weight_percent_nabl(self):
+        
+        for record in self:
+            record.light_weight_percent_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b405cb5b-4e2c-4a0f-9f55-f4165258d231')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b405cb5b-4e2c-4a0f-9f55-f4165258d231')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.light_weight_percent - record.light_weight_percent*mu_value
+                    upper = record.light_weight_percent + record.light_weight_percent*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.light_weight_percent_nabl = 'pass'
+                        break
+                    else:
+                        record.light_weight_percent_nabl = 'fail'
+
+    @api.depends('wt_sample_light_weight','wt_dry_sample_light_weight')
+    def _compute_light_weight(self):
+        for record in self:
+            if record.wt_sample_light_weight != 0:
+                record.light_weight_percent = record.wt_dry_sample_light_weight/record.wt_sample_light_weight*100
+            else:
+                record.light_weight_percent = 0
+
+
+
+
+
+
+
+
+
+
+
+  #  Determination  clay and lump
+    
+    name_clay_lumps = fields.Char("Name",default="Determination of Clay Lumps")
+    clay_lump_visible = fields.Boolean("Clay Lump Visible",compute="_compute_visible")
+
+    wt_sample_clay_lumps = fields.Float("Weight of Sample in gms")
+    wt_dry_sample_clay_lumps = fields.Float("Weight of dry sample after retained in 75 microns")
+    clay_lumps_percent = fields.Float("Clay Lumps in %",compute="_compute_clay_lumps")
+
+    clay_lumps_percent_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Conformity", compute="_compute_clay_lumps_percent_conformity", store=True)
+
+    @api.depends('clay_lumps_percent','eln_ref','grade')
+    def _compute_clay_lumps_percent_conformity(self):
+        
+        for record in self:
+            record.clay_lumps_percent_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6daf868e-c850-4c80-8cf2-c37941cfc075')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6daf868e-c850-4c80-8cf2-c37941cfc075')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.clay_lumps_percent - record.clay_lumps_percent*mu_value
+                    upper = record.clay_lumps_percent + record.clay_lumps_percent*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.clay_lumps_percent_conformity = 'pass'
+                        break
+                    else:
+                        record.clay_lumps_percent_conformity = 'fail'
+
+    clay_lumps_percent_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_clay_lumps_percent_nabl", store=True)
+
+    @api.depends('clay_lumps_percent','eln_ref','grade')
+    def _compute_clay_lumps_percent_nabl(self):
+        
+        for record in self:
+            record.clay_lumps_percent_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6daf868e-c850-4c80-8cf2-c37941cfc075')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6daf868e-c850-4c80-8cf2-c37941cfc075')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.clay_lumps_percent - record.clay_lumps_percent*mu_value
+                    upper = record.clay_lumps_percent + record.clay_lumps_percent*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.clay_lumps_percent_nabl = 'pass'
+                        break
+                    else:
+                        record.clay_lumps_percent_nabl = 'fail'
+
+    @api.depends('wt_sample_clay_lumps','wt_dry_sample_clay_lumps')
+    def _compute_clay_lumps(self):
+        for record in self:
+            if record.wt_sample_clay_lumps != 0:
+                record.clay_lumps_percent = ((record.wt_sample_clay_lumps - record.wt_dry_sample_clay_lumps)/record.wt_sample_clay_lumps * 100)
+            else:
+                record.clay_lumps_percent = 0
+
+
+
+
+
+    
+
+     # Deleterious Material - Soft Particle
+
+    deleterious_soft_par_name = fields.Char("Name", default="Deleterious Material - Soft Particles")
+    deleterious_soft_par_visible = fields.Boolean("Deleterious Material - Soft Particles",compute="_compute_visible")
+    par_sample_weight = fields.Float( string="Total Sample Weight (W) g" )
+    soft_particles_weight = fields.Float( string="Weight of Soft Particles (Ws) g" )
+
+    soft_particles_percent = fields.Float(
+        string="Soft Particles %",
+        compute="_compute_soft_particles",
+        store=True
+    )
+
+    @api.depends('par_sample_weight', 'soft_particles_weight')
+    def _compute_soft_particles(self):
+        for rec in self:
+            if rec.par_sample_weight:
+                rec.soft_particles_percent = (
+                    rec.soft_particles_weight / rec.par_sample_weight
+                ) * 100
+            else:
+                rec.soft_particles_percent = 0
+
+
+
+
+    # Deleterious Material - Organic Impurities
+
+    organic_impurities_name = fields.Char( "Name", default="Deleterious Material - Organic Impurities")
+    organic_impurities_visible = fields.Boolean( "Deleterious Material - Organic Impurities",compute="_compute_visible")
+
+    sample_color = fields.Selection([
+    ('lighter', 'Lighter than Standard'),
+    ('same', 'Same as Standard'),
+    ('darker', 'Darker than Standard')
+      ], string="Sample Color")
+
+
+    organic_impurities_result = fields.Selection([
+    ('pass', 'Pass'),
+    ('fail', 'Fail')
+        ], string="Organic Impurities Result",
+   compute="_compute_organic_impurities",
+   store=True
+         )
+
+
+    @api.depends('sample_color')
+    def _compute_organic_impurities(self):
+      for rec in self:
+        if rec.sample_color in ['lighter', 'same']:
+            rec.organic_impurities_result = 'pass'
+        elif rec.sample_color == 'darker':
+            rec.organic_impurities_result = 'fail'
+        else:
+            rec.organic_impurities_result = False
+
+
+
+
+
+
+
+
       # Specific Gravity
 
     specific_gravity_name = fields.Char("Name",default="Specific Gravity & Water Absorption")
@@ -502,20 +721,7 @@ class FineAggregate(models.Model):
 
 
 
-    # @api.depends('sample_plus_bucket', 'weight_empty_bucket')
-    # def _compute_sample_weight(self):
-    #     for record in self:
-    #         record.sample_weight = record.sample_plus_bucket - record.weight_empty_bucket
-
-    
-
-    # @api.depends('sample_weight', 'weight_bucket')
-    # def _compute_loose_bulk_density(self):
-    #     for record in self:
-    #         if record.weight_bucket:
-    #             record.loose_bulk_density = record.sample_weight / record.weight_bucket
-    #         else:
-    #             record.loose_bulk_density = 0.0
+ 
 
 
       # 4. Bulking of Sand
@@ -1196,6 +1402,14 @@ class FineAggregate(models.Model):
 
 
 
+
+
+
+
+
+
+
+
      ### Compute Visible
     @api.depends('sample_parameters')
     def _compute_visible(self):
@@ -1212,6 +1426,18 @@ class FineAggregate(models.Model):
             record.compacted_density_visible = False
             record.void_compacted_density_visible = False
             record.void_loose_density_visible = False
+
+
+            record.clay_lump_visible = False
+            record.light_weight_visible = False
+            record.deleterious_soft_par_visible = False
+            record.organic_impurities_visible  = False
+
+
+
+
+
+
           
             for sample in record.sample_parameters:
                 print("Internal Ids",sample.internal_id)
@@ -1250,19 +1476,20 @@ class FineAggregate(models.Model):
 
 
 
-            
-              
-    # def open_eln_page(self):
-    #     # import wdb; wdb.set_trace()
 
-    #     return {
-    #             'view_mode': 'form',
-    #             'res_model': "lerm.eln",
-    #             'type': 'ir.actions.act_window',
-    #             'target': 'current',
-    #             'res_id': self.eln_ref.id,
-    
-    #         }
+
+                if sample.internal_id == '6daf868e-c850-4c80-8cf2-c37941cfc075':
+                    record.clay_lump_visible = True
+                if sample.internal_id == '6daf868e-c850-4c80-8cf2-c37941cfc075':
+                    record.light_weight_visible = True
+               
+                if sample.internal_id == '03d66a05-767f-4e4f-9f09-b1a3af00af76':
+                    record.deleterious_soft_par_visible = True
+                if sample.internal_id == '0363075f-a3f2-440a-b634-76f469d220c7':
+                    record.organic_impurities_visible = True
+
+            
+   
     
 
     def open_eln_page(self):
@@ -1333,6 +1560,54 @@ class FineAggregate(models.Model):
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+
+
+
+
+
+
+            # Deleterious Content - Clay Lumps
+            if result.parameter.internal_id == '6daf868e-c850-4c80-8cf2-c37941cfc075':
+                result.calculated = True
+                result.result_char = round(self.clay_lumps_percent,2)
+                if self.clay_lumps_percent_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+             # Deleterious Material - Lightweight Pieces (Coal & Lignite)
+            if result.parameter.internal_id == 'e7cc6b68-2550-4e1e-a28e-8526295e733f':
+                result.calculated = True
+                result.result_char = round(self.light_weight_percent,2)
+                if self.light_weight_percent_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+
+              # Deleterious Material (Soft Fragments)
+            if result.parameter.internal_id == '03d66a05-767f-4e4f-9f09-b1a3af00af76':
+                result.calculated = True
+
+
+             #  Deleterious Material - Organic Impurities
+            if result.parameter.internal_id == '0363075f-a3f2-440a-b634-76f469d220c7':
+                result.calculated = True
+
+
+
+
+            
+
+
+
+
+
 
 
         return {

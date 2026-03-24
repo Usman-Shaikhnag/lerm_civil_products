@@ -14,3 +14,50 @@
     padding-bottom: 2rem; /* avoid last card cutting off */
 }
 
+.kpi-card{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:18px 20px;
+    background:white;
+    border-radius:12px;
+    min-width:200px;
+    box-shadow:0 6px 14px rgba(0,0,0,0.06);
+    transition:all 0.25s ease;
+}
+
+.kpi-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 10px 20px rgba(0,0,0,0.1);
+}
+
+.kpi-icon{
+    width:42px;
+    height:42px;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    font-size:18px;
+}
+
+.kpi-content{
+    display:flex;
+    flex-direction:column;
+}
+
+.kpi-number{
+    font-size:24px;
+    font-weight:700;
+    color:#222;
+}
+
+.kpi-title{
+    font-size:13px;
+    color:#6c757d;
+}
+
+.clickable{
+    cursor:pointer;
+}

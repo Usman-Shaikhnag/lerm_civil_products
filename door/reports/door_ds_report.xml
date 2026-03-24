@@ -12,15 +12,10 @@
               
                 <div t-if="data.door_length_visible" style="margin-top:30px;">
                         
+
                        <div style="text-align:center;font-size:18px">
                               <span t-field="env['lerm.parameter.master'].search([('internal_id','=','cd31c1fa-aac8-4a92-b56e-37ace7f01f13')]).parameter_name"/>
-                            <!-- <span>
-								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','cd31c1fa-aac8-4a92-b56e-37ace7f01f13')]).parameter_table" t-as="parameter">
-									<t t-if="parameter.grade.id == eln.grade_id.id">
-										<span t-field="parameter.specification"/>
-									</t>
-								</t>
-							</span> -->
+                            
                         </div>
                         <table style="margin-top:30px;">
                             <t t-set="i" t-value="0"/>

@@ -30,9 +30,26 @@
                         </tree>
                       </field>
                     </div>
-                     <group >
-                        <!-- <field name="tests" widget="many2many_tags" options="{'no_create':True,'no_open': True}"/> -->
-                    </group>
+                     
+                     <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+                    <!--  -->
                     <group invisible="not fludity_visible">
                         <h1>
                             <field name="fluidity_name" readonly="1" nolabel="1"/>
@@ -47,11 +64,11 @@
                          <tbody>
                             <tr>
                               <td><span>Temperature °c</span></td>
-                              <td><field name="temp_percent_fluidity"/></td>
+                              <td><field name="temp_percent_fluidity" class="blue-input"/></td>
                             </tr>
                             <tr>
                             <td><span>Humidity %</span></td>
-                            <td><field name="humidity_percent_fludity"/></td>
+                            <td><field name="humidity_percent_fludity" class="blue-input"/></td>
                             </tr>
                          </tbody>
                       </table>
@@ -63,11 +80,11 @@
                          <tbody>
                             <tr>
                               <td><span>Start Date</span></td>
-                              <td><field name="start_date_fludity"/></td>
+                              <td><field name="start_date_fludity" class="blue-input"/></td>
                             </tr>
                             <tr>
                             <td><span>End Date</span></td>
-                            <td><field name="end_date_fludity"/></td>
+                            <td><field name="end_date_fludity" class="blue-input"/></td>
                             </tr> 
                          </tbody>
                       </table>
@@ -90,27 +107,27 @@
                            </tr>
                            <tr>
                              <td><span>Wt. of Cement (g)</span></td>
-                             <td style="text-align:center;"><field  name="wt_of_cement"  colspan="1"  nolabel="1"/></td>
+                             <td style="text-align:center;"><field  name="wt_of_cement"  colspan="1"  nolabel="1" class="blue-input"/></td>
                            </tr>
                            <tr>
                              <td><span>Wt.of water (g)</span></td>
-                             <td style="text-align:center;"><field  name="wt_of_water"  colspan="1"  nolabel="1"/></td>
+                             <td style="text-align:center;"><field  name="wt_of_water"  colspan="1"  nolabel="1" class="blue-input" /></td>
                            </tr>
                            <tr>
                              <td><span>CEBEX 100 (g)</span></td>
-                             <td style="text-align:center;"><field  name="cebex"  colspan="1"  nolabel="1"/></td>
+                             <td style="text-align:center;"><field  name="cebex"  colspan="1"  nolabel="1" class="blue-input" /></td>
                            </tr>
                            <tr>
                              <td><span>Water Temperature °c</span></td>
-                             <td style="text-align:center;"><field  name="water_temperature"  colspan="1"  nolabel="1"/></td>
+                             <td style="text-align:center;"><field  name="water_temperature"  colspan="1"  nolabel="1" class="blue-input" /></td>
                            </tr>
                            <tr>
                              <td><span>Grout Temperature °c</span></td>
-                             <td style="text-align:center;"><field  name="grout_temperature"  colspan="1"  nolabel="1"/></td>
+                             <td style="text-align:center;"><field  name="grout_temperature"  colspan="1"  nolabel="1" class="blue-input" /></td>
                            </tr>
                            <tr>
                              <td><span>Flow (Sec)</span></td>
-                             <td style="text-align:center;"><field  name="flow_sec"  colspan="1"  nolabel="1"/></td>
+                             <td style="text-align:center;"><field  name="flow_sec"  colspan="1"  nolabel="1" class="blue-input" /></td>
                            </tr>
                          </tbody>
                       </table>
@@ -127,106 +144,7 @@
                       </table>
                     </div>
 
-                     <!-- <group >
-                    <group>
-                      <field name="temp_percent_fluidity"/>
-                      <field name="humidity_percent_fludity"/>
-                    </group>
-                    <group>
-                      <field name="start_date_fludity"/>
-                      <field name="end_date_fludity"/>
-                    </group>
-                    </group> -->
-                    <!-- <group invisible="not fludity_visible">
-                        <label for="water_cement_ratio" string="Water Cement Ratio (w/c)" />
-                        <div class="address_format " >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="water_cement_ratio" string="Trial 1" />
-                            <field  name="water_cement_ratio"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>
-                    <group invisible="not fludity_visible">
-                        <label for="wt_of_cement" string="Wt. of  Cement (g)" />
-                        <div class="address_format " >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="wt_of_cement" string="" />
-                            <field  name="wt_of_cement"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>
-                    <group invisible="not fludity_visible">
-                        <label for="wt_of_water" string="Wt.of water (g)" />
-                        <div class="address_format " >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="wt_of_water" string="" />
-                            <field  name="wt_of_water"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>
-                    <group invisible="not fludity_visible">
-                        <label for="cebex" string="CEBEX 100 (g)" />
-                        <div class="address_format " >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="cebex" string="" />
-                            <field  name="cebex"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>
-                    <group invisible="not fludity_visible">
-                        <label for="water_temperature" string="Water Temperature °c" />
-                        <div class="address_format " >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="water_temperature" string="" />
-                            <field  name="water_temperature"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>
-                    <group invisible="not fludity_visible">
-                        <label for="grout_temperature" string="Grout Temperature °c" />
-                        <div class="address_format " >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="grout_temperature" string="" />
-                            <field  name="grout_temperature"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>
-                     <group invisible="not fludity_visible">
-                        <label for="flow_sec" string="Flow (Sec)" />
-                        <div class="address_format " >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="flow_sec" string="" />
-                            <field  name="flow_sec"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>
-                     <group invisible="not fludity_visible"> -->
-                        <!-- <field name="bleeding_confirmity"
-                               decoration-success="bleeding_confirmity == 'pass'" 
-                               decoration-danger="bleeding_confirmity == 'fail'" 
-                               readonly="1"/> -->
-                      <!-- <field name="fludity_nabl"/>
-                      
-                    </group> -->
-                       <!-- Setting Time Start -->
-                    <!-- <group>
-                        <field name="setting_time_visible" readonly="1" invisible="1" />
-                        <h1>
-                            <field name="setting_time_name" readonly="1" nolabel="1"   attrs="{'invisible': [('setting_time_visible', '=', False)]}"/>
-                        </h1>
-                    </group> -->
-                    <!-- <group  attrs="{'invisible': [('setting_time_visible', '=', False)]}">
-                    <group>
-                      <field name="temp_percent_setting"/>
-                      <field name="humidity_percent_setting"/>
-                    </group>
-                    <group>
-                      <field name="start_date_setting"/>
-                      <field name="end_date_setting"/>
-                    </group>
-                    </group> -->
-                     <!-- <group> -->
-                        
+                    
                        
                     <!-- </group> -->
                     <!-- Initial Setting Time -->
@@ -254,15 +172,15 @@
                          <tbody>
                             <tr>
                               <td><span>The Time When water is added to cement (t1)</span></td>
-                              <td><field name="time_water_added" invisible="not initial_setting_time_visible"/></td>
+                              <td><field name="time_water_added" invisible="not initial_setting_time_visible" class="blue-input" /></td>
                             </tr>
                             <tr>
                             <td><span>The time at which needle fails to penetrate the test block to a point 5 ± 0.5 mm (t2)</span></td>
-                            <td><field name="time_needle_fails" invisible="not initial_setting_time_visible"/></td>
+                            <td><field name="time_needle_fails" invisible="not initial_setting_time_visible" class="blue-input"/></td>
                             </tr>
                             <tr>
                             <td><span>Initial Setting Time (t2-t1) (Hours)</span></td>
-                            <td><field name="initial_setting_time_hours" invisible="not initial_setting_time_visible"/></td>
+                            <td><field name="initial_setting_time_hours" invisible="not initial_setting_time_visible" /></td>
                             </tr>
                             </tbody>
                             </table>
@@ -288,7 +206,7 @@
                         <div style="width:48%;">
                         <div style="margin-top:8px;">
                           <h2>
-                            <field name="final_setting_time_name" readonly="1" nolabel="1"   invisible="not final_setting_time_visible"/>
+                            <field name="final_setting_time_name" readonly="1" nolabel="1"   invisible="not final_setting_time_visible" />
                         </h2>
                         </div>
                         <div> 
@@ -296,7 +214,7 @@
                          <tbody>
                             <tr>
                               <td><span>The Time at which the needle make an impression on the surface of test block while attachment fails to do (t3)</span></td>
-                              <td style="width:250px;"><field name="time_needle_make_impression" invisible="not final_setting_time_visible"/></td>
+                              <td style="width:250px;"><field name="time_needle_make_impression" invisible="not final_setting_time_visible" class="blue-input"/></td>
                             </tr>
                             <tr>
                             <td><span>Final Setting Time (t2-t1) (Hours)</span></td>
@@ -325,46 +243,7 @@
                         </div>
                       </div>
                     </div>
-<!-- 
-                    <group invisible="not initial_setting_time_visible">
-                   
-                    </group>
-                   
-                    <group style="width:50%">
-                        <h3>
-                            <field name="initial_setting_time_name" readonly="1" nolabel="1"   invisible="not initial_setting_time_visible"/>
-                        </h3>
-                   
-                        <field name="time_water_added" invisible="not initial_setting_time_visible"/>
-                        <field name="time_needle_fails" invisible="not initial_setting_time_visible"/>
-                        <field name="initial_setting_time_hours" invisible="not initial_setting_time_visible"/> -->
-                        <!-- <field name="initial_setting_time_minutes_unrounded" attrs="{'invisible': [('initial_setting_time_visible', '=', False)]}"/>
-                        <field name="initial_setting_time_minutes" attrs="{'invisible': [('initial_setting_time_visible', '=', False)]}"/> -->
-                        <!-- <field name="initial_setting_conformity"
-                         decoration-success="initial_setting_conformity == 'pass'" 
-                               decoration-danger="initial_setting_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name="initial_setting_nabl"/>
-                    </group>
-                    
 
-                    <group style="width:50%">
-                        
-                        <field name="final_setting_time_visible" readonly="1" invisible="1" />
-                        <h1>
-                            <field name="final_setting_time_name" readonly="1" nolabel="1"   invisible="not final_setting_time_visible"/>
-                        </h1>
-                   
-                        <field name="time_needle_make_impression" invisible="not final_setting_time_visible"/>
-                        <field name="final_setting_time_hours" invisible="not final_setting_time_visible"/> -->
-                        <!-- <field name="final_setting_time_minutes_unrounded" attrs="{'invisible': [('final_setting_time_visible', '=', False)]}"/>
-                        <field name="final_setting_time_minutes" attrs="{'invisible': [('final_setting_time_visible', '=', False)]}"/> -->
-                        <!-- <field name="final_setting_conformity"
-                         decoration-success="final_setting_conformity == 'pass'" 
-                               decoration-danger="final_setting_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name="final_setting_nabl"/>
-                    </group> -->
 
 
                     <!-- Bleeding -->
@@ -376,43 +255,30 @@
                         </h1>
                     </div>
                     <group/>
-                    <!-- <group  attrs="{'invisible': [('bleeding_visible', '=', False)]}">
-                    <group>
-                      <field name="temp_percent_bleeding"/>
-                      <field name="humidity_percent_bleeding"/>
-                    </group>
-                    <group>
-                      <field name="start_date_bleeding"/>
-                      <field name="end_date_bleeding"/>
-                    </group>
-                    </group> -->
+                    
 
                     <div> 
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                          <tbody>
                             <tr>
                               <td><span>Volume of sample at begning of test (mL)</span></td>
-                              <td><field name="vl_sample" invisible="not bleeding_visible"/></td>
+                              <td><field name="vl_sample" invisible="not bleeding_visible" class="blue-input"/></td>
                             </tr>
                             <tr>
                             <td><span>Volume of decanted bleed water (mL)</span></td>
-                            <td> <field name="vl_decanted" invisible="not bleeding_visible"/></td>
+                            <td> <field name="vl_decanted" invisible="not bleeding_visible" class="blue-input"/></td>
                             </tr>
                          </tbody>
                       </table>
                         </div>
-                     <!-- <group> 
-                        <field name="vl_sample" invisible="not bleeding_visible"/>
-                        <field name="vl_decanted" invisible="not bleeding_visible"/>
-                    </group> -->
-
+                    
                      <div class="custom_table_borders" invisible="not bleeding_visible">
                      <h4 style="white-space: nowrap;">Bleeding</h4><br/>
                       <field name="bleeding_table" nolabel="1" colspan="2">
                         <tree editable="bottom">
-                          <field name="test"/>
-                          <field name="vl_of_sample"/>
-                          <field name="vl_of_grout"/>
+                          <field name="test" class="blue-input" decoration-info="test != 0"/>
+                          <field name="vl_of_sample" class="blue-input" decoration-info="vl_of_sample != 0"/>
+                          <field name="vl_of_grout" class="blue-input" decoration-info="vl_of_grout != 0"/>
                           <field name="bleeding_precent"/>
                         </tree>
                       </field>
@@ -449,12 +315,7 @@
                         </div>
                     <group/>
 
-                      <!-- <field name="final_bleeding"/>
-                      <field name="bleeding_confirmity"
-                               decoration-success="bleeding_confirmity == 'pass'" 
-                               decoration-danger="bleeding_confirmity == 'fail'" 
-                               readonly="1"/>
-                      <field name="bleeding_nabl"/> -->
+                  
                       
                     
 
@@ -468,23 +329,14 @@
                     </div>
                     <group/>
                     
-                    <!-- <group  attrs="{'invisible': [('volume_change_visible', '=', False)]}">
-                    <group>
-                      <field name="temp_percent_volume_change"/>
-                      <field name="humidity_percent_volume_change"/>
-                    </group>
-                    <group>
-                      <field name="start_date_volume_change"/>
-                      <field name="end_date_volume_change"/>
-                    </group>
-                    </group> -->
+                   
 
                     <div> 
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                          <tbody>
                             <tr>
                               <td><span>Thickness of Glass Plate</span></td>
-                              <td><field name="thickness_of_glass_plate"/></td>
+                              <td><field name="thickness_of_glass_plate" class="blue-input" /></td>
                             </tr>
                          </tbody>
                       </table>
@@ -492,17 +344,17 @@
                         <group/>
                     
                      <div class="custom_table_borders" invisible="not volume_change_visible">
-                      <!-- <field name="thickness_of_glass_plate"/> -->
+                      
 
                       <h4 style="white-space: nowrap;">Height Change</h4><br/>
                       <field name="volume_change_table" colspan="2" nolabel="1">
                         <tree editable="bottom">
-                          <field name="initial_reading"/>
-                          <field name="days_3"/>
-                          <field name="days_14"/>
-                          <field name="days_28"/>
-                          <field name="height"/>
-                          <field name="height_change"/>
+                          <field name="initial_reading" class="blue-input" decoration-info="initial_reading != 0"/>
+                          <field name="days_3" class="blue-input" decoration-info="days_3 != 0"/>
+                          <field name="days_14" class="blue-input" decoration-info="days_14 != 0"/>
+                          <field name="days_28" class="blue-input" decoration-info="days_28 != 0"/>
+                          <field name="height" class="blue-input" decoration-info="height != 0"/>
+                          <field name="height_change" />
                         </tree>
                       </field>
                       </div>
@@ -536,13 +388,7 @@
                           </tbody>                     
                           </table>
                         </div>
-                      <!-- <field name="height_change_average"/>
-                      <field name="volume_change_confirmity"
-                               decoration-success="volume_change_confirmity == 'pass'" 
-                               decoration-danger="volume_change_confirmity == 'fail'" 
-                               readonly="1"/>
-                      <field name="volume_nabl_1"
-                             /> -->
+                    
                     
 
                      <!-- compressive strength -->
@@ -553,16 +399,7 @@
                         </h1>
                     </div>
                     <group/>
-                    <!-- <group attrs="{'invisible': [('compressive_strength_visible', '=', False)]}">
-                    <group>
-                      <field name="temp_percent_compressive"/>
-                      <field name="humidity_percent_compressive"/>
-                    </group>
-                    <group>
-                      <field name="start_date_compressive_strength"/>
-                      <field name="end_date_compressive_strength"/>
-                    </group>
-                    </group> -->
+                  
 
                     <div>
                       <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:70%">
@@ -573,23 +410,23 @@
                            </tr>
                            <tr>
                              <td><span>Wt. of Cement (g)</span></td>
-                             <td style="text-align:center;"><field  name="wt_of_cement_1"  colspan="1" /></td>
+                             <td style="text-align:center;"><field  name="wt_of_cement_1"  colspan="1" class="blue-input" /></td>
                            </tr>
                            <tr>
                              <td><span>Wt.of water (g)</span></td>
-                             <td style="text-align:center;"><field  name="wt_of_water_1"  colspan="1" /></td>
+                             <td style="text-align:center;"><field  name="wt_of_water_1"  colspan="1"  class="blue-input" /></td>
                            </tr>
                            <tr>
                              <td><span>CEBEX 100 (g)</span></td>
-                             <td style="text-align:center;"><field  name="cebex_1"  colspan="1" /></td>
+                             <td style="text-align:center;"><field  name="cebex_1"  colspan="1" class="blue-input" /></td>
                            </tr>
                            <tr>
                              <td><span>Water Temperature °c</span></td>
-                             <td style="text-align:center;"><field  name="water_temperature_1"  colspan="1" /></td>
+                             <td style="text-align:center;"><field  name="water_temperature_1"  colspan="1" class="blue-input" /></td>
                            </tr>
                            <tr>
                              <td><span>Grout Temperature °c</span></td>
-                             <td style="text-align:center;"><field  name="grout_temperature_1"  colspan="1" /></td>
+                             <td style="text-align:center;"><field  name="grout_temperature_1"  colspan="1" class="blue-input" /></td>
                            </tr>
                          </tbody>
                       </table>
@@ -603,15 +440,15 @@
                     <tbody>
                       <tr>
                         <td><span>Done</span></td>
-                        <td><field name="status_7days"/></td>
+                        <td><field name="status_7days" class="blue-input"/></td>
                       </tr>
                       <tr>
                         <td><span>Date of Casting</span></td>
-                        <td><field name="casting_date_7days"/></td>
+                        <td><field name="casting_date_7days" class="blue-input"/></td>
                       </tr>
                       <tr>
                         <td><span>Date of Testing</span></td>
-                        <td><field name="testing_date_7days"/></td>
+                        <td><field name="testing_date_7days" class="blue-input"/></td>
                       </tr>
                       </tbody>
                     </table>
@@ -621,11 +458,11 @@
                     <h4 style="white-space: nowrap;">7 Days</h4><br/>
                     <field name="casting_7_days_tables" nolabel="1" colspan="2">
                         <tree editable="bottom">
-                          <field name="length"/>
-                          <field name="width"/>
+                          <field name="length" class="blue-input" decoration-info="length != 0"/>
+                          <field name="width" class="blue-input" decoration-info="width != 0"/>
                           <field name="crosssectional_area"/>
-                          <field name="wt_of_cement_cube"/>
-                          <field name="crushing_load" />
+                          <field name="wt_of_cement_cube" class="blue-input" decoration-info="wt_of_cement_cube != 0"/>
+                          <field name="crushing_load" class="blue-input" decoration-info="crushing_load != 0"/>
                           <field name="compressive_strength" />
                         </tree>
                       </field>
@@ -670,15 +507,15 @@
                     <tbody>
                       <tr>
                         <td><span>Done</span></td>
-                        <td><field name="status_28days"/></td>
+                        <td><field name="status_28days"  class="blue-input"/></td>
                       </tr>
                       <tr>
                         <td><span>Date of Casting</span></td>
-                        <td><field name="casting_date_28days"/></td>
+                        <td><field name="casting_date_28days"   class="blue-input"/></td>
                       </tr>
                       <tr>
                         <td><span>Date of Testing</span></td>
-                        <td><field name="testing_date_28days"/></td>
+                        <td><field name="testing_date_28days"  class="blue-input"/></td>
                       </tr>
                       </tbody>
                     </table>
@@ -688,11 +525,11 @@
                     <h4 style="white-space: nowrap;">28 Days</h4><br/>
                     <field name="casting_28_days_tables" colspan="2" nolabel="1">
                         <tree editable="bottom">
-                          <field name="length"/>
-                          <field name="width"/>
+                          <field name="length" class="blue-input" decoration-info="length != 0"/>
+                          <field name="width" class="blue-input" decoration-info="width != 0"/>
                           <field name="crosssectional_area"/>
-                          <field name="wt_of_cement_cube"/>
-                          <field name="crushing_load" />
+                          <field name="wt_of_cement_cube" class="blue-input" decoration-info="wt_of_cement_cube != 0"/>
+                          <field name="crushing_load" class="blue-input" decoration-info="crushing_load != 0"/>
                           <field name="compressive_strength" />
                         </tree>
                       </field>
