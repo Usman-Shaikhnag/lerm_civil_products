@@ -1636,9 +1636,7 @@ class FineAggregate(models.Model):
 
     @api.depends('eln_ref')
     def _compute_sample_parameters(self):
-        # records = self.env['lerm.eln'].sudo().search([('id','=', record.eln_id.id)]).parameters_result
-        # print("records",records)
-        # self.sample_parameters = records
+        
         for record in self:
             records = record.eln_ref.parameters_result.parameter.ids
             record.sample_parameters = records
@@ -1736,9 +1734,7 @@ class SieveAnalysisLine(models.Model):
 
 
 
-    # @api.depends('cumulative_retained')
-    # def _compute_cum_retained(self):
-    #     self.cumulative_retained=0
+
 
     @api.depends('percent_retained', 'parent_id.sieve_analysis_child_lines.percent_retained')
     def _compute_cum_retained(self):
@@ -1778,26 +1774,7 @@ class SpecificAndWaterLine(models.Model):
     wt_of_pycnometer_c = fields.Float(string="Wt of Pycnometer containing Water:- (C)")
     wt_of_oven_d = fields.Float(string="Wt of Oven Dried Aggregate :- ( D )")
 
-    # specific_gravity = fields.Float(string="Specific Gravity", compute="_compute_values", store=True)
-    # water_absorption = fields.Float(string="Water Absorption (%)", compute="_compute_values", store=True)
-
-    # @api.depends('wt_of_staurated_a', 'wt_of_pycnometer_b', 'wt_of_pycnometer_c', 'wt_of_oven_d')
-    # def _compute_values(self):
-    #     for rec in self:
-    #         A = rec.wt_of_staurated_a
-    #         B = rec.wt_of_pycnometer_b
-    #         C = rec.wt_of_pycnometer_c
-    #         D = rec.wt_of_oven_d
-
-    #         if D and ((A - D) - (B - C)):
-    #             rec.specific_gravity = D / ((A - D) - (B - C))
-    #         else:
-    #             rec.specific_gravity = 0.0
-
-    #         if D:
-    #             rec.water_absorption = ((A - D) / D) * 100
-    #         else:
-    #             rec.water_absorption = 0.0
+ 
    
 
     @api.model

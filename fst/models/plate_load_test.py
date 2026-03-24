@@ -21,7 +21,7 @@ from reportlab.lib.utils import ImageReader
 
 
 class PlateLoadTest(models.Model):
-    _name = "lerm.plate.load.test1"
+    _name = "fst.plate.load.test"
     _rec_name = "project_name"
 
     # --- Meta / Cover Block ---
@@ -104,7 +104,7 @@ class PlateLoadTest(models.Model):
     pdf_report = fields.Binary("PDF Report")
     pdf_filename = fields.Char(default="Plate_Load_Test_Report.pdf")
     contents_ids = fields.One2many(
-        "lerm.plate.load.test.contents",
+        "fst.plate.load.test.contents",
         "plate_load_test_id",
         string="Table of Contents"
     )
@@ -134,7 +134,7 @@ class PlateLoadTest(models.Model):
             ]
 
             for line in default_lines:
-                self.env["lerm.plate.load.test.contents"].create({
+                self.env["fst.plate.load.test.contents"].create({
                     "plate_load_test_id": record.id,
                     "sr_no": line["sr_no"],
                     "item": line["item"],
@@ -283,11 +283,11 @@ class PlateLoadTest(models.Model):
         
 
 class PlateLoadTestContents(models.Model):
-    _name = "lerm.plate.load.test.contents1"
+    _name = "fst.plate.load.test.contents"
     _description = "Plate Load Test - Table of Contents"
 
     plate_load_test_id = fields.Many2one(
-        "lerm.plate.load.test",
+        "fst.plate.load.test",
         string="Plate Load Test",
         ondelete="cascade"
     )
@@ -303,7 +303,7 @@ class ReportPlateLoadTest(models.AbstractModel):
 
     @api.model
     def _get_report_values(self, docids, data=None):
-        docs = self.env['lerm.plate.load.test'].browse(docids)
+        docs = self.env['fst.plate.load.test'].browse(docids)
 
         result = {}
 
@@ -381,7 +381,7 @@ class ReportPlateLoadTest(models.AbstractModel):
         # print("result", result)
         return {
             'doc_ids': docids,
-            'doc_model': 'lerm.plate.load.test',
+            'doc_model': 'fst.plate.load.test',
             'docs': docs,
             'computed': result,
         }
