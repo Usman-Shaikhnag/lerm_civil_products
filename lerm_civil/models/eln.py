@@ -85,6 +85,7 @@ class ELN(models.Model):
     temperature = fields.Float("Temperature")
     instrument = fields.Many2one('maintenance.equipment',string="Instrument")
     sop = fields.Html(string='SOP',compute="comput_sop")
+    casting = fields.Boolean(string="Casting",compute="_casting_required")
     date_testing = fields.Date("Date of Testing",compute="_compute_date_testing")
     days_casting = fields.Selection([
         ('1', '1 Days'),
@@ -96,7 +97,7 @@ class ELN(models.Model):
         ('45', '45 Days'),
         ('56', '56 Days'),
         ('112', '112 Days'),
-    ], string='Days of casting', default='3')
+    ], string='Days of casting')
     # data_sheet = fields.Binary(string="Data Sheet", attachment=True)
 
     # file_upload = fields.Many2many(
@@ -134,6 +135,11 @@ class ELN(models.Model):
     #     string='Report Upload',
     #     help='Attach multiple images to the sample',
     # )
+
+    @api.depends('sample_id')
+    def _casting_required(self):
+        for record in self:
+            record.casting = record.sample_id.casting
 
 
     @api.depends('sample_id')
@@ -201,7 +207,9 @@ class ELN(models.Model):
             try:
                 if record.material:
                     record.grade_ids = self.env['product.template'].search([('id','=', record.material.id)]).grade_table
-            except:
+                else:
+                    record.grade_ids = False
+            except Exception as e:
                 record.grade_ids = False
 
 
@@ -211,8 +219,11 @@ class ELN(models.Model):
             try:
                 if record.material:
                     record.size_ids = self.env['product.template'].search([('id','=', record.material.id)]).size_table
-            except:
+                else:
+                    record.size_ids = False
+            except Exception as e:
                 record.size_ids = False
+
 
     @api.onchange('witness')
     def update_witness_name(self):

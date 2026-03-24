@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="precast_mech_datasheet">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			<!-- <t t-call="lerm_civil.data_sheet_header_generaltemplate"> -->
+            <t t-call="lerm_civil.mechanical_data_sheet_header">
+                <div style="text-align:center;font-size:18px;font-weight: bold;">
+                    Precast Kerb Stone
+                </div>
+                <div class="container_eln" style="margin-top:5px">
+
+                   
+                    <div t-if="data.transverse_visible" style="margin-top:20px">
+                        <table style="margin-top:20px">
+                            <tr cols="12">
+					
+                                <td colspan="6">Job No :
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="eln.kes_no"></span>
+                                </td>
+                                <td colspan="6">Test Start Date: 
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="eln.start_date"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="6">Material: <span t-field="eln.material"></span>
+                                </td>
+                                <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
+                                </td>
+                            </tr>
+                            <tr style="height:50px" cols="12">
+                                <td colspan="4">Performed By :
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="eln.technician.name"/>
+                                </td>
+                                <td colspan="4">Witness Name :
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="eln.witness_name"/>
+                                </td>
+                                <td colspan="4">Witness Signature :
+                                    <![CDATA[&nbsp;]]>
+                                    <span style='padding:20px'></span>
+                                </td>
+                            </tr>
+                        </table>
+
+                            <!-- Transverse Strength -->
+
+                            <!-- <div style="text-align:center;font-size:18px">
+                                Transverse Strength
+                            </div> -->
+                            <div style="text-align:center;font-size:18px;margin-top:20px">
+								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','0b48abe6-07a4-4345-bcc1-30ff6e4830af')]).parameter_name"/>
+                            </div>
+                            
+
+                            <table style="margin-top:20px">
+                                <tr cols="12">
+                                    <td colspan="1">Trial no 
+                                    </td>
+                                    <td colspan="2">Required Load in (Ton)
+                                    </td>
+                                    <td colspan="2">Observed Test Result
+                                    </td>
+                                    <td colspan="4">Protocol
+                                    </td>
+                                    <td colspan="3">Requirement
+                                    </td>
+                                    
+                                    
+                                </tr>
+
+                                <t t-set="i" t-value="0"/>
+                                <tr t-foreach="data.transverse_table" t-as="r">
+                                    <td colspan="1">
+                                        <span t-esc="r['trial_no']"/>
+                                    </td>
+                                    <td colspan="2">
+                                        <span t-esc="r['required_load']"/>
+                                    </td>
+                                    <td colspan="2">
+                                        <span t-esc="r['observed_test_result']"/>
+                                    </td>
+                                    <td colspan="4">
+                                        <span t-esc="r['protocol']"/>
+                                    </td>
+                                    <td colspan="3">
+                                        <span t-esc="r['requirement']"/>
+                                    </td>
+                                    
+                                </tr>
+                            </table>
+                            
+                    </div>
+
+                    <!-- Water Absorbtion  -->
+                    <div t-if="data.water_absorbtion_visible" style="margin-top:20px">
+                        <!-- <div style="text-align:center;font-size:18px">
+                            Water Absorbtion
+                        </div> -->
+                         <div style="text-align:center;font-size:18px;margin-top:20px">
+                            <!-- Water Absorbtion -->
+							<span t-field="env['lerm.parameter.master'].search([('internal_id','=','f913fc79-eeb4-4e16-a7fc-75608384d9b0')]).parameter_name"/>
+                        </div>
+                        
+
+                        <table style="margin-top:20px">
+                            <tr cols="12">
+                                <td colspan="1">Sr no 
+                                </td>
+                                <td colspan="1">Dry Weight (after 24 hour in oven)
+                                </td>
+                                <td colspan="2">Weight (wt. after 10 minutes emersion in water)
+                                </td>
+                                <td colspan="2">Weight (wt. after 24 hour emersion in water)
+                                </td>
+                                <td colspan="2">Initial Water Absorption, %
+                                </td>
+                                <td colspan="2">Final Water Absorption, %
+                                </td>
+                                <td colspan="2">Protocol
+                                </td>
+                                
+                            </tr>
+
+                            <t t-set="i" t-value="0"/>
+                            <tr t-foreach="data.water_absorbtion_table" t-as="r">
+                                <td colspan="1">
+                                    <div>
+                                        <span t-esc="i + 1" />
+                                        <t t-set="i" t-value="i+1"/>
+                                    </div>
+                                </td>
+                                <td colspan="1">
+                                    <span t-esc="r['dry_wt_oven']"/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['wt_10_min']"/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['wt_24_hr']"/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['initial_water_absorbtion']"/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['final_water_absorbtion']"/>
+                                </td>
+                                <td colspan="2">
+                                    <span t-esc="r['protocol']"/>
+                                </td>
+                                
+                            </tr>
+                        </table>
+                        
+
+                    </div>
+                    <div class="authorizeRowDataSheet">
+                        <div>
+                            <div>
+                                <b>
+                                    Tested By 
+                                </b>
+                                
+                            </div>
+                           <div style="height: 40px;">
+						<!-- <t t-if="eln.sample_id.testedby_signature_required"> -->
+								<t t-if="eln.tested_by_signature_datasheet">
+
+									<div t-if="eln.sample_id.filled_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.check_by.name"/>
+                                </b>
+                            </div>
+                            
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.check_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                    </div>
+
+				</div>
+
+				
+			</t>
+		</t>
+	</template>
+</odoo>

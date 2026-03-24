@@ -47,6 +47,44 @@
                             }
                     </style>
 
+                    <group  invisible="dimension_visible == False">
+                        <h1>
+                            <field name="dimension_name" readonly="1" nolabel="1"/>
+                            <field name="dimension_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+                    <div class="d-flex gap-2" invisible="dimension_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="length"></label></td>
+                                    <td style="width:50%;"><field name="length" class="blue-input" decoration-info="length != 0"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="thickness"></label></td>
+                                    <td style="width:50%;"><field name="thickness" class="blue-input" decoration-info="thickness != 0"/></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                        <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="width"></label></td>
+                                    <td style="width:50%;"><field name="width" class="blue-input" decoration-info="width != 0"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
 
 
                      <!--Chequered Tiles  -->

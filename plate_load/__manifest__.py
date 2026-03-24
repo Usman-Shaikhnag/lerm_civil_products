@@ -14,6 +14,7 @@ This module contains all the common features of Sales Management and eCommerce.
     'data': [
                  'security/ir.model.access.csv',
                  'views/plate_load.xml',
+                 'views/plate_load_test_views.xml',
                  'reports/plate_load_report.xml',
                  'reports/plate_load_datasheet.xml'
     ],

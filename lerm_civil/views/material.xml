@@ -11,6 +11,12 @@
     <field name="arch" type="xml">
       
       <!-- Inline Fields in Options -->
+      <xpath expr="//div[@name='button_box']" position="inside">
+            <button class="oe_stat_button" type="object" name="action_open_product_reports" icon="fa-file-text-o">
+                <field string="Reports" name="product_reports_count" widget="statinfo"/>
+            </button>
+      </xpath>
+
       <xpath expr="//div[@name='options']" position="inside">
         <span class="d-inline-block">
           <field name="is_sample"/>

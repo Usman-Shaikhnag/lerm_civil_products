@@ -37,6 +37,23 @@ class Material(models.Model):
     source_sample = fields.Char(string="Source Sample")
     test_method_adopted = fields.Char(string="Test Method Adopted")
 
+    product_reports_count = fields.Integer(string="Product Reports Count", compute="_compute_product_reports_count")
+
+    def _compute_product_reports_count(self):
+        for rec in self:
+            count = self.env['lerm.srf.sample'].search_count([('material_id', '=', rec.id), ('state', '=', '4-in_report')])
+            rec.product_reports_count = count
+
+    def action_open_product_reports(self):
+        self.ensure_one()
+        action = self.env["ir.actions.actions"]._for_xml_id("lerm_civil.test_sample_pending_in_report_action")
+        action['domain'] = [('material_id', '=', self.id), ('state', '=', '4-in_report')]
+        action['context'] = {'default_material_id': self.id}
+        action['name'] = 'Product Reports'
+        return action
+
+    
+    
     @api.depends('is_sample', 'is_product_based_calculation')
     def _compute_visibility_flags(self):
         for rec in self:
