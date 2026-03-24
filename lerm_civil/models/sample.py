@@ -171,6 +171,7 @@ class LermSampleForm(models.Model):
 
     resampled = fields.Boolean("Resampled")
     report_issued_date = fields.Date("Report Issued Date")
+    lab_id = fields.Char(string="Lab ID")
 
     display_report_portal = fields.Boolean("Display on Portal")
     customer_portal_sample = fields.Many2one('customer.sample.line',string="Customer Portal Sample", readonly=True)
