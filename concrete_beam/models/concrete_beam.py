@@ -17,6 +17,7 @@ class FlexuralStrengthConcreteBeam(models.Model):
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     
     average_flexural_strength = fields.Float(string="Average Flexural Strength in N/mm2",compute="_compute_average_flexural_strength")
+    sample_id = fields.Many2one('lerm.srf.sample',string='Sample')
 
     # age_of_days = fields.Selection([
     #     ('3days', '3 Days'),
@@ -172,6 +173,11 @@ class FlexuralStrengthConcreteBeam(models.Model):
 
     def open_eln_page(self):
         # import wdb; wdb.set_trace()
+        # for record in self:
+        #     # Sample ला target कर
+        #     if record.sample_id:
+        #         record.sample_id.state = '7-calculated'
+                
         for result in self.eln_ref.parameters_result:
             if result.parameter.internal_id == '19edc74f-c7b2-45b6-8696-e97c19e81993':
                 result.result_char = round(self.average_flexural_strength,2)

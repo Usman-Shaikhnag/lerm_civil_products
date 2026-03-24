@@ -21,7 +21,7 @@ class TempMonitoring(models.Model):
 
     eln_ref = fields.Many2one('lerm.eln',string="ELN")
     grade = fields.Char(string="Grade")
-    size = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
+    size = fields.Many2one('lerm.size.line',string="Size",store=True)
 
     @api.depends('eln_ref')
     def _compute_size_id(self):
