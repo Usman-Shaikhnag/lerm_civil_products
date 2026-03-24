@@ -26,8 +26,8 @@
                 </group>
                 <group>
                     <group style="width:50%">
-                        <field name='srf_id' readonly="1"/>
-                        <field name='srf_date' readonly="1"/>
+                        <field name='srf_id' readonly="1" string="OR ID"/>
+                        <field name='srf_date' readonly="1" string="OR Date"/>
                         <field name='discipline' readonly="1"/>
                         <field name='lab_no_value' invisible="1"/>
                         <field name='material' readonly="1"/>
@@ -238,7 +238,7 @@
                 <tree default_order='create_date desc' create="false">
                     <!-- <field name='eln_id' optional="show"/> -->
                     <field name='eln_id' optional="show"/>
-                    <field name='srf_id' optional="show"/>
+                    <field name='srf_id' optional="show"  string="OR ID"/>
                     <!-- <field name='sample_id' optional="show"/> -->
                     <field name='technician' optional="hide"/>
                     <field name='technician_ids' optional="show" widget="many2many_tags"/>
@@ -305,8 +305,8 @@
             <field name="arch" type="xml">
                 <search>
                     <field name="eln_id" string="ELN ID" />
-                    <field name="srf_id" string="SRF ID" />
-                    <field name="kes_no" string="SSL NO" />
+                    <field name="srf_id" string="OR ID" />
+                    <field name="kes_no" string="OR NO" />
                     <field name="technician" string="Technicians" />
                     <field name="casting_date" string="Casting Date" />
                     <field name="discipline" string="Discipline" />

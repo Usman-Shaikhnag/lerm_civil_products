@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <record id="srf_form_id" model="ir.actions.act_window">
-        <field name="name">SRF</field>
+        <field name="name">Order Request</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">lerm.civil.srf</field>
         <field name="view_mode">tree,kanban,form,graph</field>
@@ -11,7 +11,7 @@
     </record>
     <!-- <menuitem id="srf_form" groups="kes_hod_access_group,kes_admin_access_group,lerm_civil.kes_access_srf" name="SRF" parent="lerm_transaction_data" action="srf_form_id" sequence="10" /> -->
     <menuitem id="srf_form" 
-        name="SRF" 
+        name="Order Request" 
         parent="lerm_transaction_data" 
         groups="lerm_civil.lerm_access_create_srf,lerm_civil.lerm_access_confirm_srf,lerm_civil.lerm_access_update_srf,lerm_civil.kes_srf_backdate_creation_group,lerm_civil.lerm_access_delete_srf"
         action="srf_form_id" 
@@ -54,7 +54,7 @@
 
 
 
-                    <button name="open_edit_srf_header_wizard" class="oe_highlight" type="object" string="Edit SRF"
+                    <button name="open_edit_srf_header_wizard" class="oe_highlight" type="object" string="Edit Order Request"
                         groups="lerm_civil.lerm_access_update_srf"/>
 
                     <button name="action_srf_sent_mail" type="object" string="Send Mail"/>
@@ -86,10 +86,12 @@
                             <field name="client_refrence" readonly="state == '2-confirm'"  string="Reference (letter/W.O./Mail)"/>
                             <field name="date_editable" invisible='1'/>
                             <field name="active" invisible='1'/>
+                            <field name="name_work" domain="[('id', 'in', name_works)]"  readonly="state == '2-confirm'"/>
+                            <field name="request_date"/>
                         </group>
 
                         <group style="width:50%">
-                            <field name="name_work" domain="[('id', 'in', name_works)]"  readonly="state == '2-confirm'"/>
+                            
                             <field name="client" readonly="state == '2-confirm'" string="End Customer, if any: "/>
                             <field name="contractor" domain="[('id', 'in', contractor_ids)]"/>
                             <field name="report_issued" />
@@ -98,7 +100,7 @@
                             <field name="billing_customer" readonly="state == '2-confirm'" string="Name of Billing Customer"/>
                             <field name="name_works" invisible='1'/>
                             <field name="consultant_name1"/>
-                            <field name="request_date"/>
+                            
                             <field name="lab_id1"  invisible="1"/>
                              <field name="quantity" invisible="1"/>
                                <field name="sample_qty" invisible="1"/>
@@ -207,9 +209,9 @@
     <field name="type">search</field>
         <field name="arch" type="xml">
             <search>
-                <field name="srf_id" string="SRF ID" />
-                <field name="kes_number" string="SSL NO" />
-                <field name="srf_date" string="SRF Date" />
+                <field name="srf_id" string="OR ID" />
+                <field name="kes_number" string="OR NO" />
+                <field name="srf_date" string="OR Date" />
                 <field name="job_date" string="JOB Date" />
                 <field name="customer" string="Customer" />
                 <field name="billing_customer" string="Billing Customer" />
@@ -307,7 +309,7 @@
                     <table class="table table-sm">
                         <thead>
                             <tr>
-                                <th>Sample Quantity</th>
+                                <th>Sample UOM</th>
                                 <th>Received</th>
                                 <th>Consumed</th>
                                 <th>Balance</th>
@@ -360,11 +362,17 @@
         <field name="target">new</field>
     </record>
 
+     
+
     <record id="sample_request_review_form" model="ir.ui.view">
         <field name="name">sample.request.review</field>
         <field name="model">sample.request.review</field>
         <field name="arch" type="xml">
-            <form create="false">
+        
+            <form create="false"  >
+          
+            <sheet >
+                    
                 <!-- <field name='sample_id'/> -->
                  <field name="split_done" invisible="1" />
                 <group>
@@ -414,29 +422,29 @@
                    
 
                 </div>
+              
                 
                 <field name="review_line_ids" create="false" delete="false">
-                    <tree create="false" editable="bottom" delete="false">
-                       <field name="split_done" column_invisible="1" />
-                        <field name="lab_id" readonly="1"/>
-                        <field name="weight"/>
-                        <field name="uom"/>
-                        <field name="source"/>
-                        <field name="depth"/>
-                        <field name="sample_details"/>
-                        <field name="packing"/>
-                        <field name="quantity"/>
-                        <field name="approved"/>
-                        <field name="remarks"/>
-
-                         <button name="action_generate_lab_id"
-                                string="Show Lab ID"
+                    <tree create="false" editable="bottom" delete="false" >
+                             <button name="action_generate_lab_id"
+                                string="Assign Lab ID"
                                 type="object"
                                 class="btn-primary"
                                 invisible="not approved or split_done"/>
+                       <field name="split_done" column_invisible="1" />
+                      
+                        
+                        <field name="lab_id" readonly="1"/>
+                        <field name="weight" />
+                        <field name="uom" />
+                        <field name="source" />
+                        <field name="depth" />
+                        <field name="sample_details" />
+                        <field name="packing" />
+                        <field name="quantity" />
+                        <field name="approved" />
+                        <field name="remarks" />
 
-                             
-                                
                         
 
 
@@ -465,7 +473,7 @@
 
             </footer>
                 
-                
+                </sheet>
             </form>
         </field>
     </record>

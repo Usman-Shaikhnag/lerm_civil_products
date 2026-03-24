@@ -2399,94 +2399,360 @@ class Soil(models.Model):
 
 
    
-    def action_generate_gsa_graph(self):
-        for record in self:
-            # 1. Initialize Plot
-            fig, ax = plt.subplots(figsize=(12, 6), dpi=100)
+    # def action_generate_gsa_graph(self):
+    #     for record in self:
+    #         # 1. Initialize Plot
+    #         fig, ax = plt.subplots(figsize=(12, 6), dpi=100)
             
-            # 2. Configure Axes limits
-            ax.set_xscale('log')
-            ax.set_xlim(0.001, 100)  
-            ax.set_ylim(0, 110)      
+    #         # 2. Configure Axes limits
+    #         ax.set_xscale('log')
+    #         ax.set_xlim(0.001, 100)  
+    #         ax.set_ylim(0, 110)      
 
-            # 3. Labels
-            ax.set_xlabel("Particle Diameter (mm)", fontsize=10, fontweight='bold')
-            ax.set_ylabel("Percentage Finer (%)", fontsize=10, fontweight='bold')
+    #         # 3. Labels
+    #         ax.set_xlabel("Particle Diameter (mm)", fontsize=10, fontweight='bold')
+    #         ax.set_ylabel("Percentage Finer (%)", fontsize=10, fontweight='bold')
 
-            # 4. Grid
-            ax.grid(True, which='major', axis='both', linestyle='-', linewidth=0.8, color='#404040', alpha=0.6)
-            ax.grid(True, which='minor', axis='both', linestyle='-', linewidth=0.5, color='#a0a0a0', alpha=0.4)
+    #         # 4. Grid
+    #         ax.grid(True, which='major', axis='both', linestyle='-', linewidth=0.8, color='#404040', alpha=0.6)
+    #         ax.grid(True, which='minor', axis='both', linestyle='-', linewidth=0.5, color='#a0a0a0', alpha=0.4)
 
-            # 5. Format X-Axis Ticks
-            locmaj = ticker.LogLocator(base=10.0, subs=(1.0,), numticks=100)
-            ax.xaxis.set_major_locator(locmaj)
+    #         # 5. Format X-Axis Ticks
+    #         locmaj = ticker.LogLocator(base=10.0, subs=(1.0,), numticks=100)
+    #         ax.xaxis.set_major_locator(locmaj)
             
-            def nice_log_formatter(x, pos):
-                if x in [0.001, 0.01, 0.1, 1, 10, 100]:
-                    return f"{x:g}" 
-                return ""
-            ax.xaxis.set_major_formatter(ticker.FuncFormatter(nice_log_formatter))
-            ax.yaxis.set_major_locator(ticker.MultipleLocator(10))
+    #         def nice_log_formatter(x, pos):
+    #             if x in [0.001, 0.01, 0.1, 1, 10, 100]:
+    #                 return f"{x:g}" 
+    #             return ""
+    #         ax.xaxis.set_major_formatter(ticker.FuncFormatter(nice_log_formatter))
+    #         ax.yaxis.set_major_locator(ticker.MultipleLocator(10))
 
-            # --- MARKER LIST ---
-            # He symbols sequence ne vaparle jatil
-            marker_cycle = itertools.cycle(['^', '*', 'D', 'x', 'o', 's', 'v', '+'])
+    #         # --- MARKER LIST ---
+    #         # He symbols sequence ne vaparle jatil
+    #         marker_cycle = itertools.cycle(['^', '*', 'D', 'x', 'o', 's', 'v', '+'])
          
-            # 6. Plot Data
-            data_plotted = False
+    #         # 6. Plot Data
+    #         data_plotted = False
             
-            if record.gsa_child_lines:
-                for sample in record.gsa_child_lines:
-                    data_pairs = []
+    #         if record.gsa_child_lines:
+    #             for sample in record.gsa_child_lines:
+    #                 data_pairs = []
 
-                    # 1. New Marker Select kara
-                    current_marker = next(marker_cycle)
+    #                 # 1. New Marker Select kara
+    #                 current_marker = next(marker_cycle)
 
-                    # --- CHANGE HERE: Save Symbol to Odoo Field ---
-                    # Jo marker graph sathi niwdla ahe, to 'symbol' field madhe save kara
-                    sample.symbol = current_marker
-                    # ----------------------------------------------
+    #                 # --- CHANGE HERE: Save Symbol to Odoo Field ---
+    #                 # Jo marker graph sathi niwdla ahe, to 'symbol' field madhe save kara
+    #                 sample.symbol = current_marker
+    #                 # ----------------------------------------------
 
-                    for line in sample.sieve_analysis_child_lines_gsa:
-                        if line.sieve_size and line.passing_percent is not None:
-                            try:
-                                # String clean kara
-                                size_str = str(line.sieve_size).lower().replace('mm', '').strip()
-                                if 'pan' in size_str:
-                                    continue 
+    #                 for line in sample.sieve_analysis_child_lines_gsa:
+    #                     if line.sieve_size and line.passing_percent is not None:
+    #                         try:
+    #                             # String clean kara
+    #                             size_str = str(line.sieve_size).lower().replace('mm', '').strip()
+    #                             if 'pan' in size_str:
+    #                                 continue 
 
-                                # 5 digit rounding
-                                size_val = round(float(size_str), 5)
-                                pass_val = line.passing_percent
+    #                             # 5 digit rounding
+    #                             size_val = round(float(size_str), 5)
+    #                             pass_val = line.passing_percent
 
-                                if 0.001 <= size_val <= 100:
-                                    data_pairs.append((size_val, pass_val))
-                            except ValueError:
-                                continue
+    #                             if 0.001 <= size_val <= 100:
+    #                                 data_pairs.append((size_val, pass_val))
+    #                         except ValueError:
+    #                             continue
                     
-                    # Sort: Smallest -> Largest
-                    data_pairs.sort(key=lambda x: x[0]) 
+    #                 # Sort: Smallest -> Largest
+    #                 data_pairs.sort(key=lambda x: x[0]) 
 
-                    if data_pairs:
-                        sizes = [x[0] for x in data_pairs]
-                        passing = [x[1] for x in data_pairs]
+    #                 if data_pairs:
+    #                     sizes = [x[0] for x in data_pairs]
+    #                     passing = [x[1] for x in data_pairs]
 
-                        # Plotting with the selected marker
-                        ax.plot(sizes, passing, marker=current_marker, markersize=6, linewidth=2, label=sample.lab_no or "Sample")
-                        data_plotted = True
+    #                     # Plotting with the selected marker
+    #                     ax.plot(sizes, passing, marker=current_marker, markersize=6, linewidth=2, label=sample.lab_no or "Sample")
+    #                     data_plotted = True
 
-            # Legend
+    #         # Legend
+    #         if data_plotted:
+    #             ax.legend(loc='lower right', fontsize=9)
+
+    #         # 7. Save Image
+    #         buffer = io.BytesIO()
+    #         plt.savefig(buffer, format='png', bbox_inches='tight') 
+    #         plt.close(fig)
+    #         buffer.seek(0)
+            
+    #         record.gsa_graph_image = base64.b64encode(buffer.read())
+    #         buffer.close()
+
+    import matplotlib.pyplot as plt
+    import itertools
+
+    
+
+
+
+    # def action_generate_gsa_graph(self):
+
+    #  import matplotlib.pyplot as plt
+    #  import matplotlib.ticker as ticker
+    #  import io
+    #  import base64
+
+    #  for record in self:
+
+    #     fig, ax = plt.subplots(figsize=(12, 6), dpi=100)
+
+    #     ax.set_xscale('log')
+    #     ax.set_xlim(0.001, 100)
+    #     ax.set_ylim(0, 110)
+
+    #     ax.set_xlabel("Particle Diameter (mm)", fontsize=10, fontweight='bold')
+    #     ax.set_ylabel("Percentage Finer (%)", fontsize=10, fontweight='bold')
+
+    #     ax.grid(True, which='major', linestyle='-', linewidth=0.8, color='#404040', alpha=0.6)
+    #     ax.grid(True, which='minor', linestyle='-', linewidth=0.5, color='#a0a0a0', alpha=0.4)
+
+    #     locmaj = ticker.LogLocator(base=10.0, subs=(1.0,), numticks=100)
+    #     ax.xaxis.set_major_locator(locmaj)
+
+    #     def nice_log_formatter(x, pos):
+    #         if x in [0.001, 0.01, 0.1, 1, 10, 100]:
+    #             return f"{x:g}"
+    #         return ""
+
+    #     ax.xaxis.set_major_formatter(ticker.FuncFormatter(nice_log_formatter))
+    #     ax.yaxis.set_major_locator(ticker.MultipleLocator(10))
+
+    #     markers = [
+    #         '^','*','D','x','o','s','v','+','p','h',
+    #         '1','2','3','4','8','H','X','d','|','_'
+    #     ]
+
+    #     colors = [
+    #         "#1f77b4","#2ca02c","#ff7f0e","#d62728","#9467bd",
+    #         "#8c564b","#e377c2","#7f7f7f","#bcbd22","#17becf",
+    #         "#393b79","#637939","#8c6d31","#843c39","#7b4173"
+    #     ]
+        
+
+    #     plot_index = 0
+    #     data_plotted = False
+
+    #     if record.gsa_child_lines:
+
+    #         for sample in record.gsa_child_lines:
+
+    #             data_pairs = []
+
+    #             for line in sample.sieve_analysis_child_lines_gsa:
+
+    #                 if line.sieve_size and line.passing_percent is not None:
+
+    #                     try:
+
+    #                         size_str = str(line.sieve_size).lower().replace('mm', '').strip()
+
+    #                         if 'pan' in size_str:
+    #                             continue
+
+    #                         size_val = round(float(size_str), 5)
+    #                         pass_val = line.passing_percent
+
+    #                         if 0.001 <= size_val <= 100:
+    #                             data_pairs.append((size_val, pass_val))
+
+    #                     except ValueError:
+    #                         continue
+
+    #             data_pairs.sort(key=lambda x: x[0])
+
+    #             if data_pairs:
+
+    #                 marker = markers[plot_index % len(markers)]
+    #                 color = colors[plot_index % len(colors)]
+
+    #                 sizes = [x[0] for x in data_pairs]
+    #                 passing = [x[1] for x in data_pairs]
+
+    #                 ax.plot(
+    #                     sizes,
+    #                     passing,
+    #                     marker=marker,
+    #                     color=color,
+    #                     markersize=6,
+    #                     linewidth=2,
+    #                     label=sample.lab_no or "Sample"
+    #                 )
+
+    #                 # assign table symbol AFTER color decided
+    #                 sample.symbol_html = f"""
+    #                 <span style="
+    #                     color:{color};
+    #                     font-size:20px;
+    #                     font-weight:bold;">
+    #                     {marker}
+    #                 </span>
+    #                 """
+
+    #                 plot_index += 1
+    #                 data_plotted = True
+
+    #         if data_plotted:
+    #             ax.legend(loc='lower right', fontsize=9)
+
+    #         buffer = io.BytesIO()
+    #         plt.savefig(buffer, format='png', bbox_inches='tight')
+    #         plt.close(fig)
+
+    #         buffer.seek(0)
+    #         record.gsa_graph_image = base64.b64encode(buffer.read())
+    #         buffer.close()
+
+
+    def action_generate_gsa_graph(self):
+
+     import matplotlib.pyplot as plt
+     import matplotlib.ticker as ticker
+     import io
+     import base64
+
+     for record in self:
+
+        fig, ax = plt.subplots(figsize=(12, 6), dpi=100)
+
+        ax.set_xscale('log')
+        ax.set_xlim(0.001, 100)
+        ax.set_ylim(0, 110)
+
+        ax.set_xlabel("Particle Diameter (mm)", fontsize=10, fontweight='bold')
+        ax.set_ylabel("Percentage Finer (%)", fontsize=10, fontweight='bold')
+
+        ax.grid(True, which='major', linestyle='-', linewidth=0.8, color='#404040', alpha=0.6)
+        ax.grid(True, which='minor', linestyle='-', linewidth=0.5, color='#a0a0a0', alpha=0.4)
+
+        locmaj = ticker.LogLocator(base=10.0, subs=(1.0,), numticks=100)
+        ax.xaxis.set_major_locator(locmaj)
+
+        def nice_log_formatter(x, pos):
+            if x in [0.001, 0.01, 0.1, 1, 10, 100]:
+                return f"{x:g}"
+            return ""
+
+        ax.xaxis.set_major_formatter(ticker.FuncFormatter(nice_log_formatter))
+        ax.yaxis.set_major_locator(ticker.MultipleLocator(10))
+
+        markers = ['^','*','D','x','o','s','v','+','p','h','1','2','3','4','8','H','X','d','|','_']
+
+        colors = [
+            "#1f77b4","#2ca02c","#ff7f0e","#d62728","#9467bd",
+            "#8c564b","#e377c2","#7f7f7f","#bcbd22","#17becf",
+            "#393b79","#637939","#8c6d31","#843c39","#7b4173"
+        ]
+
+        marker_unicode = {
+    '^': '▲',
+    '*': '★',
+    'D': '◆',
+    'x': '✕',
+    'o': '●',
+    's': '■',
+    'v': '▼',
+    '+': '+'
+}
+
+
+        plot_index = 0
+        data_plotted = False
+
+        if record.gsa_child_lines:
+
+            for sample in record.gsa_child_lines:
+
+                data_pairs = []
+
+                for line in sample.sieve_analysis_child_lines_gsa:
+
+                    if line.sieve_size and line.passing_percent is not None:
+
+                        try:
+
+                            size_str = str(line.sieve_size).lower().replace('mm', '').strip()
+
+                            if 'pan' in size_str:
+                                continue
+
+                            size_val = round(float(size_str), 5)
+                            pass_val = line.passing_percent
+
+                            if 0.001 <= size_val <= 100:
+                                data_pairs.append((size_val, pass_val))
+
+                        except ValueError:
+                            continue
+
+                data_pairs.sort(key=lambda x: x[0])
+
+                if data_pairs:
+
+                    marker = markers[plot_index % len(markers)]
+                    color = colors[plot_index % len(colors)]
+
+                    sizes = [x[0] for x in data_pairs]
+                    passing = [x[1] for x in data_pairs]
+
+                    ax.plot(
+                        sizes,
+                        passing,
+                        marker=marker,
+                        color=color,
+                        markersize=6,
+                        linewidth=2,
+                        label=sample.lab_no or "Sample"
+                    )
+
+                    # symbol = marker
+                    symbol = marker_unicode.get(marker, marker)
+
+                    sample.symbol_html = f"""
+<svg width="60" height="22">
+
+    <!-- thin line -->
+    <line x1="0" y1="11" x2="60" y2="11"
+          stroke="{color}"
+          stroke-width="3"
+          stroke-linecap="round"/>
+
+    <!-- marker -->
+    <text x="30" y="15"
+          text-anchor="middle"
+          font-size="16"
+          fill="{color}"
+          font-weight="bold">
+        {symbol}
+    </text>
+
+</svg>
+"""
+
+                    plot_index += 1
+                    data_plotted = True
+
             if data_plotted:
                 ax.legend(loc='lower right', fontsize=9)
 
-            # 7. Save Image
             buffer = io.BytesIO()
-            plt.savefig(buffer, format='png', bbox_inches='tight') 
+            plt.savefig(buffer, format='png', bbox_inches='tight')
             plt.close(fig)
+
             buffer.seek(0)
-            
             record.gsa_graph_image = base64.b64encode(buffer.read())
             buffer.close()
+    
+    
 
        
 
@@ -4427,7 +4693,16 @@ class SoilGSALINE(models.Model):
     sr_no = fields.Integer(string="Sr NO.")
     #  readonly=True, copy=False, default=1
     
-    symbol = fields.Char(string="Symbol")
+    # symbol = fields.Char(string="Symbol")
+    symbol = fields.Char(string="Symbol", readonly=True)
+
+    
+
+    symbol_html = fields.Html(string="Symbol",sanitize=False,readonly=True)
+
+    symbol_color = fields.Char(string="Symbol Color", readonly=True)
+
+
     bh_id = fields.Char(string="BH ID")
     lab_no = fields.Char(string="LAB ID")
     sample_depth = fields.Char(string="Sample Depth (m)")

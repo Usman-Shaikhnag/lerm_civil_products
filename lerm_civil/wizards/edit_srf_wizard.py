@@ -17,10 +17,12 @@ class SRFEditWizard(models.TransientModel):
     customer = fields.Many2one('res.partner',string="Customer",tracking=True)
     billing_customer = fields.Many2one('res.partner',string="Billing Customer")
     contact_person = fields.Many2one('res.partner',string="Contact Person")
-    client = fields.Char("Client")
+    # client = fields.Char("Client")
+    client = fields.Many2one('res.partner',string="Client")
     # site_address = fields.Many2one('res.partner',string="Site Address")
     site_address = fields.Char(string="Site Address",compute="_compute_site_address")
-    # name_work = fields.Many2one('res.partner.project',string="Name of Work")
+    name_work = fields.Many2one('res.partner.project',string="Name of Work")
+    consultant_name1 = fields.Char(string="Consultant Name")
     # name_works = fields.Many2many('res.partner.project',string="Name of Work",compute="_compute_name_work")
 
     client_refrence = fields.Char(string="Client Reference Letter")
@@ -32,6 +34,40 @@ class SRFEditWizard(models.TransientModel):
     contractor_ids = fields.Many2many('lerm.contractor.line')
     attachment = fields.Binary(string="Attachment")
     attachment_name = fields.Char(string="Attachment Name")
+    report_issued = fields.Many2one('res.partner',string="Report to be issued in the name of:")
+    request_date = fields.Date(string="Date of test request:")
+
+    @api.onchange('name_work')
+    def _onchange_name_work(self):
+        # Set the value of consultant_name1 based on the selected name_work
+        if self.name_work:
+            self.consultant_name1 = self.name_work.consultant_name
+
+    @api.depends('name_work')
+    def _compute_consultant_name1(self):
+        # Update consultant_name1 when name_work changes
+        for record in self:
+            if record.name_work:
+                record.consultant_name1 = record.name_work.consultant_name
+            else:
+                record.consultant_name1 = False
+
+
+
+    @api.onchange('name_work')
+    def _onchange_name_client(self):
+        # Set the value of consultant_name1 based on the selected name_work
+        if self.name_work:
+            self.client = self.name_work.client_name
+
+    @api.depends('name_work')
+    def _compute_name_client1(self):
+        # Update client when name_work changes
+        for record in self:
+            if record.name_work:
+                record.client = record.name_work.client_name
+            else:
+                record.client = False
     
     
     
@@ -40,11 +76,14 @@ class SRFEditWizard(models.TransientModel):
         self.srf_id.write({
             'customer': self.customer.id,
             'srf_date': self.srf_date,
-            'client': self.client,
+            'client': self.client.id,
             'contact_person': self.contact_person.id,
             'contractor': self.contractor.id,
             'billing_customer': self.billing_customer.id,
             'client_refrence': self.client_refrence,
+            'report_issued': self.report_issued.id,
+            'request_date': self.request_date,
+            
             # 'name_work': self.name_work.id,
             'attachment':self.attachment,
             'attachment_name':self.attachment_name

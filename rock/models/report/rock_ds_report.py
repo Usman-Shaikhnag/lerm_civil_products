@@ -4,6 +4,8 @@ import base64
 import qrcode
 from io import BytesIO
 from lxml import etree
+from odoo.modules.module import get_module_resource
+
 
 class RockDatasheet(models.AbstractModel):
         _name = 'report.rock.rock_datasheet'
@@ -100,6 +102,21 @@ class SoilReportTriaxial(models.AbstractModel):
             ('sample_id', 'in', docs.ids)
         ])
 
+        logo_path = get_module_resource(
+       'lerm_civil',
+       'static',
+       'src',
+       'img',
+       'genstru_logo.png')   
+
+        logo_base64 = False
+        if logo_path:
+            with open(logo_path, 'rb') as f:
+                logo_base64 = base64.b64encode(f.read()).decode('utf-8')
+        
+        print("LOGO PATH:", logo_path)
+        print("LOGO BASE64 EXISTS:", bool(logo_base64))
+
         
 
         return {
@@ -107,6 +124,8 @@ class SoilReportTriaxial(models.AbstractModel):
             'doc_model': 'mechanical.rock',
             'data': docs,
             'eln': eln_records,
+            'docs': docs,
+            'logo_base64': logo_base64,
         }
 
 
@@ -125,6 +144,15 @@ class SoilReportTriaxial(models.AbstractModel):
             ('sample_id', 'in', docs.ids)
         ])
 
+        logo_path = get_module_resource(
+            'lerm_civil', 'static/src/img', 'genstru_logo.png'
+        )
+
+        logo_base64 = False
+        if logo_path:
+            with open(logo_path, 'rb') as f:
+                logo_base64 = base64.b64encode(f.read()).decode('utf-8')
+
         
 
         return {
@@ -132,4 +160,6 @@ class SoilReportTriaxial(models.AbstractModel):
             'doc_model': 'mechanical.rock',
             'data': docs,
             'eln': eln_records,
+            'docs': docs,
+            'logo_base64': logo_base64,
         }
