@@ -1333,7 +1333,13 @@ class SampleRequestReviewLine(models.Model):
                 'lab_ids_raw': ",".join(labs),
                 'show_lab_id': True
             })
-        return True
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'sample.request.review',
+            'view_mode': 'form',
+            'res_id': parent.id,
+            'target': 'new',
+        }
 
 
 
