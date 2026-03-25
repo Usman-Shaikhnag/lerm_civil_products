@@ -12,6 +12,7 @@
         'report/kes_invoice_template.xml',
         'report/kes_invoice_template_without_header.xml',
         'views/customer.xml',
+        'views/company.xml',
     ],
  'assets': {
         'web.report_assets_common': [

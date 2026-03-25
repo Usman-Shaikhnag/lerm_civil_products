@@ -34,6 +34,13 @@ class Soil(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
 
+
+    lab_id = fields.Many2one(
+    'lerm.lab.master',
+    string="Lab",
+    default=lambda self: self.env['lerm.lab.master'].search([], limit=1)
+)
+
     def prefill_data(self):
         # import wdb; wdb.set_trace()
         return {
@@ -2527,78 +2534,54 @@ class Soil(models.Model):
         for result in technician_results:
             # import wdb;wdb.set_trace()
             # Elongation
-            if result.parameter.internal_id == '12014fgr-5c56-475b-9a89-93a59c9ee3a2':
+
+             if result.parameter.internal_id == '00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr':
+                result.result_char = round(self.phi_deg,2)
                 result.calculated = True
-
-            if result.parameter.internal_id == '21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr':
-                result.calculated = True
-
-            if result.parameter.internal_id == '5e3a90c9-ca0b-406f-93a9-11ba7318e71b':
-                result.calculated = True
-
-            if result.parameter.internal_id == '214hhj6gt21-ca64-44dd-b0ae-6587gghty':
-                result.calculated = True
-
-            if result.parameter.internal_id == 'ght4125-ca64-44dd-b0ae-228aacf04998':
-                result.calculated = True
-
-
-            if result.parameter.internal_id == '23fg21gh-7202-4d62-864b-8efa58b6b61f':
-                result.result_char = round(self.liquid_limit,2)
-                if self.liquid_limit_nabl == 'pass':
+                if self.phi_deg_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
-            if result.parameter.internal_id == '120vbf14-2ff0-4b81-aca1-0e07dab7cd87':
-                result.result_char = round(self.plastic_limit,2)
-                if self.plastic_limit_nabl == 'pass':
+             
+             if result.parameter.internal_id == '21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr':
+                result.result_char = round(self.avg_shear_stress,2)
+                result.calculated = True
+                if self.avg_shear_stress_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
-            if result.parameter.internal_id == '1045789654-2ff0-4b81-aca1-0e07dab7cd87':
-                result.result_char = round(self.plasticity_index,2)
-                if self.plasticity_index_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-            if result.parameter.internal_id == '3210vbf-20fb-4843-aa0e-2ee981be0d7c':
-                result.result_char = round(self.max_dry_density,2)
-                if self.heavy_table_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-            if result.parameter.internal_id == '3210vbf-20fb-4843-aa0e-142578bgtyu':
-                result.result_char = round(self.omc1,2)
-                if self.omc_table_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-            if result.parameter.internal_id == 'ght4125-ca64-44dd-b0ae-228aacf04998':
+             
+             if result.parameter.internal_id == 'ght4125-ca64-44dd-b0ae-228aacf04998':
                 result.result_char = round(self.fsi,2)
+                result.calculated = True
                 if self.fsi_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
-            if result.parameter.internal_id == '5487gt21-ca64-44dd-b0ae-228aacf04965':
-                result.result_char = round(self.permeability,2)
-                if self.permeability_nabl == 'pass':
+             
+             if result.parameter.internal_id == '12014fgr-5c56-475b-9a89-93a59c9ee3a2':
+                # result.result_char = round(self.avrg_compressive_strength,2)
+                result.calculated = True
+                # if self.comp_strength_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+             
+             if result.parameter.internal_id == '214hhj6gt21-ca64-44dd-b0ae-6587gghty':
+                result.result_char = round(self.specific_gravity,2)
+                result.calculated = True
+                if self.specific_gravity_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
-            if result.parameter.internal_id == '3210vbf-20fb-4843-aa0e-145ght27854l':
-                result.result_char = round(self.area_triaxial,2)
-                if self.area_triaxial_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
+             
+
+            
             
             
 

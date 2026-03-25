@@ -4,47 +4,37 @@
 		<t t-call="web.html_container">
 			 <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
 				<div class="container_eln" style="padding-top:0;">
-					<div class="" t-foreach="eln" t-as="o">
+
+					 <div class="" t-foreach="eln" t-as="o">
 						<table style="width: 100%; border-collapse: collapse;">
 							<tbody>
+					
+
+							<tr>
+							  <td><strong>DESCRIPTION OF SAMPLE</strong> : <span t-field="data.age_of_days"/> </td>
+							
+							</tr>
+
+							
+		
+
+
+								<tr> 
+								   <td >  <strong>Type of Sample</strong> : <span t-field="o.material.name"/></td>
+
+                                
+                               </tr>
+
 								<tr>
-									<td style="width: 30%; padding: 5px;"><strong>Client Details</strong></td>
-									<td style="padding-left: 10px;">
-										<span t-field="o.srf_id.customer.name"/>
-										<span t-field="o.srf_id.customer.street"/>
-										<span t-field="o.srf_id.customer.street2"/>
-										<span t-field="o.srf_id.customer.city"/>
-										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
-										<span t-field="o.srf_id.customer.state_id"/> ,
-										<span t-field="o.srf_id.customer.country_id"/>
-									</td>
+								<td > <strong>Curing Condition:</strong>  <span t-field="data.curing_condition"/></td>
 								</tr>
-								<tr>
-									<td><strong>Client's Reference</strong></td>
-									<td style="padding-left: 10px;"><span t-field="o.srf_id.client_refrence"/></td>
-								</tr>
-								<tr>
-									<td><strong>Name of Work</strong></td>
-									<td style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
-								</tr>
-								<tr>
-									<td><strong>Date of Testing</strong></td>
-									<td style="padding-left: 10px;">
-										<span t-field="o.start_date" style="margin-right:10px;"/> to 
-										<span t-field="o.end_date" style="margin-left:10px;"/>
-									</td>
-								</tr>
-								<tr>
-									<td><strong>Type of Sample</strong></td>
-									<td style="padding-left: 10px;"><span t-field="o.material.name"/></td>
-								</tr>
-								<!-- Source of Sample (only if value exists) -->
+								
 								<tr t-if="o.material.source_sample">
 									<td style="font-weight: bold;">Source of Sample</td>
 									<td><span t-field="o.material.source_sample"/></td>
 								</tr>
 
-								<!-- Test method adopted (only if value exists) -->
+								
 								<tr t-if="o.material.test_method_adopted">
 									<td style="font-weight: bold;">Test method adopted:</td>
 									<td><span t-field="o.material.test_method_adopted"/></td>
@@ -53,44 +43,77 @@
 						</table>
 					</div>
 
-					<!--Maybe Used Later -->
-					<!-- <div style="padding-top:5px">
-						<span style="font-weight: bold;" t-esc="eln.material.test_parameter"/>: 
-						
-						
-							<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','23545tur-17c1-48ac-8462-9671e4d3d09f')]).parameter_table" t-as="parameter">
-								<t t-if="parameter.grade.id == eln.grade_id.id">
-									<span t-field="parameter.specification"/>
-								</t>
-							</t>
-						
-					</div> -->
+
 					
-					<div style="margin-top:2px">
+					<div>
 						<table class="custom_table_borders text-center">
+						<tr>
+							    <!-- <td >Location of testing :</td> -->
+
+							
+								<td>
+
+								Location of testing :
+
+								<t t-if="data.lab_id">
+								 <t t-foreach="data.lab_id.lab_location_line" t-as="loc">
+								   <div>
+                                     <span t-esc="loc.location_name"/>
+                                    
+                                    </div>
+									 </t>
+                                  </t>
+								  </td>
+
+
+
+								 
+
+						
+							</tr>
+
+
+							<tr>
+						    	<td><strong>Date of Testing</strong> : <span t-field="o.start_date"/> </td>
+							</tr>
+							<tr>
+							   <td><strong>Date of Completion</strong> : <span t-field="o.end_date"/></td>
+							</tr>
+
+
 							<tr>
 								<td><strong>Grade of Sample</strong> : <span t-field="o.grade_id.grade"/></td>
-								<td><strong>Age Of Cubes</strong> : <span t-field="data.age_of_days"></span></td>
+
 							</tr>
-							<tr>
-								<td><strong>Size of Cube</strong> : <span t-field="o.sample_id.size_id.size"/></td>
-								<td><strong>Area Of Cube  : </strong><span t-field="data.area_of_cube"/>  Sq.mm</td>		
-							</tr>
+
+
+				
 						</table>
-					</div> 
+					</div>  
+
+
+
+
 
 					<div style="">
 						<table class="custom_table_borders">
 							<thead>
 								<tr>
-									<th style="text-align: center; font-weight: bold; width: 4%;">Sr. No</th>
-									<th style="text-align: center; font-weight: bold; white-space: nowrap;">Sample Identification</th>
-									<th style="text-align: center; font-weight: bold; width: 10%;">Weight of Cube (gms)</th>
-									<th style="text-align: center; font-weight: bold; width: 9%;">Date of casting</th>
-									<th style="text-align: center; font-weight: bold; width: 9%;">Date of Testing</th>
-									<th style="text-align: center; font-weight: bold; width: 6%;">Load (kN)</th>
-									<th style="text-align: center; font-weight: bold; width: 13%;">Compressive Strength (N/mm²)</th>
-									<th style="text-align: center; font-weight: bold; width: 15%;">Avg. Compressive Strength (N/mm²)</th>
+									<th style="text-align: center; font-weight: bold; width: 4%;" rowspan = "2">Sr. No</th>
+									<th style="text-align: center; font-weight: bold; white-space: nowrap;" rowspan = "2">Sample Identification</th>
+									<th style="text-align: center; font-weight: bold; white-space: nowrap;" rowspan = "2">Age of Concrete</th>
+									<th style="text-align: center; font-weight: bold; width: 10%;" rowspan = "2">Weight of Cube (gms)</th>
+									<th style="text-align: center; font-weight: bold; width: 9%;" colspan= "3">Dimension</th>
+									
+									<th style="text-align: center; font-weight: bold; width: 9%;" rowspan = "2">Area of cube mm2</th>
+									<th style="text-align: center; font-weight: bold; width: 6%;" rowspan = "2">Load (kN)</th>
+									<th style="text-align: center; font-weight: bold; width: 13%;" rowspan = "2">Compressive Strength (N/mm²)</th>
+									<th style="text-align: center; font-weight: bold; width: 15%;" rowspan = "2">Avg. Compressive Strength (N/mm²)</th>
+								</tr>
+								<tr>
+								<th style="text-align: center; font-weight: bold; width: 9%;"> L (mm)</th>
+									<th style="text-align: center; font-weight: bold; width: 9%;">X</th>
+									<th style="text-align: center; font-weight: bold; width: 9%;">B (mm)</th>
 								</tr>
 							</thead>
 
@@ -101,8 +124,21 @@
 								<tr>
 									<td style="text-align: center;"><span t-esc="r.sr_no"/></td>
 									<td style="text-align: center; white-space: nowrap;"><span t-esc="r.id_mark"/></td>
+
+									<td style="text-align: center;"><span t-esc="r.days"/></td>
+
+
 									<td style="text-align: center;"><span t-esc="r.wt_sample"/></td>
-									<t t-if="r.dt_of_casting">
+									
+
+									<td style="text-align: center;"><span t-esc="r.length"/></td>
+									<td style="text-align: center;"><span t-esc="r.x_symbol"/></td>
+									<td style="text-align: center;"><span t-esc="r.breadth"/></td>
+									<td style="text-align: center;"><span t-esc="r.area_of_cube"/></td>
+
+
+
+									<!-- <t t-if="r.dt_of_casting">
 										<td style="text-align: center;">
 											<span t-esc="r.dt_of_casting.strftime('%d-%m-%y')"/>
 										</td>
@@ -117,7 +153,7 @@
 									</t>
 									<t t-else="">
 										<td style="text-align: center;"><span t-esc="r.dt_of_testing1"/></td>
-									</t>
+									</t> -->
 									<td style="text-align: center;"><span t-esc="r.load"/></td>
 									<td style="text-align: center;">
 										<span t-esc="r.compressive_strength" t-options='{"widget": "float", "precision": 2}'/>

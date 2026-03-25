@@ -2,7 +2,7 @@
     <data>
 
         <record model="ir.module.category" id="kes_invocing_access_category">
-            <field name="name">KES Invocing</field>
+            <field name="name">LERM Invocing</field>
         </record>
 
 
@@ -13,6 +13,16 @@
 
         <record model="res.groups" id="kes_invocing_creation_backdate_group">
             <field name="name">Invocing Backdate Creation</field>
+            <field name="category_id" ref="kes_invocing_access_category"/>
+        </record>
+
+        <record model="res.groups" id="lerm_project_master">
+            <field name="name">Project Master</field>
+            <field name="category_id" ref="kes_invocing_access_category"/>
+        </record>
+
+        <record model="res.groups" id="lerm_project_read">
+            <field name="name">Project Read</field>
             <field name="category_id" ref="kes_invocing_access_category"/>
         </record>
 

@@ -57,29 +57,13 @@
 
                     <group col="2" style="margin-bottom:30px;">
                         <field name="work_name"/>
-                        <field name="client"/>
                         <field name="contractor"/>
-                        <field name="ulr"/>
+                        <field name="client"/>
                         <field name="report_no"/>
                         <field name="rec_date"/>
                         <field name="test_standard"/>
                         <field name="site_location" colspan="2"/>
                     </group>
-                    <!-- ================= CONTENTS ================= -->
-                    <div style="margin-top:30px;">
-                        <h3 style="border-bottom:2px solid #000;">
-                            CONTENTS
-                        </h3>
-                    </div>
-
-                    <field name="content_ids" nolabel="1">
-                        <tree editable="bottom">
-                            <field name="sequence"/>
-                            <field name="description"/>
-                            <field name="page_no"/>
-                        </tree>
-                    </field>
-
 
                     <!-- ================= INTRODUCTION ================= -->
                     <div style="margin-top:30px;">
@@ -189,25 +173,12 @@
 
                     <field name="graph_image" widget="image"/>
 
-                    <!-- ================= ANALYSIS OF TEST RESULTS ================= -->
-                    <div style="margin-top:35px;">
-                        <h3 style="font-weight:bold;">
-                            2.06 : ANALYSIS OF TEST RESULTS
-                        </h3>
-                    </div>
-
-                    <div style="border:1px solid #000; padding:12px; margin-bottom:15px;">
-                        <field name="analysis_text"
-                            widget="text"
-                            nolabel="1"/>
-                    </div>
-                    
                     <!-- ================= DISPLACEMENT SUMMARY ================= -->
                     <div style="margin-top:20px; font-weight:bold;">
                         Gross Displacement =
-                        <field name="gross_settlement" readonly="1"/> mm<br/>
+                        <field name="gross_displacement" readonly="1"/> mm<br/>
                         Net Displacement =
-                        <field name="net_settlement" readonly="1"/> mm<br/>
+                        <field name="net_displacement" readonly="1"/> mm<br/>
                         Rebound =
                         <field name="rebound" readonly="1"/> mm
                     </div>

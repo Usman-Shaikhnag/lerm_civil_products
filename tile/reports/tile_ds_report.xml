@@ -9,6 +9,8 @@
 					<p style="font-size:15px"><b>Test Report</b></p>
 				</div> -->
 
+
+
 				<div class="container_eln">
 					<div t-foreach="eln" t-as="o">
 						
@@ -1205,6 +1207,17 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
     <template id="tile_datasheet">
         <t t-call="web.html_container">
             <t t-call="lerm_civil.mechanical_data_sheet_header">
@@ -1403,9 +1416,57 @@
                     </div>
 
 
+
+
+					<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+
+
                       <!-- Straightness  -->
                     
-                <div t-if="data.straightness_visible" style="margin-top:20px">
+                <div t-if="data.straightness_visible" style="margin-top:20px; page-break-before: always;">
                         <div style="text-align:center;font-size:18px">
                               <span t-field="env['lerm.parameter.master'].search([('internal_id','=','19999f82-79c0-44a8-9379-f40dd33235aa')]).parameter_name"/>
                             <span>
@@ -1495,9 +1556,56 @@
 
 
 
+				<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+
+
+
                   <!-- Rectangularity  -->
                     
-                <div t-if="data.rectangularity_visible" style="margin-top:20px">
+                <div t-if="data.rectangularity_visible" style="margin-top:20px; page-break-before: always;">
                         <div style="text-align:center;font-size:18px">
                               <span t-field="env['lerm.parameter.master'].search([('internal_id','=','4e209b70-f6b9-49b9-bab6-f38292f64b1c')]).parameter_name"/>
                             <span>
@@ -1587,9 +1695,57 @@
 
 
 
+					<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+
+
+
+
                   <!-- Centre Curvature  -->
                     
-                <div t-if="data.centre_curvature_visible" style="margin-top:20px">
+                <div t-if="data.centre_curvature_visible" style="margin-top:20px; page-break-before: always;">
                         <div style="text-align:center;font-size:18px">
                               <span t-field="env['lerm.parameter.master'].search([('internal_id','=','873e02d1-db08-43d8-a88f-f6de09d41955')]).parameter_name"/>
                             <span>
@@ -1684,9 +1840,57 @@
                 </div>
 
 
+
+					<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+
+
+
                    <!-- Edge Curvature  -->
                     
-                <div t-if="data.edge_curvature_visible" style="margin-top:20px">
+                <div t-if="data.edge_curvature_visible" style="margin-top:20px; page-break-before: always;">
                         <div style="text-align:center;font-size:18px">
                               <span t-field="env['lerm.parameter.master'].search([('internal_id','=','2c4efee6-d22a-4eec-afbb-5435f3041f3f')]).parameter_name"/>
                             <span>
@@ -1782,9 +1986,57 @@
 
 
 
+					<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+
+
+
+
                  <!-- warpage  -->
                     
-                <div t-if="data.warpage_visible" style="margin-top:20px">
+                <div t-if="data.warpage_visible" style="margin-top:20px; page-break-before: always;">
                         <div style="text-align:center;font-size:18px">
                               <span t-field="env['lerm.parameter.master'].search([('internal_id','=','91fc2258-6bd7-40d4-82d8-404af0928ae9')]).parameter_name"/>
                             <span>
@@ -1883,9 +2135,58 @@
 
 
 
+
+					<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+
+
+
+
                     <!--water absorption and bulk density  -->
                     
-                <div t-if="data.water_bulk_visible" style="margin-top:20px">
+                <div t-if="data.water_bulk_visible" style="margin-top:20px; page-break-before: always;">
                         <div style="text-align:center;font-size:18px">
                               <span t-field="env['lerm.parameter.master'].search([('internal_id','=','5d81b405-ed58-4374-bda7-2825e12f307c')]).parameter_name"/>
                             <span>
@@ -1977,9 +2278,57 @@
 
 
 
+					<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+
+
+
+
                     <!-- bulk density  -->
                     
-                <div t-if="data.bulk_visible" style="margin-top:20px">
+                <div t-if="data.bulk_visible" style="margin-top:20px; page-break-before: always;">
                         <div style="text-align:center;font-size:18px">
                               <span t-field="env['lerm.parameter.master'].search([('internal_id','=','25489lku-2bb3-4821-958d-ec2c81db5698')]).parameter_name"/>
                             <span>
@@ -2060,11 +2409,58 @@
                            
                         </table>
                 </div>
+
+
+					<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+
                     
 
                           <!--Modulus and rupture and breaking strength -->
                     
-                <div t-if="data.modulus_visible" style="margin-top:20px">
+                <div t-if="data.modulus_visible" style="margin-top:20px; page-break-before: always;">
                         <div style="text-align:center;font-size:18px">
                               <span t-field="env['lerm.parameter.master'].search([('internal_id','=','f9fb0d98-1891-496f-9ef3-4745c5598085')]).parameter_name"/>
                             <span>
@@ -2164,9 +2560,57 @@
 
 
 
+					<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+
+
+
+
                         <!--crazing resistance test-->
                     
-                <div t-if="data.crazing_visible" style="margin-top:20px">
+                <div t-if="data.crazing_visible" style="margin-top:20px; page-break-before: always;">
                         <div style="text-align:center;font-size:18px">
                               <span t-field="env['lerm.parameter.master'].search([('internal_id','=','0157651d-76f3-428a-9a89-f47593d1fd42')]).parameter_name"/>
                             <span>
@@ -2194,9 +2638,58 @@
                         </table>
                 </div>
 
+
+
+
+					<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+
+
                          <!--chemical resistance test-->
                     
-                <div t-if="data.chemical_visible" style="margin-top:20px">
+                <div t-if="data.chemical_visible" style="margin-top:20px; page-break-before: always;">
                         <div style="text-align:center;font-size:18px">
                               <span t-field="env['lerm.parameter.master'].search([('internal_id','=','daa5edf4-4f0a-4625-a1b8-4b365204be34')]).parameter_name"/>
                             <span>

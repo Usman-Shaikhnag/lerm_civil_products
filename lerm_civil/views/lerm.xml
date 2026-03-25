@@ -134,6 +134,24 @@
             <p class="o_view_nocontent_smiling_face">Alotted Sample</p>
         </field>
     </record>
+
+    <record id="test_sample_calculated_action" model="ir.actions.act_window">
+        <field name="name">Sample In-Test</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">lerm.srf.sample</field>
+        <field name="view_mode">tree,kanban,form</field>
+
+        <!-- Correct state -->
+        <field name="domain">[
+            ('state','=','7-calculated')
+        ]</field>
+
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face"> Sample</p>
+        </field>
+    </record>
+
+
     <record id="sample_pending_verification_action" model="ir.actions.act_window">
         <field name="name">Sample Verification Pending</field>
         <field name="type">ir.actions.act_window</field>
@@ -272,6 +290,12 @@
       <field name="view_mode">tree,form</field>
     </record>
     
+    <record id="srf_form_id" model="ir.actions.act_window">
+        <field name="name">SRF</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">lerm.civil.srf</field>
+        <field name="view_mode">tree,kanban,form,graph</field>
+    </record>
     
 
     <!-- <menuitem id="menu_partner_document_root"
@@ -328,6 +352,7 @@
     <menuitem id="lerm_product_item_param_master"
         parent="lerm_menu"
         name="Product Master"
+        groups="lerm_civil.lerm_access_product_master"
         action="lerm_product_action"
         sequence="11" />
     
@@ -347,6 +372,7 @@
     <menuitem id="lab_master"
         name="Lab Master"
         parent="lerm_menu"
+        groups="lerm_civil.lerm_access_lab_master"
         action="lab_master_action"
         sequence="14" />
 
@@ -367,6 +393,10 @@
         parent="lerm_root"
         sequence="10" />
 
+     <!-- <menuitem id="lerm_transaction_data"
+        name="Lab Operations"
+        parent="lerm_root"
+        sequence="10" /> -->
 
     <menuitem id="srf_form" 
         name="SRF" 
@@ -382,7 +412,11 @@
         action="test_sample_action"
         sequence="15" />
 
-    
+    <menuitem id="lerm_rejected_sample"
+        name="Rejected Sample"
+        parent="lerm_transaction_data"
+        action="rejected_sample_action"
+        sequence="17" />
 
     <menuitem id="lerm_eln"
         name="Lab Notebook"
@@ -416,38 +450,39 @@
         action="test_sample_pending_allotted_action"
         sequence="21" />
 
+    <menuitem id="sample_status_calculated"
+        name="In-Test"
+        parent="sample_status"
+        action="test_sample_calculated_action"
+        sequence="22" />
+
     <menuitem id="sample_status_pending_verification"
         name="Pending Verification"
         parent="sample_status"
         groups="lerm_civil.lerm_sample_verification"
         action="sample_pending_verification_action"
-        sequence="22" />
+        sequence="23" />
     
     <menuitem id="sample_status_pending_approval"
         name="Pending Approval"
         parent="sample_status"
         groups="lerm_civil.lerm_sample_approval"
         action="sample_pending_approval_action"
-        sequence="23" />
+        sequence="24" />
 
 
     <menuitem id="sample_status_in_report"
         name="In-Report"
         parent="sample_status"
         action="test_sample_pending_in_report_action"
-        sequence="24" />
+        sequence="25" />
 
-    <menuitem id="lerm_rejected_sample"
-        name="Rejected Sample"
-        parent="sample_status"
-        action="rejected_sample_action"
-        sequence="30" />
    
 
     <menuitem id="reporting_menu"
         name="Reports"
         parent="lerm_root" 
-        groups="lerm_civil.kes_report"
+        groups="lerm_civil.kes_admin_access_group,lerm_civil.kes_report"
         sequence="25"  />
 
      
@@ -455,22 +490,23 @@
     <menuitem id="lerm_sample_reporting"
         name="Customer Reports"
         parent="reporting_menu"
-        groups="lerm_civil.kes_report"
         action="lerm_sample_reports_action"
+        groups="lerm_civil.kes_admin_access_group,lerm_civil.kes_report"
         sequence="10" />
 
 
     <menuitem id="lerm_ulr_reporting"
         name="ULR"
         parent="reporting_menu"
-        groups="lerm_civil.kes_report"
         action="lerm_ulr_reports_action"
+        groups="lerm_civil.kes_admin_access_group,lerm_civil.kes_report"
         sequence="10" />
 
     <menuitem id="lerm_print_reports_reporting"
         name="Sample"
         parent="reporting_menu"
         action="lerm_sample_print_reports_action"
+        groups="lerm_civil.kes_admin_access_group"
         sequence="11" />
 
 

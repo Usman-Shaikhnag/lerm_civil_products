@@ -1258,7 +1258,169 @@ class Door(models.Model):
 
 
     def open_eln_page(self):
-        # import wdb; wdb.set_trace()
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+            # import wdb;wdb.set_trace()
+            
+            # Length
+            if result.parameter.internal_id == 'cd31c1fa-aac8-4a92-b56e-37ace7f01f13':
+                result.result_char = round(self.door_length_avg,2)
+                result.calculated = True
+                if self.door_length_avg_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            # Width
+            if result.parameter.internal_id == '426149cc-ee30-45bb-a7df-db54327c2de1':
+                result.result_char = round(self.door_length_avg,2)
+                result.calculated = True
+                if self.door_length_avg_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Thickness
+            if result.parameter.internal_id == '80bacb3a-e725-4651-b476-3b1cc3fdd405':
+                result.result_char = round(self.door_thickess_avg,2)
+                result.calculated = True
+                if self.door_thickess_avg_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Squareness
+            if result.parameter.internal_id == '7f15645f-2d9f-4797-9a0f-978913968fd7':
+                result.result_char = round(self.door_squareness_avg,2)
+                result.calculated = True
+                if self.door_squareness_avg_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # General Flatness Test
+            if result.parameter.internal_id == 'c3845764-c593-4ad2-a2a1-a8653c060b16':
+                # result.result_char = round(self.door_length_avg,2)
+                result.calculated = True
+                
+
+            # Local Planeness Test
+            if result.parameter.internal_id == '0020e36c-0431-4859-8713-5e40c743e23b':
+                result.result_char = round(self.door_local_planeness_avg,2)
+                result.calculated = True
+                if self.door_local_planeness_avg_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            # Impact Indentation Test
+            if result.parameter.internal_id == 'bf8130ff-d00f-44c6-8216-da112646962c':
+                result.result_char = round(self.door_impact_avg,2)
+                result.calculated = True
+                if self.door_impact_avg_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            # Edge Loading Test
+            if result.parameter.internal_id == 'e3b8df2f-c7f4-4079-9c72-42fdab241896':
+                # result.result_char = round(self.door_length_avg,2)
+                result.calculated = True
+                # if self.door_length_avg_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+
+
+            # Shock Resistance Test
+            if result.parameter.internal_id == '92d5ed97-f463-4129-a75a-091ebfc79eb3':
+                # result.result_char = round(self.door_length_avg,2)
+                result.calculated = True
+                # if self.door_length_avg_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+
+
+            # Buckling Resistance Test
+            if result.parameter.internal_id == 'f38ae4bd-c6ac-4ebb-ac3f-ccb6c058d038':
+                # result.result_char = round(self.door_length_avg,2)
+                result.calculated = True
+                # if self.door_length_avg_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+
+
+            # Slamming test
+            if result.parameter.internal_id == '52613913-a010-4316-bed3-95e730833bcd':
+                # result.result_char = round(self.door_length_avg,2)
+                result.calculated = True
+                # if self.door_length_avg_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+
+            # Misuse test
+            if result.parameter.internal_id == 'ac04ae65-0ecf-41e3-a756-4a6f463bc7dd':
+                # result.result_char = round(self.door_length_avg,2)
+                result.calculated = True
+                # if self.door_length_avg_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+
+            # End Immersion test
+            if result.parameter.internal_id == 'def7da26-83e4-4dac-9350-5a7985bdcbd7':
+                # result.result_char = round(self.door_impact_avg,2)
+                result.calculated = True
+                # if self.door_impact_avg_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+
+            # Knife test
+            if result.parameter.internal_id == 'bf807311-0de8-4c7d-a2b1-3c97c4a607b4':
+                # result.result_char = round(self.door_impact_avg,2)
+                result.calculated = True
+                # if self.door_impact_avg_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+
+            # Glue adhesion test
+            if result.parameter.internal_id == 'f473aa7e-7e07-4cbc-a2c2-cc5c2dabb650':
+                
+                result.calculated = True
+                
+
+            # Varying Humidity test
+            if result.parameter.internal_id == '7bc503c2-a6d6-4ecb-a6d4-285a80e013c4':
+               
+                result.calculated = True
+                
 
         return {
                 'view_mode': 'form',

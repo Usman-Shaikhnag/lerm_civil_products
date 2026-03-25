@@ -9,6 +9,7 @@ class CementNormalConsistency(models.Model):
     _name = "cement.opc"
     _inherit = "lerm.eln"
     _rec_name = "name"
+    
 
     name = fields.Char("Name",default="Cement")
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
@@ -990,39 +991,63 @@ class CementNormalConsistency(models.Model):
                     record.specific_gravity_visible = True
              
 
+    
     def open_eln_page(self):
-    # import wdb; wdb.set_trace()
-        for result in self.eln_ref.parameters_result:
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+
+            # Fineness of Cement by Dry Sieving
             if result.parameter.internal_id == 'a9e97cea-372f-4775-9bcb-e9dd70e6e6df':
                 result.result_char = round(self.avg_cement,2)
+                result.calculated = True
                 if self.avg_cement_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+
+            # 
             if result.parameter.internal_id == '254gt2547-372f-4775-9bcb-e9dd70e3587g':
                 result.result_char = round(self.avg_density,2)
+                result.calculated = True
                 if self.avg_density_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+
             if result.parameter.internal_id == '32457fg-372f-4775-9bcb-e9dd70214578r':
                 result.result_char = round(self.avg_fineness_blaine,2)
+                result.calculated = True
                 if self.avg_fineness_blaine_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+
+
             if result.parameter.internal_id == '23547gtyu-372f-4775-9bcb-e9dd723547htui':
                 result.result_char = round(self.avg_soundness_cement,2)
+                result.calculated = True
                 if self.avg_soundness_cement_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+
             if result.parameter.internal_id == '3214578nbhgt2-372f-4775-9bcb-e9dd723547htui':
                 result.result_char = round(self.consitency_of_cement,2)
+                result.calculated = True
                 if self.consitency_of_cement_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1032,20 +1057,27 @@ class CementNormalConsistency(models.Model):
           
             if result.parameter.internal_id == '0124578hgggt-372f-4775-9bcb-e9dd723547htui':
                 result.result_char = round(self.avg_3_days,2)
+                result.calculated = True
                 if self.avg_3_days_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+
             if result.parameter.internal_id == '30124587hhhy-372f-4775-9bcb-e9dd723547htui':
                 result.result_char = round(self.avg_7_days,2)
+                result.calculated = True
                 if self.avg_7_days_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+
             if result.parameter.internal_id == '3012456998ffff-372f-4775-9bcb-e9dd723547htui':
                 result.result_char = round(self.avg_28_days,2)
+                result.calculated = True
                 if self.avg_28_days_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1054,26 +1086,40 @@ class CementNormalConsistency(models.Model):
 
             if result.parameter.internal_id == '40ce7425-30fe-4043-b518-015f5c60d916':
                 result.result_char = self.initial_setting_time_minutes_unrounded
+                result.calculated = True
                 if self.initial_setting_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+
             if result.parameter.internal_id == 'd339933c-5e9c-4335-9ea2-2d87624c3061':
                 result.result_char = self.final_setting_time_minutes_unrounded
+                result.calculated = True
                 if self.final_setting_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
 
+
             if result.parameter.internal_id == '63254170yt0-372f-4775-9bcb-e9dd723547htui':
                 result.result_char = self.avg_specific_gravity
+                result.calculated = True
                 if self.avg_specific_gravity_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+            if result.parameter.internal_id == '12457888yui14-372f-4775-9bcb-e9dd723547htui2':
+                # result.result_char = self.avg_specific_gravity
+                result.calculated = True
+
+            if result.parameter.internal_id == '2014587ghty1-372f-4775-9bcb-e9dd723547htui':
+                # result.result_char = self.avg_specific_gravity
+                result.calculated = True
             
 
         return {

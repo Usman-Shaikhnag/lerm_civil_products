@@ -48,6 +48,14 @@ class PlateLoad(models.Model):
     factor_safty = fields.Char(string="factor of safety")
     allowable_net = fields.Char(string="The net allowable safe bearing capacity")
 
+    introdution = fields.Text(string="Introdution")
+
+    objective = fields.Text(string="Objective")
+
+    apparatus = fields.Text(string="Apparatus")
+
+    test_procedure = fields.Text(string="Setup & Test Procedure")
+
 
   
    
@@ -195,33 +203,17 @@ class PlateLoad(models.Model):
     
     def action_calculate_unload_settlement_and_cumulative(self):
         for rec in self:
-            unload_lines = rec.child_lines_plate_unload.sorted('sr_no')
+            running_total = 0.0
 
-            if not unload_lines:
-                continue
+            # Start with last loading cumulative
+            if rec.child_lines_plate_load:
+                last_line = rec.child_lines_plate_load.sorted('sr_no')[-1]
+                running_total = last_line.cumulative_sett1 or 0.0
 
-            # ----------------------------
-            # Step 1: Reset cumulative only
-            # ----------------------------
-            unload_lines.write({
-                'cumulative_sett11': 0.0,
-            })
-
-            # ----------------------------
-            # Step 2: Get first & last avg_sett1
-            # ----------------------------
-            first_avg = unload_lines[0].avg_sett1 or 0.0
-            last_avg = unload_lines[-1].avg_sett1 or 0.0
-
-            # ----------------------------
-            # Step 3: Difference
-            # ----------------------------
-            diff = last_avg - first_avg
-
-            # ----------------------------
-            # Step 4: Show ONLY on first line
-            # ----------------------------
-            unload_lines[0].cumulative_sett11 = diff
+            # Now unloading lines
+            for line in rec.child_lines_plate_unload.sorted('sr_no'):
+                running_total = running_total + (line.avg_sett1 or 0.0)
+                line.cumulative_sett11 = running_total
 
 
     
@@ -942,7 +934,7 @@ class PlateLoadLine(models.Model):
     d3 = fields.Float(string="D3",digits=(12,2))
     d4 = fields.Float(string="D4",digits=(12,2))
 
-    avg_sett = fields.Float(string="Average Settlement mm",digits=(12,2),compute='_compute_avg_sett',store=True)
+    avg_sett = fields.Float(string="Average Settlement mm",digits=(12,3),compute='_compute_avg_sett',store=True)
     cumulative_sett1 = fields.Float(string="Cumulative Settlement",digits=(12,3))
 
     @api.depends('applied_pressure', 'parent_id.ram_area')
@@ -977,23 +969,81 @@ class PlateLoadLine(models.Model):
                 rec.avg_sett = sum(valid) / len(valid)
             else:
                 rec.avg_sett = 0.0
-
-    @api.onchange('applied_pressure')
-    def _onchange_applied_pressure_copy_previous(self):
+    @api.depends(
+        'd1', 'd2', 'd3', 'd4', 'applied_pressure',
+        'parent_id.child_lines_plate_load.d1',
+        'parent_id.child_lines_plate_load.d2',
+        'parent_id.child_lines_plate_load.d3',
+        'parent_id.child_lines_plate_load.d4',
+        'parent_id.child_lines_plate_load.applied_pressure'
+    )
+    def _compute_avg_sett(self):
         for rec in self:
+            rec.avg_sett = 0.0
+
+            # avg फक्त applied_pressure line वर
             if not rec.parent_id or not rec.applied_pressure:
-                return
+                continue
 
-            # Get immediate previous line based on sr_no
-            prev_line = rec.parent_id.child_lines_plate_load.filtered(
-                lambda l: l.sr_no < rec.sr_no
-            ).sorted(key=lambda l: l.sr_no, reverse=True)[:1]
+            # All lines sorted
+            lines = rec.parent_id.child_lines_plate_load.sorted(
+                key=lambda l: l.sr_no
+            )
 
-            if prev_line:
-                rec.d1 = prev_line.d1
-                rec.d2 = prev_line.d2
-                rec.d3 = prev_line.d3
-                rec.d4 = prev_line.d4
+            if not lines:
+                continue
+
+            # Applied pressure lines BEFORE current line
+            prev_pressure_lines = lines.filtered(
+                lambda l: l.applied_pressure and l.sr_no < rec.sr_no
+            )
+
+            # 🔹 Reference line
+            if prev_pressure_lines:
+                # Just previous applied_pressure line
+                base = prev_pressure_lines[-1]
+            else:
+                # First applied_pressure → base = first row (0 load)
+                base = lines[0]
+
+            diffs = [
+                (rec.d1 or 0.0) - (base.d1 or 0.0),
+                (rec.d2 or 0.0) - (base.d2 or 0.0),
+                (rec.d3 or 0.0) - (base.d3 or 0.0),
+                (rec.d4 or 0.0) - (base.d4 or 0.0),
+            ]
+
+            rec.avg_sett = round(sum(diffs) / 4, 3)
+
+    
+
+    
+    
+
+
+
+
+
+
+
+
+
+        @api.onchange('applied_pressure')
+        def _onchange_applied_pressure_copy_previous(self):
+            for rec in self:
+                if not rec.parent_id or not rec.applied_pressure:
+                    return
+
+                # Get immediate previous line based on sr_no
+                prev_line = rec.parent_id.child_lines_plate_load.filtered(
+                    lambda l: l.sr_no < rec.sr_no
+                ).sorted(key=lambda l: l.sr_no, reverse=True)[:1]
+
+                if prev_line:
+                    rec.d1 = prev_line.d1
+                    rec.d2 = prev_line.d2
+                    rec.d3 = prev_line.d3
+                    rec.d4 = prev_line.d4
 
 
 

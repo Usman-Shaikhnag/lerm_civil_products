@@ -532,6 +532,10 @@ class SoilReport(models.AbstractModel):
     
     @api.model
     def _get_report_values(self, docids, data):
+        
+        lab_id = fields.Many2one('lerm.lab.master',default=lambda self: self.env['lerm.lab.master'].search([], limit=1))
+
+
         # eln = self.env['lerm.eln'].sudo().browse(docids)
         inreport_value = data.get('inreport', None)
         nabl = data.get('nabl')
