@@ -74,7 +74,10 @@ class DriveFile(models.Model):
         try:
             sftp.stat(f"/home/{storage.name}")
         except FileNotFoundError:
-            raise UserError(f"Base path /home/{storage.name} does not exist on server.")
+            try:
+                sftp.mkdir(f"/home/{storage.name}", mode=0o755)
+            except Exception as e:
+                raise UserError(f"Base path /home/{storage.name} does not exist and could not be created: {str(e)}")
 
         # Make intermediate directories
         path_accum = f"/home/{storage.name}"
@@ -98,9 +101,9 @@ class DriveFile(models.Model):
 
         record = self.create({
             "name": clean_filename,
-            "type": file_data["type"],
-            "size": file_data["size"] / (1024 * 1024),
-            "folder_id": folder_id,
+            "type": file_data.get("type") or "application/octet-stream",
+            "size": file_data.get("size", 0) / (1024 * 1024),
+            "folder_id": folder_id or False,
             "external_url": relative_path,
         })
         return record.read()[0]
@@ -189,14 +192,20 @@ class DriveFile(models.Model):
         if not storage:
             return
 
-        transport = paramiko.Transport((storage.host, storage.port or 22))
-        transport.connect(username=storage.username, password=storage.password)
-        sftp = paramiko.SFTPClient.from_transport(transport)
+        try:
+            transport = paramiko.Transport((storage.host, storage.port or 22))
+            transport.connect(username=storage.username, password=storage.password)
+            sftp = paramiko.SFTPClient.from_transport(transport)
+        except Exception as e:
+            _logger.error(f"SFTP Connection failed during sync: {e}")
+            return  # Skip sync if server is unreachable
 
         all_files = self.sudo().search([])
         missing = []
         # import wdb;wdb.set_trace()
         for file in all_files:
+            if not file.external_url:
+                continue
             if file.external_url.startswith(storage.name):
                 remote_path = f"/home/{file.external_url}"
             else:
@@ -206,9 +215,15 @@ class DriveFile(models.Model):
             except FileNotFoundError:
                 missing.append(file.name)
                 file.unlink()
+            except Exception as e:
+                _logger.warning(f"SFTP stat failed for {remote_path}: {e}")
+                pass
 
-        sftp.close()
-        transport.close()
+        try:
+            sftp.close()
+            transport.close()
+        except:
+            pass
         if missing:
             _logger.warning(f"Removed metadata for {len(missing)} missing SFTP files: {missing}")
 
