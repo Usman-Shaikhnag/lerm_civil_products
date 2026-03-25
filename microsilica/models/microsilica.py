@@ -939,25 +939,68 @@ class Microsilica(models.Model):
 
 
             if result.parameter.internal_id == 'ddd2525aw-19f0-48b6-8e09-e7076a4b04b5':
+                result.result_char = round(self.control_compressive_strength_7_days,2)
                 result.calculated = True
+                if self.accelerated_pozzolanic_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
 
             if result.parameter.internal_id == '52147fgtre-5f8c-44a2-984b-6ad2a17d250c':
+                result.result_char = round(self.retain_wt_rounded,2)
                 result.calculated = True
+                if self.oversize_retained_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+                
 
             if result.parameter.internal_id == '658fgtrcd-80ef-4de0-96ba-a279f27b9ede':
+                result.result_char = round(self.specific_gravity_avrg,2)
                 result.calculated = True
+                if self.specific_gravity_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
 
             if result.parameter.internal_id == '658798cvfd-889b-477c-a355-0476f6bcd0d7':
+                result.result_char = round(self.comp_control_strngth_7_days,2)
                 result.calculated = True
+                if self.comp_strngth_7_days_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
 
             if result.parameter.internal_id == '658874seqa-bfaf-4667-aca6-b69c321af63b':
+                result.result_char = round(self.avrg_oversize_percent,2)
                 result.calculated = True
+                if self.oversize_percent_retain_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
 
             if result.parameter.internal_id == '14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a':
+                result.result_char = round(self.avrg_bulk_density,2)
                 result.calculated = True
+                if self.bulk_density_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
             
             if result.parameter.internal_id == 'd62e47c1-64b1-4589-b412-677f1e21377b':
+                # result.result_char = round(self.aggregate_elongation,2)
                 result.calculated = True
+                # if self.avg_commpressive_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
 
         return {
                 'view_mode': 'form',

@@ -29,6 +29,25 @@
                       </field>
                     </div>
 
+
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
                      
 
                     
@@ -38,16 +57,16 @@
                                 <!-- <field name='serial_no'  /> -->
                                 <field name='abstract'  />
                                 <!-- <field name='cement' /> -->
-                                 <field name='cement_display' />
-                                <field name='slag' />
-                                <field name='miro_silica' />
-                                <field name='w_c_f' />
-                                <field name='c_f' />
-                                <field name='r_Sand' />
-                                <field name='c_Sand' />
-                                <field name='mm10' />
-                                <field name='mm20' />
-                                <field name='adm' />
+                                 <field name='cement_display' class="blue-input" decoration-info="cement_display != 0" />
+                                <field name='slag' class="blue-input" decoration-info="slag != 0"/>
+                                <field name='miro_silica' class="blue-input" decoration-info="miro_silica != 0"/>
+                                <field name='w_c_f' class="blue-input" decoration-info="w_c_f != 0"/>
+                                <field name='c_f' class="blue-input" decoration-info="c_f != 0"/>
+                                <field name='r_Sand' class="blue-input" decoration-info="r_Sand != 0"/>
+                                <field name='c_Sand' class="blue-input" decoration-info="c_Sand != 0"/>
+                                <field name='mm10' class="blue-input" decoration-info="mm10 != 0"/>
+                                <field name='mm20' class="blue-input" decoration-info="mm20 != 0"/>
+                                <field name='adm' class="blue-input" decoration-info="adm != 0"/>
                             </tree>
                     </field>
 
@@ -65,7 +84,7 @@
                                 </tr>
                                 <tr>
                                     <td><label for="sp_gr">Sp Gr</label></td>
-                                    <td><field name="sp_gr"/></td>
+                                    <td><field name="sp_gr" class="blue-input" /></td>
                                 </tr>
                                 <tr>
                                     <td><label for="mix_grade">Mix Grade</label></td>
@@ -88,7 +107,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="design_stipulations_com">CHARACTERISTIC COMPRESSIVE STRENGTH AT 28 DAYS</label></td>
-                                    <td><field name="design_stipulations_com"/></td>
+                                    <td><field name="design_stipulations_com" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="design_stipulations_max_size">MAXIMUM SIZE OF AGGREGATE</label></td>
@@ -96,27 +115,27 @@
                                 </tr>
                                 <tr>
                                     <td><label for="design_stipulations_work">WORKABILITY (SLUMP)</label></td>
-                                    <td><field name="design_stipulations_work"/></td>
+                                    <td><field name="design_stipulations_work" class="blue-input"/></td>
                                 </tr>
                                  <tr>
                                     <td><label for="design_stipulations_exposure">TYPE OF EXPOSURE</label></td>
-                                    <td><field name="design_stipulations_exposure"/></td>
+                                    <td><field name="design_stipulations_exposure" class="blue-input"/></td>
                                 </tr>
                                  <tr>
                                     <td><label for="design_stipulations_cement">MINIMUM CEMENT CONTENT</label></td>
-                                    <td><field name="design_stipulations_cement"/></td>
+                                    <td><field name="design_stipulations_cement" class="blue-input"/></td>
                                 </tr>
                                  <tr>
                                     <td><label for="design_stipulations_water">MAXIMUM WATER - CEMENT RATIO</label></td>
-                                    <td><field name="design_stipulations_water"/></td>
+                                    <td><field name="design_stipulations_water" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="design_stipulations_tolerance">TOLERANCE FACTOR (t)</label></td>
-                                    <td><field name="design_stipulations_tolerance"/></td>
+                                    <td><field name="design_stipulations_tolerance" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="design_stipulations_admicture">CHEMICAL ADMIXTURE TYPE</label></td>
-                                    <td><field name="design_stipulations_admicture"/></td>
+                                    <td><field name="design_stipulations_admicture" class="blue-input"/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -142,7 +161,7 @@
                                 </tr>
                                 <tr>
                                     <td><label for="test_data_admixture">CHEMICAL ADMIXTURE</label></td>
-                                    <td><field name="test_data_admixture"/></td>
+                                    <td><field name="test_data_admixture" class="blue-input"/></td>
                                 </tr>
                                  <tr>
                                     <td><label for="test_data_flyash">FLYASH CONTENT PERCENTAGE</label></td>
@@ -166,7 +185,7 @@
                 
                          <field name="child_lines_concrete_design_material" nolabel="1"  class="custom_table_borders">
                             <tree editable="bottom">
-                                <field name='material'  />
+                                <field name='material' class="blue-input" decoration-info="material != 0" />
                                  <field name='specific_gravity' />
                                 <field name='water_absorption' />
                             
@@ -212,7 +231,7 @@
                                 <field name='percent_retained' string="% Retained"/>
                                 <field name='cumulative_retained' context="{'default_cumulative_retained': cumulative_retained}" readonly="1" string="Cum. Retained %"/>
                                 <field name='passing_percent' string="Passing %" readonly="1"/>
-                                <field name='ll' />
+                                <field name='ll'  />
                                 <field name='up' />
                             </tree>
                     </field>
@@ -417,11 +436,11 @@
                                 <field name='combine_grading_20mm' />
                                 <field name='combine_grading_10mm' />
                                 <field name='combine_grading_csand' />
-                                <field name='combine_grading_nsand' />
+                                <field name='combine_grading_nsand' class="blue-input" decoration-info="combine_grading_nsand != 0"/>
 
                                 <field name='combine_grading_all' />
-                                <field name='combine_grading_ll_all' />
-                                <field name='combine_grading_up_all' />
+                                <field name='combine_grading_ll_all' class="blue-input" decoration-info="combine_grading_ll_all != 0"/>
+                                <field name='combine_grading_up_all' class="blue-input" decoration-info="combine_grading_up_all != 0"/>
                                
                             </tree>
                     </field>
@@ -504,7 +523,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="selection_water_content_maximum">From table 2,maximum water - cement content for 20 mm aggregate</label></td>
-                                    <td><field name="selection_water_content_maximum"/></td>
+                                    <td><field name="selection_water_content_maximum" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="selection_water_content_superplasticizer">we are used superplasticizer  based on trial mix water adopted  </label></td>

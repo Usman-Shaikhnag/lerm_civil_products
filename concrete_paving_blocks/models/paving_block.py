@@ -219,7 +219,7 @@ class PavingBlock(models.Model):
     commpressive_name = fields.Char("Name",default="Compressive Strength")
     commpressive_visible = fields.Boolean("Plan Area Visible",compute="_compute_visible")
 
-    commpressive_child_lines = fields.One2many('paver.compressive.line','parent_id',string="Compressive Line")
+    commpressive_child_lines = fields.One2many('paving.compressive.line','parent_id',string="Compressive Line")
 
     avg_commpressive = fields.Float(
         string="Avg. Compressive Strength (N/mm2)",compute="_compute_avg_commpressive")
@@ -378,45 +378,56 @@ class PavingBlock(models.Model):
                
 
 
-
-    # def open_eln_page(self):
-    #     # import wdb; wdb.set_trace()
-
-    #     return {
-    #             'view_mode': 'form',
-    #             'res_model': "lerm.eln",
-    #             'type': 'ir.actions.act_window',
-    #             'target': 'current',
-    #             'res_id': self.eln_ref.id,
-                
-    #         }           
+       
 
     def open_eln_page(self):
-    # import wdb; wdb.set_trace()
-        for result in self.eln_ref.parameters_result:
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+            # import wdb;wdb.set_trace()
+            
+            # 
             if result.parameter.internal_id == 'f391245b-100a-4b84-ba27-af9918baea99':
+                result.calculated = True
                 result.result_char = round(self.area_paver,2)
                 if self.area_paver_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+
+            # 
             if result.parameter.internal_id == '5bd8b6a3-4097-4125-befe-36c633ce7ae8':
+                result.calculated = True
                 result.result_char = round(self.avg_water_absorption,2)
                 if self.avg_water_absorption_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
-            if result.parameter.internal_id == '1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11':
+
+
+            # 
+            if result.parameter.internal_id == 'd73e8ec7-63d5-40ff-ae41-db88b4f53cf0':
+                result.calculated = True
                 result.result_char = round(self.avg_commpressive,2)
                 if self.avg_commpressive_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+
+            # 
             if result.parameter.internal_id == '2acf6ad3-ae04-46e4-a2f8-18bd39a20e18':
                 result.result_char = round(self.avg_thickness,2)
+                result.calculated = True
                 if self.avg_thickness_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -449,15 +460,33 @@ class PavingBlock(models.Model):
 
 
 
-    @api.depends('eln_ref')
+    # @api.depends('eln_ref')
+    # def _compute_sample_parameters(self):
+    #     # records = self.env['lerm.eln'].sudo().search([('id','=', record.eln_id.id)]).parameters_result
+    #     # print("records",records)
+    #     # self.sample_parameters = records
+    #     for record in self:
+    #         records = record.eln_ref.parameters_result.parameter.ids
+    #         record.sample_parameters = records
+    #         print("Records",records)
+    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
-        # records = self.env['lerm.eln'].sudo().search([('id','=', record.eln_id.id)]).parameters_result
-        # print("records",records)
-        # self.sample_parameters = records
+        # parameter_based_assignment
+        current_user = self.env.user
         for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
+            if not record.eln_ref:
+                record.sample_parameters = [(6, 0, [])]
+                continue
+
+            # filter parameter results by current user
+            user_param_results = record.eln_ref.parameters_result.filtered(
+                lambda r: r.technician and r.technician.id == current_user.id
+            )
+
+            # map to parameter master IDs
+            parameter_ids = user_param_results.mapped('parameter').ids
+
+            record.sample_parameters = [(6, 0, parameter_ids)]
 
 
 
@@ -522,7 +551,7 @@ class WaterLine(models.Model):
 
 
 class CompressiveLine(models.Model):
-    _name = "paver.compressive.line"
+    _name = "paving.compressive.line"
     parent_id = fields.Many2one('mechanical.concrete.paving.block',string="Parent Id")
 
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)

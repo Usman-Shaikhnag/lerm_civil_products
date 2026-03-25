@@ -345,6 +345,17 @@ class GsbMechanical(models.Model):
                 # continue
 
 
+           
+            if result.parameter.internal_id == '6547ytre-4369-491d-93a6-030514c29663':
+                # result.result_char = round(self.aggregate_elongation,2)
+                result.calculated = True
+                # if self.aggregate_combine_conformity == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+
+
 
 
 
