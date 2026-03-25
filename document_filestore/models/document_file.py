@@ -192,9 +192,13 @@ class DriveFile(models.Model):
         if not storage:
             return
 
-        transport = paramiko.Transport((storage.host, storage.port or 22))
-        transport.connect(username=storage.username, password=storage.password)
-        sftp = paramiko.SFTPClient.from_transport(transport)
+        try:
+            transport = paramiko.Transport((storage.host, storage.port or 22))
+            transport.connect(username=storage.username, password=storage.password)
+            sftp = paramiko.SFTPClient.from_transport(transport)
+        except Exception as e:
+            _logger.error(f"SFTP Connection failed during sync: {e}")
+            return  # Skip sync if server is unreachable
 
         all_files = self.sudo().search([])
         missing = []
@@ -211,9 +215,15 @@ class DriveFile(models.Model):
             except FileNotFoundError:
                 missing.append(file.name)
                 file.unlink()
+            except Exception as e:
+                _logger.warning(f"SFTP stat failed for {remote_path}: {e}")
+                pass
 
-        sftp.close()
-        transport.close()
+        try:
+            sftp.close()
+            transport.close()
+        except:
+            pass
         if missing:
             _logger.warning(f"Removed metadata for {len(missing)} missing SFTP files: {missing}")
 
