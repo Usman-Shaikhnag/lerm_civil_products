@@ -9,12 +9,17 @@ class CustomerDashboard extends Component {
   setup() {
     this.dashboard_state = useState({
       customer_data: [],
+      aging_data: {},
+      labs: [],
+      companies: [],
     });
 
     this.filter_state = useState({
       start_date: this._getDateXDaysAgo(30),
       end_date: this._today(),
       activeDiscipline: "ALL",
+      activeLab: "ALL",
+      activeCompany: "ALL",
       activeDays: 30,
       searchQuery: "",
       isLoading: true,
@@ -28,9 +33,65 @@ class CustomerDashboard extends Component {
     this.action = useService("action");
     this.rpc = useService("rpc");
 
+    this.styleMap = {
+      "1-allotment_pending": { icon: "fa-hourglass-o", color: "#fd7e14", label: "Assignment Pending" },
+      "7-partially-alloted": { icon: "fa-adjust", color: "#8b5cf6", label: "Partially Alloted" },
+      "2-alloted": { icon: "fa-play-circle", color: "#0066ff", label: "Alloted" },
+      "7-calculated": { icon: "fa-calculator", color: "#6366f1", label: "Calculated" },
+      "3-pending_verification": { icon: "fa-hourglass-half", color: "#d97706", label: "Pending Verification" },
+      "5-pending_approval": { icon: "fa-clock-o", color: "#dc2626", label: "Pending Approval" },
+      "4-in_report": { icon: "fa-file-text-o", color: "#16a34a", label: "In Report" },
+      "6-cancelled": { icon: "fa-times-circle", color: "#9ca3af", label: "Cancelled" },
+    };
+
     onWillStart(async () => {
+      const filterOptions = await jsonrpc("/dashboard/get_filter_options", {});
+      this.dashboard_state.labs = filterOptions.labs || [];
+      this.dashboard_state.companies = filterOptions.companies || [];
       await this.fetchData();
     });
+  }
+
+  get agingKpiData() {
+    const buckets = [
+      { key: "0-7", label: "0-7 Days", color: "#10b981", icon: "fa-clock-o" },
+      { key: "8-15", label: "8-15 Days", color: "#f59e0b", icon: "fa-calendar-minus-o" },
+      { key: "16-30", label: "16-30 Days", color: "#ef4444", icon: "fa-calendar-plus-o" },
+      { key: "31-45", label: "31-45 Days", color: "#b91c1c", icon: "fa-hourglass-end" },
+      { key: "46-60", label: "46-60 Days", color: "#7f1d1d", icon: "fa-warning" },
+      { key: "60+", label: "60+ Days", color: "#450a0a", icon: "fa-history" },
+    ];
+
+    const data = this.dashboard_state.aging_data || {};
+    return buckets.map((b) => {
+      const bucketData = data[b.key] || { total: 0, states: {} };
+      const states = Object.entries(bucketData.states).map(([stateKey, stateData]) => {
+        const style = this.styleMap[stateKey] || { icon: "fa-question-circle", color: "#6c757d", label: stateKey };
+        return {
+          key: stateKey,
+          label: style.label,
+          icon: style.icon,
+          color: style.color,
+          count: stateData.count,
+          breakdown: stateData.breakdown || [],
+        };
+      });
+
+      return {
+        ...b,
+        count: bucketData.total,
+        states: states,
+      };
+    });
+  }
+
+  get filteredLabs() {
+    if (this.filter_state.activeCompany === "ALL") {
+      return this.dashboard_state.labs;
+    }
+    return this.dashboard_state.labs.filter(
+      (l) => l.company_id === parseInt(this.filter_state.activeCompany)
+    );
   }
 
   // NEW: Computed property for total pages
@@ -53,6 +114,8 @@ class CustomerDashboard extends Component {
       start_date,
       end_date,
       activeDiscipline,
+      activeLab,
+      activeCompany,
       searchQuery,
       currentPage,
       pageSize,
@@ -63,6 +126,8 @@ class CustomerDashboard extends Component {
         start_date,
         end_date,
         discipline: activeDiscipline,
+        lab_id: activeLab,
+        company_id: activeCompany,
         search_query: searchQuery,
 
         // NEW: Send Pagination params
@@ -72,6 +137,7 @@ class CustomerDashboard extends Component {
 
       // Update state with paginated data and total count from the backend
       this.dashboard_state.customer_data = result.customers || [];
+      this.dashboard_state.aging_data = result.aging_data || {};
       this.filter_state.totalCustomers = Number(result.total_customers) || 0;
     } catch (error) {
       console.error("Failed to fetch customer data:", error);
@@ -129,7 +195,81 @@ class CustomerDashboard extends Component {
     await this.fetchData();
   }
 
-  // --- NEW: Search Handler ---
+  async _onLabFilter(ev) {
+    this.filter_state.activeLab = ev.target.value;
+    this.filter_state.currentPage = 1;
+    await this.fetchData();
+  }
+
+  async _onCompanyFilter(ev) {
+    this.filter_state.activeCompany = ev.target.value;
+    this.filter_state.activeLab = "ALL"; // Reset lab when company changes
+    this.filter_state.currentPage = 1;
+    await this.fetchData();
+  }
+
+  async onAgingClick(bucketKey, stateKey = null, productId = null) {
+    const today = new Date();
+    let minDays, maxDays;
+
+    if (bucketKey === "0-7") { minDays = 0; maxDays = 7; }
+    else if (bucketKey === "8-15") { minDays = 8; maxDays = 15; }
+    else if (bucketKey === "16-30") { minDays = 16; maxDays = 30; }
+    else if (bucketKey === "31-45") { minDays = 31; maxDays = 45; }
+    else if (bucketKey === "46-60") { minDays = 46; maxDays = 60; }
+    else if (bucketKey === "60+") { minDays = 61; maxDays = null; }
+
+    const dMax = new Date(today);
+    dMax.setDate(today.getDate() - minDays);
+    dMax.setHours(23, 59, 59, 999);
+
+    const domain = [
+      ["eln_id", "!=", false],
+      ["eln_id.create_date", "<=", dMax.toISOString()],
+    ];
+
+    if (maxDays !== null) {
+      const dMin = new Date(today);
+      dMin.setDate(today.getDate() - maxDays);
+      dMin.setHours(0, 0, 0, 0);
+      domain.push(["eln_id.create_date", ">=", dMin.toISOString()]);
+    }
+
+    if (stateKey) {
+      domain.push(["state", "=", stateKey]);
+    } else {
+      domain.push(["state", "in", ["2-alloted", "7-calculated", "3-pending_verification", "5-pending_approval"]]);
+    }
+
+    if (productId) {
+      domain.push(["material_id", "=", productId]);
+    }
+
+    // Apply dashboard-wide filters
+    if (this.filter_state.activeDiscipline !== "ALL") {
+      domain.push(["discipline_id.discipline", "=", this.filter_state.activeDiscipline]);
+    }
+    if (this.filter_state.activeLab !== "ALL") {
+      domain.push(["lab_location", "=", parseInt(this.filter_state.activeLab)]);
+    }
+    if (this.filter_state.activeCompany !== "ALL") {
+      domain.push(["lab_location.company_id", "=", parseInt(this.filter_state.activeCompany)]);
+    }
+    if (this.filter_state.searchQuery) {
+        domain.push(["customer_id.name", "ilike", this.filter_state.searchQuery]);
+    }
+
+    const action = {
+      type: "ir.actions.act_window",
+      name: `Aging Samples (${bucketKey})`,
+      res_model: "lerm.srf.sample",
+      views: [[false, "list"], [false, "form"]],
+      domain: domain,
+      context: { group_by: ["state", "material_id"] },
+    };
+
+    return this.action.doAction(action);
+  }
 
   // Uses both change and keyup to provide a fluid search experience
   async _onSearchCustomer(ev) {
