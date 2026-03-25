@@ -725,6 +725,8 @@ class CementPPC(models.Model):
     wt_of_kerosene = fields.Float(string="Weight of bottle + Full Kerosene( W₄ g)")
     wt_of_bottle_water = fields.Float(string="Weight of bottle + Full Water ( W₅ g)")
 
+    constatnt_factor = fields.Float(string="Constatnt Factor",store=True)
+
     specific_gravity = fields.Float(string="Specific gravity ",compute="_compute_specific_gravity",digits=(12,3))
 
     @api.depends('wt_of_empty_bottle', 'wt_of_bottle_cement', 'wt_of_specific_bpttle', 'wt_of_kerosene')
@@ -732,7 +734,7 @@ class CementPPC(models.Model):
         for rec in self:
             if rec.wt_of_empty_bottle and rec.wt_of_bottle_cement and rec.wt_of_specific_bpttle and rec.wt_of_kerosene:
                 numerator = rec.wt_of_bottle_cement - rec.wt_of_empty_bottle
-                denominator = ((rec.wt_of_bottle_cement - rec.wt_of_empty_bottle) - (rec.wt_of_specific_bpttle - rec.wt_of_kerosene)) * 0.79
+                denominator = ((rec.wt_of_bottle_cement - rec.wt_of_empty_bottle) - (rec.wt_of_specific_bpttle - rec.wt_of_kerosene)) * rec.constatnt_factor
                 rec.specific_gravity = numerator / denominator if denominator else 0.0
             else:
                 rec.specific_gravity = 0.0
@@ -753,7 +755,7 @@ class CementPPC(models.Model):
         for rec in self:
             if rec.wt_of_empty_bottle1 and rec.wt_of_bottle_cement1 and rec.wt_of_specific_bpttle1 and rec.wt_of_kerosene1:
                 numerator1 = rec.wt_of_bottle_cement1 - rec.wt_of_empty_bottle1
-                denominator1 = ((rec.wt_of_bottle_cement1 - rec.wt_of_empty_bottle1) - (rec.wt_of_specific_bpttle1 - rec.wt_of_kerosene1)) * 0.79
+                denominator1 = ((rec.wt_of_bottle_cement1 - rec.wt_of_empty_bottle1) - (rec.wt_of_specific_bpttle1 - rec.wt_of_kerosene1)) * rec.constatnt_factor
                 rec.specific_gravity1 = numerator1 / denominator1 if denominator1 else 0.0
             else:
                 rec.specific_gravity1 = 0.0

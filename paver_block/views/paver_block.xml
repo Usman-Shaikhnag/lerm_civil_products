@@ -32,6 +32,36 @@
                         </field>
                     </div>
 
+                                    <style>
+                       /* Selection field normal */
+                            .blue-input .o_input,
+                            .blue-input select {
+                                background-color: #eaf3ff !important;
+                                border: 1px solid #bcd3ff !important;
+                                transition: all 0.2s ease;
+                            }
+
+                            /* When user clicks / selects dropdown */
+                            .blue-input .o_input:focus,
+                            .blue-input select:focus {
+                                background-color: #d6e8ff !important;
+                                border: 1px solid #4a90ff !important;
+                                box-shadow: 0 0 6px rgba(74,144,255,0.6) !important;
+                                outline: none !important;
+                            }
+
+                            /* Dropdown arrow highlight */
+                            .blue-input select {
+                                cursor: pointer;
+                            }
+
+                            /* When value selected (optional bold look) */
+                            .blue-input select:not([value=""]) {
+                                font-weight: 600;
+                            }
+
+                    </style>
+
                      <group invisible = "paver_visible == False"  style="white-space: nowrap; width:70%;text-align: center">
                         <h1>
                             <field name="paver_name" readonly="1" nolabel="1"/>
@@ -81,6 +111,42 @@
                         </table>
                     </div>
 
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="calc_type"></label></td>
+                                    <td><field name="calc_type" class="blue-input"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                        
+                        <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="correction_factore">Correction Factore</label></td>
+                                    <td><field name="correction_factore"/></td>
+                                </tr>
+
+                            </tbody>
+                        </table> -->
+                    </div>
+
+                    <div class="d-flex gap-2" invisible="calc_type != 'manual'">
+                        
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="area_paver1"></label></td>
+                                    <td><field name="area_paver1"/></td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
 
 
                 
@@ -89,7 +155,7 @@
 
                     
                         <!-- Left Table -->
-                        <div class="d-flex gap-2">
+                        <div class="d-flex gap-2" invisible="calc_type != 'calculated'">
                                 <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
                                     <thead>
                                         <tr>
@@ -279,6 +345,7 @@
                                 <field name="sample_identification" options="{'column_width':100}"/>
                                 <field name="wt_block" />
                                 <field name="correction_factor"/>
+                                 <field name="area"/>
                                 <field name="load"/>
                                 <field name="compressive_strenght"/>
                                 <field name="thickness"/>

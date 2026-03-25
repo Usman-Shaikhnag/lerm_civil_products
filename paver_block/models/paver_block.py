@@ -121,6 +121,11 @@ class PaverBlock(models.Model):
 
     correction_factore = fields.Float(string=" Correction Factor")
 
+    calc_type = fields.Selection([
+    ('calculated', 'Calculated'),
+    ('manual', 'Manually')
+    ], string="Mode", required=True)
+
     # @api.depends('size_id')
     # def _compute_thickness2(self):
     #     for rec in self:
@@ -150,6 +155,8 @@ class PaverBlock(models.Model):
     mass_specimen = fields.Float(string=" Mass of the Specimen Shaped Cardboard Sheet, Msp ",compute="_compute_mass_values",digits=(12,6))
     mass_size = fields.Float(string="Mass of the 200 X 100 mm size shaped Cardboard Sheet, Mst:",compute="_compute_mass_values",digits=(12,6))
     area_paver = fields.Float(string="Plan Area of Paver Block, Asp",compute="_compute_area_paver")
+
+    area_paver1 = fields.Float(string="Plan Area of Paver Block, Asp")
 
     area_paver_conformity = fields.Selection([
             ('pass', 'Pass'),
@@ -618,6 +625,9 @@ class CompressiveLine(models.Model):
     sample_identification = fields.Char(string="Sample Identification")
     wt_block = fields.Float(string="Weight of Block (gms)")
     correction_factor = fields.Float(string="Correction Factor",store=True)
+
+    area = fields.Float(string="Area in mm2",store=True)
+
     load = fields.Float(string=" Load (kN)")
     compressive_strenght = fields.Float(string=" Compressive Strength (N/mm2)",compute="_compute_compressive_strength")
     thickness = fields.Float(string=" Thickness mm")

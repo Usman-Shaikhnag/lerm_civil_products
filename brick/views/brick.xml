@@ -36,6 +36,36 @@
                             </tree>
                         </field>
                     </div>
+
+                    <style>
+                       /* Selection field normal */
+.blue-input .o_input,
+.blue-input select {
+    background-color: #eaf3ff !important;
+    border: 1px solid #bcd3ff !important;
+    transition: all 0.2s ease;
+}
+
+/* When user clicks / selects dropdown */
+.blue-input .o_input:focus,
+.blue-input select:focus {
+    background-color: #d6e8ff !important;
+    border: 1px solid #4a90ff !important;
+    box-shadow: 0 0 6px rgba(74,144,255,0.6) !important;
+    outline: none !important;
+}
+
+/* Dropdown arrow highlight */
+.blue-input select {
+    cursor: pointer;
+}
+
+/* When value selected (optional bold look) */
+.blue-input select:not([value=""]) {
+    font-weight: 600;
+}
+
+                    </style>
                   
 
                     <table class="table o_form_table custom_table_borders">
@@ -197,11 +227,11 @@
                             
                              <tr>
                                     <td><strong>Observation</strong></td>
-                                    <td><field name="visual_observation_1" nolabel="1"/></td>
-                                    <td><field name="visual_observation_2" nolabel="1"/></td>
-                                    <td><field name="visual_observation_3" nolabel="1"/></td>
-                                    <td><field name="visual_observation_4" nolabel="1"/></td>
-                                    <td><field name="visual_observation_5" nolabel="1"/></td>
+                                    <td><field name="visual_observation_1" nolabel="1" class="blue-input" /></td>
+                                    <td><field name="visual_observation_2" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="visual_observation_3" nolabel="1" class="blue-input" /></td>
+                                    <td><field name="visual_observation_4" nolabel="1" class="blue-input" /></td>
+                                    <td><field name="visual_observation_5" nolabel="1" class="blue-input" /></td>
                                 </tr>
 
                             </tbody>
