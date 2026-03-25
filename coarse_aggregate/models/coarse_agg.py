@@ -2296,6 +2296,7 @@ class CoarseAggregateMechanical(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
 
+
             # Flakiness
             if result.parameter.internal_id == 'be7a60bc-bb2c-410d-b91a-4f8730a4ac6f':
                 result.result_char = round(self.aggregate_flakiness,2)
