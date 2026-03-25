@@ -13,20 +13,20 @@
                 <div class="lerm-date-section">
                     <div class="row g-3 mb-4 align-items-end">
                         <!-- Search Bar with Mode Selector -->
-                        <div class="col-lg-5 col-md-6">
+                        <div class="col-lg-3 col-md-6">
                             <label class="lerm-field-label">Search Products</label>
                             <div class="input-group flex-nowrap" style="height: 38px; border-bottom: 1.5px solid #d1d5db;">
                                 <select class="form-select border-0 bg-light-subtle text-muted" 
-                                        style="width: 120px; font-size: 0.75rem; border-right: 1px solid #e5e7eb !important;"
+                                        style="width: 100px; font-size: 0.7rem; border-right: 1px solid #e5e7eb !important;"
                                         t-on-change="_onSearchTypeChange">
-                                    <option value="all">Search All</option>
-                                    <option value="product">Product Name</option>
-                                    <option value="srf">SRF ID</option>
-                                    <option value="ulr">ULR No.</option>
-                                    <option value="report">Report No.</option>
+                                    <option value="all">All</option>
+                                    <option value="product">Prod</option>
+                                    <option value="srf">SRF</option>
+                                    <option value="ulr">ULR</option>
+                                    <option value="report">Rep</option>
                                 </select>
                                 <input type="text" class="lerm-select flex-grow-1 border-0" 
-                                       placeholder="Enter search query..."
+                                       placeholder="Search..."
                                        t-att-value="filter_state.searchQuery" 
                                        t-on-change="_onSearchProduct"
                                        t-on-keyup="_onSearchProduct"
@@ -37,18 +37,44 @@
                             </div>
                         </div>
 
+                        <!-- Company Filter -->
+                        <div class="col-lg-3 col-md-6">
+                            <label class="lerm-field-label">Company</label>
+                            <select class="lerm-select" t-on-change="_onCompanyFilter">
+                                <option value="ALL">All Companies</option>
+                                <t t-foreach="this.dashboard_state.companies" t-as="comp" t-key="comp.id">
+                                    <option t-att-value="comp.id" t-att-selected="this.filter_state.activeCompany == comp.id">
+                                        <t t-esc="comp.name"/>
+                                    </option>
+                                </t>
+                            </select>
+                        </div>
+
+                        <!-- Lab Filter -->
+                        <div class="col-lg-3 col-md-6">
+                            <label class="lerm-field-label">Lab Location</label>
+                            <select class="lerm-select" t-on-change="_onLabFilter">
+                                <option value="ALL">All Labs</option>
+                                <t t-foreach="this.filteredLabs" t-as="lab" t-key="lab.id">
+                                    <option t-att-value="lab.id" t-att-selected="this.filter_state.activeLab == lab.id">
+                                        <t t-esc="lab.name"/>
+                                    </option>
+                                </t>
+                            </select>
+                        </div>
+
                         <!-- Discipline Filter -->
-                        <div class="col-lg-7 col-md-6">
+                        <div class="col-lg-3 col-md-6">
                             <label class="lerm-field-label">Discipline</label>
                             <div class="lerm-btn-group">
                                 <button class="lerm-toggle-btn" t-on-click="_onDisciplineFilter" data-discipline="ALL"
                                         t-att-style="this.filter_state.activeDiscipline === 'ALL' ? 'background:#0066ff;color:#fff;' : ''">ALL</button>
                                 <button class="lerm-toggle-btn" t-on-click="_onDisciplineFilter" data-discipline="MECHANICAL"
-                                        t-att-style="this.filter_state.activeDiscipline === 'MECHANICAL' ? 'background:#0066ff;color:#fff;' : ''">Mechanical</button>
+                                        t-att-style="this.filter_state.activeDiscipline === 'MECHANICAL' ? 'background:#0066ff;color:#fff;' : ''">Mech</button>
                                 <button class="lerm-toggle-btn" t-on-click="_onDisciplineFilter" data-discipline="NDT"
                                         t-att-style="this.filter_state.activeDiscipline === 'NDT' ? 'background:#0066ff;color:#fff;' : ''">NDT</button>
                                 <button class="lerm-toggle-btn" t-on-click="_onDisciplineFilter" data-discipline="CHEMICAL"
-                                        t-att-style="this.filter_state.activeDiscipline === 'CHEMICAL' ? 'background:#0066ff;color:#fff;' : ''">Chemical</button>
+                                        t-att-style="this.filter_state.activeDiscipline === 'CHEMICAL' ? 'background:#0066ff;color:#fff;' : ''">Chem</button>
                             </div>
                         </div>
                     </div>
@@ -80,6 +106,72 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- SAMPLE AGING OVERVIEW -->
+            <div class="lerm-section-header mt-4">
+                <i class="fa fa-clock-o"/>
+                <h2>Sample Aging Overview</h2>
+            </div>
+            
+            <div class="row g-3 mb-4 px-1">
+                <t t-foreach="this.agingKpiData" t-as="kpi" t-key="kpi.key">
+                    <div class="col-6 col-md-4 col-lg">
+                        <div class="lerm-kpi-card"
+                             t-on-click="() => this.onAgingClick(kpi.key)">
+                            <div class="kpi-accent-bar" t-att-style="'background: ' + kpi.color"/>
+                            <i t-attf-class="fa #{kpi.icon} kpi-icon" t-att-style="'color: ' + kpi.color"/>
+                            <div class="kpi-count" t-att-style="'color: ' + kpi.color" t-esc="kpi.count"/>
+                            <div class="kpi-label"><t t-esc="kpi.label"/></div>
+                            
+                            <!-- State Breakdown (with Collapsible Product Breakdown) -->
+                            <div class="mt-3 w-100 px-1" t-if="kpi.states.length">
+                                <hr class="my-2" style="opacity: 0.15;"/>
+                                <div class="d-flex flex-column gap-1" style="max-height: 200px; overflow-y: auto; scrollbar-width: thin;">
+                                    <t t-foreach="kpi.states" t-as="state" t-key="state.key">
+                                        <t t-set="collapse_id" t-value="'collapse-prod-' + kpi.key.replace('+', '-plus') + '-' + state.key"/>
+                                        
+                                        <!-- State Row (Toggle) -->
+                                        <div class="lerm-status-row py-1 px-2 rounded d-flex justify-content-between align-items-center" 
+                                             t-att-data-bs-target="'#' + collapse_id" data-bs-toggle="collapse"
+                                             t-on-click.stop=""
+                                             style="cursor: pointer; transition: background 0.15s;">
+                                            <span class="status-label d-flex align-items-center gap-2" style="font-size: 0.72rem;">
+                                                <i t-attf-class="fa #{state.icon}" t-att-style="'color: ' + state.color + '; font-size: 0.75rem;'"/>
+                                                <span class="text-truncate" t-att-title="state.label"><t t-esc="state.label"/></span>
+                                            </span>
+                                            <span class="status-badge px-2 py-0 d-flex align-items-center gap-1" 
+                                                  t-att-style="'background: ' + state.color + '20; color: ' + state.color + '; font-size: 0.7rem; font-weight: 700; border-radius: 10px; min-width: 24px; text-align: center;'">
+                                                <t t-esc="state.count"/>
+                                                <i class="fa fa-chevron-down" style="font-size: 0.6rem; opacity: 0.7;"/>
+                                            </span>
+                                        </div>
+
+                                        <!-- Product Breakdown (Collapse) -->
+                                        <div class="collapse" t-att-id="collapse_id">
+                                            <div class="lerm-sub-list ms-2 border-start ps-2 my-1" style="border-color: #e5e7eb !important;">
+                                                <t t-foreach="state.breakdown" t-as="prod" t-key="prod.id">
+                                                    <div class="lerm-sub-item d-flex justify-content-between align-items-center py-1 rounded" 
+                                                         t-on-click.stop="() => this.onAgingClick(kpi.key, state.key, prod.id)"
+                                                         style="cursor: pointer; font-size: 0.68rem; padding: 0.2rem 0.5rem; transition: background 0.1s;">
+                                                        <span class="text-muted text-truncate" t-att-title="prod.name"><t t-esc="prod.name"/></span>
+                                                        <span class="badge rounded-pill bg-light text-dark border" style="font-size: 0.65rem;"><t t-esc="prod.count"/></span>
+                                                    </div>
+                                                </t>
+                                                <!-- "View All" option for the state -->
+                                                <div class="lerm-sub-item d-flex justify-content-center py-1 mt-1 rounded bg-light-subtle border"
+                                                     t-on-click.stop="() => this.onAgingClick(kpi.key, state.key)"
+                                                     style="cursor: pointer; font-size: 0.65rem; color: #4b5563; font-weight: 600;">
+                                                    View All <t t-esc="state.label"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
             </div>
 
             <!-- SECTION HEADER -->

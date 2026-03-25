@@ -20,6 +20,7 @@ class MainDashboard extends Component {
       technician_data: [],
       labs: [],
       companies: [],
+      aging_data: {},
     });
     this.filter_state = useState({
       // <-- NEW REACTIVE STATE OBJECT
@@ -50,13 +51,7 @@ class MainDashboard extends Component {
       this.dashboard_state.labs = filterOptions.labs || [];
       this.dashboard_state.companies = filterOptions.companies || [];
 
-      await this.fetchData(
-        this.filter_state.start_date,
-        this.filter_state.end_date,
-        this.filter_state.activeDiscipline,
-        this.filter_state.activeLab,
-        this.filter_state.activeCompany,
-      );
+      await this.fetchData();
     });
 
     onMounted(() => {
@@ -65,19 +60,15 @@ class MainDashboard extends Component {
     });
   }
 
-  async fetchData(
-    start_date,
-    end_date,
-    discipline,
-    lab_id = "ALL",
-    company_id = "ALL",
-  ) {
+  async fetchData() {
+    const { start_date, end_date, activeDiscipline, activeLab, activeCompany } = this.filter_state;
+    
     const data_result = await jsonrpc("/dashboard/getdata", {
       start_date,
       end_date,
-      discipline,
-      lab_id,
-      company_id,
+      discipline: activeDiscipline,
+      lab_id: activeLab,
+      company_id: activeCompany,
     });
 
     if (!data_result.error) {
@@ -102,14 +93,15 @@ class MainDashboard extends Component {
       this.dashboard_state.state_counts = data_result.state_data.map(
         (item) => item.count,
       );
+      this.dashboard_state.aging_data = data_result.aging_data || {};
     }
 
     const tech_data_result = await jsonrpc("/lerm/overview/data", {
       start_date,
       end_date,
-      discipline,
-      lab_id,
-      company_id,
+      discipline: activeDiscipline,
+      lab_id: activeLab,
+      company_id: activeCompany,
     });
     this.dashboard_state.technician_data = tech_data_result;
   }
@@ -123,13 +115,7 @@ class MainDashboard extends Component {
   async _onLabFilter(ev) {
     const labId = ev.target.value;
     this.filter_state.activeLab = labId;
-    await this.fetchData(
-      this.filter_state.start_date,
-      this.filter_state.end_date,
-      this.filter_state.activeDiscipline,
-      this.filter_state.activeLab,
-      this.filter_state.activeCompany,
-    );
+    await this.fetchData();
     this.renderTimeChart();
     this.renderStateChart();
   }
@@ -148,13 +134,7 @@ class MainDashboard extends Component {
       }
     }
 
-    await this.fetchData(
-      this.filter_state.start_date,
-      this.filter_state.end_date,
-      this.filter_state.activeDiscipline,
-      this.filter_state.activeLab,
-      this.filter_state.activeCompany,
-    );
+    await this.fetchData();
     this.renderTimeChart();
     this.renderStateChart();
   }
@@ -168,15 +148,22 @@ class MainDashboard extends Component {
       (lab) => lab.company_id === companyId,
     );
   }
-  get kpiData() {
-    const styleMap = {
-      "1-allotment_pending": { icon: "fa-hourglass-o", color: "#fd7e14", label: "Allotment Pending" },
+  get styleMap() {
+    return {
+      "1-allotment_pending": { icon: "fa-hourglass-o", color: "#fd7e14", label: "Assignment Pending" },
+      "7-partially-alloted": { icon: "fa-adjust", color: "#8b5cf6", label: "Partially Alloted" },
       "2-alloted": { icon: "fa-play-circle", color: "#0066ff", label: "Alloted" },
+      "7-calculated": { icon: "fa-calculator", color: "#6366f1", label: "In-Test" },
       "3-pending_verification": { icon: "fa-hourglass-half", color: "#d97706", label: "Pending Verification" },
       "5-pending_approval": { icon: "fa-clock-o", color: "#dc2626", label: "Pending Approval" },
       "4-in_report": { icon: "fa-file-text-o", color: "#16a34a", label: "In Report" },
-      "cancelled": { icon: "fa-times-circle", color: "#9ca3af", label: "Cancelled" },
+      "6-cancelled": { icon: "fa-times-circle", color: "#9ca3af", label: "Cancelled" },
     };
+  }
+
+  get kpiData() {
+    const styleMap = this.styleMap;
+
 
     const data = [{
       state: 'total',
@@ -200,6 +187,40 @@ class MainDashboard extends Component {
     return data;
   }
 
+  get agingKpiData() {
+    const buckets = [
+      { key: "0-7", label: "0-7 Days", color: "#10b981", icon: "fa-clock-o" },
+      { key: "8-15", label: "8-15 Days", color: "#f59e0b", icon: "fa-calendar-minus-o" },
+      { key: "16-30", label: "16-30 Days", color: "#ef4444", icon: "fa-calendar-plus-o" },
+      { key: "31-45", label: "31-45 Days", color: "#b91c1c", icon: "fa-hourglass-end" },
+      { key: "46-60", label: "46-60 Days", color: "#7f1d1d", icon: "fa-warning" },
+      { key: "60+", label: "60+ Days", color: "#450a0a", icon: "fa-history" },
+    ];
+
+
+    return buckets.map(bucket => {
+      const bucketData = this.dashboard_state.aging_data[bucket.key] || { total: 0, states: {} };
+      return {
+        key: bucket.key,
+        label: bucket.label,
+        count: bucketData.total,
+        states: Object.entries(bucketData.states).map(([stateKey, stateData]) => {
+          const style = this.styleMap[stateKey] || { icon: "fa-question-circle", color: "#6c757d", label: stateKey };
+          return {
+            key: stateKey,
+            label: style.label,
+            count: stateData.count,
+            breakdown: stateData.breakdown || [],
+            icon: style.icon,
+            color: style.color
+          };
+        }),
+        color: bucket.color,
+        icon: bucket.icon
+      };
+    });
+  }
+
   async _onDateFilter(ev) {
     const days = parseInt(ev.target.dataset.days);
 
@@ -209,13 +230,7 @@ class MainDashboard extends Component {
     this.filter_state.activeDays = days; // <-- UPDATED: Track the active day count
 
     // Fetch data using the updated values
-    await this.fetchData(
-      this.filter_state.start_date,
-      this.filter_state.end_date,
-      this.filter_state.activeDiscipline,
-      this.filter_state.activeLab,
-      this.filter_state.activeCompany,
-    );
+    await this.fetchData();
     this.renderTimeChart();
     this.renderStateChart();
   }
@@ -231,13 +246,7 @@ class MainDashboard extends Component {
       this.filter_state.activeDays = false; // Reset activeDays for custom date
 
       // Fetch data using the updated values (using state values which are already correct)
-      await this.fetchData(
-        start,
-        end,
-        this.filter_state.activeDiscipline,
-        this.filter_state.activeLab,
-        this.filter_state.activeCompany,
-      );
+      await this.fetchData();
 
       // Charts are only rendered if data was successfully fetched (start and end were set)
       this.renderTimeChart();
@@ -268,13 +277,82 @@ class MainDashboard extends Component {
     this.stateChartType = type;
     this.renderStateChart();
   }
+  async onAgingClick(bucketKey, stateKey = null, techId = null) {
+    const today = new Date();
+    // Handle 60+ specifically or parse min-max
+    let minDays, maxDays;
+    if (bucketKey === "60+") {
+        minDays = 61;
+        maxDays = null;
+    } else {
+        [minDays, maxDays] = bucketKey.split("-").map(Number);
+    }
+    
+    // Create new date objects for boundaries
+    const dMax = new Date(today);
+    dMax.setDate(today.getDate() - minDays);
+    dMax.setHours(23, 59, 59, 999);
+    
+    let dMin = null;
+    if (maxDays !== null) {
+        dMin = new Date(today);
+        dMin.setDate(today.getDate() - maxDays);
+        dMin.setHours(0, 0, 0, 0);
+    }
+
+    const domain = [
+        ["state", "in", ["2-alloted", "7-calculated", "3-pending_verification", "5-pending_approval"]],
+        ["eln_id", "!=", false],
+        ["eln_id.create_date", "<=", dMax.toISOString()],
+    ];
+
+    if (dMin) {
+        domain.push(["eln_id.create_date", ">=", dMin.toISOString()]);
+    }
+
+    if (stateKey) {
+        domain.push(["state", "=", stateKey]);
+    }
+
+    if (techId) {
+        domain.push("|", ["technicians", "=", techId], ["eln_id.technician", "=", techId]);
+    }
+
+    if (this.filter_state.activeDiscipline !== "ALL") {
+        domain.push(["discipline_id.discipline", "=", this.filter_state.activeDiscipline]);
+    }
+    if (this.filter_state.activeLab !== "ALL") {
+        domain.push(["lab_location", "=", parseInt(this.filter_state.activeLab)]);
+    }
+    if (this.filter_state.activeCompany !== "ALL") {
+        domain.push(["lab_location.company_id", "=", parseInt(this.filter_state.activeCompany)]);
+    }
+
+    this.action.doAction({
+      type: "ir.actions.act_window",
+      name: `Samples Aging: ${bucketKey} Days`,
+      res_model: "lerm.srf.sample",
+      domain: domain,
+      views: [
+        [false, "list"],
+        [false, "form"],
+      ],
+      context: {
+        group_by: ["state"],
+      }
+    });
+  }
+
   async onKpiClick(stateName) {
     const stateLabelMap = {
-      "1-allotment_pending": "Allotment Pending",
+      "1-allotment_pending": "Assignment Pending",
+      "7-partially-alloted": "Partially Alloted",
       "2-alloted": "Alloted",
+      "7-calculated": "In-Test",
       "3-pending_verification": "Pending Verification",
       "5-pending_approval": "Pending Approval",
       "4-in_report": "In Report",
+      "6-cancelled": "Cancelled",
     };
     const domain = [
       ["sample_received_date", ">=", this.filter_state.start_date],
@@ -302,14 +380,7 @@ class MainDashboard extends Component {
     this.filter_state.activeDiscipline = discipline;
 
     // Fetch data using the updated values
-    await this.fetchData(
-      // <-- ADDED AWAIT HERE
-      this.filter_state.start_date,
-      this.filter_state.end_date,
-      this.filter_state.activeDiscipline,
-      this.filter_state.activeLab,
-      this.filter_state.activeCompany,
-    );
+    await this.fetchData();
     this.renderTimeChart();
     this.renderStateChart();
   }
