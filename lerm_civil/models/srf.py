@@ -762,14 +762,175 @@ class SrfForm(models.Model):
 
  
 
+    # def confirm_srf(self):
+    #     import re
+    #     import paramiko
+
+    #     for rec in self:
+
+    #         # -----------------------
+    #         # SRF SEQUENCE
+    #         # -----------------------
+    #         srf_seq = self.env['ir.sequence'].search([
+    #             ('code', '=', 'lerm.srf.main.seq')
+    #         ], limit=1)
+
+    #         srf_first = self.env['ir.sequence'].next_by_code('lerm.srf.main.seq')
+
+    #         srf_parts = srf_first.split('/')
+
+    #         base_prefix = srf_parts[0]
+    #         full_part = srf_parts[1]
+
+    #         date_part = full_part[:6]
+    #         first_number = int(full_part[-3:])
+
+    #         total_samples = sum(rec.sample_range_table.mapped('sample_qty'))
+    #         last_number = first_number + total_samples - 1
+
+    #         if srf_seq:
+    #             srf_seq.sudo().write({
+    #                 'number_next_actual': last_number + 1
+    #             })
+
+    #         modified_srf_id = "%s/%s%s-%s%s" % (
+    #             base_prefix,
+    #             date_part,
+    #             str(first_number).zfill(3),
+    #             date_part,
+    #             str(last_number).zfill(3)
+    #         )
+
+    #         # -----------------------
+    #         # SAMPLE PROCESS
+    #         # -----------------------
+    #         for range_line in rec.sample_range_table:
+
+    #             sam_seq = self.env['ir.sequence'].search([
+    #                 ('code', '=', 'lerm.srf.sample')
+    #             ], limit=1)
+
+    #             sam_next = sam_seq.number_next_actual
+
+    #             sample_range = "SAM/%s-%s" % (
+    #                 sam_next,
+    #                 sam_next + range_line.sample_qty - 1
+    #             )
+
+    #             sam_seq.sudo().write({
+    #                 'number_next_actual': sam_next + range_line.sample_qty
+    #             })
+
+    #             # ❌ DO NOT CALL KES SEQUENCE HERE
+    #             # ❌ NO LOOP FOR KES RANGE
+
+    #             range_line.write({
+    #                 'sample_range': sample_range,
+    #                 'kes_range': ''
+    #             })
+
+    #             # -----------------------
+    #             # SAMPLES
+    #             # -----------------------
+    #             samples = self.env['lerm.srf.sample'].search([
+    #                 ('sample_range_id', '=', range_line.id)
+    #             ])
+
+    #             for sample in samples:
+
+    #                 sample_no = self.env['ir.sequence'].next_by_code('lerm.srf.sample') or 'New'
+
+    #                 # ✅ SINGLE CALL ONLY (NO JUMP)
+    #                 kes_no = self.env['ir.sequence'].next_by_code('lerm.kes.main.seq')
+
+    #                 ulr_no = ''
+    #                 if sample.scope == 'nabl':
+
+    #                     seq_val = self.env['ir.sequence'].next_by_code('sample.ulr.seq') or 'New'
+
+    #                     lab = sample.lab_location
+    #                     lab_cert = lab.lab_certificate_no or ''
+    #                     lab_loc = sample.location_name.location_code if sample.location_name else ''
+
+    #                     ulr_no = seq_val.replace('(lab_certificate_no)', lab_cert)\
+    #                                     .replace('(lab_no_value)', lab_loc)
+
+    #                 sample.write({
+    #                     'sample_no': sample_no,
+    #                     'kes_no': kes_no,
+    #                     'status': '2-confirmed',
+    #                     'ulr_no': ulr_no
+    #                 })
+
+    #         # -----------------------
+    #         # FINAL WRITE
+    #         # -----------------------
+    #         rec.write({
+    #             'srf_id': modified_srf_id,
+    #             'kes_number': kes_no,
+    #             'state': '2-confirm'
+    #         })
+
+    #         # -----------------------
+    #         # FTP RENAME
+    #         # -----------------------
+    #         attachment_path = rec.attachment_path
+    #         pattern = r'(?<=/)\d+(?=/)'
+
+    #         if attachment_path and re.search(pattern, attachment_path):
+
+    #             old_path = re.sub(pattern, str(rec.id), attachment_path)
+
+    #             file_name = old_path.rsplit('/', 1)[1]
+    #             old_dir = old_path.rsplit('/', 1)[0]
+
+    #             new_path = re.sub(
+    #                 pattern,
+    #                 rec.srf_id.replace("/", "").replace("-", ""),
+    #                 attachment_path
+    #             )
+
+    #             new_dir = new_path.rsplit('/', 1)[0]
+
+    #             ftp_storage = self.env["ftp.storage"].search([
+    #                 ("active", "=", True)
+    #             ], limit=1)
+
+    #             transport = paramiko.Transport(
+    #                 (ftp_storage.host, ftp_storage.port or 22)
+    #             )
+
+    #             transport.connect(
+    #                 username=ftp_storage.username,
+    #                 password=ftp_storage.password
+    #             )
+
+    #             sftp = paramiko.SFTPClient.from_transport(transport)
+
+    #             try:
+    #                 sftp.rename(
+    #                     "/home/" + old_dir,
+    #                     "/home/" + new_dir
+    #                 )
+
+    #                 rec.write({
+    #                     'attachment_path': new_dir + "/" + file_name
+    #                 })
+
+    #             except Exception as e:
+    #                 raise Exception("FTP Rename Failed: %s" % str(e))
+
+    #             sftp.close()
+
     def confirm_srf(self):
         import re
         import paramiko
+        from odoo import fields
 
         for rec in self:
 
             # -----------------------
-            # SRF SEQUENCE
+            # SRF SEQUENCE (DATE RANGE BASED)
             # -----------------------
             srf_seq = self.env['ir.sequence'].search([
                 ('code', '=', 'lerm.srf.main.seq')
@@ -788,10 +949,23 @@ class SrfForm(models.Model):
             total_samples = sum(rec.sample_range_table.mapped('sample_qty'))
             last_number = first_number + total_samples - 1
 
-            if srf_seq:
-                srf_seq.sudo().write({
-                    'number_next_actual': last_number + 1
-                })
+            # -----------------------
+            # UPDATE DATE RANGE (SRF)
+            # -----------------------
+            if srf_seq and srf_seq.use_date_range:
+
+                today = fields.Date.today()
+
+                date_range = self.env['ir.sequence.date_range'].search([
+                    ('sequence_id', '=', srf_seq.id),
+                    ('date_from', '<=', today),
+                    ('date_to', '>=', today)
+                ], limit=1)
+
+                if date_range:
+                    date_range.sudo().write({
+                        'number_next_actual': last_number + 1
+                    })
 
             modified_srf_id = "%s/%s%s-%s%s" % (
                 base_prefix,
@@ -821,9 +995,6 @@ class SrfForm(models.Model):
                     'number_next_actual': sam_next + range_line.sample_qty
                 })
 
-                # ❌ DO NOT CALL KES SEQUENCE HERE
-                # ❌ NO LOOP FOR KES RANGE
-
                 range_line.write({
                     'sample_range': sample_range,
                     'kes_range': ''
@@ -836,13 +1007,17 @@ class SrfForm(models.Model):
                     ('sample_range_id', '=', range_line.id)
                 ])
 
+                last_kes_no = False
+
                 for sample in samples:
 
                     sample_no = self.env['ir.sequence'].next_by_code('lerm.srf.sample') or 'New'
 
-                    # ✅ SINGLE CALL ONLY (NO JUMP)
+                    # KES (already date_range based)
                     kes_no = self.env['ir.sequence'].next_by_code('lerm.kes.main.seq')
+                    last_kes_no = kes_no
 
+                    # ULR
                     ulr_no = ''
                     if sample.scope == 'nabl':
 
@@ -867,7 +1042,7 @@ class SrfForm(models.Model):
             # -----------------------
             rec.write({
                 'srf_id': modified_srf_id,
-                'kes_number': kes_no,
+                'kes_number': last_kes_no,
                 'state': '2-confirm'
             })
 
@@ -896,31 +1071,38 @@ class SrfForm(models.Model):
                     ("active", "=", True)
                 ], limit=1)
 
-                transport = paramiko.Transport(
-                    (ftp_storage.host, ftp_storage.port or 22)
-                )
+                if ftp_storage:
 
-                transport.connect(
-                    username=ftp_storage.username,
-                    password=ftp_storage.password
-                )
-
-                sftp = paramiko.SFTPClient.from_transport(transport)
-
-                try:
-                    sftp.rename(
-                        "/home/" + old_dir,
-                        "/home/" + new_dir
+                    transport = paramiko.Transport(
+                        (ftp_storage.host, ftp_storage.port or 22)
                     )
 
-                    rec.write({
-                        'attachment_path': new_dir + "/" + file_name
-                    })
+                    transport.connect(
+                        username=ftp_storage.username,
+                        password=ftp_storage.password
+                    )
 
-                except Exception as e:
-                    raise Exception("FTP Rename Failed: %s" % str(e))
+                    sftp = paramiko.SFTPClient.from_transport(transport)
 
-                sftp.close()
+                    try:
+                        sftp.rename(
+                            "/home/" + old_dir,
+                            "/home/" + new_dir
+                        )
+
+                        rec.write({
+                            'attachment_path': new_dir + "/" + file_name
+                        })
+
+                    except Exception as e:
+                        raise Exception("FTP Rename Failed: %s" % str(e))
+
+                    finally:
+                        sftp.close()
+                        transport.close()
+
+    
+    
             
 
 
