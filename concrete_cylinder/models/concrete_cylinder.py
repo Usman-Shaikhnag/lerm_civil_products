@@ -21,6 +21,7 @@ class MechanicalConcreteCube(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="ELN")
+    sample_id = fields.Many2one('lerm.srf.sample',string='Sample')
 
 
     cube_name = fields.Char("Name",default=" Concrete Cylinder")

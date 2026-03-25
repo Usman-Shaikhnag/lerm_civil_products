@@ -22,6 +22,8 @@ class MechanicalConcreteCube(models.Model):
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="ELN")
 
+    sample_id = fields.Many2one('lerm.srf.sample',string='Sample')
+
 
     cube_name = fields.Char("Name",default=" Cube")
     cube_visible = fields.Boolean("Chequered Visible",compute="_compute_visible")   
@@ -469,11 +471,22 @@ class MechanicalConcreteCube(models.Model):
                 if sample.internal_id == "30214iu-eba3-4f15-b33d-679b39f73301":
                     record.water_absorption_visible = True
 
-                
+
+
+
     def open_eln_page(self):
-        # import wdb; wdb.set_trace()
-        for result in self.eln_ref.parameters_result:
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+         
+  
             if result.parameter.internal_id == '23545tur-17c1-48ac-8462-9671e4d3d09f':
+                result.calculated = True
                 result.result_char = round(self.average_strength,2)
                 if self.nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -483,7 +496,20 @@ class MechanicalConcreteCube(models.Model):
 
         for result in self.eln_ref.parameters_result:
             if result.parameter.internal_id == '30214iu-eba3-4f15-b33d-679b39f73301':
+                result.calculated = True
                 result.result_char = round(self.avg_water_absorption,2)
+                if self.nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+
+        for result in self.eln_ref.parameters_result:
+            if result.parameter.internal_id == '1023457-0268-46ef-ba88-9c0453210lkit1':
+                result.calculated = True
+                result.result_char = round(self.average_of_wpt,2)
                 if self.nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:

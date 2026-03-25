@@ -496,12 +496,29 @@ class BitumenConcrete(models.Model):
         for result in self.eln_ref.parameters_result:
             if result.parameter.internal_id == '35789ght-7188-4086-b132-62b50e63f1247ui':
                 result.result_char = round(self.binder_content,2)
+                result.calculated = True
                 if self.binder_content_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+        for result in self.eln_ref.parameters_result:
+            if result.parameter.internal_id == '62578gtre-7188-4086-b132-62b50e63f1247ui':
+                # result.result_char = round(self.binder_content,2)
+                result.calculated = True
+                # if self.binder_content_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue 
           
+
+
+
+          
+                   
+
         return {
                 'view_mode': 'form',
                 'res_model': "lerm.eln",

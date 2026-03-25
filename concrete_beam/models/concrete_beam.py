@@ -17,6 +17,7 @@ class FlexuralStrengthConcreteBeam(models.Model):
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     
     average_flexural_strength = fields.Float(string="Average Flexural Strength in N/mm2",compute="_compute_average_flexural_strength")
+    sample_id = fields.Many2one('lerm.srf.sample',string='Sample')
 
     # age_of_days = fields.Selection([
     #     ('3days', '3 Days'),

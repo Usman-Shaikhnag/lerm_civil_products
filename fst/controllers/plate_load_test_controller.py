@@ -56,7 +56,7 @@ class PlateLoadTestController(http.Controller):
                 return {"error": "Invalid token"}
 
             form_id = verified.get("form_id")
-            record = request.env['lerm.plate.load.test'].sudo().browse(form_id)
+            record = request.env['fst.plate.load.test'].sudo().browse(form_id)
 
             sections = data.get("sections")
             loading_cols = data.get("loading_columns")
@@ -125,7 +125,7 @@ class PlateLoadTestController(http.Controller):
                 return {"error": "Invalid token"}
 
             form_id = verified.get("form_id")
-            record = request.env['lerm.plate.load.test'].sudo().browse(form_id)
+            record = request.env['fst.plate.load.test'].sudo().browse(form_id)
 
             if not record.exists():
                 return {"error": "Record not found"}
