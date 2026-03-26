@@ -57,7 +57,9 @@ class ElnReport(models.AbstractModel):
             'nabl' : nabl,
             'srf_id': eln.srf_id,
         }
- 
+
+
+
 
 
 class DataSheetReport(models.AbstractModel):

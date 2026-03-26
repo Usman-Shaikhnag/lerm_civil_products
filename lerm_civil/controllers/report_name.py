@@ -44,6 +44,8 @@ from odoo.addons.web.controllers.main import ReportController
 from odoo.addons.portal.controllers.portal import CustomerPortal
 from odoo.http import request
 
+
+
 class MyReportName(ReportController):
     @http.route(['/report/download'], type='http', auth="user")
     def report_download(self, data, context=None):
@@ -190,6 +192,7 @@ class MyReportName(ReportController):
             ('Content-Disposition', 'attachment; filename="Report.pdf"')
         ])
         return response
+
     
 
     @http.route(['/download_report/nonnabl/<int:eln_id>'], type='http', auth="public", website=True)
@@ -232,3 +235,5 @@ class MyReportName(ReportController):
             ('Content-Disposition', 'attachment; filename="Report.pdf"')
         ])
         return response
+
+
