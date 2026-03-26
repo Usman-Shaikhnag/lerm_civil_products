@@ -35,13 +35,10 @@
                     </div>
 
 
-<<<<<<< HEAD
 
 
-                     <style>
-=======
+
                     <style>
->>>>>>> d5f75ca336fe6ca5af93070e24732511118fdae4
                         .blue-input input {
                             background-color: #d8ecff !important;   /* हलका Blue background */
                             border-color: #3b82f6 !important;        /* Blue border */ 
@@ -84,15 +81,11 @@
                     <field name="sieve_analysis_child_lines" invisible = "sieve_visible == False">
                         <tree editable="bottom" class="custom_table_borders">
                             <field name="serial_no"/>
-<<<<<<< HEAD
-                            <field name="sieve_size"/>
-                            <field name="particle_size"/>
-                            <field name="wt_retained" />
-=======
+
                             <field name="sieve_size" />
                             <field name="particle_size" class="blue-input" decoration-info="particle_size != 0"/>
                             <field name="wt_retained" class="blue-input" decoration-info="wt_retained != 0"/>
->>>>>>> d5f75ca336fe6ca5af93070e24732511118fdae4
+
                             <field name="percent_retained"/>
                             <field name="cumulative_retained"/>
                             <field name="passing_percent"/>
@@ -188,22 +181,16 @@
                         <field name="child_liness">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='serial_no' />
-<<<<<<< HEAD
-                                <field name='container_no1' />
-                                <field name='blwo_no1' widget="char" style="width:10px; max-width:10px; min-width:10px;"/>
-                                <field name="wt_of_con_wet" />
-                                <field name='wt_of_con_dry' />
-                                <field name='loss_of_moisture'/>
-                                <field name='wt_containner' />
-=======
+
                                 <field name='container_no1' class="blue-input" decoration-info="container_no1 != 0"/>
                                 <field name='blwo_no1' widget="char" style="width:10px; max-width:10px; min-width:10px;" class="blue-input" decoration-info="blwo_no1 != 0"/>
                                 <field name="wt_of_con_wet" class="blue-input" decoration-info="wt_of_con_wet != 0"/>
                                 <field name='wt_of_con_dry' class="blue-input" decoration-info="wt_of_con_dry != 0"/>
                                 <field name='loss_of_moisture' />
                                 <field name='wt_containner' class="blue-input" decoration-info="wt_containner != 0"/>
->>>>>>> d5f75ca336fe6ca5af93070e24732511118fdae4
+
                                 <field name='wt_of_dry' />
+
                                 <field name='moisture_content' />
                             </tree>
                         </field>
@@ -770,11 +757,11 @@
                         <field name="volume_dry_table">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='serial_no'/>
-                                <field name='container_no_dry'  width="100px"/>
-                                <field name='shrinkage_dry_before'/>
-                                <field name='shrinkage_dry_after'/>
+                                <field name='container_no_dry'  width="100px" class="blue-input" decoration-info="container_no_dry != 0"/>
+                                <field name='shrinkage_dry_before' class="blue-input" decoration-info="shrinkage_dry_before != 0"/>
+                                <field name='shrinkage_dry_after' class="blue-input" decoration-info="shrinkage_dry_after != 0"/>
                                 <field name='mass_mercury_dry'/>
-                                <field name='density_dry'/>
+                                <field name='density_dry' class="blue-input" decoration-info="density_dry != 0"/>
                                 <field name='volume_dry'/>
                             </tree>
                         </field>
@@ -796,11 +783,11 @@
                         <field name="volume_wet_table">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='serial_no'/>
-                                <field name='container_no_wet'  width="100px"/>
-                                <field name='shrinkage_wet_before'/>
-                                <field name='shrinkage_wet_after'/>
+                                <field name='container_no_wet'  width="100px" class="blue-input" decoration-info="container_no_wet != 0"/>
+                                <field name='shrinkage_wet_before' class="blue-input" decoration-info="shrinkage_wet_before != 0"/>
+                                <field name='shrinkage_wet_after' class="blue-input" decoration-info="shrinkage_wet_after != 0"/>
                                 <field name='mass_mercury_wet'/>
-                                <field name='density_wet'/>
+                                <field name='density_wet' class="blue-input" decoration-info="density_wet != 0"/>
                                 <field name='volume_wet'/>
                             </tree>
                         </field>
@@ -837,9 +824,9 @@
                         <field name="test_line_ids">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='serial_no'/>
-                                <field name='h1'  />
-                                <field name='h2'/>
-                                <field name='t'/>
+                                <field name='h1'  class="blue-input" decoration-info="h1 != 0"/>
+                                <field name='h2' class="blue-input" decoration-info="h2 != 0"/>
+                                <field name='t' class="blue-input" decoration-info="t != 0"/>
                                 <field name='k_value'/>
                               
                             </tree>
@@ -950,10 +937,10 @@
                         <field name="direct_shear_ids">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='serial_no'/>
-                                <field name='ao'  />
-                                <field name='delta'/>
-                                <field name='proving_ring_reading'/>
-                                <field name='normal_stress'/>
+                                <field name='ao'  class="blue-input" decoration-info="ao != 0"/>
+                                <field name='delta' class="blue-input" decoration-info="delta != 0"/>
+                                <field name='proving_ring_reading' class="blue-input" decoration-info="proving_ring_reading != 0"/>
+                                <field name='normal_stress' class="blue-input" decoration-info="normal_stress != 0"/>
                                 <field name='horizontal_load'/>
                                 <field name='corrected_area'/>
                                 <field name='shear_stress'/>
@@ -996,8 +983,8 @@
                         <field name="angleshear_line_ids">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='serial_no'/>
-                                <field name='normal_stress'  />
-                                <field name='shear_strength'/>
+                                <field name='normal_stress'  class="blue-input" decoration-info="normal_stress != 0"/>
+                                <field name='shear_strength' class="blue-input" decoration-info="shear_strength != 0"/>
                                 
                               
                             </tree>
@@ -1043,9 +1030,9 @@
                         <field name="swelling_pressure_line_ids">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='serial_no'/>
-                                <field name='dial_gauge_reading'  />
-                                <field name='load_applied'/>
-                                <field name='area_of_sample'/>
+                                <field name='dial_gauge_reading' class="blue-input" decoration-info="dial_gauge_reading != 0" />
+                                <field name='load_applied' class="blue-input" decoration-info="load_applied != 0"/>
+                                <field name='area_of_sample' class="blue-input" decoration-info="area_of_sample != 0"/>
                                 <field name='swelling_pressure'/>
                               
                                 
@@ -1091,8 +1078,8 @@
                         <field name="uu_triaxial_angle_line_ids">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='serial_no'/>
-                                <field name='confining_pressure'  />
-                                <field name='deviator_stress'/>
+                                <field name='confining_pressure'  class="blue-input" decoration-info="confining_pressure != 0"/>
+                                <field name='deviator_stress' class="blue-input" decoration-info="deviator_stress != 0"/>
                                 <field name='sigma1'/>
                                 <field name='sigma'/>
                                 <field name='tau'/>
@@ -1144,8 +1131,8 @@
                         <field name="uu_triaxial_cohesion_line_ids">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='serial_no'/>
-                                <field name='confining_pressure'  />
-                                <field name='deviator_stress'/>
+                                <field name='confining_pressure'  class="blue-input" decoration-info="confining_pressure != 0"/>
+                                <field name='deviator_stress' class="blue-input" decoration-info="deviator_stress != 0"/>
                                 <field name='sigma1'/>
                                 <field name='sigma'/>
                                 <field name='tau'/>
@@ -1226,8 +1213,8 @@
                         <field name="ucs_ids">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='serial_no'/>
-                                <field name='dial_gauge'  />
-                                <field name='proving_ring_reading'/>
+                                <field name='dial_gauge'  class="blue-input" decoration-info="dial_gauge != 0"/>
+                                <field name='proving_ring_reading' class="blue-input" decoration-info="proving_ring_reading != 0"/>
                                 <field name='deformation'/>
                                 <field name='axial_strain'/>
                                 <field name='load'/>
@@ -1303,11 +1290,11 @@
                         <field name="consolidation_name_ids">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='serial_no'/>
-                                <field name='load'  />
-                                <field name='dial_gauge'/>
-                                <field name='delta_h'/>
+                                <field name='load'  class="blue-input" decoration-info="load != 0" />
+                                <field name='dial_gauge'  class="blue-input" decoration-info="dial_gauge != 0"/>
+                                <field name='delta_h'  class="blue-input" decoration-info="delta_h != 0"/>
                                 <field name='corrected_height'/>
-                                <field name='stress'/>
+                                <field name='stress'  class="blue-input" decoration-info="stress != 0"/>
                                 <field name='strain'/>
                                 <field name='void_ratio'/>
                               
@@ -1379,11 +1366,11 @@
                         <field name="consolidation_pc_ids">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='serial_no'/>
-                                <field name='load_pc'  />
-                                <field name='dial_gauge_pc'/>
-                                <field name='delta_h_pc'/>
+                                <field name='load_pc' class="blue-input" decoration-info="load_pc != 0" />
+                                <field name='dial_gauge_pc' class="blue-input" decoration-info="dial_gauge_pc != 0"/>
+                                <field name='delta_h_pc' class="blue-input" decoration-info="delta_h_pc != 0"/>
                                 <field name='corrected_height_pc'/>
-                                <field name='stress_pc'/>
+                                <field name='stress_pc' class="blue-input" decoration-info="stress_pc != 0"/>
                                 <field name='strain_pc'/>
                                 <field name='void_ratio_pc'/>
                               
