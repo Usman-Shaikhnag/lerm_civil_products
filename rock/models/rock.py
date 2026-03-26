@@ -832,7 +832,140 @@ class MechanicalRock(models.Model):
            
 
     def open_eln_page(self):
-        # import wdb; wdb.set_trace()
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+            # import wdb;wdb.set_trace()
+            
+            
+            
+            if result.parameter.internal_id == 'a1f9c5d0-0bc7-41a6-a2bb-0fe9d898008d':
+                result.result_char = round(self.avg_usc,2)
+                result.calculated = True
+                if self.avg_usc_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'a4eb1d5e-9d64-48cd-8277-ad734e0edd84':
+                result.result_char = round(self.avg_porosity,2)
+                result.calculated = True
+                # if self.aggregate_combine_conformity == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+
+            if result.parameter.internal_id == 'bf5d3d97-9a52-4242-9a36-2e40e5fc8247':
+                # result.result_char = round(self.aggregate_elongation,2)
+                result.calculated = True
+                # if self.aggregate_combine_conformity == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+
+
+            if result.parameter.internal_id == '87ec776a-11eb-45ef-addf-e183edabd6dd':
+                result.result_char = round(self.avg_dry_density,2)
+                result.calculated = True
+                # if self.aggregate_combine_conformity == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+
+
+            if result.parameter.internal_id == '71e24ae1-b9a9-41cb-86a5-89d87312f3d6':
+                result.result_char = round(self.avg_water_absorption,2)
+                result.calculated = True
+                # if self.aggregate_combine_conformity == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+
+
+            if result.parameter.internal_id == '71e24ae1-b9a9-41cb-86a5-89d87355786tt':
+                result.result_char = round(self.cai,2)
+                result.calculated = True
+                if self.cai_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            if result.parameter.internal_id == '71e24ae1-b9a9-41cb-86a5-9654tyu145er2':
+                result.result_char = round(self.modulus_e,2)
+                result.calculated = True
+                if self.modulus_e_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '6tr24ae1-b9a9-41cb-86a5-9654578gtr32e':
+                result.result_char = round(self.avg_is50,2)
+                result.calculated = True
+                if self.avg_is50_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '3tr74ae1-b9a9-41cb-86a5-965457878tyrw':
+                result.result_char = round(self.avg_nu,2)
+                result.calculated = True
+                if self.avg_nu_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '78er74ae1-b9a9-41cb-86a5-96578rtew214q':
+                result.result_char = round(self.avg_index,2)
+                result.calculated = True
+                if self.avg_index_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '88er74ae1-b9a9-41cb-86a5-9657878rte214w':
+                result.result_char = round(self.avg_tensile_strength,2)
+                result.calculated = True
+                if self.avg_tensile_strength_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            if result.parameter.internal_id == '9rtr74ae1-b9a9-41cb-86a5-96578723147gtre':
+                result.result_char = round(self.phi_deg_uu_triaxial_angle,2)
+                result.calculated = True
+                if self.phi_deg_uu_triaxial_angle_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            if result.parameter.internal_id == '0rte74ae1-b9a9-41cb-86a5-96578721254789rt':
+                result.result_char = round(self.cohesion_uu_triaxial_cohesion,2)
+                result.calculated = True
+                if self.cohesion_uu_triaxial_cohesion_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
 
         return {
                 'view_mode': 'form',

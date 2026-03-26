@@ -833,7 +833,71 @@ class PtGrout(models.Model):
                     record.compressive_strength_visible = True
 
     def open_eln_page(self):
-        # import wdb; wdb.set_trace()
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+            # import wdb;wdb.set_trace()
+            
+            
+            
+            if result.parameter.internal_id == '321457gr-331a-4e71-8887-ef37cf38c7dd':
+                result.result_char = round(self.water_cement_ratio,2)
+                result.calculated = True
+                if self.fludity_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '21047gfds1-7350-4597-8057-139ef15f07fe':
+                result.result_char = round(self.initial_setting_time_minutes_unrounded,2)
+                result.calculated = True
+                if self.initial_setting_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '214758bgfd-5cad-4cbe-a6f5-1cee158d2d0e':
+                result.result_char = round(self.final_setting_time_minutes_unrounded,2)
+                result.calculated = True
+                if self.final_setting_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '2104789gfrty-9b4f-4025-b34c-75a33149cc6f':
+                result.result_char = round(self.final_bleeding,2)
+                result.calculated = True
+                if self.bleeding_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '456hgf45h-2c21-4a5d-beb8-366c6a3e4b93':
+                result.result_char = round(self.height_change_average,2)
+                result.calculated = True
+                if self.volume_nabl_1 == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '24578hgrt-39e1-4ca3-8c9d-f28fb1f9b12e':
+                result.result_char = round(self.water_cement_ratio_1,2)
+                result.calculated = True
+                if self.compressive_strength_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
 
         return {
                 'view_mode': 'form',

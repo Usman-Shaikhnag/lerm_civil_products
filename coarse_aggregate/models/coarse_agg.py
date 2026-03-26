@@ -2284,9 +2284,8 @@ class CoarseAggregateMechanical(models.Model):
 
         for result in technician_results:
             # import wdb;wdb.set_trace()
-            # Elongation
-            if result.parameter.internal_id == 'c2168fff-e47c-4155-99ff-9d7dc223e768':
-                result.calculated = True
+            
+            
             
             if result.parameter.internal_id == '9effe915-e5a3-45a7-aaeb-10caababd667':
                 result.result_char = round(self.aggregate_elongation,2)
@@ -2297,6 +2296,9 @@ class CoarseAggregateMechanical(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
 
+            # Elongation
+            if result.parameter.internal_id == 'c2168fff-e47c-4155-99ff-9d7dc223e768':
+                result.calculated = True
 
             # Flakiness
             if result.parameter.internal_id == 'be7a60bc-bb2c-410d-b91a-4f8730a4ac6f':
