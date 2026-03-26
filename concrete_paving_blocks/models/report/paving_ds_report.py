@@ -7,7 +7,7 @@ from lxml import etree
 
 class PavingBlockDatasheet1(models.AbstractModel):
         _name = 'report.lerm_concrete_paving_block_datasheet'
-        _description = ' Concrete Paving Block DataSheet 1'
+        _description = 'Concrete Paving Block DataSheet'
     
         @api.model
         def _get_report_values(self, docids, data):
@@ -42,7 +42,7 @@ class PavingBlockDatasheet1(models.AbstractModel):
         
 class PavingBlockReport1(models.AbstractModel):
     _name = 'report.paver_block.paving_block_report'
-    _description = ' Concrete Paving Block Report 1'
+    _description = 'Concrete Paving Block Report'
     
     @api.model
     def _get_report_values(self, docids, data):

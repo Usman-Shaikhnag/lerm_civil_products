@@ -11,6 +11,7 @@ class WOOD(models.Model):
     _rec_name = "name_wood"
 
 
+
     name_wood = fields.Char("Name",default="WOOD")
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 
@@ -175,37 +176,38 @@ class WOOD(models.Model):
              
 
 
-
-
-    # def open_eln_page(self):
-    #     # import wdb; wdb.set_trace()
-
-    #     return {
-    #             'view_mode': 'form',
-    #             'res_model': "lerm.eln",
-    #             'type': 'ir.actions.act_window',
-    #             'target': 'current',
-    #             'res_id': self.eln_ref.id,
-                
-    #         }
+             
     def open_eln_page(self):
-    # import wdb; wdb.set_trace()
-        for result in self.eln_ref.parameters_result:
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+    
             if result.parameter.internal_id == 'a90cdbd7-3fa3-4b83-ae31-9d28120458tyu32':
                 result.result_char = round(self.average_moisture,2)
+                result.calculated = True
                 if self.moisture_content_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+
+              
             if result.parameter.internal_id == '769b7052-d658-4d14-a5cc-c21dbe1487gbhjt':
                 result.result_char = round(self.average_specific_gravity,2)
+                result.calculated = True
                 if self.specific_gravity_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
-            
+
+
 
         return {
                 'view_mode': 'form',
