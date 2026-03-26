@@ -1617,8 +1617,100 @@ class FlyaschNormalConsistency(models.Model):
                
 
     def open_eln_page(self):
-        # import wdb; wdb.set_trace()
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
 
+        for result in technician_results:
+            # import wdb;wdb.set_trace()
+            
+            
+            
+            if result.parameter.internal_id == '124fgrt3-1b3c-43ae-9c20-5421b6d6edf9':
+                result.result_char = round(self.normal_consistency_fly_1,2)
+                result.calculated = True
+                if self.normal_consistency_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '2014fgr32-6bbe-4fdf-9571-a5a099be0293':
+                result.result_char = round(self.initial_setting_time_minutes_unrounded,2)
+                result.calculated = True
+                if self.initial_setting_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '32145grte8-6526-4fcc-a5ec-18cc1ae10857':
+                result.result_char = round(self.final_setting_time_minutes_unrounded,2)
+                result.calculated = True
+                if self.final_setting_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '3214vbfsd-0da6-4ec4-a91e-d41c44f5edb5':
+                result.result_char = round(self.prcent_retaind,2)
+                result.calculated = True
+                if self.prcent_retaind_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '3210ght7-91b0-4153-87ef-11b6954a9837':
+                result.result_char = round(self.expansion_soundness,2)
+                result.calculated = True
+                if self.expansion_soundness_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '3214fgrt-1d2c-4d3b-9ebe-ecb0b5e1221e':
+                result.result_char = round(self.average_specific_gravity,2)
+                result.calculated = True
+                if self.average_specific_gravity_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '3201vfg-98f0-419e-94cd-1844af4393f5':
+                result.result_char = round(self.compressive_strength_of_sample,2)
+                result.calculated = True
+                if self.compressive_strength_of_sample_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '320147vbfd-c97d-4d83-a9f2-2eb112eae116':
+                result.result_char = round(self.compressive_strength_28_days,2)
+                result.calculated = True
+                if self.lime_reactivity_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '2104fvdr-6047-4781-9885-0b8b29050fda':
+                result.result_char = round(self.fineness_air_permeability,2)
+                result.calculated = True
+                if self.fineness_blaine_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+        
         return {
                 'view_mode': 'form',
                 'res_model': "lerm.eln",

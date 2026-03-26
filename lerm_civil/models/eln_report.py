@@ -25,6 +25,15 @@ class ElnReport(models.AbstractModel):
             eln = self.env['lerm.eln'].sudo().search([('sample_id','=',data['context']['active_id'])])
         else:
             eln = self.env['lerm.eln'].sudo().browse(docids)
+
+        qr_static = qrcode.QRCode(box_size=6, border=2)
+        # scope_link = eln[0].nabl_scope_link if eln and hasattr(eln[0], 'nabl_scope_link') else False
+        qr_static.add_data("https://www.lerm.in")
+        # qr_static.add_data(scope_link)
+        qr_static.make(fit=True)
+        buf_static = BytesIO()
+        qr_static.make_image(fill_color="black", back_color="white").save(buf_static, format="PNG")
+        qr_static_b64 = base64.b64encode(buf_static.getvalue()).decode()
         print()
         # qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
         # qr.add_data(eln.kes_no)
@@ -53,10 +62,19 @@ class ElnReport(models.AbstractModel):
         return {
             'eln': eln,
             'qrcode': qr_code,
+            'qrcode_static': qr_static_b64,
             'stamp' : inreport_value,
             'nabl' : nabl,
             'srf_id': eln.srf_id,
         }
+
+
+
+
+
+
+
+ 
  
 
 

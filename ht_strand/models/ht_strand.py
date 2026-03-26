@@ -666,7 +666,107 @@ class HtStrand(models.Model):
                     record.modulus_of_ela_visible = True
 
     def open_eln_page(self):
-        # import wdb; wdb.set_trace()
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+            # import wdb;wdb.set_trace()
+            
+            if result.parameter.internal_id == '65895-a3df-4990-93d1-9904984644aoo2':
+                result.result_char = round(self.crossectional_area,2)
+                result.calculated = True
+                if self.crossectional_area_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '632547l-a3df-4990-93d1-9904984644au4':
+                result.result_char = round(self.per_diff_dia,2)
+                result.calculated = True
+                if self.per_diff_dia_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            if result.parameter.internal_id == '6325578-a3df-4990-93d1-9904984644a75':
+                result.result_char = round(self.proof_stress2per,2)
+                result.calculated = True
+                if self.proof_stress2per_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '6325487-a3df-4978-93d1-9904984644au4':
+                result.result_char = round(self.breaking_load,2)
+                result.calculated = True
+                if self.breaking_load_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '879542-a3df-4978-93d1-990498464785yt':
+                result.result_char = round(self.tensile_strength,2)
+                result.calculated = True
+                if self.tensile_strength_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            if result.parameter.internal_id == '36578ee-a3df-4978-93d1-990498464785yt':
+                result.result_char = round(self.elongation,2)
+                result.calculated = True
+                if self.elongation_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            if result.parameter.internal_id == '6897ert-a3df-4978-93d1-990498464785yt':
+                result.result_char = round(self.weight_per_meter,2)
+                result.calculated = True
+                if self.weight_per_meter_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '984fgtrvv-a3df-4978-93d1-990498464785yt':
+                result.result_char = round(self.lay_length,2)
+                result.calculated = True
+                if self.lay_length_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            if result.parameter.internal_id == '3147tyr4-a3df-4978-93d1-990498464785yt':
+                result.result_char = round(self.modulus_of_ela,2)
+                result.calculated = True
+                if self.modulus_of_ela_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            if result.parameter.internal_id == '333b8761-c035-44ff-a610-31b3fb5337d0':
+                # result.result_char = round(self.modulus_of_ela,2)
+                result.calculated = True
+
+
 
         return {
                 'view_mode': 'form',
