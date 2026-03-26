@@ -33,7 +33,7 @@ class LabMaster(models.Model):
 
     lab_location_line = fields.One2many('lerm.lab.location.master','parent_id',string="Lab Location")
 
-
+    company_id = fields.Many2one('res.company',string="Company")
 
 
 
