@@ -32,6 +32,7 @@ class CoarseAggregateMechanical(models.Model):
                 },
         }
 
+
      # ---- helper method
     def _get_unit(self, internal_id):
         param = self.env['lerm.parameter.master'].search([

@@ -16,6 +16,7 @@
                        <field name="grade"/>
                     </group>
 
+
                     <group>
                         <field name="srf_id" invisible="1"/>
                         <field name="sample_id" readonly="1" />
@@ -32,6 +33,27 @@
                             </tree>
                         </field>
                     </div>
+
+
+
+
+                     <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
 
                     
 
@@ -60,7 +82,7 @@
                             <field name="serial_no"/>
                             <field name="sieve_size"/>
                             <field name="particle_size"/>
-                            <field name="wt_retained"/>
+                            <field name="wt_retained" />
                             <field name="percent_retained"/>
                             <field name="cumulative_retained"/>
                             <field name="passing_percent"/>
@@ -160,7 +182,7 @@
                                 <field name='blwo_no1' widget="char" style="width:10px; max-width:10px; min-width:10px;"/>
                                 <field name="wt_of_con_wet" />
                                 <field name='wt_of_con_dry' />
-                                <field name='loss_of_moisture' />
+                                <field name='loss_of_moisture'/>
                                 <field name='wt_containner' />
                                 <field name='wt_of_dry' />
                                 <field name='moisture_content' />
