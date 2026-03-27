@@ -4,10 +4,10 @@
 		<t t-call="web.html_container">
 			 <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
 				<div class="container_eln" style="padding-top:0;">
-<<<<<<< HEAD
-					<div class="" t-foreach="eln" t-as="o">
 
-					  <table>
+					 <div class="" t-foreach="eln" t-as="o">
+
+					 <table>
 							<tr>	
 								<td colspan="8" rowspan="6">Issued to :<br/>  
 									
@@ -65,8 +65,8 @@
 								</td> -->
 								<td>
 
-								<t t-if="brick.lab_id">
-								 <t t-foreach="brick.lab_id.lab_location_line" t-as="loc">
+								<t t-if="data.lab_id">
+								 <t t-foreach="data.lab_id.lab_location_line" t-as="loc">
 								   <div>
                                      <span t-esc="loc.location_name"/>
                                        <!-- (<span t-esc="loc.location_code"/>) -->
@@ -107,54 +107,42 @@
 									<span t-field="o.material.name"/>
 								</td>
 							</tr>
-							<!-- <tr>
-								<td colspan="12"> Size :
+							<tr>
+								<td colspan="12"> Description Of Sample :
 								</td>
 								<td>
-									<span t-field="o.sample_id.size_id.size"/>
+									<span t-field="data.age_of_days"/>
 								</td>
 								
 							</tr>
 
 							<tr>
-							   <td colspan="12"> Grade :
+							   <td colspan="12"> Type of Sample :
 									</td>
 								<td>
-									<span t-field="o.sample_id.grade_id.grade"/>
+									<span t-field="o.material.name"/>
 								</td>
-							</tr> -->
-							
-						</table>
-					</div> 
-					
-=======
-
-					 <div class="" t-foreach="eln" t-as="o">
->>>>>>> a7112fa70cb435cceaba41942ca48cf793bae5aa
-						<table style="width: 100%; border-collapse: collapse;">
-							<tbody>
-					
-
-							<tr>
-							  <td><strong>DESCRIPTION OF SAMPLE</strong> : <span t-field="data.age_of_days"/> </td>
-							
 							</tr>
 
-							
-		
+						
 
+							<tr>
+							   <td colspan="12"> Date of Completion :
+									</td>
+								<td>
+									<span t-field="o.end_date"/>
+								</td>
+							</tr>
 
-								<tr> 
-								   <td >  <strong>Type of Sample</strong> : <span t-field="o.material.name"/></td>
+							<tr>
+							   <td colspan="12"> Curing Condition :
+									</td>
+								<td>
+									<span t-field="data.curing_condition"/>
+								</td>
+							</tr>
 
-                                
-                               </tr>
-
-								<tr>
-								<td > <strong>Curing Condition:</strong>  <span t-field="data.curing_condition"/></td>
-								</tr>
-								
-								<tr t-if="o.material.source_sample">
+							<tr t-if="o.material.source_sample">
 									<td style="font-weight: bold;">Source of Sample</td>
 									<td><span t-field="o.material.source_sample"/></td>
 								</tr>
@@ -164,57 +152,15 @@
 									<td style="font-weight: bold;">Test method adopted:</td>
 									<td><span t-field="o.material.test_method_adopted"/></td>
 								</tr>
-							</tbody>
+							
 						</table>
+					
+						
 					</div>
 
 
 					
-					<div>
-						<table class="custom_table_borders text-center">
-						<tr>
-							    <!-- <td >Location of testing :</td> -->
-
-							
-								<td>
-
-								Location of testing :
-
-								<t t-if="data.lab_id">
-								 <t t-foreach="data.lab_id.lab_location_line" t-as="loc">
-								   <div>
-                                     <span t-esc="loc.location_name"/>
-                                    
-                                    </div>
-									 </t>
-                                  </t>
-								  </td>
-
-
-
-								 
-
-						
-							</tr>
-
-
-							<tr>
-						    	<td><strong>Date of Testing</strong> : <span t-field="o.start_date"/> </td>
-							</tr>
-							<tr>
-							   <td><strong>Date of Completion</strong> : <span t-field="o.end_date"/></td>
-							</tr>
-
-
-							<tr>
-								<td><strong>Grade of Sample</strong> : <span t-field="o.grade_id.grade"/></td>
-
-							</tr>
-
-
-				
-						</table>
-					</div>  
+					
 
 
 
