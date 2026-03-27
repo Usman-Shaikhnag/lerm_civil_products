@@ -41,7 +41,7 @@ class LermSampleForm(models.Model):
         ('non_satisfactory', 'Non-Satisfactory'),
     ], string='Sample Condition', default='satisfactory')
     technicians = fields.Many2one("res.users",string="Technicians",tracking=5)
-    location = fields.Char(string="Location")
+    location = fields.Integer(string="Location Code")
     sample_reject_reason = fields.Char(string="Sample Reject Reason")
     has_witness = fields.Boolean(string="Witness")
     witness = fields.Char(string="Witness Name")
@@ -102,7 +102,7 @@ class LermSampleForm(models.Model):
 
     print_button_visible = fields.Boolean("Print Nabl visible",compute="_compute_print_nabl_visible")
    
-    lab_location = fields.Many2one('lerm.lab.master',string="Lab Location")
+    lab_location = fields.Many2one('lerm.lab.master',string="Lab Name")
     location_name = fields.Many2one('lerm.lab.location.master',string="Location Name")
 
     file_upload = fields.Many2many(
@@ -135,10 +135,12 @@ class LermSampleForm(models.Model):
         ('1-allotment_pending', 'Assignment Pending'),
         ('7-partially-alloted', 'Partially Alloted'),
         ('2-alloted', 'Alloted'),
+        ('7-calculated', 'In-Test'),
         ('3-pending_verification','Pending Verification'),
         ('5-pending_approval','Pending Approval'),
         ('4-in_report', 'In-Report'),
         ('6-cancelled', 'Cancelled'),
+        
     ], string='State',default='1-allotment_pending')
     conformity = fields.Boolean(string="Conformity")
     parameters_result = fields.One2many('sample.parameters.result','sample_id',string="Parameters Result")
@@ -157,7 +159,6 @@ class LermSampleForm(models.Model):
 
     ])
     other_cancellation_reason = fields.Text("Cancellation Reason")
-
     tested_by_signature_datasheet = fields.Boolean(string="Tested By Signature Datasheet")
     checked_by_signature_datasheet = fields.Boolean(string="Checked By Signature Datasheet")
 
@@ -170,6 +171,7 @@ class LermSampleForm(models.Model):
 
     resampled = fields.Boolean("Resampled")
     report_issued_date = fields.Date("Report Issued Date")
+    lab_id = fields.Char(string="Lab ID")
 
     display_report_portal = fields.Boolean("Display on Portal")
     customer_portal_sample = fields.Many2one('customer.sample.line',string="Customer Portal Sample", readonly=True)

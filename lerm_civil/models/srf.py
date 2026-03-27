@@ -114,7 +114,12 @@ class SrfForm(models.Model):
     srf_id = fields.Char(string="SRF ID",tracking=True)
     kes_number = fields.Char(string="UID",tracking=True)
     # job_no = fields.Char(string="Job NO.")
-    srf_date = fields.Date(string="SRF Date",default=lambda self: self._get_default_date(),tracking=True)
+    # srf_date = fields.Date(string="SRF Date",default=lambda self: self._get_default_date(),tracking=True)
+    srf_date = fields.Date(
+        string="SRF Date",
+        default=fields.Date.context_today,
+        tracking=True
+    )
     job_date = fields.Date(string="JOB Date")
     customer = fields.Many2one('res.partner',string="Customer",tracking=True)
     billing_customer = fields.Many2one('res.partner',string="Billing Customer")
@@ -381,173 +386,556 @@ class SrfForm(models.Model):
 
 
 
-    def confirm_srf(self):
-        srf_ids=[]
+    # def confirm_srf(self):
+    #     srf_ids=[]
         
-        # import wdb; wdb.set_trace()
+    #     # import wdb; wdb.set_trace()
         
-        count = self.env['lerm.srf.sample'].search_count([('srf_id.srf_date','=',self.srf_date),('kes_no','!=','New'),('status','=','2-confirmed')]) 
+    #     count = self.env['lerm.srf.sample'].search_count([('srf_id.srf_date','=',self.srf_date),('kes_no','!=','New'),('status','=','2-confirmed')]) 
 
-        for record in self.sample_range_table:
-            sam_next_number = self.env['ir.sequence'].search([('code','=','lerm.srf.sample')]).number_next_actual
-            kes_next_number = self.env['ir.sequence'].search([('code','=','lerm.srf.sample.kes')]).number_next_actual
+    #     for record in self.sample_range_table:
+    #         sam_next_number = self.env['ir.sequence'].search([('code','=','lerm.srf.sample')]).number_next_actual
+    #         kes_next_number = self.env['ir.sequence'].search([('code','=','lerm.srf.sample.kes')]).number_next_actual
            
-            sample_range = "SAM/"+str(sam_next_number)+"-"+str(sam_next_number+record.sample_qty-1)
-            kes_range = "LERM/"+str(count+1)+"-"+str(count+1+record.sample_qty-1)
-            record.write({'sample_range': sample_range , 'kes_range': kes_range })
-            samples = self.env['lerm.srf.sample'].search([('sample_range_id','=',record.id)])
+    #         sample_range = "SAM/"+str(sam_next_number)+"-"+str(sam_next_number+record.sample_qty-1)
+    #         kes_range = "LERM/"+str(count+1)+"-"+str(count+1+record.sample_qty-1)
+    #         record.write({'sample_range': sample_range , 'kes_range': kes_range })
+    #         samples = self.env['lerm.srf.sample'].search([('sample_range_id','=',record.id)])
             
             
-            for sample in samples:
-                # import wdb; wdb.set_trace()
-                sample_id = self.env['ir.sequence'].next_by_code('lerm.srf.sample') or 'New'
+    #         for sample in samples:
+    #             # import wdb; wdb.set_trace()
+    #             sample_id = self.env['ir.sequence'].next_by_code('lerm.srf.sample') or 'New'
 
-                year = str(self.srf_date.year)[-2:]
-                month = str(self.srf_date.month).zfill(2)
-                day = str(self.srf_date.day).zfill(2)
-                count = count + 1
+    #             year = str(self.srf_date.year)[-2:]
+    #             month = str(self.srf_date.month).zfill(2)
+    #             day = str(self.srf_date.day).zfill(2)
+    #             count = count + 1
 
-                kes_no = "LERM/TR/"+ year+month+day + str(count).zfill(3) or "New"
+    #             kes_no = "LERM/TR/"+ year+month+day + str(count).zfill(3) or "New"
 
-                kes_no_daywise = self.env['ir.sequence'].next_by_code('lerm.sample.daywise.seq') 
-                # kes_no = self.env['ir.sequence'].next_by_code('lerm.srf.sample.kes') + kes_no_daywise or 'New'
-                # lab_l_id =  self.env['lab.location'].search([('id','=',self.env.context['allowed_company_ids'][0])])
-                company =  self.env['res.company'].search([('id','=',self.env.context['allowed_company_ids'][0])])
+    #             kes_no_daywise = self.env['ir.sequence'].next_by_code('lerm.sample.daywise.seq') 
+    #             # kes_no = self.env['ir.sequence'].next_by_code('lerm.srf.sample.kes') + kes_no_daywise or 'New'
+    #             # lab_l_id =  self.env['lab.location'].search([('id','=',self.env.context['allowed_company_ids'][0])])
+    #             company =  self.env['res.company'].search([('id','=',self.env.context['allowed_company_ids'][0])])
                 
-                if sample.scope == 'nabl':
+    #             if sample.scope == 'nabl':
 
-                    if sample.lab_location:
-                        code = sample.lab_location.ulr_sequence.code
-                        seqq = self.env['ir.sequence'].sudo().search([('code', '=', code)], limit=1)
+    #                 if sample.lab_location:
+    #                     code = sample.lab_location.ulr_sequence.code
+    #                     seqq = self.env['ir.sequence'].sudo().search([('code', '=', code)], limit=1)
 
-                        matched_record = None
-                        for date_range in seqq.date_range_ids:
-                            if date_range.date_from <= self.srf_date <= date_range.date_to:
-                                matched_record = date_range
-                                break
+    #                     matched_record = None
+    #                     for date_range in seqq.date_range_ids:
+    #                         if date_range.date_from <= self.srf_date <= date_range.date_to:
+    #                             matched_record = date_range
+    #                             break
 
-                        lab_loc = sample.location_name.location_code or ''
-                        lab_cert_no = sample.lab_location.lab_certificate_no or ''
-                        padding = int(seqq.padding or 5)
-                        suffix = seqq.suffix or ''
+    #                     lab_loc = sample.location_name.location_code or ''
+    #                     lab_cert_no = sample.lab_location.lab_certificate_no or ''
+    #                     padding = int(seqq.padding or 5)
+    #                     suffix = seqq.suffix or ''
 
-                        if matched_record:
-                            next_actual = str(matched_record.number_next_actual)
-                            ulr_no = lab_cert_no + year + lab_loc + next_actual.zfill(padding) + suffix
+    #                     if matched_record:
+    #                         next_actual = str(matched_record.number_next_actual)
+    #                         ulr_no = lab_cert_no + year + lab_loc + next_actual.zfill(padding) + suffix
 
-                            # Increment and save the updated next number
-                            matched_record.sudo().write({
-                                'number_next_actual': matched_record.number_next_actual + 1
-                            })
-                        else:
-                            # Fall back to next_by_code
-                            ulr_no = self.env['ir.sequence'].next_by_code(code) or 'New'
-
-
+    #                         # Increment and save the updated next number
+    #                         matched_record.sudo().write({
+    #                             'number_next_actual': matched_record.number_next_actual + 1
+    #                         })
+    #                     else:
+    #                         # Fall back to next_by_code
+    #                         ulr_no = self.env['ir.sequence'].next_by_code(code) or 'New'
 
 
-                        # code = sample.lab_location.ulr_sequence.code
-                        # ulr_no = self.env['ir.sequence'].next_by_code(code) or 'New'
-                        # lab_loc = sample.location_name.location_code
-                        # lab_cert_no = sample.lab_location.lab_certificate_no
-                        # ulr_no = ulr_no.replace('(lab_certificate_no)', lab_cert_no)                
-                        # ulr_no = ulr_no.replace('(lab_no_value)', lab_loc)
+
+
+    #                     # code = sample.lab_location.ulr_sequence.code
+    #                     # ulr_no = self.env['ir.sequence'].next_by_code(code) or 'New'
+    #                     # lab_loc = sample.location_name.location_code
+    #                     # lab_cert_no = sample.lab_location.lab_certificate_no
+    #                     # ulr_no = ulr_no.replace('(lab_certificate_no)', lab_cert_no)                
+    #                     # ulr_no = ulr_no.replace('(lab_no_value)', lab_loc)
                         
 
 
-                    else:
-                        lab_loc = str(sample.lab_no_value)
-                        lab_cert_no = str(company.lab_certificate_no)
-                        # lab_loc = company.lab_seq_no
-                        ulr_no = self.env['ir.sequence'].next_by_code('sample.ulr.seq') or 'New'
-                        ulr_no = ulr_no.replace('(lab_certificate_no)', lab_cert_no)                
-                        ulr_no = ulr_no.replace('(lab_no_value)', lab_loc)
-                else:
-                    ulr_no = ''
-                # import wdb ; wdb.set_trace()
+    #                 else:
+    #                     lab_loc = str(sample.lab_no_value)
+    #                     lab_cert_no = str(company.lab_certificate_no)
+    #                     # lab_loc = company.lab_seq_no
+    #                     ulr_no = self.env['ir.sequence'].next_by_code('sample.ulr.seq') or 'New'
+    #                     ulr_no = ulr_no.replace('(lab_certificate_no)', lab_cert_no)                
+    #                     ulr_no = ulr_no.replace('(lab_no_value)', lab_loc)
+    #             else:
+    #                 ulr_no = ''
+    #             # import wdb ; wdb.set_trace()
               
-                sample.write({'sample_no':sample_id,'kes_no':kes_no,'status':'2-confirmed','ulr_no':ulr_no})
-                self.env.cr.commit()
+    #             sample.write({'sample_no':sample_id,'kes_no':kes_no,'status':'2-confirmed','ulr_no':ulr_no})
+    #             self.env.cr.commit()
         
     
-        first_sample_range = self.sample_range_table[0].kes_range
-        last_sample_range = self.sample_range_table[-1].kes_range  
-        first_samplerange_slash_index = first_sample_range.find("/")
-        srffirstnumber_str = first_sample_range[first_samplerange_slash_index+1:first_sample_range.find("-")]
-        last_sample_range_index = last_sample_range.find("-")
-        srf_last_number = last_sample_range[last_sample_range_index+1:]
+    #     first_sample_range = self.sample_range_table[0].kes_range
+    #     last_sample_range = self.sample_range_table[-1].kes_range  
+    #     first_samplerange_slash_index = first_sample_range.find("/")
+    #     srffirstnumber_str = first_sample_range[first_samplerange_slash_index+1:first_sample_range.find("-")]
+    #     last_sample_range_index = last_sample_range.find("-")
+    #     srf_last_number = last_sample_range[last_sample_range_index+1:]
 
       
-        modified_srf_id = f"SRF/"+year+month+day+srffirstnumber_str.zfill(3)+"-"+year+month+day+srf_last_number.zfill(3)
-        modified_kes_number = f"LERM/TR/DUS"
-        self.write({'srf_id': modified_srf_id})
-        self.write({'kes_number': modified_kes_number})
-        self.write({'state': '2-confirm'})
+    #     modified_srf_id = f"SRF/"+year+month+day+srffirstnumber_str.zfill(3)+"-"+year+month+day+srf_last_number.zfill(3)
+    #     modified_kes_number = f"LERM/TR/DUS"
+    #     self.write({'srf_id': modified_srf_id})
+    #     self.write({'kes_number': modified_kes_number})
+    #     self.write({'state': '2-confirm'})
         
         
-        attachment_path = self.attachment_path
-        pattern = r'(?<=/)\d+(?=/)'
+    #     attachment_path = self.attachment_path
+    #     pattern = r'(?<=/)\d+(?=/)'
 
-        if attachment_path:
-            if re.search(pattern, attachment_path):
-                # Replace the number with your desired value (e.g., 'XX')
-                old_path = re.sub(pattern, str(self.id) , attachment_path)
-                # import wdb;wdb.set_trace()
-                file_name = old_path.rsplit('/', 1)[1]
+    #     if attachment_path:
+    #         if re.search(pattern, attachment_path):
+    #             # Replace the number with your desired value (e.g., 'XX')
+    #             old_path = re.sub(pattern, str(self.id) , attachment_path)
+    #             # import wdb;wdb.set_trace()
+    #             file_name = old_path.rsplit('/', 1)[1]
                 
-                old_path = old_path.rsplit('/', 1)[0]
+    #             old_path = old_path.rsplit('/', 1)[0]
                 
                 
-                new_path = re.sub(pattern, self.srf_id.replace("/", "").replace("-", ""), attachment_path)
-                # import wdb;wdb.set_trace()
+    #             new_path = re.sub(pattern, self.srf_id.replace("/", "").replace("-", ""), attachment_path)
+    #             # import wdb;wdb.set_trace()
                 
-                new_path = new_path.rsplit('/', 1)[0]
+    #             new_path = new_path.rsplit('/', 1)[0]
 
                 
                 
-                ftp_storage = self.env["ftp.storage"].search([("active","=",True)])
+    #             ftp_storage = self.env["ftp.storage"].search([("active","=",True)])
                 
-                transport = paramiko.Transport((ftp_storage.host, ftp_storage.port or 22))
-                transport.banner_timeout = 60
-                transport.connect(
-                    username=ftp_storage.username,
-                    password=ftp_storage.password
-                )
-                sftp = paramiko.SFTPClient.from_transport(transport)
+    #             transport = paramiko.Transport((ftp_storage.host, ftp_storage.port or 22))
+    #             transport.banner_timeout = 60
+    #             transport.connect(
+    #                 username=ftp_storage.username,
+    #                 password=ftp_storage.password
+    #             )
+    #             sftp = paramiko.SFTPClient.from_transport(transport)
                 
-                # sftp.rename("/home/"+old_path,"/home/"+new_path)
+    #             # sftp.rename("/home/"+old_path,"/home/"+new_path)
                 
 
-                try:
-                    print(f"Source file attributes: {sftp.stat('/home/' + old_path)}")
-                except FileNotFoundError:
-                    print("ERROR: Source file doesn't exist!")
-                    # List directory contents to see what's actually there
-                    dir_path = os.path.dirname('/home/' + old_path)
-                    print(f"Contents of {dir_path}: {sftp.listdir(dir_path)}")
+    #             try:
+    #                 print(f"Source file attributes: {sftp.stat('/home/' + old_path)}")
+    #             except FileNotFoundError:
+    #                 print("ERROR: Source file doesn't exist!")
+    #                 # List directory contents to see what's actually there
+    #                 dir_path = os.path.dirname('/home/' + old_path)
+    #                 print(f"Contents of {dir_path}: {sftp.listdir(dir_path)}")
                 
-                # Perform the rename
-                # import wdb;wdb.set_trace()
+    #             # Perform the rename
+    #             # import wdb;wdb.set_trace()
                 
-                try:
-                    sftp.rename("/home/"+old_path, "/home/"+new_path)
-                    self.write({'attachment_path': new_path+"/"+file_name})
-                except Exception as e:
-                    print(f"Rename failed: {str(e)}")
-                    raise
+    #             try:
+    #                 sftp.rename("/home/"+old_path, "/home/"+new_path)
+    #                 self.write({'attachment_path': new_path+"/"+file_name})
+    #             except Exception as e:
+    #                 print(f"Rename failed: {str(e)}")
+    #                 raise
 
 
 
-                sftp.close()
+    #             sftp.close()
                 
                 
                 
-            else:
-                print("No number found in the middle")
+    #         else:
+    #             print("No number found in the middle")
             
         
         
         # for record in self:
+
+
+    # def confirm_srf(self):
+    #     import re
+    #     import paramiko
+    #     from datetime import datetime
+
+    #     for rec in self:
+
+    #         # -----------------------
+    #         # SRF SEQUENCE
+    #         # -----------------------
+    #         srf_seq = self.env['ir.sequence'].search([
+    #             ('code', '=', 'lerm.srf.main.seq')
+    #         ], limit=1)
+
+    #         srf_first = self.env['ir.sequence'].next_by_code('lerm.srf.main.seq')
+
+    #         # -----------------------
+    #         # SAFE PARSING
+    #         # -----------------------
+    #         parts = srf_first.split('/')
+
+    #         base_prefix = parts[0] if parts else "NERLT"
+    #         full_part = parts[-1] if parts else srf_first
+
+    #         numbers = re.findall(r'\d+', full_part)
+
+    #         if numbers:
+    #             numeric_full = numbers[0]
+    #             first_number = int(numeric_full[-3:])
+    #         else:
+    #             numeric_full = "000000"
+    #             first_number = 1
+
+    #         # -----------------------
+    #         # YEAR (YY)
+    #         # -----------------------
+    #         yy = datetime.now().strftime('%y')
+
+    #         # -----------------------
+    #         # TOTAL RANGE CALCULATION
+    #         # -----------------------
+    #         total_samples = sum(rec.sample_range_table.mapped('sample_qty'))
+    #         last_number = first_number + total_samples - 1
+
+    #         if srf_seq:
+    #             srf_seq.sudo().write({
+    #                 'number_next_actual': last_number + 1
+    #             })
+
+    #         # -----------------------
+    #         # FINAL SRF FORMAT
+    #         # -----------------------
+    #         modified_srf_id = "%s/LAB/%s/%s-%s" % (
+    #             base_prefix,
+    #             yy,
+    #             str(first_number).zfill(6),
+    #             str(last_number).zfill(6)
+    #         )
+
+    #         # -----------------------
+    #         # SAMPLE PROCESS
+    #         # -----------------------
+    #         for range_line in rec.sample_range_table:
+
+    #             sam_seq = self.env['ir.sequence'].search([
+    #                 ('code', '=', 'lerm.srf.sample')
+    #             ], limit=1)
+
+    #             sam_next = sam_seq.number_next_actual
+
+    #             sample_range = "SAM/%s-%s" % (
+    #                 sam_next,
+    #                 sam_next + range_line.sample_qty - 1
+    #             )
+
+    #             sam_seq.sudo().write({
+    #                 'number_next_actual': sam_next + range_line.sample_qty
+    #             })
+
+    #             range_line.write({
+    #                 'sample_range': sample_range,
+    #                 'kes_range': ''
+    #             })
+
+    #             samples = self.env['lerm.srf.sample'].search([
+    #                 ('sample_range_id', '=', range_line.id)
+    #             ])
+
+    #             for sample in samples:
+
+    #                 sample_no = self.env['ir.sequence'].next_by_code('lerm.srf.sample') or 'New'
+    #                 kes_no = self.env['ir.sequence'].next_by_code('lerm.kes.main.seq') or 'New'
+
+    #                 ulr_no = ''
+    #                 if sample.scope == 'nabl':
+
+    #                     seq_val = self.env['ir.sequence'].next_by_code('sample.ulr.seq') or 'New'
+
+    #                     lab = sample.lab_location
+    #                     lab_cert = lab.lab_certificate_no or ''
+    #                     lab_loc = sample.location_name.location_code if sample.location_name else ''
+
+    #                     ulr_no = seq_val.replace('(lab_certificate_no)', lab_cert)\
+    #                                     .replace('(lab_no_value)', lab_loc)
+
+    #                 sample.write({
+    #                     'sample_no': sample_no,
+    #                     'kes_no': kes_no,
+    #                     'status': '2-confirmed',
+    #                     'ulr_no': ulr_no
+    #                 })
+
+    #         # -----------------------
+    #         # FINAL WRITE
+    #         # -----------------------
+    #         rec.write({
+    #             'srf_id': modified_srf_id,
+    #             'kes_number': kes_no,
+    #             'state': '2-confirm'
+    #         })
+
+    #         # -----------------------
+    #         # FTP RENAME (UNCHANGED)
+    #         # -----------------------
+    #         attachment_path = rec.attachment_path
+    #         pattern = r'(?<=/)\d+(?=/)'
+
+    #         if attachment_path and re.search(pattern, attachment_path):
+
+    #             old_path = re.sub(pattern, str(rec.id), attachment_path)
+
+    #             file_name = old_path.rsplit('/', 1)[1]
+    #             old_dir = old_path.rsplit('/', 1)[0]
+
+    #             new_path = re.sub(
+    #                 pattern,
+    #                 rec.srf_id.replace("/", "").replace("-", ""),
+    #                 attachment_path
+    #             )
+
+    #             new_dir = new_path.rsplit('/', 1)[0]
+
+    #             ftp_storage = self.env["ftp.storage"].search([
+    #                 ("active", "=", True)
+    #             ], limit=1)
+
+    #             transport = paramiko.Transport(
+    #                 (ftp_storage.host, ftp_storage.port or 22)
+    #             )
+
+    #             transport.connect(
+    #                 username=ftp_storage.username,
+    #                 password=ftp_storage.password
+    #             )
+
+    #             sftp = paramiko.SFTPClient.from_transport(transport)
+
+    #             try:
+    #                 sftp.rename(
+    #                     "/home/" + old_dir,
+    #                     "/home/" + new_dir
+    #                 )
+
+    #                 rec.write({
+    #                     'attachment_path': new_dir + "/" + file_name
+    #                 })
+
+    #             except Exception as e:
+    #                 raise Exception("FTP Rename Failed: %s" % str(e))
+
+    #             sftp.close()
+
+    def confirm_srf(self):
+        import re
+        import paramiko
+        from datetime import datetime
+
+        for rec in self:
+
+            # =====================================================
+            # SRF SEQUENCE (DATE RANGE BASED)
+            # =====================================================
+            srf_seq = self.env['ir.sequence'].search([
+                ('code', '=', 'lerm.srf.main.seq')
+            ], limit=1)
+
+            srf_first = self.env['ir.sequence'].next_by_code('lerm.srf.main.seq')
+
+            # -----------------------
+            # SAFE PARSING
+            # -----------------------
+            parts = srf_first.split('/')
+
+            base_prefix = parts[0] if parts else "NERLT"
+            full_part = parts[-1] if parts else srf_first
+
+            numbers = re.findall(r'\d+', full_part)
+
+            if numbers:
+                numeric_full = numbers[0]
+                first_number = int(numeric_full[-3:])
+            else:
+                numeric_full = "000000"
+                first_number = 1
+
+            # -----------------------
+            # YEAR
+            # -----------------------
+            yy = datetime.now().strftime('%y')
+
+            # -----------------------
+            # TOTAL RANGE
+            # -----------------------
+            total_samples = sum(rec.sample_range_table.mapped('sample_qty'))
+            last_number = first_number + total_samples - 1
+
+            # -----------------------
+            # UPDATE DATE RANGE (SRF)
+            # -----------------------
+            if srf_seq and srf_seq.use_date_range:
+
+                today = datetime.now().date()
+
+                date_range = self.env['ir.sequence.date_range'].search([
+                    ('sequence_id', '=', srf_seq.id),
+                    ('date_from', '<=', today),
+                    ('date_to', '>=', today)
+                ], limit=1)
+
+                if date_range:
+                    date_range.sudo().write({
+                        'number_next_actual': last_number + 1
+                    })
+
+            # -----------------------
+            # FINAL SRF FORMAT
+            # -----------------------
+            modified_srf_id = "%s/LAB/%s/%s-%s" % (
+                base_prefix,
+                yy,
+                str(first_number).zfill(6),
+                str(last_number).zfill(6)
+            )
+
+            # =====================================================
+            # SAMPLE PROCESS
+            # =====================================================
+            for range_line in rec.sample_range_table:
+
+                sam_seq = self.env['ir.sequence'].search([
+                    ('code', '=', 'lerm.srf.sample')
+                ], limit=1)
+
+                sam_next = sam_seq.number_next_actual
+
+                sample_range = "SAM/%s-%s" % (
+                    sam_next,
+                    sam_next + range_line.sample_qty - 1
+                )
+
+                sam_seq.sudo().write({
+                    'number_next_actual': sam_next + range_line.sample_qty
+                })
+
+                range_line.write({
+                    'sample_range': sample_range,
+                    'kes_range': ''
+                })
+
+                # =====================================================
+                # SAMPLE RECORDS
+                # =====================================================
+                samples = self.env['lerm.srf.sample'].search([
+                    ('sample_range_id', '=', range_line.id)
+                ])
+
+                for sample in samples:
+
+                    sample_no = self.env['ir.sequence'].next_by_code('lerm.srf.sample') or 'New'
+                    kes_no = self.env['ir.sequence'].next_by_code('lerm.kes.main.seq') or 'New'
+
+                    # -----------------------
+                    # ULR
+                    # -----------------------
+                    ulr_no = ''
+                    if sample.scope == 'nabl':
+
+                        seq_val = self.env['ir.sequence'].next_by_code('sample.ulr.seq') or 'New'
+
+                        lab = sample.lab_location
+                        lab_cert = lab.lab_certificate_no or ''
+                        lab_loc = sample.location_name.location_code if sample.location_name else ''
+
+                        ulr_no = seq_val.replace('(lab_certificate_no)', lab_cert)\
+                                        .replace('(lab_no_value)', lab_loc)
+
+                    sample.write({
+                        'sample_no': sample_no,
+                        'kes_no': kes_no,
+                        'status': '2-confirmed',
+                        'ulr_no': ulr_no
+                    })
+
+            # =====================================================
+            # FINAL WRITE
+            # =====================================================
+            rec.write({
+                'srf_id': modified_srf_id,
+                'kes_number': kes_no,
+                'state': '2-confirm'
+            })
+
+            # =====================================================
+            # FTP RENAME (UNCHANGED)
+            # =====================================================
+            attachment_path = rec.attachment_path
+            pattern = r'(?<=/)\d+(?=/)'
+
+            if attachment_path and re.search(pattern, attachment_path):
+
+                old_path = re.sub(pattern, str(rec.id), attachment_path)
+
+                file_name = old_path.rsplit('/', 1)[1]
+                old_dir = old_path.rsplit('/', 1)[0]
+
+                new_path = re.sub(
+                    pattern,
+                    rec.srf_id.replace("/", "").replace("-", ""),
+                    attachment_path
+                )
+
+                new_dir = new_path.rsplit('/', 1)[0]
+
+                ftp_storage = self.env["ftp.storage"].search([
+                    ("active", "=", True)
+                ], limit=1)
+
+                if ftp_storage:
+
+                    transport = paramiko.Transport(
+                        (ftp_storage.host, ftp_storage.port or 22)
+                    )
+
+                    transport.connect(
+                        username=ftp_storage.username,
+                        password=ftp_storage.password
+                    )
+
+                    sftp = paramiko.SFTPClient.from_transport(transport)
+
+                    try:
+                        sftp.rename(
+                            "/home/" + old_dir,
+                            "/home/" + new_dir
+                        )
+
+                        rec.write({
+                            'attachment_path': new_dir + "/" + file_name
+                        })
+
+                    except Exception as e:
+                        raise Exception("FTP Rename Failed: %s" % str(e))
+
+                    finally:
+                        sftp.close()
+                        transport.close()
+    
+    
+    
+
+   
+
+    
+    
+
+        
+    
+
+
+
+   
 
     # name_of_work = fields.Many2one('res.partner.project',string='Name of Work')
 
@@ -754,7 +1142,7 @@ class CreateSampleWizard(models.TransientModel):
         ('satisfactory', 'Satisfactory'),
         ('non_satisfactory', 'Non-Satisfactory'),
     ], string='Sample Condition', default='satisfactory')
-    location = fields.Char(string="Location")
+    location = fields.Char(string="Location Code")
     sample_reject_reason = fields.Char(string="Sample Reject Reason")
     has_witness = fields.Boolean(string="Witness")
     witness = fields.Char(string="Witness name")
@@ -794,7 +1182,7 @@ class CreateSampleWizard(models.TransientModel):
     is_update = fields.Boolean('Is Update')
 
     department_id = fields.Char(string='Department')
-    lab_location = fields.Many2one('lerm.lab.master',string="Lab Location",default=lambda self: self._get_oldest_lab())
+    lab_location = fields.Many2one('lerm.lab.master',string="Lab Name",default=lambda self: self._get_oldest_lab())
     location_name = fields.Many2one('lerm.lab.location.master',string="Location Name")
     customer = fields.Many2one('res.partner', string="Customer")
 
@@ -819,6 +1207,22 @@ class CreateSampleWizard(models.TransientModel):
         for record in self:
             if record.lab_location and len(record.lab_location.lab_location_line) > 0:
                 record.location_name = record.lab_location.lab_location_line[0]
+
+    # @api.onchange('lab_location')
+    # def _default_location(self):
+    #     for record in self:
+    #         if record.lab_location and len(record.lab_location.lab_location_line) > 0:
+    #             record.location = record.lab_location.lab_location_line[0]
+
+    @api.onchange('lab_location')
+    def _default_location(self):
+        for record in self:
+            location_code = False
+            if record.lab_location and record.lab_location.lab_location_line:
+                location_line = record.lab_location.lab_location_line[0]
+                location_code = location_line.location_code
+
+            record.location = location_code
 
 
     @api.depends('material_id')
@@ -1285,10 +1689,30 @@ class CreateSampleWizard(models.TransientModel):
         technicians = fields.Many2one("res.users", string="Technician")
 
         # used in Parameter mode (final technician set to be stored in ELN)
-        technician_ids = fields.Many2many('res.users',string='Technicians',store=True,)
+        technician_ids = fields.Many2many('res.users',string='Technicians',store=True)
+
+        allowed_technician_domain_ids = fields.Many2many(
+            'res.users',
+            compute='_compute_allowed_technician_domain_ids',
+            store=False
+        )
 
         sample_id = fields.Many2one('lerm.srf.sample', string='Sample')   # optional
         line_ids = fields.One2many('sample.allot.line', 'wizard_id', string='Parameters')
+
+        @api.depends('sample_id', 'sample_id.lab_location')
+        def _compute_allowed_technician_domain_ids(self):
+            for wizard in self:
+                if wizard.sample_id and wizard.sample_id.lab_location:
+                    lab = wizard.sample_id.lab_location
+                    employees = self.env['hr.employee'].sudo().search([
+                        ('lab_ids', 'in', [lab.id])
+                    ])
+                    employee_user_ids = employees.mapped('user_id').ids
+                    wizard.allowed_technician_domain_ids = [(6, 0, employee_user_ids)]
+                else:
+                    wizard.allowed_technician_domain_ids = [(5,)]
+
 
         @api.model
         def default_get(self, fields):

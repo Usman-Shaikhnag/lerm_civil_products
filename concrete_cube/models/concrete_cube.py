@@ -13,6 +13,7 @@ class MechanicalConcreteCube(models.Model):
     _description = 'mechanical.concrete.cube'
     _rec_name = "name"
 
+    lab_id = fields.Many2one('lerm.lab.master',default=lambda self: self.env['lerm.lab.master'].search([], limit=1))
     name = fields.Char("Name",default="Compressive Strength of Concrete Cube")
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
@@ -24,9 +25,31 @@ class MechanicalConcreteCube(models.Model):
 
 
 
+#     curing_condition = fields.Char(
+#     string="Curing Condition",
+#     required=True
+# )
+
+
+
+
+    curing_condition = fields.Char(string="Curing Condition")
+
+    # @api.constrains('curing_condition')
+    # def _check_curing_condition(self):
+    #     pattern = r'^\d+(\.\d+)?°C\s±\s\d+(\.\d+)?°$'
+    #     for rec in self:
+    #         if rec.curing_condition:
+    #             if not re.match(pattern, rec.curing_condition):
+    #                 raise ValidationError(
+    #                     "Format must be like: 27°C ±2°"
+    #                 )
+
+
+
     def action_calculate_avg_strength(self):
         for rec in self:
-            lines = rec.child_lines.sorted(key=lambda l: l.sr_no)  # sr_no ने sort करायचं
+            lines = rec.child_lines.sorted(key=lambda l: l.sr_no) 
             group_size = 3
 
             for i in range(0, len(lines), group_size):
@@ -46,7 +69,7 @@ class MechanicalConcreteCube(models.Model):
 
     def prefill_data(self):
         wizard_action = self.env.ref('concrete_cube.action_cube_prefill_data_wizard')
-        # import wdb; wdb.set_trace()
+     
         return {
             'name': 'Prefill Data',
             'type': 'ir.actions.act_window',
@@ -86,6 +109,7 @@ class MechanicalConcreteCube(models.Model):
                     record.area_of_cube = 0
             else:
                 record.area_of_cube = 0
+
 
 
 
@@ -293,15 +317,27 @@ class MechanicalConcreteCube(models.Model):
                 record.age_of_days = None
 
     def open_eln_page(self):
-        # import wdb; wdb.set_trace()
-        for result in self.eln_ref.parameters_result:
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+            # import wdb;wdb.set_trace()
+            # Elongation
             if result.parameter.internal_id == '23545tur-17c1-48ac-8462-9671e4d3d09f':
-                result.result_char = round(self.average_strength,2)
-                if self.nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
+                result.calculated = True
+            
+            # if result.parameter.internal_id == '9effe915-e5a3-45a7-aaeb-10caababd667':
+            #     result.result_char = round(self.aggregate_elongation,2)
+            #     result.calculated = True
+            #     if self.aggregate_combine_conformity == 'pass':
+            #         result.nabl_status = 'nabl'
+            #     else:
+            #         result.nabl_status = 'non-nabl'
+            #     continue
 
         return {
                 'view_mode': 'form',
@@ -435,15 +471,59 @@ class MechanicalConcreteCubeLine(models.Model):
 
     avg_compressive_strength = fields.Float(string="Avg. Compressive Strength (N/mm2)")
 
-    # @api.depends('parent_id', 'parent_id.child_lines.compressive_strength')
-    # def _compute_avg_strength(self):
-    #     for rec in self:
-    #         if rec.parent_id and rec.parent_id.child_lines:
-    #             strengths = rec.parent_id.child_lines.mapped('compressive_strength')
-    #             values = [s for s in strengths if s > 0]
-    #             rec.avg_compressive_strength = sum(values) / len(values) if values else 0.0
-    #         else:
-    #             rec.avg_compressive_strength = 0.0
+
+
+   
+
+
+    length = fields.Float(string="L (mm)", compute="_compute_l_b", store=True)
+    breadth = fields.Float(string="B (mm)", compute="_compute_l_b", store=True)
+    x_symbol = fields.Char(default="X")
+   
+
+    @api.depends('parent_id.size_id.size')
+    def _compute_l_b(self):
+     import re
+     for rec in self:
+        size_str = rec.parent_id.size_id.size
+        if size_str:
+            numbers = re.findall(r'\d+', str(size_str))
+            if len(numbers) >= 2:
+                rec.length = float(numbers[0])
+                rec.breadth = float(numbers[1])
+            else:
+                rec.length = 0
+                rec.breadth = 0
+        else:
+            rec.length = 0
+            rec.breadth = 0
+
+
+
+    area_of_cube = fields.Float(string="Area of Cube",compute="_compute_area_cube",store=True)
+
+    @api.depends('parent_id.size_id.size')
+    def _compute_area_cube(self):
+        import re
+        for record in self:
+            size_str = record.parent_id.size_id.size
+            if size_str:
+                match = re.search(r'\d+', str(size_str))
+                if match:
+                    side = int(match.group())
+                    record.area_of_cube = side * side  # or whatever formula
+                else:
+                    record.area_of_cube = 0
+            else:
+                record.area_of_cube = 0
+
+
+
+
+
+
+
+    
 
     @api.depends('load', 'parent_id.area_of_cube')
     def _compute_strength(self):

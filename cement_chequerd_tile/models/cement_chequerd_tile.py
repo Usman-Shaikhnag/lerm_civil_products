@@ -24,6 +24,12 @@ class ChequeredCementTile(models.Model):
 
      # Dimension
 
+    dimension_name = fields.Char(default="Dimension")
+    dimension_visible = fields.Boolean(compute="_compute_visible")
+    length = fields.Float('Length')
+    thickness = fields.Float('Thickness')
+    width = fields.Float('Width')
+
     chequered_tiles_cement_cement_name1 = fields.Char("Name",default=" Chequered Tiles")
     chequered_tiles_cement_visible = fields.Boolean("Chequered Visible",compute="_compute_visible")   
 
@@ -398,6 +404,7 @@ class ChequeredCementTile(models.Model):
             record.chequered_tiles_cement_visible = False
             record.chequered_cement_water_absorption_visible = False
             record.chequeredwet_cement_transver_visible = False
+            record.dimension_visible = False
             
             
             for sample in record.sample_parameters:
@@ -413,6 +420,9 @@ class ChequeredCementTile(models.Model):
                 if sample.internal_id == "2658piy-34eb-4442-bccb-3b13f9d05ea2":
                     record.chequeredwet_cement_transver_visible = True
 
+                if sample.internal_id == "30214hy-34eb-4442-bccb-3b13f9d541hng":
+                    record.dimension_visible = True
+
                
 
 
@@ -420,7 +430,40 @@ class ChequeredCementTile(models.Model):
 
 
     def open_eln_page(self):
-        # import wdb; wdb.set_trace()
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+            # import wdb;wdb.set_trace()
+
+            
+            # Chequered Tiles 
+            if result.parameter.internal_id == '12578dfgr-a3df-4990-93d1-9904984644a3':
+                result.calculated = True
+
+            # Water Absorption
+            if result.parameter.internal_id == '258opk1-5406-4010-a81f-88e591d4197e':
+                result.result_char = round(self.average_water_cement_absorption,2)
+                result.calculated = True
+                if self.average_water_cement_absorption_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # WET TRANSVERSE STRENGTH TEST
+            if result.parameter.internal_id == '2658piy-34eb-4442-bccb-3b13f9d05ea2':
+                result.result_char = round(self.average_cement_wet_transver,2)
+                result.calculated = True
+                if self.average_cement_wet_transver_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
 
         return {
                 'view_mode': 'form',

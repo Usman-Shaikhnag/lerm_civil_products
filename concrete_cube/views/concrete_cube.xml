@@ -18,6 +18,7 @@
                              <field name="size_id" readonly="1"/>
                         </group>
 
+
                         <div class="custom_table_borders" style="margin-top: 15px;">
                             <field name="sample_parameters" nolabel="1">
                                 <tree>
@@ -119,14 +120,51 @@
                         </table>
                     </div>
 
+
+                    <div>
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="curing_condition">curing Condition</label></td>
+                                    <td><field name="curing_condition"/></td>
+                                   
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    
+
                     <field name="child_lines" nolabel="1" class="custom_table_borders">
                         <tree editable="bottom">
                             <field name='sr_no' string="Sr. NO"/>
                             <field name='id_mark'  class="blue-input" decoration-info="id_mark != 0"/>
                             <field name='wt_sample'  widget="char" class="blue-input" decoration-info="wt_sample != 0"/>
-                            <field name='dt_of_casting' widget="date" options="{'format': 'dd-MM-yy'}" readonly="1"/>
+                            <!-- <field name='dt_of_casting' widget="date" options="{'format': 'dd-MM-yy'}" readonly="1"/> -->
                             <field name='days'/>
-                            <field name='dt_of_testing1'  widget="date" options="{'format': 'dd-MM-yy'}" readonly="1"/>
+
+
+
+
+                            <field name='length'  widget="char" class="blue-input" decoration-info="wt_sample != 0"/>
+                             <field name='x_symbol'  widget="char" />
+                            <field name='breadth'  widget="char" class="blue-input" decoration-info="wt_sample != 0"/>
+                            <field name='area_of_cube'/>
+
+
+
+
+                             
+                     
+
+
+
+
+      
+       
+                            <!-- <field name='dt_of_testing1'  widget="date" options="{'format': 'dd-MM-yy'}" readonly="1"/> -->
                             <field name="load"  widget="char" class="blue-input" decoration-info="load != 0"/>
                             <field name='compressive_strength'/>
                             <field name='avg_compressive_strength'/>

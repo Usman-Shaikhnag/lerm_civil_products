@@ -24,12 +24,8 @@ class RoutinePileLoadTest(models.Model):
     name = fields.Char("Project Name", required=True)
     rec_date = fields.Date("Report Date")
     work_name = fields.Char("Name of Work")
-    client = fields.Many2one("res.partner", string="Client")
-    contractor = fields.Many2one(
-        "lerm.contractor.line",
-        string="Contractor",
-        domain="[('partner_id', '=', client)]"
-    )
+    contractor = fields.Char("Contractor")
+    client = fields.Char("Client")
 
     ulr = fields.Char("ULR No", copy=False, readonly=True)
     report_no = fields.Char("Report No", copy=False, readonly=True)
@@ -348,6 +344,7 @@ class RoutinePileLoadTest(models.Model):
             for line in rec.unloading_reading_ids:
                 line._compute_mean()
                 line._compute_split_dt()
+
             rec._compute_settlement_values()
             rec._compute_max_settlement()
 
@@ -390,13 +387,14 @@ class RoutinePileLoadTest(models.Model):
         store=False,
         copy=False
     )
-
+    
     @api.depends('loading_reading_ids.reading_datetime')
     def _compute_last_reading_datetime(self):
         for rec in self:
             dates = rec.loading_reading_ids.mapped('reading_datetime')
             dates = [d for d in dates if d]
             rec.last_reading_datetime = max(dates) if dates else False
+
 
 
     def action_delete_line(self):
