@@ -876,50 +876,74 @@ class BitumenConcrete(models.Model):
     #         }
 
     def open_eln_page(self):
-    # import wdb; wdb.set_trace()
-        for result in self.eln_ref.parameters_result:
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+
             if result.parameter.internal_id == '32578999-7188-4086-b132-62b50e63f1247ui':
+                result.calculated = True
                 result.result_char = round(self.binder_content,2)
                 if self.binder_content_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
             if result.parameter.internal_id == '5487698-4587-4086-b132-62b50e63f1247ui':
+                result.calculated = True
                 result.result_char = round(self.avg_sp_bitumen,2)
                 if self.avg_sp_bitumen_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
             if result.parameter.internal_id == '012457hy-4587-4086-b132-62b50e63f124772':
+                result.calculated = True
                 result.result_char = round(self.mean_flash,2)
                 if self.mean_flash_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
             if result.parameter.internal_id == '98547ytrg-4587-4086-b132-62b50e63f124714':
+                result.calculated = True
                 result.result_char = round(self.mean_fire,2)
                 if self.mean_fire_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
             if result.parameter.internal_id == '3587914-4587-4086-b132-62b50e63f124772':
+                result.calculated = True
                 result.result_char = round(self.avg_temp,2)
                 if self.avg_temp_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
             if result.parameter.internal_id == '68574nht-4587-4086-b132-62b50e63f12474h':
+                result.calculated = True
                 result.result_char = round(self.avg_penetration,2)
                 if self.avg_temp_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+            if result.parameter.internal_id == '6587412-4587-4086-b132-62b50e63f124778':
+                result.calculated = True
+
+            if result.parameter.internal_id == '234587hjy-7188-4086-b132-62b50e63f1247ui':
+                result.calculated = True
           
         return {
                 'view_mode': 'form',
