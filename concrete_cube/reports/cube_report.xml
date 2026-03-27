@@ -5,6 +5,127 @@
 			 <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
 				<div class="container_eln" style="padding-top:0;">
 					<div class="" t-foreach="eln" t-as="o">
+
+					  <table>
+							<tr>	
+								<td colspan="8" rowspan="6">Issued to :<br/>  
+									
+									<span t-field="o.srf_id.customer.name"/><br/>
+									<span t-field="o.srf_id.customer.street"/>
+									<span t-field="o.srf_id.customer.street2"/>
+									<span t-field="o.srf_id.customer.city"/>
+									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
+									<span t-field="o.srf_id.customer.state_id"/>
+											,
+									<span t-field="o.srf_id.customer.country_id"/>
+								
+								</td>
+								<td colspan="5">Sample Receipt Date :</td>
+
+								<td colspan="5"><span t-field="o.sample_id.sample_received_date"/></td>
+							</tr>
+
+							<tr>
+							    <td colspan="5">Date of testing :</td>
+
+								<td colspan="5"><span t-field="o.start_date"/></td>
+							</tr>
+
+							<tr>
+								<td colspan="5"> Size :
+								</td>
+								<td>
+									<span t-field="o.sample_id.size_id.size"/>
+								</td>
+								
+							</tr>
+
+							<tr>
+							   <td colspan="5"> Grade :
+									</td>
+								<td>
+									<span t-field="o.sample_id.grade_id.grade"/>
+								</td>
+							</tr>
+
+							<tr>
+							    <td colspan="5">Lab Id :</td>
+
+								<td colspan="5">
+								<!-- <span t-field="o.sample_id.sample_received_date"/> -->
+								</td>
+							</tr>
+
+							<tr>
+							    <td colspan="5">Tested at :</td>
+
+								<!-- <td colspan="5">
+								<span t-field="o.sample_id.sample_received_date"/>
+								</td> -->
+								<td>
+
+								<t t-if="brick.lab_id">
+								 <t t-foreach="brick.lab_id.lab_location_line" t-as="loc">
+								   <div>
+                                     <span t-esc="loc.location_name"/>
+                                       <!-- (<span t-esc="loc.location_code"/>) -->
+                                    </div>
+									 </t>
+                                  </t>
+								  </td>
+
+						
+							</tr>
+						</table>
+						
+						<table style="margin-top:10px;">
+							<tr>
+								<td colspan="12"> Contractor Name :	
+									</td>
+								<td>
+									<span t-field="o.srf_id.customer.name"/><br/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="12"> Sample Description: </td>
+								<td>
+									<span t-field="o.sample_id.sample_description"/>
+								</td>
+							</tr>
+							<tr>
+							
+								<td colspan="12"> Project Name : </td>
+								<td>
+									<span t-field="o.srf_id.name_work"/>
+								</td>
+							</tr>
+							<tr>
+							
+								<td colspan="12"> Name of Work/Subject : </td>
+								<td>
+									<span t-field="o.material.name"/>
+								</td>
+							</tr>
+							<!-- <tr>
+								<td colspan="12"> Size :
+								</td>
+								<td>
+									<span t-field="o.sample_id.size_id.size"/>
+								</td>
+								
+							</tr>
+
+							<tr>
+							   <td colspan="12"> Grade :
+									</td>
+								<td>
+									<span t-field="o.sample_id.grade_id.grade"/>
+								</td>
+							</tr> -->
+							
+						</table>
+					</div> 
+					
 						<table style="width: 100%; border-collapse: collapse;">
 							<tbody>
 								<tr>
