@@ -9,26 +9,18 @@
             <p class="o_view_nocontent_smiling_face">Test Method</p>
         </field> -->
     </record>
-    <!-- <menuitem id="srf_form" groups="kes_hod_access_group,kes_admin_access_group,lerm_civil.kes_access_srf" name="SRF" parent="lerm_transaction_data" action="srf_form_id" sequence="10" /> -->
-    <menuitem id="srf_form" 
-        name="SRF" 
-        groups="lerm_civil.kes_access_srf,lerm_civil.kes_quality_manager,lerm_civil.kes_verified_by,lerm_civil.kes_hod_access_group,lerm_civil.kes_confirm_srf,lerm_civil.kes_report" 
-        parent="lerm_transaction_data" 
-        action="srf_form_id" 
-        sequence="10"/>
+    
 
-   <record id="lerm_civil_srf_form" model="ir.ui.view">
+    <record id="lerm_civil_srf_form" model="ir.ui.view">
         <field name="name">lerm.civil.srf.form</field>
         <field name="model">lerm.civil.srf</field>
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="confirm_srf" type="object" string="Confirm"
-                        groups="lerm_civil.kes_verified_by,lerm_civil.kes_confirm_srf"
+                    <button name="confirm_srf" groups="lerm_civil.lerm_access_confirm_srf" class="oe_highlight" type="object" string="Confirm"
                         invisible="state in ('2-confirm')"/>
 
-                    <button name="open_edit_srf_header_wizard" type="object" string="Edit SRF"
-                        groups="lerm_civil.srf_sample_editable"/>
+                    <button name="open_edit_srf_header_wizard" groups="lerm_civil.lerm_access_update_srf" class="oe_highlight" type="object" string="Edit SRF" />
 
                     <button name="action_srf_sent_mail" type="object" string="Send Mail"/>
 
@@ -52,8 +44,7 @@
                             <field name="srf_id" readonly="1"/>
                             <field name="srf_date" readonly="state == '2-confirm' and date_editable == False"/>
                             <field name="kes_number" invisible='1'/>
-                            <field name="customer" readonly="state == '2-confirm'"
-                                groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
+                            <field name="customer" readonly="state == '2-confirm'" />
                             <field name="contact_person" domain="[('id', 'in', contact_site_ids)]"
                                 readonly="state == '2-confirm'"/>
                             <field name="site_address"/>
@@ -64,20 +55,13 @@
 
                         <group style="width:50%">
                             <field name="name_work" domain="[('id', 'in', name_works)]"  readonly="state == '2-confirm'"/>
-                            <field name="client" readonly="state == '2-confirm'"
-                                   groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
-                            <field name="contractor" domain="[('id', 'in', contractor_ids)]"
-                                   groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
+                            <field name="client" readonly="state == '2-confirm'"/>
+                            <field name="contractor" domain="[('id', 'in', contractor_ids)]"/>
                             <field name="contractor_ids" invisible='1'/>
                             <field name="contact_other_ids" invisible='1'/>
-                            <field name="billing_customer" readonly="state == '2-confirm'"
-                                groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
+                            <field name="billing_customer" readonly="state == '2-confirm'"/>
                             <field name="name_works" invisible='1'/>
                             <field name="consultant_name1"/>
-
-                            <!-- <field name="attachment_path" readonly="1"/>
-                            <button name="open_file_upload" type="object" string="Upload Attachment" />
-                            <button name="download_attachment" type="object" string="Download Attachment"/> -->
                         </group>
                         
                     </group>
@@ -89,14 +73,14 @@
                     </group>
 
                     <div class="oe_button_box d-flex gap-2">
-                        <button name="open_new_sample_add_wizard" string="New Sample" type="object" class="btn btn-primary mr-2" invisible="state in ('2-confirm')"/>
-                        <button name="open_sample_add_wizard" string="Repeat Sample" type="object" class="btn btn-primary" invisible="state in ('2-confirm')"/>
+                        <button name="open_new_sample_add_wizard" groups="lerm_civil.lerm_access_create_srf" string="New Sample" type="object" class="btn btn-primary mr-2" invisible="state in ('2-confirm')"/>
+                        <button name="open_sample_add_wizard" groups="lerm_civil.lerm_access_create_srf" string="Repeat Sample" type="object" class="btn btn-primary" invisible="state in ('2-confirm')"/>
                     </div>
 
                     <field name="samples"
                                         readonly="1"
                                         context="{'default_customer_id': customer, 'is_local': True}"
-                                        groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf">
+                                        >
                         <tree>
                             <field name="kes_no" string="Sample No."/>
                             <field name="material_id"/>
@@ -109,10 +93,8 @@
                             <field name="sample_received_date"/>
                             <field name="sample_description"/>
                             <field name="quantity"/>
-                            <button name="edit_sample" string="Edit" type="object" class="btn-primary"
-                                groups="lerm_civil.srf_sample_editable"/>
-                            <button name="reallocate_sample" string="Reallocate" type="object" class="btn-primary"
-                                groups="lerm_civil.kes_job_allocation,lerm_civil.kes_hod_access_group,lerm_civil.kes_verified_by,lerm_civil.kes_quality_manager"/>
+                            <button name="edit_sample" groups="lerm_civil.lerm_access_update_srf" string="Edit" type="object" class="btn-primary"/>
+                            <button name="reallocate_sample" string="Reallocate" type="object" groups="lerm_civil.lerm_job_allocation" class="btn-primary"/>
                         </tree>
                     </field>
                 </sheet>
@@ -122,6 +104,7 @@
                     <field name="message_ids" widget="mail_thread"/>
                     <field name="activity_ids" widget="mail_activity"/>
                 </div>
+                
             </form>
         </field>
     </record>
@@ -253,7 +236,7 @@
                     <table class="table table-sm">
                         <thead>
                             <tr>
-                                <th>Sample Quantity</th>
+                                <th>Sample UOM</th>
                                 <th>Received</th>
                                 <th>Consumed</th>
                                 <th>Balance</th>
@@ -278,7 +261,6 @@
                     <group style="width:50%">
                         <field name="customer_id" invisible='1'/>
                         <field name="available_parameter_ids" invisible='1'/>
-
                     </group>
 
                     <group style="width:100%">

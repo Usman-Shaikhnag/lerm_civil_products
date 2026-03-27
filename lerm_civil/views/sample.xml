@@ -15,8 +15,8 @@
                             type="object"
                             name="open_sample_allotment_wizard"
                             string="Allotment"
-                            groups="lerm_civil.kes_job_allocation,lerm_civil.kes_hod_access_group,lerm_civil.kes_verified_by,lerm_civil.kes_quality_manager"
-                            invisible="state not in ('1-allotment_pending')"/>
+                            groups="lerm_civil.lerm_job_allocation"
+                            invisible="state not in ('1-allotment_pending','7-partially-alloted')"/>
 
                         <button type="object" name="print_datasheet" string="Print Datasheet"/>
 
@@ -32,19 +32,16 @@
                             string="Print Non-NABL Report"
                             invisible="state not in ('4-in_report')"/>
 
-                        <button type="object" class="oe_highlight" name="approve_sample" string="Approve"
-                            groups="lerm_civil.kes_checked_by,lerm_civil.kes_hod_access_group"
+                        <button type="object" class="oe_highlight" groups="lerm_civil.lerm_sample_verification" name="approve_sample" string="Approve"
                             invisible="state not in ('3-pending_verification')"/>
 
-                        <button type="object" class="oe_highlight" name="approve_pending_sample" string="Approve"
-                            groups="lerm_civil.kes_hod_access_group"
+                        <button type="object" class="oe_highlight" groups="lerm_civil.lerm_sample_approval" name="approve_pending_sample" string="Approve"
                             invisible="state not in ('5-pending_approval')"/>
 
-                        <button type="object" name="reject_sample" string="Reject"
+                        <button type="object" name="reject_sample" groups="lerm_civil.lerm_sample_verification" string="Reject"
                             invisible="state not in ('3-pending_verification', '5-pending_approval')"/>
 
-                        <button type="object" name="reallocate_sample" string="Reallocate"
-                            groups="lerm_civil.kes_hod_access_group,lerm_civil.kes_admin_access_group,lerm_civil.kes_verified_by"
+                        <button type="object" name="reallocate_sample" groups="lerm_civil.lerm_job_allocation" string="Reallocate"
                             invisible="state in ('1-allotment_pending')"/>
 
                         <button type="object" name="cancel_sample" string="Cancel Sample"
@@ -89,36 +86,45 @@
                                 <field name="sample_received_date" readonly="state != '1-allotment_pending'"/>
                                 <field name="location" readonly="state != '1-allotment_pending'"/>
                                 <field name="lab_location"/>
-                                <field name="invoice_status" invisible="state not in ('4-in_report')"/>
+                                <field name="invoice_status" readonly="1" invisible="state not in ('4-in_report')"/>
+                                <field name="invoice_number" readonly="1"/>
+                                <field name='tested_by_signature_datasheet'/>
+                                <field name='checked_by_signature_datasheet'/>
                                 <!-- <field name="file_upload" widget="many2many_binary" />
                                 <field name="report_upload" widget="many2many_binary" /> -->
+                                <!-- <field name="datasheet_path" readonly="1" />
+                                <button name="open_file_upload_datasheet" type="object" string="Upload" class="btn-primary" />
+                                <button name="download_attachment_datasheet" type="object" string="Download" class="btn-primary" />
 
-                                
-                                <!-- <field name="datasheet_path" />
-                                <button name="open_file_upload_datasheet" type="object" string="Upload Datasheet" />
-                                <button name="download_attachment_datasheet" type="object" string="Download Datasheet" /> -->
-
-
-                                <!-- 
                                 <field name="report_path"  readonly="1"/>
-                                <button name="open_file_upload_report" type="object" string="Upload Report" />
-                                <button name="download_attachment_report" type="object" string="Download Report" /> 
-                                -->
+                                <button name="open_file_upload_report" type="object" string="Upload" class="btn-primary" />
+                                <button name="download_attachment_report" type="object" string="Download" class="btn-primary" /> -->
 
 
                                 <field name='casting_date' invisible="casting != True" readonly="state != '1-allotment_pending'"/>
                                 <field name="days_casting" invisible="casting != True" readonly="state != '1-allotment_pending'" />
                                 <field name="date_casting" invisible="casting != True" readonly="state != '1-allotment_pending'"/>
-                                <field name='tested_by_signature_datasheet'/>
-                                <field name='checked_by_signature_datasheet'/>
-
                                 <field name="testedby_signature_required" invisible="state not in ('4-in_report')"/>
                                 <field name="checkby_signature_required" invisible="state not in ('4-in_report')"/>
                                 <field name="approveby_signature_required" invisible="state not in ('4-in_report')"/>
-                                <field name="page_break" />
-                                    
-                                
                                 <field name="received_by_id" readonly="state != '1-allotment_pending'"/>
+                                <field name="page_break" />
+                                <field name="display_report_portal"/>
+                                <!-- <div class="o_row">
+                                    <span>Tested By:</span>
+                                    <field name="filled_by" readonly="1" class="oe_inline"/>
+                                    <field name="testedby_signature_required" invisible="state not in ('4-in_report')" class="oe_inline"/>
+                                </div>
+                                <div class="o_row">
+                                    <span>Checked By:</span>
+                                    <field name="check_by" readonly="1" class="oe_inline"/>
+                                    <field name="checkby_signature_required" invisible="state not in ('4-in_report')" class="oe_inline"/>
+                                </div>
+                                <div class="o_row">
+                                    <span>Approved By:</span>
+                                    <field name="approved_by" readonly="1" class="oe_inline"/>
+                                    <field name="approveby_signature_required" invisible="state not in ('4-in_report')" class="oe_inline"/>
+                                </div> -->
                             </group>
                             <group>
                                 <field name="lab_no_value" optional="show" invisible="1"/>
@@ -141,13 +147,34 @@
                            
                         </group>
                         
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Sample UOM</th>
+                                    <th>Received</th>
+                                    <th>Consumed</th>
+                                    <th>Discarded</th>
+                                    <th>Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><field name="uom_id" readonly="1"/></td>
+                                    <td><field name="quantity_received" readonly="1"/></td>
+                                    <td><field name="quantity_consumed" readonly="1"/></td>
+                                    <td><field name="quantity_discarded" readonly="1"/></td>
+                                    <td><field name="quantity_balance" readonly="1"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
                         
                         
                             <!-- <field name="invoice_number" invisible="state != '4-in_report' and invoice_status != '2-invoiced'"/> -->
 
                         <button name="open_form" type="object" class="btn btn-primary" string="Open Form" invisible="product_or_form_based == False"/>
             
-                        <field invisible="1" name="parameters" nolabel="1" options="{'no_create': True, 'no_open': True}" />
+                        <field name="parameters" nolabel="1" options="{'no_create': True, 'no_open': True}" />
                         <field name="parameters_result" nolabel="1" invisible="product_or_form_based == True">
                             <tree editable="bottom" >
                                 <field name="parameter"/>
@@ -316,25 +343,45 @@
     </record>
 
     <record id="srf_sample_allotment_wizard" model="ir.ui.view">
-        <field name="name">sample.allotment.wizard</field>
+        <field name="name">sample.allotment.wizard.form</field>
         <field name="model">sample.allotment.wizard</field>
         <field name="arch" type="xml">
-            <form>
+            <form string="Allot Sample">
                 <sheet>
-                    <group style="width:100%">
-                        <field name='technicians'/>
-                        <!-- <field name="message_ids" widget="mail_thread"/>
-                        <field name="activity_ids" widget="mail_activity"/> -->
+                    <group>
+                        <field name="allocation_type" widget="radio"/>
                     </group>
+
+                    <group invisible="allocation_type != 'sample'">
+                        <field name="sample_id" invisible="1"/>
+                        <field name="technicians" domain="[('id', 'in', allowed_technician_domain_ids)]"/>
+                        <field name="allowed_technician_domain_ids" invisible="1"/>
+                    </group>
+
+                    <group invisible="allocation_type != 'parameter'">
+                        <field name="technician_ids" widget="many2many_tags"/>
+                        <field name="line_ids">
+                            <tree editable="bottom">
+                                <field name="parameter_id"/>
+                                <field name="is_locked" invisible="1"/>
+                                <field name="allowed_technician_ids" invisible="1"/>
+                                <field name="technician"
+                                        readonly="is_locked"
+                                        domain="[('id', 'in', parent.allowed_technician_domain_ids)]"
+                                        options="{'no_create': True, 'no_open': True}"/>
+                            </tree>
+                            </field>
+                    </group>
+
                     <footer>
                         <button name="allot_sample" string="Allot Sample" type="object" class="btn-primary"/>
                         <button name="close_allotment_wizard" string="Close" type="object"/>
-                        <button name="schedule_activity" string="Schedule Activity" type="object" class="oe_highlight"/>
                     </footer>
                 </sheet>
             </form>
         </field>
     </record>
+
 
 
     <record id="srf_sample_allotment_wizard_action" model="ir.actions.act_window">

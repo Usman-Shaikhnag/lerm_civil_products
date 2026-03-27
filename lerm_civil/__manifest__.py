@@ -10,6 +10,7 @@
     'data/sequence.xml',
     # 'data/module_category_data.xml',
     'views/enviroment_register.xml',
+    'views/sample_register.xml',
     'views/lerm.xml',
     'views/groups.xml',
     'views/res_company.xml',
@@ -26,8 +27,12 @@
     'views/employee.xml',
     'views/product_grade_wizard.xml',
     'views/reallocation_wizard.xml',
-    'views/ftp_upload_wizard_views.xml',
-
+    'views/portal/lerm_portal.xml',
+    'views/customer_sample_requests.xml',
+    'views/partner_document.xml',
+    'views/overview.xml',
+    # 'views/ftp_upload_wizard_views.xml',
+    # 'views/ftp_upload_wizard_views.xml',
     # 'views/mechanical/sieve_analysis.xml',
     'reports/eln_report_action.xml',
     'reports/eln_report_template.xml',
@@ -51,15 +56,18 @@
     # 'security/ir.model.access.csv',
     ],
     'assets': {
-    'web.assets_backend':[
-        'lerm_civil/static/src/css/custom_styles.css',
-    ],
-    'web.report_assets_common': [
-            '/lerm_civil/static/src/css/eln_report.scss',
-            '/lerm_civil/static/src/css/data_sheet_styles.scss',
-
+        'web.assets_backend': [
+            'lerm_civil/static/src/css/custom_styles.css',
+            'lerm_civil/static/src/js/disable_right_click.js',
         ],
-    'web.assets_qweb': [
-    ],
-        }
+        'web.assets_frontend': [
+            'lerm_civil/static/src/js/disable_right_click.js',
+        ],
+        'web.report_assets_common': [
+            'lerm_civil/static/src/css/eln_report.scss',
+            'lerm_civil/static/src/css/data_sheet_styles.scss',
+        ],
+        'web.assets_qweb': [
+        ],
+    }
 }

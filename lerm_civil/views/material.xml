@@ -11,6 +11,12 @@
     <field name="arch" type="xml">
       
       <!-- Inline Fields in Options -->
+      <xpath expr="//div[@name='button_box']" position="inside">
+            <button class="oe_stat_button" type="object" name="action_open_product_reports" icon="fa-file-text-o">
+                <field string="Reports" name="product_reports_count" widget="statinfo"/>
+            </button>
+      </xpath>
+
       <xpath expr="//div[@name='options']" position="inside">
         <span class="d-inline-block">
           <field name="is_sample"/>
@@ -151,20 +157,35 @@
   </record>
 
 
+  <record id="product_template_tree_inherited" model="ir.ui.view">
+    <field name="name">product.template.lerm.tree.inherit</field>
+    <field name="model">product.template</field>
+    <field name="inherit_id" ref="product.product_template_tree_view"/>
+    <field name="arch" type="xml">
+      <xpath expr="//tree/field[@name='name']" position="after">
+        <field name="lab_name" optional="show"/>
+        <field name="discipline" optional="show"/>
+        <field name="group" widget="many2many_tags" optional="show"/>
+      </xpath>
+        
+    </field>
+    </record>
+
   <record id="lerm_product_template_tree_inherited" model="ir.ui.view">
             <field name="name">product.template.lerm.tree.inherit</field>
             <field name="model">product.product</field>
             <field name="inherit_id" ref="product.product_product_tree_view"/>
             <field name="arch" type="xml">
-              
+                <!-- <field name="name" position="after">
+                    <field name="lab_name" readonly="1"/>
+                    
+                </field> -->
               <xpath expr="//tree/field[@name='name']" position="after">
                 <field name="lab_name" readonly="1"/>
               </xpath>
                 
             </field>
     </record>
-
-    
 
 
     

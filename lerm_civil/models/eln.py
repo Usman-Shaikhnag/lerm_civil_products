@@ -26,6 +26,7 @@ class ELN(models.Model):
 
     srf_id = fields.Many2one('lerm.civil.srf',string="SRF ID")
     technician = fields.Many2one('res.users',string="Technicians",tracking=5)
+    technician_ids = fields.Many2many('res.users',string='Technicians',tracking=5,store=True,)
     sample_id = fields.Many2one('lerm.srf.sample',string='UID',tracking=True,ondelete="cascade")
     srf_date = fields.Date(string='SRF Date',tracking=True)
     kes_no = fields.Char(string="UID",tracking=True)
@@ -39,6 +40,10 @@ class ELN(models.Model):
     material = fields.Many2one('product.template',string='Material')
     witness_name = fields.Char(string="Witness Name")
     witness_description = fields.Char(string="Witness Description")
+    
+    # witness_path = fields.Char(string="Witness")
+    # attachment_path = fields.Char(string="Attachment")
+    
     witness_photo = fields.Binary(string="Witness Photo")
     witness_photo_name = fields.Char(string="Witness Photo Name")
     casting_date = fields.Date(string="Casting Date",compute="_compute_casting_date")
@@ -59,6 +64,7 @@ class ELN(models.Model):
 
     update_result = fields.Integer("Update Result")
     state = fields.Selection([
+        ('5-alloted', 'Alloted'),
         ('1-draft', 'In-Test'),
         ('2-confirm', 'In-Check'),
         ('3-approved','Approved'),
@@ -80,7 +86,19 @@ class ELN(models.Model):
     temperature = fields.Float("Temperature")
     instrument = fields.Many2one('maintenance.equipment',string="Instrument")
     sop = fields.Html(string='SOP',compute="comput_sop")
+    casting = fields.Boolean(string="Casting",compute="_casting_required")
     date_testing = fields.Date("Date of Testing",compute="_compute_date_testing")
+    days_casting = fields.Selection([
+        ('1', '1 Days'),
+        ('3', '3 Days'),
+        ('7', '7 Days'),
+        ('14', '14 Days'),
+        ('21', '21 Days'),
+        ('28', '28 Days'),
+        ('45', '45 Days'),
+        ('56', '56 Days'),
+        ('112', '112 Days'),
+    ], string='Days of casting')
     # data_sheet = fields.Binary(string="Data Sheet", attachment=True)
 
     # file_upload = fields.Many2many(
@@ -101,16 +119,28 @@ class ELN(models.Model):
     
     active = fields.Boolean(string="Active",default=True)
     tested_by_signature_datasheet = fields.Boolean(string="Tested By Signature")
-
     
-   
-   
+    quantity = fields.Integer(string="Quantity")
+    uom_id = fields.Many2one('uom.uom', string="Unit of Measure")  # kg, mm, etc.
+    quantity_received = fields.Integer(string="Quantiyty Received")
+    quantity_consumed = fields.Integer(string="Quantity Consumed")
+    quantity_balance = fields.Integer(string="Quantity Balance", compute="compute_quantity_balance", readonly=True)
+
+    @api.depends('quantity_received', 'quantity_consumed')
+    def compute_quantity_balance(self):
+        for rec in self:
+            rec.quantity_balance = rec.quantity_received - rec.quantity_consumed
 
     # report_upload = fields.Many2many(
     #     'ir.attachment',
     #     string='Report Upload',
     #     help='Attach multiple images to the sample',
     # )
+
+    @api.depends('sample_id')
+    def _casting_required(self):
+        for record in self:
+            record.casting = record.sample_id.casting
 
 
     @api.depends('sample_id')
@@ -178,7 +208,9 @@ class ELN(models.Model):
             try:
                 if record.material:
                     record.grade_ids = self.env['product.template'].search([('id','=', record.material.id)]).grade_table
-            except:
+                else:
+                    record.grade_ids = False
+            except Exception as e:
                 record.grade_ids = False
 
 
@@ -188,8 +220,11 @@ class ELN(models.Model):
             try:
                 if record.material:
                     record.size_ids = self.env['product.template'].search([('id','=', record.material.id)]).size_table
-            except:
+                else:
+                    record.size_ids = False
+            except Exception as e:
                 record.size_ids = False
+
 
     @api.onchange('witness')
     def update_witness_name(self):
@@ -234,20 +269,26 @@ class ELN(models.Model):
 
 
     def open_product_based_form(self):
+        for record in self:
+            # Sample ला target कर
+            if record.sample_id:
+                record.sample_id.state = '7-calculated'
+                
         model_record = self.material.product_based_calculation.filtered(lambda r: r.grade.id == self.grade_id.id)
         model = model_record.ir_model.model
 
-        print("material ",self.material.product_based_calculation)
-        print("model ",model)
+        # print("material ",self.material.product_based_calculation)
+        # print("model ",model)
 
+        # import wdb; wdb.set_trace()
         if self.model_id != 0:
-            # import wdb; wdb.set_trace()
             return {
                 'view_mode': 'form',
                 'res_model': model,
                 'type': 'ir.actions.act_window',
                 'target': 'current',
                 'res_id': self.model_id,
+                'domain': [('parameters_result.technician', '=', self.env.uid)],
                 'context': {
                     'default_srf_id':self.srf_id.id,
                     'default_sample_id': self.sample_id.id,
@@ -361,72 +402,9 @@ class ELN(models.Model):
             record.write({'result':result})
             print(result) 
 
-
-
-    # def confirm_eln(self):
-    #     self.sample_id.write({'state':'3-pending_verification'})
-    #     # import wdb;wdb.set_trace();
-    #     self.sample_id.parameters_result.unlink()
-    #     self.end_date = datetime.now().date()
-    #     if self.srf_date:
-    #         if self.start_date < self.srf_date:
-    #             raise ValidationError("Start Date cannot be less than SRF Date")
-
-    #     for result in self.parameters_result:
-    #         if not result.calculated:
-    #             raise ValidationError("Not all parameters are calculated. Please ensure all parameters are calculated before proceeding.")
-
-    #     for result in self.parameters_result:
-    #         self.env["sample.parameters.result"].create({
-    #             'sample_id':self.sample_id.id,
-    #             'parameter': result.parameter.id,
-    #             'result': result.result,
-    #             'unit':result.unit.id,
-    #             'specification':result.specification,
-    #             'test_method':result.test_method.id
-    #         })
-    #     self.write({'state': '2-confirm'})
-            
-    # def confirm_eln(self):
-    #     self.sample_id.write({'state':'3-pending_verification'})
-    #     # import wdb;wdb.set_trace();
-    #     self.sample_id.parameters_result.unlink()
-        
-    #     # Fetch start_date and set it as end_date
-    #     start_date = self.start_date
-    #     # Ensure end_date is not the current date
-    #     desired_end_date = start_date if start_date != datetime.now().date() else start_date + timedelta(days=1)
-
-    #     self.end_date = desired_end_date
-        
-    #     if self.srf_date:
-    #         if self.start_date < self.srf_date:
-    #             raise ValidationError("Start Date cannot be less than SRF Date")
-
-    #     for result in self.parameters_result:
-    #         if not result.calculated:
-    #             raise ValidationError("Not all parameters are calculated. Please ensure all parameters are calculated before proceeding.")
-
-    #     for result in self.parameters_result:
-    #         self.env["sample.parameters.result"].create({
-    #             'sample_id':self.sample_id.id,
-    #             'parameter': result.parameter.id,
-    #             'result': result.result,
-    #             'unit':result.unit.id,
-    #             'specification':result.specification,
-    #             'test_method':result.test_method.id
-    #         })
-    #     self.write({'state': '2-confirm'})
     def confirm_eln(self):
-
-        # if not self.data_sheet:
-        #     raise ValidationError("Please attach a data sheet before confirming ELN.")
-
+  
         
-            
-        sample_id = self.sample_id.sudo()
-        sample_id.write({'state':'3-pending_verification'})
-        sample_id.parameters_result.unlink()
             
         start_date = self.start_date
         
@@ -434,15 +412,9 @@ class ELN(models.Model):
         if self.end_date and self.end_date < start_date:
             raise ValidationError("End Date cannot be before Start Date")
         # import wdb;wdb.set_trace()
-        
-        # if len(self.file_upload) > 0:
-        #     self.sample_id.sudo().file_upload = self.file_upload
-        # else:
-        #     raise ValidationError("Please attach datasheet before submitting")
-        
-        # If end_date is not provided, set it to the next day after start_date
+       
         if not self.end_date:
-            self.end_date = start_date + timedelta(days=1)
+            self.end_date = start_date 
         else:
             # If end_date is provided, check if it's before start_date
             if self.end_date < start_date:
@@ -452,19 +424,33 @@ class ELN(models.Model):
             if self.start_date < self.srf_date:
                 raise ValidationError("Start Date cannot be less than SRF Date")
 
+        # import wdb;wdb.set_trace()
         for result in self.parameters_result:
-            result.sudo().write({
-                'calculated':True
-            })
-
-        # for result in self.parameters_result:
-        #     if not result.calculated:
-        #         raise ValidationError("Not all parameters are calculated. Please ensure all parameters are calculated before proceeding.")
-        self.tested_by_signature_datasheet = True
+            if not result.calculated:
+                raise ValidationError("Not all parameters are calculated. Please ensure all parameters are calculated before proceeding.")
+        #     result.sudo().write({
+        #         'calculated':True
+        #     })
+        
         sample_id = self.sample_id.sudo()
         sample_id.write({
-            'tested_by_signature_datasheet':True
+            'state':'3-pending_verification',
+            'quantity':self.quantity,
+            'uom_id':self.uom_id.id,
+            'quantity_received':self.quantity_received,
+            'quantity_consumed':self.quantity_consumed,
+            'quantity_balance':self.quantity_balance
             })
+        sample_register = self.env['lerm.sample.register'].sudo().search([('sample','=',self.sample_id.id)])
+        sample_register.write({
+            'quantity':self.quantity,
+            'uom_id':self.uom_id.id,
+            'quantity_received':self.quantity_received,
+            'quantity_consumed':self.quantity_consumed,
+            'quantity_balance':self.quantity_balance
+        })
+        sample_id.parameters_result.unlink()
+        
         for result in self.parameters_result:
             self.env["sample.parameters.result"].sudo().create({
                 'sample_id':self.sample_id.id,
@@ -472,19 +458,23 @@ class ELN(models.Model):
                 'result': result.result,
                 'unit':result.unit.id,
                 'specification':result.specification,
-                'test_method':result.test_method.id,
-                # 'tested_by_signature_datasheet':True
+                'test_method':result.test_method.id
             })
         self.write({'state': '2-confirm'})
 
 
     def reupdate_result(self):
         sample = self.sample_id.sudo()
-        # sample = self.sample_id
-        # import wdb;wdb.set_trace()
-        # print(sample)
+        
         self.sample_id.sudo().file_upload = self.file_upload
         sample.parameters_result.sudo().unlink()
+        # sample.write({
+        #     'quantity':self.quantity,
+        #     'uom_id':self.uom_id.id,
+        #     'quantity_received':self.quantity_received,
+        #     'quantity_consumed':self.quantity_consumed,
+        #     'quantity_balance':self.quantity_balance
+        #     })
         for result in self.parameters_result:
             sample.parameters_result.sudo().create({
                 'sample_id':self.sample_id.id,
@@ -494,17 +484,7 @@ class ELN(models.Model):
                 'specification':result.specification,
                 'test_method':result.test_method.id 
             })
-        # for result in self.parameters_result:
-        #     self.env["sample.parameters.result"].create({
-        #         'sample_id':self.sample_id.id,
-        #         'parameter': result.parameter.id,
-        #         'result': result.result,
-        #         'unit':result.unit.id,
-        #         'specification':result.specification,
-        #         'test_method':result.test_method.id
-        #     })
         
-
 
     
 
@@ -721,6 +701,7 @@ class ParameteResultCalculationWizard(models.TransientModel):
     # result_char = fields.Char(string="Result")
 
     eln_state = fields.Selection([
+        ('5-alloted', 'Alloted'),
         ('1-draft', 'In-Test'),
         ('2-confirm', 'In-Check'),
         ('3-approved','Approved'),
@@ -953,7 +934,7 @@ class ELNParametersResult(models.Model):
     test_method = fields.Many2one('lerm_civil.test_method',string="Specification")
     specification_permissible_limit = fields.Text(string="Specification",compute='_compute_specification')
     specification = fields.Text(string="Test Method", compute='_compute_specification')
-
+    technician = fields.Many2one('res.users', string='Technician', index=True, ondelete='set null')
 
     nabl_status = fields.Selection([
         ('nabl', 'NABL'),
