@@ -727,6 +727,9 @@ class SrfForm(models.Model):
 
     #             sftp.close()
 
+
+    # New
+
     def confirm_srf(self):
         import re
         import paramiko
@@ -921,6 +924,8 @@ class SrfForm(models.Model):
                     finally:
                         sftp.close()
                         transport.close()
+
+        # ADD
     
     
     
