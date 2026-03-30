@@ -12,7 +12,7 @@
                     name="confirm_eln"
                     string="Confirm"
                     invisible="state not in ('1-draft', '4-rejected')"/>
-                <field readonly="1" name="state" widget="statusbar" statusbar_visible="1-draft,2-confirm,3-approved"/>
+                <field readonly="1" name="state" widget="statusbar" statusbar_visible="1-draft,,5-alloted,2-confirm,3-approved"/>
                 <button type="object" name="print_report" string="Print Report"/>
                 <button type="object" name="reupdate_result" string="Update Results"/>
                 <button type="object" name="print_datasheet" string="Print Datasheet"/>
@@ -36,8 +36,8 @@
                         <field name='remarks'/>
                         <field name='conformity' readonly="1"/>
                         <field name='has_witness'/>
-                        <field name='is_product_based_calculation' invisible="1"/>
-                        <!--<field name='file_upload' widget="many2many_binary"/> -->
+                        <field name='is_product_based_calculation'/>
+                        <field name='file_upload' invisible="1" widget="many2many_binary"/>
                         <field name='invisible_fetch_inputs' invisible="1"/>
                         <field name='size_ids' invisible="1"/>
                     </group>
@@ -49,20 +49,52 @@
                         <field name='witness_name'/>
                         <field name='grade_id' domain="[('id', 'in', grade_ids)]"/>
                         <field name='end_date'/>
-                        <!-- <field name="witness_photo" filename='witness_photo_name'/>
-                        <field name='witness_photo_name' invisible="1"/>
-                        <field name='attachment' filename='attachment_name'/>
-                        <field name='attachment_name' invisible="1"/> -->
+
+                        <!-- <label string="Witness" for="witness_path" /> -->
+                     
+                        <!-- <field name="witness_path" readonly="1"/>
+                        <button name="open_witness_photo_upload" type="object" string="Upload" class="btn-primary"/>
+                        <button name="download_witness_photo" type="object" string="Download" class="btn-primary"/> -->
+
+
+                        <!-- <field name='witness_photo_name' invisible="1"/> -->
+                        <!-- <field name='attachment' filename='attachment_name'/> -->
+
+                        <!-- <field name='attachment_name' invisible="1"/> -->
                         <field name='casting' invisible="1"/>
-                        <field name="casting_date" invisible="casting == False"/>
-                        <field name="date_testing" invisible="casting == False"/>
-                        <field name="days_casting" readonly="1" invisible="casting == False"/>
+
+                        <field name='casting_date' readonly="1" invisible="casting == False"/>
+                        <field name='days_casting' readonly="1" invisible="casting == False"/>
+                        <field name='date_testing' readonly="1" invisible="casting == False"/>
                         <field name='instrument'/>
                         <field name='tested_by_signature_datasheet'/>
                         <field name='grade_ids' invisible="1"/>
                         <field name='ir_model' invisible="1"/>
                     </group>
                 </group>
+                <group>
+                    <!-- <field name="volume"/> -->
+                    <field name="quantity"/>
+                </group>
+
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Sample Quantity</th>
+                            <th>Received</th>
+                            <th>Consumed</th>
+                            <th>Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><field name="uom_id" readonly="1"/></td>
+                            <td><field name="quantity_received" readonly="1"/></td>
+                            <td><field name="quantity_consumed"/></td>
+                            <td><field name="quantity_balance" readonly="1"/></td>
+                        </tr>
+                    </tbody>
+                </table>
 
                 <button string="Open Form" name="open_product_based_form" class="oe_highlight" type="object"
                             invisible="is_product_based_calculation == False"/>
@@ -92,11 +124,12 @@
                     <tree editable="bottom">
                         <field name="sequence" string="Sequence" widget="handle"/>
                         <field name="parameter"/>
-                        <field name="result_type" optional="show"/>
+                        <field name="technician"/>
+                        <field name="result_type" optional="show" readonly="1"/>
                         <field name="result_char" optional="show" readonly="result_type == 'number'"/>
                         <field name="result" optional="show" readonly="1" column_invisible="parent.is_product_based_calculation == True"/>
                         <field name="calculation_type" optional="show" column_invisible="parent.is_product_based_calculation == True"/>
-                        <field name="calculated" optional="show"/>
+                        <field name="calculated" optional="show" readonly="1"/>
                         <field name="unit" optional="show" column_invisible="parent.is_product_based_calculation == True"/>
                         <field name="test_method" optional="show" string="Parameter Test Method" column_invisible="parent.is_product_based_calculation == True"/>
                         <field name="specification_permissible_limit" optional="show" column_invisible="parent.is_product_based_calculation == True"/>
@@ -113,10 +146,10 @@
 
                 <field name="sop"/>
 
-                <group style="width:100%">
+                <group style="width:100%" invisible="1">
                     <field name="parameters_input" nolabel="1" invisible="is_product_based_calculation == True">
                         <tree editable="bottom" delete="1">
-                            <field name="parameter_result"/>
+                            <field name="parameter_result" />
                             <field name="is_parameter_dependent"/>
                             <field name="identifier" invisible="1"/>
                             <field name="inputs"/>
@@ -127,7 +160,7 @@
                 </group>
             </sheet>
 
-            <div class="oe_chatter">
+            <div class="oe_chatter" >
                 <field name="message_follower_ids" widget="mail_followers"/>
                 <field name="message_ids" widget="mail_thread"/>
                 <field name="activity_ids" widget="mail_activity"/>
@@ -184,8 +217,9 @@
                     <!-- <field name='eln_id' optional="show"/> -->
                     <field name='eln_id' optional="show"/>
                     <field name='srf_id' optional="show"/>
-                    <field name='sample_id' optional="show"/>
+                    <!-- <field name='sample_id' optional="show"/> -->
                     <field name='technician' optional="show"/>
+                    <field name="activity_ids" widget="list_activity" optional="show"/>
                     <field name='srf_date' optional="show"/>
                     <field name='kes_no' optional="show"/>
                     <field name='discipline' optional="show"/>
@@ -258,6 +292,7 @@
                     <field name="group" string="Group" />
                     <field name="material" string="Material" />
                     <field name="state" string="State" />
+                    <filter string="Alloted" name="state_in_alloted" domain="[('state', '=', '5-alloted')]" />
                     <filter string="In-Test" name="state_in_test" domain="[('state', '=', '1-draft')]" />
                     <filter string="In-Check" name="state_in_check" domain="[('state', '=', '2-confirm')]" />
                     <filter string="Approved" name="state_approved" domain="[('state', '=', '3-approved')]" />
@@ -301,7 +336,7 @@
                         <tree editable="bottom">
                             <field name="wizard_id" invisible="1"/>
                             <field name="inputs_id" invisible="1"/>
-                            <field name="parameter_result"/>
+                            <field name="parameter_result" />
                             <field name="is_parameter_dependent"/>
                             <field name="identifier"/>
                             <field name="inputs"/>

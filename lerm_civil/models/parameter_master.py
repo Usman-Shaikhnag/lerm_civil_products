@@ -32,6 +32,9 @@ class ParameterMaster(models.Model):
     fetch_by_grade = fields.Boolean("Fetch by Grade", default=True)
     fetch_by_size = fields.Boolean("Fetch by Size", default=True)
 
+    instrument = fields.Many2one('maintenance.equipment',string="Instrument")
+    allowed_technicians = fields.Many2many('res.users','lerm_parameter_technician_rel','parameter_id', 'user_id',string="Allowed Technicians",)
+
 
     def name_get(self):
         res = []

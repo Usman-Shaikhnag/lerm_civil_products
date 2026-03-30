@@ -73,7 +73,7 @@
     </record>
 
     <record id="test_method_action" model="ir.actions.act_window">
-        <field name="name">TestMethod</field>
+        <field name="name">Test Method</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">lerm_civil.test_method</field>
         <field name="view_mode">tree,kanban,form</field>
@@ -134,6 +134,24 @@
             <p class="o_view_nocontent_smiling_face">Alotted Sample</p>
         </field>
     </record>
+
+    <record id="test_sample_calculated_action" model="ir.actions.act_window">
+        <field name="name">Sample In-Test</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">lerm.srf.sample</field>
+        <field name="view_mode">tree,kanban,form</field>
+
+        <!-- Correct state -->
+        <field name="domain">[
+            ('state','=','7-calculated')
+        ]</field>
+
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face"> Sample</p>
+        </field>
+    </record>
+
+
     <record id="sample_pending_verification_action" model="ir.actions.act_window">
         <field name="name">Sample Verification Pending</field>
         <field name="type">ir.actions.act_window</field>
@@ -235,6 +253,57 @@
             <!-- <field name="view_id" ref="print_reports_wizard"/> -->
             <field name="target">new</field>
     </record>
+
+    <record id="action_sample_register" model="ir.actions.act_window">
+        <field name="name">Sample Register</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">lerm.sample.register</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Sample Register</p>
+        </field>
+    </record>
+
+    <record id="customer_sample_request_action" model="ir.actions.act_window">
+        <field name="name">Customer Sample Requests</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">customer.sample.requests</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Customer Sample Requests</p>
+        </field>
+    </record>
+
+    <record id="lerm_portal_master_action" model="ir.actions.act_window">
+        <field name="name">Portal User Master</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">portal.user.master</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Portal User Master</p>
+        </field>
+    </record>
+
+    <record id="action_partner_document" model="ir.actions.act_window">
+      <field name="name">Share Documents</field>
+      <field name="res_model">partner.document</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+    
+    <record id="srf_form_id" model="ir.actions.act_window">
+        <field name="name">SRF</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">lerm.civil.srf</field>
+        <field name="view_mode">tree,kanban,form,graph</field>
+    </record>
+    
+
+    <!-- <menuitem id="menu_partner_document_root"
+            name="Share Documents"
+            parent="documents.menu_root"
+            sequence="20"
+            action="action_partner_document"/> -->
+    
     
     <menuitem id="lerm_root"
         name="LERM CIVIL"
@@ -246,13 +315,23 @@
         sequence="10" 
         web_icon="lerm_civil,static/description/icon.png"/> -->
 
+    <menuitem id="register_menu"
+        name="Register"
+        parent="lerm_root"
+        sequence="50"  />
   
 
     <menuitem id="enviroment_register_menu"
         name="Environment Register"
-        parent="lerm_root"
+        parent="register_menu"
         action="action_enviroment_register_tree"
-        sequence="20"  />
+        sequence="10"  />
+    
+    <menuitem id="sample_register_menu"
+        name="Sample Register"
+        parent="register_menu"
+        action="action_sample_register"
+        sequence="11"  />
 
     
 
@@ -273,6 +352,7 @@
     <menuitem id="lerm_product_item_param_master"
         parent="lerm_menu"
         name="Product Master"
+        groups="lerm_civil.lerm_access_product_master"
         action="lerm_product_action"
         sequence="11" />
     
@@ -292,8 +372,15 @@
     <menuitem id="lab_master"
         name="Lab Master"
         parent="lerm_menu"
+        groups="lerm_civil.lerm_access_lab_master"
         action="lab_master_action"
         sequence="14" />
+
+    <menuitem id="lerm_portal_user_master"
+        parent="lerm_menu"
+        name="Portal User Master"
+        action="lerm_portal_master_action"
+        sequence="15" />
 
     <menuitem id="lerm_test_method"
         name="Test Method"
@@ -311,9 +398,17 @@
         parent="lerm_root"
         sequence="10" /> -->
 
+    <menuitem id="srf_form" 
+        name="SRF" 
+        parent="lerm_transaction_data" 
+        groups="lerm_civil.lerm_access_create_srf,lerm_civil.lerm_access_confirm_srf,lerm_civil.lerm_access_update_srf,lerm_civil.kes_srf_backdate_creation_group,lerm_civil.lerm_access_delete_srf"
+        action="srf_form_id" 
+        sequence="10"/>
+
     <menuitem id="lerm_sample"
         name="Sample"
         parent="lerm_transaction_data"
+        groups="lerm_civil.lerm_sample_approval,lerm_civil.lerm_sample_verification,lerm_civil.lerm_access_update_sample,lerm_civil.lerm_access_delete_sample"
         action="test_sample_action"
         sequence="15" />
 
@@ -324,11 +419,20 @@
         sequence="17" />
 
     <menuitem id="lerm_eln"
-        name="Laboratory Notebook"
+        name="Lab Notebook"
         parent="lerm_transaction_data"
+        groups="lerm_civil.kes_technician_access_group"
         action="test_eln_action"
         sequence="16" />
-    
+
+
+    <menuitem id="customer_sample_request"
+        name="Customer Sample Request"
+        parent="lerm_transaction_data"
+        action="customer_sample_request_action"
+        sequence="20" />
+
+
     <menuitem id="sample_status"
         name="Operational Status"
         parent="lerm_root"
@@ -346,24 +450,32 @@
         action="test_sample_pending_allotted_action"
         sequence="21" />
 
+    <menuitem id="sample_status_calculated"
+        name="In-Test"
+        parent="sample_status"
+        action="test_sample_calculated_action"
+        sequence="22" />
+
     <menuitem id="sample_status_pending_verification"
         name="Pending Verification"
         parent="sample_status"
+        groups="lerm_civil.lerm_sample_verification"
         action="sample_pending_verification_action"
-        sequence="22" />
+        sequence="23" />
     
     <menuitem id="sample_status_pending_approval"
         name="Pending Approval"
         parent="sample_status"
+        groups="lerm_civil.lerm_sample_approval"
         action="sample_pending_approval_action"
-        sequence="23" />
+        sequence="24" />
 
 
     <menuitem id="sample_status_in_report"
         name="In-Report"
         parent="sample_status"
         action="test_sample_pending_in_report_action"
-        sequence="24" />
+        sequence="25" />
 
    
 
@@ -396,8 +508,6 @@
         action="lerm_sample_print_reports_action"
         groups="lerm_civil.kes_admin_access_group"
         sequence="11" />
-    
 
-   
 
 </odoo>

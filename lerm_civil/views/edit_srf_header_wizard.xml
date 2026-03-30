@@ -19,7 +19,7 @@
                     <group style="width:50%">
                         <field name="customer" options="{'no_create': True}"/>
                         <field name="client" />
-                        <field name="contractor" options="{'no_create': True}" domain="[('id', 'in', contractor_ids)]" groups="lerm_civil.kes_verified_by,lerm_civil.kes_access_srf"/>
+                        <field name="contractor" domain="[('id', 'in', contractor_ids)]"/>
                         <field name="contractor_ids" invisible="1"/>
                         <field name="contact_other_ids" invisible="1"/>
                         <field name="billing_customer" options="{'no_create': True}"/>

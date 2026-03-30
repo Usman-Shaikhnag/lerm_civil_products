@@ -10,6 +10,7 @@
                 <group style="width:100%">
                     <field name="internal_id"/>
                     <field name="parameter_name"/>
+                    <field name="allowed_technicians" widget="many2many_tags" options="{'no_create': True}"/>
                 </group>
                 <group>
                     <group style="width:50%">
@@ -35,6 +36,8 @@
                         <field name="nabl_select"/>
                         <field name="fetch_by_grade"/>
                         <field name="fetch_by_size"/>
+                        <field name="instrument"/>
+
                     </group>
                 </group>
 
@@ -105,6 +108,7 @@
                     <field name='nabl_select' optional="show"/>
                     <field name="parameter_table" optional="show"/>
                     <field name="dependent_inputs" optional="show"/>
+                    <field name="allowed_technicians" optional="show"/>
                 </tree>
             </field>
         </record>

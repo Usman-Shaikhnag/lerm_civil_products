@@ -2,7 +2,7 @@ from odoo import api, fields, models
 from odoo.exceptions import UserError,ValidationError
 import logging
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 # _logger = logging.getLogger(__name__)
 
@@ -16,9 +16,9 @@ class LermSampleForm(models.Model):
     _rec_name = 'kes_no'
 
     client_reference1 = fields.Char(string="Client Reference",compute="_compute_client_reference", store=True)
-    srf_id = fields.Many2one('lerm.civil.srf' , string="SRF ID" ,ondelete="cascade",tracking=True)
+    srf_id = fields.Many2one('lerm.civil.srf',ondelete="cascade", string="SRF ID" ,tracking=True)
     sample_range_id = fields.Many2one('sample.range.line',string="Sample Range")
-    eln_id = fields.Many2one('lerm.eln',string="ELN",ondelete="cascade")
+    eln_id = fields.Many2one('lerm.eln',string="ELN",ondelete="set null")
     sample_no = fields.Char(string="Sample ID." ,required=True,readonly=True, default=lambda self: 'New')
     casting = fields.Boolean(string="Casting")
     discipline_id = fields.Many2one('lerm_civil.discipline',string="Discipline")
@@ -85,14 +85,14 @@ class LermSampleForm(models.Model):
 
     active = fields.Boolean(string="Active",default=True)
 
-    # invoice_number = fields.Many2one(
-    #     'account.move',  
-    #     string="Invoice Number",  
-    #     help="Select the invoice number",  
-    #     domain="[('move_type', '=', 'out_invoice')]",  
+    invoice_number = fields.Many2one(
+        'account.move',  
+        string="Invoice Number",  
+        help="Select the invoice number",  
+        domain="[('move_type', '=', 'out_invoice')]",  
        
-    #     store=True
-    # )
+        store=True
+    )
 
     invoice_status = fields.Selection([
         ('1-uninvoiced', 'Uninvoiced'),
@@ -102,7 +102,7 @@ class LermSampleForm(models.Model):
 
     print_button_visible = fields.Boolean("Print Nabl visible",compute="_compute_print_nabl_visible")
    
-    lab_location = fields.Many2one('lerm.lab.master',string="Lab Location")
+    lab_location = fields.Many2one('lerm.lab.master',string="Lab Name")
     location_name = fields.Many2one('lerm.lab.location.master',string="Location Name")
 
     file_upload = fields.Many2many(
@@ -114,7 +114,6 @@ class LermSampleForm(models.Model):
         help='Attach multiple images to the sample',
     )
     
-    # datasheet_path = fields.Char(string="Datasheet")
     
     report_upload = fields.Many2many(
         'ir.attachment',
@@ -124,11 +123,7 @@ class LermSampleForm(models.Model):
         string='Report Upload',
         help='Attach multiple images to the sample',
     )
-    
-    # report_path = fields.Char(string="Report")
-    
-
-
+        
 
 
     status = fields.Selection([
@@ -138,11 +133,14 @@ class LermSampleForm(models.Model):
 
     state = fields.Selection([
         ('1-allotment_pending', 'Assignment Pending'),
+        ('7-partially-alloted', 'Partially Alloted'),
         ('2-alloted', 'Alloted'),
+        ('7-calculated', 'In-Test'),
         ('3-pending_verification','Pending Verification'),
         ('5-pending_approval','Pending Approval'),
         ('4-in_report', 'In-Report'),
         ('6-cancelled', 'Cancelled'),
+        
     ], string='State',default='1-allotment_pending')
     conformity = fields.Boolean(string="Conformity")
     parameters_result = fields.One2many('sample.parameters.result','sample_id',string="Parameters Result")
@@ -161,69 +159,31 @@ class LermSampleForm(models.Model):
 
     ])
     other_cancellation_reason = fields.Text("Cancellation Reason")
-
     tested_by_signature_datasheet = fields.Boolean(string="Tested By Signature Datasheet")
     checked_by_signature_datasheet = fields.Boolean(string="Checked By Signature Datasheet")
 
     quantity = fields.Integer(string="Quantity")
+    uom_id = fields.Many2one('uom.uom', string="Unit of Measure")  # kg, mm, etc.
+    quantity_received = fields.Integer(string="Quantiyty Received")
+    quantity_consumed = fields.Integer(string="Quantity Consumed")
+    quantity_discarded = fields.Integer(string="Quantity Discarded")
+    quantity_balance = fields.Integer(string="Quantity Balance", compute="compute_quantity_balance", readonly=True)
+
+    resampled = fields.Boolean("Resampled")
+    report_issued_date = fields.Date("Report Issued Date")
+
+    display_report_portal = fields.Boolean("Display on Portal")
+    customer_portal_sample = fields.Many2one('customer.sample.line',string="Customer Portal Sample", readonly=True)
+
+    @api.depends('quantity_received', 'quantity_consumed','quantity_discarded')
+    def compute_quantity_balance(self):
+        for rec in self:
+            rec.quantity_balance = rec.quantity_received - rec.quantity_consumed - rec.quantity_discarded
+
+            
     
     
-    # def download_attachment_report(self):
-    #     host = self.env["ftp.storage"].sudo().search([('active','=',True)]).host
-    #     if not self.report_path:
-    #         raise ValidationError("Report Not Uploaded")
-    #     ftp_url = f"https://{host}/files/{self.report_path}"
-    #     return {
-    #         'type': 'ir.actions.act_url',
-    #         'url': f"/web/binary/download_ftp?url={ftp_url}",
-    #         'target': 'self',
-    #     }
     
-    
-    
-    # def open_file_upload_report(self):
-    #     action = self.env.ref('lerm_civil.view_ftp_upload_wizard_form')
-    #     return {
-    #         'name': "Upload File Wizard",
-    #         'type': 'ir.actions.act_window',
-    #         'view_type': 'form',
-    #         'view_mode': 'form',
-    #         'res_model': 'file.upload.wizard',
-    #         'view_id': action.id,
-    #         'target': 'new',
-    #         'context': {
-    #             'default_form_name': 'lerm.srf.sample',
-    #             'default_field_name':'report_path'
-    #             }
-    #         }
-    
-    
-    # def download_attachment_datasheet(self):
-    #     host = self.env["ftp.storage"].sudo().search([('active','=',True)]).host
-    #     if not self.datasheet_path:
-    #         raise ValidationError("Datasheet Not Uploaded")
-    #     ftp_url = f"https://{host}/files/{self.datasheet_path}"
-    #     return {
-    #         'type': 'ir.actions.act_url',
-    #         'url': f"/web/binary/download_ftp?url={ftp_url}",
-    #         'target': 'self',
-    #     }
-    
-    # def open_file_upload_datasheet(self):
-    #     action = self.env.ref('lerm_civil.view_ftp_upload_wizard_form')
-    #     return {
-    #         'name': "Upload File Wizard",
-    #         'type': 'ir.actions.act_window',
-    #         'view_type': 'form',
-    #         'view_mode': 'form',
-    #         'res_model': 'file.upload.wizard',
-    #         'view_id': action.id,
-    #         'target': 'new',
-    #         'context': {
-    #             'default_form_name': 'lerm.srf.sample',
-    #             'default_field_name':'datasheet_path'
-    #             }
-    #         }
     
     @api.depends('srf_id.client_refrence')
     def _compute_client_reference(self):
@@ -425,9 +385,7 @@ class LermSampleForm(models.Model):
             self.check_by = self.env.user
             if not result.verified:
                 raise ValidationError("Not all parameters are verified. Please ensure all parameters are verified before proceeding.")
-        self.write({'state': '5-pending_approval',
-                              'checked_by_signature_datasheet':True
-                              })
+        self.write({'state': '5-pending_approval'})
         # eln = self.env['lerm.eln'].search([('sample_id','=',self.id)])
         # eln.write({'state':'3-approved'})
 
@@ -452,7 +410,16 @@ class LermSampleForm(models.Model):
         
         # if not self.datasheet_path:
         #     raise ValidationError("Please attach datasheet before submitting.")
-
+        # import wdb ; wdb.set_trace()
+        
+        sample_register = self.env['lerm.sample.register'].sudo().search([('sample','=',self.id)])
+        try:
+            sample_register.sudo().write({
+                'report_issued_date':date.today()
+            })
+        except:
+            print('Sample Register Not Updated')
+            
         self.approved_by = self.env.user
         self.write({'state': '4-in_report'})
         
@@ -494,9 +461,25 @@ class LermSampleForm(models.Model):
             'view_mode': 'form',
             'res_model': 'sample.reallocation.wizard',
             'view_id': action.id,
-            'target': 'new'
+            'target': 'new',
+            'context': dict(
+                    self.env.context,
+                    active_ids=self.ids,   # 🔑 THIS IS THE KEY
+                ),
             }
 
+    def send_mail_action(self):
+        # import wdb ; wdb.set_trace()
+        action = self.env.ref('lerm_civil.send_mail_wizard')
+        return {
+            'name': "Send Mail",
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'send.mail.wizard',
+            'view_id': action.id,
+            'target': 'new'
+            }
 
     def print_datasheet(self):
         eln = self.env["lerm.eln"].sudo().search([('sample_id','=', self.id)])
@@ -600,7 +583,6 @@ class LermSampleForm(models.Model):
         # return self.env.ref('lerm_civil.sample_report_action').report_action(self)
 
     def open_sample_allotment_wizard(self):
-        
         action = self.env.ref('lerm_civil.srf_sample_allotment_wizard')
         return {
             'name': "Allot Sample",
@@ -609,8 +591,9 @@ class LermSampleForm(models.Model):
             'view_mode': 'form',
             'res_model': 'sample.allotment.wizard',
             'view_id': action.id,
-            'target': 'new'
-            }
+            'target': 'new',
+            'context': dict(self.env.context, active_ids=self.ids, default_sample_id=self.id if len(self) == 1 else False),
+        }
 
 
     # @api.model
