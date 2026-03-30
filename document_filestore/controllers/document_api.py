@@ -74,30 +74,42 @@ class DriveController(http.Controller):
             folder_data = allowed_folders.read(['id', 'name', 'parent_id', 'user_id'])
             final_folders = []
             for f in folder_data:
-                parent = f['parent_id']
+                parent = f.get('parent_id')
+                user_id_tuple = f.get('user_id')
                 final_folders.append({
                     'id': str(f['id']),
-                    'name': f['name'],
+                    'name': f.get('name') or "Unnamed Folder",
                     'parentId': str(parent[0]) if parent else "root",
-                    'ownerId': f['user_id'][0],
-                    'currentUserId':user.id,
+                    'ownerId': user_id_tuple[0] if user_id_tuple else False,
+                    'currentUserId': user.id,
                     'isFolder': True,
                 })
-            file_data = allowed_files.read(['id', 'name', 'type', 'size', 'folder_id', 'external_url','user_id'])
+            file_data = allowed_files.read(['id', 'name', 'type', 'size', 'folder_id', 'external_url', 'user_id'])
             final_files = []
             for f in file_data:
-                # import wdb;wdb.set_trace()
-                folder_id = f['folder_id'][0] if f['folder_id'] else None
+                folder_id = f.get('folder_id')
+                folder_id_val = folder_id[0] if folder_id else None
+                user_id_tuple = f.get('user_id')
+                
+                # Safely parse size to prevent float multiplication errors
+                raw_size = f.get('size')
+                calc_size = 0
+                if raw_size is not None and raw_size is not False:
+                    calc_size = int(float(raw_size) * 1024 * 1024)
+                    
+                raw_type = f.get('type')
+                ext_url = f.get('external_url') or ""
+                
                 final_files.append({
                     'id': str(f['id']),
-                    'name': f['name'],
-                    'type': f['type'].split('/')[0] if f['type'] else 'file',
-                    'size': format_size(int(f['size'] * 1024 * 1024)),
-                    'parentId': str(folder_id) if folder_id else "root",
-                    'downloadUrl': f"/web/binary/download_ftp?url=https://{storage.host}/files/{f['external_url']}",
-                    'previewUrl': f"https://{storage.host}/files/{f['external_url']}",
-                    'ownerId': f['user_id'][0],
-                    'currentUserId':user.id,
+                    'name': f.get('name') or "Unnamed File",
+                    'type': str(raw_type).split('/')[0] if raw_type else 'file',
+                    'size': format_size(calc_size),
+                    'parentId': str(folder_id_val) if folder_id_val else "root",
+                    'downloadUrl': f"/web/binary/download_ftp?url=https://{storage.host}/files/{ext_url}",
+                    'previewUrl': f"https://{storage.host}/files/{ext_url}",
+                    'ownerId': user_id_tuple[0] if user_id_tuple else False,
+                    'currentUserId': user.id,
                     'isFolder': False,
                 })
             for f in final_folders:
