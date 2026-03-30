@@ -1503,6 +1503,12 @@ class CreateSampleWizard(models.TransientModel):
             store=False
         )
 
+        allowed_technician_domain_ids = fields.Many2many(
+            'res.users',
+            compute='_compute_allowed_technician_domain_ids',
+            store=False
+        )
+        
         sample_id = fields.Many2one('lerm.srf.sample', string='Sample')   # optional
         line_ids = fields.One2many('sample.allot.line', 'wizard_id', string='Parameters')
 
@@ -1518,7 +1524,6 @@ class CreateSampleWizard(models.TransientModel):
                     wizard.allowed_technician_domain_ids = [(6, 0, employee_user_ids)]
                 else:
                     wizard.allowed_technician_domain_ids = [(5,)]
-
 
         @api.model
         def default_get(self, fields):
