@@ -932,6 +932,7 @@ class CoarseAggregateMechanical(models.Model):
                 record.aggregate_combine_nabl = 'fail'
 
 
+
     @api.depends('elongation_table.wt_retained')
     def _compute_total_el_fl(self):
         for record in self:

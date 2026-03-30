@@ -64,6 +64,7 @@ class ELN(models.Model):
 
     update_result = fields.Integer("Update Result")
     state = fields.Selection([
+        ('5-alloted', 'Alloted'),
         ('1-draft', 'In-Test'),
         ('2-confirm', 'In-Check'),
         ('3-approved','Approved'),
@@ -268,6 +269,11 @@ class ELN(models.Model):
 
 
     def open_product_based_form(self):
+        for record in self:
+            # Sample ला target कर
+            if record.sample_id:
+                record.sample_id.state = '7-calculated'
+                
         model_record = self.material.product_based_calculation.filtered(lambda r: r.grade.id == self.grade_id.id)
         model = model_record.ir_model.model
 
@@ -695,6 +701,7 @@ class ParameteResultCalculationWizard(models.TransientModel):
     # result_char = fields.Char(string="Result")
 
     eln_state = fields.Selection([
+        ('5-alloted', 'Alloted'),
         ('1-draft', 'In-Test'),
         ('2-confirm', 'In-Check'),
         ('3-approved','Approved'),
