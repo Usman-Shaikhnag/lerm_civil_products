@@ -86,9 +86,16 @@ class DriveFile(models.Model):
                 sftp.mkdir(path_accum, mode=0o755)
 
         # Upload file
-        with BytesIO(file_binary) as f:
-            sftp.putfo(f, remote_path)
-        sftp.chmod(remote_path, 0o644)  # readable
+        try:
+            with BytesIO(file_binary) as f:
+                sftp.putfo(f, remote_path)
+        except Exception as e:
+            raise UserError(f"Failed to upload file to SFTP: {str(e)}")
+            
+        try:
+            sftp.chmod(remote_path, 0o644)  # readable
+        except Exception as e:
+            _logger.warning(f"SFTP chmod failed (ignoring): {str(e)}")
 
         sftp.close()
         transport.close()
