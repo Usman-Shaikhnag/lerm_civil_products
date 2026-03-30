@@ -1,4 +1,13 @@
 from odoo import models, fields, api
+from odoo.exceptions import UserError
+import paramiko
+import re
+
+def sanitize(name):
+    """Replace spaces with underscores and remove unsafe characters."""
+    name = name.strip().replace(" ", "_")
+    name = re.sub(r"[^A-Za-z0-9._-]", "", name)
+    return name
 
 class DocumentFolder(models.Model):
     _name = 'document.folder'
@@ -68,20 +77,92 @@ class DocumentFolder(models.Model):
     # document_folder.py (add at bottom)
 
     def get_sftp_folder_path(self):
-        """Return folder hierarchy name path, sanitized."""
+        """Return folder hierarchy name path, sanitized exactly like document_file.py."""
         parts = []
         folder = self
         while folder:
-            name = folder.name.replace(" ", "_")
-            for ch in "/\\:*?\"<>|":
-                name = name.replace(ch, "")
-            parts.insert(0, name)
+            parts.insert(0, sanitize(folder.name))
             folder = folder.parent_id
-        return "/".join(parts)  # "Projects/Reports"
+        return "/".join(parts)  # e.g. "Projects/Reports"
+
     def write(self, vals):
         self._check_permission("edit")
-        return super().write(vals)
+        
+        storage = self.env["ftp.storage"].sudo().search([('active', '=', True)], limit=1)
+        old_paths = {}
+        if 'name' in vals and storage:
+            for folder in self:
+                old_paths[folder.id] = f"/home/{storage.name}/Document/{folder.get_sftp_folder_path()}"
+                
+        res = super().write(vals)
+        
+        if 'name' in vals and storage:
+            # Recompute new physical paths and rename on SFTP
+            try:
+                transport = paramiko.Transport((storage.host, storage.port or 22))
+                transport.connect(username=storage.username, password=storage.password)
+                sftp = paramiko.SFTPClient.from_transport(transport)
+                
+                for folder in self:
+                    new_path = f"/home/{storage.name}/Document/{folder.get_sftp_folder_path()}"
+                    old_path = old_paths.get(folder.id)
+                    if old_path and old_path != new_path:
+                        try:
+                            sftp.rename(old_path, new_path)
+                        except Exception:
+                            pass  # Directory might not exist yet
+                sftp.close()
+                transport.close()
+            except Exception:
+                pass
+            
+            # Update external URLs for all child files so sync_with_sftp doesn't delete them
+            all_files = self.env['document.file'].sudo().search([('folder_id', 'child_of', self.ids)])
+            for f in all_files:
+                folder_path_parts = ["Document"]
+                curr = f.folder_id
+                while curr:
+                    folder_path_parts.insert(1, sanitize(curr.name))
+                    curr = curr.parent_id
+                
+                clean_filename = f.name
+                relative_path = f"{storage.name}/" + "/".join(folder_path_parts + [clean_filename])
+                f.write({'external_url': relative_path})
+
+        return res
 
     def unlink(self):
         self._check_permission("full")
+        storage = self.env["ftp.storage"].sudo().search([('active', '=', True)], limit=1)
+        
+        try:
+            transport = paramiko.Transport((storage.host, storage.port or 22))
+            transport.connect(username=storage.username, password=storage.password)
+            sftp = paramiko.SFTPClient.from_transport(transport)
+        except Exception:
+            sftp = None
+
+        for folder in self:
+            # First, trigger unlink on all nested files so they get removed from SFTP
+            if folder.file_ids:
+                folder.file_ids.unlink()
+            
+            # Then, trigger unlink on sub-folders recursively
+            if folder.child_ids:
+                folder.child_ids.unlink()
+                
+            # Finally, remove the physical folder from SFTP
+            if sftp:
+                folder_path = folder.get_sftp_folder_path()
+                if folder_path:  # Do not delete root Document
+                    remote_path = f"/home/{storage.name}/Document/{folder_path}"
+                    try:
+                        sftp.rmdir(remote_path)
+                    except Exception:
+                        pass
+        
+        if sftp:
+            sftp.close()
+            transport.close()
+
         return super().unlink()
