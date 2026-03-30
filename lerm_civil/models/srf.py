@@ -924,6 +924,13 @@ class SrfForm(models.Model):
                     finally:
                         sftp.close()
                         transport.close()
+    
+    
+    
+
+   
+
+    
 
         # ADD
     
@@ -943,6 +950,7 @@ class SrfForm(models.Model):
    
 
     # name_of_work = fields.Many2one('res.partner.project',string='Name of Work')
+    last_srf_number = fields.Integer(string="Last SRF Number", default=0)
 
     @api.depends('customer')
     def compute_contact_ids(self):

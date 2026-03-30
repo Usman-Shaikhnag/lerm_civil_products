@@ -17,6 +17,7 @@ class WptMechanical(models.Model):
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     child_lines = fields.One2many('mechanical.wpt.line','parent_id',string="Parameter")
 
+
     average_of_wpt = fields.Float(string="Average of WPT", compute="_compute_average_of_averages")
 
     @api.depends('child_lines.average')
@@ -178,11 +179,14 @@ class WptMechanical(models.Model):
         for result in self.eln_ref.parameters_result:
             if result.parameter.internal_id == '32145ght-0268-46ef-ba88-9c0453210lkit1':
                 result.result_char = round(self.average_of_wpt,2)
+                result.calculated = True
                 if self.wpt_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+
 
 
         return {

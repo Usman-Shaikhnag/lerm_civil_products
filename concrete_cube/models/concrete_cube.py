@@ -339,6 +339,18 @@ class MechanicalConcreteCube(models.Model):
             #         result.nabl_status = 'non-nabl'
             #     continue
 
+
+
+        for result in self.eln_ref.parameters_result:
+            if result.parameter.internal_id == '1023457-0268-46ef-ba88-9c0453210lkit1':
+                result.calculated = True
+                result.result_char = round(self.average_of_wpt,2)
+                if self.nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
         return {
                 'view_mode': 'form',
                 'res_model': "lerm.eln",
