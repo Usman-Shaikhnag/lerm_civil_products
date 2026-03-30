@@ -230,35 +230,61 @@ class Stones(models.Model):
 
    
 
+    # def action_generate_compressive_dry_lines(self):
+    #     for record in self:
+    #         if record.lab_id and ' - ' in record.lab_id:
+    #             start_str, end_str = record.lab_id.split(' - ')
+    #             prefix = '-'.join(start_str.split('-')[:2])
+    #             start = int(start_str.split('-')[2])
+    #             end = int(end_str.split('-')[2])
+
+    #             lines = []
+    #             for i in range(start, end + 1):
+    #                 lab_id = f"{prefix}-{str(i).zfill(3)}"
+    #                 lines.append((0, 0, {'lab_id': lab_id}))
+
+    #             record.compressive_dry_ids = lines
+    #             record.compressive_dry_generated = True
+
+    #         # 🔹 Set flag to show sieve analysis
+    #         if record.compressive_dry_ids:
+    #             record.show_sieve = True
+
+    #         # 🔹 Reload the current record in form view
+    #         return {
+    #             'type': 'ir.actions.act_window',
+    #             'name': 'Stone Form',
+    #             'res_model': 'mechanical.stones',
+    #             'res_id': record.id,  # ✅ Use record.id instead of self.id
+    #             'view_mode': 'form',
+    #             'target': 'current',
+    #         }
+
     def action_generate_compressive_dry_lines(self):
         for record in self:
-            if record.lab_id and ' - ' in record.lab_id:
-                start_str, end_str = record.lab_id.split(' - ')
-                prefix = '-'.join(start_str.split('-')[:2])
-                start = int(start_str.split('-')[2])
-                end = int(end_str.split('-')[2])
+            lines = []
 
-                lines = []
-                for i in range(start, end + 1):
-                    lab_id = f"{prefix}-{str(i).zfill(3)}"
-                    lines.append((0, 0, {'lab_id': lab_id}))
+            if record.lab_id:
+                # 🔹 Range case (e.g. ABC-001 - ABC-005)
+                if ' - ' in record.lab_id:
+                    start_str, end_str = record.lab_id.split(' - ')
+                    prefix = '-'.join(start_str.split('-')[:2])
+                    start = int(start_str.split('-')[2])
+                    end = int(end_str.split('-')[2])
 
+                    for i in range(start, end + 1):
+                        lab_id = f"{prefix}-{str(i).zfill(3)}"
+                        lines.append((0, 0, {'lab_id': lab_id}))
+
+                # 🔹 Single lab id case (e.g. ABC-001)
+                else:
+                    lines.append((0, 0, {'lab_id': record.lab_id}))
+
+            # 🔹 Assign lines and flags
+            if lines:
                 record.compressive_dry_ids = lines
                 record.compressive_dry_generated = True
-
-            # 🔹 Set flag to show sieve analysis
-            if record.compressive_dry_ids:
                 record.show_sieve = True
-
-            # 🔹 Reload the current record in form view
-            return {
-                'type': 'ir.actions.act_window',
-                'name': 'Stone Form',
-                'res_model': 'mechanical.stones',
-                'res_id': record.id,  # ✅ Use record.id instead of self.id
-                'view_mode': 'form',
-                'target': 'current',
-            }
 
     
     @api.onchange('compressive_dry_ids')
@@ -314,35 +340,61 @@ class Stones(models.Model):
 
 
 
+    # def action_generate_compressive_wet_lines(self):
+    #     for record in self:
+    #         if record.lab_id and ' - ' in record.lab_id:
+    #             start_str, end_str = record.lab_id.split(' - ')
+    #             prefix = '-'.join(start_str.split('-')[:2])
+    #             start = int(start_str.split('-')[2])
+    #             end = int(end_str.split('-')[2])
+
+    #             lines = []
+    #             for i in range(start, end + 1):
+    #                 lab_id = f"{prefix}-{str(i).zfill(3)}"
+    #                 lines.append((0, 0, {'lab_id': lab_id}))
+
+    #             record.compressive_wet_ids = lines
+    #             record.compressive_wet_generated = True
+
+    #         # 🔹 Set flag to show sieve analysis
+    #         if record.compressive_wet_ids:
+    #             record.show_sieve = True
+
+    #         # 🔹 Reload the current record in form view
+    #         return {
+    #             'type': 'ir.actions.act_window',
+    #             'name': 'Stone Form',
+    #             'res_model': 'mechanical.stones',
+    #             'res_id': record.id,  # ✅ Use record.id instead of self.id
+    #             'view_mode': 'form',
+    #             'target': 'current',
+    #         }
+
     def action_generate_compressive_wet_lines(self):
         for record in self:
-            if record.lab_id and ' - ' in record.lab_id:
-                start_str, end_str = record.lab_id.split(' - ')
-                prefix = '-'.join(start_str.split('-')[:2])
-                start = int(start_str.split('-')[2])
-                end = int(end_str.split('-')[2])
+            lines = []
 
-                lines = []
-                for i in range(start, end + 1):
-                    lab_id = f"{prefix}-{str(i).zfill(3)}"
-                    lines.append((0, 0, {'lab_id': lab_id}))
+            if record.lab_id:
+                # 🔹 Range case (e.g. ABC-001 - ABC-005)
+                if ' - ' in record.lab_id:
+                    start_str, end_str = record.lab_id.split(' - ')
+                    prefix = '-'.join(start_str.split('-')[:2])
+                    start = int(start_str.split('-')[2])
+                    end = int(end_str.split('-')[2])
 
+                    for i in range(start, end + 1):
+                        lab_id = f"{prefix}-{str(i).zfill(3)}"
+                        lines.append((0, 0, {'lab_id': lab_id}))
+
+                # 🔹 Single lab id case (e.g. ABC-001)
+                else:
+                    lines.append((0, 0, {'lab_id': record.lab_id}))
+
+            # 🔹 Assign lines and flags
+            if lines:
                 record.compressive_wet_ids = lines
                 record.compressive_wet_generated = True
-
-            # 🔹 Set flag to show sieve analysis
-            if record.compressive_wet_ids:
                 record.show_sieve = True
-
-            # 🔹 Reload the current record in form view
-            return {
-                'type': 'ir.actions.act_window',
-                'name': 'Stone Form',
-                'res_model': 'mechanical.stones',
-                'res_id': record.id,  # ✅ Use record.id instead of self.id
-                'view_mode': 'form',
-                'target': 'current',
-            }
 
     @api.onchange('compressive_wet_ids')
     def _onchange_limits_lines(self):
