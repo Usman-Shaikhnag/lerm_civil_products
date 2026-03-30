@@ -42,8 +42,52 @@ class PrecastKerbMechanical(models.Model):
                 if sample.internal_id == 'klrt1230t-eeb4-4e16-a7fc-7560838410lo':
                     record.dimension_visible = True
 
-    def open_eln_page(self):
+    # def open_eln_page(self):
         # import wdb; wdb.set_trace()
+
+
+
+
+    def open_eln_page(self):
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+          
+            
+            if result.parameter.internal_id == '0b48abe6-07a4-4345-bcc1-30ff6e4830af':
+                # result.result_char = round(self.average_density,2)
+                result.calculated = True
+                # if self.average_density_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+
+            if result.parameter.internal_id == 'f913fc79-eeb4-4e16-a7fc-75608384d9b0':
+                # result.result_char = round(self.average_density,2)
+                result.calculated = True
+                # if self.average_density_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+
+
+            if result.parameter.internal_id == 'klrt1230t-eeb4-4e16-a7fc-7560838410lo':
+                # result.result_char = round(self.average_density,2)
+                result.calculated = True
+                # if self.average_density_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+
+
 
         return {
                 'view_mode': 'form',

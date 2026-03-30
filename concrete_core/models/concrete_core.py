@@ -17,6 +17,9 @@ class ConcreteCore(models.Model):
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
     sample_id = fields.Many2one('lerm.srf.sample',string='Sample')
 
+
+    
+
     def prefill_data(self):
         # import wdb; wdb.set_trace()
         return {
@@ -40,6 +43,22 @@ class ConcreteCore(models.Model):
     def _compute_grade_id(self):
         if self.eln_ref:
             self.grade = self.eln_ref.grade_id.id
+
+    @api.depends('eln_ref')
+    def _compute_sample_parameters(self):
+        for record in self:
+            records = record.eln_ref.parameters_result.parameter.ids
+            record.sample_parameters = records
+            print("Records",records)
+
+    def get_all_fields(self):
+        record = self.env['mechanical.concrete.core'].browse(self.ids[0])
+        field_values = {}
+        for field_name, field in record._fields.items():
+            field_value = record[field_name]
+            field_values[field_name] = field_value
+
+        return field_values
 
     age_of_days = fields.Selection([
         ('3days', '3 Days'),
@@ -364,7 +383,7 @@ class ConcreteCore(models.Model):
 
 
             ### Compute Visible
-    @api.depends('sample_parameters')
+    @api.depends('eln_ref')
     def _compute_visible(self):
         
         for record in self:
@@ -375,9 +394,7 @@ class ConcreteCore(models.Model):
           
             
             for sample in record.sample_parameters:
-                print("Internal Ids",sample.internal_id)
 
-               
                 if sample.internal_id == "254187-47c9-4662-9298-3095ac900ffc":
                     record.concrete_visible = True
 
@@ -395,11 +412,44 @@ class ConcreteCore(models.Model):
 
 
     def open_eln_page(self):
-        # import wdb; wdb.set_trace()
-        # for record in self:
-        #     # Sample ला target कर
-        #     if record.sample_id:
-        #         record.sample_id.state = '7-calculated'
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+            # import wdb;wdb.set_trace()
+        
+            
+            if result.parameter.internal_id == '254187-47c9-4662-9298-3095ac900ffc':
+                # result.result_char = round(self.aggregate_elongation,2)
+                result.calculated = True
+                # if self.aggregate_combine_conformity == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+
+            if result.parameter.internal_id == '30214uy-0268-46ef-ba88-9c04532103012t':
+                result.result_char = round(self.average_of_wpt,2)
+                result.calculated = True
+                if self.wpt_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '02145jj-eba3-4f15-b33d-679b39f73301':
+                result.result_char = round(self.avg_water_absorption,2)
+                result.calculated = True
+                if self.avg_water_absorption_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
 
         return {
                 'view_mode': 'form',
@@ -418,6 +468,15 @@ class ConcreteCore(models.Model):
         # record.get_all_fields()
         record.eln_ref.write({'model_id':record.id})
         return record
+    
+
+    def read(self, fields=None, load='_classic_read'):
+
+        self._compute_sample_parameters()
+        self._compute_visible()
+        self.default_get(fields)
+
+        return super(ConcreteCore, self).read(fields=fields, load=load)
 
 
 
@@ -425,13 +484,35 @@ class ConcreteCore(models.Model):
 
 
 
-    @api.depends('eln_ref')
-    def _compute_sample_parameters(self):
+    # @api.depends('eln_ref')
+    # def _compute_sample_parameters(self):
      
+    #     for record in self:
+    #         records = record.eln_ref.parameters_result.parameter.ids
+    #         record.sample_parameters = records
+    #         print("Records",records)
+
+
+    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
+    def _compute_sample_parameters(self):
+        # parameter_based_assignment
+        current_user = self.env.user
         for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
+            if not record.eln_ref:
+                record.sample_parameters = [(6, 0, [])]
+                continue
+
+            # filter parameter results by current user
+            user_param_results = record.eln_ref.parameters_result.filtered(
+                lambda r: r.technician and r.technician.id == current_user.id
+            )
+
+            # map to parameter master IDs
+            parameter_ids = user_param_results.mapped('parameter').ids
+
+            record.sample_parameters = [(6, 0, parameter_ids)]
+
+    
 
 
 
@@ -443,6 +524,11 @@ class ConcreteCore(models.Model):
             field_values[field_name] = field_value
 
         return field_values
+    
+    @api.depends('eln_ref')
+    def _compute_grade_id(self):
+        if self.eln_ref:
+            self.grade = self.eln_ref.grade_id.id
 
     def open_eln_page(self):
         # import wdb; wdb.set_trace()

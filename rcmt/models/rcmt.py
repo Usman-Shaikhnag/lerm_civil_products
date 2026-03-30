@@ -58,6 +58,9 @@ class RCMT(models.Model):
 
     def prefill_data(self):
         # import wdb; wdb.set_trace()
+
+
+
         return {
             'name': 'Prefill Data',
             'type': 'ir.actions.act_window',
@@ -412,8 +415,34 @@ class RCMT(models.Model):
 
 
    
-    def open_eln_page(self):
+    # def open_eln_page(self):
         # import wdb; wdb.set_trace()
+
+
+        
+    def open_eln_page(self):
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+
+
+        
+        # for result in self.eln_ref.parameters_result:
+            if result.parameter.internal_id == '78954gh24-391c-4d7b-818d-28f7b75ea261':
+                # result.result_char = round(self.binder_content,2)
+                result.calculated = True
+                # if self.binder_content_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+
+
 
         return {
                 'view_mode': 'form',

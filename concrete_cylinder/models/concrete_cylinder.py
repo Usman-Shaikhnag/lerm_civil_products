@@ -469,13 +469,16 @@ class MechanicalConcreteCube(models.Model):
 
                 
     def open_eln_page(self):
-        # import wdb; wdb.set_trace()
-        # for record in self:
-        #     # Sample ला target कर
-        #     if record.sample_id:
-        #         record.sample_id.state = '7-calculated'
-        for result in self.eln_ref.parameters_result:
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
             if result.parameter.internal_id == '301hjtre-17c1-48ac-8462-9671e4d3d09f':
+                result.calculated = True
                 result.result_char = round(self.average_strength,2)
                 if self.nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -485,6 +488,7 @@ class MechanicalConcreteCube(models.Model):
 
         for result in self.eln_ref.parameters_result:
             if result.parameter.internal_id == '1234jht-0268-46ef-ba88-9c0453210lkit1':
+                result.calculated = True
                 result.result_char = round(self.average_of_wpt,2)
                 if self.nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -494,6 +498,7 @@ class MechanicalConcreteCube(models.Model):
 
         for result in self.eln_ref.parameters_result:
             if result.parameter.internal_id == '0124ytrg-eba3-4f15-b33d-679b39f73301':
+                result.calculated = True
                 result.result_char = round(self.avg_water_absorption,2)
                 if self.nabl == 'pass':
                     result.nabl_status = 'nabl'
