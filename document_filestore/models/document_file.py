@@ -74,10 +74,7 @@ class DriveFile(models.Model):
         try:
             sftp.stat(f"/home/{storage.name}")
         except FileNotFoundError:
-            try:
-                sftp.mkdir(f"/home/{storage.name}", mode=0o755)
-            except Exception as e:
-                raise UserError(f"Base path /home/{storage.name} does not exist and could not be created: {str(e)}")
+            raise UserError(f"Base path /home/{storage.name} does not exist on server.")
 
         # Make intermediate directories
         path_accum = f"/home/{storage.name}"
@@ -89,9 +86,16 @@ class DriveFile(models.Model):
                 sftp.mkdir(path_accum, mode=0o755)
 
         # Upload file
-        with BytesIO(file_binary) as f:
-            sftp.putfo(f, remote_path)
-        sftp.chmod(remote_path, 0o644)  # readable
+        try:
+            with BytesIO(file_binary) as f:
+                sftp.putfo(f, remote_path)
+        except Exception as e:
+            raise UserError(f"Failed to upload file to SFTP: {str(e)}")
+            
+        try:
+            sftp.chmod(remote_path, 0o644)  # readable
+        except Exception as e:
+            _logger.warning(f"SFTP chmod failed (ignoring): {str(e)}")
 
         sftp.close()
         transport.close()
@@ -101,9 +105,9 @@ class DriveFile(models.Model):
 
         record = self.create({
             "name": clean_filename,
-            "type": file_data.get("type") or "application/octet-stream",
-            "size": file_data.get("size", 0) / (1024 * 1024),
-            "folder_id": folder_id or False,
+            "type": file_data["type"],
+            "size": file_data["size"] / (1024 * 1024),
+            "folder_id": folder_id,
             "external_url": relative_path,
         })
         return record.read()[0]
@@ -197,35 +201,38 @@ class DriveFile(models.Model):
             transport.connect(username=storage.username, password=storage.password)
             sftp = paramiko.SFTPClient.from_transport(transport)
         except Exception as e:
-            _logger.error(f"SFTP Connection failed during sync: {e}")
-            return  # Skip sync if server is unreachable
+            _logger.error(f"sync_with_sftp connection failed: {e}")
+            return
 
         all_files = self.sudo().search([])
-        missing = []
-        # import wdb;wdb.set_trace()
+        missing_ids = []
+        missing_names = []
+
         for file in all_files:
             if not file.external_url:
                 continue
+                
             if file.external_url.startswith(storage.name):
                 remote_path = f"/home/{file.external_url}"
             else:
                 remote_path = f"/home/{storage.name}/{file.external_url}"
+                
             try:
                 sftp.stat(remote_path)
             except FileNotFoundError:
-                missing.append(file.name)
-                file.unlink()
-            except Exception as e:
-                _logger.warning(f"SFTP stat failed for {remote_path}: {e}")
-                pass
+                missing_ids.append(file.id)
+                missing_names.append(file.name)
+            except Exception:
+                pass  # Ignore other stat errors so it doesn't crash
 
-        try:
-            sftp.close()
-            transport.close()
-        except:
-            pass
-        if missing:
-            _logger.warning(f"Removed metadata for {len(missing)} missing SFTP files: {missing}")
+        sftp.close()
+        transport.close()
+        
+        if missing_ids:
+            _logger.warning(f"Removed metadata for {len(missing_names)} missing SFTP files: {missing_names}")
+            # Delete DB records only, bypassing overridden unlink that reconnects to SFTP
+            missing_records = self.browse(missing_ids)
+            super(DriveFile, missing_records).unlink()
 
     def _check_permission(self, level):
         for record in self:
