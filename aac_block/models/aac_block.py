@@ -20,6 +20,30 @@ class AacBlockMechanical(models.Model):
     tests = fields.Many2many("mechanical.gypsum.test",string="Tests")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
+    @api.depends("eln_ref")
+    def _compute_size_id(self):
+        for record in self:
+            print("Size iD",record.eln_ref.size_id)
+            record.size_id = record.eln_ref.size_id.id
+
+
+    @api.depends('eln_ref')
+    def _compute_sample_parameters(self):
+        for record in self:
+            records = record.eln_ref.parameters_result.parameter.ids
+            record.sample_parameters = records
+            print("Records",records)
+
+        
+    def get_all_fields(self):
+        record = self.env['mechanical.aac.block'].browse(self.ids[0])
+        field_values = {}
+        for field_name, field in record._fields.items():
+            field_value = record[field_name]
+            field_values[field_name] = field_value
+
+        return field_values
+
 
     @api.depends('eln_ref','sample_parameters')
     def _compute_visible(self):
@@ -44,23 +68,70 @@ class AacBlockMechanical(models.Model):
                     record.compressive_strength_visible = True
 
     def open_eln_page(self):
-        # import wdb; wdb.set_trace()
-        for result in self.eln_ref.parameters_result:
-                    if result.parameter.internal_id == '6478fde2-8097-4275-b80f-48ebdbcfe244':
-                        result.result_char = round(self.average_moisture_content,2)
-                        if self.moisture_nabl == 'pass':
-                            result.nabl_status = 'nabl'
-                        else:
-                            result.nabl_status = 'non-nabl'
-                        continue
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
 
-                    if result.parameter.internal_id == '254879sw-4ef4-4e51-abeb-57dd2abe29a4':
-                        result.result_char = round(self.average_density,2)
-                        if self.density_nabl == 'pass':
-                            result.nabl_status = 'nabl'
-                        else:
-                            result.nabl_status = 'non-nabl'
-                        continue
+        for result in technician_results:
+            
+            # Dimension
+            if result.parameter.internal_id == '12478fdr3w-ac79-4102-aeda-622dc0f973f6':
+                # result.result_char = round(self.aggregate_elongation,2)
+                result.calculated = True
+                # if self.aggregate_combine_conformity == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+
+             # Moisture Content
+            if result.parameter.internal_id == '6478fde2-8097-4275-b80f-48ebdbcfe244':
+                result.result_char = round(self.average_moisture_content,2)
+                result.calculated = True
+                if self.moisture_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+             # Density
+            if result.parameter.internal_id == '254879sw-4ef4-4e51-abeb-57dd2abe29a4':
+                result.result_char = round(self.average_density,2)
+                result.calculated = True
+                if self.density_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+             # Drying Shrinkage
+            if result.parameter.internal_id == '214578ews-b1a2-4dac-b8cb-e077770af52f':
+                result.result_char = round(self.average_drying_shrinkage,2)
+                result.calculated = True
+                if self.drying_shrinkage_aac_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+             # Compressive Strength
+            if result.parameter.internal_id == '21457896dfe-cb61-45db-91c5-0167b27a9ab5':
+                result.result_char = round(self.average_compressive_strength,2)
+                result.calculated = True
+                if self.compressive_strength_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            
                    
         return {
                 'view_mode': 'form',
@@ -100,13 +171,32 @@ class AacBlockMechanical(models.Model):
         if self.eln_ref:
             self.grade = self.eln_ref.grade_id.id
 
-    @api.depends('eln_ref')
-    def _compute_sample_parameters(self):
+    # @api.depends('eln_ref')
+    # def _compute_sample_parameters(self):
         
+    #     for record in self:
+    #         records = record.eln_ref.parameters_result.parameter.ids
+    #         record.sample_parameters = records
+    #         print("Records",records)
+
+    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
+    def _compute_sample_parameters(self):
+        # parameter_based_assignment
+        current_user = self.env.user
         for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
+            if not record.eln_ref:
+                record.sample_parameters = [(6, 0, [])]
+                continue
+
+            # filter parameter results by current user
+            user_param_results = record.eln_ref.parameters_result.filtered(
+                lambda r: r.technician and r.technician.id == current_user.id
+            )
+
+            # map to parameter master IDs
+            parameter_ids = user_param_results.mapped('parameter').ids
+
+            record.sample_parameters = [(6, 0, parameter_ids)]
 
     # Dimension
     dimension_name = fields.Char(default="Dimension")

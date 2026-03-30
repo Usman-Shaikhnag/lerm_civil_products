@@ -218,10 +218,46 @@ class CoverblockMechanical(models.Model):
 
 
 
+                
+                
+
     def open_eln_page(self):
+       
+        current_user = self.env.user
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
 
 
-         return {
+        for result in technician_results:
+            
+            if result.parameter.internal_id == '3dea9034-e36c-4bfb-9e1a-f9ed5101d49b':
+                result.result_char = round(self.average_crushing,2)
+                result.calculated = True
+                if self.average_crushing_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            if result.parameter.internal_id == 'a43a33a4-834e-40d4-afb3-80a4e61ece05':
+             
+                result.calculated = True
+                # if self.average_crushing_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+
+         
+
+
+
+
+
+
+        return {
                 'view_mode': 'form',
                 'res_model': "lerm.eln",
                 'type': 'ir.actions.act_window',

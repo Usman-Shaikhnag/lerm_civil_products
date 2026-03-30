@@ -31,6 +31,24 @@
                       </field>
                     </div>
                     <group/>
+
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
                     
                     <!-- Dimension -->
 
@@ -43,9 +61,9 @@
                     <div class="custom_table_borders" invisible="not dimension_visible">
                         <field name="dimension_table" nolabel="1" >
                         <tree editable="bottom">
-                          <field name="length"/>
-                          <field name="width"/>
-                          <field name="height"/>
+                          <field name="length" class="blue-input" decoration-info="length != 0"/>
+                          <field name="width" class="blue-input" decoration-info="width != 0"/>
+                          <field name="height" class="blue-input" decoration-info="height != 0"/>
                         </tree>
                         </field>
                     </div>
@@ -101,15 +119,15 @@
                             <tbody>
                                 <tr>
                                     <td><label class="text-bold" for="length_grade1">Length pecification Grade - 1</label></td>
-                                    <td><field name="length_grade1"/></td>
+                                    <td><field name="length_grade1" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><label class="text-bold" for="width_grade1">Width Specification Grade - 1</label></td>
-                                    <td><field name="width_grade1"/></td>
+                                    <td><field name="width_grade1" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><label class="text-bold" for="height_grade1">Height Specification Grade - 1</label></td>
-                                    <td><field name="height_grade1"/></td>
+                                    <td><field name="height_grade1" class="blue-input"/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -120,15 +138,15 @@
                             <tbody>
                                 <tr>
                                     <td><label class="text-bold" for="length_grade2">Length Specification Grade - 2</label></td>
-                                    <td><field name="length_grade2"/></td>
+                                    <td><field name="length_grade2" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><label class="text-bold" for="width_grade2">Width Specification Grade - 2</label></td>
-                                    <td><field name="width_grade2"/></td>
+                                    <td><field name="width_grade2" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><label class="text-bold" for="height_grade2">Height Specification Grade - 2</label></td>
-                                    <td><field name="height_grade2"/></td>
+                                    <td><field name="height_grade2" class="blue-input"/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -137,25 +155,7 @@
                     <group/>
 
 
-                    <!-- <group invisible="not dimension_visible">
-                        <group style="white-space: nowrap; width:70%;">
-                            <field name="length_grade1"/>
-                             <field name="length_grade2"/>
-                    
-                        </group>
-
-                           <group  style="white-space: nowrap; width:70%;">
-                            <field name="width_grade1"/>
-                             <field name="width_grade2"/>
-                    
-                        </group>
-
-                         <group style="white-space: nowrap; width:70%;">
-                            <field name="height_grade1"/>
-                             <field name="height_grade2"/>
-                    
-                        </group>
-                    </group> -->
+                  
                     
                     
 
@@ -171,8 +171,8 @@
                     <div class="custom_table_borders" invisible="not moisture_visible">
                         <field name="moisture_content_table" nolabel="1" >
                         <tree editable="bottom">
-                          <field name="wt_sample"/>
-                          <field name="oven_wt"/>
+                          <field name="wt_sample" class="blue-input" decoration-info="wt_sample != 0"/>
+                          <field name="oven_wt" class="blue-input" decoration-info="oven_wt != 0"/>
                           <field name="moisture_content"/>
                         </tree>
                         </field>
@@ -187,11 +187,17 @@
                           </tr>
                            <tr>
                             <td><label for="moisture_confirmity" class="text-bold">Conformity</label></td>
-                             <td><field name="moisture_confirmity"/></td>
+                             <td><field name="moisture_confirmity"
+                                        decoration-success="moisture_confirmity == 'pass'" 
+                                        decoration-danger="moisture_confirmity == 'fail'" 
+                                        readonly="1"/></td>
                            </tr>
                            <tr>
                            <td><label for="moisture_nabl" class="text-bold">NABL</label></td>
-                           <td><field name="moisture_nabl"/></td>
+                           <td><field name="moisture_nabl"
+                                        decoration-success="moisture_nabl == 'pass'" 
+                                        decoration-danger="moisture_nabl == 'fail'" 
+                                        readonly="1"/></td>
                           </tr>
                           </tbody>
                           </table>
@@ -213,7 +219,7 @@
                          <tbody>
                            <tr>
                            <td><label for="moisture_grade1" class="text-bold">Specification Grade - 1</label></td>
-                           <td><field name="moisture_grade1"/></td>
+                           <td><field name="moisture_grade1" class="blue-input"/></td>
                           </tr>
                           </tbody>
                           </table>
@@ -224,7 +230,7 @@
                          <tbody>
                            <tr>
                            <td><label for="moisture_grade2" class="text-bold">Specification Grade - 2</label></td>
-                           <td><field name="moisture_grade2"/></td>
+                           <td><field name="moisture_grade2" class="blue-input"/></td>
                           </tr>
                           </tbody>
                           </table>
@@ -267,11 +273,11 @@
                     <div class="custom_table_borders" invisible="not density_visible">
                         <field name="density_table"  nolabel="1" colspan="2">
                         <tree>
-                          <field name="length" widget="textarea" />
-                          <field name="width" style="white-space:nowrap;"/>
-                          <field name="height" style="white-space:nowrap;"/>
+                          <field name="length" widget="textarea"  class="blue-input"/>
+                          <field name="width" style="white-space:nowrap;" class="blue-input"/>
+                          <field name="height" style="white-space:nowrap;" class="blue-input"/>
                           <field name="volume" style="white-space:nowrap;" />
-                          <field name="wt_sample" style="white-space:nowrap;"/>
+                          <field name="wt_sample" style="white-space:nowrap;" class="blue-input"/>
                           <field name="density" style="white-space:nowrap;"/>
                         </tree>
                         </field>
@@ -286,11 +292,17 @@
                           </tr>
                            <tr>
                             <td><label for="density_confirmity" class="text-bold">Conformity</label></td>
-                             <td><field name="density_confirmity"/></td>
+                             <td><field name="density_confirmity"
+                                        decoration-success="density_confirmity == 'pass'" 
+                                        decoration-danger="density_confirmity == 'fail'" 
+                                        readonly="1"/></td>
                            </tr>
                            <tr>
                            <td><label for="density_nabl" class="text-bold">NABL</label></td>
-                           <td><field name="density_nabl"/></td>
+                           <td><field name="density_nabl"
+                                        decoration-success="density_nabl == 'pass'" 
+                                        decoration-danger="density_nabl == 'fail'" 
+                                        readonly="1"/></td>
                           </tr>
                           </tbody>
                           </table>
@@ -302,7 +314,7 @@
                          <tbody>
                            <tr>
                            <td><label for="density_grade1" class="text-bold">Specification Grade - 1</label></td>
-                           <td><field name="density_grade1"/></td>
+                           <td><field name="density_grade1" class="blue-input"/></td>
                           </tr>
                           </tbody>
                           </table>
@@ -313,7 +325,7 @@
                          <tbody>
                            <tr>
                            <td><label for="density_grade2" class="text-bold">Specification Grade - 2</label></td>
-                           <td><field name="density_grade2"/></td>
+                           <td><field name="density_grade2" class="blue-input"/></td>
                           </tr>
                           </tbody>
                           </table>
@@ -347,9 +359,9 @@
                     <div class="custom_table_borders" invisible="not drying_shrinkage_visible">
                         <field name="drying_shrinkage_table" nolabel="1">
                         <tree editable="bottom">
-                          <field name="length"/>
-                          <field name="initial_length"/>
-                          <field name="final_length"/>
+                          <field name="length" class="blue-input" decoration-info="length != 0"/>
+                          <field name="initial_length" class="blue-input" decoration-info="initial_length != 0"/>
+                          <field name="final_length" class="blue-input" decoration-info="final_length != 0"/>
                           <field name="change_length"/>
                           <field name="drying_shrinkage"/>
                         </tree>
@@ -365,11 +377,17 @@
                           </tr>
                            <tr>
                             <td><label for="drying_shrinkage_confirmity" class="text-bold">Conformity</label></td>
-                             <td><field name="drying_shrinkage_confirmity"/></td>
+                             <td><field name="drying_shrinkage_confirmity"
+                                        decoration-success="drying_shrinkage_confirmity == 'pass'" 
+                                        decoration-danger="drying_shrinkage_confirmity == 'fail'" 
+                                        readonly="1"/></td>
                            </tr>
                            <tr>
                            <td><label for="drying_shrinkage_aac_nabl" class="text-bold">NABL</label></td>
-                           <td><field name="drying_shrinkage_aac_nabl"/></td>
+                           <td><field name="drying_shrinkage_aac_nabl"
+                                        decoration-success="drying_shrinkage_aac_nabl == 'pass'" 
+                                        decoration-danger="drying_shrinkage_aac_nabl == 'fail'" 
+                                        readonly="1"/></td>
                           </tr>
                           </tbody>
                           </table>
@@ -381,7 +399,7 @@
                          <tbody>
                            <tr>
                            <td><label for="drying_grade1" class="text-bold">Specification Grade - 1</label></td>
-                           <td><field name="drying_grade1"/></td>
+                           <td><field name="drying_grade1" class="blue-input"/></td>
                           </tr>
                           </tbody>
                           </table>
@@ -392,7 +410,7 @@
                          <tbody>
                            <tr>
                            <td><label for="drying_grade2" class="text-bold">Specification Grade - 2</label></td>
-                           <td><field name="drying_grade2"/></td>
+                           <td><field name="drying_grade2" class="blue-input"/></td>
                           </tr>
                           </tbody>
                           </table>
@@ -429,8 +447,8 @@
                     <div class="custom_table_borders" invisible="not compressive_strength_visible">
                         <field name="compressive_strength_table" nolabel="1" >
                         <tree editable="bottom">
-                          <field name="crosssectional_area"/>
-                          <field name="aac_load"/>
+                          <field name="crosssectional_area" class="blue-input" decoration-info="crosssectional_area != 0"/>
+                          <field name="aac_load" class="blue-input" decoration-info="aac_load != 0"/>
                           <field name="compressive_strength"/>
                         </tree>
                         </field>
@@ -445,11 +463,17 @@
                           </tr>
                            <tr>
                             <td><label for="compressive_strength_confirmity" class="text-bold">Conformity</label></td>
-                             <td><field name="compressive_strength_confirmity"/></td>
+                             <td><field name="compressive_strength_confirmity"
+                                        decoration-success="compressive_strength_confirmity == 'pass'" 
+                                        decoration-danger="compressive_strength_confirmity == 'fail'" 
+                                        readonly="1"/></td>
                            </tr>
                            <tr>
                            <td><label for="compressive_strength_nabl" class="text-bold">NABL</label></td>
-                           <td><field name="compressive_strength_nabl"/></td>
+                           <td><field name="compressive_strength_nabl"
+                                        decoration-success="compressive_strength_nabl == 'pass'" 
+                                        decoration-danger="compressive_strength_nabl == 'fail'" 
+                                        readonly="1"/></td>
                           </tr>
                           </tbody>
                           </table>
@@ -461,7 +485,7 @@
                          <tbody>
                            <tr>
                            <td><label for="compressive_grade1" class="text-bold">Specification Grade - 1</label></td>
-                           <td><field name="compressive_grade1"/></td>
+                           <td><field name="compressive_grade1" class="blue-input"/></td>
                           </tr>
                           </tbody>
                           </table>
@@ -472,7 +496,7 @@
                          <tbody>
                            <tr>
                            <td><label for="compressive_grade2" class="text-bold">Specification Grade - 2</label></td>
-                           <td><field name="compressive_grade2"/></td>
+                           <td><field name="compressive_grade2" class="blue-input"/></td>
                           </tr>
                           </tbody>
                           </table>

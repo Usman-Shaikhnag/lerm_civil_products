@@ -2507,22 +2507,7 @@ class Soil(models.Model):
                 if sample.internal_id == '2r478h88hhhllly1-ca64-44dd-b0ae-897897gghtre0':
                     record.uu_triaxial_cohesion_visible = True
 
-
-    # def open_eln_page(self):
-    #     # import wdb; wdb.set_trace()
-
-    #     return {
-    #             'view_mode': 'form',
-    #             'res_model': "lerm.eln",
-    #             'type': 'ir.actions.act_window',
-    #             'target': 'current',
-    #             'res_id': self.eln_ref.id,
-                
-    #         }
-    # def open_eln_page(self):
-    # # import wdb; wdb.set_trace()
-    #     for result in self.eln_ref.parameters_result:
-
+    
     def open_eln_page(self):
         # parameter_based_assignment
         current_user = self.env.user
@@ -2532,28 +2517,78 @@ class Soil(models.Model):
         )
 
         for result in technician_results:
-            # import wdb;wdb.set_trace()
-            # Elongation
 
-             if result.parameter.internal_id == '00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr':
-                result.result_char = round(self.phi_deg,2)
+
+        
+            # Sieve Analysis
+            if result.parameter.internal_id == '12014fgr-5c56-475b-9a89-93a59c9ee3a2':
                 result.calculated = True
-                if self.phi_deg_nabl == 'pass':
+                result.result_char = round(self.liquid_limit,2)
+                if self.liquid_limit_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
-             
-             if result.parameter.internal_id == '21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr':
-                result.result_char = round(self.avg_shear_stress,2)
+            
+            
+            # Liquid Limit
+            if result.parameter.internal_id == '23fg21gh-7202-4d62-864b-8efa58b6b61f':
                 result.calculated = True
-                if self.avg_shear_stress_nabl == 'pass':
+                result.result_char = round(self.liquid_limit,2)
+                if self.liquid_limit_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
-             
-             if result.parameter.internal_id == 'ght4125-ca64-44dd-b0ae-228aacf04998':
+
+
+            # Plastic Limit
+            if result.parameter.internal_id == '120vbf14-2ff0-4b81-aca1-0e07dab7cd87':
+                result.calculated = True
+                result.result_char = round(self.plastic_limit,2)
+                if self.plastic_limit_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            # Plasticity Index
+            if result.parameter.internal_id == '1045789654-2ff0-4b81-aca1-0e07dab7cd87':
+                result.calculated = True
+                result.result_char = round(self.plasticity_index,2)
+                if self.plasticity_index_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            # Heavy Visible
+            if result.parameter.internal_id == '3210vbf-20fb-4843-aa0e-2ee981be0d7c':
+                result.calculated = True
+                result.result_char = round(self.max_dry_density,2)
+                if self.heavy_table_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            # OMC
+            if result.parameter.internal_id == '3210vbf-20fb-4843-aa0e-142578bgtyu':
+                result.calculated = True
+                result.result_char = round(self.omc1,2)
+                if self.omc_table_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            # Free Swell Index
+            if result.parameter.internal_id == 'ght4125-ca64-44dd-b0ae-228aacf04998':
+                result.calculated = True
                 result.result_char = round(self.fsi,2)
                 result.calculated = True
                 if self.fsi_nabl == 'pass':
@@ -2561,27 +2596,173 @@ class Soil(models.Model):
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
-             
-             if result.parameter.internal_id == '12014fgr-5c56-475b-9a89-93a59c9ee3a2':
-                # result.result_char = round(self.avrg_compressive_strength,2)
+
+
+            # DETERMINATION OF 'K'
+            if result.parameter.internal_id == '5487gt21-ca64-44dd-b0ae-228aacf04965':
                 result.calculated = True
-                # if self.comp_strength_nabl == 'pass':
+                result.result_char = round(self.permeability,2)
+                if self.permeability_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            
+            # Triaxial 
+            if result.parameter.internal_id == '3210vbf-20fb-4843-aa0e-145ght27854l':
+                result.calculated = True
+                result.result_char = round(self.area_triaxial,2)
+                if self.area_triaxial_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            
+            # CALCULATIONS OF COHESION AND ANGLE OF INTERNAL FRICTION
+            if result.parameter.internal_id == '14578nhy87-20fb-4843-aa0e-145ght27854l':
+                result.calculated = True
+                # result.result_char = round(self.area_triaxial,2)
+                # if self.area_triaxial_nabl == 'pass':
                 #     result.nabl_status = 'nabl'
                 # else:
                 #     result.nabl_status = 'non-nabl'
                 # continue
-             
-             if result.parameter.internal_id == '214hhj6gt21-ca64-44dd-b0ae-6587gghty':
-                result.result_char = round(self.specific_gravity,2)
+
+            
+            # California Bearing Ratio
+            if result.parameter.internal_id == '15247gtr-2065-4532-814a-3a4c1e884305':
                 result.calculated = True
+                # result.result_char = round(self.area_triaxial,2)
+                # if self.area_triaxial_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+
+
+            # Shrinkage limit Visible
+            if result.parameter.internal_id == '5487gt21-ca64-44dd-b0ae-278954ggh114':
+                result.calculated = True
+                result.result_char = round(self.shrinkage_limit1,2)
+                if self.shrinkage_limit1_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Permeability Falling Head Test
+            if result.parameter.internal_id == '897546gt21-ca64-44dd-b0ae-22145687':
+                result.calculated = True
+                result.result_char = round(self.avg_k,2)
+                if self.avg_k_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            # Specific Gravity
+            if result.parameter.internal_id == '214hhj6gt21-ca64-44dd-b0ae-6587gghty':
+                result.calculated = True
+                result.result_char = round(self.specific_gravity,2)
                 if self.specific_gravity_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
-             
+
+
+            # Direct Shear Test
+            if result.parameter.internal_id == '21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr':
+                result.calculated = True
+                result.result_char = round(self.avg_shear_stress,2)
+                if self.avg_shear_stress_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            # Unconfined Compressive Strength (UCS) Test
+            if result.parameter.internal_id == 't4y57888hhhllly1-ca64-44dd-b0ae-1234567rt':
+                result.calculated = True
+                result.result_char = round(self.avg_stress,2)
+                if self.avg_stress_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            # Consolidation Test (Cc) Test
+            if result.parameter.internal_id == '78957888hhhllly1-ca64-44dd-b0ae-2314780ty':
+                result.calculated = True
+                result.result_char = round(self.compression_index,2)
+                if self.compression_index_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            # Consolidation Test (Pc) Test
+            if result.parameter.internal_id == '98ggh7888hhhllly1-ca64-44dd-b0ae-6547ggt0r':
+                result.calculated = True
+                result.result_char = round(self.preconsolidation_pressure,2)
+                if self.preconsolidation_pressure_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
 
             
+            # Direct Shear Test (Angle of Friction)
+            if result.parameter.internal_id == '00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr':
+                result.calculated = True
+                result.result_char = round(self.phi_deg,2)
+                if self.phi_deg_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            # Swelling Pressure by Consolidometer Method
+            if result.parameter.internal_id == '9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2':
+                result.calculated = True
+                result.result_char = round(self.avg_swelling_pressure,2)
+                if self.avg_swelling_pressure_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            # Unconsolidated Undrained Triaxial Test (Angle of Friction)
+            if result.parameter.internal_id == '65478h88hhhllly1-ca64-44dd-b0ae-89745785gt41d':
+                result.calculated = True
+                result.result_char = round(self.phi_deg_uu_triaxial_angle,2)
+                if self.phi_deg_uu_triaxial_angle_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            if result.parameter.internal_id == '2r478h88hhhllly1-ca64-44dd-b0ae-897897gghtre0':
+                result.calculated = True
+                result.result_char = round(self.cohesion_uu_triaxial_cohesion,2)
+                if self.cohesion_uu_triaxial_cohesion_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+
             
             
 
@@ -2610,15 +2791,34 @@ class Soil(models.Model):
 
 
 
-    @api.depends('eln_ref')
+    # @api.depends('eln_ref')
+    # def _compute_sample_parameters(self):
+    #     # records = self.env['lerm.eln'].sudo().search([('id','=', record.eln_id.id)]).parameters_result
+    #     # print("records",records)
+    #     # self.sample_parameters = records
+    #     for record in self:
+    #         records = record.eln_ref.parameters_result.parameter.ids
+    #         record.sample_parameters = records
+    #         print("Records",records)
+
+    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
-        # records = self.env['lerm.eln'].sudo().search([('id','=', record.eln_id.id)]).parameters_result
-        # print("records",records)
-        # self.sample_parameters = records
+        # parameter_based_assignment
+        current_user = self.env.user
         for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
+            if not record.eln_ref:
+                record.sample_parameters = [(6, 0, [])]
+                continue
+
+            # filter parameter results by current user
+            user_param_results = record.eln_ref.parameters_result.filtered(
+                lambda r: r.technician and r.technician.id == current_user.id
+            )
+
+            # map to parameter master IDs
+            parameter_ids = user_param_results.mapped('parameter').ids
+
+            record.sample_parameters = [(6, 0, parameter_ids)]
 
 
 

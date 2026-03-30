@@ -391,9 +391,18 @@ class PaverBlock(models.Model):
     #         }           
 
     def open_eln_page(self):
-    # import wdb; wdb.set_trace()
-        for result in self.eln_ref.parameters_result:
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+            # import wdb;wdb.set_trace()
+            
             if result.parameter.internal_id == '23547trew-199c-497a-b3a7-45023c604673':
+                result.calculated = True
                 result.result_char = round(self.area_paver,2)
                 if self.area_paver_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -401,6 +410,7 @@ class PaverBlock(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
             if result.parameter.internal_id == '2147fgrr-eba3-4f15-b33d-679b39f7372e':
+                result.calculated = True
                 result.result_char = round(self.avg_water_absorption,2)
                 if self.avg_water_absorption_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -408,6 +418,7 @@ class PaverBlock(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
             if result.parameter.internal_id == '1457fgrtt-5dc9-4a2a-8bf0-1281d1865a11':
+                result.calculated = True
                 result.result_char = round(self.avg_commpressive,2)
                 if self.avg_commpressive_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -415,6 +426,7 @@ class PaverBlock(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
             if result.parameter.internal_id == '1457fgrtt-5dc9-4a2a-8bf0-121045278hty':
+                result.calculated = True
                 result.result_char = round(self.avg_thickness,2)
                 if self.avg_thickness_nabl == 'pass':
                     result.nabl_status = 'nabl'

@@ -31,7 +31,37 @@ class ConcreteDesign(models.Model):
 
 
     def open_eln_page(self):
-        # import wdb; wdb.set_trace()
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+            # import wdb;wdb.set_trace()
+            
+            
+            if result.parameter.internal_id == 'd04e874e-b00e-41a0-b6f9-fea1affc2a39':
+                result.calculated = True
+            
+            if result.parameter.internal_id == '4c010f3d-0fc8-4231-9e1f-09d6d1b908b5':
+                # result.result_char = round(self.aggregate_elongation,2)
+                result.calculated = True
+                # if self.aggregate_combine_conformity == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+
+            if result.parameter.internal_id == 'd2fceeb5-1d45-476d-a207-4c3d7673194f':
+                # result.result_char = round(self.aggregate_elongation,2)
+                result.calculated = True
+                # if self.aggregate_combine_conformity == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
      
 
         return {
@@ -1282,21 +1312,21 @@ class ConcreteDesign(models.Model):
     
 
 
-    # @api.depends('eln_ref')
-    # def _compute_visible(self):
-    #     for record in self:
+    @api.depends('eln_ref')
+    def _compute_visible(self):
+        for record in self:
           
-    #         # record.sieve_visible = False
-    #         # record.sieve_visible1 = False
+            record.sieve_visible = False
+            record.sieve_visible1 = False
          
 
-    #         for sample in record.sample_parameters:
+            for sample in record.sample_parameters:
               
-                # if sample.internal_id == '4c010f3d-0fc8-4231-9e1f-09d6d1b908b5':
-                #     record.sieve_visible = True
+                if sample.internal_id == '4c010f3d-0fc8-4231-9e1f-09d6d1b908b5':
+                    record.sieve_visible = True
 
-                # if sample.internal_id == 'd2fceeb5-1d45-476d-a207-4c3d7673194f':
-                #     record.sieve_visible1 = True
+                if sample.internal_id == 'd2fceeb5-1d45-476d-a207-4c3d7673194f':
+                    record.sieve_visible1 = True
                
 
     @api.depends('eln_ref')

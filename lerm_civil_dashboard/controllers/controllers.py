@@ -647,6 +647,8 @@ class LermCivilDashboard(http.Controller):
         start_date = kw.get('start_date')
         end_date = kw.get('end_date')
         discipline = kw.get('discipline')
+        lab_id = kw.get('lab_id')
+        company_id = kw.get('company_id')
         search_query = kw.get('search_query', '').strip()
         search_type = kw.get('search_type', 'all') # Options: all, product, srf, ulr, report
 
@@ -666,6 +668,12 @@ class LermCivilDashboard(http.Controller):
                 ]
             except Exception:
                 pass
+        
+        if lab_id and lab_id != 'ALL':
+            domain.append(('lab_location', '=', int(lab_id)))
+            
+        if company_id and company_id != 'ALL':
+            domain.append(('lab_location.company_id', '=', int(company_id)))
 
         # 2. Discipline Filtering
         if discipline and discipline != "ALL":
@@ -720,16 +728,41 @@ class LermCivilDashboard(http.Controller):
                     'uninvoiced': len(material_samples.filtered(lambda s: s.invoice_status == '1-uninvoiced')),
                 })
 
-        # 5. Sort the complete data set (Descending by total_samples)
+        # 5. Add Sample Aging Overview (with Product Breakdown)
+        # Use the same base domain logic from above (Date, Discipline, Search)
+        # But filter for specific aging states as per requirement
+        aging_domain = [
+            ('state', 'in', ['2-alloted', '7-calculated', '3-pending_verification', '5-pending_approval']),
+            ('eln_id', '!=', False)
+        ]
+        # Include current search filters if they match sample fields
+        if discipline and discipline != "ALL":
+            aging_domain.append(('discipline_id.discipline', '=', discipline))
+            
+        if lab_id and lab_id != 'ALL':
+            aging_domain.append(('lab_location', '=', int(lab_id)))
+            
+        if company_id and company_id != 'ALL':
+            aging_domain.append(('lab_location.company_id', '=', int(company_id)))
+        
+        # Apply name filter if it exists
+        if search_query:
+            if search_type in ['all', 'product']:
+                aging_domain.append(('material_id.name', 'ilike', f'%{search_query}%'))
+
+        aging_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='product')
+
+        # 6. Sort the complete data set (Descending by total_samples)
         data.sort(key=itemgetter('total_samples'), reverse=True)
 
-        # 6. Apply Pagination
+        # 7. Apply Pagination
         total_products = len(data)
         offset = (page_number - 1) * page_size
         paginated_data = data[offset : offset + page_size]
 
         return {
             'products': paginated_data,
-            'total_products': total_products
+            'total_products': total_products,
+            'aging_data': aging_buckets
         }
 
