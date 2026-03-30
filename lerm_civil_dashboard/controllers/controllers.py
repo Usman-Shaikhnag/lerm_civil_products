@@ -180,7 +180,17 @@ class LermCivilDashboard(http.Controller):
                 b_name = "Unknown"
                 b_id = 0
                 if breakdown_type == 'technician':
-                    tech = s.eln_id.technician or s.technicians
+                    tech = None
+                    if s.eln_id and s.eln_id.parameters_result:
+                        for param_res in s.eln_id.parameters_result:
+                            if param_res.technician:
+                                tech = param_res.technician
+                                break
+                    if not tech:
+                        tech = s.eln_id.technician or s.technicians
+                        if not tech and s.eln_id.technician_ids:
+                            tech = s.eln_id.technician_ids[0]
+
                     if tech:
                         b_name = tech.name
                         b_id = tech.id
@@ -260,10 +270,14 @@ class LermCivilDashboard(http.Controller):
             return []
 
         # 3. Map samples to technicians (user_id)
-        # A sample can have multiple technicians (via ELN technician_ids)
+        # A sample can have multiple technicians (via ELN technician_ids or parameters_result)
         tech_to_samples = defaultdict(lambda: Sample.browse())
         for s in samples:
             u_ids = set()
+            if s.eln_id and s.eln_id.parameters_result:
+                for param_res in s.eln_id.parameters_result:
+                    if param_res.technician:
+                        u_ids.add(param_res.technician.id)
             if s.technicians:
                 u_ids.add(s.technicians.id)
             if s.eln_id:
@@ -636,100 +650,5 @@ class LermCivilDashboard(http.Controller):
             'products': paginated_data,
             'total_products': total_products,
             'aging_data': aging_buckets
-        }
-        
-    @http.route(['/lerm/product/overview/data'], type='json', auth='user', methods=["POST"])
-    def product_overview_data(self, **kw):
-        """
-        Fetches sample counts grouped by product (material), filtered by date, discipline, and multi-field search query.
-        Returns the paginated product list and the total product count.
-        """
-        start_date = kw.get('start_date')
-        end_date = kw.get('end_date')
-        discipline = kw.get('discipline')
-        search_query = kw.get('search_query', '').strip()
-        search_type = kw.get('search_type', 'all') # Options: all, product, srf, ulr, report
-
-        # Pagination parameters
-        page_size = int(kw.get('page_size', 10))
-        page_number = int(kw.get('page_number', 1))
-
-        Sample = request.env['lerm.srf.sample'].sudo()
-        domain = []
-
-        # 1. Date Filtering
-        if start_date and end_date:
-            try:
-                domain += [
-                    ('sample_received_date', '>=', start_date),
-                    ('sample_received_date', '<=', end_date),
-                ]
-            except Exception:
-                pass
-
-        # 2. Discipline Filtering
-        if discipline and discipline != "ALL":
-            domain.append(('discipline_id.discipline', '=', discipline))
-
-        # 3. Search Query Filtering
-        if search_query:
-            search_domain = []
-            if search_type in ['all', 'product']:
-                search_domain.append(('material_id.name', 'ilike', f'%{search_query}%'))
-            if search_type in ['all', 'srf']:
-                search_domain.append(('srf_id.srf_id', 'ilike', f'%{search_query}%'))
-            if search_type in ['all', 'ulr']:
-                search_domain.append(('ulr_no', 'ilike', f'%{search_query}%'))
-            if search_type in ['all', 'report']:
-                search_domain.append(('kes_no', 'ilike', f'%{search_query}%'))
-            
-            if search_domain:
-                if len(search_domain) > 1:
-                    actual_search_domain = ['|'] * (len(search_domain) - 1) + search_domain
-                else:
-                    actual_search_domain = search_domain
-                domain += actual_search_domain
-
-        # 4. Fetch samples and group by material
-        samples_in_period = Sample.search(domain)
-        # Using mapped and set to ensure we only get unique materials
-        materials = set(samples_in_period.mapped('material_id'))
-
-        data = []
-        for material in materials:
-            material_id = material.id if material else 0
-            material_name = material.name if material else "General / No Material"
-            
-            if material:
-                material_samples = samples_in_period.filtered(lambda s: s.material_id.id == material_id)
-            else:
-                material_samples = samples_in_period.filtered(lambda s: not s.material_id)
-            
-            if len(material_samples) > 0:
-                data.append({
-                    'product_id': material_id,
-                    'product_name': material_name,
-                    'total_samples': len(material_samples),
-                    'assignment_pending': len(material_samples.filtered(lambda s: s.state == '1-allotment_pending')),
-                    'alloted': len(material_samples.filtered(lambda s: s.state == '2-alloted')),
-                    'pending_verification': len(material_samples.filtered(lambda s: s.state == '3-pending_verification')),
-                    'pending_approval': len(material_samples.filtered(lambda s: s.state == '5-pending_approval')),
-                    'in_report': len(material_samples.filtered(lambda s: s.state == '4-in_report')),
-                    'cancelled': len(material_samples.filtered(lambda s: s.state == '6-cancelled')),
-                    'invoiced': len(material_samples.filtered(lambda s: s.invoice_status == '2-invoiced')),
-                    'uninvoiced': len(material_samples.filtered(lambda s: s.invoice_status == '1-uninvoiced')),
-                })
-
-        # 5. Sort the complete data set (Descending by total_samples)
-        data.sort(key=itemgetter('total_samples'), reverse=True)
-
-        # 6. Apply Pagination
-        total_products = len(data)
-        offset = (page_number - 1) * page_size
-        paginated_data = data[offset : offset + page_size]
-
-        return {
-            'products': paginated_data,
-            'total_products': total_products
         }
 
