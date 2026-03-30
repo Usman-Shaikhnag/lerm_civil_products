@@ -196,28 +196,43 @@ class DriveFile(models.Model):
         if not storage:
             return
 
-        transport = paramiko.Transport((storage.host, storage.port or 22))
-        transport.connect(username=storage.username, password=storage.password)
-        sftp = paramiko.SFTPClient.from_transport(transport)
+        try:
+            transport = paramiko.Transport((storage.host, storage.port or 22))
+            transport.connect(username=storage.username, password=storage.password)
+            sftp = paramiko.SFTPClient.from_transport(transport)
+        except Exception as e:
+            _logger.error(f"sync_with_sftp connection failed: {e}")
+            return
 
         all_files = self.sudo().search([])
-        missing = []
-        # import wdb;wdb.set_trace()
+        missing_ids = []
+        missing_names = []
+
         for file in all_files:
+            if not file.external_url:
+                continue
+                
             if file.external_url.startswith(storage.name):
                 remote_path = f"/home/{file.external_url}"
             else:
                 remote_path = f"/home/{storage.name}/{file.external_url}"
+                
             try:
                 sftp.stat(remote_path)
             except FileNotFoundError:
-                missing.append(file.name)
-                file.unlink()
+                missing_ids.append(file.id)
+                missing_names.append(file.name)
+            except Exception:
+                pass  # Ignore other stat errors so it doesn't crash
 
         sftp.close()
         transport.close()
-        if missing:
-            _logger.warning(f"Removed metadata for {len(missing)} missing SFTP files: {missing}")
+        
+        if missing_ids:
+            _logger.warning(f"Removed metadata for {len(missing_names)} missing SFTP files: {missing_names}")
+            # Delete DB records only, bypassing overridden unlink that reconnects to SFTP
+            missing_records = self.browse(missing_ids)
+            super(DriveFile, missing_records).unlink()
 
     def _check_permission(self, level):
         for record in self:
