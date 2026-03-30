@@ -14,6 +14,8 @@ class WbmMechanical(models.Model):
     _rec_name = "name"
 
 
+
+
     name = fields.Char("Name",default="WBM")
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 
@@ -22,9 +24,127 @@ class WbmMechanical(models.Model):
 
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
-     
+    
+
+
+
     def open_eln_page(self):
-        # import wdb; wdb.set_trace()
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+           
+            # Dry Gradation
+            if result.parameter.internal_id == '4525465214-3497-4b7f-819a-a26f25c9848':
+                result.calculated = True
+             
+
+
+                # Water Absorbtion
+            if result.parameter.internal_id == '42135869f-6974-4a89-9a32-2375ca190815':
+                result.calculated = True
+               
+
+
+            #  Elongation 
+            if result.parameter.internal_id == '21045gh-638d-4e6f-b258-df8a2fc0ea5c':
+                result.result_char = round(self.aggregate_elongation,2)
+                result.calculated = True
+                if self.aggregate_elongation_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            # Flakiness Index
+            if result.parameter.internal_id == '2103654tr-8125-4f5f-aa7c-f82d1416d5eb':
+                result.result_char = round(self.aggregate_flakiness,2)
+                result.calculated = True
+                if self.aggregate_flakiness_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            
+            # impact value
+            if result.parameter.internal_id == 'gh124113-e282-488c-9dbb-16e9f14b065b':
+                result.result_char = round(self.average_impact_value,2)
+                result.calculated = True
+                if self.average_impact_value_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+                # Abrasion Value
+            if result.parameter.internal_id == '14257scf-9ee6-4115-a8db-015d7cb6d5c7':
+                result.result_char = round(self.abrasion_value_percentage,2)
+                result.calculated = True
+                if self.abrasion_value_percentage_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+                #   Liquid Limit
+            if result.parameter.internal_id == '321045gtr-d02d-43fd-b4a7-dd5a6c6cd36e':
+                result.result_char = round(self.liquid_limit,2)
+                result.calculated = True
+                if self.liquid_limit_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+
+             # Plastic Limit 
+            if result.parameter.internal_id == '124578fgh-d228-42f5-9927-69ca7dadbcee':
+                result.calculated = True
+                
+            
+             
+             #  plasticity index
+            if result.parameter.internal_id == '2124578s-0d26-4a6c-8bff-0269dde01d2a':
+                result.result_char = round(self.average_plastic_moisture,2)
+                result.calculated = True
+                if self.plasticity_index_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue 
+
+
+
+            # Density Relation Using Heavy Compaction
+            if result.parameter.internal_id == '214587-b50a-42ec-8489-75e615e51466':
+                result.calculated = True
+                
+
+
+             # CBR
+            if result.parameter.internal_id == '124576hh-6461-4137-ba6a-381d0229b973':
+                result.calculated = True
+               
+
+
+            
+           
+
+
+
+            
+
+
+
 
         return {
                 'view_mode': 'form',
@@ -807,30 +927,7 @@ class WbmMechanical(models.Model):
 
 
     def generate_line_chart_density(self):
-        # Prepare data for the chart
-        # x_values = []
-        # y_values = []
-        # for line in self.density_relation_table:
-        #     x_values.append(line.moisture)
-        #     y_values.append(line.dry_density)
-        
-        # # Create the line chart
-        # plt.plot(x_values, y_values, marker='o')
-        # plt.xlabel('% Moisture')
-        # plt.ylabel('Dry Density')
-        # plt.title('Density Relation Using Heavy Compaction')
-
-
-        # plt.ylim(bottom=0, top=max(y_values) + 10)
-        
-        # buffer = io.BytesIO()
-        # plt.savefig(buffer, format='png')
-        # plt.close()  # Close the figure to free up resources
-        # buffer.seek(0)
-    
-        # # Convert the chart image to base64
-        # chart_image = base64.b64encode(buffer.read()).decode('utf-8')  
-        # return chart_image
+       
         plt.figure(figsize=(12, 6))
         x_value = []
         y_value = []
