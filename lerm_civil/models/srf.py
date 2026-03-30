@@ -1149,6 +1149,9 @@ class CreateSampleWizard(models.TransientModel):
     grade_required = fields.Boolean(string="Grade Required",compute="compute_grade_required")
 
     sample_qty = fields.Integer(string="Sample Quantity",default=1)
+    unit = fields.Many2one('uom.uom',string="Unit")
+    uom1 = fields.Char(string="UOM")
+    lab_id = fields.Char(string="Lab ID")
     received_by_id = fields.Many2one('res.users',string="Received By",default=lambda self: self.env.user)
     sample_received_date = fields.Date(string="Sample Received Date")
     sample_condition = fields.Selection([

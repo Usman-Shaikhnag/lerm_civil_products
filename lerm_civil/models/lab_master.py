@@ -40,6 +40,9 @@ class LabMaster(models.Model):
 
 
 
+
+
+
 class LabLocationMaster(models.Model):
     _name = 'lerm.lab.location.master'
     _rec_name = 'location_name'

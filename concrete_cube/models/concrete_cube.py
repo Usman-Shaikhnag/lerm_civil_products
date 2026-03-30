@@ -488,9 +488,13 @@ class MechanicalConcreteCubeLine(models.Model):
    
 
 
-    length = fields.Float(string="L (mm)", compute="_compute_l_b", store=True)
-    breadth = fields.Float(string="B (mm)", compute="_compute_l_b", store=True)
+    length = fields.Float(string="L (mm)", compute="_compute_l_b",inverse="_inverse_l_b", store=True,digits=(8,0))
+    breadth = fields.Float(string="B (mm)", compute="_compute_l_b", inverse="_inverse_l_b",store=True,digits=(8,0))
     x_symbol = fields.Char(default="X")
+
+    def _inverse_l_b(self):
+     for rec in self:
+        pass
    
 
     @api.depends('parent_id.size_id.size')
