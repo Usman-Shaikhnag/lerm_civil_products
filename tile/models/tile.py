@@ -17,6 +17,31 @@ class Tile(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
 
+    @api.depends("eln_ref")
+    def _compute_size_id(self):
+        for record in self:
+            print("Size iD",record.eln_ref.size_id)
+            record.size_id = record.eln_ref.size_id.id
+
+
+    @api.depends('eln_ref')
+    def _compute_sample_parameters(self):
+        for record in self:
+            records = record.eln_ref.parameters_result.parameter.ids
+            record.sample_parameters = records
+            print("Records",records)
+
+        
+    def get_all_fields(self):
+        record = self.env['mechanical.tile'].browse(self.ids[0])
+        field_values = {}
+        for field_name, field in record._fields.items():
+            field_value = record[field_name]
+            field_values[field_name] = field_value
+
+        return field_values
+
+
 
     product_id = fields.Many2one('product.template', string="Product", compute="_compute_product_id",store=True)
 
@@ -932,8 +957,8 @@ class Tile(models.Model):
         
         for record in self:
             record.average_water_bulk_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1578liop-ed58-4374-bda7-2825e12f307c')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1578liop-ed58-4374-bda7-2825e12f307c')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5d81b405-ed58-4374-bda7-2825e12f307c')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5d81b405-ed58-4374-bda7-2825e12f307c')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
@@ -957,8 +982,8 @@ class Tile(models.Model):
         
         for record in self:
             record.average_water_bulk_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1578liop-ed58-4374-bda7-2825e12f307c')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1578liop-ed58-4374-bda7-2825e12f307c')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5d81b405-ed58-4374-bda7-2825e12f307c')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5d81b405-ed58-4374-bda7-2825e12f307c')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -1087,7 +1112,7 @@ class Tile(models.Model):
     def _compute_requirement_water(self):
         """Fetch multiple permissable_limit values from lerm.parameter.master where internal_id matches"""
         param_master = self.env['lerm.parameter.master'].search([
-            ('internal_id', '=', '1578liop-ed58-4374-bda7-2825e12f307c')
+            ('internal_id', '=', '5d81b405-ed58-4374-bda7-2825e12f307c')
         ], limit=1)
 
         for record in self:
@@ -1309,8 +1334,8 @@ class Tile(models.Model):
         
         for record in self:
             record.average_modulus_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5879opff-6bd7-40d4-82d8-404af0928ae9')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5879opff-6bd7-40d4-82d8-404af0928ae9')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f9fb0d98-1891-496f-9ef3-4745c5598085')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f9fb0d98-1891-496f-9ef3-4745c5598085')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
@@ -1334,8 +1359,8 @@ class Tile(models.Model):
         
         for record in self:
             record.average_modulus_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5879opff-6bd7-40d4-82d8-404af0928ae9')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5879opff-6bd7-40d4-82d8-404af0928ae9')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f9fb0d98-1891-496f-9ef3-4745c5598085')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f9fb0d98-1891-496f-9ef3-4745c5598085')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -1414,7 +1439,7 @@ class Tile(models.Model):
     def _compute_requirement_modulus(self):
         """Fetch multiple permissable_limit values from lerm.parameter.master where internal_id matches"""
         param_master = self.env['lerm.parameter.master'].search([
-            ('internal_id', '=', '5879opff-6bd7-40d4-82d8-404af0928ae9')
+            ('internal_id', '=', 'f9fb0d98-1891-496f-9ef3-4745c5598085')
         ], limit=1)
 
         for record in self:
@@ -1808,7 +1833,164 @@ class Tile(models.Model):
 
 
     def open_eln_page(self):
-        # import wdb; wdb.set_trace()
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+             
+
+             
+
+            # Dimension
+            if result.parameter.internal_id == '1db41e6d-550e-4c5d-a923-7510a616beb5':
+                result.calculated = True
+                
+
+            # Straightness
+            if result.parameter.internal_id == '19999f82-79c0-44a8-9379-f40dd33235aa':
+                result.calculated = True
+                result.result_char = round(self.deviation_straightness,2)
+                if self.deviation_straightness_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Rectangularity
+            if result.parameter.internal_id == '4e209b70-f6b9-49b9-bab6-f38292f64b1c':
+                result.calculated = True
+                result.result_char = round(self.deviation_rectangularity,2)
+                if self.deviation_rectangularity_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Centre Curvature
+            if result.parameter.internal_id == '873e02d1-db08-43d8-a88f-f6de09d41955':
+                result.calculated = True
+                result.result_char = round(self.deviation_centre_curvature,2)
+                if self.deviation_centre_curvature_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Edge Curvature
+            if result.parameter.internal_id == '2c4efee6-d22a-4eec-afbb-5435f3041f3f':
+                result.calculated = True
+                result.result_char = round(self.deviation_edge_curvature,2)
+                if self.deviation_edge_curvature_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            
+            # Warpage
+            if result.parameter.internal_id == '91fc2258-6bd7-40d4-82d8-404af0928ae9':
+                result.calculated = True
+                result.result_char = round(self.deviation_warpage,2)
+                if self.deviation_warpage_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            
+            # Water Absorption
+            if result.parameter.internal_id == '5d81b405-ed58-4374-bda7-2825e12f307c':
+                result.calculated = True
+                result.result_char = round(self.average_water_bulk,2)
+                if self.average_water_bulk_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Modulus Of Rupture And Breaking Strength
+            if result.parameter.internal_id == 'f9fb0d98-1891-496f-9ef3-4745c5598085':
+                result.calculated = True
+                result.result_char = round(self.average_modulus,2)
+                if self.average_modulus_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Crazing Resistance Test
+            if result.parameter.internal_id == '0157651d-76f3-428a-9a89-f47593d1fd42':
+                result.calculated = True
+                # result.result_char = round(self.soundness_mgso4,2)
+                # if self.soundness_mgso4_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+
+            # Resistance to Staining
+            if result.parameter.internal_id == 'daa5edf4-4f0a-4625-a1b8-4b365204be34':
+                result.calculated = True
+                # result.result_char = round(self.soundness_mgso4,2)
+                # if self.soundness_mgso4_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+            
+            
+            # Resistance to household Chemicals and swimming pool water cleansers except to cleasing agent containing hydroflouric acids and its compounds.
+            if result.parameter.internal_id == '65eefe82-1c17-43d6-8d24-31cad21f017a':
+                result.calculated = True
+                # result.result_char = round(self.soundness_mgso4,2)
+                # if self.soundness_mgso4_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+            
+            # Surface Quality
+            if result.parameter.internal_id == '56f97e43-cd99-458c-9bce-4c72ba6d7e84':
+                result.calculated = True
+                # result.result_char = round(self.soundness_mgso4,2)
+                # if self.soundness_mgso4_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+
+            # Scratch hardness According to Moh's Scale
+            if result.parameter.internal_id == 'ecfb0b0b-0774-4296-af7b-6151fbf4f968':
+                result.calculated = True
+                result.result_char = round(self.scratch_hardness_avg,2)
+                # if self.soundness_mgso4_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+
+            # Deviation in Thickness %
+            if result.parameter.internal_id == '35777f82-79c0-44a8-9379-f40dd33235uyt':
+                result.calculated = True
+                result.result_char = round(self.deviation_thickness,2)
+                if self.deviation_thickness_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Bulk Density
+            if result.parameter.internal_id == '25489lku-2bb3-4821-958d-ec2c81db5698':
+                result.calculated = True
+                result.result_char = round(self.bulk_density,2)
+                if self.bulk_density_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
 
         return {
                 'view_mode': 'form',
@@ -1834,15 +2016,34 @@ class Tile(models.Model):
 
 
 
-    @api.depends('eln_ref')
+    # @api.depends('eln_ref')
+    # def _compute_sample_parameters(self):
+    #     # records = self.env['lerm.eln'].sudo().search([('id','=', record.eln_id.id)]).parameters_result
+    #     # print("records",records)
+    #     # self.sample_parameters = records
+    #     for record in self:
+    #         records = record.eln_ref.parameters_result.parameter.ids
+    #         record.sample_parameters = records
+    #         print("Records",records)
+
+    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
-        # records = self.env['lerm.eln'].sudo().search([('id','=', record.eln_id.id)]).parameters_result
-        # print("records",records)
-        # self.sample_parameters = records
+        # parameter_based_assignment
+        current_user = self.env.user
         for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
+            if not record.eln_ref:
+                record.sample_parameters = [(6, 0, [])]
+                continue
+
+            # filter parameter results by current user
+            user_param_results = record.eln_ref.parameters_result.filtered(
+                lambda r: r.technician and r.technician.id == current_user.id
+            )
+
+            # map to parameter master IDs
+            parameter_ids = user_param_results.mapped('parameter').ids
+
+            record.sample_parameters = [(6, 0, parameter_ids)]
 
 
 
@@ -1854,6 +2055,11 @@ class Tile(models.Model):
             field_values[field_name] = field_value
 
         return field_values
+    
+    @api.depends('eln_ref')
+    def _compute_grade_id(self):
+        if self.eln_ref:
+            self.grade = self.eln_ref.grade_id.id
 
 
 class DimensionTile(models.Model):

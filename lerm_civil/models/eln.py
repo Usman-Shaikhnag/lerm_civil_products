@@ -25,6 +25,7 @@ class ELN(models.Model):
     ir_model = fields.Many2one('ir.model',string="Model")
 
     srf_id = fields.Many2one('lerm.civil.srf',string="SRF ID")
+    lab_location = fields.Many2one('lerm.lab.master', string="Lab")
     technician = fields.Many2one('res.users',string="Technicians",tracking=5)
     technician_ids = fields.Many2many('res.users',string='Technicians',tracking=5,store=True,)
     sample_id = fields.Many2one('lerm.srf.sample',string='UID',tracking=True,ondelete="cascade")
