@@ -180,7 +180,17 @@ class LermCivilDashboard(http.Controller):
                 b_name = "Unknown"
                 b_id = 0
                 if breakdown_type == 'technician':
-                    tech = s.eln_id.technician or s.technicians
+                    tech = None
+                    if s.eln_id and s.eln_id.parameters_result:
+                        for param_res in s.eln_id.parameters_result:
+                            if param_res.technician:
+                                tech = param_res.technician
+                                break
+                    if not tech:
+                        tech = s.eln_id.technician or s.technicians
+                        if not tech and s.eln_id.technician_ids:
+                            tech = s.eln_id.technician_ids[0]
+
                     if tech:
                         b_name = tech.name
                         b_id = tech.id
@@ -260,10 +270,14 @@ class LermCivilDashboard(http.Controller):
             return []
 
         # 3. Map samples to technicians (user_id)
-        # A sample can have multiple technicians (via ELN technician_ids)
+        # A sample can have multiple technicians (via ELN technician_ids or parameters_result)
         tech_to_samples = defaultdict(lambda: Sample.browse())
         for s in samples:
             u_ids = set()
+            if s.eln_id and s.eln_id.parameters_result:
+                for param_res in s.eln_id.parameters_result:
+                    if param_res.technician:
+                        u_ids.add(param_res.technician.id)
             if s.technicians:
                 u_ids.add(s.technicians.id)
             if s.eln_id:
