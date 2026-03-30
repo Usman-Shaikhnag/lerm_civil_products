@@ -155,6 +155,14 @@
                     </table>
                     </div>
 
+
+                    <div invisible = "sieve_visible == False" class="custom_table_borders">
+                        <button name="action_generate_sieve_graph"
+        type="object"
+        string="Generate Graph"
+        class="btn-primary"/>
+                    </div>
+
                     
                     <div invisible = "sieve_visible == False" class="custom_table_borders text-center">
                         <field name="graph_image_slive" widget="image" readonly="1"/>
@@ -574,6 +582,86 @@
                     </div> -->
 
 
+                    <!--  -->
+
+
+                     <div invisible = "heavy_visible == False">
+                        <h1 class="text-center">
+                            <field name="heavy_name" readonly="1" nolabel="1"/>
+                            <field name="heavy_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    
+                   
+                 
+                    <div invisible = "heavy_visible == False">
+                        <field name="heavy_table">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name="serial_no"/>
+                                <field name="amount_soil"/>
+                                <field name="amount_water"/>
+                                <field name="empty_wt_mould"/>
+                                <field name="wt_soil"/>
+                                <field name="wt_of_wet"/>
+                                <field name="volume_mould"/>
+                                <field name="bulk_density"/>
+                                <field name="con_no"/>
+                                <field name="empty_wt"/>
+                                <field name="wet_con_ovenwet"/>
+                                <field name="wet_con_ovendry"/>
+                                <field name="water_content"/>
+                                <field name="dry_density"/>
+                            </tree>
+                        </field>
+                    </div>
+
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not heavy_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="max_dry_density">Max Dry Density </label></td>
+                                <td><field name="max_dry_density"/><span> g/cc</span></td>
+                                <td><label for="omc">Optimum Moisture Content </label></td>
+                                <td><field name="omc"/><span> %</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div invisible = "heavy_visible == False" class="custom_table_borders">
+                      <button name="action_generate_graph"
+        type="object"
+        string="Generate Graph"
+        class="btn-primary"/>
+                    </div>
+
+                    
+
+                    <div invisible = "heavy_visible == False" class="custom_table_borders text-center">
+                      <field name="graph_image_density" widget="image" readonly="1"/>
+                    </div>
+                  
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not heavy_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="heavy_table_conformity"></label></td>
+                                <td><field  name="heavy_table_conformity"
+                                            decoration-success="heavy_table_conformity == 'pass'" 
+                                            decoration-danger="heavy_table_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                            <tr>
+                                <td><label for="heavy_table_nabl"></label></td>
+                                <td><field name="heavy_table_nabl"
+                                            decoration-success="heavy_table_nabl == 'pass'" 
+                                            decoration-danger="heavy_table_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                   
+
+
                     <!-- FSI -->
                     <div invisible="fsi_visible == False">
                         <h1 class="text-center">
@@ -583,22 +671,45 @@
                     </div>
                     
                     <div class="d-flex gap-2">
-                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not fsi_visible">
-                            <tbody>
-                                <tr>
-                                    <td><label for="wt_sample" ></label></td>
-                                    <td><field name="wt_sample" class="blue-input" /></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="valume_water"></label></td>
-                                    <td><field name="valume_water" class="blue-input" /></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="valime_kerosen" ></label></td>
-                                    <td><field name="valime_kerosen" class="blue-input" /></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <table class="table table-sm table-bordered custom_table_borders" invisible="not fsi_visible" style="white-space:nowrap;">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Sample 1</th>
+                                <th>Sample 2</th>
+                                <!-- <th>Result</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="fw-bold"> Weight of the soil sample</span></td>
+                                <td><field name="wt_sample"/></td>
+                                <td><field name="wt_sample1"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">The volume of soil specimen read from the graduated cylinder containing distilled water</span></td>
+                                <td><field name="valume_water"/></td>
+                                <td><field name="valume_water1"/></td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">The volume of soil specimen read from the graduated cylinder containing kerosene</span></td>
+                                <td><field name="valime_kerosen" readonly="1"/></td>
+                                <td><field name="valime_kerosen1" readonly="1"/></td>
+                            </tr>
+
+                             <tr>
+                                <td><span class="fw-bold">FSI (%)</span></td>
+                                <td><field name="fsi1"/></td>
+                                <td><field name="fsi2"/></td>
+                            </tr>
+
+                           
+
+                           
+
+                           
+                        </tbody>
+                    </table>
                         
                         <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not fsi_visible">
                             <tbody>
@@ -864,18 +975,27 @@
                             <tr>
                                 <td><label for="m1">Mass of Density Bottle (M1)</label></td>
                                 <td><field name="m1" class="blue-input"/>g</td>
+                                <td><field name="m11" class="blue-input"/>g</td>
                             </tr>
                             <tr>
                                 <td><label for="m2">Mass of Bottle &amp; Dry Soil (M2)</label></td>
                                 <td><field name="m2" class="blue-input" />g</td>
+                                <td><field name="m22" class="blue-input" />g</td>
                             </tr>
                             <tr>
                                 <td><label for="m3">Mass of Bottle, Soil &amp; Liquid (M3)</label></td>
                                 <td><field name="m3" class="blue-input"/>g</td>
+                                <td><field name="m33" class="blue-input"/>g</td>
                             </tr>
                              <tr>
                                 <td><label for="m4">Mass of Bottle Full of Liquid (M4) </label></td>
                                 <td><field name="m4" class="blue-input" />g</td>
+                                <td><field name="m44" class="blue-input" />g</td>
+                            </tr>
+                             <tr>
+                                <td><label for="specific_gravity_1">Specific Gravity (G) </label></td>
+                                <td><field name="specific_gravity_1" class="blue-input" />g</td>
+                                <td><field name="specific_gravity_2" class="blue-input" />g</td>
                             </tr>
                             
                         </tbody>
@@ -884,21 +1004,21 @@
                     <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not specific_gravity_visible">
                             <tbody>
                                 <tr>
-                                <td><label for="specific_gravity">Specific Gravity (G)</label></td>
-                                <td><field name="specific_gravity"/><span></span></td>
+                                <td><label for="avg_specific_gravity">Average Specific Gravity (G)</label></td>
+                                <td><field name="avg_specific_gravity"/><span></span></td>
                             </tr>
                                 <tr>
-                                <td><label for="specific_gravity_conformity"></label></td>
-                                <td><field name="specific_gravity_conformity"
-                                            decoration-success="specific_gravity_conformity == 'pass'" 
-                                            decoration-danger="specific_gravity_conformity == 'fail'" 
+                                <td><label for="avg_specific_gravity_conformity"></label></td>
+                                <td><field name="avg_specific_gravity_conformity"
+                                            decoration-success="avg_specific_gravity_conformity == 'pass'" 
+                                            decoration-danger="avg_specific_gravity_conformity == 'fail'" 
                                             readonly="1" /></td>
                                 </tr>
                                 <tr>
-                                <td><label for="specific_gravity_nabl"></label></td>
-                                <td><field name="specific_gravity_nabl"
-                                            decoration-success="specific_gravity_nabl == 'pass'" 
-                                            decoration-danger="specific_gravity_nabl == 'fail'" 
+                                <td><label for="avg_specific_gravity_nabl"></label></td>
+                                <td><field name="avg_specific_gravity_nabl"
+                                            decoration-success="avg_specific_gravity_nabl == 'pass'" 
+                                            decoration-danger="avg_specific_gravity_nabl == 'fail'" 
                                             readonly="1" /></td>
                                 </tr>
                             </tbody>
@@ -1404,6 +1524,24 @@
                                 </tr>
                             </tbody>
                         </table> -->
+
+
+
+                         <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
 
 
 

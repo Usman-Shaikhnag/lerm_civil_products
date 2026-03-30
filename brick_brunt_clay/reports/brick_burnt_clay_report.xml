@@ -142,7 +142,7 @@
 					<div t-if="brick.compressive_strength_visible and (brick.comp_strength_nabl == 'pass' and nabl or (brick.comp_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)" style="margin-top:20px;">
 						<td>
 							<span>
-								<strong>Compressive strength :</strong><![CDATA[&nbsp;]]>
+								<strong>Compressive strength :</strong><![CDATA[&nbsp;]]> <strong>IS 3495 (Part 1) : 2019</strong><![CDATA[&nbsp;]]>
 								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','97928829-9b1f-4091-aa7f-4b76f98eb47f')]).parameter_table" t-as="parameter">
 									<t t-if="parameter.grade.id == eln.grade_id.id">
 										<span t-field="parameter.specification"/>
@@ -151,7 +151,7 @@
 							</span>
 						</td>
 
-						<table t-if="brick.compressive_strength_visible" style="margin-top:30px;">
+						<table t-if="brick.compressive_strength_visible" style="margin-top:10px;">
 							<t t-set="i" t-value="0"/>
 							<thead>
 								<tr>
@@ -209,7 +209,7 @@
 								
 							</tbody>
 						</table>
-						<table t-if="brick.compressive_strength_visible" style="margin-top: 20px;max-width:400px">
+						<table t-if="brick.compressive_strength_visible" style="margin-top: 10px;max-width:400px">
 							<tr>
 								<td style="font-weight: bold;">Average Compressive Strength</td>
 								<td style="text-align: center;">
@@ -472,66 +472,33 @@
 					<div>
 
 					</div>
-					<div style="margin-top:20px; page-break-inside: avoid;" class="noteContainer">
-						<div>
-							<b>Remarks: -</b>
+					<div  class="noteContainer">
+							<table class="table table-bordered">
+							<tr>
+								<td style="padding: 2px; font-style: italic; font-size: 12px;">
+									<b>Note:-</b>
+									<!-- &#160;&#160;(i) The results relate only to the items tested 
+									&#160;&#160;(ii) This test report should not be reproduced except in full, without written approval of this Laboratory 
+									&#160;&#160;(iii) Any corrections invalidate the test reports 
+									&#160;&#160;(iv) Any Query regarding the report must be reported immediately. 
+									&#160;&#160;(v) * mark indicate tests which are not in the scope of NABL. 
+									&#160;&#160;(vi) # mark indicates Details given by Client. -->
+
+									<t t-if="brick.notes_id">
+										<t t-foreach="brick.notes_id" t-as="n">
+											<span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span><br/><br/>
+										</t>
+									</t>
+									<t t-if="eln.has_witness">
+										&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
+									</t>
+									<t t-if="eln.remarks">
+										&#160;&#160;<span t-esc="eln.remarks"/>
+									</t>
+								</td>
+							</tr>
+						</table>
 						</div>
-						<!-- <div>
-							<ul>
-								<li>
-								The Test Report(s) is/are valid only to the sample submitted to the laboratory.
-								</li>
-								<li>
-								Sample(s) was/were not drawn by laboratory.
-								</li>
-								<li>
-								This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.
-								</li>
-									<li>
-										  - Information provided by the customer.
-									</li>
-
-								<li t-if="eln.has_witness">
-										Test witnessed by : <span t-esc="eln.witness_name"/>
-										
-									</li>
-									<li t-if="eln.remarks">
-										<span t-esc="eln.remarks"/>
-									</li>
-							</ul>
-						</div> -->
-
-
-						<div>
-							<ul>
-								<li>
-								This test report relates only to the samples tested.
-								</li>
-								<li>
-								The results are valid only for specific items and conditions tested and shall not be used to claim product certification or endorsement by the laboratory.
-								</li>
-								<li>
-								This report shall not be reproduced, except in full, without prior written approval of the laboratory.
-								</li>
-									<li>
-										 The laboratory assumes no responsibility for the selection, sampling, or interpretation of the results by any third party.
-									</li>
-									<li>
-										 Any alteration, editing, or misuse of this report will render it invalid.
-									</li>
-
-								<li t-if="eln.has_witness">
-										Test witnessed by : <span t-esc="eln.witness_name"/>
-										
-									</li>
-									<li t-if="eln.remarks">
-										<span t-esc="eln.remarks"/>
-									</li>
-							</ul>
-						</div>
-
-						
-					</div>
 
 					<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
 						<div>

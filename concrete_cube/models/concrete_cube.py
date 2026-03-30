@@ -24,6 +24,44 @@ class MechanicalConcreteCube(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="ELN")
 
 
+    notes_id = fields.One2many('mechanical.concrete.cube.notes','parent_id',string="Notes")
+
+
+    @api.model
+    def default_get(self, fields):
+        res = super(MechanicalConcreteCube, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The results relate only to the items tested ',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'This test report should not be reproduced except in full, without written approval of this Laboratory ',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'Any corrections invalidate the test reports ',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'Any Query regarding the report must be reported immediately.',
+            }),
+            (0, 0, {
+                'sr_no': 'e',
+                'notes': '* mark indicate tests which are not in the scope of NABL.',
+            }),
+            (0, 0, {
+                'sr_no': 'f',
+                'notes': '# mark indicates Details given by Client.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
+
 
 #     curing_condition = fields.Char(
 #     string="Curing Condition",
@@ -476,9 +514,13 @@ class MechanicalConcreteCubeLine(models.Model):
    
 
 
-    length = fields.Float(string="L (mm)", compute="_compute_l_b", store=True)
-    breadth = fields.Float(string="B (mm)", compute="_compute_l_b", store=True)
+    length = fields.Float(string="L (mm)", compute="_compute_l_b",inverse="_inverse_l_b", store=True,digits=(8,0))
+    breadth = fields.Float(string="B (mm)", compute="_compute_l_b", inverse="_inverse_l_b",store=True,digits=(8,0))
     x_symbol = fields.Char(default="X")
+
+    def _inverse_l_b(self):
+     for rec in self:
+        pass
    
 
     @api.depends('parent_id.size_id.size')
@@ -648,3 +690,11 @@ class MechanicalConcreteCubeGradeLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.sr_no = index + 1
+
+
+class MechanicalConcreteCubeNotes(models.Model):
+    _name = "mechanical.concrete.cube.notes"
+
+    parent_id = fields.Many2one('mechanical.concrete.cube',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")

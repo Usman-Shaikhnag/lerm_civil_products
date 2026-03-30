@@ -26,6 +26,44 @@ class MechanicalBricksBurntClay(models.Model):
     string="Lab",
     default=lambda self: self.env['lerm.lab.master'].search([], limit=1)
 )
+    
+
+    notes_id = fields.One2many('bricks.burnt.clay.notes','parent_id',string="Notes")
+
+
+    @api.model
+    def default_get(self, fields):
+        res = super(MechanicalBricksBurntClay, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The results relate only to the items tested ',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'This test report should not be reproduced except in full, without written approval of this Laboratory ',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'Any corrections invalidate the test reports ',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'Any Query regarding the report must be reported immediately.',
+            }),
+            (0, 0, {
+                'sr_no': 'e',
+                'notes': '* mark indicate tests which are not in the scope of NABL.',
+            }),
+            (0, 0, {
+                'sr_no': 'f',
+                'notes': '# mark indicates Details given by Client.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
 
     def to_roman(self, num):
       val = [
@@ -422,3 +460,11 @@ class WaterAbsorptionLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
+
+class BricksBurntClayNotes(models.Model):
+    _name = "bricks.burnt.clay.notes"
+
+    parent_id = fields.Many2one('mechanical.bricks.burnt.clay',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")

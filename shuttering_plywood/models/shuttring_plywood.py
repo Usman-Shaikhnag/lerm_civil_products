@@ -523,7 +523,46 @@ class ShutteringPlywood(models.Model):
 
 
     def open_eln_page(self):
-        # import wdb; wdb.set_trace()
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+            # import wdb;wdb.set_trace()
+            
+            
+            
+            if result.parameter.internal_id == '12578trew3-7a9c-4616-bad5-88eb1b2607456':
+                # result.result_char = round(self.aggregate_elongation,2)
+                result.calculated = True
+                # if self.aggregate_combine_conformity == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
+
+            if result.parameter.internal_id == '35478tyus14-7a9b-4616-bad5-88eb1b26070834':
+                result.calculated = True
+               
+
+            if result.parameter.internal_id == '57896543fght-7a9b-4616-bad5-88eb1b260hj653':
+                result.calculated = True
+
+
+            if result.parameter.internal_id == '12547gtre2-7a7n-4616-bad5-88eb1b260tr878ng':
+                result.calculated = True
+
+            if result.parameter.internal_id == '124578gte-7a9c-4616-bad5-88eb1b29087y':
+                result.result_char = round(self.average_density_shuttering,2)
+                result.calculated = True
+                if self.average_density_shuttering_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
 
         return {
                 'view_mode': 'form',

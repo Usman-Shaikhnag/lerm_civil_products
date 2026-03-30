@@ -206,10 +206,15 @@
                             <field name="price" invisible='1'/>
                             <field name="size_id" domain="[('id', 'in', size_ids)]" options="{'no_create': True}"/>
                             <field name="sample_qty" readonly="is_update == True"/>
+
+                            
+
                             <field name="sample_received_date" readonly="1"/>
                             <field name="location"/>
                             <field name="casting"/>
                             <field name="grade_required"/>
+                             <field name="lab_id"/>
+                            
                             <field name="group_ids" invisible='1'/>
                             <field name="size_ids" invisible='1'/>
                         </group>
@@ -236,7 +241,7 @@
                     <table class="table table-sm">
                         <thead>
                             <tr>
-                                <th>Sample Quantity</th>
+                                <th>Sample UOM</th>
                                 <th>Received</th>
                                 <th>Consumed</th>
                                 <th>Balance</th>
@@ -244,7 +249,8 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td><field name="uom_id"/></td>
+                            
+                                <td><field name="uom1"/></td>
                                 <td><field name="quantity_received"/></td>
                                 <td><field name="quantity_consumed"/></td>
                                 <td><field name="quantity_balance"/></td>
