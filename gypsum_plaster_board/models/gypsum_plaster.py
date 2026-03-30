@@ -390,8 +390,61 @@ class GypsumPlaster(models.Model):
 
 
 
-    def open_eln_page(self):
+    # def open_eln_page(self):
         # import wdb; wdb.set_trace()
+
+    def open_eln_page(self):
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+          
+            
+            if result.parameter.internal_id == '3587lpiy-7a9c-4616-bad5-88eb1b260747':
+                result.result_char = round(self.average_density,2)
+                result.calculated = True
+                if self.average_density_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            if result.parameter.internal_id == '34597lpuy-f555-4f7c-beae-9547435d852a':
+                result.result_char = round(self.average_water_absorption,2)
+                result.calculated = True
+                if self.average_water_absorption_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+
+            if result.parameter.internal_id == '6587plyr2-b6bb-4100-bf91-24e750389f25':
+                result.result_char = round(self.average_flexural_tranverse,2)
+                result.calculated = True
+                if self.average_flexural_tranverse_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue 
+
+
+            if result.parameter.internal_id == 'g1578pu2-cd1c-4fe1-804a-541a8e9ff19d':
+                result.result_char = round(self.average_flexural_longitudinal,2)
+                result.calculated = True
+                if self.average_flexural_longitudinal_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
 
         return {
                 'view_mode': 'form',
