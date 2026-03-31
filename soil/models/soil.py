@@ -941,6 +941,57 @@ class Soil(models.Model):
             else:
                 record.heavy_table_nabl = 'fail'
 
+
+    heavy_table_omc_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Conformity", compute="_compute_heavy_table_omc_conformity", store=True)
+
+    @api.depends('omc','eln_ref','grade')
+    def _compute_heavy_table_omc_conformity(self):
+        
+        for record in self:
+            record.heavy_table_omc_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','71131703-21c3-4e91-8a05-820616cea874')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','71131703-21c3-4e91-8a05-820616cea874')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.omc - record.omc*mu_value
+                    upper = record.omc + record.omc*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.heavy_table_omc_conformity = 'pass'
+                        break
+                    else:
+                        record.heavy_table_omc_conformity = 'fail'
+
+    heavy_table_omc_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')], string="NABL", compute="_compute_heavy_table_omc_nabl", store=True)
+
+    @api.depends('omc','eln_ref','grade')
+    def _compute_heavy_table_omc_nabl(self):
+        
+        for record in self:
+            record.heavy_table_omc_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','71131703-21c3-4e91-8a05-820616cea874')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','71131703-21c3-4e91-8a05-820616cea874')]).parameter_table
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.omc - record.omc*mu_value
+            upper = record.omc + record.omc*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.heavy_table_omc_nabl = 'pass'
+                break
+            else:
+                record.heavy_table_omc_nabl = 'fail'
+
     
     graph_image_density = fields.Binary("Line Chart", compute="_compute_graph_image_density_omc_light", store=True)
 
@@ -2784,13 +2835,26 @@ class Soil(models.Model):
              
 
              if result.parameter.internal_id == '3210vbf-20fb-4843-aa0e-2ee981be0d7c':
-                # result.result_char = round(self.avg_specific_gravity,2)
+                result.result_char = round(self.max_dry_density,2)
                 result.calculated = True
-                # if self.avg_specific_gravity_nabl == 'pass':
-                #     result.nabl_status = 'nabl'
-                # else:
-                #     result.nabl_status = 'non-nabl'
-                # continue
+                if self.heavy_table_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+             if result.parameter.internal_id == '71131703-21c3-4e91-8a05-820616cea874':
+                result.result_char = round(self.omc,2)
+                result.calculated = True
+                if self.heavy_table_omc_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+             
+
+
              
 
             
