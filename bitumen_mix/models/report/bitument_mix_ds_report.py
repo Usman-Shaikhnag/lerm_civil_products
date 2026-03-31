@@ -62,17 +62,17 @@ class BitumenConcreteReport(models.AbstractModel):
         qr_static_b64 = base64.b64encode(buf_static.getvalue()).decode()
 
         qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
-        qr.add_data(eln.kes_no)
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        report_url = f"{base_url}/download_report/bitumenm/{'nabl' if nabl else 'nonnabl'}/{eln.id}"
+
+        qr.add_data(report_url)
         qr.make(fit=True)
         qr_image = qr.make_image()
-
-        # Convert the QR code image to base64 string
         buffered = BytesIO()
         qr_image.save(buffered, format="PNG")
-        qr_image_base64 = base64.b64encode(buffered.getvalue()).decode()
+        qr_code = base64.b64encode(buffered.getvalue()).decode()
 
-        # Assign the base64 string to a field in the 'srf' object
-        qr_code = qr_image_base64
+
         model_id = eln.model_id
         # differnt location for product based
         model_name = eln.material.product_based_calculation[0].ir_model.name 

@@ -296,3 +296,223 @@ class ReportDownloadControllerChemical(http.Controller):
                 headers=[('Content-Type', 'text/plain')],
                 status=500,
             )
+
+
+
+class ReportDownloadControllerAAC(http.Controller):
+    @http.route(['/download_report/aac/nabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
+    def download_report_nabl_fine(self, eln_id, **kw):
+        try:
+            eln = request.env['lerm.eln'].sudo().browse(eln_id)
+            if not eln.exists():
+                return werkzeug.exceptions.NotFound("ELN record not found")
+
+            report_name = 'aac_block.aac_block_mech_report'
+            pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
+                report_name, res_ids=[eln.id], data={'nabl': True}
+            )
+
+            filename = f"{eln.kes_no or 'report'}_NABL.pdf"
+            headers = [
+                ('Content-Type', 'application/pdf'),
+                ('Content-Length', len(pdf_content)),
+                ('Content-Disposition', content_disposition(filename)),
+            ]
+            return request.make_response(pdf_content, headers=headers)
+        except Exception as e:
+            return request.make_response(
+                f"Internal Server Error (NABL): {str(e)}",
+                headers=[('Content-Type', 'text/plain')],
+                status=500,
+            )
+
+    @http.route(['/download_report/aac/nonnabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
+    def download_report_nonnabl_fine(self, eln_id, **kw):
+        try:
+            eln = request.env['lerm.eln'].sudo().browse(eln_id)
+            if not eln.exists():
+                return werkzeug.exceptions.NotFound("ELN record not found")
+
+            report_name = 'aac_block.aac_block_mech_report'
+            pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
+                report_name, res_ids=[eln.id], data={'nabl': False}
+            )
+
+            filename = f"{eln.kes_no or 'report'}_NonNABL.pdf"
+            headers = [
+                ('Content-Type', 'application/pdf'),
+                ('Content-Length', len(pdf_content)),
+                ('Content-Disposition', content_disposition(filename)),
+            ]
+            return request.make_response(pdf_content, headers=headers)
+        except Exception as e:
+            return request.make_response(
+                f"Internal Server Error (Non-NABL): {str(e)}",
+                headers=[('Content-Type', 'text/plain')],
+                status=500,
+            )
+
+
+
+class ReportDownloadControllerBitumenC(http.Controller):
+    @http.route(['/download_report/bitumenc/nabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
+    def download_report_nabl_fine(self, eln_id, **kw):
+        try:
+            eln = request.env['lerm.eln'].sudo().browse(eln_id)
+            if not eln.exists():
+                return werkzeug.exceptions.NotFound("ELN record not found")
+
+            report_name = 'bitumen_concrete.bitumen_concrete_report_ssl'
+            pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
+                report_name, res_ids=[eln.id], data={'nabl': True}
+            )
+
+            filename = f"{eln.kes_no or 'report'}_NABL.pdf"
+            headers = [
+                ('Content-Type', 'application/pdf'),
+                ('Content-Length', len(pdf_content)),
+                ('Content-Disposition', content_disposition(filename)),
+            ]
+            return request.make_response(pdf_content, headers=headers)
+        except Exception as e:
+            return request.make_response(
+                f"Internal Server Error (NABL): {str(e)}",
+                headers=[('Content-Type', 'text/plain')],
+                status=500,
+            )
+
+    @http.route(['/download_report/bitumenc/nonnabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
+    def download_report_nonnabl_fine(self, eln_id, **kw):
+        try:
+            eln = request.env['lerm.eln'].sudo().browse(eln_id)
+            if not eln.exists():
+                return werkzeug.exceptions.NotFound("ELN record not found")
+
+            report_name = 'bitumen_concrete.bitumen_concrete_report_ssl'
+            pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
+                report_name, res_ids=[eln.id], data={'nabl': False}
+            )
+
+            filename = f"{eln.kes_no or 'report'}_NonNABL.pdf"
+            headers = [
+                ('Content-Type', 'application/pdf'),
+                ('Content-Length', len(pdf_content)),
+                ('Content-Disposition', content_disposition(filename)),
+            ]
+            return request.make_response(pdf_content, headers=headers)
+        except Exception as e:
+            return request.make_response(
+                f"Internal Server Error (Non-NABL): {str(e)}",
+                headers=[('Content-Type', 'text/plain')],
+                status=500,
+            )
+
+
+
+
+class ReportDownloadControllerBitumenM(http.Controller):
+    @http.route(['/download_report/bitumenm/nabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
+    def download_report_nabl_fine(self, eln_id, **kw):
+        try:
+            eln = request.env['lerm.eln'].sudo().browse(eln_id)
+            if not eln.exists():
+                return werkzeug.exceptions.NotFound("ELN record not found")
+
+            report_name = 'bitumen_mix.bitumen_mix_report_sm'
+            pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
+                report_name, res_ids=[eln.id], data={'nabl': True}
+            )
+
+            filename = f"{eln.kes_no or 'report'}_NABL.pdf"
+            headers = [
+                ('Content-Type', 'application/pdf'),
+                ('Content-Length', len(pdf_content)),
+                ('Content-Disposition', content_disposition(filename)),
+            ]
+            return request.make_response(pdf_content, headers=headers)
+        except Exception as e:
+            return request.make_response(
+                f"Internal Server Error (NABL): {str(e)}",
+                headers=[('Content-Type', 'text/plain')],
+                status=500,
+            )
+
+    @http.route(['/download_report/bitumenm/nonnabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
+    def download_report_nonnabl_fine(self, eln_id, **kw):
+        try:
+            eln = request.env['lerm.eln'].sudo().browse(eln_id)
+            if not eln.exists():
+                return werkzeug.exceptions.NotFound("ELN record not found")
+
+            report_name = 'bitumen_mix.bitumen_mix_report_sm'
+            pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
+                report_name, res_ids=[eln.id], data={'nabl': False}
+            )
+
+            filename = f"{eln.kes_no or 'report'}_NonNABL.pdf"
+            headers = [
+                ('Content-Type', 'application/pdf'),
+                ('Content-Length', len(pdf_content)),
+                ('Content-Disposition', content_disposition(filename)),
+            ]
+            return request.make_response(pdf_content, headers=headers)
+        except Exception as e:
+            return request.make_response(
+                f"Internal Server Error (Non-NABL): {str(e)}",
+                headers=[('Content-Type', 'text/plain')],
+                status=500,
+            )
+
+
+class ReportDownloadControllerBrick(http.Controller):
+    @http.route(['/download_report/brick/nabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
+    def download_report_nabl_fine(self, eln_id, **kw):
+        try:
+            eln = request.env['lerm.eln'].sudo().browse(eln_id)
+            if not eln.exists():
+                return werkzeug.exceptions.NotFound("ELN record not found")
+
+            report_name = 'brick.lerm_brick_report'
+            pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
+                report_name, res_ids=[eln.id], data={'nabl': True}
+            )
+
+            filename = f"{eln.kes_no or 'report'}_NABL.pdf"
+            headers = [
+                ('Content-Type', 'application/pdf'),
+                ('Content-Length', len(pdf_content)),
+                ('Content-Disposition', content_disposition(filename)),
+            ]
+            return request.make_response(pdf_content, headers=headers)
+        except Exception as e:
+            return request.make_response(
+                f"Internal Server Error (NABL): {str(e)}",
+                headers=[('Content-Type', 'text/plain')],
+                status=500,
+            )
+
+    @http.route(['/download_report/brick/nonnabl/<int:eln_id>'], type='http', auth='public', website=True, csrf=False)
+    def download_report_nonnabl_fine(self, eln_id, **kw):
+        try:
+            eln = request.env['lerm.eln'].sudo().browse(eln_id)
+            if not eln.exists():
+                return werkzeug.exceptions.NotFound("ELN record not found")
+
+            report_name = 'brick.lerm_brick_report'
+            pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
+                report_name, res_ids=[eln.id], data={'nabl': False}
+            )
+
+            filename = f"{eln.kes_no or 'report'}_NonNABL.pdf"
+            headers = [
+                ('Content-Type', 'application/pdf'),
+                ('Content-Length', len(pdf_content)),
+                ('Content-Disposition', content_disposition(filename)),
+            ]
+            return request.make_response(pdf_content, headers=headers)
+        except Exception as e:
+            return request.make_response(
+                f"Internal Server Error (Non-NABL): {str(e)}",
+                headers=[('Content-Type', 'text/plain')],
+                status=500,
+            )
