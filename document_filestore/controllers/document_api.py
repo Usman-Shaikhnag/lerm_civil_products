@@ -35,7 +35,12 @@ class DriveController(http.Controller):
 
             Folder = request.env['document.folder'].sudo()
             File = request.env['document.file'].sudo()
-            File.sync_with_sftp()
+            
+            # HUGE PERFORMANCE BOTTLENECK:
+            # File.sync_with_sftp() connects and pings the SFTP server for EVERY file,
+            # causing the page to freeze for seconds/minutes depending on file count. 
+            # This should only be run asynchronously via Cron, not on page load.
+            # File.sync_with_sftp()
 
             # import wdb;wdb.set_trace()
             user = request.env.user
