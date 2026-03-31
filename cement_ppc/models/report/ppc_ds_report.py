@@ -44,6 +44,23 @@ class CementReportOpc43(models.AbstractModel):
 
         # Assign the base64 string to a field in the 'srf' object
         qr_code = qr_image_base64
+
+        # 🧩 QR Code तयार करा
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+        )
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        report_url = f"{base_url}/download_report/ppc/{'nabl' if nabl else 'nonnabl'}/{eln.id}"
+
+        qr.add_data(report_url)
+        qr.make(fit=True)
+        qr_image = qr.make_image()
+        buffered = BytesIO()
+        qr_image.save(buffered, format="PNG")
+        qr_code = base64.b64encode(buffered.getvalue()).decode()
             
         data = {
             "material_id":eln.material.id,

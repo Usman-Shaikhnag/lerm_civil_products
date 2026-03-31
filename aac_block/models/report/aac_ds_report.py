@@ -32,13 +32,8 @@ from lxml import etree
 #         qr_static_b64 = base64.b64encode(buf_static.getvalue()).decode()
         
         
-#         # 🧩 QR Code तयार करा
-#         qr = qrcode.QRCode(
-#             version=1,
-#             error_correction=qrcode.constants.ERROR_CORRECT_L,
-#             box_size=10,
-#             border=4,
-#         )
+#         qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
+#         # qr.add_data(eln.kes_no)
 #         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
 #         report_url = f"{base_url}/download_report/aac/{'nabl' if nabl else 'nonnabl'}/{eln.id}"
 
