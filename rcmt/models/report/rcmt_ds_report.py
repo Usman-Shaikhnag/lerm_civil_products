@@ -94,7 +94,7 @@ class RcmtDatasheet(models.AbstractModel):
 
 class RCMTReport(models.AbstractModel):
     _name = 'report.rcmt.rcmt_mec_report'
-    _description = 'RCMT Report
+    _description = 'RCMT Report'
     
     @api.model
     def _get_report_values(self, docids, data=None):
