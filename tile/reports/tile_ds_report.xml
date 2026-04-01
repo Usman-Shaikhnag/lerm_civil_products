@@ -272,46 +272,7 @@
 							</td>
 
 						</tr>
-<<<<<<< HEAD
 				
-=======
-						<!-- <tr t-if="data.dimension_visible">
-                            <td><div><span>C</span></div></td>
-                            <td>Deviation in Thickness</td>
-							  <td>
-								<span t-field="data.average_thickness"/>
-							</td>
-                            <td>
-								<span>
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','1db41e6d-550e-4c5d-a923-7510a616beb5')]).unit.name"/>
-								</span>
-							</td>
-							<td>
-								<span>
-									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','1db41e6d-550e-4c5d-a923-7510a616beb5')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.permissable_limit"/>
-                                        </t>
-									</t>
-								</span>
-									<span t-field="data.requirement_thickness"/>
-							</td>
-                            <td>
-								<span>
-									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','1db41e6d-550e-4c5d-a923-7510a616beb5')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-								</span>
-							</td>
-                          
-                            
-							
-                            <td t-if="eln.conformity"></td>
-
-						</tr> -->
->>>>>>> 409be5dc886cb7345c0f9cc1c2662380f02d7088
 
 						<tr t-if="data.straightness_visible and (data.deviation_straightness_nabl == 'pass' and nabl or (data.deviation_straightness_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
                             <td >
@@ -336,17 +297,7 @@
 								</span>
 							</td>
 							<td>
-<<<<<<< HEAD
 							
-=======
-								<!-- <span>
-									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','19999f82-79c0-44a8-9379-f40dd33235aa')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.permissable_limit"/>
-                                        </t>
-									</t>
-								</span> -->
->>>>>>> 409be5dc886cb7345c0f9cc1c2662380f02d7088
 								<span t-field="data.requirement_straightness"/>
 							</td>
                             <td style="text-align: center;">
@@ -388,17 +339,7 @@
 								</span>
 							</td>
 							<td>
-<<<<<<< HEAD
 								
-=======
-								<!-- <span>
-									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','4e209b70-f6b9-49b9-bab6-f38292f64b1c')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.permissable_limit"/>
-                                        </t>
-									</t>
-								</span> -->
->>>>>>> 409be5dc886cb7345c0f9cc1c2662380f02d7088
 								<span t-field="data.requirement_rectangularity"/>
 							</td>
                             <td style="text-align: center;">
@@ -442,17 +383,7 @@
 								</span>
 							</td>
 							<td>
-<<<<<<< HEAD
 								
-=======
-								<!-- <span>
-									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','873e02d1-db08-43d8-a88f-f6de09d41955')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.permissable_limit"/>
-                                        </t>
-									</t>
-								</span> -->
->>>>>>> 409be5dc886cb7345c0f9cc1c2662380f02d7088
 								<span t-field="data.requirement_centre_curvature"/>
 							</td>
                             <td style="text-align: center;">
@@ -496,17 +427,7 @@
 								</span>
 							</td>
 							<td>
-<<<<<<< HEAD
 								
-=======
-								<!-- <span>
-									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','2c4efee6-d22a-4eec-afbb-5435f3041f3f')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.permissable_limit"/>
-                                        </t>
-									</t>
-								</span> -->
->>>>>>> 409be5dc886cb7345c0f9cc1c2662380f02d7088
 								<span t-field="data.requirement_edge_curvature"/>
 							</td>
                             <td style="text-align: center;"> 
@@ -550,17 +471,7 @@
 								</span>
 							</td>
 							<td>
-<<<<<<< HEAD
 						
-=======
-								<!-- <span>
-									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','91fc2258-6bd7-40d4-82d8-404af0928ae9')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.permissable_limit"/>
-                                        </t>
-									</t>
-								</span> -->
->>>>>>> 409be5dc886cb7345c0f9cc1c2662380f02d7088
 								<span t-field="data.requirement_warpage"/>
 							</td>
                             <td style="text-align: center;">
