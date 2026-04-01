@@ -110,7 +110,6 @@ class FineAggDatasheetSSL(models.AbstractModel):
 #             'nabl' : nabl
 #         }
 
-
 class FineAggregateReportSSL(models.AbstractModel):
     _name = 'report.fine_aggregate.fineaggregate_report_ssl'
     _description = 'Fine Aggregate  Report SSL'
@@ -130,6 +129,14 @@ class FineAggregateReportSSL(models.AbstractModel):
 
         if not eln:
             raise ValueError("ELN record not found")
+
+        # Static QR
+        qr_static = qrcode.QRCode(box_size=6, border=2)
+        qr_static.add_data("https://www.lerm.in")
+        qr_static.make(fit=True)
+        buf_static = BytesIO()
+        qr_static.make_image(fill_color="black", back_color="white").save(buf_static, format="PNG")
+        qr_static_b64 = base64.b64encode(buf_static.getvalue()).decode()
 
         # 🧩 QR Code तयार करा
         qr = qrcode.QRCode(
@@ -165,6 +172,6 @@ class FineAggregateReportSSL(models.AbstractModel):
             'qrcode': qr_code,
             'nabl' : nabl,
             'qrcode_static': qr_static_b64,
-            'stamp' : inreport_value,
+            # 'stamp' : inreport_value,
             'nabl' : nabl
         }
