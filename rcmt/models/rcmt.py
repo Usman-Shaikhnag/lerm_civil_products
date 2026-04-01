@@ -301,6 +301,43 @@ class RCMT(models.Model):
     diameter_specimen1 = fields.Float("Diameter of specimen, mm")
     diameter_specimen2 = fields.Float("Diameter of specimen, mm")
     diameter_specimen3 = fields.Float("Diameter of specimen, mm")
+
+
+
+
+    # remark
+
+    notes_id = fields.One2many('rcmt.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(RCMT, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+    
+
+
+
      
     #  Measurement for Chloride Penetration depth
      
@@ -550,6 +587,15 @@ class PenrtrationDepthRcmt(models.Model):
                 record.dx_avg = average
             else:
                 record.dx_avg = 0.0
+
+
+
+class rcmtNotes(models.Model):
+    _name = "rcmt.notes"
+
+    parent_id = fields.Many2one('mechanical.rcmt',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
 
 
 
