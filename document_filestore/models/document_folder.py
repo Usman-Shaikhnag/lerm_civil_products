@@ -89,6 +89,7 @@ class DocumentFolder(models.Model):
         self._check_permission("edit")
         
         storage = self.env["ftp.storage"].sudo().search([('active', '=', True)], limit=1)
+<<<<<<< HEAD
         old_paths = {}
         if 'name' in vals and storage:
             for folder in self:
@@ -98,10 +99,17 @@ class DocumentFolder(models.Model):
         
         if 'name' in vals and storage:
             # Recompute new physical paths and rename on SFTP
+=======
+        
+        sftp = None
+        transport = None
+        if 'name' in vals and storage:
+>>>>>>> 5ad20fd5238828436f69896b2d852822c3723efe
             try:
                 transport = paramiko.Transport((storage.host, storage.port or 22))
                 transport.connect(username=storage.username, password=storage.password)
                 sftp = paramiko.SFTPClient.from_transport(transport)
+<<<<<<< HEAD
                 
                 for folder in self:
                     new_path = f"/home/{storage.name}/Document/{folder.get_sftp_folder_path()}"
@@ -111,6 +119,31 @@ class DocumentFolder(models.Model):
                             sftp.rename(old_path, new_path)
                         except Exception:
                             pass  # Directory might not exist yet
+=======
+            except Exception:
+                pass
+                
+        old_paths = {}
+        if 'name' in vals and storage and sftp:
+            for folder in self:
+                ext_url = f"{storage.name}/Document/{folder.get_sftp_folder_path()}"
+                old_paths[folder.id] = self.env['document.file']._get_sftp_remote_path(sftp, storage.name, ext_url)
+                
+        res = super().write(vals)
+        
+        if 'name' in vals and storage and sftp:
+            # Recompute new physical paths and rename on SFTP
+            for folder in self:
+                ext_url = f"{storage.name}/Document/{folder.get_sftp_folder_path()}"
+                new_path = self.env['document.file']._get_sftp_remote_path(sftp, storage.name, ext_url)
+                old_path = old_paths.get(folder.id)
+                if old_path and old_path != new_path:
+                    try:
+                        sftp.rename(old_path, new_path)
+                    except Exception:
+                        pass  # Directory might not exist yet
+            try:
+>>>>>>> 5ad20fd5238828436f69896b2d852822c3723efe
                 sftp.close()
                 transport.close()
             except Exception:
@@ -155,7 +188,12 @@ class DocumentFolder(models.Model):
             if sftp:
                 folder_path = folder.get_sftp_folder_path()
                 if folder_path:  # Do not delete root Document
+<<<<<<< HEAD
                     remote_path = f"/home/{storage.name}/Document/{folder_path}"
+=======
+                    ext_url = f"{storage.name}/Document/{folder_path}"
+                    remote_path = self.env['document.file']._get_sftp_remote_path(sftp, storage.name, ext_url)
+>>>>>>> 5ad20fd5238828436f69896b2d852822c3723efe
                     try:
                         sftp.rmdir(remote_path)
                     except Exception:

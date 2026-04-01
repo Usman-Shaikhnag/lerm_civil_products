@@ -30,6 +30,41 @@ class DriveFile(models.Model):
     permissions = fields.One2many('document.file.permission', 'file_id', string='Permissions')
 
     @api.model
+    def _get_sftp_remote_path(self, sftp, storage_name, external_url):
+        """ Get correct absolute path on SFTP server from external_url. Always enforces /home/<storage_name> """
+        base_sftp_path = f"/home/{storage_name}"
+        
+        # Ensure base directories exist
+        try:
+            sftp.stat("/home")
+        except IOError:
+            try:
+                sftp.mkdir("/home", mode=0o755)
+            except IOError:
+                pass
+                
+        try:
+            sftp.stat(base_sftp_path)
+        except IOError:
+            try:
+                sftp.mkdir(base_sftp_path, mode=0o755)
+            except IOError:
+                pass
+            
+        # Standardize external_url
+        if external_url.startswith(storage_name + "/"):
+            url_without_storage = external_url[len(storage_name):] # "/Document/..."
+        elif external_url.startswith(storage_name):
+            url_without_storage = external_url[len(storage_name):] # "/Document/..." usually
+        else:
+            url_without_storage = f"/{external_url}"
+            
+        if not url_without_storage.startswith("/"):
+            url_without_storage = "/" + url_without_storage
+
+        return f"{base_sftp_path}{url_without_storage}"
+
+    @api.model
     def create_and_store_file(self, file_data, folder_id=False):
         """
         Upload file to SFTP under:
@@ -59,30 +94,47 @@ class DriveFile(models.Model):
                 folder_path_parts.insert(1, sanitize(folder.name))
                 folder = folder.parent_id
 
-        # Example → /home/Demo/Document/Projects/Reports
-        remote_dir = f"/home/{storage.name}/" + "/".join(folder_path_parts)
-
-        # Final file path
-        remote_path = f"{remote_dir}/{clean_filename}"
-
-        # 4) Connect & upload
+        # 4) Connect
         transport = paramiko.Transport((storage.host, storage.port or 22))
         transport.connect(username=storage.username, password=storage.password)
         sftp = paramiko.SFTPClient.from_transport(transport)
 
-        # Ensure directories exist
+        # 5) Build paths
+        base_sftp_path = f"/home/{storage.name}"
+        
         try:
-            sftp.stat(f"/home/{storage.name}")
-        except FileNotFoundError:
-            raise UserError(f"Base path /home/{storage.name} does not exist on server.")
+            sftp.stat("/home")
+        except IOError:
+            try:
+                sftp.mkdir("/home", mode=0o755)
+            except IOError:
+                pass
+                
+        try:
+            sftp.stat(base_sftp_path)
+        except IOError:
+            try:
+                sftp.mkdir(base_sftp_path, mode=0o755)
+            except IOError:
+                raise UserError(f"Failed to create directory {base_sftp_path}. Ensure SFTP user has permission.")
+            
+        # Example → /home/Demo/Document/Projects/Reports OR /Document/Projects/Reports
+        remote_dir = base_sftp_path + "/" + "/".join(folder_path_parts)
+        if remote_dir.startswith("//"):
+             remote_dir = remote_dir[1:]
 
-        # Make intermediate directories
-        path_accum = f"/home/{storage.name}"
+        # Final file path
+        remote_path = f"{remote_dir}/{clean_filename}"
+
+        # Upload file
+        path_accum = base_sftp_path if base_sftp_path else ""
         for part in folder_path_parts:
-            path_accum += f"/{part}"
+            path_accum += f"/{part}" if path_accum else f"/{part}"
+            if path_accum.startswith("//"):
+                path_accum = path_accum[1:]
             try:
                 sftp.stat(path_accum)
-            except FileNotFoundError:
+            except IOError:
                 sftp.mkdir(path_accum, mode=0o755)
 
         # Upload file
@@ -128,16 +180,14 @@ class DriveFile(models.Model):
                 new_url = "/".join(file.external_url.split("/")[:-1] + [new_name])
 
 
-                if file.external_url.startswith(storage.name):
-                    old_path = f"/home/{file.external_url}"
-                    new_path = f"/home/{new_url}"
-                else:
-                    old_path = f"/home/{storage.name}/{file.external_url}"
-                    new_path = f"/home/{storage.name}/{new_url}"
                 try:
                     transport = paramiko.Transport((storage.host, storage.port or 22))
                     transport.connect(username=storage.username, password=storage.password)
                     sftp = paramiko.SFTPClient.from_transport(transport)
+                    
+                    old_path = file._get_sftp_remote_path(sftp, storage.name, file.external_url)
+                    new_path = file._get_sftp_remote_path(sftp, storage.name, new_url)
+
                     sftp.rename(old_path, new_path)
                     sftp.close()
                     transport.close()
@@ -164,22 +214,18 @@ class DriveFile(models.Model):
                 file.folder_id._check_permission("full")
 
             if file.external_url:
-                if file.external_url.startswith(storage.name):
-                    remote_path = f"/home/{file.external_url}"
-                else:
-                    remote_path = f"/home/{storage.name}/{file.external_url}"
-
-
                 try:
                     # SFTP Connect
                     transport = paramiko.Transport((storage.host, storage.port or 22))
                     transport.connect(username=storage.username, password=storage.password)
                     sftp = paramiko.SFTPClient.from_transport(transport)
 
+                    remote_path = file._get_sftp_remote_path(sftp, storage.name, file.external_url)
+
                     try:
                         sftp.remove(remote_path)
                         # _logger.info(f"SFTP: deleted {remote_path}")
-                    except FileNotFoundError:
+                    except IOError:
                         # _logger.warning(f"SFTP file not found (skipped delete): {remote_path}")
                         pass
 
@@ -212,6 +258,7 @@ class DriveFile(models.Model):
             if not file.external_url:
                 continue
                 
+<<<<<<< HEAD
             if file.external_url.startswith(storage.name):
                 remote_path = f"/home/{file.external_url}"
             else:
@@ -220,6 +267,13 @@ class DriveFile(models.Model):
             try:
                 sftp.stat(remote_path)
             except FileNotFoundError:
+=======
+            remote_path = file.sudo()._get_sftp_remote_path(sftp, storage.name, file.external_url)
+                
+            try:
+                sftp.stat(remote_path)
+            except IOError:
+>>>>>>> 5ad20fd5238828436f69896b2d852822c3723efe
                 missing_ids.append(file.id)
                 missing_names.append(file.name)
             except Exception:
