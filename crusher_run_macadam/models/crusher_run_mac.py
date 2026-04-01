@@ -22,7 +22,7 @@ class CrusherRunMacadamMechanical(models.Model):
 
 # remark
 
-    notes_id = fields.One2many('crusher.Run.Macadam.notes', 'parent_id', string="Notes")
+    notes_id = fields.One2many('crusher.run.macadam.notes', 'parent_id', string="Notes")
     
     @api.model
     def default_get(self, fields):
@@ -1116,9 +1116,8 @@ class ImpactValueLine(models.Model):
             record.sample_no = index + 1
 
 
-
 class crusherRunMacadamNotes(models.Model):
-    _name = "crusher.Run.Macadam.notes"
+    _name = "crusher.run.macadam.notes"
 
     parent_id = fields.Many2one('mechanical.crusher.run.macadam',string="Parent Id")
     sr_no = fields.Char("Sr. No.")

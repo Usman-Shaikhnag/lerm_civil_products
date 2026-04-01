@@ -6,6 +6,7 @@ import math
 from decimal import Decimal
 from matplotlib import pyplot as plt
 from datetime import datetime, timedelta
+from odoo.exceptions import UserError
 # import io
 # from PIL import Image
 # import base64
@@ -271,9 +272,12 @@ class ELN(models.Model):
     def open_product_based_form(self):
         for record in self:
             # Sample ला target कर
+            
+            # ✅ First time run → state change
             if record.sample_id:
                 record.sample_id.state = '7-calculated'
-                
+            
+                    
         model_record = self.material.product_based_calculation.filtered(lambda r: r.grade.id == self.grade_id.id)
         model = model_record.ir_model.model
 
