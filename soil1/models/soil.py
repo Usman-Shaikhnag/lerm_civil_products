@@ -2711,126 +2711,147 @@ class Soil(models.Model):
     import matplotlib.pyplot as plt
     import itertools
 
-    
 
 
 
-    # def action_generate_gsa_graph(self):
+#     def action_generate_gsa_graph(self):
 
-    #  import matplotlib.pyplot as plt
-    #  import matplotlib.ticker as ticker
-    #  import io
-    #  import base64
+#      import matplotlib.pyplot as plt
+#      import matplotlib.ticker as ticker
+#      import io
+#      import base64
 
-    #  for record in self:
+#      for record in self:
 
-    #     fig, ax = plt.subplots(figsize=(12, 6), dpi=100)
+#         fig, ax = plt.subplots(figsize=(12, 6), dpi=100)
 
-    #     ax.set_xscale('log')
-    #     ax.set_xlim(0.001, 100)
-    #     ax.set_ylim(0, 110)
+#         ax.set_xscale('log')
+#         ax.set_xlim(0.001, 100)
+#         ax.set_ylim(0, 110)
 
-    #     ax.set_xlabel("Particle Diameter (mm)", fontsize=10, fontweight='bold')
-    #     ax.set_ylabel("Percentage Finer (%)", fontsize=10, fontweight='bold')
+#         ax.set_xlabel("Particle Diameter (mm)", fontsize=10, fontweight='bold')
+#         ax.set_ylabel("Percentage Finer (%)", fontsize=10, fontweight='bold')
 
-    #     ax.grid(True, which='major', linestyle='-', linewidth=0.8, color='#404040', alpha=0.6)
-    #     ax.grid(True, which='minor', linestyle='-', linewidth=0.5, color='#a0a0a0', alpha=0.4)
+#         ax.grid(True, which='major', linestyle='-', linewidth=0.8, color='#404040', alpha=0.6)
+#         ax.grid(True, which='minor', linestyle='-', linewidth=0.5, color='#a0a0a0', alpha=0.4)
 
-    #     locmaj = ticker.LogLocator(base=10.0, subs=(1.0,), numticks=100)
-    #     ax.xaxis.set_major_locator(locmaj)
+#         locmaj = ticker.LogLocator(base=10.0, subs=(1.0,), numticks=100)
+#         ax.xaxis.set_major_locator(locmaj)
 
-    #     def nice_log_formatter(x, pos):
-    #         if x in [0.001, 0.01, 0.1, 1, 10, 100]:
-    #             return f"{x:g}"
-    #         return ""
+#         def nice_log_formatter(x, pos):
+#             if x in [0.001, 0.01, 0.1, 1, 10, 100]:
+#                 return f"{x:g}"
+#             return ""
 
-    #     ax.xaxis.set_major_formatter(ticker.FuncFormatter(nice_log_formatter))
-    #     ax.yaxis.set_major_locator(ticker.MultipleLocator(10))
+#         ax.xaxis.set_major_formatter(ticker.FuncFormatter(nice_log_formatter))
+#         ax.yaxis.set_major_locator(ticker.MultipleLocator(10))
 
-    #     markers = [
-    #         '^','*','D','x','o','s','v','+','p','h',
-    #         '1','2','3','4','8','H','X','d','|','_'
-    #     ]
+#         markers = ['^','*','D','x','o','s','v','+','p','h','1','2','3','4','8','H','X','d','|','_']
 
-    #     colors = [
-    #         "#1f77b4","#2ca02c","#ff7f0e","#d62728","#9467bd",
-    #         "#8c564b","#e377c2","#7f7f7f","#bcbd22","#17becf",
-    #         "#393b79","#637939","#8c6d31","#843c39","#7b4173"
-    #     ]
-        
+#         colors = [
+#             "#1f77b4","#2ca02c","#ff7f0e","#d62728","#9467bd",
+#             "#8c564b","#e377c2","#7f7f7f","#bcbd22","#17becf",
+#             "#393b79","#637939","#8c6d31","#843c39","#7b4173"
+#         ]
 
-    #     plot_index = 0
-    #     data_plotted = False
+#         marker_unicode = {
+#     '^': '▲',
+#     '*': '★',
+#     'D': '◆',
+#     'x': '✕',
+#     'o': '●',
+#     's': '■',
+#     'v': '▼',
+#     '+': '+'
+# }
 
-    #     if record.gsa_child_lines:
 
-    #         for sample in record.gsa_child_lines:
+#         plot_index = 0
+#         data_plotted = False
 
-    #             data_pairs = []
+#         if record.gsa_child_lines:
 
-    #             for line in sample.sieve_analysis_child_lines_gsa:
+#             for sample in record.gsa_child_lines:
 
-    #                 if line.sieve_size and line.passing_percent is not None:
+#                 data_pairs = []
 
-    #                     try:
+#                 for line in sample.sieve_analysis_child_lines_gsa:
 
-    #                         size_str = str(line.sieve_size).lower().replace('mm', '').strip()
+#                     if line.sieve_size and line.passing_percent is not None:
 
-    #                         if 'pan' in size_str:
-    #                             continue
+#                         try:
 
-    #                         size_val = round(float(size_str), 5)
-    #                         pass_val = line.passing_percent
+#                             size_str = str(line.sieve_size).lower().replace('mm', '').strip()
 
-    #                         if 0.001 <= size_val <= 100:
-    #                             data_pairs.append((size_val, pass_val))
+#                             if 'pan' in size_str:
+#                                 continue
 
-    #                     except ValueError:
-    #                         continue
+#                             size_val = round(float(size_str), 5)
+#                             pass_val = line.passing_percent
 
-    #             data_pairs.sort(key=lambda x: x[0])
+#                             if 0.001 <= size_val <= 100:
+#                                 data_pairs.append((size_val, pass_val))
 
-    #             if data_pairs:
+#                         except ValueError:
+#                             continue
 
-    #                 marker = markers[plot_index % len(markers)]
-    #                 color = colors[plot_index % len(colors)]
+#                 data_pairs.sort(key=lambda x: x[0])
 
-    #                 sizes = [x[0] for x in data_pairs]
-    #                 passing = [x[1] for x in data_pairs]
+#                 if data_pairs:
 
-    #                 ax.plot(
-    #                     sizes,
-    #                     passing,
-    #                     marker=marker,
-    #                     color=color,
-    #                     markersize=6,
-    #                     linewidth=2,
-    #                     label=sample.lab_no or "Sample"
-    #                 )
+#                     marker = markers[plot_index % len(markers)]
+#                     color = colors[plot_index % len(colors)]
 
-    #                 # assign table symbol AFTER color decided
-    #                 sample.symbol_html = f"""
-    #                 <span style="
-    #                     color:{color};
-    #                     font-size:20px;
-    #                     font-weight:bold;">
-    #                     {marker}
-    #                 </span>
-    #                 """
+#                     sizes = [x[0] for x in data_pairs]
+#                     passing = [x[1] for x in data_pairs]
 
-    #                 plot_index += 1
-    #                 data_plotted = True
+#                     ax.plot(
+#                         sizes,
+#                         passing,
+#                         marker=marker,
+#                         color=color,
+#                         markersize=6,
+#                         linewidth=2,
+#                         label=sample.lab_no or "Sample"
+#                     )
 
-    #         if data_plotted:
-    #             ax.legend(loc='lower right', fontsize=9)
+#                     # symbol = marker
+#                     symbol = marker_unicode.get(marker, marker)
 
-    #         buffer = io.BytesIO()
-    #         plt.savefig(buffer, format='png', bbox_inches='tight')
-    #         plt.close(fig)
+#                     sample.symbol_html = f"""
+# <svg width="60" height="22">
 
-    #         buffer.seek(0)
-    #         record.gsa_graph_image = base64.b64encode(buffer.read())
-    #         buffer.close()
+#     <!-- thin line -->
+#     <line x1="0" y1="11" x2="60" y2="11"
+#           stroke="{color}"
+#           stroke-width="3"
+#           stroke-linecap="round"/>
+
+#     <!-- marker -->
+#     <text x="30" y="15"
+#           text-anchor="middle"
+#           font-size="16"
+#           fill="{color}"
+#           font-weight="bold">
+#         {symbol}
+#     </text>
+
+# </svg>
+# """
+
+#                     plot_index += 1
+#                     data_plotted = True
+
+#             if data_plotted:
+#                 ax.legend(loc='lower right', fontsize=9)
+
+#             buffer = io.BytesIO()
+#             plt.savefig(buffer, format='png', bbox_inches='tight')
+#             plt.close(fig)
+
+#             buffer.seek(0)
+#             record.gsa_graph_image = base64.b64encode(buffer.read())
+#             buffer.close()
 
 
     def action_generate_gsa_graph(self):
@@ -2839,6 +2860,8 @@ class Soil(models.Model):
      import matplotlib.ticker as ticker
      import io
      import base64
+     import numpy as np
+     from scipy.interpolate import PchipInterpolator
 
      for record in self:
 
@@ -2874,16 +2897,15 @@ class Soil(models.Model):
         ]
 
         marker_unicode = {
-    '^': '▲',
-    '*': '★',
-    'D': '◆',
-    'x': '✕',
-    'o': '●',
-    's': '■',
-    'v': '▼',
-    '+': '+'
-}
-
+            '^': '▲',
+            '*': '★',
+            'D': '◆',
+            'x': '✕',
+            'o': '●',
+            's': '■',
+            'v': '▼',
+            '+': '+'
+        }
 
         plot_index = 0
         data_plotted = False
@@ -2899,7 +2921,6 @@ class Soil(models.Model):
                     if line.sieve_size and line.passing_percent is not None:
 
                         try:
-
                             size_str = str(line.sieve_size).lower().replace('mm', '').strip()
 
                             if 'pan' in size_str:
@@ -2921,32 +2942,59 @@ class Soil(models.Model):
                     marker = markers[plot_index % len(markers)]
                     color = colors[plot_index % len(colors)]
 
-                    sizes = [x[0] for x in data_pairs]
-                    passing = [x[1] for x in data_pairs]
+                    sizes = np.array([x[0] for x in data_pairs])
+                    passing = np.array([x[1] for x in data_pairs])
 
-                    ax.plot(
+                    # -------- PERFECT SMOOTH CURVE (PCHIP) --------
+                    if len(sizes) >= 3:
+
+                        x_smooth = np.logspace(
+                            np.log10(min(sizes)),
+                            np.log10(max(sizes)),
+                            120
+                        )
+
+                        pchip = PchipInterpolator(sizes, passing)
+                        y_smooth = pchip(x_smooth)
+
+                        # safety clamp
+                        y_smooth = np.clip(y_smooth, 0, 100)
+
+                        ax.plot(
+                            x_smooth,
+                            y_smooth,
+                            color=color,
+                            linewidth=2,
+                            label=sample.lab_no or "Sample"
+                        )
+                    else:
+                        ax.plot(
+                            sizes,
+                            passing,
+                            color=color,
+                            linewidth=2,
+                            label=sample.lab_no or "Sample"
+                        )
+
+                    # Original points (important)
+                    ax.scatter(
                         sizes,
                         passing,
                         marker=marker,
                         color=color,
-                        markersize=6,
-                        linewidth=2,
-                        label=sample.lab_no or "Sample"
+                        s=40
                     )
 
-                    # symbol = marker
+                    # Legend symbol
                     symbol = marker_unicode.get(marker, marker)
 
                     sample.symbol_html = f"""
 <svg width="60" height="22">
-
-    <!-- thin line -->
     <line x1="0" y1="11" x2="60" y2="11"
           stroke="{color}"
           stroke-width="3"
           stroke-linecap="round"/>
 
-    <!-- marker -->
     <text x="30" y="15"
           text-anchor="middle"
           font-size="16"
@@ -2954,7 +3002,6 @@ class Soil(models.Model):
           font-weight="bold">
         {symbol}
     </text>
-
 </svg>
 """
 
@@ -8309,7 +8356,7 @@ class LLLine(models.Model):
 
     ll_line_ids = fields.One2many('lab.atterberg.ll.line', 'parent_id')
 
-    liquid_avg = fields.Float( string='Liquid Limit Avg %' , digits=(16,1) ,compute='_compute_liquid_avg',store=True)
+    liquid_avg = fields.Float( string='Liquid Limit Avg %' , digits=(16,0) ,compute='_compute_liquid_avg',store=True)
 
     ll_graph = fields.Binary("Liquid Limit Graph", compute="_compute_ll_graph", store=True)
     ll_value = fields.Float("Liquid Limit (%)", digits=(10, 2), compute="_compute_ll_graph", store=True)
@@ -8325,61 +8372,142 @@ class LLLine(models.Model):
                 rec.ll_graph = False
                 rec.ll_value = 0.0
 
-    def _generate_line_chart_liquid(self):
-        data = [(l.blows, l.water_content) for l in self.ll_line_ids if l.blows and l.water_content]
-        if len(data) < 3:
-            return False, 0.0
+    # def _generate_line_chart_liquid(self):
+    #     data = [(l.blows, l.water_content) for l in self.ll_line_ids if l.blows and l.water_content]
+    #     if len(data) < 3:
+    #         return False, 0.0
 
-        data.sort(key=lambda x: x[0])
-        blows = np.array([d[0] for d in data], dtype=float)
-        water = np.array([d[1] for d in data], dtype=float)
+    #     data.sort(key=lambda x: x[0])
+    #     blows = np.array([d[0] for d in data], dtype=float)
+    #     water = np.array([d[1] for d in data], dtype=float)
 
-        log_blows = np.log10(blows)
-        slope, intercept = np.polyfit(log_blows, water, 1)
+    #     log_blows = np.log10(blows)
+    #     slope, intercept = np.polyfit(log_blows, water, 1)
         
-        ll_value = 62.0  # ✅ Exactly 62
+    #     ll_value = 62.0  # ✅ Exactly 62
 
-        x_fit = np.linspace(log_blows.min(), log_blows.max(), 200)
-        y_fit = slope * x_fit + intercept
+    #     x_fit = np.linspace(log_blows.min(), log_blows.max(), 200)
+    #     y_fit = slope * x_fit + intercept
 
-        y_pred = slope * log_blows + intercept
-        ss_res = np.sum((water - y_pred) ** 2)
-        ss_tot = np.sum((water - np.mean(water)) ** 2)
-        r2 = 1 - ss_res / ss_tot
+    #     y_pred = slope * log_blows + intercept
+    #     ss_res = np.sum((water - y_pred) ** 2)
+    #     ss_tot = np.sum((water - np.mean(water)) ** 2)
+    #     r2 = 1 - ss_res / ss_tot
 
-        fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
+    #     fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
 
-        ax.plot(blows, water, color='#4472C4', marker='o', linewidth=2.5)
-        ax.plot(10 ** x_fit, y_fit, color='black', linewidth=1.5)
-        ax.axvline(25, color='green', linestyle='--', linewidth=1)
+    #     ax.plot(blows, water, color='#4472C4', marker='o', linewidth=2.5)
+    #     ax.plot(10 ** x_fit, y_fit, color='black', linewidth=1.5)
+    #     ax.axvline(25, color='green', linestyle='--', linewidth=1)
 
-        # ✅ FIXED: X-axis labels completely removed
-        ax.set_xscale('log')
-        ax.set_xlim(10, 100)
-        ax.tick_params(axis='x', which='both', bottom=False, top=False, labelbottom=False)
-        ax.set_ylim(min(water) - 1, max(water) + 1)
+    #     # ✅ FIXED: X-axis labels completely removed
+    #     ax.set_xscale('log')
+    #     ax.set_xlim(10, 100)
+    #     ax.tick_params(axis='x', which='both', bottom=False, top=False, labelbottom=False)
+    #     ax.set_ylim(min(water) - 1, max(water) + 1)
 
-        ax.set_xlabel("No. of Blows", fontsize=11)
-        ax.set_ylabel("Moisture Content (%)", fontsize=11)
+    #     ax.set_xlabel("No. of Blows", fontsize=11)
+    #     ax.set_ylabel("Moisture Content (%)", fontsize=11)
 
-        ax.yaxis.grid(True, color='#BFBFBF', linewidth=0.8)
-        ax.xaxis.grid(False)
+    #     ax.yaxis.grid(True, color='#BFBFBF', linewidth=0.8)
+    #     ax.xaxis.grid(False)
 
-        for spine in ax.spines.values():
-            spine.set_color('black')
-            spine.set_linewidth(1)
+    #     for spine in ax.spines.values():
+    #         spine.set_color('black')
+    #         spine.set_linewidth(1)
 
-        eq_text = f"y = {slope:.4f}x + {intercept:.3f}\nR² = {r2:.4f}"
-        ax.text(30, max(water) - 0.4, eq_text, fontsize=10)
+    #     # eq_text = f"y = {slope:.4f}x + {intercept:.3f}\nR² = {r2:.4f}"
+    #     # ax.text(30, max(water) - 0.4, eq_text, fontsize=10)
 
-        buffer = BytesIO()
-        fig.savefig(buffer, format='png', bbox_inches='tight', facecolor='white')
-        buffer.seek(0)
-        image = base64.b64encode(buffer.read())
-        buffer.close()
-        plt.close(fig)
+    #     buffer = BytesIO()
+    #     fig.savefig(buffer, format='png', bbox_inches='tight', facecolor='white')
+    #     buffer.seek(0)
+    #     image = base64.b64encode(buffer.read())
+    #     buffer.close()
+    #     plt.close(fig)
 
-        return image, ll_value
+    #     return image, ll_value
+
+    def _generate_line_chart_liquid(self):
+
+     import numpy as np
+     import base64
+     from io import BytesIO
+     import matplotlib.pyplot as plt
+
+     data = [(l.blows, l.water_content) for l in self.ll_line_ids if l.blows and l.water_content]
+
+     if len(data) < 3:
+        return False, 0.0
+
+     data.sort(key=lambda x: x[0])
+
+     blows = np.array([d[0] for d in data], dtype=float)
+     water = np.array([d[1] for d in data], dtype=float)
+
+    # -----------------------------
+    # Regression
+    # -----------------------------
+     log_blows = np.log10(blows)
+     slope, intercept = np.polyfit(log_blows, water, 1)
+
+    # ✅ Keep LL calculation (but don't show)
+     ll_value = slope * np.log10(25) + intercept
+
+    # -----------------------------
+    # Fit line
+    # -----------------------------
+     x_fit = np.linspace(np.log10(10), np.log10(100), 200)
+     y_fit = slope * x_fit + intercept
+
+    # -----------------------------
+    # Plot
+    # -----------------------------
+     fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
+
+     ax.plot(blows, water, color='#4472C4', marker='o', linewidth=2.5)
+     ax.plot(10 ** x_fit, y_fit, color='black', linewidth=1.5)
+
+    # 25 blows line
+     ax.axvline(25, color='green', linestyle='--', linewidth=1)
+
+    # -----------------------------
+    # Axis
+    # -----------------------------
+     ax.set_xscale('log')
+     ax.set_xlim(10, 100)
+
+     ax.tick_params(axis='x', which='both', bottom=False, top=False, labelbottom=False)
+
+     ax.set_ylim(min(water) - 1, max(water) + 1)
+
+    # Labels
+     ax.set_xlabel("No. of Blows", fontsize=11)
+     ax.set_ylabel("Moisture Content (%)", fontsize=11)
+
+    # Grid
+     ax.yaxis.grid(True, color='#BFBFBF', linewidth=0.8)
+     ax.xaxis.grid(False)
+
+    # Border
+     for spine in ax.spines.values():
+        spine.set_color('black')
+        spine.set_linewidth(1)
+
+   
+    # -----------------------------
+    # Export
+    # -----------------------------
+     buffer = BytesIO()
+     fig.savefig(buffer, format='png', bbox_inches='tight', facecolor='white')
+     buffer.seek(0)
+
+     image = base64.b64encode(buffer.read())
+
+     buffer.close()
+     plt.close(fig)
+
+     return image, round(ll_value, 2)
 
     @api.depends('ll_line_ids.water_content')
     def _compute_liquid_avg(self):
@@ -8470,68 +8598,161 @@ class LLLine(models.Model):
                 vals['serial_no'] = max_serial_no + 1
         return super(LLLine, self).create(vals)
 
+    # def _generate_line_chart_liquid(self):
+    #     data = [(l.blows, l.water_content) for l in self.ll_line_ids if l.blows and l.water_content]
+    #     if len(data) < 3:
+    #         return False, 0.0
+
+    #     data.sort(key=lambda x: x[0])
+    #     blows = np.array([d[0] for d in data], dtype=float)
+    #     water = np.array([d[1] for d in data], dtype=float)
+
+    #     log_blows = np.log10(blows)
+    #     slope, intercept = np.polyfit(log_blows, water, 1)
+        
+    #     # ✅ FIXED: Exactly 62
+    #     ll_value = 62.0
+
+    #     x_fit = np.linspace(log_blows.min(), log_blows.max(), 200)
+    #     y_fit = slope * x_fit + intercept
+        
+    #     y_pred = slope * log_blows + intercept
+    #     ss_res = np.sum((water - y_pred) ** 2)
+    #     ss_tot = np.sum((water - np.mean(water)) ** 2)
+    #     r2 = 1 - ss_res / ss_tot
+
+    #     fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
+        
+    #     ax.plot(blows, water, color='#4472C4', marker='o', linewidth=2.5)
+    #     ax.plot(10 ** x_fit, y_fit, color='black', linewidth=1.5)
+    #     ax.axvline(25, color='green', linestyle='--', linewidth=1)
+
+    #     # ✅ FIXED: Remove extra log lines (10^1, 10^2)
+    #     ax.set_xscale('log')
+    #     ax.set_xlim(10, 100)
+    #     ax.set_xticks([10, 20, 30, 40, 50, 60])  # Custom ticks only
+    #     ax.set_xticklabels(['10', '20', '30', '40', '50', '60'])  # Clean labels
+        
+    #     ax.set_ylim(min(water) - 1, max(water) + 1)
+    #     ax.set_xlabel("No. of Blows", fontsize=11)
+    #     ax.set_ylabel("Moisture Content (%)", fontsize=11)
+        
+    #     ax.yaxis.grid(True, color='#BFBFBF', linewidth=0.8)
+    #     ax.xaxis.grid(False)
+
+    #     for spine in ax.spines.values():
+    #         spine.set_color('black')
+    #         spine.set_linewidth(1)
+
+    #     eq_text = f"y = {slope:.4f}x + {intercept:.3f}\nR² = {r2:.4f}\nLL = {ll_value:.0f}"
+    #     ax.text(30, max(water) - 0.4, eq_text, fontsize=10)
+
+    #     buffer = BytesIO()
+    #     fig.savefig(buffer, format='png', bbox_inches='tight', facecolor='white')
+    #     buffer.seek(0)
+    #     image = base64.b64encode(buffer.read())
+    #     buffer.close()
+    #     plt.close(fig)
+
+    #     return image, ll_value
+
     def _generate_line_chart_liquid(self):
-        data = [(l.blows, l.water_content) for l in self.ll_line_ids if l.blows and l.water_content]
-        if len(data) < 3:
-            return False, 0.0
 
-        data.sort(key=lambda x: x[0])
-        blows = np.array([d[0] for d in data], dtype=float)
-        water = np.array([d[1] for d in data], dtype=float)
+     import numpy as np
+     import base64
+     from io import BytesIO
+     import matplotlib.pyplot as plt
 
-        log_blows = np.log10(blows)
-        slope, intercept = np.polyfit(log_blows, water, 1)
-        
-        # ✅ FIXED: Exactly 62
-        ll_value = 62.0
+     data = [(l.blows, l.water_content) for l in self.ll_line_ids if l.blows and l.water_content]
 
-        x_fit = np.linspace(log_blows.min(), log_blows.max(), 200)
-        y_fit = slope * x_fit + intercept
-        
-        y_pred = slope * log_blows + intercept
-        ss_res = np.sum((water - y_pred) ** 2)
-        ss_tot = np.sum((water - np.mean(water)) ** 2)
-        r2 = 1 - ss_res / ss_tot
+     if len(data) < 3:
+        return False, 0.0
 
-        fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
-        
-        ax.plot(blows, water, color='#4472C4', marker='o', linewidth=2.5)
-        ax.plot(10 ** x_fit, y_fit, color='black', linewidth=1.5)
-        ax.axvline(25, color='green', linestyle='--', linewidth=1)
+     data.sort(key=lambda x: x[0])
 
-        # ✅ FIXED: Remove extra log lines (10^1, 10^2)
-        ax.set_xscale('log')
-        ax.set_xlim(10, 100)
-        ax.set_xticks([10, 20, 30, 40, 50, 60])  # Custom ticks only
-        ax.set_xticklabels(['10', '20', '30', '40', '50', '60'])  # Clean labels
-        
-        ax.set_ylim(min(water) - 1, max(water) + 1)
-        ax.set_xlabel("No. of Blows", fontsize=11)
-        ax.set_ylabel("Moisture Content (%)", fontsize=11)
-        
-        ax.yaxis.grid(True, color='#BFBFBF', linewidth=0.8)
-        ax.xaxis.grid(False)
+     blows = np.array([d[0] for d in data], dtype=float)
+     water = np.array([d[1] for d in data], dtype=float)
 
-        for spine in ax.spines.values():
-            spine.set_color('black')
-            spine.set_linewidth(1)
+    # -----------------------------
+    # Regression
+    # -----------------------------
+     log_blows = np.log10(blows)
+     slope, intercept = np.polyfit(log_blows, water, 1)
 
-        eq_text = f"y = {slope:.4f}x + {intercept:.3f}\nR² = {r2:.4f}\nLL = {ll_value:.0f}"
-        ax.text(30, max(water) - 0.4, eq_text, fontsize=10)
+    # ✅ Dynamic LL (but NOT shown)
+     ll_value = slope * np.log10(25) + intercept
 
-        buffer = BytesIO()
-        fig.savefig(buffer, format='png', bbox_inches='tight', facecolor='white')
-        buffer.seek(0)
-        image = base64.b64encode(buffer.read())
-        buffer.close()
-        plt.close(fig)
+    # -----------------------------
+    # Fit line
+    # -----------------------------
+     x_fit = np.linspace(log_blows.min(), log_blows.max(), 200)
+     y_fit = slope * x_fit + intercept
 
-        return image, ll_value
+    # -----------------------------
+    # R²
+    # -----------------------------
+     y_pred = slope * log_blows + intercept
+     ss_res = np.sum((water - y_pred) ** 2)
+     ss_tot = np.sum((water - np.mean(water)) ** 2)
+     r2 = 1 - ss_res / ss_tot
 
-    def _reorder_serial_numbers(self):
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
+    # -----------------------------
+    # Plot
+    # -----------------------------
+     fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
+
+     ax.plot(blows, water, color='#4472C4', marker='o', linewidth=2.5)
+     ax.plot(10 ** x_fit, y_fit, color='black', linewidth=1.5)
+
+     ax.axvline(25, color='green', linestyle='--', linewidth=1)
+
+    # -----------------------------
+    # X Axis (log with clean ticks)
+    # -----------------------------
+     ax.set_xscale('log')
+     ax.set_xlim(10, 100)
+
+     ax.set_xticks([10, 20, 30, 40, 50, 60])
+     ax.set_xticklabels(['10', '20', '30', '40', '50', '60'])
+
+    # -----------------------------
+    # Y Axis
+    # -----------------------------
+     ax.set_ylim(min(water) - 1, max(water) + 1)
+
+    # Labels
+     ax.set_xlabel("No. of Blows", fontsize=11)
+     ax.set_ylabel("Moisture Content (%)", fontsize=11)
+
+    # Grid
+     ax.yaxis.grid(True, color='#BFBFBF', linewidth=0.8)
+     ax.xaxis.grid(False)
+
+    # Borders
+     for spine in ax.spines.values():
+        spine.set_color('black')
+        spine.set_linewidth(1)
+
+    # -----------------------------
+    # ✅ Text (NO LL)
+    # -----------------------------
+     eq_text = f"y = {slope:.4f}x + {intercept:.3f}\nR² = {r2:.4f}"
+     ax.text(30, max(water) - 0.4, eq_text, fontsize=10)
+
+    # -----------------------------
+    # Export
+    # -----------------------------
+     buffer = BytesIO()
+     fig.savefig(buffer, format='png', bbox_inches='tight', facecolor='white')
+     buffer.seek(0)
+
+     image = base64.b64encode(buffer.read())
+
+     buffer.close()
+     plt.close(fig)
+
+     return image, round(ll_value, 2)
+
 
 
 
@@ -9602,6 +9823,64 @@ class TriaxialShearLine(models.Model):
 
     mohr_graph = fields.Binary(string="Mohr Circle & Failure Envelope",store=True)
 
+    # def action_generate_mohr_graph(self):
+    #  for rec in self:
+    #     rec.mohr_graph = False
+
+    #     stresses = [
+    #         (rec.cell_pressure1, rec.effect_norm_stress1),
+    #         (rec.cell_pressure2, rec.effect_norm_stress2),
+    #         (rec.cell_pressure3, rec.effect_norm_stress3),
+    #     ]
+
+    #     stresses = [(s3, s1) for s3, s1 in stresses if s3 and s1]
+    #     if not stresses:
+    #         continue
+
+    #     import math
+    #     import numpy as np
+    #     import matplotlib.pyplot as plt
+    #     from io import BytesIO
+    #     import base64
+
+    #     fig, ax = plt.subplots(figsize=(8, 5), dpi=100)
+    #     max_sigma = 0
+
+    #     # ---- Mohr circles ----
+    #     for sigma3, sigma1 in stresses:
+    #         center = (sigma1 + sigma3) / 2
+    #         radius = (sigma1 - sigma3) / 2
+
+    #         theta = np.linspace(0, np.pi, 200)
+    #         x = center + radius * np.cos(theta)
+    #         y = radius * np.sin(theta)
+
+    #         ax.plot(x, y, color='gray', linewidth=1.5)
+    #         max_sigma = max(max_sigma, sigma1)
+
+    #     # ---- Failure envelope ----
+    #     phi_rad = math.radians(rec.phi)
+    #     sigma = np.linspace(0, max_sigma * 1.2, 200)
+    #     tau = rec.cohesion + sigma * math.tan(phi_rad)
+
+    #     ax.plot(sigma, tau, color='black', linewidth=2.5)
+
+    #     # ---- Formatting ----
+    #     ax.set_xlabel("Normal Stress (kg/sq.cm)")
+    #     ax.set_ylabel("Shear Stress (kg/sq.cm)")
+    #     ax.set_xlim(0, max_sigma * 1.25)
+    #     ax.set_ylim(0, max(tau) * 1.2)
+    #     ax.grid(True, color='#BFBFBF', linewidth=0.8)
+
+    #     # ---- Save ----
+    #     buffer = BytesIO()
+    #     fig.savefig(buffer, format='png', bbox_inches='tight')
+    #     buffer.seek(0)
+    #     rec.mohr_graph = base64.b64encode(buffer.read())
+
+    #     buffer.close()
+    #     plt.close(fig)
+
     def action_generate_mohr_graph(self):
      for rec in self:
         rec.mohr_graph = False
@@ -9622,7 +9901,7 @@ class TriaxialShearLine(models.Model):
         from io import BytesIO
         import base64
 
-        fig, ax = plt.subplots(figsize=(8, 5), dpi=100)
+        fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
         max_sigma = 0
 
         # ---- Mohr circles ----
@@ -9647,9 +9926,14 @@ class TriaxialShearLine(models.Model):
         # ---- Formatting ----
         ax.set_xlabel("Normal Stress (kg/sq.cm)")
         ax.set_ylabel("Shear Stress (kg/sq.cm)")
+
         ax.set_xlim(0, max_sigma * 1.25)
         ax.set_ylim(0, max(tau) * 1.2)
+
         ax.grid(True, color='#BFBFBF', linewidth=0.8)
+
+        # ⭐ IMPORTANT FIX (proportional graph)
+        ax.set_aspect('equal', adjustable='box')
 
         # ---- Save ----
         buffer = BytesIO()
@@ -12483,6 +12767,135 @@ class SwellingPressureLine(models.Model):
 
 
   
+#     def generate_line_chart_swell(self):
+#      self.ensure_one()
+
+#      import numpy as np
+#      import base64
+#      from io import BytesIO
+#      import matplotlib
+#      matplotlib.use('Agg')
+#      import matplotlib.pyplot as plt
+#      from scipy.interpolate import PchipInterpolator
+#      from matplotlib.ticker import LogLocator, LogFormatter
+
+    
+#      lines = self.swelling_table_ids.sorted('applied_pressure')
+
+#      x = np.array([l.applied_pressure for l in lines if l.applied_pressure > 0], float)
+#      y = np.array([l.delta_h for l in lines if l.delta_h is not None], float)
+
+#      if len(x) < 3:
+#         return False
+
+   
+#      sp = 0
+#      for i in range(len(x) - 1):
+#         if y[i] >= 0 and y[i + 1] <= 0:
+#             sp = x[i] + (x[i + 1] - x[i]) * (0 - y[i]) / (y[i + 1] - y[i])
+#             break
+
+#      lx = np.log10(x)
+#      cs = PchipInterpolator(lx, y)
+
+#      lx_s = np.linspace(lx.min(), lx.max(), 500)
+#      xs = 10 ** lx_s
+#      ys = cs(lx_s)
+
+   
+#      fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
+
+#     # Curve
+#      ax.plot(xs, ys, color='#4472C4', linewidth=2.5)
+
+#     # Markers
+#      ax.scatter(x, y, color='#4472C4', s=30, zorder=5)
+
+#     # Point labels
+#      for xi, yi in zip(x, y):
+#         ax.text(xi, yi + 0.05, f"{yi:.3f}", ha='center', fontsize=8)
+
+#     # Zero horizontal line
+#      ax.axhline(0, color='#4472C4', linewidth=1)
+
+#     # X axis crosses at Y=0
+#      ax.spines['bottom'].set_position(('data', 0))
+
+#     # Swelling pressure vertical line
+#      ax.axvline(sp, color='red', linewidth=1.5)
+
+#     # -----------------------------
+#     # LOG X AXIS 0.10 → 100
+#     # -----------------------------
+#      ax.set_xscale('log')
+#      ax.set_xlim(0.1, 100)
+
+#     # Major ticks: 0.1 1 10 100
+#      ax.xaxis.set_major_locator(LogLocator(base=10))
+#      ax.xaxis.set_major_formatter(LogFormatter())
+
+#     # Minor ticks (Excel density)
+#      ax.xaxis.set_minor_locator(
+#         LogLocator(base=10, subs=np.arange(1, 10) * 0.1)
+#     )
+
+    
+#      y_min = min(y.min(), ys.min())
+#      y_max = max(y.max(), ys.max())
+
+# # Add small padding
+#      padding = (y_max - y_min) * 0.10
+#      y_min -= padding
+#      y_max += padding
+
+# # Round limits nicely (like Excel)
+#      y_min = np.floor(y_min * 2) / 2
+#      y_max = np.ceil(y_max * 2) / 2
+
+#      ax.set_ylim(y_min, y_max)
+
+# # Auto step (0.5 or 0.25 depending on range)
+#      y_range = y_max - y_min
+
+#      if y_range <= 2:
+#         step = 0.25
+#      elif y_range <= 5:
+#         step = 0.5
+#      else:
+#         step = 1.0
+
+#      ax.set_yticks(np.arange(y_min, y_max + step, step))
+ 
+#     # -----------------------------
+#     # Grid (Excel style)
+#     # -----------------------------
+#      ax.grid(which='major', color='#A6A6A6', linewidth=0.8)
+#      ax.grid(which='minor', color='#D9D9D9', linewidth=0.5)
+
+#     # Background
+#      ax.set_facecolor('#F2F2F2')
+#      fig.patch.set_facecolor('white')
+
+#     # Labels
+#      ax.set_xlabel('Pressure kg/cm2', fontsize=10)
+#      ax.set_ylabel('Deformation, mm', fontsize=10)
+
+#     # Borders
+#      ax.spines['top'].set_visible(True)
+#      ax.spines['right'].set_visible(True)
+
+#     # -----------------------------
+#     # Export
+#     # -----------------------------
+#      buf = BytesIO()
+#      fig.tight_layout()
+#      fig.savefig(buf, format='png')
+#      plt.close(fig)
+#      buf.seek(0)
+
+#      return base64.b64encode(buf.read())
+
+
     def generate_line_chart_swell(self):
      self.ensure_one()
 
@@ -12493,9 +12906,11 @@ class SwellingPressureLine(models.Model):
      matplotlib.use('Agg')
      import matplotlib.pyplot as plt
      from scipy.interpolate import PchipInterpolator
-     from matplotlib.ticker import LogLocator, LogFormatter
+     from matplotlib.ticker import LogLocator, FuncFormatter
 
-    
+    # -----------------------------
+    # Data
+    # -----------------------------
      lines = self.swelling_table_ids.sorted('applied_pressure')
 
      x = np.array([l.applied_pressure for l in lines if l.applied_pressure > 0], float)
@@ -12504,75 +12919,68 @@ class SwellingPressureLine(models.Model):
      if len(x) < 3:
         return False
 
-   
+    # -----------------------------
+    # Swelling Pressure
+    # -----------------------------
      sp = 0
      for i in range(len(x) - 1):
         if y[i] >= 0 and y[i + 1] <= 0:
             sp = x[i] + (x[i + 1] - x[i]) * (0 - y[i]) / (y[i + 1] - y[i])
             break
 
+    # -----------------------------
+    # Smooth Curve (LOG DOMAIN)
+    # -----------------------------
      lx = np.log10(x)
      cs = PchipInterpolator(lx, y)
 
-     lx_s = np.linspace(lx.min(), lx.max(), 500)
+     lx_s = np.linspace(lx.min(), lx.max(), 120)
      xs = 10 ** lx_s
      ys = cs(lx_s)
 
-   
+    # -----------------------------
+    # Plot
+    # -----------------------------
      fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
 
-    # Curve
-     ax.plot(xs, ys, color='#4472C4', linewidth=2.5)
-
-    # Markers
-     ax.scatter(x, y, color='#4472C4', s=30, zorder=5)
-
-    # Point labels
-     for xi, yi in zip(x, y):
-        ax.text(xi, yi + 0.05, f"{yi:.3f}", ha='center', fontsize=8)
-
-    # Zero horizontal line
-     ax.axhline(0, color='#4472C4', linewidth=1)
-
-    # X axis crosses at Y=0
-     ax.spines['bottom'].set_position(('data', 0))
-
-    # Swelling pressure vertical line
-     ax.axvline(sp, color='red', linewidth=1.5)
+     ax.plot(xs, ys, color='#4472C4', linewidth=2)
+     ax.scatter(x, y, color='#4472C4', s=20, zorder=5)
 
     # -----------------------------
-    # LOG X AXIS 0.10 → 100
+    # LOG X AXIS (Dynamic)
     # -----------------------------
+     x_min = 10 ** np.floor(np.log10(min(x)))
+     x_max = 10 ** np.ceil(np.log10(max(x)))
+
      ax.set_xscale('log')
-     ax.set_xlim(0.1, 100)
+     ax.set_xlim(x_min, x_max)
 
-    # Major ticks: 0.1 1 10 100
+     def log_format(val, pos):
+        return f"{val:.2f}"
+
      ax.xaxis.set_major_locator(LogLocator(base=10))
-     ax.xaxis.set_major_formatter(LogFormatter())
-
-    # Minor ticks (Excel density)
+     ax.xaxis.set_major_formatter(FuncFormatter(log_format))
      ax.xaxis.set_minor_locator(
-        LogLocator(base=10, subs=np.arange(1, 10) * 0.1)
+        LogLocator(base=10, subs=[0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9])
     )
 
-    
+    # -----------------------------
+    # Y AXIS (Dynamic)
+    # -----------------------------
      y_min = min(y.min(), ys.min())
      y_max = max(y.max(), ys.max())
 
-# Add small padding
      padding = (y_max - y_min) * 0.10
      y_min -= padding
      y_max += padding
 
-# Round limits nicely (like Excel)
      y_min = np.floor(y_min * 2) / 2
      y_max = np.ceil(y_max * 2) / 2
 
      ax.set_ylim(y_min, y_max)
 
-# Auto step (0.5 or 0.25 depending on range)
      y_range = y_max - y_min
-
+ 
      if y_range <= 2:
         step = 0.25
      elif y_range <= 5:
@@ -12581,24 +12989,46 @@ class SwellingPressureLine(models.Model):
         step = 1.0
 
      ax.set_yticks(np.arange(y_min, y_max + step, step))
- 
+
     # -----------------------------
-    # Grid (Excel style)
+    # ⭐ IMPORTANT: X-axis at Y = 0
+    # -----------------------------
+     ax.spines['bottom'].set_position(('data', 0))
+     ax.spines['top'].set_visible(False)
+
+    # FIX label positions
+     ax.xaxis.set_ticks_position('bottom')
+     ax.yaxis.set_ticks_position('left')
+
+    # -----------------------------
+    # Reference lines
+    # -----------------------------
+     ax.axvline(sp, color='red', linewidth=1.5)
+
+    # -----------------------------
+    # Grid
     # -----------------------------
      ax.grid(which='major', color='#A6A6A6', linewidth=0.8)
      ax.grid(which='minor', color='#D9D9D9', linewidth=0.5)
 
+    # -----------------------------
     # Background
-     ax.set_facecolor('#F2F2F2')
+    # -----------------------------
+     ax.set_facecolor('white')
      fig.patch.set_facecolor('white')
 
+    # -----------------------------
     # Labels
-     ax.set_xlabel('Pressure kg/cm2', fontsize=10)
-     ax.set_ylabel('Deformation, mm', fontsize=10)
+    # -----------------------------
+     ax.set_xlabel('Applied Pressure (kg/cm2)', fontsize=10)
+     ax.set_ylabel('Deformation (mm)', fontsize=10)
+
+    # Keep X label at bottom (IMPORTANT FIX)
+     ax.xaxis.set_label_coords(0.5, -0.1)
 
     # Borders
-     ax.spines['top'].set_visible(True)
      ax.spines['right'].set_visible(True)
+     ax.spines['left'].set_visible(True)
 
     # -----------------------------
     # Export
