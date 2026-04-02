@@ -75,8 +75,12 @@
                                     </div>
                                 </td>
                                 <td style="text-align:right; width:30%;">
-                                    <img t-att-src="'/lerm_civil/static/src/img/qr_logo.png'" style="height:40px; width:auto;"/>
+                                    <!-- <img t-att-src="'/lerm_civil/static/src/img/qr_logo.png'" style="height:40px; width:auto;"/> -->
+                                   
+                                    <img t-att-src="'data:image/png;base64,%s' % (qrcode_static or '')"
+                                         style="width:75px; height:70px;"/>
                                 </td>
+                                
 
                               
                             </tr>
