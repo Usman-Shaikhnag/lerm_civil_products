@@ -3468,6 +3468,10 @@ class Soil(models.Model):
 
             record.soil_light_heavy_visible = False
             record.nmc_visible = False
+            record.pl_visible = False
+            record.ll_visible = False
+            record.sl_visible = False
+
            
 
 
@@ -3562,6 +3566,13 @@ class Soil(models.Model):
 
                 if sample.internal_id == 'c800e59a-b847-4049-9e2b-673fcd1fcde5':
                     record.soil_light_heavy_visible = True
+
+                if sample.internal_id == 'yoptr557-11f8-4249-9fa8-78888993214g':
+                    record.pl_visible = True
+                if sample.internal_id == 'uitefc57-11f8-4249-9fa8-788889923147':
+                    record.ll_visible = True
+                if sample.internal_id == 'yt28uj5t-11f8-4249-9fa8-78888993214t':
+                    record.sl_visible = True
                 
                
 

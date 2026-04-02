@@ -48,7 +48,7 @@ class LermSampleForm(models.Model):
         ('non_satisfactory', 'Non-Satisfactory'),
     ], string='Sample Condition', default='satisfactory')
     technicians = fields.Many2one("res.users",string="Technicians",tracking=5)
-    location = fields.Char(string="Location")
+    location = fields.Integer(string="Location Code",compute="_compute_location_code",store=True)
     sample_reject_reason = fields.Char(string="Sample Reject Reason")
     has_witness = fields.Boolean(string="Witness")
     witness = fields.Char(string="Witness Name")
@@ -109,8 +109,21 @@ class LermSampleForm(models.Model):
 
     print_button_visible = fields.Boolean("Print Nabl visible",compute="_compute_print_nabl_visible")
    
-    lab_location = fields.Many2one('lerm.lab.master',string="Lab Location")
+    lab_location = fields.Many2one('lerm.lab.master',string="Lab Name")
     location_name = fields.Many2one('lerm.lab.location.master',string="Location Name")
+
+    @api.depends('lab_location', 'location_name', 'location_name.location_code')
+    def _compute_location_code(self):
+        for rec in self:
+            if rec.lab_location and rec.location_name and rec.location_name.location_code:
+                try:
+                    rec.location = int(rec.location_name.location_code)
+                except:
+                    rec.location = 0
+            else:
+                rec.location = 0
+
+    
 
     file_upload = fields.Many2many(
         'ir.attachment',

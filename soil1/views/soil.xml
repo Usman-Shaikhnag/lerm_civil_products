@@ -940,7 +940,7 @@
                         </field>
                     </div> 
 
-                    <div>
+                    <div invisible = "moisture_visible == False">
                      <button name="action_submit"
                                     string="Add End Date"
                                     type="object"
@@ -1685,13 +1685,13 @@
 
 
 
-        <div invisible="ll_visible == False or freeswell_visible == False">
+        <div invisible="ll_visible == False">
 
             <h1 class="text-center">
                 <field name="Atterbergs_name_ll" readonly="1" nolabel="1"/>
                 <field name="ll_visible" invisible="1"/>
                 <field name="ll_lines_generated" invisible="1"/>
-                 <field name="freeswell_visible" invisible="1"/>
+                 <!-- <field name="freeswell_visible" invisible="1"/> -->
             </h1> 
 
              <div invisible = "ll_visible == False">
@@ -1826,13 +1826,13 @@
         </div>
 
 
-        <div invisible="pl_visible == False or freeswell_visible == False">
+        <div invisible="pl_visible == False ">
 
             <h1 class="text-center">
                 <field name="Atterbergs_name_pl" readonly="1" nolabel="1"/>
                 <field name="pl_visible" invisible="1"/>
                 <field name="pl_lines_generated" invisible="1"/>
-                 <field name="freeswell_visible" invisible="1"/>
+                 <!-- <field name="freeswell_visible" invisible="1"/> -->
             </h1> 
 
              <div invisible = "pl_visible == False">
@@ -1961,13 +1961,13 @@
         </div>
 
 
-        <div invisible="sl_visible == False or freeswell_visible == False">
+        <div invisible="sl_visible == False">
 
             <h1 class="text-center">
                 <field name="Atterbergs_name_sl" readonly="1" nolabel="1"/>
                 <field name="sl_visible" invisible="1"/>
                 <field name="sl_lines_generated" invisible="1"/>
-                 <field name="freeswell_visible" invisible="1"/>
+                 <!-- <field name="freeswell_visible" invisible="1"/> -->
             </h1> 
 
              <div invisible = "sl_visible == False">

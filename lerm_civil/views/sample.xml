@@ -86,8 +86,8 @@
                                 <field name="kes_no" />
                                 <field name='ulr_no'/>
                                 <field name="sample_received_date" readonly="state != '1-allotment_pending'"/>
-                                <field name="location" readonly="state != '1-allotment_pending'"/>
-                                <field name="lab_location"/>
+                                <field name="location" readonly="state != '1-allotment_pending'" string="Location Code"/>
+                                <field name="lab_location" string="Lab Name"/>
                                 <field name="invoice_status" readonly="1" invisible="state not in ('4-in_report')"/>
                                 <field name="invoice_number" readonly="1"/>
                                 <field name='tested_by_signature_datasheet'/>
