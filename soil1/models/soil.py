@@ -100,14 +100,44 @@ class Soil(models.Model):
             }),
             (0, 0, {
                 'sr_no': 'b',
-                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+                'notes': '^ indicates insufficient quantity of processed sample to perform specific test',
             }),
             (0, 0, {
                 'sr_no': 'c',
-                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+                'notes': 'If direct shear test indicates * it represents Consolidated Undrained (CU) test, if ** then it represents Consolidated Drained (CD) test, else it is Unconsolidated Undrained (UU)  test',
             }),
             (0, 0, {
                 'sr_no': 'd',
+                'notes': 'If direct shear test indicates ### it represents Consolidated Undrained (CU) test with corrected area, if ## then it represents Consolidated Drained (CD) test with corrected area, # it represents Unconsolidated Undrained (UU)  test with corrected area',
+            }),
+
+            (0, 0, {
+                'sr_no': 'e',
+                'notes': 'If  CBR value indicate *, it represents Unsoaked CBR  else it is soaked CBR',
+            }),
+
+            (0, 0, {
+                'sr_no': 'f',
+                'notes': 'If Proctor results indicate * it represents Heavy compaction, else it is Light compaction test',
+            }),
+
+            (0, 0, {
+                'sr_no': 'g',
+                'notes': 'If Permeability results indicate *, it represents Constant Head Test, else it is Falling Head test',
+            }),
+
+            (0, 0, {
+                'sr_no': 'h',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+
+            (0, 0, {
+                'sr_no': 'i',
+                'notes': 'The balance samples if any will be discarded  after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+
+            (0, 0, {
+                'sr_no': 'j',
                 'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
             }),
         ]
@@ -1679,6 +1709,8 @@ class Soil(models.Model):
     diameter_triaxial = fields.Float(string="Diameter of the specimen  (d) in  meters",digits=(12,3))
     length_triaxial = fields.Float(string="Length of the specimen (L) in meters",digits=(12,3))
     area_triaxial = fields.Float(string="Area of the specimen  in m2",compute="_compute_area_triaxial",digits=(12,3))
+
+
 
     area_triaxial_conformity = fields.Selection([
             ('pass', 'Pass'),
@@ -8661,6 +8693,13 @@ class TriaxialShearLine(models.Model):
         compute="_compute_triaxial_details1", 
         store=True
     )
+
+    area11_triaxial = fields.Float(
+        string="Area (A): cm²", 
+        digits=(8, 2), 
+        compute="_compute_triaxial_details11", 
+        store=True
+    )
     
     height_triaxial = fields.Float(string="Height: mm", digits=(8, 1))
     
@@ -8669,6 +8708,13 @@ class TriaxialShearLine(models.Model):
         string="Soil Volume: cm³", 
         digits=(8, 2),
         compute="_compute_triaxial_details1",
+        store=True
+    )
+
+    soil_volume1 = fields.Float(
+        string="Soil Volume: cm³", 
+        digits=(8, 2),
+        compute="_compute_triaxial_details11",
         store=True
     )
     
@@ -8699,6 +8745,16 @@ class TriaxialShearLine(models.Model):
                 record.soil_volume = volume_cm3 
             else:
                 record.soil_volume = 0.0
+
+    @api.depends('area1_triaxial', 'soil_volume')
+    def _compute_triaxial_details11(self):
+     for record in self:
+
+        # AREA (cm²)
+        record.area11_triaxial = record.area1_triaxial / 100 if record.area1_triaxial else 0.0
+
+        # VOLUME (cm³)
+        record.soil_volume1 = record.soil_volume / 1000 if record.soil_volume else 0.0
 
    # --- COMMON PARAMETERS ---
     specific_gravity = fields.Float(string="Specific Gravity", digits=(5, 3))
@@ -9084,6 +9140,18 @@ class TriaxialShearLine(models.Model):
     phi = fields.Float(string="φ (Degrees)", digits=(10, 2),compute="_compute_pq_parameters", store=True)
 
     cohesion = fields.Float(string="C (kg/cm²)", digits=(10, 2),compute="_compute_pq_parameters", store=True)
+    
+    angle_phi = fields.Float(string="Angle of shear plane with vertical axis", digits=(10, 0),compute="_compute_angle_phi1", store=True)
+
+   
+    @api.depends('phi')
+    def _compute_angle_phi1(self):
+     for rec in self:
+        if rec.phi is not None:
+            value = round(90 - rec.phi, 4)   # ✅ remove float precision issue
+            rec.angle_phi = math.ceil(value)  # ✅ always round up
+        else:
+            rec.angle_phi = 0.0
 
    
 
@@ -11704,7 +11772,7 @@ class SwellingPressureLine(models.Model):
 
     wt_dry_soil_swell = fields.Float(string= "Weight Of Dry Specimen + Ring, w4", compute="_compute_wt_dry_soil_swell", digits=(10,3))
 
-    height_solid = fields.Float(string= "Dry weight of soil, w4", compute="_compute_height_solid", digits=(10,4))
+    height_solid = fields.Float(string= "Height of Solids, Hs", compute="_compute_height_solid", digits=(10,4))
 
     @api.depends('wt_dry_specimen_af','wt_of_ring')
     def _compute_wt_dry_soil_swell(self):

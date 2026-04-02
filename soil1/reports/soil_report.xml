@@ -19,8 +19,12 @@
 
 
 							<tr>
-								<td colspan="3"><strong>Project Name</strong>: </td>
-								<td colspan="9" style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
+
+							    <td colspan="3" ><strong>Mechanical Testing</strong>: </td>
+								<td colspan="9" style="padding-left: 10px;"><span t-field="o.sample_id.group_id"/></td>
+
+
+								
 
 								<!-- <td><strong>Date of Report</strong>: </td>
 									
@@ -34,7 +38,7 @@
 							<tr>
 							<td colspan="3" style="width:20%;"><strong>Name &amp; Address of Customer</strong>: </td>
 							<td colspan="3" style="padding-left: 10px;width:25%;">
-										<span t-field="o.srf_id.customer.name"/>
+										<!-- <span t-field="o.srf_id.customer.name"/> -->
 										<span t-field="o.srf_id.customer.street"/>
 										<span t-field="o.srf_id.customer.street2"/>
 										<span t-field="o.srf_id.customer.city"/>
@@ -55,8 +59,8 @@
 							</tr>
 							<tr>
 								
-								<td colspan="3" ><strong>Mechanical Testing</strong>: </td>
-								<td colspan="3" style="padding-left: 10px;"><span t-field="o.sample_id.group_id"/></td>
+								<td colspan="3"><strong>Project Name</strong>: </td>
+								<td colspan="3" style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
 
 								<td colspan="3"><strong>Date of Report</strong>: </td>
 									
@@ -88,7 +92,10 @@
 							<tr>
 
 								<td colspan="3"><strong>Type of Sample &amp; Condition</strong>: </td>
-								<td colspan="3"><span t-field="o.material.name"/></td>
+								<td colspan="3">
+								<!-- <span t-field="o.material.name"/> -->
+								<span>DS/SPT/UDS</span>
+								</td>
 
 							<td colspan="3"><strong>Completion Date</strong>: </td>
 								<td colspan="3">
@@ -161,7 +168,7 @@
 			<t t-set="silt_clay_vals" t-value="[g.silt_clay for g in (data.gsa_child_lines or []) if g.silt_clay]"/>
 			<t t-set="silt_clay_index" t-value="0"/>
 			
-			<t t-set="perm_head_vals" t-value="[g.avg_permeability_27 for g in (data.permeability_falling_ids or []) if g.avg_permeability_27]"/>
+			<t t-set="perm_head_vals" t-value="[g.avg_permeability_sci for g in (data.permeability_falling_ids or []) if g.avg_permeability_sci]"/>
 			<t t-set="perm_head_index" t-value="0"/>
 
 			<t t-set="swelling_vals" t-value="[g.swelling_pressure for g in (data.swelling_pressure_ids or []) if g.swelling_pressure]"/>
@@ -169,6 +176,9 @@
 
 			<t t-set="consolidationcr_vals" t-value="[g.cr for g in (data.consolidation_lines or []) if g.cr]"/>
 			<t t-set="consolidationcr_index" t-value="0"/>
+
+			<t t-set="cbr_vals" t-value="[g.cbr_2_5_mm for g in (data.cbr_ids or []) if g.cbr_2_5_mm]"/>
+			<t t-set="cbr_index" t-value="0"/>
 
 			<t t-set="consolidation_vals" t-value="[g.ce for g in (data.consolidation_lines or []) if g.ce]"/>
 			<t t-set="consolidation_index" t-value="0"/>
@@ -213,6 +223,7 @@
 								len(swelling_vals or []),
 								len(consolidation_vals or []),
 								len(consolidationcr_vals or []),
+								len(cbr_vals or []),
 								len(diarect_vals or []),
 								len(diarectphi_vals or []),
 								len(ucs_vals or []),
@@ -228,7 +239,7 @@
           <table width="100%" style="font-size: 8px; border-collapse: collapse;" border="1">
             <thead>
               <tr>
-			  <th rowspan="3">Lab ID</th>
+			  <!-- <th rowspan="3">Lab ID</th> -->
                 <th rowspan="3">Location</th>
                 <th rowspan="3">Sample Type</th>
                 <th rowspan="3">Depth (m)</th>
@@ -246,7 +257,7 @@
                 <th colspan="2">Triaxial Test (UU)⁺</th>
                 <th colspan="2">Consolidation⁺</th>
                 <th colspan="1">California Bearing Ratio⁺</th>
-                <th colspan="1">SwellingRatio⁺</th>
+                <th colspan="1">Swelling Pressure⁺</th>
                 <th colspan="1">Permeability</th>
               </tr>
               <tr>
@@ -258,13 +269,13 @@
 				<th>γb</th>
 				<th>NMC</th>
                 <th>MDD</th><th>OMC</th>
-				<th>qu</th>
+				<th>qᵤ</th>
                 <th>C</th><th>ϕ</th>
                 <th>C</th><th>ϕ</th>
                 <th>Pc</th><th>Cc</th>
 				<th>CBR</th>
 				<th></th>
-				<th>K</th>
+				<th>k</th>
               </tr>
 			  <tr>
 			  <!-- GSA -->
@@ -408,7 +419,7 @@
 			  </tr>
 			 
 			  <tr>
-				<th colspan="4">Test Method / Reference</th>
+				<th colspan="3">Test Method / Reference</th>
 				<!-- GSA -->
 				<th colspan="4">
 				
@@ -759,15 +770,15 @@
               <t t-foreach="range(row_count)" t-as="line">
                 <tr>
                   <!-- <td><t t-esc="line.lab_no"/></td> -->
-				 <td style="min-width: 100px; width: 100px;">
-						<t t-set="ni" t-value="n_index if n_index is not None else 0"/>
+				 <!-- <td style="min-width: 100px; width: 100px;">
+						<t t-set="ni" t-value="n_index if n_index is not None else 0"/> -->
 
-						<t t-if="name_vals and ni &lt; len(name_vals)">
+						<!-- <t t-if="name_vals and ni &lt; len(name_vals)">
 							<t t-esc="name_vals[ni]"/>
 							<t t-set="n_index" t-value="ni + 1"/>
-						</t>
-						<t t-else="">--</t>
-					</td>
+						</t> -->
+						<!-- <t t-else=""></t> -->
+					<!-- </td> -->
 
                   <!-- <td><t t-esc="line.bh_id"/></td>
 				  <td><t t-esc="line.sample_details"/></td>
@@ -809,6 +820,9 @@
 					<td>
 					<t t-set="i" t-value="gravel_index"/>
 					<t t-if="gravel_vals and i &lt; len(gravel_vals)">
+
+					  
+
 						<t t-esc="gravel_vals[i]"/>
 						<t t-set="gravel_index" t-value="i + 1"/>
 					</t>
@@ -818,6 +832,8 @@
 					<td>
 					<t t-set="i" t-value="silt_index"/>
 					<t t-if="silt_vals and i &lt; len(silt_vals)">
+					    
+
 						<t t-esc="silt_vals[i]"/>
 						<t t-set="silt_index" t-value="i + 1"/>
 					</t>
@@ -827,7 +843,9 @@
 					<td>
 					<t t-set="i" t-value="sand_index"/>
 					<t t-if="sand_vals and i &lt; len(sand_vals)">
-						<t t-esc="sand_vals[i]"/>
+					  
+
+						<!-- <t t-esc="sand_vals[i]"/> -->
 						<t t-set="sand_index" t-value="i + 1"/>
 					</t>
 					<t t-else="">--</t>
@@ -836,6 +854,8 @@
 					<td>
 					<t t-set="i" t-value="silt_clay_index"/>
 					<t t-if="silt_clay_vals and i &lt; len(silt_clay_vals)">
+					    
+
 						<t t-esc="silt_clay_vals[i]"/>
 						<t t-set="silt_clay_index" t-value="i + 1"/>
 					</t>
@@ -847,7 +867,8 @@
 					<td>
 						<t t-set="li" t-value="ll_index if ll_index is not None else 0"/>
 						<t t-if="ll_vals and li &lt; len(ll_vals)">
-							<t t-esc="'%.2f' % ll_vals[li]"/>
+						    <t t-esc="int((ll_vals[li] or 0) + 0.5)"/>
+							<!-- <t t-esc="'%.2f' % ll_vals[li]"/> -->
 							<t t-set="ll_index" t-value="li + 1"/>
 						</t>
 						<t t-else="">--</t>
@@ -856,7 +877,8 @@
 					<td>
 						<t t-set="li" t-value="pl_index if pl_index is not None else 0"/>
 						<t t-if="pl_vals and li &lt; len(pl_vals)">
-							<t t-esc="'%.2f' % pl_vals[li]"/>
+						    <t t-esc="int((pl_vals[li] or 0) + 0.5)"/>
+							<!-- <t t-esc="'%.2f' % pl_vals[li]"/> -->
 							<t t-set="pl_index" t-value="li + 1"/>
 						</t>
 						<t t-else="">--</t>
@@ -865,7 +887,10 @@
 					<td>
 						<t t-set="li" t-value="sl_index if sl_index is not None else 0"/>
 						<t t-if="sl_vals and li &lt; len(sl_vals)">
-							<t t-esc="'%.2f' % sl_vals[li]"/>
+
+							<t t-esc="int((sl_vals[li] or 0) + 0.5)"/>
+
+							<!-- <t t-esc="'%.2f' % sl_vals[li]"/> -->
 							<t t-set="sl_index" t-value="li + 1"/>
 						</t>
 						<t t-else="">--</t>
@@ -879,7 +904,8 @@
 						<t t-set="gi" t-value="g_index if g_index is not None else 0"/>
 
 						<t t-if="grav_vals and gi &lt; len(grav_vals)">
-							<t t-esc="grav_vals[gi]"/>
+						    <t t-esc="'%.2f' % grav_vals[gi]"/>
+							<!-- <t t-esc="grav_vals[gi]"/> -->
 							<t t-set="g_index" t-value="gi + 1"/>
 						</t>
 						<t t-else="">--</t>
@@ -888,7 +914,10 @@
 						<t t-set="gi" t-value="free_index if free_index is not None else 0"/>
 
 						<t t-if="free_vals and gi &lt; len(free_vals)">
-							<t t-esc="'%.2f' % free_vals[gi]"/>
+
+						    <t t-esc="int((free_vals[li] or 0) + 0.5)"/>
+
+							<!-- <t t-esc="'%.2f' % free_vals[gi]"/> -->
 							<t t-set="free_index" t-value="gi + 1"/>
 						</t>
 						<t t-else="">--</t>
@@ -909,7 +938,9 @@
 						<t t-set="di" t-value="n_avg_nmc if n_avg_nmc is not None else 0"/>
 
 						<t t-if="name_avg_nmc and di &lt; len(name_avg_nmc)">
-							<t t-esc="'%.2f' % name_avg_nmc[di]"/>
+						     <t t-esc="int((name_avg_nmc[li] or 0) + 0.5)"/>
+
+							<!-- <t t-esc="'%.2f' % name_avg_nmc[di]"/> -->
 							<t t-set="n_avg_nmc" t-value="di + 1"/>
 						</t>
 						<t t-else="">--</t>
@@ -928,7 +959,7 @@
 						<t t-set="di" t-value="proctormdd_index if proctormdd_index is not None else 0"/>
 
 						<t t-if="proctormdd_vals and di &lt; len(proctormdd_vals)">
-							<t t-esc="'%.3f' % proctormdd_vals[di]"/>
+							<t t-esc="'%.2f' % proctormdd_vals[di]"/>
 							<t t-set="proctormdd_index" t-value="di + 1"/>
 						</t>
 						<t t-else="">--</t>
@@ -938,7 +969,7 @@
 						<t t-set="di" t-value="proctoromc_index if proctoromc_index is not None else 0"/>
 
 						<t t-if="proctoromc_vals and di &lt; len(proctoromc_vals)">
-							<t t-esc="'%.3f' % proctoromc_vals[di]"/>
+							<t t-esc="'%.2f' % proctoromc_vals[di]"/>
 							<t t-set="proctoromc_index" t-value="di + 1"/>
 						</t>
 						<t t-else="">--</t>
@@ -949,7 +980,7 @@
 						<t t-set="di" t-value="usc_index if usc_index is not None else 0"/>
 
 						<t t-if="ucs_vals and di &lt; len(ucs_vals)">
-							<t t-esc="'%.3f' % ucs_vals[di]"/>
+							<t t-esc="'%.2f' % ucs_vals[di]"/>
 							<t t-set="usc_index" t-value="di + 1"/>
 						</t>
 						<t t-else="">--</t>
@@ -960,7 +991,7 @@
 						<t t-set="di" t-value="diarect_index if diarect_index is not None else 0"/>
 
 						<t t-if="diarect_vals and di &lt; len(diarect_vals)">
-							<t t-esc="'%.3f' % diarect_vals[di]"/>
+							<t t-esc="'%.2f' % diarect_vals[di]"/>
 							<t t-set="diarect_index" t-value="di + 1"/>
 						</t>
 						<t t-else="">--</t>
@@ -981,7 +1012,7 @@
 						<t t-set="di" t-value="triaxialc_index if triaxialc_index is not None else 0"/>
 
 						<t t-if="triaxialc_vals and di &lt; len(triaxialc_vals)">
-							<t t-esc="'%.3f' % triaxialc_vals[di]"/>
+							<t t-esc="'%.2f' % triaxialc_vals[di]"/>
 							<t t-set="triaxialc_index" t-value="di + 1"/>
 						</t>
 						<t t-else="">--</t>
@@ -990,7 +1021,7 @@
 						<t t-set="di" t-value="triaxialp_index if triaxialp_index is not None else 0"/>
 
 						<t t-if="triaxialp_vals and di &lt; len(triaxialp_vals)">
-							<t t-esc="'%.3f' % triaxialp_vals[di]"/>
+							<t t-esc="'%.2f' % triaxialp_vals[di]"/>
 							<t t-set="triaxialp_index" t-value="di + 1"/>
 						</t>
 						<t t-else="">--</t>
@@ -1001,7 +1032,7 @@
 						<t t-set="di" t-value="consolidation_index if consolidation_index is not None else 0"/>
 
 						<t t-if="consolidation_vals and di &lt; len(consolidation_vals)">
-							<t t-esc="'%.3f' % consolidation_vals[di]"/>
+							<t t-esc="'%.2f' % consolidation_vals[di]"/>
 							<t t-set="consolidation_index" t-value="di + 1"/>
 						</t>
 						<t t-else="">--</t>
@@ -1010,21 +1041,29 @@
 						<t t-set="di" t-value="consolidationcr_index if consolidationcr_index is not None else 0"/>
 
 						<t t-if="consolidationcr_vals and di &lt; len(consolidationcr_vals)">
-							<t t-esc="'%.3f' % consolidationcr_vals[di]"/>
+							<t t-esc="'%.2f' % consolidationcr_vals[di]"/>
 							<t t-set="consolidationcr_index" t-value="di + 1"/>
 						</t>
 						<t t-else="">--</t>
 					</td>
 
 					<!-- CBR -->
-					<td></td>
+					<td style="min-width: 20px; width: 20px;">
+						<t t-set="di" t-value="cbr_index if cbr_index is not None else 0"/>
+
+						<t t-if="cbr_vals and di &lt; len(cbr_vals)">
+							<t t-esc="'%.2f' % cbr_vals[di]"/>
+							<t t-set="cbr_index" t-value="di + 1"/>
+						</t>
+						<t t-else="">--</t>
+					</td>
 
 					<!-- Swelling -->
 					<td style="min-width: 20px; width: 20px;">
 						<t t-set="di" t-value="swelling_index if swelling_index is not None else 0"/>
 
 						<t t-if="swelling_vals and di &lt; len(swelling_vals)">
-							<t t-esc="'%.3f' % swelling_vals[di]"/>
+							<t t-esc="'%.2f' % swelling_vals[di]"/>
 							<t t-set="swelling_index" t-value="di + 1"/>
 						</t>
 						<t t-else="">--</t>
@@ -1036,7 +1075,8 @@
 						<t t-set="di" t-value="perm_head_index if perm_head_index is not None else 0"/>
 
 						<t t-if="perm_head_vals and di &lt; len(perm_head_vals)">
-							<t t-esc="'%.9f' % perm_head_vals[di]"/>
+						    <t t-esc="perm_head_vals[i]"/>
+							<!-- <t t-esc="'%.9f' % perm_head_vals[di]"/> -->
 							<t t-set="perm_head_index" t-value="di + 1"/>
 						</t>
 						<t t-else="">--</t>
@@ -1059,8 +1099,10 @@
 							
 								<td style="padding: 5px; font-style: italic; font-size: 15px; line-height: 18px;">
 									<b>Remarks:</b><br/><br/>
-									    * Refer to Annexure-I for environmental and test conditions<br/><br/>
-									    * Refer to Annexure-I (A) to know NABL accredited scope, range and uncertainty of measurement for test parameter<br/><br/>
+									    1. + Refer to Annexure-I for environmental and test conditions<br/><br/>
+									    2. Refer to Annexure- I (A) to know NABL accredited scope, range and uncertainty of measurement for test parameter<br/><br/>
+										G-Gravel, S-Sand, M-Silt, C-Clay, LL-Liquid Limit, PL-Plastic Limit, SL-Shrinkage Limit, NMC-Natural Moisture Content, UCS- Unconfined Compressive Strength,CBR- California Bearing Ratio Test<br/><br/>	
+										UU-Unconsolidated Undrained, C-Cohesion, ɸ-Angle of Internal Friction, Pc-Preconsolidation Pressure, Cc-Compression Index, NP-Non-Plastic, MDD- Maximum dry density, OMC- Optimum moisture content, k = coefficient of permeability	<br/><br/>	
 
 									<b>Notes:-</b><br/><br/>
 								    	<!-- a. The information marked with an # received from customer<br/><br/>
@@ -1269,7 +1311,7 @@
 
 									<td style="width:20%; text-align:center; vertical-align:middle; padding: 5px;">
                                        <img t-att-src="'/lerm_civil/static/src/img/genstru_logo.png'"
-                                        style="height:55px;"/>
+                                        style="height:75px;"/>
                                     </td>
 
 									<!-- COMPANY HEADER -->
@@ -1351,7 +1393,7 @@
 				 
 					
 
-						<table style="width:100%; border-collapse:collapse; font-size:13px;">
+						<table style="width:100%; border-collapse:collapse; font-size:13px;margin-top:30px;">
 
 						<tr>
 								<td colspan="6" style="border:1px solid black; padding:6px; text-align:center; font-weight:bold;">
@@ -1361,14 +1403,14 @@
 								
 							</tr>
 
-							<tr>
+							<!-- <tr>
 								<td colspan="6" style="border:1px solid black; padding:6px; text-align:center; font-weight:bold;">
 									LAB ID :
 									<span t-esc="cbr.lab_id"/>
 								</td>
 
 								
-							</tr>
+							</tr> -->
 
 							<tr>
 								<td colspan="3" style="border:1px solid black; padding:4px;">
@@ -1398,8 +1440,9 @@
 								</span>
 								</td>
 								<td colspan="3" style="border:1px solid black; padding:4px;">
-									<b>Annexure- II to ULR</b>
-									<span style="background-color:yellow; padding:2px 6px;">
+									<b>Annexure- II to ULR : </b>
+									<span style="padding:2px 6px;">
+									<span t-field="o.sample_id.ulr_no"/>
 									</span>
 								</td>
 							</tr>
@@ -1417,7 +1460,7 @@
 								<td colspan="6" style="border:1px solid black; padding:4px;">
 									<b>Name &amp; Address of Customer :</b>
 									
-										<span t-field="o.srf_id.customer.name"/>
+										<!-- <span t-field="o.srf_id.customer.name"/> -->
 										<span t-field="o.srf_id.customer.street"/>
 										<span t-field="o.srf_id.customer.street2"/>
 										<span t-field="o.srf_id.customer.city"/>
@@ -1485,7 +1528,7 @@
 									<b>Room Temperature (°C)</b>
 								</td>
 								<td  colspan="1"  style="border:1px solid black; padding:4px; text-align:center;">
-									<t t-esc="cbr.room_temp"/>
+									<t t-esc="int((cbr.room_temp or 0) + 0.5)"/>
 								</td>
 								<td colspan="1" style="border:1px solid black; padding:4px;">
 									<b>Relative humidity (%)</b>
@@ -1694,7 +1737,7 @@
 
 									<td style="width:20%; text-align:center; vertical-align:middle; padding: 5px;">
                                        <img t-att-src="'/lerm_civil/static/src/img/genstru_logo.png'"
-                                        style="height:55px;"/>
+                                        style="height:75px;"/>
                                     </td>
 
 									<!-- COMPANY HEADER -->
@@ -1793,7 +1836,8 @@
 									<b>Annexure- II to ULR</b>
 								</td>
 								<td colspan="3" style="border:1px solid black; padding:4px;">
-									<span style="background-color:yellow; padding:2px 6px;">
+									<span style=" padding:2px 6px;">
+									<span t-field="o.sample_id.ulr_no"/>
 									</span>
 								</td>
 							</tr>
@@ -1808,7 +1852,7 @@
 							<tr>
 							<td colspan="3" style="width:20%;"><strong>Name &amp; Address of Customer</strong>: </td>
 							<td colspan="9" style="padding-left: 10px;width:25%;">
-										<span t-field="o.srf_id.customer.name"/>
+										<!-- <span t-field="o.srf_id.customer.name"/> -->
 										<span t-field="o.srf_id.customer.street"/>
 										<span t-field="o.srf_id.customer.street2"/>
 										<span t-field="o.srf_id.customer.city"/>
@@ -1889,7 +1933,7 @@
 								<tr> 
 								
 									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Symbol</th>
-									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;width: 7%;">Lab ID</th>
+									<!-- <th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;width: 7%;">Lab ID</th> -->
 									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">BH ID</th>
 									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Sample Depth (m)</th>
 									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Sample Details</th>
@@ -1918,20 +1962,58 @@
 						<t t-foreach="data.gsa_child_lines" t-as="line">
 								<tr>
 									<td><t t-esc="line.symbol"/></td>
-									<td style="width: 7%; "><t t-esc="line.lab_no"/></td>
+									<!-- <td style="width: 7%; "><t t-esc="line.lab_no"/></td> -->
 									<td><t t-esc="line.bh_id"/></td>
 									<td><t t-esc="line.sample_depth"/></td>
 		                            <td><t t-esc="line.sample_details"/></td>
-									<td><t t-esc="line.wt_of_samp1"/></td>
+
+									<td colspan="1">
+									 <t t-esc="int(line.wt_of_samp1 or 0)"/>
+									</td>
+
+									<!-- <td><t t-esc="line.wt_of_samp1"/></td> -->
 									<td><t t-esc="line.water_content"/></td>
-									<td><t t-esc="line.temp"/></td>
-									<td><t t-esc="line.humidity"/></td>
-									<td><t t-esc="line.specific_gravity"/></td>
+
+									<td colspan="1">
+									 <t t-esc="int(line.temp or 0)"/>
+									</td>
+
+									<!-- <td><t t-esc="line.temp"/></td> -->
+
+									<td colspan="1">
+									 <t t-esc="int(line.humidity or 0)"/>
+									</td>
+
+									<!-- <td><t t-esc="line.humidity"/></td> -->
+
+									<td>
+    <t t-esc="'%.2f' % (line.specific_gravity or 0)"/>
+</td>
+									<!-- <td><t t-esc="line.specific_gravity"/></td> -->
+
+									<td colspan="1">
+									 <t t-esc="int(line.gravel or 0)"/>
+									</td>
 									
-									<td colspan="1"><t t-esc="line.gravel"/></td>
-									<td colspan="1"><t t-esc="line.sand"/></td>
-									<td colspan="1"><t t-esc="line.silt"/></td>
-									<td colspan="1"><t t-esc="line.silt_clay"/></td>
+									<!-- <td colspan="1"><t t-esc="line.gravel"/></td> -->
+
+									<td colspan="1">
+									 <t t-esc="int(line.sand or 0)"/>
+									</td>
+
+									<!-- <td colspan="1"><t t-esc="line.sand"/></td> -->
+
+									<td colspan="1">
+									 <t t-esc="int(line.silt or 0)"/>
+									</td>
+
+									<!-- <td colspan="1"><t t-esc="line.silt"/></td> -->
+
+									<td colspan="1">
+									 <t t-esc="int(line.silt_clay or 0)"/>
+									</td>
+
+									<!-- <td colspan="1"><t t-esc="line.silt_clay"/></td> -->
 									<td>
 										<t t-esc="dict(line._fields['soil_classification'].selection).get(line.soil_classification)"/>
 									</td>
@@ -2021,6 +2103,9 @@
 	</template>
 
 
+	<!--  -->
+
+
 	  <template id="report_proctor_template">
     <t t-call="web.html_container">
 
@@ -2051,7 +2136,7 @@
 
 									<td style="width:20%; text-align:center; vertical-align:middle; padding: 5px;">
                                        <img t-att-src="'/lerm_civil/static/src/img/genstru_logo.png'"
-                                        style="height:55px;"/>
+                                        style="height:75px;"/>
                                     </td>
 
 									<!-- COMPANY HEADER -->
@@ -2116,7 +2201,7 @@
 				 
 					
 
-						<table style="width:100%; border-collapse:collapse; font-size:13px;">
+						<table style="width:100%; border-collapse:collapse; font-size:13px;margin-top:30px;">
 
 							<!-- 🔹 HEADER -->
 							<tr>
@@ -2126,14 +2211,14 @@
 
 								
 							</tr>
-							<tr>
+							<!-- <tr>
 								<td colspan="6" style="border:1px solid black; padding:6px; text-align:center; font-weight:bold;">
 									LAB ID :
 									<span t-esc="proctor.lab_id"/>
 								</td>
 
 								
-							</tr>
+							</tr> -->
 
 							<tr>
 								<td colspan="3" style="border:1px solid black; padding:4px;">
@@ -2168,8 +2253,8 @@
 								</td>
 								<td colspan="3" style="border:1px solid black; padding:4px;">
 									<b>Annexure- II to ULR</b>
-									<span style="background-color:yellow; padding:2px 6px;">
-										<!-- <t t-esc="data.ulr_no"/> -->
+									<span style=" padding:2px 6px;">
+										<span t-field="o.sample_id.ulr_no"/>
 									</span>
 								</td>
 							</tr>
@@ -2188,7 +2273,7 @@
 									<b>Name &amp; Address of Customer :</b>
 									<!-- <t t-esc="data.customer_name"/> -->
 									<!-- <td colspan="3" style="padding-left: 10px;width:25%;"> -->
-										<span t-field="o.srf_id.customer.name"/>
+										<!-- <span t-field="o.srf_id.customer.name"/> -->
 										<span t-field="o.srf_id.customer.street"/>
 										<span t-field="o.srf_id.customer.street2"/>
 										<span t-field="o.srf_id.customer.city"/>
@@ -2207,13 +2292,16 @@
 							
 
 							<tr >
+
+							    <td colspan="6" style="border:1px solid black; padding:4px;">
+									<b>Date Sample Received :   </b><span t-field="o.sample_id.sample_received_date"/> </td>
 								
-								<td colspan="3" style="border:1px solid black; padding:6px; font-weight:bold;">
+								<!-- <td colspan="3" style="border:1px solid black; padding:6px; font-weight:bold;">
 									Date Sample Received
 								</td>
 								<td colspan="3" style="border:1px solid black; padding:6px;">
 									<span t-field="o.sample_id.sample_received_date"/>
-								</td>
+								</td> -->
 							</tr>
 
 							<tr>
@@ -2252,13 +2340,19 @@
 									Room Temperature (deg)
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-								 <t t-esc="proctor.room_temp_proctor"/>
+
+								 <t t-esc="int((proctor.room_temp_proctor or 0) + 0.5)"/>
+
+								 <!-- <t t-esc="proctor.room_temp_proctor"/> -->
+
 								</td>
 								<td style="border:1px solid black; padding:6px; font-weight:bold;">
 									Relative humidity (%)
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-								 	 <t t-esc="proctor.humidity_proctor"/>
+								    <t t-esc="int((proctor.humidity_proctor or 0) + 0.5)"/>
+
+								 	 <!-- <t t-esc="proctor.humidity_proctor"/> -->
 								</td>
 							</tr>
 
@@ -2284,14 +2378,20 @@
 								</td>
 								<td style="border:1px solid black; padding:6px;">
 
-								 <t t-esc="proctor.empty_wt_proctor"/>
+								  <t t-esc="int((proctor.empty_wt_proctor or 0) + 0.5)"/>
+
+
+								 <!-- <t t-esc="proctor.empty_wt_proctor"/> -->
 									
 								</td>
 								<td style="border:1px solid black; padding:6px; font-weight:bold;">
 									Volume of mould, cc
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-								<t t-esc="proctor.volumn_proctor"/>
+
+								  <t t-esc="int((proctor.volumn_proctor or 0) + 0.5)"/>
+
+								<!-- <t t-esc="proctor.volumn_proctor"/> -->
 									
 								</td>
 							</tr>
@@ -2355,7 +2455,7 @@
 
 									<td style="width:20%; text-align:center; vertical-align:middle; padding: 5px;">
                                        <img t-att-src="'/lerm_civil/static/src/img/genstru_logo.png'"
-                                        style="height:55px;"/>
+                                        style="height:75px;"/>
                                     </td>
 
 									<!-- COMPANY HEADER -->
@@ -2439,7 +2539,7 @@
 						
                  <div >
 						<!-- 🔹 HEADER -->
-						<table style="width:100%; border-collapse:collapse; font-size:13px;">
+						<table style="width:100%; border-collapse:collapse; font-size:13px; margin-top:30px;">
                         <tr>
 								<td colspan="6" style="border:1px solid black; padding:6px; text-align:center; font-weight:bold;">
 								DETERMINE THE SHEAR STRENGTH BY TRIAXIAL SHEAR TEST
@@ -2489,8 +2589,8 @@
 								</td>
 								<td colspan="3" style="border:1px solid black; padding:4px;">
 									<b>Annexure- II to ULR</b>
-									<span style="background-color:yellow; padding:2px 6px;">
-										<!-- <t t-esc="data.ulr_no"/> -->
+									<span style=" padding:2px 6px;">
+										<span t-field="o.sample_id.ulr_no"/>
 									</span>
 								</td>
 							</tr>
@@ -2509,7 +2609,7 @@
 									<b>Name &amp; Address of Customer :</b>
 									<!-- <t t-esc="data.customer_name"/> -->
 									<!-- <td colspan="3" style="padding-left: 10px;width:25%;"> -->
-										<span t-field="o.srf_id.customer.name"/>
+										<!-- <span t-field="o.srf_id.customer.name"/> -->
 										<span t-field="o.srf_id.customer.street"/>
 										<span t-field="o.srf_id.customer.street2"/>
 										<span t-field="o.srf_id.customer.city"/>
@@ -2578,13 +2678,16 @@
 									Room Temperature (deg)
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-								 <t t-esc="triaxial.temp_triaxial"/>
+
+								  <t t-esc="int((triaxial.temp_triaxial or 0) + 0.5)"/>
+								 <!-- <t t-esc="triaxial.temp_triaxial"/> -->
 								</td>
 								<td style="border:1px solid black; padding:6px; font-weight:bold;">
 									Relative humidity (%)
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-								 	 <t t-esc="triaxial.humidity_triaxial"/>
+								    <t t-esc="int((triaxial.humidity_triaxial or 0) + 0.5)"/>
+								 	 <!-- <t t-esc="triaxial.humidity_triaxial"/> -->
 								</td>
 							</tr>
 
@@ -2609,14 +2712,17 @@
 								</td>
 								<td style="border:1px solid black; padding:6px;">
 
-								 <t t-esc="triaxial.dia_triaxial"/>
+								   <t t-esc="int((triaxial.dia_triaxial or 0) + 0.5)"/>
+
+								 <!-- <t t-esc="triaxial.dia_triaxial"/> -->
 									
 								</td>
 								<td style="border:1px solid black; padding:6px; font-weight:bold;">
 									Wet Weight of Sample (gm)  
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-								<t t-esc="triaxial.mass_before_avg"/>
+								  
+								<t t-esc="round(triaxial.mass_before_avg or 0, 1)"/>
 									
 								</td>
 							</tr>
@@ -2627,14 +2733,17 @@
 								</td>
 								<td style="border:1px solid black; padding:6px;">
 
-								 <t t-esc="triaxial.height_triaxial"/>
+								   <t t-esc="int((triaxial.height_triaxial or 0) + 0.5)"/>
+
+								 <!-- <t t-esc="triaxial.height_triaxial"/> -->
 									
 								</td>
 								<td style="border:1px solid black; padding:6px; font-weight:bold;">
 									Dry Weight of Sample (gm) 
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-								<t t-esc="triaxial.mass_dry_avg"/>
+								   <t t-esc="round(triaxial.mass_dry_avg or 0, 1)"/>
+								<!-- <t t-esc="triaxial.mass_dry_avg"/> -->
 									
 								</td>
 							</tr>
@@ -2645,7 +2754,9 @@
 								</td>
 								<td style="border:1px solid black; padding:6px;">
 
-								 <t t-esc="triaxial.area1_triaxial"/>
+								   
+
+								 <t t-esc="triaxial.area11_triaxial"/>
 									
 								</td>
 								<td style="border:1px solid black; padding:6px; font-weight:bold;">
@@ -2663,7 +2774,9 @@
 								</td>
 								<td style="border:1px solid black; padding:6px;">
 
-								 <t t-esc="triaxial.soil_volume"/>
+								  
+
+								 <t t-esc="triaxial.soil_volume1"/>
 									
 								</td>
 								<td style="border:1px solid black; padding:6px; font-weight:bold;">
@@ -2688,7 +2801,10 @@
 									Proving Ring Capacity kN 
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-								<t t-esc="triaxial.proving_triaxial"/>
+
+								  <t t-esc="int((triaxial.proving_triaxial or 0) + 0.5)"/>
+
+								<!-- <t t-esc="triaxial.proving_triaxial"/> -->
 									
 								</td>
 							</tr>
@@ -2724,7 +2840,9 @@
 									Angle of shear plane with vertical axis
 								</td>
 								<td style="border:1px solid black; padding:6px;">
-								<t t-esc="triaxial.phi"/>
+
+								<t t-esc="int((triaxial.angle_phi or 0) + 0.5)"/>
+								<!-- <t t-esc="triaxial.angle_phi"/> -->
 									
 								</td>
 							</tr>
@@ -2750,47 +2868,47 @@
 					<table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-left:auto; margin-right:auto;">
 						<tbody>
 							<tr>
-								<td style="text-align:center;font-weight:bold;">Sr No</td>
-								<td style="text-align:center;font-weight:bold;">Cell Pressure  s3  kg/cm²</td>
-								<td style="text-align:center;font-weight:bold;">Deviatoric Stress at Failure sd kg/cm²</td>
-								<td style="text-align:center;font-weight:bold;">Effective Normal Stress at Failure s1 kg/cm²</td>
+								<td style="border:1px solid black;text-align:center;font-weight:bold;">Sr No</td>
+								<td style="text-align:center;border:1px solid black;font-weight:bold;">Cell Pressure  σ₃  kg/cm²</td>
+								<td style="text-align:center;border:1px solid black;font-weight:bold;">Deviatoric Stress at Failure σd kg/cm²</td>
+								<td style="text-align:center;border:1px solid black;font-weight:bold;">Effective Normal Stress at Failure σ1 kg/cm²</td>
 							</tr>
 
 							<tr>
-								<td style="text-align:center;font-weight:bold;">1</td>
-								<td style="text-align:center;">
+								<td style="text-align:center;border:1px solid black;font-weight:bold;">1</td>
+								<td style="text-align:center;border:1px solid black;">
 									<t t-esc="triaxial.cell_pressure1"/>
 								</td>
-								<td style="text-align:center;">
+								<td style="text-align:center;border:1px solid black;">
 									<t t-esc="triaxial.deviatoric_stress1"/>
 								</td>
-								<td style="text-align:center;">
+								<td style="text-align:center;border:1px solid black;">
 									<t t-esc="triaxial.effect_norm_stress1"/>
 								</td>
 							</tr>
 
 							<tr>
-								<td style="text-align:center;font-weight:bold;">2</td>
-								<td style="text-align:center;">
+								<td style="text-align:center;font-weight:bold;border:1px solid black;">2</td>
+								<td style="text-align:center;border:1px solid black;">
 									<t t-esc="triaxial.cell_pressure2"/>
 								</td>
-								<td style="text-align:center;">
+								<td style="text-align:center;border:1px solid black;">
 									<t t-esc="triaxial.deviatoric_stress2"/>
 								</td>
-								<td style="text-align:center;">
+								<td style="text-align:center;border:1px solid black;">
 									<t t-esc="triaxial.effect_norm_stress2"/>
 								</td>
 							</tr>
 
 							<tr>
-								<td style="text-align:center;font-weight:bold;">3</td>
-								<td style="text-align:center;">
+								<td style="text-align:center;border:1px solid black;font-weight:bold;">3</td>
+								<td style="text-align:center;border:1px solid black;">
 									<t t-esc="triaxial.cell_pressure3"/>
 								</td>
-								<td style="text-align:center;">
+								<td style="text-align:center;border:1px solid black;">
 									<t t-esc="triaxial.deviatoric_stress3"/>
 								</td>
-								<td style="text-align:center;">
+								<td style="text-align:center;border:1px solid black;">
 									<t t-esc="triaxial.effect_norm_stress3"/>
 								</td>
 							</tr>
@@ -2814,7 +2932,7 @@
 			</div>
 
 			<div style="margin-top:5px; text-align:center; font-weight:bold;">
-				Angle of internal friction  °  : = <span t-esc="triaxial.phi"/>
+				Angle of internal friction  °  : = <span t-esc="int((triaxial.phi or 0) + 0.5)"/>
 			</div>
 
 			</div>
@@ -2856,7 +2974,7 @@
 
 									<td style="width:20%; text-align:center; vertical-align:middle; padding: 5px;">
                                        <img t-att-src="'/lerm_civil/static/src/img/genstru_logo.png'"
-                                        style="height:55px;"/>
+                                        style="height:75px;"/>
                                     </td>
 
 									<td style="width:77%; border:1px solid #000; padding:0;">
@@ -2939,7 +3057,7 @@
 				 
 					
                    
-						<table style="width:100%; border-collapse:collapse; font-size:13px;">
+						<table style="width:100%; border-collapse:collapse; font-size:13px;margin-top:30px;">
 
 						<tr>
 								<td colspan="10" style="border:1px solid black; padding:6px; text-align:center; font-weight:bold;">
@@ -2972,14 +3090,23 @@
 
 								
 							</tr>
-							<tr>
+							<!-- <tr>
 								<td colspan="10" style="border:1px solid black; padding:6px; text-align:center; font-weight:bold;">
 									LAB ID :
 									<span t-esc="sweeling.lab_id"/>
 								</td>
 
 								
+							</tr> -->
+							<tr>
 							</tr>
+
+							 <td colspan="10" style="border:1px solid black; padding:4px;text-align:center;">
+									<b>Annexure- II to ULR : </b>
+									<span style="padding:2px 6px;">
+									<span t-field="o.sample_id.ulr_no"/>
+									</span>
+								</td>
 
 							
 							<tr>
@@ -2995,7 +3122,7 @@
 								<td colspan="10" style="border:1px solid black; padding:4px;">
 									<b>Name &amp; Address of Customer :</b>
 									
-										<span t-field="o.srf_id.customer.name"/>
+										<!-- <span t-field="o.srf_id.customer.name"/> -->
 										<span t-field="o.srf_id.customer.street"/>
 										<span t-field="o.srf_id.customer.street2"/>
 										<span t-field="o.srf_id.customer.city"/>
@@ -3027,9 +3154,11 @@
 							<tr>
 								<td style="border:1px solid black; padding:4px;"><b>Sample ID</b></td>
 								<td style="border:1px solid black; padding:4px;"><span t-esc="sweeling.lab_id"/></td>
+								<td>
+								</td>
 
 								<td style="border:1px solid black; padding:4px;"><b>Weight of Ring, w1</b></td>
-								<td style="border:1px solid black; padding:4px;"><span t-esc="sweeling.wt_of_ring"/></td>
+								<td style="border:1px solid black; padding:4px;"><span t-esc="round(sweeling.wt_of_ring or 0, 2)"/></td>
 								<td style="border:1px solid black; padding:4px;">gm</td>
 
 								<td colspan="2" style="border:1px solid black; padding:4px;"><b>Height of Solids, Hs</b></td>
@@ -3040,9 +3169,13 @@
 							<tr>
 								<td style="border:1px solid black; padding:4px;"><b>Specific Gravity, G</b></td>
 								<td style="border:1px solid black; padding:4px;"><span t-esc="sweeling.swelling_specific_gravity"/></td>
+								<td>
+								</td>
 
 								<td style="border:1px solid black; padding:4px;"><b>Weight of Wet Specimen + Ring, w2</b></td>
-								<td style="border:1px solid black; padding:4px;"><span t-esc="sweeling.wt_wet_specimen_bf"/></td>
+								<td style="border:1px solid black; padding:4px;"><span t-esc="round(sweeling.wt_wet_specimen_bf or 0, 2)"/>
+								<!-- <span t-esc="sweeling.wt_wet_specimen_bf"/> -->
+								</td>
 								<td style="border:1px solid black; padding:4px;">gm</td>
 
 								<td colspan="2" style="border:1px solid black; padding:4px;"><b>Bulk Density of Soil</b></td>
@@ -3053,22 +3186,31 @@
 							<tr>
 								<td style="border:1px solid black; padding:4px;"><b>Diameter, D</b></td>
 								<td style="border:1px solid black; padding:4px;"><span t-esc="sweeling.swelling_diameter"/></td>
+								<td style="border:1px solid black; padding:4px;"><span>  cm</span></td>
 
 								<td style="border:1px solid black; padding:4px;"><b>Weight of Dry Specimen + Ring, w3</b></td>
-								<td style="border:1px solid black; padding:4px;"><span t-esc="sweeling.wt_dry_specimen_af"/></td>
+								<td style="border:1px solid black; padding:4px;"><span t-esc="round(sweeling.wt_dry_specimen_af or 0, 2)"/>
+								<!-- <span t-esc="sweeling.wt_dry_specimen_af"/> -->
+								</td>
 								<td style="border:1px solid black; padding:4px;">gm</td>
 
 								<td colspan="2" style="border:1px solid black; padding:4px;"><b>Dry Density of Soil</b></td>
-								<td style="border:1px solid black; padding:4px;"><span t-esc="sweeling.height_solid"/></td>
+								<td style="border:1px solid black; padding:4px;">
+								<span t-esc="round(sweeling.height_solid or 0, 2)"/>
+								<!-- <span t-esc="sweeling.height_solid"/> -->
+								</td>
 								<td colspan="2" style="border:1px solid black; padding:4px;">gm/cc</td>
 							</tr>
 
 							<tr>
 								<td style="border:1px solid black; padding:4px;"><b>Height, H</b></td>
 								<td style="border:1px solid black; padding:4px;"><span t-esc="sweeling.swelling_height"/></td>
+								<td style="border:1px solid black; padding:4px;"><span>  cm</span></td>
 
 								<td style="border:1px solid black; padding:4px;"><b>Dry weight of soil, wd</b></td>
-								<td style="border:1px solid black; padding:4px;"><span t-esc="sweeling.dry_density_soil"/></td>
+								<td style="border:1px solid black; padding:4px;"><span t-esc="round(sweeling.wt_dry_soil_swell or 0, 2)"/>
+								<!-- <span t-esc="sweeling.wt_dry_soil_swell"/> -->
+								</td>
 								<td style="border:1px solid black; padding:4px;">gm</td>
 
 								<td colspan="2" style="border:1px solid black; padding:4px;"><b>Initial void ratio, e₀</b></td>
@@ -3079,6 +3221,7 @@
 							<tr>
 								<td style="border:1px solid black; padding:4px;"><b>Area, A</b></td>
 								<td style="border:1px solid black; padding:4px;"><span t-esc="sweeling.swelling_area"/></td>
+								<td style="border:1px solid black; padding:4px;"><span>  cm²</span></td>
 
 								<td style="border:1px solid black; padding:4px;"><b>Water Content, wc</b></td>
 								<td style="border:1px solid black; padding:4px;"><span t-esc="sweeling.water_content"/></td>
@@ -3092,6 +3235,7 @@
 							<tr>
 								<td style="border:1px solid black; padding:4px;"><b>Volume, Vol</b></td>
 								<td style="border:1px solid black; padding:4px;"><span t-esc="sweeling.swelling_volume"/></td>
+								<td style="border:1px solid black; padding:4px;"><span>  cm³</span></td>
 
 								<td style="border:1px solid black; padding:4px;"><b>Initial Reading</b></td>
 								<td style="border:1px solid black; padding:4px;"><span t-esc="sweeling.initial_read"/></td>
@@ -3206,7 +3350,7 @@
 
 									<td style="width:20%; text-align:center; vertical-align:middle; padding: 5px;">
                                        <img t-att-src="'/lerm_civil/static/src/img/genstru_logo.png'"
-                                        style="height:55px;"/>
+                                        style="height:75px;"/>
                                     </td>
 
 									<!-- COMPANY HEADER -->
@@ -3292,7 +3436,7 @@
 			
                  <div >
 						<!-- 🔹 HEADER -->
-						<table style="width:100%; border-collapse:collapse; font-size:13px;">
+						<table style="width:100%; border-collapse:collapse; font-size:13px;margin-top:30px;">
                         <tr>
 								<td colspan="6" style="border:1px solid black; padding:6px; text-align:center; font-weight:bold;">
 								DETERMINE SHEAR STRENGTH BY DIRECT SHEAR TEST
@@ -3300,14 +3444,14 @@
 
 								
 							</tr>
-							<tr>
+							<!-- <tr>
 								<td colspan="6" style="border:1px solid black; padding:6px; text-align:center; font-weight:bold;">
 									LAB ID :
 									<span t-esc="direct.lab_id"/>
 								</td>
 
 								
-							</tr>
+							</tr> -->
 
 							<tr>
 								<td colspan="3" style="border:1px solid black; padding:4px;">
@@ -3339,8 +3483,8 @@
 								</td>
 								<td colspan="3" style="border:1px solid black; padding:4px;">
 									<b>Annexure- II to ULR</b>
-									<span style="background-color:yellow; padding:2px 6px;">
-										<!-- <t t-esc="data.ulr_no"/> -->
+									<span style=" padding:2px 6px;">
+										<span t-field="o.sample_id.ulr_no"/>
 									</span>
 								</td>
 							</tr>
@@ -3358,7 +3502,7 @@
 									<b>Name &amp; Address of Customer :</b>
 									<!-- <t t-esc="data.customer_name"/> -->
 									<!-- <td colspan="3" style="padding-left: 10px;width:25%;"> -->
-										<span t-field="o.srf_id.customer.name"/>
+										<!-- <span t-field="o.srf_id.customer.name"/> -->
 										<span t-field="o.srf_id.customer.street"/>
 										<span t-field="o.srf_id.customer.street2"/>
 										<span t-field="o.srf_id.customer.city"/>
@@ -3559,37 +3703,37 @@
 					<table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-left:auto; margin-right:auto;">
 						<tbody>
 							<tr>
-								<td style="text-align:center;font-weight:bold;">Sr No</td>
-								<td style="text-align:center;font-weight:bold;">Shear stress kg/cm²</td>
-								<td style="text-align:center;font-weight:bold;">Normal stress kg/cm²</td>
+								<td style="text-align:center;font-weight:bold;border:1px solid black;">Sr No</td>
+								<td style="text-align:center;font-weight:bold;border:1px solid black;">Shear stress kg/cm²</td>
+								<td style="text-align:center;font-weight:bold;border:1px solid black;">Normal stress kg/cm²</td>
 							</tr>
 
 							<tr>
-								<td style="text-align:center;font-weight:bold;">1</td>
-								<td style="text-align:center;">
+								<td style="text-align:center;font-weight:bold;border:1px solid black;">1</td>
+								<td style="text-align:center;border:1px solid black;">
 									<t t-esc="direct.shear_test_final1"/>
 								</td>
-								<td style="text-align:center;">
+								<td style="text-align:center;border:1px solid black;">
 									<t t-esc="direct.normal_stress"/>
 								</td>
 							</tr>
 
 							<tr>
-								<td style="text-align:center;font-weight:bold;">2</td>
-								<td style="text-align:center;">
+								<td style="text-align:center;font-weight:bold;border:1px solid black;">2</td>
+								<td style="text-align:center;border:1px solid black;">
 									<t t-esc="direct.shear_test_final2"/>
 								</td>
-								<td style="text-align:center;">
+								<td style="text-align:center;border:1px solid black;">
 									<t t-esc="direct.normal_stress_2"/>
 								</td>
 							</tr>
 
 							<tr>
-								<td style="text-align:center;font-weight:bold;">3</td>
-								<td style="text-align:center;">
+								<td style="text-align:center;border:1px solid black;font-weight:bold;">3</td>
+								<td style="text-align:center;border:1px solid black;">
 									<t t-esc="direct.shear_test_final3"/>
 								</td>
-								<td style="text-align:center;">
+								<td style="text-align:center;border:1px solid black;">
 									<t t-esc="direct.normal_stress_3"/>
 								</td>
 							</tr>
@@ -3654,7 +3798,7 @@
 
 									<td style="width:20%; text-align:center; vertical-align:middle; padding: 5px;">
                                        <img t-att-src="'/lerm_civil/static/src/img/genstru_logo.png'"
-                                        style="height:55px;"/>
+                                        style="height:75px;"/>
                                     </td>
 
 									<td style="width:77%; border:1px solid #000; padding:0;">
@@ -3736,7 +3880,7 @@
 
 						
 			
-						<table style="width:100%; border-collapse:collapse; font-size:13px;">
+						<table style="width:100%; border-collapse:collapse; font-size:13px;margin-top:30px;">
                         <tr>
 								<td colspan="6" style="border:1px solid black; padding:6px; text-align:center; font-weight:bold;">
 								DETERMINATION OF CONSOLIDATION PROPERTIES
@@ -3775,7 +3919,8 @@
 								</td>
 								<td colspan="3" style="border:1px solid black; padding:4px;">
 									<b>Annexure- II to ULR</b>
-									<span style="background-color:yellow; padding:2px 6px;">
+									<span style=" padding:2px 6px;">
+									<span t-field="o.sample_id.ulr_no"/>
 									</span>
 								</td>
 							</tr>
@@ -3796,7 +3941,7 @@
 								<td colspan="6" style="border:1px solid black; padding:4px;">
 									<b>Name &amp; Address of Customer :</b>
 								
-										<span t-field="o.srf_id.customer.name"/>
+										<!-- <span t-field="o.srf_id.customer.name"/> -->
 										<span t-field="o.srf_id.customer.street"/>
 										<span t-field="o.srf_id.customer.street2"/>
 										<span t-field="o.srf_id.customer.city"/>
@@ -4016,8 +4161,12 @@
 					
 				</t>
 
-            <div style="margin-top:20px; text-align:center; font-weight:bold;">
+            <!-- <div style="margin-top:20px; text-align:center; font-weight:bold;">
 				Preconsolidation Pressure : = <span t-esc="consolidation.pc_y" t-options='{"widget": "float", "precision": 2}'/> 
+			</div> -->
+
+			<div style="margin-top:5px; text-align:center; font-weight:bold;">
+				PC : = <span t-esc="consolidation.PC_final" t-options='{"widget": "float", "precision": 2}'/>
 			</div>
 
 			<div style="margin-top:5px; text-align:center; font-weight:bold;">
@@ -4028,11 +4177,9 @@
 				Recompression Index, Cr  : = <span t-esc="consolidation.cr" t-options='{"widget": "float", "precision": 3}'/>
 			</div>
 
-			<div style="margin-top:5px; text-align:center; font-weight:bold;">
-				PC : = <span t-esc="consolidation.PC_final" t-options='{"widget": "float", "precision": 2}'/>
-			</div>
+			
 
-			<div style="margin-top:5px; text-align:center; font-weight:bold;">
+			<!-- <div style="margin-top:5px; text-align:center; font-weight:bold;">
 				Depth : = <span t-esc="consolidation.pc_depth"/>
 			</div>
 
@@ -4042,7 +4189,7 @@
 
 			<div style="margin-top:5px; text-align:center; font-weight:bold;">
 				OCR : = <span t-esc="consolidation.ocr" t-options='{"widget": "float", "precision": 2}'/> Normally Consolidated
-			</div>
+			</div> -->
 
 
 
