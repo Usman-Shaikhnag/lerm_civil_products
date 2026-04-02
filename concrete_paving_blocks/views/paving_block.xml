@@ -2,17 +2,20 @@
 <odoo>
     <data>
 
-        <record id="mechanical_pever_block1" model="ir.ui.view">
-        <field name="name">mechanical.concrete.paving.block.form</field>
-        <field name="model">mechanical.concrete.paving.block</field>
-        <field name="arch" type="xml">
-            <form create="false">
+    <record id="mechanical_pever_block1" model="ir.ui.view">
+    <field name="name">mechanical.concrete.paving.block.form</field>
+    <field name="model">mechanical.concrete.paving.block</field>
+    <field name="arch" type="xml">
+        <form create="false">
+
+        
                 <sheet>
                    <group style="white-space: nowrap; width:70%;">
                         <h1>
                             <field name="name_paving" readonly="1" nolabel="1"/>
                         </h1>
                     </group>
+
                     <group >
                        <field name="grade"/>
                        <field name="size_id" invisible="1"/>
@@ -227,12 +230,6 @@
                                 </field>
                             </div>
 
-                     <!-- <group invisible = "water_absorption_visible == False" string="Result" colspan="4"  style="white-space: nowrap; width:70%; margin-top: 10px">
-                     
-                        <field name="avg_water_absorption" readonly="1"/>
-                        
-                  
-                    </group> -->
 
                     
                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "water_absorption_visible == False">
@@ -382,9 +379,6 @@
                         </page>
 
                     </notebook>
-
-
-
 
 
 

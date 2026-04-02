@@ -20,6 +20,7 @@ class CrusherRunMacadamMechanical(models.Model):
 
    
 
+
 # remark
 
     notes_id = fields.One2many('crusher.run.macadam.notes', 'parent_id', string="Notes")

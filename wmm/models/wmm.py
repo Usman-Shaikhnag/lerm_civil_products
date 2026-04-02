@@ -13,6 +13,7 @@ class WmmMechanical(models.Model):
     _rec_name = "name"
 
 
+
     name = fields.Char("Name",default="WMM")
 
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")

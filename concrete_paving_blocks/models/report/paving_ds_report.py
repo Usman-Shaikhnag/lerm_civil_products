@@ -6,7 +6,7 @@ from io import BytesIO
 from lxml import etree
 
 class PavingBlockDatasheet1(models.AbstractModel):
-        _name = 'report.lerm_concrete_paving_block_datasheet'
+        _name = 'report.concrete_paving_block.paving_block_datasheet'
         _description = 'Concrete Paving Block DataSheet'
     
         @api.model
@@ -91,7 +91,7 @@ class PavingBlockDatasheet1(models.AbstractModel):
 
 
 class PavingBlockReport1(models.AbstractModel):
-    _name = 'report.paver_block.paving_block_report'
+    _name = 'report.concrete_paving_block.paving_block_report'
     _description = 'Paving Block'
     
     @api.model

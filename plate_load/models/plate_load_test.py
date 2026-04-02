@@ -1373,6 +1373,7 @@ class LoadAndCumilitiveLine1(models.Model):
 
 
 
+
 class plateloadNotes(models.Model):
     _name = "plateload.notes"
 

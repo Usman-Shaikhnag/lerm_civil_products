@@ -18,6 +18,7 @@ class CoverblockMechanical(models.Model):
     grade = fields.Many2one('lerm.grade.line', compute="_compute_grade_id", store=True )
     avg_compacted_unit = fields.Char( "Compacted Density", compute="_compute_units" )
 
+
    
     def _get_unit(self, internal_id):
         param = self.env['lerm.parameter.master'].search([
@@ -35,7 +36,7 @@ class CoverblockMechanical(models.Model):
 
 # remark
 
-    notes_id = fields.One2many('coverblock.notes', 'parent_id', string="Notes")
+    notes_id = fields.One2many('cover.notes', 'parent_id', string="Notes")
     
     @api.model
     def default_get(self, fields):
@@ -418,7 +419,7 @@ class CrushingValueLine(models.Model):
 
 
 class coverblockNotes(models.Model):
-    _name = "coverblock.notes"
+    _name = "cover.notes"
 
     parent_id = fields.Many2one('mechanical.cover.block',string="Parent Id")
     sr_no = fields.Char("Sr. No.")

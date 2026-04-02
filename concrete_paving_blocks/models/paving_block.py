@@ -16,6 +16,7 @@ class PavingBlock(models.Model):
     _rec_name = "name_paving"
 
 
+
     name_paving = fields.Char("Name",default="Concrete Paving Block")
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 
