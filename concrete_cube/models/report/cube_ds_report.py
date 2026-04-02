@@ -125,13 +125,37 @@ class ConcreteCubeCompresiveReport(models.AbstractModel):
             raise ValueError("ELN record not found")
 
         # Static QR
-        qr_static = qrcode.QRCode(box_size=6, border=2)
-        qr_static.add_data("https://www.lerm.in")
-        qr_static.make(fit=True)
-        buf_static = BytesIO()
-        qr_static.make_image(fill_color="black", back_color="white").save(buf_static, format="PNG")
-        qr_static_b64 = base64.b64encode(buf_static.getvalue()).decode()
+        # qr_static = qrcode.QRCode(box_size=6, border=2)
+        # qr_static.add_data("https://www.lerm.in")
+        # qr_static.make(fit=True)
+        # buf_static = BytesIO()
+        # qr_static.make_image(fill_color="black", back_color="white").save(buf_static, format="PNG")
+        # qr_static_b64 = base64.b64encode(buf_static.getvalue()).decode()
+        # Lab fetch करा (adjust field नाव)
+        lab = eln.lab_location  
+        nabl_link = lab.nabl_scope_link if lab and lab.nabl_scope_link else False
+        qr_static_b64 = False
 
+        if nabl_link:
+            # QR code chi setting
+            qr = qrcode.QRCode(
+                version=1,
+                error_correction=qrcode.constants.ERROR_CORRECT_M, # 'M' correction mule scan fast hoto
+                box_size=4, # Size thoda adjust kela aahe
+                border=2,
+            )
+            qr.add_data(nabl_link)
+            qr.make(fit=True)
+
+            # Image generate karne
+            img = qr.make_image(fill_color="black", back_color="white")
+            
+            # Image memory buffer madhe save karne
+            buf = BytesIO()
+            img.save(buf, format="PNG")
+            
+        # Base64 string madhe convert karne
+        qr_static_b64 = base64.b64encode(buf.getvalue()).decode('utf-8')
         # 🧩 QR Code तयार करा
         qr = qrcode.QRCode(
             version=1,

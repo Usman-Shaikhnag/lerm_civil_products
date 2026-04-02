@@ -3,7 +3,7 @@ from odoo import api, fields, models
 class CoverblockMechanical(models.Model):
     _name = "mechanical.cover.block"
     _inherit = "lerm.eln"
-    _description = "Mechanical Cover Block"
+    _description = "mechanical.cover.block"
     _rec_name = "name"
 
     name = fields.Char(default="Cover Block")
