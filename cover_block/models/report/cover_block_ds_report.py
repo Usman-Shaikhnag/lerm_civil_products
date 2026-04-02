@@ -8,9 +8,9 @@ from lxml import etree
 
 
 
-class CoverblockReport(models.AbstractModel):
+class coverblockReport(models.AbstractModel):
     _name = 'report.cover_block.cover_block_report'
-    _description = 'Cover block Report'
+    _description = 'cover block Report'
     
     @api.model
     def _get_report_values(self, docids, data):
@@ -71,9 +71,9 @@ class CoverblockReport(models.AbstractModel):
         }
 
 
-class CoverblockDataSheet(models.AbstractModel):
+class coverblockDataSheet(models.AbstractModel):
     _name = 'report.cover_block.cover_block_datasheet'
-    _description = 'Cover block DataSheet'
+    _description = 'cover block DataSheet'
     
     @api.model
     def _get_report_values(self, docids, data):
