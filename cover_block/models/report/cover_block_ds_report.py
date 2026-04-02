@@ -9,7 +9,7 @@ from lxml import etree
 
 
 class CoverblockReport(models.AbstractModel):
-    _name = 'report.Cover_Block.Cover_block_report'
+    _name = 'report.cover_block.cover_block_report'
     _description = 'Cover block Report'
     
     @api.model
@@ -72,7 +72,7 @@ class CoverblockReport(models.AbstractModel):
 
 
 class CoverblockDataSheet(models.AbstractModel):
-    _name = 'report.Cover_Block.Cover_block_datasheet'
+    _name = 'report.cover_block.cover_block_datasheet'
     _description = 'Cover block DataSheet'
     
     @api.model
