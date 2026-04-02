@@ -15,6 +15,7 @@
     'views/groups.xml',
     'views/res_company.xml',
     'views/material.xml',
+    'reports/rr_report.xml',
     'views/srf.xml',
     'views/edit_srf_header_wizard.xml',
     'views/parameter_master.xml',
@@ -42,7 +43,6 @@
     'reports/genstru_eln_report.xml',
     'reports/genstru_eln_datasheet.xml',
     'reports/review_form_report.xml',
-    'reports/rr_report.xml'
    
 
 

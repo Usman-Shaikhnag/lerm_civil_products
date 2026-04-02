@@ -34,6 +34,11 @@ class CoarseAggregateMechanical(models.Model):
     avg_compacted_unit  = fields.Char("Compacted Density", compute="_compute_units", store=False)
 
     calc_mode = fields.Boolean(default=True)     # Calculate चालू असताना True
+
+    # sample_id = fields.Many2one(
+    #     'lerm.srf.sample',
+    #     string="Sample"
+    # )
     
 
     notes_id = fields.One2many(
@@ -2645,6 +2650,9 @@ class CoarseAggregateMechanical(models.Model):
         for record in self:
             record.calc_mode = False
             record.submit_mode = True
+
+            # if record.sample_id:
+            #     record.sample_id.state = '7-calculated'
 
             current_user = record.env.user
 

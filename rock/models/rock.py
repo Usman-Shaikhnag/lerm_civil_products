@@ -134,35 +134,61 @@ class MechanicalRock(models.Model):
     rock_lines_generated = fields.Boolean(string="Rock Lab Lines ",default=False)
     show_sieve = fields.Boolean(default=False)
 
+    # def action_generate_rock_lines(self):
+    #     for record in self:
+    #         if record.lab_id and ' - ' in record.lab_id:
+    #             start_str, end_str = record.lab_id.split(' - ')
+    #             prefix = '-'.join(start_str.split('-')[:2])
+    #             start = int(start_str.split('-')[2])
+    #             end = int(end_str.split('-')[2])
+
+    #             lines = []
+    #             for i in range(start, end + 1):
+    #                 lab_id = f"{prefix}-{str(i).zfill(3)}"
+    #                 lines.append((0, 0, {'lab_id': lab_id}))
+
+    #             record.rock_child_lines = lines
+    #             record.rock_lines_generated = True
+
+    #         # 🔹 Set flag to show sieve analysis
+    #         if record.rock_child_lines:
+    #             record.show_sieve = True
+
+    #         # 🔹 Reload the current record in form view
+    #         return {
+    #             'type': 'ir.actions.act_window',
+    #             'name': 'Rock Form',
+    #             'res_model': 'mechanical.rock',
+    #             'res_id': record.id,  # ✅ Use record.id instead of self.id
+    #             'view_mode': 'form',
+    #             'target': 'current',
+    #         }
+
     def action_generate_rock_lines(self):
         for record in self:
-            if record.lab_id and ' - ' in record.lab_id:
-                start_str, end_str = record.lab_id.split(' - ')
-                prefix = '-'.join(start_str.split('-')[:2])
-                start = int(start_str.split('-')[2])
-                end = int(end_str.split('-')[2])
+            lines = []
 
-                lines = []
-                for i in range(start, end + 1):
-                    lab_id = f"{prefix}-{str(i).zfill(3)}"
-                    lines.append((0, 0, {'lab_id': lab_id}))
+            if record.lab_id:
+                # 🔹 Range case (e.g. ABC-001 - ABC-005)
+                if ' - ' in record.lab_id:
+                    start_str, end_str = record.lab_id.split(' - ')
+                    prefix = '-'.join(start_str.split('-')[:2])
+                    start = int(start_str.split('-')[2])
+                    end = int(end_str.split('-')[2])
 
+                    for i in range(start, end + 1):
+                        lab_id = f"{prefix}-{str(i).zfill(3)}"
+                        lines.append((0, 0, {'lab_id': lab_id}))
+
+                # 🔹 Single lab id case (e.g. ABC-001)
+                else:
+                    lines.append((0, 0, {'lab_id': record.lab_id}))
+
+            # 🔹 Assign lines and flags
+            if lines:
                 record.rock_child_lines = lines
                 record.rock_lines_generated = True
-
-            # 🔹 Set flag to show sieve analysis
-            if record.rock_child_lines:
                 record.show_sieve = True
-
-            # 🔹 Reload the current record in form view
-            return {
-                'type': 'ir.actions.act_window',
-                'name': 'Rock Form',
-                'res_model': 'mechanical.rock',
-                'res_id': record.id,  # ✅ Use record.id instead of self.id
-                'view_mode': 'form',
-                'target': 'current',
-            }
 
     avg_dia_visible = fields.Boolean("Average Diameter / Distance between Platens (D )",compute="_compute_visible")
     avg_height_visible = fields.Boolean("Average Height (H) / Width (W)",compute="_compute_visible")
@@ -192,24 +218,50 @@ class MechanicalRock(models.Model):
     cerchar_abrasivity_generated = fields.Boolean(string="GSA Lines Generated",default=False)
     cerchar_abrasivity_ids = fields.One2many('cerchar.abrasivity.line', 'parent_id',ondelete='cascade')
 
+    # def action_generate_cerchar_abrasivity_lines(self):
+    #     for record in self:
+    #         if record.lab_id and ' - ' in record.lab_id:
+    #             start_str, end_str = record.lab_id.split(' - ')
+    #             prefix = '-'.join(start_str.split('-')[:2])
+    #             start = int(start_str.split('-')[2])
+    #             end = int(end_str.split('-')[2])
+
+    #             lines = []
+    #             for i in range(start, end + 1):
+    #                 lab_id = f"{prefix}-{str(i).zfill(3)}"
+    #                 lines.append((0, 0, {'lab_id': lab_id}))
+
+    #             record.cerchar_abrasivity_ids = lines
+    #             record.cerchar_abrasivity_generated = True
+
+    #         # 🔹 Set flag to show sieve analysis
+    #         if record.cerchar_abrasivity_ids:
+    #             record.show_sieve = True
+
     def action_generate_cerchar_abrasivity_lines(self):
         for record in self:
-            if record.lab_id and ' - ' in record.lab_id:
-                start_str, end_str = record.lab_id.split(' - ')
-                prefix = '-'.join(start_str.split('-')[:2])
-                start = int(start_str.split('-')[2])
-                end = int(end_str.split('-')[2])
+            lines = []
 
-                lines = []
-                for i in range(start, end + 1):
-                    lab_id = f"{prefix}-{str(i).zfill(3)}"
-                    lines.append((0, 0, {'lab_id': lab_id}))
+            if record.lab_id:
+                # 🔹 Range case (e.g. ABC-001 - ABC-005)
+                if ' - ' in record.lab_id:
+                    start_str, end_str = record.lab_id.split(' - ')
+                    prefix = '-'.join(start_str.split('-')[:2])
+                    start = int(start_str.split('-')[2])
+                    end = int(end_str.split('-')[2])
 
+                    for i in range(start, end + 1):
+                        lab_id = f"{prefix}-{str(i).zfill(3)}"
+                        lines.append((0, 0, {'lab_id': lab_id}))
+
+                # 🔹 Single lab id case (e.g. ABC-001)
+                else:
+                    lines.append((0, 0, {'lab_id': record.lab_id}))
+
+            # 🔹 Assign lines and flags
+            if lines:
                 record.cerchar_abrasivity_ids = lines
                 record.cerchar_abrasivity_generated = True
-
-            # 🔹 Set flag to show sieve analysis
-            if record.cerchar_abrasivity_ids:
                 record.show_sieve = True
 
 
@@ -224,24 +276,50 @@ class MechanicalRock(models.Model):
     slake_durability_generated = fields.Boolean(string="Rock Lab Lines ",default=False)
     show_sieve = fields.Boolean(default=False)
 
+    # def action_generate_slake_durability(self):
+    #     for record in self:
+    #         if record.lab_id and ' - ' in record.lab_id:
+    #             start_str, end_str = record.lab_id.split(' - ')
+    #             prefix = '-'.join(start_str.split('-')[:2])
+    #             start = int(start_str.split('-')[2])
+    #             end = int(end_str.split('-')[2])
+
+    #             lines = []
+    #             for i in range(start, end + 1):
+    #                 lab_id = f"{prefix}-{str(i).zfill(3)}"
+    #                 lines.append((0, 0, {'lab_id': lab_id}))
+
+    #             record.slake_durability_child_lines = lines
+    #             record.slake_durability_generated = True
+
+    #         # 🔹 Set flag to show sieve analysis
+    #         if record.slake_durability_child_lines:
+    #             record.show_sieve = True
+
     def action_generate_slake_durability(self):
         for record in self:
-            if record.lab_id and ' - ' in record.lab_id:
-                start_str, end_str = record.lab_id.split(' - ')
-                prefix = '-'.join(start_str.split('-')[:2])
-                start = int(start_str.split('-')[2])
-                end = int(end_str.split('-')[2])
+            lines = []
 
-                lines = []
-                for i in range(start, end + 1):
-                    lab_id = f"{prefix}-{str(i).zfill(3)}"
-                    lines.append((0, 0, {'lab_id': lab_id}))
+            if record.lab_id:
+                # 🔹 Range case (e.g. ABC-001 - ABC-005)
+                if ' - ' in record.lab_id:
+                    start_str, end_str = record.lab_id.split(' - ')
+                    prefix = '-'.join(start_str.split('-')[:2])
+                    start = int(start_str.split('-')[2])
+                    end = int(end_str.split('-')[2])
 
+                    for i in range(start, end + 1):
+                        lab_id = f"{prefix}-{str(i).zfill(3)}"
+                        lines.append((0, 0, {'lab_id': lab_id}))
+
+                # 🔹 Single lab id case (e.g. ABC-001)
+                else:
+                    lines.append((0, 0, {'lab_id': record.lab_id}))
+
+            # 🔹 Assign lines and flags
+            if lines:
                 record.slake_durability_child_lines = lines
                 record.slake_durability_generated = True
-
-            # 🔹 Set flag to show sieve analysis
-            if record.slake_durability_child_lines:
                 record.show_sieve = True
 
 
@@ -294,24 +372,50 @@ class MechanicalRock(models.Model):
     doc_name1 = fields.Char("Doc Name",default="Triaxial Shear Test (Rock)")
 
 
+    # def action_generate_triaxial_lines(self):
+    #     for record in self:
+    #         if record.lab_id and ' - ' in record.lab_id:
+    #             start_str, end_str = record.lab_id.split(' - ')
+    #             prefix = '-'.join(start_str.split('-')[:2])
+    #             start = int(start_str.split('-')[2])
+    #             end = int(end_str.split('-')[2])
+
+    #             lines = []
+    #             for i in range(start, end + 1):
+    #                 lab_id = f"{prefix}-{str(i).zfill(3)}"
+    #                 lines.append((0, 0, {'lab_id': lab_id}))
+
+    #             record.triaxial_ids = lines
+    #             record.triaxial_generated = True
+
+    #         # 🔹 Set flag to show sieve analysis
+    #         if record.triaxial_ids:
+    #             record.show_sieve = True
+
     def action_generate_triaxial_lines(self):
         for record in self:
-            if record.lab_id and ' - ' in record.lab_id:
-                start_str, end_str = record.lab_id.split(' - ')
-                prefix = '-'.join(start_str.split('-')[:2])
-                start = int(start_str.split('-')[2])
-                end = int(end_str.split('-')[2])
+            lines = []
 
-                lines = []
-                for i in range(start, end + 1):
-                    lab_id = f"{prefix}-{str(i).zfill(3)}"
-                    lines.append((0, 0, {'lab_id': lab_id}))
+            if record.lab_id:
+                # 🔹 Range case (e.g. ABC-001 - ABC-005)
+                if ' - ' in record.lab_id:
+                    start_str, end_str = record.lab_id.split(' - ')
+                    prefix = '-'.join(start_str.split('-')[:2])
+                    start = int(start_str.split('-')[2])
+                    end = int(end_str.split('-')[2])
 
+                    for i in range(start, end + 1):
+                        lab_id = f"{prefix}-{str(i).zfill(3)}"
+                        lines.append((0, 0, {'lab_id': lab_id}))
+
+                # 🔹 Single lab id case (e.g. ABC-001)
+                else:
+                    lines.append((0, 0, {'lab_id': record.lab_id}))
+
+            # 🔹 Assign lines and flags
+            if lines:
                 record.triaxial_ids = lines
                 record.triaxial_generated = True
-
-            # 🔹 Set flag to show sieve analysis
-            if record.triaxial_ids:
                 record.show_sieve = True
 
 
@@ -325,24 +429,50 @@ class MechanicalRock(models.Model):
     doc_name2 = fields.Char("Doc Name",default="MODULUS OF ELASTICITY AND POISSON'S RATIO OF ROCK")
 
 
+    # def action_generate_elasticity_lines(self):
+    #     for record in self:
+    #         if record.lab_id and ' - ' in record.lab_id:
+    #             start_str, end_str = record.lab_id.split(' - ')
+    #             prefix = '-'.join(start_str.split('-')[:2])
+    #             start = int(start_str.split('-')[2])
+    #             end = int(end_str.split('-')[2])
+
+    #             lines = []
+    #             for i in range(start, end + 1):
+    #                 lab_id = f"{prefix}-{str(i).zfill(3)}"
+    #                 lines.append((0, 0, {'lab_id': lab_id}))
+
+    #             record.elasticity_ids = lines
+    #             record.elasticity_generated = True
+
+    #         # 🔹 Set flag to show sieve analysis
+    #         if record.elasticity_ids:
+    #             record.show_sieve = True
+
     def action_generate_elasticity_lines(self):
         for record in self:
-            if record.lab_id and ' - ' in record.lab_id:
-                start_str, end_str = record.lab_id.split(' - ')
-                prefix = '-'.join(start_str.split('-')[:2])
-                start = int(start_str.split('-')[2])
-                end = int(end_str.split('-')[2])
+            lines = []
 
-                lines = []
-                for i in range(start, end + 1):
-                    lab_id = f"{prefix}-{str(i).zfill(3)}"
-                    lines.append((0, 0, {'lab_id': lab_id}))
+            if record.lab_id:
+                # 🔹 Range case (e.g. ABC-001 - ABC-005)
+                if ' - ' in record.lab_id:
+                    start_str, end_str = record.lab_id.split(' - ')
+                    prefix = '-'.join(start_str.split('-')[:2])
+                    start = int(start_str.split('-')[2])
+                    end = int(end_str.split('-')[2])
 
+                    for i in range(start, end + 1):
+                        lab_id = f"{prefix}-{str(i).zfill(3)}"
+                        lines.append((0, 0, {'lab_id': lab_id}))
+
+                # 🔹 Single lab id case (e.g. ABC-001)
+                else:
+                    lines.append((0, 0, {'lab_id': record.lab_id}))
+
+            # 🔹 Assign lines and flags
+            if lines:
                 record.elasticity_ids = lines
                 record.elasticity_generated = True
-
-            # 🔹 Set flag to show sieve analysis
-            if record.elasticity_ids:
                 record.show_sieve = True
 
 

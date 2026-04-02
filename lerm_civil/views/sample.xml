@@ -86,8 +86,8 @@
                                 <field name="kes_no" />
                                 <field name='ulr_no'/>
                                 <field name="sample_received_date" readonly="state != '1-allotment_pending'"/>
-                                <field name="location" readonly="state != '1-allotment_pending'"/>
-                                <field name="lab_location"/>
+                                <field name="location" readonly="state != '1-allotment_pending'" string="Location Code"/>
+                                <field name="lab_location" string="Lab Name"/>
                                 <field name="invoice_status" readonly="1" invisible="state not in ('4-in_report')"/>
                                 <field name="invoice_number" readonly="1"/>
                                 <field name='tested_by_signature_datasheet'/>
@@ -358,7 +358,9 @@
                     </group>
 
                     <group invisible="allocation_type != 'sample'">
-                        <field name="technicians"/>
+                        <field name="sample_id" invisible="1"/>
+                        <field name="technicians" domain="[('id', 'in', allowed_technician_domain_ids)]"/>
+                        <field name="allowed_technician_domain_ids" invisible="1"/>
                     </group>
 
                     <group invisible="allocation_type != 'parameter'">
@@ -370,7 +372,7 @@
                                 <field name="allowed_technician_ids" invisible="1"/>
                                 <field name="technician"
                                         readonly="is_locked"
-                                        domain="[('id', 'in', allowed_technician_ids)]"
+                                        domain="[('id', 'in', parent.allowed_technician_domain_ids)]"
                                         options="{'no_create': True, 'no_open': True}"/>
                             </tree>
                             </field>

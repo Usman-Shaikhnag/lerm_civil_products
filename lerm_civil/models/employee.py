@@ -7,3 +7,6 @@ class EmployeeInherited(models.Model):
 
     signature = fields.Binary(string="Signature", attachment=True)
     signature_name = fields.Char(string="Signature Name")
+
+    lab_ids = fields.Many2many('lerm.lab.master',string="Lab")
+    company_ids = fields.Many2many('res.company', string='Companies')

@@ -758,24 +758,50 @@ class Soil(models.Model):
 
 
 
+    # def action_generate_bulck_lines(self):
+    #     for record in self:
+    #         if record.lab_id and ' - ' in record.lab_id:
+    #             start_str, end_str = record.lab_id.split(' - ')
+    #             prefix = '-'.join(start_str.split('-')[:2])
+    #             start = int(start_str.split('-')[2])
+    #             end = int(end_str.split('-')[2])
+
+    #             lines = []
+    #             for i in range(start, end + 1):
+    #                 lab_id = f"{prefix}-{str(i).zfill(3)}"
+    #                 lines.append((0, 0, {'lab_id': lab_id}))
+
+    #             record.bulk_line_ids = lines
+    #             record.bulk_lines_generated = True
+
+    #         # 🔹 Set flag to show sieve analysis
+    #         if record.bulk_line_ids:
+    #             record.show_sieve = True
+
     def action_generate_bulck_lines(self):
         for record in self:
-            if record.lab_id and ' - ' in record.lab_id:
-                start_str, end_str = record.lab_id.split(' - ')
-                prefix = '-'.join(start_str.split('-')[:2])
-                start = int(start_str.split('-')[2])
-                end = int(end_str.split('-')[2])
+            lines = []
 
-                lines = []
-                for i in range(start, end + 1):
-                    lab_id = f"{prefix}-{str(i).zfill(3)}"
-                    lines.append((0, 0, {'lab_id': lab_id}))
+            if record.lab_id:
+                # 🔹 Range case (e.g. ABC-001 - ABC-005)
+                if ' - ' in record.lab_id:
+                    start_str, end_str = record.lab_id.split(' - ')
+                    prefix = '-'.join(start_str.split('-')[:2])
+                    start = int(start_str.split('-')[2])
+                    end = int(end_str.split('-')[2])
 
+                    for i in range(start, end + 1):
+                        lab_id = f"{prefix}-{str(i).zfill(3)}"
+                        lines.append((0, 0, {'lab_id': lab_id}))
+
+                # 🔹 Single lab id case (e.g. ABC-001)
+                else:
+                    lines.append((0, 0, {'lab_id': record.lab_id}))
+
+            # 🔹 Assign lines
+            if lines:
                 record.bulk_line_ids = lines
                 record.bulk_lines_generated = True
-
-            # 🔹 Set flag to show sieve analysis
-            if record.bulk_line_ids:
                 record.show_sieve = True
 
 
@@ -836,35 +862,33 @@ class Soil(models.Model):
 
     def action_generate_nmc_lines(self):
         for record in self:
-            if record.lab_id and ' - ' in record.lab_id:
-                start_str, end_str = record.lab_id.split(' - ')
-                prefix = '-'.join(start_str.split('-')[:2])
-                start = int(start_str.split('-')[2])
-                end = int(end_str.split('-')[2])
+            lines = []
 
-                lines = []
+            if record.lab_id:
+                # 🔹 Range case (e.g. ABC-001 - ABC-005)
+                if ' - ' in record.lab_id:
+                    start_str, end_str = record.lab_id.split(' - ')
+                    prefix = '-'.join(start_str.split('-')[:2])
+                    start = int(start_str.split('-')[2])
+                    end = int(end_str.split('-')[2])
 
-                for i in range(start, end + 1):
-                    lab_id = f"{prefix}-{str(i).zfill(3)}"
-                    lines.append((0, 0, {'lab_id': lab_id}))   # 1st
-                    lines.append((0, 0, {'lab_id': False}))    # 2nd blank
+                    for i in range(start, end + 1):
+                        lab_id = f"{prefix}-{str(i).zfill(3)}"
+                        lines.append((0, 0, {'lab_id': lab_id}))  # 1st line
+                        lines.append((0, 0, {'lab_id': False}))   # 2nd blank line
 
+                # 🔹 Single lab id case (e.g. ABC-001)
+                else:
+                    lines.append((0, 0, {'lab_id': record.lab_id}))  # 1st line
+                    lines.append((0, 0, {'lab_id': False}))          # 2nd blank line
+
+            # 🔹 Assign lines
+            if lines:
                 record.moisture_ids = lines
                 record.nmc_lines_generated = True
-
-            if record.moisture_ids:
                 record.show_sieve = True
 
-            # return {
-            #     'type': 'ir.actions.act_window',
-            #     'name': 'Soil Form',
-            #     'res_model': 'mechanical.soil1',
-            #     'res_id': record.id,
-            #     'view_mode': 'form',
-            #     'target': 'current',
-            # }
-
-        
+   
 
     def action_moisture_content_NMC(self):
           for rec in self:
@@ -932,25 +956,53 @@ class Soil(models.Model):
 
     sp_lines_generated = fields.Boolean(string="GSA Lines Generated",default=False)
 
+    # def action_generate_sp_lines(self):
+    #     for record in self:
+    #         if record.lab_id and ' - ' in record.lab_id:
+    #             start_str, end_str = record.lab_id.split(' - ')
+    #             prefix = '-'.join(start_str.split('-')[:2])
+    #             start = int(start_str.split('-')[2])
+    #             end = int(end_str.split('-')[2])
+
+    #             lines = []
+
+    #             for i in range(start, end + 1):
+    #                 lab_no = f"{prefix}-{str(i).zfill(3)}"
+    #                 lines.append((0, 0, {'lab_no': lab_no}))   # 1st
+    #                 lines.append((0, 0, {'lab_no': False}))    # 2nd blank
+
+    #             record.gravity_line_ids = lines
+    #             record.sp_lines_generated = True
+
+    #         if record.gravity_line_ids:
+    #             record.show_sieve = True
+
     def action_generate_sp_lines(self):
         for record in self:
-            if record.lab_id and ' - ' in record.lab_id:
-                start_str, end_str = record.lab_id.split(' - ')
-                prefix = '-'.join(start_str.split('-')[:2])
-                start = int(start_str.split('-')[2])
-                end = int(end_str.split('-')[2])
+            lines = []
 
-                lines = []
+            if record.lab_id:
+                # 🔹 Range case (e.g. ABC-001 - ABC-005)
+                if ' - ' in record.lab_id:
+                    start_str, end_str = record.lab_id.split(' - ')
+                    prefix = '-'.join(start_str.split('-')[:2])
+                    start = int(start_str.split('-')[2])
+                    end = int(end_str.split('-')[2])
 
-                for i in range(start, end + 1):
-                    lab_no = f"{prefix}-{str(i).zfill(3)}"
-                    lines.append((0, 0, {'lab_no': lab_no}))   # 1st
-                    lines.append((0, 0, {'lab_no': False}))    # 2nd blank
+                    for i in range(start, end + 1):
+                        lab_no = f"{prefix}-{str(i).zfill(3)}"
+                        lines.append((0, 0, {'lab_no': lab_no}))  # 1st line
+                        lines.append((0, 0, {'lab_no': False}))   # 2nd blank line
 
+                # 🔹 Single lab id case
+                else:
+                    lines.append((0, 0, {'lab_no': record.lab_id}))  # 1st line
+                    lines.append((0, 0, {'lab_no': False}))          # 2nd blank line
+
+            # 🔹 Assign lines
+            if lines:
                 record.gravity_line_ids = lines
                 record.sp_lines_generated = True
-
-            if record.gravity_line_ids:
                 record.show_sieve = True
 
            
@@ -1007,24 +1059,49 @@ class Soil(models.Model):
    
 
 
+    # def action_generate_freeswell_lines(self):
+    #     for record in self:
+    #         if record.lab_id and ' - ' in record.lab_id:
+    #             start_str, end_str = record.lab_id.split(' - ')
+    #             prefix = '-'.join(start_str.split('-')[:2])
+    #             start = int(start_str.split('-')[2])
+    #             end = int(end_str.split('-')[2])
+
+    #             lines = []
+    #             for i in range(start, end + 1):
+    #                 lab_id = f"{prefix}-{str(i).zfill(3)}"
+    #                 lines.append((0, 0, {'lab_id': lab_id}))
+
+    #             record.freeswell_line_ids = lines
+    #             record.freeswell_lines_generated = True
+
+    #         # 🔹 Set flag to show sieve analysis
+    #         if record.freeswell_line_ids:
+    #             record.show_sieve = True
     def action_generate_freeswell_lines(self):
         for record in self:
-            if record.lab_id and ' - ' in record.lab_id:
-                start_str, end_str = record.lab_id.split(' - ')
-                prefix = '-'.join(start_str.split('-')[:2])
-                start = int(start_str.split('-')[2])
-                end = int(end_str.split('-')[2])
+            lines = []
 
-                lines = []
-                for i in range(start, end + 1):
-                    lab_id = f"{prefix}-{str(i).zfill(3)}"
-                    lines.append((0, 0, {'lab_id': lab_id}))
+            if record.lab_id:
+                # 🔹 Range case (e.g. ABC-001 - ABC-005)
+                if ' - ' in record.lab_id:
+                    start_str, end_str = record.lab_id.split(' - ')
+                    prefix = '-'.join(start_str.split('-')[:2])
+                    start = int(start_str.split('-')[2])
+                    end = int(end_str.split('-')[2])
 
+                    for i in range(start, end + 1):
+                        lab_id = f"{prefix}-{str(i).zfill(3)}"
+                        lines.append((0, 0, {'lab_id': lab_id}))
+
+                # 🔹 Single lab id case
+                else:
+                    lines.append((0, 0, {'lab_id': record.lab_id}))
+
+            # 🔹 Assign lines
+            if lines:
                 record.freeswell_line_ids = lines
                 record.freeswell_lines_generated = True
-
-            # 🔹 Set flag to show sieve analysis
-            if record.freeswell_line_ids:
                 record.show_sieve = True
 
           
@@ -1040,24 +1117,50 @@ class Soil(models.Model):
 
     ll_lines_generated = fields.Boolean(string="GSA Lines Generated",default=False)
 
+    # def action_generate_ll_lines(self):
+    #     for record in self:
+    #         if record.lab_id and ' - ' in record.lab_id:
+    #             start_str, end_str = record.lab_id.split(' - ')
+    #             prefix = '-'.join(start_str.split('-')[:2])
+    #             start = int(start_str.split('-')[2])
+    #             end = int(end_str.split('-')[2])
+
+    #             lines = []
+    #             for i in range(start, end + 1):
+    #                 lab_id = f"{prefix}-{str(i).zfill(3)}"
+    #                 lines.append((0, 0, {'lab_id': lab_id}))
+
+    #             record.ll_child_lines = lines
+    #             record.ll_lines_generated = True
+
+    #         # 🔹 Set flag to show sieve analysis
+    #         if record.ll_child_lines:
+    #             record.show_sieve = True
+
     def action_generate_ll_lines(self):
         for record in self:
-            if record.lab_id and ' - ' in record.lab_id:
-                start_str, end_str = record.lab_id.split(' - ')
-                prefix = '-'.join(start_str.split('-')[:2])
-                start = int(start_str.split('-')[2])
-                end = int(end_str.split('-')[2])
+            lines = []
 
-                lines = []
-                for i in range(start, end + 1):
-                    lab_id = f"{prefix}-{str(i).zfill(3)}"
-                    lines.append((0, 0, {'lab_id': lab_id}))
+            if record.lab_id:
+                # 🔹 Range case (e.g. ABC-001 - ABC-005)
+                if ' - ' in record.lab_id:
+                    start_str, end_str = record.lab_id.split(' - ')
+                    prefix = '-'.join(start_str.split('-')[:2])
+                    start = int(start_str.split('-')[2])
+                    end = int(end_str.split('-')[2])
 
+                    for i in range(start, end + 1):
+                        lab_id = f"{prefix}-{str(i).zfill(3)}"
+                        lines.append((0, 0, {'lab_id': lab_id}))
+
+                # 🔹 Single lab id case
+                else:
+                    lines.append((0, 0, {'lab_id': record.lab_id}))
+
+            # 🔹 Assign lines
+            if lines:
                 record.ll_child_lines = lines
                 record.ll_lines_generated = True
-
-            # 🔹 Set flag to show sieve analysis
-            if record.ll_child_lines:
                 record.show_sieve = True
 
           
@@ -1070,24 +1173,50 @@ class Soil(models.Model):
 
     pl_lines_generated = fields.Boolean(string="Lab ID Show",default=False)
 
+    # def action_generate_pl_lines(self):
+    #     for record in self:
+    #         if record.lab_id and ' - ' in record.lab_id:
+    #             start_str, end_str = record.lab_id.split(' - ')
+    #             prefix = '-'.join(start_str.split('-')[:2])
+    #             start = int(start_str.split('-')[2])
+    #             end = int(end_str.split('-')[2])
+
+    #             lines = []
+    #             for i in range(start, end + 1):
+    #                 lab_id = f"{prefix}-{str(i).zfill(3)}"
+    #                 lines.append((0, 0, {'lab_id': lab_id}))
+
+    #             record.pl_child_lines = lines
+    #             record.pl_lines_generated = True
+
+    #         # 🔹 Set flag to show sieve analysis
+    #         if record.pl_child_lines:
+    #             record.show_sieve = True
+
     def action_generate_pl_lines(self):
         for record in self:
-            if record.lab_id and ' - ' in record.lab_id:
-                start_str, end_str = record.lab_id.split(' - ')
-                prefix = '-'.join(start_str.split('-')[:2])
-                start = int(start_str.split('-')[2])
-                end = int(end_str.split('-')[2])
+            lines = []
 
-                lines = []
-                for i in range(start, end + 1):
-                    lab_id = f"{prefix}-{str(i).zfill(3)}"
-                    lines.append((0, 0, {'lab_id': lab_id}))
+            if record.lab_id:
+                # 🔹 Range case (e.g. ABC-001 - ABC-005)
+                if ' - ' in record.lab_id:
+                    start_str, end_str = record.lab_id.split(' - ')
+                    prefix = '-'.join(start_str.split('-')[:2])
+                    start = int(start_str.split('-')[2])
+                    end = int(end_str.split('-')[2])
 
+                    for i in range(start, end + 1):
+                        lab_id = f"{prefix}-{str(i).zfill(3)}"
+                        lines.append((0, 0, {'lab_id': lab_id}))
+
+                # 🔹 Single lab id case
+                else:
+                    lines.append((0, 0, {'lab_id': record.lab_id}))
+
+            # 🔹 Assign lines
+            if lines:
                 record.pl_child_lines = lines
                 record.pl_lines_generated = True
-
-            # 🔹 Set flag to show sieve analysis
-            if record.pl_child_lines:
                 record.show_sieve = True
 
            
@@ -1100,24 +1229,50 @@ class Soil(models.Model):
 
     sl_lines_generated = fields.Boolean(string="Lab ID Show",default=False)
 
+    # def action_generate_sl_lines(self):
+    #     for record in self:
+    #         if record.lab_id and ' - ' in record.lab_id:
+    #             start_str, end_str = record.lab_id.split(' - ')
+    #             prefix = '-'.join(start_str.split('-')[:2])
+    #             start = int(start_str.split('-')[2])
+    #             end = int(end_str.split('-')[2])
+
+    #             lines = []
+    #             for i in range(start, end + 1):
+    #                 lab_id = f"{prefix}-{str(i).zfill(3)}"
+    #                 lines.append((0, 0, {'lab_id': lab_id}))
+
+    #             record.sl_child_lines = lines
+    #             record.sl_lines_generated = True
+
+    #         # 🔹 Set flag to show sieve analysis
+    #         if record.sl_child_lines:
+    #             record.show_sieve = True
+
     def action_generate_sl_lines(self):
         for record in self:
-            if record.lab_id and ' - ' in record.lab_id:
-                start_str, end_str = record.lab_id.split(' - ')
-                prefix = '-'.join(start_str.split('-')[:2])
-                start = int(start_str.split('-')[2])
-                end = int(end_str.split('-')[2])
+            lines = []
 
-                lines = []
-                for i in range(start, end + 1):
-                    lab_id = f"{prefix}-{str(i).zfill(3)}"
-                    lines.append((0, 0, {'lab_id': lab_id}))
+            if record.lab_id:
+                # 🔹 Range case (e.g. ABC-001 - ABC-005)
+                if ' - ' in record.lab_id:
+                    start_str, end_str = record.lab_id.split(' - ')
+                    prefix = '-'.join(start_str.split('-')[:2])
+                    start = int(start_str.split('-')[2])
+                    end = int(end_str.split('-')[2])
 
+                    for i in range(start, end + 1):
+                        lab_id = f"{prefix}-{str(i).zfill(3)}"
+                        lines.append((0, 0, {'lab_id': lab_id}))
+
+                # 🔹 Single lab id case
+                else:
+                    lines.append((0, 0, {'lab_id': record.lab_id}))
+
+            # 🔹 Assign lines
+            if lines:
                 record.sl_child_lines = lines
                 record.sl_lines_generated = True
-
-            # 🔹 Set flag to show sieve analysis
-            if record.sl_child_lines:
                 record.show_sieve = True
 
             
@@ -1796,24 +1951,32 @@ class Soil(models.Model):
     cbr_generated = fields.Boolean(string="GSA Lines Generated",default=False)
     cbr_ids = fields.One2many('cbr.line', 'parent_id',ondelete='cascade')
 
+ 
+
     def action_generate_cbr_lines(self):
         for record in self:
-            if record.lab_id and ' - ' in record.lab_id:
-                start_str, end_str = record.lab_id.split(' - ')
-                prefix = '-'.join(start_str.split('-')[:2])
-                start = int(start_str.split('-')[2])
-                end = int(end_str.split('-')[2])
+            lines = []
 
-                lines = []
-                for i in range(start, end + 1):
-                    lab_id = f"{prefix}-{str(i).zfill(3)}"
-                    lines.append((0, 0, {'lab_id': lab_id}))
+            if record.lab_id:
+                # 🔹 Range case (e.g. ABC-001 - ABC-005)
+                if ' - ' in record.lab_id:
+                    start_str, end_str = record.lab_id.split(' - ')
+                    prefix = '-'.join(start_str.split('-')[:2])
+                    start = int(start_str.split('-')[2])
+                    end = int(end_str.split('-')[2])
 
+                    for i in range(start, end + 1):
+                        lab_id = f"{prefix}-{str(i).zfill(3)}"
+                        lines.append((0, 0, {'lab_id': lab_id}))
+
+                # 🔹 Single lab id case (e.g. ABC-001)
+                else:
+                    lines.append((0, 0, {'lab_id': record.lab_id}))
+
+            # 🔹 Assign lines
+            if lines:
                 record.cbr_ids = lines
                 record.cbr_generated = True
-
-            # 🔹 Set flag to show sieve analysis
-            if record.cbr_ids:
                 record.show_sieve = True
 
           
@@ -2388,24 +2551,49 @@ class Soil(models.Model):
 
    
 
+    # def action_generate_gsa_lines(self):
+    #     for record in self:
+    #         if record.lab_id and ' - ' in record.lab_id:
+    #             start_str, end_str = record.lab_id.split(' - ')
+    #             prefix = '-'.join(start_str.split('-')[:2])
+    #             start = int(start_str.split('-')[2])
+    #             end = int(end_str.split('-')[2])
+
+    #             lines = []
+    #             for i in range(start, end + 1):
+    #                 lab_no = f"{prefix}-{str(i).zfill(3)}"
+    #                 lines.append((0, 0, {'lab_no': lab_no}))
+
+    #             record.gsa_child_lines = lines
+    #             record.gsa_lines_generated = True
+
+    #         # 🔹 Set flag to show sieve analysis
+    #         if record.gsa_child_lines:
+    #             record.show_sieve = True
     def action_generate_gsa_lines(self):
         for record in self:
-            if record.lab_id and ' - ' in record.lab_id:
-                start_str, end_str = record.lab_id.split(' - ')
-                prefix = '-'.join(start_str.split('-')[:2])
-                start = int(start_str.split('-')[2])
-                end = int(end_str.split('-')[2])
+            lines = []
 
-                lines = []
-                for i in range(start, end + 1):
-                    lab_no = f"{prefix}-{str(i).zfill(3)}"
-                    lines.append((0, 0, {'lab_no': lab_no}))
+            if record.lab_id:
+                # 🔹 Range case (e.g. ABC-001 - ABC-005)
+                if ' - ' in record.lab_id:
+                    start_str, end_str = record.lab_id.split(' - ')
+                    prefix = '-'.join(start_str.split('-')[:2])
+                    start = int(start_str.split('-')[2])
+                    end = int(end_str.split('-')[2])
 
+                    for i in range(start, end + 1):
+                        lab_no = f"{prefix}-{str(i).zfill(3)}"
+                        lines.append((0, 0, {'lab_no': lab_no}))
+
+                # 🔹 Single lab id case
+                else:
+                    lines.append((0, 0, {'lab_no': record.lab_id}))
+
+            # 🔹 Assign lines
+            if lines:
                 record.gsa_child_lines = lines
                 record.gsa_lines_generated = True
-
-            # 🔹 Set flag to show sieve analysis
-            if record.gsa_child_lines:
                 record.show_sieve = True
 
            
@@ -2805,24 +2993,50 @@ class Soil(models.Model):
     consolidation_generated = fields.Boolean(string="GSA Lines Generated",default=False)
     consolidation_lines = fields.One2many('consolidation.line', 'parent_id',ondelete='cascade')
 
+    # def action_generate_consolidation_lines(self):
+    #     for record in self:
+    #         if record.lab_id and ' - ' in record.lab_id:
+    #             start_str, end_str = record.lab_id.split(' - ')
+    #             prefix = '-'.join(start_str.split('-')[:2])
+    #             start = int(start_str.split('-')[2])
+    #             end = int(end_str.split('-')[2])
+
+    #             lines = []
+    #             for i in range(start, end + 1):
+    #                 lab_id = f"{prefix}-{str(i).zfill(3)}"
+    #                 lines.append((0, 0, {'lab_id': lab_id}))
+
+    #             record.consolidation_lines = lines
+    #             record.consolidation_generated = True
+
+    #         # 🔹 Set flag to show sieve analysis
+    #         if record.consolidation_lines:
+    #             record.show_sieve = True
+
     def action_generate_consolidation_lines(self):
         for record in self:
-            if record.lab_id and ' - ' in record.lab_id:
-                start_str, end_str = record.lab_id.split(' - ')
-                prefix = '-'.join(start_str.split('-')[:2])
-                start = int(start_str.split('-')[2])
-                end = int(end_str.split('-')[2])
+            lines = []
 
-                lines = []
-                for i in range(start, end + 1):
-                    lab_id = f"{prefix}-{str(i).zfill(3)}"
-                    lines.append((0, 0, {'lab_id': lab_id}))
+            if record.lab_id:
+                # 🔹 Range case (e.g. ABC-001 - ABC-005)
+                if ' - ' in record.lab_id:
+                    start_str, end_str = record.lab_id.split(' - ')
+                    prefix = '-'.join(start_str.split('-')[:2])
+                    start = int(start_str.split('-')[2])
+                    end = int(end_str.split('-')[2])
 
+                    for i in range(start, end + 1):
+                        lab_id = f"{prefix}-{str(i).zfill(3)}"
+                        lines.append((0, 0, {'lab_id': lab_id}))
+
+                # 🔹 Single lab id case
+                else:
+                    lines.append((0, 0, {'lab_id': record.lab_id}))
+
+            # 🔹 Assign lines
+            if lines:
                 record.consolidation_lines = lines
                 record.consolidation_generated = True
-
-            # 🔹 Set flag to show sieve analysis
-            if record.consolidation_lines:
                 record.show_sieve = True
 
            
@@ -2845,24 +3059,50 @@ class Soil(models.Model):
     swelling_pressure_generated = fields.Boolean(string="GSA Lines Generated",default=False)
     swelling_pressure_ids = fields.One2many('swelling.pressure.line', 'parent_id',ondelete='cascade')
 
+    # def action_generate_swelling_pressure_lines(self):
+    #     for record in self:
+    #         if record.lab_id and ' - ' in record.lab_id:
+    #             start_str, end_str = record.lab_id.split(' - ')
+    #             prefix = '-'.join(start_str.split('-')[:2])
+    #             start = int(start_str.split('-')[2])
+    #             end = int(end_str.split('-')[2])
+
+    #             lines = []
+    #             for i in range(start, end + 1):
+    #                 lab_id = f"{prefix}-{str(i).zfill(3)}"
+    #                 lines.append((0, 0, {'lab_id': lab_id}))
+
+    #             record.swelling_pressure_ids = lines
+    #             record.swelling_pressure_generated = True
+
+    #         # 🔹 Set flag to show sieve analysis
+    #         if record.swelling_pressure_ids:
+    #             record.show_sieve = True
+
     def action_generate_swelling_pressure_lines(self):
         for record in self:
-            if record.lab_id and ' - ' in record.lab_id:
-                start_str, end_str = record.lab_id.split(' - ')
-                prefix = '-'.join(start_str.split('-')[:2])
-                start = int(start_str.split('-')[2])
-                end = int(end_str.split('-')[2])
+            lines = []
 
-                lines = []
-                for i in range(start, end + 1):
-                    lab_id = f"{prefix}-{str(i).zfill(3)}"
-                    lines.append((0, 0, {'lab_id': lab_id}))
+            if record.lab_id:
+                # 🔹 Range case (e.g. ABC-001 - ABC-005)
+                if ' - ' in record.lab_id:
+                    start_str, end_str = record.lab_id.split(' - ')
+                    prefix = '-'.join(start_str.split('-')[:2])
+                    start = int(start_str.split('-')[2])
+                    end = int(end_str.split('-')[2])
 
+                    for i in range(start, end + 1):
+                        lab_id = f"{prefix}-{str(i).zfill(3)}"
+                        lines.append((0, 0, {'lab_id': lab_id}))
+
+                # 🔹 Single lab id case
+                else:
+                    lines.append((0, 0, {'lab_id': record.lab_id}))
+
+            # 🔹 Assign lines
+            if lines:
                 record.swelling_pressure_ids = lines
                 record.swelling_pressure_generated = True
-
-            # 🔹 Set flag to show sieve analysis
-            if record.swelling_pressure_ids:
                 record.show_sieve = True
 
            
@@ -2888,25 +3128,53 @@ class Soil(models.Model):
     permeability_falling_generated = fields.Boolean(string="GSA Lines Generated",default=False)
     permeability_falling_ids = fields.One2many('perm.head.line', 'parent_id',ondelete='cascade')
 
+    # def action_generate_permeability_falling_lines(self):
+    #     for record in self:
+    #         if record.lab_id and ' - ' in record.lab_id:
+    #             start_str, end_str = record.lab_id.split(' - ')
+    #             prefix = '-'.join(start_str.split('-')[:2])
+    #             start = int(start_str.split('-')[2])
+    #             end = int(end_str.split('-')[2])
+
+    #             lines = []
+    #             for i in range(start, end + 1):
+    #                 lab_id = f"{prefix}-{str(i).zfill(3)}"
+    #                 lines.append((0, 0, {'lab_id': lab_id}))
+
+    #             record.permeability_falling_ids = lines
+    #             record.permeability_falling_generated = True
+
+    #         # 🔹 Set flag to show sieve analysis
+    #         if record.permeability_falling_ids:
+    #             record.show_sieve = True
+
     def action_generate_permeability_falling_lines(self):
         for record in self:
-            if record.lab_id and ' - ' in record.lab_id:
-                start_str, end_str = record.lab_id.split(' - ')
-                prefix = '-'.join(start_str.split('-')[:2])
-                start = int(start_str.split('-')[2])
-                end = int(end_str.split('-')[2])
+            lines = []
 
-                lines = []
-                for i in range(start, end + 1):
-                    lab_id = f"{prefix}-{str(i).zfill(3)}"
-                    lines.append((0, 0, {'lab_id': lab_id}))
+            if record.lab_id:
+                # 🔹 Range case (e.g. ABC-001 - ABC-005)
+                if ' - ' in record.lab_id:
+                    start_str, end_str = record.lab_id.split(' - ')
+                    prefix = '-'.join(start_str.split('-')[:2])
+                    start = int(start_str.split('-')[2])
+                    end = int(end_str.split('-')[2])
 
+                    for i in range(start, end + 1):
+                        lab_id = f"{prefix}-{str(i).zfill(3)}"
+                        lines.append((0, 0, {'lab_id': lab_id}))
+
+                # 🔹 Single lab id case (e.g. ABC-001)
+                else:
+                    lines.append((0, 0, {'lab_id': record.lab_id}))
+
+            # 🔹 Assign lines
+            if lines:
                 record.permeability_falling_ids = lines
                 record.permeability_falling_generated = True
-
-            # 🔹 Set flag to show sieve analysis
-            if record.permeability_falling_ids:
                 record.show_sieve = True
+
+    
 
             
 
@@ -2935,24 +3203,50 @@ class Soil(models.Model):
 
     
 
+    # def action_generate_triaxial_test_lines(self):
+    #     for record in self:
+    #         if record.lab_id and ' - ' in record.lab_id:
+    #             start_str, end_str = record.lab_id.split(' - ')
+    #             prefix = '-'.join(start_str.split('-')[:2])
+    #             start = int(start_str.split('-')[2])
+    #             end = int(end_str.split('-')[2])
+
+    #             lines = []
+    #             for i in range(start, end + 1):
+    #                 lab_id = f"{prefix}-{str(i).zfill(3)}"
+    #                 lines.append((0, 0, {'lab_id': lab_id}))
+
+    #             record.triaxial_test_ids = lines
+    #             record.triaxial_test_generated = True
+
+    #         # 🔹 Set flag to show sieve analysis
+    #         if record.triaxial_test_ids:
+    #             record.show_sieve = True
+
     def action_generate_triaxial_test_lines(self):
         for record in self:
-            if record.lab_id and ' - ' in record.lab_id:
-                start_str, end_str = record.lab_id.split(' - ')
-                prefix = '-'.join(start_str.split('-')[:2])
-                start = int(start_str.split('-')[2])
-                end = int(end_str.split('-')[2])
+            lines = []
 
-                lines = []
-                for i in range(start, end + 1):
-                    lab_id = f"{prefix}-{str(i).zfill(3)}"
-                    lines.append((0, 0, {'lab_id': lab_id}))
+            if record.lab_id:
+                # 🔹 Range case (e.g. ABC-001 - ABC-005)
+                if ' - ' in record.lab_id:
+                    start_str, end_str = record.lab_id.split(' - ')
+                    prefix = '-'.join(start_str.split('-')[:2])
+                    start = int(start_str.split('-')[2])
+                    end = int(end_str.split('-')[2])
 
+                    for i in range(start, end + 1):
+                        lab_id = f"{prefix}-{str(i).zfill(3)}"
+                        lines.append((0, 0, {'lab_id': lab_id}))
+
+                # 🔹 Single lab id case (e.g. ABC-001)
+                else:
+                    lines.append((0, 0, {'lab_id': record.lab_id}))
+
+            # 🔹 Assign lines and flags
+            if lines:
                 record.triaxial_test_ids = lines
                 record.triaxial_test_generated = True
-
-            # 🔹 Set flag to show sieve analysis
-            if record.triaxial_test_ids:
                 record.show_sieve = True
 
           
@@ -2983,24 +3277,50 @@ class Soil(models.Model):
     soil_light_heavy_generated = fields.Boolean(string="GSA Lines Generated",default=False)
     soil_light_heavy_ids = fields.One2many('heavy.compaction.line', 'parent_id',ondelete='cascade')
 
+    # def action_generate_soil_light_heavy_lines(self):
+    #     for record in self:
+    #         if record.lab_id and ' - ' in record.lab_id:
+    #             start_str, end_str = record.lab_id.split(' - ')
+    #             prefix = '-'.join(start_str.split('-')[:2])
+    #             start = int(start_str.split('-')[2])
+    #             end = int(end_str.split('-')[2])
+
+    #             lines = []
+    #             for i in range(start, end + 1):
+    #                 lab_id = f"{prefix}-{str(i).zfill(3)}"
+    #                 lines.append((0, 0, {'lab_id': lab_id}))
+
+    #             record.soil_light_heavy_ids = lines
+    #             record.soil_light_heavy_generated = True
+
+    #         # 🔹 Set flag to show sieve analysis
+    #         if record.soil_light_heavy_ids:
+    #             record.show_sieve = True
+
     def action_generate_soil_light_heavy_lines(self):
         for record in self:
-            if record.lab_id and ' - ' in record.lab_id:
-                start_str, end_str = record.lab_id.split(' - ')
-                prefix = '-'.join(start_str.split('-')[:2])
-                start = int(start_str.split('-')[2])
-                end = int(end_str.split('-')[2])
+            lines = []
 
-                lines = []
-                for i in range(start, end + 1):
-                    lab_id = f"{prefix}-{str(i).zfill(3)}"
-                    lines.append((0, 0, {'lab_id': lab_id}))
+            if record.lab_id:
+                # 🔹 Range case (e.g. ABC-001 - ABC-005)
+                if ' - ' in record.lab_id:
+                    start_str, end_str = record.lab_id.split(' - ')
+                    prefix = '-'.join(start_str.split('-')[:2])
+                    start = int(start_str.split('-')[2])
+                    end = int(end_str.split('-')[2])
 
+                    for i in range(start, end + 1):
+                        lab_id = f"{prefix}-{str(i).zfill(3)}"
+                        lines.append((0, 0, {'lab_id': lab_id}))
+
+                # 🔹 Single lab id case (e.g. ABC-001)
+                else:
+                    lines.append((0, 0, {'lab_id': record.lab_id}))
+
+            # 🔹 Assign lines and flags
+            if lines:
                 record.soil_light_heavy_ids = lines
                 record.soil_light_heavy_generated = True
-
-            # 🔹 Set flag to show sieve analysis
-            if record.soil_light_heavy_ids:
                 record.show_sieve = True
 
 
@@ -3022,24 +3342,50 @@ class Soil(models.Model):
     ucs_generated = fields.Boolean(string="GSA Lines Generated",default=False)
     ucs_ids = fields.One2many('ucs.line', 'parent_id',ondelete='cascade')
 
+    # def action_generate_ucs_lines(self):
+    #     for record in self:
+    #         if record.lab_id and ' - ' in record.lab_id:
+    #             start_str, end_str = record.lab_id.split(' - ')
+    #             prefix = '-'.join(start_str.split('-')[:2])
+    #             start = int(start_str.split('-')[2])
+    #             end = int(end_str.split('-')[2])
+
+    #             lines = []
+    #             for i in range(start, end + 1):
+    #                 lab_id = f"{prefix}-{str(i).zfill(3)}"
+    #                 lines.append((0, 0, {'lab_id': lab_id}))
+
+    #             record.ucs_ids = lines
+    #             record.ucs_generated = True
+
+    #         # 🔹 Set flag to show sieve analysis
+    #         if record.ucs_ids:
+    #             record.show_sieve = True
+
     def action_generate_ucs_lines(self):
         for record in self:
-            if record.lab_id and ' - ' in record.lab_id:
-                start_str, end_str = record.lab_id.split(' - ')
-                prefix = '-'.join(start_str.split('-')[:2])
-                start = int(start_str.split('-')[2])
-                end = int(end_str.split('-')[2])
+            lines = []
 
-                lines = []
-                for i in range(start, end + 1):
-                    lab_id = f"{prefix}-{str(i).zfill(3)}"
-                    lines.append((0, 0, {'lab_id': lab_id}))
+            if record.lab_id:
+                # 🔹 Range case (e.g. ABC-001 - ABC-005)
+                if ' - ' in record.lab_id:
+                    start_str, end_str = record.lab_id.split(' - ')
+                    prefix = '-'.join(start_str.split('-')[:2])
+                    start = int(start_str.split('-')[2])
+                    end = int(end_str.split('-')[2])
 
+                    for i in range(start, end + 1):
+                        lab_id = f"{prefix}-{str(i).zfill(3)}"
+                        lines.append((0, 0, {'lab_id': lab_id}))
+
+                # 🔹 Single lab id case (e.g. ABC-001)
+                else:
+                    lines.append((0, 0, {'lab_id': record.lab_id}))
+
+            # 🔹 Assign lines and flags
+            if lines:
                 record.ucs_ids = lines
                 record.ucs_generated = True
-
-            # 🔹 Set flag to show sieve analysis
-            if record.ucs_ids:
                 record.show_sieve = True
 
     
@@ -3064,24 +3410,50 @@ class Soil(models.Model):
     direct_shear_generated = fields.Boolean(string="GSA Lines Generated",default=False)
     direct_shear_line = fields.One2many('direct.shear.line', 'parent_id',ondelete='cascade')
 
+    # def action_generate_direct_shear_lines(self):
+    #     for record in self:
+    #         if record.lab_id and ' - ' in record.lab_id:
+    #             start_str, end_str = record.lab_id.split(' - ')
+    #             prefix = '-'.join(start_str.split('-')[:2])
+    #             start = int(start_str.split('-')[2])
+    #             end = int(end_str.split('-')[2])
+
+    #             lines = []
+    #             for i in range(start, end + 1):
+    #                 lab_id = f"{prefix}-{str(i).zfill(3)}"
+    #                 lines.append((0, 0, {'lab_id': lab_id}))
+
+    #             record.direct_shear_line = lines
+    #             record.direct_shear_generated = True
+
+    #         # 🔹 Set flag to show sieve analysis
+    #         if record.direct_shear_line:
+    #             record.show_sieve = True
+
     def action_generate_direct_shear_lines(self):
         for record in self:
-            if record.lab_id and ' - ' in record.lab_id:
-                start_str, end_str = record.lab_id.split(' - ')
-                prefix = '-'.join(start_str.split('-')[:2])
-                start = int(start_str.split('-')[2])
-                end = int(end_str.split('-')[2])
+            lines = []
 
-                lines = []
-                for i in range(start, end + 1):
-                    lab_id = f"{prefix}-{str(i).zfill(3)}"
-                    lines.append((0, 0, {'lab_id': lab_id}))
+            if record.lab_id:
+                # 🔹 Range case (e.g. ABC-001 - ABC-005)
+                if ' - ' in record.lab_id:
+                    start_str, end_str = record.lab_id.split(' - ')
+                    prefix = '-'.join(start_str.split('-')[:2])
+                    start = int(start_str.split('-')[2])
+                    end = int(end_str.split('-')[2])
 
+                    for i in range(start, end + 1):
+                        lab_id = f"{prefix}-{str(i).zfill(3)}"
+                        lines.append((0, 0, {'lab_id': lab_id}))
+
+                # 🔹 Single lab id case (e.g. ABC-001)
+                else:
+                    lines.append((0, 0, {'lab_id': record.lab_id}))
+
+            # 🔹 Assign lines and flags
+            if lines:
                 record.direct_shear_line = lines
                 record.direct_shear_generated = True
-
-            # 🔹 Set flag to show sieve analysis
-            if record.direct_shear_line:
                 record.show_sieve = True
 
 
@@ -3128,6 +3500,10 @@ class Soil(models.Model):
 
             record.soil_light_heavy_visible = False
             record.nmc_visible = False
+            record.pl_visible = False
+            record.ll_visible = False
+            record.sl_visible = False
+
            
 
 
@@ -3222,6 +3598,13 @@ class Soil(models.Model):
 
                 if sample.internal_id == 'c800e59a-b847-4049-9e2b-673fcd1fcde5':
                     record.soil_light_heavy_visible = True
+
+                if sample.internal_id == 'yoptr557-11f8-4249-9fa8-78888993214g':
+                    record.pl_visible = True
+                if sample.internal_id == 'uitefc57-11f8-4249-9fa8-788889923147':
+                    record.ll_visible = True
+                if sample.internal_id == 'yt28uj5t-11f8-4249-9fa8-78888993214t':
+                    record.sl_visible = True
                 
                
 

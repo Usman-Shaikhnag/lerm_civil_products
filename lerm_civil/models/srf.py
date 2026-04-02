@@ -53,7 +53,7 @@ class Discipline(models.Model):
         # record.eln_ref.write({'model_id':record.id})
         return record
     # @api.model
-    # def create(self, vals):
+    # def create(self, vals):'default_billing_customer': self.billing_customer.id,
     #     record = super(Discipline, self).create(vals)
     #     record.get_all_fields()
     #     return record
@@ -179,7 +179,8 @@ class SrfForm(models.Model):
     eln_count = fields.Integer(string="ELN Count", compute='compute_eln_count')
     sample_range_table = fields.One2many('sample.range.line','srf_id',string="Sample Range")
     contractor = fields.Many2one('lerm.contractor.line',string="Contractor")
-    report_issued = fields.Char(string="Report to be issued in the")
+    # report_issued = fields.Char(string="Report to be issued in the")
+    report_issued = fields.Many2one('res.partner',string="Report to be issued in the name of:")
     contractor_ids = fields.Many2many('lerm.contractor.line')
     casting = fields.Boolean(string="Casting")
 
@@ -952,19 +953,178 @@ class SrfForm(models.Model):
     #             except Exception as e:
     #                 print(f"FTP Rename failed: {str(e)}")
 
+    # def confirm_srf(self):
+    #     srf_ids = []
+    #     import re
+    #     import paramiko
+    #     import os
+
+    #     # Date variables
+    #     year = str(self.srf_date.year)
+
+    #     # Get SRF Sequence
+    #     new_srf_seq = self.env['ir.sequence'].next_by_code('lerm.civil.srf.seq') or 'New'
+
+    #     # Sample wise total count
+    #     sample_total_count = self.env['lerm.srf.sample'].search_count([
+    #         ('srf_id.srf_date', '=', self.srf_date),
+    #         ('kes_no', '!=', 'New'),
+    #         ('status', '=', '2-confirmed')
+    #     ])
+
+    #     for record in self.sample_range_table:
+    #         sam_next_number = self.env['ir.sequence'].search([
+    #             ('code', '=', 'lerm.srf.sample')
+    #         ]).number_next_actual
+
+    #         sample_range = "SAM/" + str(sam_next_number) + "-" + str(sam_next_number + record.sample_qty - 1)
+
+    #         record.write({
+    #             'sample_range': sample_range,
+    #             'kes_range': new_srf_seq
+    #         })
+
+    #         samples = self.env['lerm.srf.sample'].search([
+    #             ('sample_range_id', '=', record.id)
+    #         ])
+
+    #         for sample in samples:
+    #             sample_id = self.env['ir.sequence'].next_by_code('lerm.srf.sample') or 'New'
+    #             sample_total_count += 1
+
+    #             # ✅ KES No Format
+    #             # kes_no = "GCPL/LAB/" + year + "/" + str(sample_total_count).zfill(5)
+    #             kes_no = self.env['ir.sequence'].next_by_code('kes.no.seq') or 'New'
+
+    #             company = self.env['res.company'].search([
+    #                 ('id', '=', self.env.context['allowed_company_ids'][0])
+    #             ])
+
+    #             # ULR Logic
+    #             ulr_no = ''
+    #             if sample.scope == 'nabl':
+    #                 if sample.lab_location:
+    #                     code = sample.lab_location.ulr_sequence.code
+    #                     seqq = self.env['ir.sequence'].sudo().search([
+    #                         ('code', '=', code)
+    #                     ], limit=1)
+
+    #                     matched_record = None
+    #                     for date_range in seqq.date_range_ids:
+    #                         if date_range.date_from <= self.srf_date <= date_range.date_to:
+    #                             matched_record = date_range
+    #                             break
+
+    #                     if matched_record:
+    #                         next_actual = str(matched_record.number_next_actual)
+    #                         ulr_no = (
+    #                             (sample.lab_location.lab_certificate_no or '')
+    #                             + year
+    #                             + (sample.location_name.location_code or '')
+    #                             + next_actual.zfill(int(seqq.padding or 5))
+    #                             + (seqq.suffix or '')
+    #                         )
+
+    #                         matched_record.sudo().write({
+    #                             'number_next_actual': matched_record.number_next_actual + 1
+    #                         })
+    #                     else:
+    #                         ulr_no = self.env['ir.sequence'].next_by_code(code) or 'New'
+
+    #                 else:
+    #                     lab_loc = str(sample.lab_no_value)
+    #                     lab_cert_no = str(company.lab_certificate_no)
+
+    #                     ulr_no = self.env['ir.sequence'].next_by_code('sample.ulr.seq') or 'New'
+    #                     ulr_no = ulr_no.replace('(lab_certificate_no)', lab_cert_no).replace('(lab_no_value)', lab_loc)
+
+    #             sample.write({
+    #                 'sample_no': sample_id,
+    #                 'kes_no': kes_no,
+    #                 'status': '2-confirmed',
+    #                 'ulr_no': ulr_no
+    #             })
+
+    #             # Create Lab Name Entry
+    #             existing_lab = self.env['lab.name'].search([
+    #                 ('srf_lab', '=', self.srf_id),
+    #                 ('lab_Ids', '=', sample.lab_id)
+    #             ], limit=1)
+
+    #             if not existing_lab:
+    #                 self.env['lab.name'].create({
+    #                     'product_id': sample.material_id.id,
+    #                     'eln_id': False,
+    #                     'date_lab': self.srf_date,
+    #                     'srf_lab': new_srf_seq,
+    #                     'report_no': kes_no,
+    #                     'url_no': ulr_no,
+    #                     'lab_Ids': sample.lab_id,
+    #                 })
+
+    #             self.env.cr.commit()
+
+    #     # Final SRF Update
+    #     self.write({
+    #         'srf_id': new_srf_seq,
+    #         'kes_number': "LERM/TR/DUS",
+    #         'state': '2-confirm'
+    #     })
+
+    #     # FTP Rename Logic
+    #     attachment_path = self.attachment_path
+    #     pattern = r'(?<=/)\d+(?=/)'
+
+    #     if attachment_path and re.search(pattern, attachment_path):
+    #         old_path_full = re.sub(pattern, str(self.id), attachment_path)
+
+    #         file_name = old_path_full.rsplit('/', 1)[1]
+    #         old_path = old_path_full.rsplit('/', 1)[0]
+
+    #         new_path = re.sub(
+    #             pattern,
+    #             self.srf_id.replace("/", "").replace("-", ""),
+    #             attachment_path
+    #         ).rsplit('/', 1)[0]
+
+    #         ftp_storage = self.env["ftp.storage"].search([
+    #             ("active", "=", True)
+    #         ], limit=1)
+
+    #         if ftp_storage:
+    #             try:
+    #                 transport = paramiko.Transport((ftp_storage.host, ftp_storage.port or 22))
+    #                 transport.connect(
+    #                     username=ftp_storage.username,
+    #                     password=ftp_storage.password
+    #                 )
+
+    #                 sftp = paramiko.SFTPClient.from_transport(transport)
+
+    #                 sftp.rename(
+    #                     "/home/" + old_path,
+    #                     "/home/" + new_path
+    #                 )
+
+    #                 self.write({
+    #                     'attachment_path': new_path + "/" + file_name
+    #                 })
+
+    #                 sftp.close()
+
+    #             except Exception as e:
+    #                 print(f"FTP Rename failed: {str(e)}")
+
     def confirm_srf(self):
         srf_ids = []
         import re
         import paramiko
         import os
 
-        # Date variables
         year = str(self.srf_date.year)
 
-        # Get SRF Sequence
         new_srf_seq = self.env['ir.sequence'].next_by_code('lerm.civil.srf.seq') or 'New'
 
-        # Sample wise total count
         sample_total_count = self.env['lerm.srf.sample'].search_count([
             ('srf_id.srf_date', '=', self.srf_date),
             ('kes_no', '!=', 'New'),
@@ -972,6 +1132,7 @@ class SrfForm(models.Model):
         ])
 
         for record in self.sample_range_table:
+
             sam_next_number = self.env['ir.sequence'].search([
                 ('code', '=', 'lerm.srf.sample')
             ]).number_next_actual
@@ -988,54 +1149,32 @@ class SrfForm(models.Model):
             ])
 
             for sample in samples:
+
                 sample_id = self.env['ir.sequence'].next_by_code('lerm.srf.sample') or 'New'
                 sample_total_count += 1
 
-                # ✅ KES No Format
-                # kes_no = "GCPL/LAB/" + year + "/" + str(sample_total_count).zfill(5)
                 kes_no = self.env['ir.sequence'].next_by_code('kes.no.seq') or 'New'
 
                 company = self.env['res.company'].search([
                     ('id', '=', self.env.context['allowed_company_ids'][0])
                 ])
 
-                # ULR Logic
+                # =====================================================
+                # ✅ NEW ULR LOGIC (REPLACED ONLY THIS PART)
+                # =====================================================
                 ulr_no = ''
                 if sample.scope == 'nabl':
-                    if sample.lab_location:
-                        code = sample.lab_location.ulr_sequence.code
-                        seqq = self.env['ir.sequence'].sudo().search([
-                            ('code', '=', code)
-                        ], limit=1)
 
-                        matched_record = None
-                        for date_range in seqq.date_range_ids:
-                            if date_range.date_from <= self.srf_date <= date_range.date_to:
-                                matched_record = date_range
-                                break
+                    seq_val = self.env['ir.sequence'].next_by_code('sample.ulr.seq') or 'New'
 
-                        if matched_record:
-                            next_actual = str(matched_record.number_next_actual)
-                            ulr_no = (
-                                (sample.lab_location.lab_certificate_no or '')
-                                + year
-                                + (sample.location_name.location_code or '')
-                                + next_actual.zfill(int(seqq.padding or 5))
-                                + (seqq.suffix or '')
-                            )
+                    lab = sample.lab_location
+                    lab_cert = lab.lab_certificate_no if lab else ''
+                    lab_loc = sample.location_name.location_code if sample.location_name else ''
 
-                            matched_record.sudo().write({
-                                'number_next_actual': matched_record.number_next_actual + 1
-                            })
-                        else:
-                            ulr_no = self.env['ir.sequence'].next_by_code(code) or 'New'
+                    ulr_no = seq_val.replace('(lab_certificate_no)', lab_cert)\
+                                    .replace('(lab_no_value)', lab_loc)
 
-                    else:
-                        lab_loc = str(sample.lab_no_value)
-                        lab_cert_no = str(company.lab_certificate_no)
-
-                        ulr_no = self.env['ir.sequence'].next_by_code('sample.ulr.seq') or 'New'
-                        ulr_no = ulr_no.replace('(lab_certificate_no)', lab_cert_no).replace('(lab_no_value)', lab_loc)
+                # =====================================================
 
                 sample.write({
                     'sample_no': sample_id,
@@ -1044,13 +1183,15 @@ class SrfForm(models.Model):
                     'ulr_no': ulr_no
                 })
 
-                # Create Lab Name Entry
+                # Create Lab Name Entry (SAFE FIX ADDED)
+                lab_id = sample.lab_id.id if sample.lab_id else False
+
                 existing_lab = self.env['lab.name'].search([
                     ('srf_lab', '=', self.srf_id),
-                    ('lab_Ids', '=', sample.lab_id)
+                    ('lab_Ids', '=', lab_id)
                 ], limit=1)
 
-                if not existing_lab:
+                if lab_id and not existing_lab:
                     self.env['lab.name'].create({
                         'product_id': sample.material_id.id,
                         'eln_id': False,
@@ -1058,23 +1199,25 @@ class SrfForm(models.Model):
                         'srf_lab': new_srf_seq,
                         'report_no': kes_no,
                         'url_no': ulr_no,
-                        'lab_Ids': sample.lab_id,
+                        'lab_Ids': lab_id,
                     })
 
                 self.env.cr.commit()
 
-        # Final SRF Update
         self.write({
             'srf_id': new_srf_seq,
             'kes_number': "LERM/TR/DUS",
             'state': '2-confirm'
         })
 
-        # FTP Rename Logic
+        # =====================================================
+        # FTP LOGIC (UNCHANGED)
+        # =====================================================
         attachment_path = self.attachment_path
         pattern = r'(?<=/)\d+(?=/)'
 
         if attachment_path and re.search(pattern, attachment_path):
+
             old_path_full = re.sub(pattern, str(self.id), attachment_path)
 
             file_name = old_path_full.rsplit('/', 1)[1]
@@ -1149,7 +1292,7 @@ class SrfForm(models.Model):
         action = self.env.ref('lerm_civil.edit_srf_wizard_form')
         
         return {
-            'name': "Edit SRF Header",
+            'name': "Edit OR Header",
             'type': 'ir.actions.act_window',
             'view_type': 'form',
             'view_mode': 'form',
@@ -1160,14 +1303,16 @@ class SrfForm(models.Model):
                 'default_srf_id' : self.id,
                 'default_customer': self.customer.id,
             'default_srf_date': self.srf_date,
-            'default_client': self.client,
+            'default_client': self.client.id,
             'default_contact_person': self.contact_person.id,
             'default_contractor': self.contractor.id,
             'default_billing_customer': self.billing_customer.id,
             'default_client_refrence': self.client_refrence,
             'default_name_work': self.name_work.id,
             'default_attachment':self.attachment,
-            'default_attachment_name':self.attachment_name
+            'default_attachment_name':self.attachment_name,
+            'default_report_issued': self.report_issued.id,
+            'default_request_date':self.request_date
             }
             }
         
@@ -1321,7 +1466,7 @@ class CreateSampleWizard(models.TransientModel):
         ('satisfactory', 'Satisfactory'),
         ('non_satisfactory', 'Non-Satisfactory'),
     ], string='Sample Condition', default='satisfactory')
-    location = fields.Char(string="Location")
+    location = fields.Char(string="Location Code")
     sample_reject_reason = fields.Char(string="Sample Reject Reason")
     has_witness = fields.Boolean(string="Witness")
     witness = fields.Char(string="Witness name")
@@ -1363,7 +1508,7 @@ class CreateSampleWizard(models.TransientModel):
     is_update = fields.Boolean('Is Update')
 
     department_id = fields.Char(string='Department')
-    lab_location = fields.Many2one('lerm.lab.master',string="Lab Location",default=lambda self: self._get_oldest_lab())
+    lab_location = fields.Many2one('lerm.lab.master',string="Lab Name",default=lambda self: self._get_oldest_lab())
     location_name = fields.Many2one('lerm.lab.location.master',string="Location Name")
     customer = fields.Many2one('res.partner', string="Customer")
 
@@ -1391,6 +1536,16 @@ class CreateSampleWizard(models.TransientModel):
         for record in self:
             if record.lab_location and len(record.lab_location.lab_location_line) > 0:
                 record.location_name = record.lab_location.lab_location_line[0]
+
+    @api.onchange('lab_location')
+    def _default_location(self):
+        for record in self:
+            location_code = False
+            if record.lab_location and record.lab_location.lab_location_line:
+                location_line = record.lab_location.lab_location_line[0]
+                location_code = location_line.location_code
+
+            record.location = location_code
 
 
     @api.depends('material_id')
@@ -2117,9 +2272,29 @@ class CreateSampleWizard(models.TransientModel):
 
         # used in Parameter mode (final technician set to be stored in ELN)
         technician_ids = fields.Many2many('res.users',string='Technicians',store=True,)
+        
+        allowed_technician_domain_ids = fields.Many2many(
+            'res.users',
+            compute='_compute_allowed_technician_domain_ids',
+            store=False
+        )
 
         sample_id = fields.Many2one('lerm.srf.sample', string='Sample')   # optional
         line_ids = fields.One2many('sample.allot.line', 'wizard_id', string='Parameters')
+
+        @api.depends('sample_id', 'sample_id.lab_location')
+        def _compute_allowed_technician_domain_ids(self):
+            for wizard in self:
+                if wizard.sample_id and wizard.sample_id.lab_location:
+                    lab = wizard.sample_id.lab_location
+                    employees = self.env['hr.employee'].sudo().search([
+                        ('lab_ids', 'in', [lab.id])
+                    ])
+                    employee_user_ids = employees.mapped('user_id').ids
+                    wizard.allowed_technician_domain_ids = [(6, 0, employee_user_ids)]
+                else:
+                    wizard.allowed_technician_domain_ids = [(5,)]
+
 
         @api.model
         def default_get(self, fields):

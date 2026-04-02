@@ -79,7 +79,7 @@
                         <tr>
                             <td style="width:25%;"><b>Review of order request no.</b></td>
                             <td style="width:45%;">
-                                <!-- <span t-field="o.name"/> -->
+                            <span t-field="o.sample_id.srf_id"/>
                             </td>
 
                             <td style="width:10%;"><b>Date:</b></td>
@@ -105,14 +105,14 @@
                         <tr>
                             <td><b>For (End Customer, if any):</b></td>
                             <td colspan="3">
-                                <!-- <span t-field="o.end_customer"/> -->
+                                <span t-field="o.sample_id.srf_id.client"/>
                             </td>
                         </tr>
 
                         <tr>
                             <td><b>Report to be issued in the name of:</b></td>
                             <td colspan="3">
-                                <!-- <span t-field="o.report_issue_name"/> -->
+                            <span t-field="o.sample_id.srf_id.report_issued"/>
                             </td>
                         </tr>
 
@@ -331,7 +331,7 @@
     <field name="report_type">qweb-pdf</field>
     <field name="report_name">lerm_civil.rr_report</field>
     <field name="report_file">lerm_civil.rr_report</field>
-    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_model_id" ref="model_sample_request_review"/>
     <field name="binding_type">report</field>
 </record>
 
