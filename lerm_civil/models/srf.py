@@ -1116,51 +1116,65 @@ class SrfForm(models.Model):
     #                 print(f"FTP Rename failed: {str(e)}")
 
     def confirm_srf(self):
-        srf_ids = []
         import re
         import paramiko
         import os
 
         year = str(self.srf_date.year)
 
+        # =====================================================
+        # SRF SEQUENCE
+        # =====================================================
         new_srf_seq = self.env['ir.sequence'].next_by_code('lerm.civil.srf.seq') or 'New'
 
+        # Sample total count
         sample_total_count = self.env['lerm.srf.sample'].search_count([
             ('srf_id.srf_date', '=', self.srf_date),
             ('kes_no', '!=', 'New'),
             ('status', '=', '2-confirmed')
         ])
 
+        # =====================================================
+        # SAMPLE RANGE LOOP
+        # =====================================================
         for record in self.sample_range_table:
 
-            sam_next_number = self.env['ir.sequence'].search([
+            sam_seq = self.env['ir.sequence'].search([
                 ('code', '=', 'lerm.srf.sample')
-            ]).number_next_actual
+            ], limit=1)
 
-            sample_range = "SAM/" + str(sam_next_number) + "-" + str(sam_next_number + record.sample_qty - 1)
+            sam_next = sam_seq.number_next_actual
+
+            sample_range = "SAM/%s-%s" % (
+                sam_next,
+                sam_next + record.sample_qty - 1
+            )
+
+            sam_seq.sudo().write({
+                'number_next_actual': sam_next + record.sample_qty
+            })
 
             record.write({
                 'sample_range': sample_range,
                 'kes_range': new_srf_seq
             })
 
+            # =====================================================
+            # SAMPLE RECORDS
+            # =====================================================
             samples = self.env['lerm.srf.sample'].search([
                 ('sample_range_id', '=', record.id)
             ])
 
             for sample in samples:
 
-                sample_id = self.env['ir.sequence'].next_by_code('lerm.srf.sample') or 'New'
+                sample_no = self.env['ir.sequence'].next_by_code('lerm.srf.sample') or 'New'
                 sample_total_count += 1
 
                 kes_no = self.env['ir.sequence'].next_by_code('kes.no.seq') or 'New'
 
-                company = self.env['res.company'].search([
-                    ('id', '=', self.env.context['allowed_company_ids'][0])
-                ])
-
                 # =====================================================
-                # ✅ NEW ULR LOGIC (REPLACED ONLY THIS PART)
+                # ✅ SAFE ULR LOGIC
                 # =====================================================
                 ulr_no = ''
                 if sample.scope == 'nabl':
@@ -1175,19 +1189,33 @@ class SrfForm(models.Model):
                                     .replace('(lab_no_value)', lab_loc)
 
                 # =====================================================
-
+                # WRITE SAMPLE
+                # =====================================================
                 sample.write({
-                    'sample_no': sample_id,
+                    'sample_no': sample_no,
                     'kes_no': kes_no,
                     'status': '2-confirmed',
                     'ulr_no': ulr_no
                 })
 
-                # Create Lab Name Entry (SAFE FIX ADDED)
-                lab_id = sample.lab_id.id if sample.lab_id else False
+                # =====================================================
+                # ✅ SAFE LAB ID HANDLING (IMPORTANT FIX)
+                # =====================================================
+                lab_id = False
 
+                if sample.lab_id:
+                    # If Many2one
+                    if hasattr(sample.lab_id, 'id'):
+                        lab_id = sample.lab_id.id
+                    else:
+                        # If string (your case issue)
+                        lab_id = sample.lab_id
+
+                # =====================================================
+                # LAB NAME ENTRY
+                # =====================================================
                 existing_lab = self.env['lab.name'].search([
-                    ('srf_lab', '=', self.srf_id),
+                    ('srf_lab', '=', new_srf_seq),
                     ('lab_Ids', '=', lab_id)
                 ], limit=1)
 
@@ -1202,8 +1230,12 @@ class SrfForm(models.Model):
                         'lab_Ids': lab_id,
                     })
 
-                self.env.cr.commit()
+                # ❗ avoid overcommit (optional)
+                # self.env.cr.commit()
 
+        # =====================================================
+        # FINAL UPDATE
+        # =====================================================
         self.write({
             'srf_id': new_srf_seq,
             'kes_number': "LERM/TR/DUS",
@@ -1253,6 +1285,7 @@ class SrfForm(models.Model):
                     })
 
                     sftp.close()
+                    transport.close()
 
                 except Exception as e:
                     print(f"FTP Rename failed: {str(e)}")

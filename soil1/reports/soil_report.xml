@@ -1012,7 +1012,9 @@
 						<t t-set="di" t-value="diarectphi_index if diarectphi_index is not None else 0"/>
 
 						<t t-if="diarectphi_vals and di &lt; len(diarectphi_vals)">
-							<t t-esc="'%.3f' % diarectphi_vals[di]"/>
+						    
+							<t t-esc="int(round(diarectphi_vals[di]))"/>
+							<!-- <t t-esc="'%.3f' % diarectphi_vals[di]"/> -->
 							<t t-set="diarectphi_index" t-value="di + 1"/>
 						</t>
 						<t t-else="">--</t>
@@ -1023,7 +1025,8 @@
 						<t t-set="di" t-value="triaxialc_index if triaxialc_index is not None else 0"/>
 
 						<t t-if="triaxialc_vals and di &lt; len(triaxialc_vals)">
-							<t t-esc="'%.2f' % triaxialc_vals[di]"/>
+						<t t-esc="int(round(triaxialc_vals[di]))"/>
+							<!-- <t t-esc="'%.2f' % triaxialc_vals[di]"/> -->
 							<t t-set="triaxialc_index" t-value="di + 1"/>
 						</t>
 						<t t-else="">--</t>
@@ -1052,7 +1055,7 @@
 						<t t-set="di" t-value="consolidationcr_index if consolidationcr_index is not None else 0"/>
 
 						<t t-if="consolidationcr_vals and di &lt; len(consolidationcr_vals)">
-							<t t-esc="'%.2f' % consolidationcr_vals[di]"/>
+							<t t-esc="'%.3f' % consolidationcr_vals[di]"/>
 							<t t-set="consolidationcr_index" t-value="di + 1"/>
 						</t>
 						<t t-else="">--</t>
@@ -1424,7 +1427,7 @@
 							</tr> -->
 
 							<tr>
-								<td colspan="3" style="border:1px solid black; padding:4px;">
+								<td colspan="4" style="border:1px solid black; padding:4px;">
 									<b>Test Method/Reference Code :</b> 
 									<span>
 									
@@ -1450,10 +1453,14 @@
 									</t>
 								</span>
 								</td>
-								<td colspan="3" style="border:1px solid black; padding:4px;">
-									<b>Annexure- II to ULR : </b>
-									<span style="padding:2px 6px;">
-									<span t-field="o.sample_id.ulr_no"/>
+								<td colspan="1" style="border:1px solid black; padding:4px;text-align:left;">
+									<b>Annexure- II to ULR</b>
+									
+								</td>
+								<td colspan="1" style="border:1px solid black; padding:4px;">
+									
+									<span style=" padding:2px 6px;">
+										<span t-field="o.sample_id.ulr_no"/>
 									</span>
 								</td>
 							</tr>
@@ -1843,7 +1850,7 @@
 									</t>
 								</span>
 								</td>
-								<td colspan="3" style="border:1px solid black; padding:4px;">
+								<td colspan="3" style="border:1px solid black; padding:4px;text-align:right;">
 									<b>Annexure- II to ULR</b>
 								</td>
 								<td colspan="3" style="border:1px solid black; padding:4px;">
@@ -1874,8 +1881,10 @@
 								</tr>
 
 								<tr>
-								<td colspan="6" style="border:1px solid black; padding:4px;">
-									<b>Report No.:   </b><span t-field="o.sample_id.kes_no"/> </td>
+								<td colspan="3" style="border:1px solid black; padding:4px;">
+									<b>Report No.:   </b> </td>
+
+								<td colspan="9" style="border:1px solid black; padding:4px;"><span t-field="o.sample_id.kes_no"/> </td>
 								
 							</tr>
 
@@ -1950,7 +1959,7 @@
 									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Sample Details</th>
 									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Weight of total sample (gm)</th>
 									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Water Content (%)</th>
-									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Room temp. (deg)</th>
+									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Room temp. °C</th>
 									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Relative humidity (%)</th>
 									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Specific gravity</th>
 									
@@ -2232,7 +2241,7 @@
 							</tr> -->
 
 							<tr>
-								<td colspan="3" style="border:1px solid black; padding:4px;">
+								<td colspan="2" style="border:1px solid black; padding:4px;">
 									<b>Test Method/Reference Code :</b>
 									<span>
 									<!-- <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','c800e59a-b847-4049-9e2b-673fcd1fcde5')]).parameter_table" t-as="parameter">
@@ -2262,8 +2271,12 @@
 									</t>
 								</span>
 								</td>
-								<td colspan="3" style="border:1px solid black; padding:4px;">
+								<td colspan="1" style="border:1px solid black; padding:4px;text-align:right;">
 									<b>Annexure- II to ULR</b>
+									
+								</td>
+								<td colspan="1" style="border:1px solid black; padding:4px;">
+									
 									<span style=" padding:2px 6px;">
 										<span t-field="o.sample_id.ulr_no"/>
 									</span>
@@ -2568,7 +2581,7 @@
 							</tr> -->
 
 							<tr>
-								<td colspan="3" style="border:1px solid black; padding:4px;">
+								<td colspan="2" style="border:1px solid black; padding:4px;">
 									<b>Test Method/Reference Code :</b>
 									<span>
 									<!-- <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','c800e59a-b847-4049-9e2b-673fcd1fcde5')]).parameter_table" t-as="parameter">
@@ -2598,8 +2611,12 @@
 									</t>
 								</span>
 								</td>
-								<td colspan="3" style="border:1px solid black; padding:4px;">
+								<td colspan="1" style="border:1px solid black; padding:4px;text-align:right;">
 									<b>Annexure- II to ULR</b>
+									
+								</td>
+								<td colspan="1" style="border:1px solid black; padding:4px;">
+									
 									<span style=" padding:2px 6px;">
 										<span t-field="o.sample_id.ulr_no"/>
 									</span>
@@ -3112,10 +3129,14 @@
 							<tr>
 							</tr>
 
-							 <td colspan="10" style="border:1px solid black; padding:4px;text-align:center;">
-									<b>Annexure- II to ULR : </b>
-									<span style="padding:2px 6px;">
-									<span t-field="o.sample_id.ulr_no"/>
+							  <td colspan="1" style="border:1px solid black; padding:4px;text-align:left;">
+									<b>Annexure- II to ULR</b>
+									
+								</td>
+								<td colspan="9" style="border:1px solid black; padding:4px;">
+									
+									<span style=" padding:2px 6px;">
+										<span t-field="o.sample_id.ulr_no"/>
 									</span>
 								</td>
 
@@ -3465,7 +3486,7 @@
 							</tr> -->
 
 							<tr>
-								<td colspan="3" style="border:1px solid black; padding:4px;">
+								<td colspan="2" style="border:1px solid black; padding:4px;">
 									<b>Test Method/Reference Code :</b> 
 									<span>
 									
@@ -3492,12 +3513,17 @@
 									</t>
 								</span>
 								</td>
-								<td colspan="3" style="border:1px solid black; padding:4px;">
+								<td colspan="1" style="border:1px solid black; padding:4px;text-align:left;">
 									<b>Annexure- II to ULR</b>
+									
+								</td>
+								<td colspan="1" style="border:1px solid black; padding:4px;">
+									
 									<span style=" padding:2px 6px;">
 										<span t-field="o.sample_id.ulr_no"/>
 									</span>
 								</td>
+								
 							</tr>
 
 							<tr>
@@ -3902,7 +3928,7 @@
 
 
 							<tr>
-								<td colspan="3" style="border:1px solid black; padding:4px;">
+								<td colspan="2" style="border:1px solid black; padding:4px;">
 									<b>Test Method/Reference Code :</b>
 									<span>
 								
@@ -3928,10 +3954,14 @@
 									</t>
 								</span>
 								</td>
-								<td colspan="3" style="border:1px solid black; padding:4px;">
+								<td colspan="1" style="border:1px solid black; padding:4px;text-align:left;">
 									<b>Annexure- II to ULR</b>
+									
+								</td>
+								<td colspan="1" style="border:1px solid black; padding:4px;">
+									
 									<span style=" padding:2px 6px;">
-									<span t-field="o.sample_id.ulr_no"/>
+										<span t-field="o.sample_id.ulr_no"/>
 									</span>
 								</td>
 							</tr>
