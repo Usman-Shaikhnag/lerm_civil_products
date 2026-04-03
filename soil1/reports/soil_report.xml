@@ -1025,8 +1025,8 @@
 						<t t-set="di" t-value="triaxialc_index if triaxialc_index is not None else 0"/>
 
 						<t t-if="triaxialc_vals and di &lt; len(triaxialc_vals)">
-						<t t-esc="int(round(triaxialc_vals[di]))"/>
-							<!-- <t t-esc="'%.2f' % triaxialc_vals[di]"/> -->
+						<!-- <t t-esc="int(round(triaxialc_vals[di]))"/> -->
+							<t t-esc="'%.2f' % triaxialc_vals[di]"/>
 							<t t-set="triaxialc_index" t-value="di + 1"/>
 						</t>
 						<t t-else="">--</t>
@@ -1035,7 +1035,8 @@
 						<t t-set="di" t-value="triaxialp_index if triaxialp_index is not None else 0"/>
 
 						<t t-if="triaxialp_vals and di &lt; len(triaxialp_vals)">
-							<t t-esc="'%.2f' % triaxialp_vals[di]"/>
+						<t t-esc="int(round(triaxialp_vals[di]))"/>
+							<!-- <t t-esc="'%.2f' % triaxialp_vals[di]"/> -->
 							<t t-set="triaxialp_index" t-value="di + 1"/>
 						</t>
 						<t t-else="">--</t>
