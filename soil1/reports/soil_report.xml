@@ -236,181 +236,190 @@
 
 
 
-          <table width="100%" style="font-size: 8px; border-collapse: collapse;" border="1">
+          <table width="100%" style="font-size: 8px; border-collapse: collapse;text-align:center;" border="1">
             <thead>
               <tr>
 			  <!-- <th rowspan="3">Lab ID</th> -->
-                <th rowspan="3">Location</th>
-                <th rowspan="3">Sample Type</th>
-                <th rowspan="3">Depth (m)</th>
-                <th colspan="4">GSA⁺</th>
-                <th colspan="3">Atterberg Limits</th>
-                <th rowspan="3">IS Class</th>
-				 <th colspan="1">Specific Gravity</th>
-				 <th colspan="1">Free Swell Index</th>
-				 <th colspan="1">Bulk Density</th>
-				  <th colspan="1">Natural Moisture Content</th>
+                <th rowspan="3" style="text-align:center;">Location</th>
+                <th rowspan="3" style="text-align:center;">Sample Type</th>
+                <th rowspan="3" style="text-align:center;">Depth (m)</th>
+                <th colspan="4" style="text-align:center;">GSA⁺</th>
+                <th colspan="3" style="text-align:center;">Atterberg Limits</th>
+                <th rowspan="3" style="text-align:center;">IS Class</th>
+				 <th colspan="2" style="text-align:center;">Specific Gravity</th>
+				 <th colspan="2" style="text-align:center;">Free Swell Index</th>
+				 <th colspan="2" style="text-align:center;">Bulk Density</th>
+				  <th colspan="1" style="text-align:center;">Natural Moisture Content</th>
                 <!-- <th colspan="3"> FSI / NMC</th> -->
-                <th colspan="2"> Proctor⁺</th>
-                <th colspan="1">UCS</th>
-                <th colspan="2">Direct Shear⁺</th>
-                <th colspan="2">Triaxial Test (UU)⁺</th>
-                <th colspan="2">Consolidation⁺</th>
-                <th colspan="1">California Bearing Ratio⁺</th>
-                <th colspan="1">Swelling Pressure⁺</th>
-                <th colspan="1">Permeability</th>
+                <th colspan="2" style="text-align:center;"> Proctor⁺</th>
+                <th colspan="2" style="text-align:center;" >UCS</th>
+                <th colspan="2" style="text-align:center;">Direct Shear⁺</th>
+                <th colspan="2" style="text-align:center;">Triaxial Test (UU)⁺</th>
+                <th colspan="2" style="text-align:center;">Consolidation⁺</th>
+                <th colspan="1" style="text-align:center;">California Bearing Ratio⁺</th>
+                <th colspan="1" style="text-align:center;">Swelling Pressure⁺</th>
+                <th colspan="1" style="text-align:center;">Permeability</th>
               </tr>
               <tr>
-                <th>G</th><th>S</th><th>M</th><th>C</th>
+                <th style="text-align:center;">G</th>
+				<th style="text-align:center;">S</th>
+				<th style="text-align:center;">M</th>
+				<th style="text-align:center;">C</th>
 				
-                <th>LL</th><th>PL</th><th>SL</th>
-                <th>Gs</th>
-				<th>FSI</th>
-				<th>γb</th>
-				<th>NMC</th>
-                <th>MDD</th><th>OMC</th>
-				<th>qᵤ</th>
-                <th>C</th><th>ϕ</th>
-                <th>C</th><th>ϕ</th>
-                <th>Pc</th><th>Cc</th>
-				<th>CBR</th>
-				<th></th>
-				<th>k</th>
+                <th style="text-align:center;">LL</th>
+				<th style="text-align:center;">PL</th>
+				<th style="text-align:center;">SL</th>
+                <th style="text-align:center;" colspan="2">Gs</th>
+				<th style="text-align:center;" colspan="2">FSI</th>
+				<th style="text-align:center;" colspan="2">γb</th>
+				<th style="text-align:center;">NMC</th>
+                <th style="text-align:center;">MDD</th>
+				<th style="text-align:center;">OMC</th>
+				<th style="text-align:center;" colspan="2">qᵤ</th>
+                <th style="text-align:center;">C</th>
+				<th style="text-align:center;">ϕ</th>
+                <th style="text-align:center;">C</th>
+				<th style="text-align:center;">ϕ</th>
+                <th style="text-align:center;">Pc</th>
+				<th style="text-align:center;">Cc</th>
+				<th style="text-align:center;">CBR</th>
+				<th style="text-align:center;"></th>
+				<th style="text-align:center;">k</th>
               </tr>
 			  <tr>
 			  <!-- GSA -->
-			   <td>
+			   <td style="text-align:center;">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','tyer4fgr-5c56-475b-9arty156878965uut')]).unit.name"/>
 				</span>
 			</td>
 			
-			<td>
+			<td style="text-align:center;">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','tyer4fgr-5c56-475b-9arty156878965uut')]).unit.name"/>
 				</span>
 			</td>
-			<td>
+			<td style="text-align:center;">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','tyer4fgr-5c56-475b-9arty156878965uut')]).unit.name"/>
 				</span>
 			</td>
-			<td>
+			<td style="text-align:center;">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','tyer4fgr-5c56-475b-9arty156878965uut')]).unit.name"/>
 				</span>
 			</td>
 			<!-- LL -->
-			 <td>
+			 <td style="text-align:center;">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','uitefc57-11f8-4249-9fa8-788889923147')]).unit.name"/>
 				</span>
 			</td>
-			<td>
+			<td style="text-align:center;"> 
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','yoptr557-11f8-4249-9fa8-78888993214g')]).unit.name"/>
 				</span>
 			</td>
-			<td>
+			<td style="text-align:center;">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','yt28uj5t-11f8-4249-9fa8-78888993214t')]).unit.name"/>
 				</span>
 			</td>
 
 			<!-- Specific -->
-			<td>
+			<td style="text-align:center;" colspan="2">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','26a889da-3ab8-40e9-af69-2399b62dce9f')]).unit.name"/>
 				</span>
 			</td>
 			<!-- FSI -->
-			<td>
+			<td style="text-align:center;" colspan="2">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3825ec57-11f8-4249-9fa8-d99f64ffd396')]).unit.name"/>
 				</span>
 			</td>
 			<!-- Bulk -->
-			<td>
+			<td style="text-align:center;" colspan="2">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9')]).unit.name"/>
 				</span>
 			</td>
 			<!-- NMC -->
-			<td>
+			<td style="text-align:center;">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','yt2okplt-11f8-4249-9fa8-78888993214t')]).unit.name"/>
 				</span>
 			</td>
 			<!-- proctor MDD -->
-			<td>
+			<td style="text-align:center;">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','jkt56888hhhllly1-ca64-44dd-b0ae-23120147g')]).unit.name"/>
 				</span>
 			</td>
 			<!-- OMC -->
-			<td>
+			<td style="text-align:center;">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','po567888hhhllly1-ca64-44dd-b0ae-23120114r')]).unit.name"/>
 				</span>
 			</td>
 			<!-- UCS -->
-			<td>
+			<td style="text-align:center;" colspan="2">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','t4y57888hhhllly1-ca64-44dd-b0ae-1234567rt')]).unit.name"/>
 				</span>
 			</td>
 			 <!-- Direct Shear -->
-			 <td>
+			 <td style="text-align:center;">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','321456ki8hhhllly1-ca64-44dd-b0ae-3214654lk')]).unit.name"/>
 				</span>
 			</td>
 
-			<td>
+			<td style="text-align:center;">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')]).unit.name"/>
 				</span> 
 			</td>
 
 			<!-- Traxial  -->
-			<td>
+			<td style="text-align:center;">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','yt25ec57-11f8-4249-9fa8-78888921457r')]).unit.name"/>
 				</span>
 			</td>
 
-			<td>
+			<td style="text-align:center;">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','yt25ec57-11f8-4249-9fa8-788889999rtt')]).unit.name"/>
 				</span> 
 			</td>
 			<!-- Consolidation -->
-			<td>
+			<td style="text-align:center;">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','32145888hhhllly1-ca64-44dd-b0ae-2578886oopp')]).unit.name"/>
 				</span>
 			</td>
 
-			<td>
+			<td style="text-align:center;">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')]).unit.name"/>
 				</span> 
 			</td>
 
 			<!-- CBR -->
-			<td>
+			<td style="text-align:center;">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')]).unit.name"/>
 				</span>
 			</td>
 			<!-- Swelling -->
-			<td>
+			<td style="text-align:center;">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')]).unit.name"/>
 				</span>
 			</td>
 			<!-- Permability -->
-			<td>
+			<td style="text-align:center;">
 				<span>
 					<span t-field="env['lerm.parameter.master'].search([('internal_id','=','897546gt21-ca64-44dd-b0ae-22145687')]).unit.name"/>
 				</span>
@@ -418,10 +427,10 @@
 			
 			  </tr>
 			 
-			  <tr>
-				<th colspan="3">Test Method / Reference</th>
+			  <tr style="text-align:center;">
+				<th colspan="3" style="text-align:center;vertical-align:middle;">Test Method / Reference</th>
 				<!-- GSA -->
-				<th colspan="4">
+				<th colspan="4" style="text-align:center;">
 				
 					 <t t-if="not eln.grade_id">
 							<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','tyer4fgr-5c56-475b-9arty156878965uut')]).test_method.test_method"/>
@@ -445,7 +454,7 @@
 						</t>
 					</th>
 					<!-- LLPLSL -->
-					<th colspan="3">
+					<th colspan="3" style="text-align:center;">
 					
 					<t t-if="not eln.grade_id">
 							<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','3825ec57-11f8-4249-9fa8-d99f64ffd396')]).test_method.test_method"/>
@@ -468,12 +477,12 @@
 							</t>
 						</t>
 					</th>
-					<th colspan="1">
+					<th colspan="1" style="text-align:center;">
 					
 				
 					</th>
 					<!-- SG -->
-					<th colspan="1">
+					<th colspan="2" style="text-align:center;">
 					
 					<t t-if="not eln.grade_id">
 							<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','26a889da-3ab8-40e9-af69-2399b62dce9f')]).test_method.test_method"/>
@@ -497,7 +506,7 @@
 						</t>
 					</th>
 					<!-- FSI -->
-					<th colspan="1">
+					<th colspan="2" style="text-align:center;">
 					
 					<t t-if="not eln.grade_id">
 							<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','3825ec57-11f8-4249-9fa8-d99f64ffd396')]).test_method.test_method"/>
@@ -521,7 +530,7 @@
 						</t>
 					</th>
 					<!-- Bulk -->
-					<th colspan="1">
+					<th colspan="2" style="text-align:center;">
 					
 
 					<t t-if="not eln.grade_id">
@@ -546,7 +555,7 @@
 						</t>
 					</th>
 					<!-- NMC -->
-					<th colspan="1">
+					<th colspan="1" style="text-align:center;">
 					
 
 					<t t-if="not eln.grade_id">
@@ -571,7 +580,7 @@
 						</t>
 					</th>
 					<!-- Proctor -->
-					<th colspan="2">
+					<th colspan="2" style="text-align:center;">
 					
 					<t t-if="not eln.grade_id">
 							<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','c800e59a-b847-4049-9e2b-673fcd1fcde5')]).test_method.test_method"/>
@@ -596,7 +605,7 @@
 					
 					</th>
 					<!-- UCS -->
-					<th colspan="1">
+					<th colspan="2" style="text-align:center;">
 					
 					<t t-if="not eln.grade_id">
 							<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','t4y57888hhhllly1-ca64-44dd-b0ae-1234567rt')]).test_method.test_method"/>
@@ -621,7 +630,7 @@
 					
 					</th>
 					<!-- Direct Shear -->
-					<th colspan="2">
+					<th colspan="2" style="text-align:center;">
 					
 					<t t-if="not eln.grade_id">
 							<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')]).test_method.test_method"/>
@@ -645,7 +654,7 @@
 						</t>
 					</th>
 					<!-- Triaxial -->
-					<th colspan="2">
+					<th colspan="2" style="text-align:center;">
 					
 					<t t-if="not eln.grade_id">
 							<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','yt25ec57-11f8-4249-9fa8-788889999rtt')]).test_method.test_method"/>
@@ -669,7 +678,7 @@
 						</t>
 					</th>
 					<!-- Consolidation -->
-					<th colspan="2">
+					<th colspan="2" style="text-align:center;">
 					
 					<t t-if="not eln.grade_id">
 							<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')]).test_method.test_method"/>
@@ -693,7 +702,7 @@
 						</t>
 					</th>
 					<!-- CBR -->
-					<th colspan="1">
+					<th colspan="1" style="text-align:center;">
 					
 					<t t-if="not eln.grade_id">
 							<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')]).test_method.test_method"/>
@@ -717,7 +726,7 @@
 						</t>
 					</th>
 					<!-- Swelling -->
-					<th colspan="1">
+					<th colspan="1" style="text-align:center;">
 					
 					<t t-if="not eln.grade_id">
 							<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')]).test_method.test_method"/>
@@ -741,7 +750,7 @@
 						</t>
 					</th>
 					<!-- permability -->
-					<th colspan="1">
+					<th colspan="1" style="text-align:center;">
 					
 					<t t-if="not eln.grade_id">
 							<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','897546gt21-ca64-44dd-b0ae-22145687')]).test_method.test_method"/>
@@ -790,7 +799,7 @@
 				  <td><t t-esc="line.sand"/></td>
 				  <td><t t-esc="line.silt_clay"/></td> -->
 
-				  <td>
+				  <td style="text-align:center;">
 					<t t-set="i" t-value="bh_index"/>
 					<t t-if="bh_vals and i &lt; len(bh_vals)">
 						<t t-esc="bh_vals[i]"/>
@@ -799,7 +808,7 @@
 					<t t-else="">--</t>
 					</td>
 
-					<td>
+					<td style="text-align:center;">
 					<t t-set="i" t-value="sample_index"/>
 					<t t-if="sample_vals and i &lt; len(sample_vals)">
 						<t t-esc="sample_vals[i]"/>
@@ -808,7 +817,7 @@
 					<t t-else="">--</t>
 					</td>
 
-					<td>
+					<td style="text-align:center;">
 					<t t-set="i" t-value="depth_index"/>
 					<t t-if="depth_vals and i &lt; len(depth_vals)">
 						<t t-esc="depth_vals[i]"/>
@@ -817,46 +826,48 @@
 					<t t-else="">--</t>
 					</td>
 
-					<td>
+					<td style="text-align:center;">
 					<t t-set="i" t-value="gravel_index"/>
 					<t t-if="gravel_vals and i &lt; len(gravel_vals)">
 
-					  
-
-						<t t-esc="gravel_vals[i]"/>
+					  <t t-esc="int(round(gravel_vals[i]))"/>
+						<!-- <t t-esc="gravel_vals[i]"/> -->
 						<t t-set="gravel_index" t-value="i + 1"/>
 					</t>
 					<t t-else="">--</t>
 					</td>
 
-					<td>
+					<td style="text-align:center;">
 					<t t-set="i" t-value="silt_index"/>
 					<t t-if="silt_vals and i &lt; len(silt_vals)">
 					    
 
-						<t t-esc="silt_vals[i]"/>
+						<t t-esc="int(round(silt_vals[i]))"/>
+						<!-- <t t-esc="silt_vals[i]"/> -->
 						<t t-set="silt_index" t-value="i + 1"/>
 					</t>
 					<t t-else="">--</t>
 					</td>
 
-					<td>
+					<td style="text-align:center;">
 					<t t-set="i" t-value="sand_index"/>
 					<t t-if="sand_vals and i &lt; len(sand_vals)">
 					  
 
+						<t t-esc="int(round(sand_vals[i]))"/>
 						<!-- <t t-esc="sand_vals[i]"/> -->
 						<t t-set="sand_index" t-value="i + 1"/>
 					</t>
 					<t t-else="">--</t>
 					</td>
 
-					<td>
+					<td style="text-align:center;">
 					<t t-set="i" t-value="silt_clay_index"/>
 					<t t-if="silt_clay_vals and i &lt; len(silt_clay_vals)">
 					    
 
-						<t t-esc="silt_clay_vals[i]"/>
+						<!-- <t t-esc="silt_clay_vals[i]"/> -->
+						<t t-esc="int(round(silt_clay_vals[i]))"/>
 						<t t-set="silt_clay_index" t-value="i + 1"/>
 					</t>
 					<t t-else="">--</t>
@@ -864,7 +875,7 @@
 
                   <!-- Atterberg Limits -->
 					<!-- LL -->
-					<td>
+					<td style="text-align:center;">
 						<t t-set="li" t-value="ll_index if ll_index is not None else 0"/>
 						<t t-if="ll_vals and li &lt; len(ll_vals)">
 						    <t t-esc="int((ll_vals[li] or 0) + 0.5)"/>
@@ -874,7 +885,7 @@
 						<t t-else="">--</t>
 					</td>
 
-					<td>
+					<td style="text-align:center;">
 						<t t-set="li" t-value="pl_index if pl_index is not None else 0"/>
 						<t t-if="pl_vals and li &lt; len(pl_vals)">
 						    <t t-esc="int((pl_vals[li] or 0) + 0.5)"/>
@@ -884,7 +895,7 @@
 						<t t-else="">--</t>
 					</td>
 
-					<td>
+					<td style="text-align:center;">
 						<t t-set="li" t-value="sl_index if sl_index is not None else 0"/>
 						<t t-if="sl_vals and li &lt; len(sl_vals)">
 
@@ -897,10 +908,10 @@
 					</td>
 
 					<!-- IS Class -->
-					<td></td>
+					<td style="text-align:center;"></td>
 
 					<!-- Specific Gravity / FSI / NMC -->
-					<td>
+					<td style="text-align:center;" colspan="2">
 						<t t-set="gi" t-value="g_index if g_index is not None else 0"/>
 
 						<t t-if="grav_vals and gi &lt; len(grav_vals)">
@@ -910,7 +921,7 @@
 						</t>
 						<t t-else="">--</t>
 					</td>
-					<td>
+					<td style="text-align:center;" colspan="2">
 						<t t-set="gi" t-value="free_index if free_index is not None else 0"/>
 
 						<t t-if="free_vals and gi &lt; len(free_vals)">
@@ -924,7 +935,7 @@
 					</td>
 
 
-					<td style="min-width: 20px; width: 20px;">
+					<td style="min-width: 20px; width: 20px;text-align:center;" colspan="2">
 						<t t-set="di" t-value="n_density if n_density is not None else 0"/>
 
 						<t t-if="name_density and di &lt; len(name_density)">
@@ -934,7 +945,7 @@
 						<t t-else="">--</t>
 					</td>
 
-					<td style="min-width: 100px; width: 100px;">
+					<td style="min-width: 100px; width: 100px;text-align:center;">
 						<t t-set="di" t-value="n_avg_nmc if n_avg_nmc is not None else 0"/>
 
 						<t t-if="name_avg_nmc and di &lt; len(name_avg_nmc)">
@@ -947,7 +958,7 @@
 					</td>
 
 
-					<!-- <td></td>
+					<!-- <td style="text-align:center;"></td>
 
 					<td></td>
 
@@ -955,7 +966,7 @@
 					<td></td> -->
 
 					<!--  / Proctor -->
-					<td style="min-width: 20px; width: 20px;">
+					<td style="min-width: 20px; width: 20px;text-align:center;">
 						<t t-set="di" t-value="proctormdd_index if proctormdd_index is not None else 0"/>
 
 						<t t-if="proctormdd_vals and di &lt; len(proctormdd_vals)">
@@ -965,7 +976,7 @@
 						<t t-else="">--</t>
 					</td>
 
-					<td style="min-width: 20px; width: 20px;">
+					<td style="min-width: 20px; width: 20px;text-align:center;">
 						<t t-set="di" t-value="proctoromc_index if proctoromc_index is not None else 0"/>
 
 						<t t-if="proctoromc_vals and di &lt; len(proctoromc_vals)">
@@ -976,7 +987,7 @@
 					</td>
 
 					<!-- UCS -->
-					<td style="min-width: 20px; width: 20px;">
+					<td style="min-width: 20px; width: 20px;text-align:center;" colspan="2">
 						<t t-set="di" t-value="usc_index if usc_index is not None else 0"/>
 
 						<t t-if="ucs_vals and di &lt; len(ucs_vals)">
@@ -987,7 +998,7 @@
 					</td>
 
 					<!-- Direct Shear -->
-					<td style="min-width: 20px; width: 20px;">
+					<td style="min-width: 20px; width: 20px;text-align:center;">
 						<t t-set="di" t-value="diarect_index if diarect_index is not None else 0"/>
 
 						<t t-if="diarect_vals and di &lt; len(diarect_vals)">
@@ -997,7 +1008,7 @@
 						<t t-else="">--</t>
 					</td>
 
-					<td style="min-width: 20px; width: 20px;">
+					<td style="min-width: 20px; width: 20px;text-align:center;">
 						<t t-set="di" t-value="diarectphi_index if diarectphi_index is not None else 0"/>
 
 						<t t-if="diarectphi_vals and di &lt; len(diarectphi_vals)">
@@ -1008,7 +1019,7 @@
 					</td>
 
 					<!-- Triaxial -->
-					<td style="min-width: 20px; width: 20px;">
+					<td style="min-width: 20px; width: 20px;text-align:center;">
 						<t t-set="di" t-value="triaxialc_index if triaxialc_index is not None else 0"/>
 
 						<t t-if="triaxialc_vals and di &lt; len(triaxialc_vals)">
@@ -1017,7 +1028,7 @@
 						</t>
 						<t t-else="">--</t>
 					</td>
-					<td style="min-width: 20px; width: 20px;">
+					<td style="min-width: 20px; width: 20px;text-align:center;">
 						<t t-set="di" t-value="triaxialp_index if triaxialp_index is not None else 0"/>
 
 						<t t-if="triaxialp_vals and di &lt; len(triaxialp_vals)">
@@ -1028,7 +1039,7 @@
 					</td>
 
 					<!-- Consolidation -->
-					<td style="min-width: 20px; width: 20px;">
+					<td style="min-width: 20px; width: 20px;text-align:center;">
 						<t t-set="di" t-value="consolidation_index if consolidation_index is not None else 0"/>
 
 						<t t-if="consolidation_vals and di &lt; len(consolidation_vals)">
@@ -1037,7 +1048,7 @@
 						</t>
 						<t t-else="">--</t>
 					</td>
-					<td style="min-width: 20px; width: 20px;">
+					<td style="min-width: 20px; width: 20px;text-align:center;">
 						<t t-set="di" t-value="consolidationcr_index if consolidationcr_index is not None else 0"/>
 
 						<t t-if="consolidationcr_vals and di &lt; len(consolidationcr_vals)">
@@ -1048,7 +1059,7 @@
 					</td>
 
 					<!-- CBR -->
-					<td style="min-width: 20px; width: 20px;">
+					<td style="min-width: 20px; width: 20px;text-align:center;">
 						<t t-set="di" t-value="cbr_index if cbr_index is not None else 0"/>
 
 						<t t-if="cbr_vals and di &lt; len(cbr_vals)">
@@ -1059,7 +1070,7 @@
 					</td>
 
 					<!-- Swelling -->
-					<td style="min-width: 20px; width: 20px;">
+					<td style="min-width: 20px; width: 20px;text-align:center;">
 						<t t-set="di" t-value="swelling_index if swelling_index is not None else 0"/>
 
 						<t t-if="swelling_vals and di &lt; len(swelling_vals)">
@@ -1071,7 +1082,7 @@
 
 					<!-- k -->
 
-					<td style="min-width: 20px; width: 20px;">
+					<td style="min-width: 20px; width: 20px;text-align:center;">
 						<t t-set="di" t-value="perm_head_index if perm_head_index is not None else 0"/>
 
 						<t t-if="perm_head_vals and di &lt; len(perm_head_vals)">
