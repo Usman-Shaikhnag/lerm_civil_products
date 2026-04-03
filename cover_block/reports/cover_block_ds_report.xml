@@ -7,7 +7,7 @@
         <t t-call="lerm_civil.mechanical_data_sheet_header">
             
             <div style="text-align:center;font-size:18px">
-                cover block
+                Cover Block
             </div>
 
             <div class="container_eln" style="margin-top:5px">
@@ -189,7 +189,8 @@
 					
 					
 
-								<tr t-if="data.specific_gravity_visible and (data.specific_gravity_nabl == 'pass' and nabl or (data.specific_gravity_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr >
+								<t t-set="i" t-value="0"/>
 									<t t-set="water_absorption" t-value="env['lerm.parameter.master'].search([('internal_id','=','a43a33a4-834e-40d4-afb3-80a4e61ece05')])"/>
 									
 									<td style="text-align: center;">

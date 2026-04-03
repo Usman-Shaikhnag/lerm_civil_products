@@ -1,12 +1,12 @@
 from odoo import api, fields, models
 
-class coverblockMechanical(models.Model):
+class CoverblockMechanical(models.Model):
     _name = "mechanical.cover.block"
     _inherit = "lerm.eln"
-    _description = "Mechanical cover block"
+    _description = "mechanical.cover.block"
     _rec_name = "name"
 
-    name = fields.Char(default="cover block")
+    name = fields.Char(default="Cover Block")
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 
 
@@ -40,7 +40,7 @@ class coverblockMechanical(models.Model):
     
     @api.model
     def default_get(self, fields):
-        res = super(coverblockMechanical, self).default_get(fields)
+        res = super(CoverblockMechanical, self).default_get(fields)
 
         default_notes = [
             (0, 0, {
@@ -309,7 +309,7 @@ class coverblockMechanical(models.Model):
     @api.model
     def create(self, vals):
         # import wdb;wdb.set_trace()
-        record = super(coverblockMechanical, self).create(vals)
+        record = super(CoverblockMechanical, self).create(vals)
         # record.get_all_fields()
         record.eln_ref.write({'model_id':record.id})
         return record
@@ -320,7 +320,7 @@ class coverblockMechanical(models.Model):
         self._compute_visible()
         self.default_get(fields)
 
-        return super(coverblockMechanical, self).read(fields=fields, load=load)
+        return super(CoverblockMechanical, self).read(fields=fields, load=load)
 
 
 

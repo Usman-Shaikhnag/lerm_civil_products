@@ -3,7 +3,7 @@
 
 
 {
-    'name': 'cover block',
+    'name': 'Cover Block',
     'version': '1.2',
     'category': 'Lerm Civil',
     'summary': 'Sales internal machinery',
