@@ -1733,9 +1733,9 @@
 
                 <t t-foreach="data" t-as="o">
 
-                    <!-- <t t-foreach="o.gsa_child_lines.filtered(lambda c: c.is_checked)" t-as="cbr">
+                    <t t-foreach="o.gsa_child_lines.filtered(lambda c: c.is_checked)" t-as="gsa">
 
-					</t> -->
+					
 					<div style="width:100%;">
 							<table style="width:100%; border-collapse:collapse; border:1px solid #000; font-size:12px;">
 								<tr>
@@ -1917,11 +1917,11 @@
 								</td>
 								<td ><strong>Start date of testing:</strong>: </td>
 								<td >
-							        <span t-field="o.start_date" style="margin-right:10px;"/>
+							        <span t-field="gsa.start_date" style="margin-right:10px;"/>
 								</td>
                                 	<td ><strong>End date of testing:</strong>: </td>
 								<td >
-									<span t-field="o.end_date" style="margin-right:10px;"/>
+									<span t-field="gsa.end_date" style="margin-right:10px;"/>
 									
 								</td>
 							</tr>
@@ -1944,8 +1944,8 @@
 							
 						</table>
 
-					<table border="1" width="100%" style="border-collapse: collapse;">
-					    <div style="border:1px solid black; padding:6px; text-align:center; font-weight:bold;">
+					<table border="1" width="100%" style="border-collapse: collapse;margin-top:30px;">
+					    <div style="border:1px solid black; padding:6px; text-align:center; font-weight:bold;margin-top:10px;">
                              Grain Size Analysis
 						</div>
 
@@ -1982,7 +1982,7 @@
 
 						<t t-foreach="data.gsa_child_lines" t-as="line">
 								<tr>
-									<td><t t-esc="line.symbol"/></td>
+									<td><t t-esc="line.symbol_html"/></td>
 									<!-- <td style="width: 7%; "><t t-esc="line.lab_no"/></td> -->
 									<td><t t-esc="line.bh_id"/></td>
 									<td><t t-esc="line.sample_depth"/></td>
@@ -2116,6 +2116,7 @@
 							</t>
 						</tbody>
 					</table>
+				</t>
 
 
         </t>
@@ -3165,7 +3166,7 @@
 								</td>
 							</tr>
 							<tr>
-								<td colspan="6" style="border:1px solid black; padding:4px;">
+								<td colspan="10" style="border:1px solid black; padding:4px;">
 									<b>Report No.:   </b><span t-field="o.sample_id.kes_no"/> </td>
 								
 							</tr>
@@ -3679,7 +3680,7 @@
 								</td>
 								<td style="border:1px solid black; padding:6px;">
 
-								 <!-- <t t-esc="direct.initial_mass_soil"/> -->
+								 <t t-esc="direct.initial_mc_final"/>
 									
 								</td>
 								<td style="border:1px solid black; padding:6px; font-weight:bold;">

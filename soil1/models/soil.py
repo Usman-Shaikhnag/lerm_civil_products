@@ -5116,6 +5116,11 @@ class SoilGSALINE(models.Model):
         ondelete='cascade'
     )
 
+    review_line_id = fields.Many2one(
+    'sample.request.review.lines',
+    string="Sample Review Line"
+)
+
     is_checked = fields.Boolean(
         string="Calculated",
         default=False
@@ -5165,10 +5170,14 @@ class SoilGSALINE(models.Model):
     symbol_color = fields.Char(string="Symbol Color", readonly=True)
 
 
+
+
     bh_id = fields.Char(string="BH ID")
     lab_no = fields.Char(string="LAB ID")
     sample_depth = fields.Char(string="Sample Depth (m)")
     sample_details = fields.Char(string="Sample Details")
+
+    
 
     water_content = fields.Char(string="Water Content (%)")
 
@@ -5834,6 +5843,11 @@ class SoilGSALINE1(models.Model):
         string="Parent Soil",
         ondelete='cascade'
     )
+
+
+
+
+    
 
     
 
@@ -8064,18 +8078,18 @@ class DirectShearTestLine(models.Model):
     #     for rec in self:
     #         rec.horizontal_shear = ((rec.prove_ring_read or 0.0) * 0.8555 + 9.6658) / 9.81
 
-    @api.depends('prove_ring_read')
-    def _compute_horizontal_shear(self):
-     for rec in self:
-        # FIRST ROW → ZERO
-        if rec.id and rec.id == min(self.ids):
-            rec.horizontal_shear = 0.0
-            continue
+    # @api.depends('prove_ring_read')
+    # def _compute_horizontal_shear(self):
+    #  for rec in self:
+    #     # FIRST ROW → ZERO
+    #     if rec.id and rec.id == min(self.ids):
+    #         rec.horizontal_shear = 0.0
+    #         continue
 
-        if rec.prove_ring_read:
-            rec.horizontal_shear = ((rec.prove_ring_read * 0.8555) + 9.6658) / 9.81
-        else:
-            rec.horizontal_shear = 0.0
+    #     if rec.prove_ring_read:
+    #         rec.horizontal_shear = ((rec.prove_ring_read * 0.8555) + 9.6658) / 9.81
+    #     else:
+    #         rec.horizontal_shear = 0.0
 
     # @api.depends('horizontal_shear', 'parent_id_direct_shear.shear_force_percent_change','corrected_area')
     # def _compute_horizontal_shear_temp(self):
@@ -8083,15 +8097,15 @@ class DirectShearTestLine(models.Model):
     #         percent = rec.parent_id_direct_shear.shear_force_percent_change or 0.0
     #         rec.horizontal_shear_temp = rec.horizontal_shear + (rec.horizontal_shear * percent)
 
-    @api.depends('horizontal_shear', 'parent_id_direct_shear.shear_force_percent_change')
-    def _compute_horizontal_shear_temp(self):
-     for rec in self:
-        if rec.id and rec.id == min(self.ids):
-            rec.horizontal_shear_temp = 0.0
-            continue
+    # @api.depends('horizontal_shear', 'parent_id_direct_shear.shear_force_percent_change')
+    # def _compute_horizontal_shear_temp(self):
+    #  for rec in self:
+    #     if rec.id and rec.id == min(self.ids):
+    #         rec.horizontal_shear_temp = 0.0
+    #         continue
 
-        percent = rec.parent_id_direct_shear.shear_force_percent_change or 0.0
-        rec.horizontal_shear_temp = rec.horizontal_shear + (rec.horizontal_shear * percent)
+    #     percent = rec.parent_id_direct_shear.shear_force_percent_change or 0.0
+    #     rec.horizontal_shear_temp = rec.horizontal_shear + (rec.horizontal_shear * percent)
 
     # @api.depends('horizontal_shear_temp', 'corrected_area')
     # def _compute_shear_stress(self):
@@ -8101,14 +8115,54 @@ class DirectShearTestLine(models.Model):
     #         else:
     #             rec.shear_stress = 0.0
 
+    # @api.depends('horizontal_shear_temp', 'corrected_area')
+    # def _compute_shear_stress(self):
+    #  for rec in self:
+    #     if rec.id and rec.id == min(self.ids):
+    #         rec.shear_stress = 0.0
+    #         continue
+
+    #     if rec.corrected_area:
+    #         rec.shear_stress = rec.horizontal_shear_temp / rec.corrected_area
+    #     else:
+    #         rec.shear_stress = 0.0
+
+    @api.depends('prove_ring_read')
+    def _compute_horizontal_shear(self):
+     for rec in self:
+        lines = rec.parent_id_direct_shear.direct_shear_ids.sorted(
+            key=lambda r: r._origin.id or 0
+        )
+
+        if rec in lines[:1]:
+            rec.horizontal_shear = 0.0
+        else:
+            rec.horizontal_shear = ((rec.prove_ring_read or 0.0) * 0.8555 + 9.6658) / 9.81
+
+
+    @api.depends('horizontal_shear', 'parent_id_direct_shear.shear_force_percent_change')
+    def _compute_horizontal_shear_temp(self):
+     for rec in self:
+        lines = rec.parent_id_direct_shear.direct_shear_ids.sorted(
+            key=lambda r: r._origin.id or 0
+        )
+
+        if rec in lines[:1]:
+            rec.horizontal_shear_temp = 0.0
+        else:
+            percent = rec.parent_id_direct_shear.shear_force_percent_change or 0.0
+            rec.horizontal_shear_temp = rec.horizontal_shear + (rec.horizontal_shear * percent)
+
     @api.depends('horizontal_shear_temp', 'corrected_area')
     def _compute_shear_stress(self):
      for rec in self:
-        if rec.id and rec.id == min(self.ids):
-            rec.shear_stress = 0.0
-            continue
+        lines = rec.parent_id_direct_shear.direct_shear_ids.sorted(
+            key=lambda r: r._origin.id or 0
+        )
 
-        if rec.corrected_area:
+        if rec in lines[:1]:
+            rec.shear_stress = 0.0
+        elif rec.corrected_area:
             rec.shear_stress = rec.horizontal_shear_temp / rec.corrected_area
         else:
             rec.shear_stress = 0.0
@@ -8182,21 +8236,66 @@ class DirectShearTestTwoLine(models.Model):
             else:
                 rec.corrected_area = 0.0
 
+    # @api.depends('prove_ring_read')
+    # def _compute_horizontal_shear(self):
+    #     for rec in self:
+    #         rec.horizontal_shear = ((rec.prove_ring_read or 0.0) * 0.8555 + 9.6658) / 9.81
+
+    # @api.depends('horizontal_shear', 'parent_id_direct2.shear_force_percent_change','corrected_area')
+    # def _compute_horizontal_shear_temp(self):
+    #     for rec in self:
+    #         percent = rec.parent_id_direct2.shear_force_percent_change or 0.0
+    #         rec.horizontal_shear_temp = rec.horizontal_shear + (rec.horizontal_shear * percent)
+
+    # @api.depends('horizontal_shear_temp', 'corrected_area')
+    # def _compute_shear_stress(self):
+    #     for rec in self:
+    #         if rec.corrected_area:
+    #             rec.shear_stress = rec.horizontal_shear_temp / rec.corrected_area
+    #         else:
+    #             rec.shear_stress = 0.0
+
+
     @api.depends('prove_ring_read')
     def _compute_horizontal_shear(self):
-        for rec in self:
-            rec.horizontal_shear = ((rec.prove_ring_read or 0.0) * 0.8555 + 9.6658) / 9.81
+     for parent in self.mapped('parent_id_direct2'):
+        lines = parent.direct_shear_ids_2.sorted(
+            key=lambda r: (r._origin.id or 0)
+        )
 
-    @api.depends('horizontal_shear', 'parent_id_direct2.shear_force_percent_change','corrected_area')
+        for i, rec in enumerate(lines):
+            if i == 0:
+                rec.horizontal_shear = 0.0
+            else:
+                rec.horizontal_shear = ((rec.prove_ring_read or 0.0) * 0.8555 + 9.6658) / 9.81
+    
+    
+    @api.depends('horizontal_shear', 'parent_id_direct2.shear_force_percent_change')
     def _compute_horizontal_shear_temp(self):
-        for rec in self:
-            percent = rec.parent_id_direct2.shear_force_percent_change or 0.0
-            rec.horizontal_shear_temp = rec.horizontal_shear + (rec.horizontal_shear * percent)
+     for parent in self.mapped('parent_id_direct2'):
+        lines = parent.direct_shear_ids_2.sorted(
+            key=lambda r: (r._origin.id or 0)
+        )
+
+        for i, rec in enumerate(lines):
+            if i == 0:
+                rec.horizontal_shear_temp = 0.0
+            else:
+                percent = parent.shear_force_percent_change or 0.0
+                rec.horizontal_shear_temp = rec.horizontal_shear + (rec.horizontal_shear * percent)
+
 
     @api.depends('horizontal_shear_temp', 'corrected_area')
     def _compute_shear_stress(self):
-        for rec in self:
-            if rec.corrected_area:
+     for parent in self.mapped('parent_id_direct2'):
+        lines = parent.direct_shear_ids_2.sorted(
+            key=lambda r: (r._origin.id or 0)
+        )
+
+        for i, rec in enumerate(lines):
+            if i == 0:
+                rec.shear_stress = 0.0
+            elif rec.corrected_area:
                 rec.shear_stress = rec.horizontal_shear_temp / rec.corrected_area
             else:
                 rec.shear_stress = 0.0
@@ -8269,21 +8368,66 @@ class DirectShearTestThreeLine(models.Model):
             else:
                 rec.corrected_area = 0.0
 
+    # @api.depends('prove_ring_read')
+    # def _compute_horizontal_shear(self):
+    #     for rec in self:
+    #         rec.horizontal_shear = ((rec.prove_ring_read or 0.0) * 0.8555 + 9.6658) / 9.81
+
+    # @api.depends('horizontal_shear', 'parent_id_direct3.shear_force_percent_change','corrected_area')
+    # def _compute_horizontal_shear_temp(self):
+    #     for rec in self:
+    #         percent = rec.parent_id_direct3.shear_force_percent_change or 0.0
+    #         rec.horizontal_shear_temp = rec.horizontal_shear + (rec.horizontal_shear * percent)
+
+    # @api.depends('horizontal_shear_temp', 'corrected_area')
+    # def _compute_shear_stress(self):
+    #     for rec in self:
+    #         if rec.corrected_area:
+    #             rec.shear_stress = rec.horizontal_shear_temp / rec.corrected_area
+    #         else:
+    #             rec.shear_stress = 0.0
+
+
     @api.depends('prove_ring_read')
     def _compute_horizontal_shear(self):
-        for rec in self:
-            rec.horizontal_shear = ((rec.prove_ring_read or 0.0) * 0.8555 + 9.6658) / 9.81
+     for parent in self.mapped('parent_id_direct3'):
+        lines = parent.direct_shear_ids_3.sorted(
+            key=lambda r: (r._origin.id or 0)
+        )
 
-    @api.depends('horizontal_shear', 'parent_id_direct3.shear_force_percent_change','corrected_area')
+        for i, rec in enumerate(lines):
+            if i == 0:
+                rec.horizontal_shear = 0.0
+            else:
+                rec.horizontal_shear = ((rec.prove_ring_read or 0.0) * 0.8555 + 9.6658) / 9.81
+
+
+    @api.depends('horizontal_shear', 'parent_id_direct3.shear_force_percent_change')
     def _compute_horizontal_shear_temp(self):
-        for rec in self:
-            percent = rec.parent_id_direct3.shear_force_percent_change or 0.0
-            rec.horizontal_shear_temp = rec.horizontal_shear + (rec.horizontal_shear * percent)
+     for parent in self.mapped('parent_id_direct3'):
+        lines = parent.direct_shear_ids_3.sorted(
+            key=lambda r: (r._origin.id or 0)
+        )
+
+        for i, rec in enumerate(lines):
+            if i == 0:
+                rec.horizontal_shear_temp = 0.0
+            else:
+                percent = parent.shear_force_percent_change or 0.0
+                rec.horizontal_shear_temp = rec.horizontal_shear + (rec.horizontal_shear * percent)
+
 
     @api.depends('horizontal_shear_temp', 'corrected_area')
     def _compute_shear_stress(self):
-        for rec in self:
-            if rec.corrected_area:
+     for parent in self.mapped('parent_id_direct3'):
+        lines = parent.direct_shear_ids_3.sorted(
+            key=lambda r: (r._origin.id or 0)
+        )
+
+        for i, rec in enumerate(lines):
+            if i == 0:
+                rec.shear_stress = 0.0
+            elif rec.corrected_area:
                 rec.shear_stress = rec.horizontal_shear_temp / rec.corrected_area
             else:
                 rec.shear_stress = 0.0
@@ -11222,40 +11366,7 @@ class DrirectShearLine(models.Model):
     
     shear_graph_image = fields.Binary("Shear Stress Graph")
 
-    # def action_generate_shear_graph(self):
-    #     for rec in self:
-    #         strain_vals = []
-    #         shear_vals = []
-
-    #         for line in rec.direct_shear_ids:
-    #             if line.horizontal_dispalacement and line.shear_stress:
-    #                 strain_vals.append(line.horizontal_dispalacement)
-    #                 shear_vals.append(line.shear_stress)
-
-    #         if not strain_vals:
-    #             return
-
-    #         # Sort by strain
-    #         data = sorted(zip(strain_vals, shear_vals))
-    #         strain_vals, shear_vals = zip(*data)
-
-    #         fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
-
-    #         # Line + Small Points
-    #         ax.plot(strain_vals, shear_vals, marker='o', markersize=2)
-
-    #         ax.set_xlabel("Strain")
-    #         ax.set_ylabel("Shear Stress")
-    #         ax.grid(True)
-
-    #         buffer = BytesIO()
-    #         plt.savefig(buffer, format='png', bbox_inches='tight')
-    #         buffer.seek(0)
-    #         image_base64 = base64.b64encode(buffer.read())
-    #         buffer.close()
-    #         plt.close(fig)
-
-    #         rec.shear_graph_image = image_base64
+    
 
 
     def action_generate_shear_graph(self):
@@ -11558,70 +11669,183 @@ class DrirectShearLine(models.Model):
     import matplotlib.pyplot as plt
     from io import BytesIO
 
+    # def action_generate_shear_graph_2(self):
+    #  for rec in self:
+    #     data = []
+
+    #     # 🔴 FORCE ORIGIN POINT (0,0)
+    #     data.append((0.0, 0.0))
+
+    #     for line in rec.direct_shear_ids_2:
+    #         if line.horizontal_dispalacement is not None and line.shear_stress is not None:
+    #             data.append((line.horizontal_dispalacement, line.shear_stress))
+
+    #     if len(data) <= 1:
+    #         rec.shear_graph_image_2 = False
+    #         continue
+
+    #     # SORT BY STRAIN
+    #     data.sort(key=lambda x: x[0])
+
+    #     # CUT AT PEAK SHEAR STRESS (NO POST-FAILURE)
+    #     shear_vals_all = [y for _, y in data]
+    #     peak_index = shear_vals_all.index(max(shear_vals_all))
+    #     data = data[:peak_index + 1]
+
+    #     strain_vals, shear_vals = zip(*data)
+
+    #     # FIGURE SIZE LIKE EXCEL
+    #     fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
+
+    #     # EXCEL BLUE SMOOTH LINE
+    #     ax.plot(
+    #         strain_vals,
+    #         shear_vals,
+    #         color='#4472C4',
+    #         linewidth=2.2
+    #     )
+
+    #     # LABELS (EXACT)
+    #     ax.set_xlabel("Strain", fontsize=11)
+    #     ax.set_ylabel("Shear stress, τ", fontsize=11)
+
+    #     # AXIS LIMITS (MATCH IMAGE)
+    #     ax.set_xlim(0, 6)
+    #     ax.set_ylim(0, 0.30)
+
+    #     # HORIZONTAL GRID ONLY
+    #     ax.yaxis.grid(True, color='#BFBFBF', linewidth=0.6)
+    #     ax.xaxis.grid(False)
+
+    #     # EXCEL-LIKE BORDER
+    #     for spine in ax.spines.values():
+    #         spine.set_color('#808080')
+    #         spine.set_linewidth(0.8)
+
+    #     ax.tick_params(labelsize=9)
+
+    #     buffer = BytesIO()
+    #     fig.savefig(buffer, format='png', bbox_inches='tight', facecolor='white')
+    #     buffer.seek(0)
+
+    #     rec.shear_graph_image_2 = base64.b64encode(buffer.read())
+
+    #     buffer.close()
+    #     plt.close(fig)
+
     def action_generate_shear_graph_2(self):
+     import numpy as np
+     from scipy.interpolate import PchipInterpolator
+     import matplotlib.pyplot as plt
+     from matplotlib.ticker import MultipleLocator, MaxNLocator
+     from io import BytesIO
+     import base64
+     from collections import defaultdict
+
      for rec in self:
-        data = []
+        strain_vals = []
+        shear_vals = []
 
-        # 🔴 FORCE ORIGIN POINT (0,0)
-        data.append((0.0, 0.0))
-
+        # ✅ Collect only actual input rows
         for line in rec.direct_shear_ids_2:
             if line.horizontal_dispalacement is not None and line.shear_stress is not None:
-                data.append((line.horizontal_dispalacement, line.shear_stress))
+                strain_vals.append(line.horizontal_dispalacement or 0.0)
+                shear_vals.append(line.shear_stress or 0.0)
 
-        if len(data) <= 1:
+        if not strain_vals:
             rec.shear_graph_image_2 = False
             continue
 
-        # SORT BY STRAIN
-        data.sort(key=lambda x: x[0])
+        # ✅ Add origin
+        strain_vals.insert(0, 0.0)
+        shear_vals.insert(0, 0.0)
 
-        # CUT AT PEAK SHEAR STRESS (NO POST-FAILURE)
-        shear_vals_all = [y for _, y in data]
-        peak_index = shear_vals_all.index(max(shear_vals_all))
-        data = data[:peak_index + 1]
+        # ✅ Remove negative values
+        clean = [(x, y) for x, y in zip(strain_vals, shear_vals) if y >= 0]
+        if not clean:
+            rec.shear_graph_image_2 = False
+            continue
 
-        strain_vals, shear_vals = zip(*data)
+        strain_vals, shear_vals = zip(*clean)
 
-        # FIGURE SIZE LIKE EXCEL
+        x = np.array(strain_vals)
+        y = np.array(shear_vals)
+
+        # ✅ Sort
+        idx = np.argsort(x)
+        x = x[idx]
+        y = y[idx]
+
+        # ✅ Remove duplicate X (important for interpolation)
+        temp = defaultdict(list)
+        for xi, yi in zip(x, y):
+            temp[xi].append(yi)
+
+        x = np.array(sorted(temp.keys()))
+        y = np.array([sum(vals)/len(vals) for vals in temp.values()])
+
+        # ✅ Safety check
+        if len(x) < 2:
+            rec.shear_graph_image_2 = False
+            continue
+
+        # ✅ CUT AFTER PEAK (removes vertical drop)
+        peak_index = np.argmax(y)
+        x = x[:peak_index + 1]
+        y = y[:peak_index + 1]
+
+        # ✅ Smooth curve (OPTIONAL but nice)
+        interp = PchipInterpolator(x, y)
+        xnew = np.linspace(x.min(), x.max(), 300)
+        ynew = interp(xnew)
+
+        # ---------------- PLOT ---------------- #
         fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
 
-        # EXCEL BLUE SMOOTH LINE
-        ax.plot(
-            strain_vals,
-            shear_vals,
-            color='#4472C4',
-            linewidth=2.2
-        )
+        # Axes at origin
+        ax.spines['left'].set_position(('data', 0))
+        ax.spines['bottom'].set_position(('data', 0))
+        ax.spines['right'].set_color('none')
+        ax.spines['top'].set_color('none')
 
-        # LABELS (EXACT)
-        ax.set_xlabel("Strain", fontsize=11)
-        ax.set_ylabel("Shear stress, τ", fontsize=11)
+        ax.xaxis.set_ticks_position('bottom')
+        ax.yaxis.set_ticks_position('left')
+        ax.margins(x=0, y=0)
 
-        # AXIS LIMITS (MATCH IMAGE)
-        ax.set_xlim(0, 6)
-        ax.set_ylim(0, 0.30)
+        # ✅ Smooth curve
+        ax.plot(xnew, ynew, linewidth=2.5, zorder=2)
 
-        # HORIZONTAL GRID ONLY
-        ax.yaxis.grid(True, color='#BFBFBF', linewidth=0.6)
-        ax.xaxis.grid(False)
+        # ✅ ONLY real input points (IMPORTANT)
+        ax.scatter(x, y, s=35, zorder=3)
 
-        # EXCEL-LIKE BORDER
-        for spine in ax.spines.values():
-            spine.set_color('#808080')
-            spine.set_linewidth(0.8)
+        # Limits
+        ax.set_xlim(left=0, right=x.max())
+        ax.set_ylim(bottom=0, top=y.max() * 1.05)
 
-        ax.tick_params(labelsize=9)
+        # Labels
+        ax.set_xlabel("Strain")
+        ax.set_ylabel("Shear Stress")
 
+        # ✅ CLEAN Y AXIS (no crowding)
+        ax.yaxis.set_major_locator(MaxNLocator(6))   # max 6 labels
+        ax.yaxis.set_minor_locator(MultipleLocator(0.05))
+
+        ax.xaxis.set_major_locator(MultipleLocator(0.5))
+        ax.xaxis.set_minor_locator(MultipleLocator(0.25))
+
+        # Grid
+        ax.grid(which='major', alpha=0.4, zorder=0)
+        ax.grid(which='minor', alpha=0.2, zorder=0)
+
+        # Save image
         buffer = BytesIO()
-        fig.savefig(buffer, format='png', bbox_inches='tight', facecolor='white')
+        plt.savefig(buffer, format='png', bbox_inches='tight')
         buffer.seek(0)
 
         rec.shear_graph_image_2 = base64.b64encode(buffer.read())
 
         buffer.close()
         plt.close(fig)
-
 
 
 
@@ -11834,73 +12058,188 @@ class DrirectShearLine(models.Model):
     from io import BytesIO
     import math
 
+    # def action_generate_shear_graph_3(self):
+    #  for rec in self:
+    #     data = []
+
+    #     # 1️⃣ FORCE ORIGIN
+    #     data.append((0.0, 0.0))
+
+    #     # 2️⃣ COLLECT DATA
+    #     for line in rec.direct_shear_ids_3:
+    #         if line.horizontal_dispalacement is not None and line.shear_stress is not None:
+    #             data.append((line.horizontal_dispalacement, line.shear_stress))
+
+    #     if len(data) <= 1:
+    #         rec.shear_graph_image_3 = False
+    #         continue
+
+    #     # 3️⃣ SORT BY STRAIN
+    #     data.sort(key=lambda x: x[0])
+
+    #     # 4️⃣ CUT AT PEAK SHEAR STRESS
+    #     shear_vals_all = [y for _, y in data]
+    #     peak_index = shear_vals_all.index(max(shear_vals_all))
+    #     data = data[:peak_index + 1]
+
+    #     strain_vals, shear_vals = zip(*data)
+
+    #     # 5️⃣ AXIS LIMITS (MATCH EXCEL IMAGE)
+    #     x_max = 7
+    #     y_max = 0.40
+
+    #     # 6️⃣ CREATE FIGURE
+    #     fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
+
+    #     # 7️⃣ PLOT — LINE WITH DIAMOND MARKERS (🔥 KEY CHANGE 🔥)
+    #     ax.plot(
+    #         strain_vals,
+    #         shear_vals,
+    #         color='#4472C4',        # Excel blue
+    #         linewidth=2.2,
+    #         marker='D',             # Diamond marker
+    #         markersize=4,
+    #         markerfacecolor='#4472C4',
+    #         markeredgewidth=0
+    #     )
+
+    #     # 8️⃣ LABELS (EXACT)
+    #     ax.set_xlabel("Strain", fontsize=11)
+    #     ax.set_ylabel("Shear stress, τ", fontsize=11)
+
+    #     # 9️⃣ AXIS LIMITS
+    #     ax.set_xlim(0, x_max)
+    #     ax.set_ylim(0, y_max)
+
+    #     # 🔟 GRID — HORIZONTAL ONLY
+    #     ax.yaxis.grid(True, color='#BFBFBF', linewidth=0.6)
+    #     ax.xaxis.grid(False)
+
+    #     # 1️⃣1️⃣ BORDER (EXCEL STYLE)
+    #     for spine in ax.spines.values():
+    #         spine.set_color('#808080')
+    #         spine.set_linewidth(0.8)
+
+    #     ax.tick_params(labelsize=9)
+
+    #     # SAVE IMAGE
+    #     buffer = BytesIO()
+    #     fig.savefig(buffer, format='png', bbox_inches='tight', facecolor='white')
+    #     buffer.seek(0)
+
+    #     rec.shear_graph_image_3 = base64.b64encode(buffer.read())
+
+    #     buffer.close()
+    #     plt.close(fig)
+
+
     def action_generate_shear_graph_3(self):
+     import numpy as np
+     from scipy.interpolate import PchipInterpolator
+     import matplotlib.pyplot as plt
+     from matplotlib.ticker import MultipleLocator, MaxNLocator
+     from io import BytesIO
+     import base64
+     from collections import defaultdict
+
      for rec in self:
-        data = []
+        strain_vals = []
+        shear_vals = []
 
-        # 1️⃣ FORCE ORIGIN
-        data.append((0.0, 0.0))
-
-        # 2️⃣ COLLECT DATA
+        # ✅ Collect data
         for line in rec.direct_shear_ids_3:
             if line.horizontal_dispalacement is not None and line.shear_stress is not None:
-                data.append((line.horizontal_dispalacement, line.shear_stress))
+                strain_vals.append(line.horizontal_dispalacement or 0.0)
+                shear_vals.append(line.shear_stress or 0.0)
 
-        if len(data) <= 1:
+        if not strain_vals:
             rec.shear_graph_image_3 = False
             continue
 
-        # 3️⃣ SORT BY STRAIN
-        data.sort(key=lambda x: x[0])
+        # ✅ Add origin
+        strain_vals.insert(0, 0.0)
+        shear_vals.insert(0, 0.0)
 
-        # 4️⃣ CUT AT PEAK SHEAR STRESS
-        shear_vals_all = [y for _, y in data]
-        peak_index = shear_vals_all.index(max(shear_vals_all))
-        data = data[:peak_index + 1]
+        # ✅ Remove negative
+        clean = [(x, y) for x, y in zip(strain_vals, shear_vals) if y >= 0]
+        if not clean:
+            rec.shear_graph_image_3 = False
+            continue
 
-        strain_vals, shear_vals = zip(*data)
+        strain_vals, shear_vals = zip(*clean)
 
-        # 5️⃣ AXIS LIMITS (MATCH EXCEL IMAGE)
-        x_max = 7
-        y_max = 0.40
+        x = np.array(strain_vals)
+        y = np.array(shear_vals)
 
-        # 6️⃣ CREATE FIGURE
+        # ✅ Sort
+        idx = np.argsort(x)
+        x = x[idx]
+        y = y[idx]
+
+        # ✅ Remove duplicates (IMPORTANT)
+        temp = defaultdict(list)
+        for xi, yi in zip(x, y):
+            temp[xi].append(yi)
+
+        x = np.array(sorted(temp.keys()))
+        y = np.array([sum(vals)/len(vals) for vals in temp.values()])
+
+        # Safety
+        if len(x) < 2:
+            rec.shear_graph_image_3 = False
+            continue
+
+        # ✅ CUT AT PEAK
+        peak_index = np.argmax(y)
+        x = x[:peak_index + 1]
+        y = y[:peak_index + 1]
+
+        # ✅ Smooth curve
+        interp = PchipInterpolator(x, y)
+        xnew = np.linspace(x.min(), x.max(), 300)
+        ynew = interp(xnew)
+
+        # ---------------- PLOT ---------------- #
         fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
 
-        # 7️⃣ PLOT — LINE WITH DIAMOND MARKERS (🔥 KEY CHANGE 🔥)
-        ax.plot(
-            strain_vals,
-            shear_vals,
-            color='#4472C4',        # Excel blue
-            linewidth=2.2,
-            marker='D',             # Diamond marker
-            markersize=4,
-            markerfacecolor='#4472C4',
-            markeredgewidth=0
-        )
+        # Axes at origin
+        ax.spines['left'].set_position(('data', 0))
+        ax.spines['bottom'].set_position(('data', 0))
+        ax.spines['right'].set_color('none')
+        ax.spines['top'].set_color('none')
 
-        # 8️⃣ LABELS (EXACT)
-        ax.set_xlabel("Strain", fontsize=11)
-        ax.set_ylabel("Shear stress, τ", fontsize=11)
+        ax.xaxis.set_ticks_position('bottom')
+        ax.yaxis.set_ticks_position('left')
+        ax.margins(x=0, y=0)
 
-        # 9️⃣ AXIS LIMITS
-        ax.set_xlim(0, x_max)
-        ax.set_ylim(0, y_max)
+        # ✅ Smooth line
+        ax.plot(xnew, ynew, linewidth=2.5, zorder=2)
 
-        # 🔟 GRID — HORIZONTAL ONLY
-        ax.yaxis.grid(True, color='#BFBFBF', linewidth=0.6)
-        ax.xaxis.grid(False)
+        # ✅ ONLY real input points
+        ax.scatter(x, y, s=35, zorder=3)
 
-        # 1️⃣1️⃣ BORDER (EXCEL STYLE)
-        for spine in ax.spines.values():
-            spine.set_color('#808080')
-            spine.set_linewidth(0.8)
+        # Limits
+        ax.set_xlim(left=0, right=x.max())
+        ax.set_ylim(bottom=0, top=y.max() * 1.05)
 
-        ax.tick_params(labelsize=9)
+        # Labels
+        ax.set_xlabel("Strain")
+        ax.set_ylabel("Shear Stress")
 
-        # SAVE IMAGE
+        # ✅ Clean axis
+        ax.yaxis.set_major_locator(MaxNLocator(6))
+        ax.yaxis.set_minor_locator(MultipleLocator(0.05))
+
+        ax.xaxis.set_major_locator(MultipleLocator(0.5))
+        ax.xaxis.set_minor_locator(MultipleLocator(0.25))
+
+        # Grid
+        ax.grid(which='major', alpha=0.4, zorder=0)
+        ax.grid(which='minor', alpha=0.2, zorder=0)
+
+        # Save
         buffer = BytesIO()
-        fig.savefig(buffer, format='png', bbox_inches='tight', facecolor='white')
+        plt.savefig(buffer, format='png', bbox_inches='tight')
         buffer.seek(0)
 
         rec.shear_graph_image_3 = base64.b64encode(buffer.read())
