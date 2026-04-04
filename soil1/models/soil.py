@@ -2409,40 +2409,40 @@ class Soil(models.Model):
 
    
 
-    def action_fetch_review_details(self):
+    # def action_fetch_review_details(self):
        
-        for line in self.gsa_child_lines:
-            if line.lab_no:
+    #     for line in self.gsa_child_lines:
+    #         if line.lab_no:
                
-                source_line = self.env['sample.request.review.lines'].search([
-                    ('lab_id', '=', line.lab_no)
-                ], limit=1)
+    #             source_line = self.env['sample.request.review.lines'].search([
+    #                 ('lab_id', '=', line.lab_no)
+    #             ], limit=1)
 
-                if source_line:
-                    line.bh_id = source_line.source
-                    line.sample_depth = source_line.depth
-                    line.sample_details = source_line.sample_details
-                    line.wt_of_samp = source_line.weight
+    #             if source_line:
+    #                 line.bh_id = source_line.source
+    #                 line.sample_depth = source_line.depth
+    #                 line.sample_details = source_line.sample_details
+    #                 line.wt_of_samp = source_line.weight
 
                
-                sg_record = self.env['specific.gravity'].search([
-                    ('lab_no', '=', line.lab_no) 
-                ], limit=1)
+    #             sg_record = self.env['specific.gravity'].search([
+    #                 ('lab_no', '=', line.lab_no) 
+    #             ], limit=1)
 
-                if sg_record:
-                    fetched_sg = sg_record.avg_corr_specific_gravity
+    #             if sg_record:
+    #                 fetched_sg = sg_record.avg_corr_specific_gravity
                     
                    
-                    line.specific_gravity = fetched_sg
+    #                 line.specific_gravity = fetched_sg
 
                    
-                    if line.hydrometer_analysis_lines_gsa:
-                        for hydro_line in line.hydrometer_analysis_lines_gsa:
-                            hydro_line.specific_gravity = fetched_sg
+    #                 if line.hydrometer_analysis_lines_gsa:
+    #                     for hydro_line in line.hydrometer_analysis_lines_gsa:
+    #                         hydro_line.specific_gravity = fetched_sg
                             
-                    print(f"Updated SG for Lab {line.lab_no}: {fetched_sg}")
-                else:
-                    print(f"SG Not Found for {line.lab_no}")
+    #                 print(f"Updated SG for Lab {line.lab_no}: {fetched_sg}")
+    #             else:
+    #                 print(f"SG Not Found for {line.lab_no}")
 
     
     
@@ -2583,12 +2583,12 @@ class Soil(models.Model):
                     end = int(end_str.split('-')[2])
 
                     for i in range(start, end + 1):
-                        lab_no = f"{prefix}-{str(i).zfill(3)}"
-                        lines.append((0, 0, {'lab_no': lab_no}))
+                        lab_id = f"{prefix}-{str(i).zfill(3)}"
+                        lines.append((0, 0, {'lab_id': lab_id}))
 
                 # 🔹 Single lab id case
                 else:
-                    lines.append((0, 0, {'lab_no': record.lab_id}))
+                    lines.append((0, 0, {'lab_id': record.lab_id}))
 
             # 🔹 Assign lines
             if lines:
@@ -2965,7 +2965,7 @@ class Soil(models.Model):
                             y_smooth,
                             color=color,
                             linewidth=2,
-                            label=sample.lab_no or "Sample"
+                            label=sample.lab_id or "Sample"
                         )
                     else:
                         ax.plot(
@@ -2973,7 +2973,7 @@ class Soil(models.Model):
                             passing,
                             color=color,
                             linewidth=2,
-                            label=sample.lab_no or "Sample"
+                            label=sample.lab_id or "Sample"
                         )
 
                     # Original points (important)
@@ -5170,12 +5170,19 @@ class SoilGSALINE(models.Model):
     symbol_color = fields.Char(string="Symbol Color", readonly=True)
 
 
+<<<<<<< HEAD
 
 
     bh_id = fields.Char(string="BH ID")
     lab_no = fields.Char(string="LAB ID")
     sample_depth = fields.Char(string="Sample Depth (m)")
     sample_details = fields.Char(string="Sample Details")
+=======
+    bh_id = fields.Char(string="BH ID",compute="_compute_gsa",store=True)
+    lab_id = fields.Char(string="LAB ID")
+    sample_depth = fields.Char(string="Sample Depth (m)",compute="_compute_gsa",store=True)
+    sample_details = fields.Char(string="Sample Details",compute="_compute_gsa",store=True)
+>>>>>>> 2129a0cb440584c0d255eec6d12dd7139c0577de
 
     
 
@@ -5194,8 +5201,28 @@ class SoilGSALINE(models.Model):
         readonly=True
     )
 
+    @api.depends('lab_id')
+    def _compute_gsa(self):
+        ReviewLine = self.env['sample.request.review.lines']
 
+        for line in self:
+            line.bh_id = False
+            line.sample_depth = False
+            line.sample_details = False
 
+            if not line.lab_id:
+                continue
+
+            review_line = ReviewLine.search(
+                [('lab_id', '=', line.lab_id)],
+                order='id desc',
+                limit=1
+            )
+
+            if review_line:
+                line.bh_id = review_line.source        # BH ID / Location
+                line.sample_depth = review_line.depth         # Depth (m)
+                line.sample_details = review_line.sample_details         # Depth (m)
 
     
 
@@ -5546,7 +5573,7 @@ class SoilSieveAnalysisLineGSA(models.Model):
         ondelete='cascade'
     )
 
-    lab_no = fields.Char(string="LAB ID")
+    lab_id = fields.Char(string="LAB ID")
 
     wt_of_samp = fields.Float(string="Weight of total sample (gm)")
 
@@ -5857,8 +5884,10 @@ class SoilGSALINE1(models.Model):
 
 
    
-    bh_id = fields.Char(string="BH ID")
-    sample_depth = fields.Char(string="Sample Depth (m)")
+    bh_id = fields.Char(string="BH ID",compute="_compute_gsa1",store=True)
+    lab_id = fields.Char(string="LAB ID")
+    sample_depth = fields.Char(string="Sample Depth (m)",compute="_compute_gsa1",store=True)
+    sample_details = fields.Char(string="Sample Details (m)",compute="_compute_gsa1",store=True)
     d_10 = fields.Float(string="D10",digits=(12,3))
     d_30 = fields.Float(string="D30")
     d_60 = fields.Float(string="D60")
@@ -5871,6 +5900,29 @@ class SoilGSALINE1(models.Model):
     dispersion = fields.Float(string="Dispersing agent correction, x",digits=(12,3))
 
     temp_corre = fields.Float("Temperature Correction, Mt",digits=(12,4) )
+
+    @api.depends('lab_id')
+    def _compute_gsa1(self):
+        ReviewLine = self.env['sample.request.review.lines']
+
+        for line in self:
+            line.bh_id = False
+            line.sample_depth = False
+            line.sample_details = False
+
+            if not line.lab_id:
+                continue
+
+            review_line = ReviewLine.search(
+                [('lab_id', '=', line.lab_id)],
+                order='id desc',
+                limit=1
+            )
+
+            if review_line:
+                line.bh_id = review_line.source        # BH ID / Location
+                line.sample_depth = review_line.depth         # Depth (m)
+                line.sample_details = review_line.sample_details         # Depth (m)
 
 
 

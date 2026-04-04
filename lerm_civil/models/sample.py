@@ -1244,6 +1244,7 @@ class SampleRequestReviewLine(models.Model):
     weight = fields.Float("Weight")
     uom = fields.Many2one('uom.uom',string="Unit")
     source = fields.Char("Source/Location/Id")
+    
 
     depth = fields.Char('Depth(m)')
     
