@@ -219,14 +219,14 @@
 								</td>
 								<td  rowspan="3" style="text-align: center; vertical-align: middle;">
 									<span>
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','78954gh24-391c-4d7b-818d-28f7b75ea261')]).unit.name"/>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','78954gh24-391c-4d7b-818d-28f7b75ea261')]).unit.name"/>
 									</span>
 								</td>
 								
                                
 								
 								<td rowspan="3" style="text-align: center; vertical-align: middle;">
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','78954gh24-391c-4d7b-818d-28f7b75ea261')]).parameter_table" t-as="parameter">
+									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','78954gh24-391c-4d7b-818d-28f7b75ea261')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
 											<span t-field="parameter.permissable_limit"/>
 										</t>
@@ -292,7 +292,7 @@
                                
 <!-- 								
 								<td rowspan="3" style="text-align: center; vertical-align: middle;">
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','78954gh24-391c-4d7b-818d-28f7b75ea261')]).parameter_table" t-as="parameter">
+									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','78954gh24-391c-4d7b-818d-28f7b75ea261')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
 											<span t-field="parameter.permissable_limit"/>
 										</t>
@@ -358,7 +358,7 @@
                                
 <!-- 								
 								<td rowspan="3" style="text-align: center; vertical-align: middle;">
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','78954gh24-391c-4d7b-818d-28f7b75ea261')]).parameter_table" t-as="parameter">
+									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','78954gh24-391c-4d7b-818d-28f7b75ea261')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
 											<span t-field="parameter.permissable_limit"/>
 										</t>
