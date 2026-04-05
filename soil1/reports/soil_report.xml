@@ -1982,60 +1982,60 @@
 
 						<t t-foreach="data.gsa_child_lines" t-as="line">
 								<tr>
-									<td><t t-esc="line.symbol_html"/></td>
+									<td style=" text-align: center;"><t t-esc="line.symbol_html"/></td>
 									<!-- <td style="width: 7%; "><t t-esc="line.lab_no"/></td> -->
-									<td><t t-esc="line.bh_id"/></td>
-									<td><t t-esc="line.sample_depth"/></td>
-		                            <td><t t-esc="line.sample_details"/></td>
+									<td style=" text-align: center;"><t t-esc="line.bh_id"/></td>
+									<td style=" text-align: center;"><t t-esc="line.sample_depth"/></td>
+		                            <td style=" text-align: center;"><t t-esc="line.sample_details"/></td>
 
-									<td colspan="1">
+									<td style=" text-align: center;" colspan="1">
 									 <t t-esc="int(line.wt_of_samp1 or 0)"/>
 									</td>
 
 									<!-- <td><t t-esc="line.wt_of_samp1"/></td> -->
-									<td><t t-esc="line.water_content"/></td>
+									<td style=" text-align: center;"><t t-esc="line.water_content"/></td>
 
-									<td colspan="1">
+									<td style=" text-align: center;" colspan="1">
 									 <t t-esc="int(line.temp or 0)"/>
 									</td>
 
 									<!-- <td><t t-esc="line.temp"/></td> -->
 
-									<td colspan="1">
+									<td style=" text-align: center;" colspan="1">
 									 <t t-esc="int(line.humidity or 0)"/>
 									</td>
 
 									<!-- <td><t t-esc="line.humidity"/></td> -->
 
-									<td>
-    <t t-esc="'%.2f' % (line.specific_gravity or 0)"/>
-</td>
+									<td style=" text-align: center;">
+                                       <t t-esc="'%.2f' % (line.specific_gravity or 0)"/>
+                                    </td>
 									<!-- <td><t t-esc="line.specific_gravity"/></td> -->
 
-									<td colspan="1">
+									<td style=" text-align: center;" colspan="1">
 									 <t t-esc="int(line.gravel or 0)"/>
 									</td>
 									
 									<!-- <td colspan="1"><t t-esc="line.gravel"/></td> -->
 
-									<td colspan="1">
+									<td style=" text-align: center;" colspan="1">
 									 <t t-esc="int(line.sand or 0)"/>
 									</td>
 
 									<!-- <td colspan="1"><t t-esc="line.sand"/></td> -->
 
-									<td colspan="1">
+									<td style=" text-align: center;" colspan="1">
 									 <t t-esc="int(line.silt or 0)"/>
 									</td>
 
 									<!-- <td colspan="1"><t t-esc="line.silt"/></td> -->
 
-									<td colspan="1">
+									<td style=" text-align: center;" colspan="1">
 									 <t t-esc="int(line.silt_clay or 0)"/>
 									</td>
 
 									<!-- <td colspan="1"><t t-esc="line.silt_clay"/></td> -->
-									<td>
+									<td style=" text-align: center;">
 										<t t-esc="dict(line._fields['soil_classification'].selection).get(line.soil_classification)"/>
 									</td>
 									
@@ -2075,42 +2075,42 @@
 					<table border="1" width="100%" style="border-collapse: collapse; text-align: center; font-size: 10px;">
 						<thead>
 							<tr>
-								<th style="padding: 5px; background-color: #f2f2f2;">BH ID</th>
-								<th style="padding: 5px; background-color: #f2f2f2;">Sample Depth (m)</th>
+								<th style="padding: 5px; background-color: #f2f2f2;text-align: center;">BH ID</th>
+								<th style="padding: 5px; background-color: #f2f2f2;text-align: center;">Sample Depth (m)</th>
 								
-								<th style="padding: 5px; background-color: #f2f2f2;">D<sub>10</sub></th>
-								<th style="padding: 5px; background-color: #f2f2f2;">D<sub>30</sub></th>
-								<th style="padding: 5px; background-color: #f2f2f2;">D<sub>60</sub></th>
-								<th style="padding: 5px; background-color: #f2f2f2;">C<sub>u</sub></th>
-								<th style="padding: 5px; background-color: #f2f2f2;">C<sub>c</sub></th>
+								<th style="padding: 5px; background-color: #f2f2f2;text-align: center;">D<sub>10</sub></th>
+								<th style="padding: 5px; background-color: #f2f2f2;text-align: center;">D<sub>30</sub></th>
+								<th style="padding: 5px; background-color: #f2f2f2;text-align: center;">D<sub>60</sub></th>
+								<th style="padding: 5px; background-color: #f2f2f2;text-align: center;">C<sub>u</sub></th>
+								<th style="padding: 5px; background-color: #f2f2f2;text-align: center;">C<sub>c</sub></th>
 								
-								<th style="padding: 5px; background-color: #f2f2f2;">Meniscus correction, Cm</th>
-								<th style="padding: 5px; background-color: #f2f2f2;">Dispersing agent correction, x</th>
-								<th style="padding: 5px; background-color: #f2f2f2;">Temperature Correction, Mt</th>
+								<th style="padding: 5px; background-color: #f2f2f2;text-align: center;">Meniscus correction, Cm</th>
+								<th style="padding: 5px; background-color: #f2f2f2;text-align: center;">Dispersing agent correction, x</th>
+								<th style="padding: 5px; background-color: #f2f2f2;text-align: center;">Temperature Correction, Mt</th>
 							</tr>
 						</thead>
 						<tbody>
 							<t t-foreach="data.gsa_particle_child_lines" t-as="line">
 								<tr>
-									<td style="padding: 5px;"><span t-field="line.bh_id"/></td>
-									<td style="padding: 5px;"><span t-field="line.sample_depth"/></td>
+									<td style="padding: 5px;text-align: center;"><span t-field="line.bh_id"/></td>
+									<td style="padding: 5px;text-align: center;"><span t-field="line.sample_depth"/></td>
 
-									<td style="padding: 5px;">
+									<td style="padding: 5px;text-align: center;">
 										<span t-field="line.d_10"/> </td>
-									<td style="padding: 5px;">
+									<td style="padding: 5px;text-align: center;">
 										<span t-field="line.d_30"/> </td>
-									<td style="padding: 5px;">
+									<td style="padding: 5px;text-align: center;">
 										<span t-field="line.d_60"/> </td>
-									<td style="padding: 5px;">
+									<td style="padding: 5px;text-align: center;">
 										<span t-field="line.c_u"/> </td>
-									<td style="padding: 5px;">
+									<td style="padding: 5px;text-align: center;">
 										<span t-field="line.c_c"/> </td>
 
-									<td style="padding: 5px;">
+									<td style="padding: 5px;text-align: center;">
 										<span t-field="line.meniscus_corre"/> </td>
-									<td style="padding: 5px;">
+									<td style="padding: 5px;text-align: center;">
 										<span t-field="line.dispersion"/> </td>
-									<td style="padding: 5px;">
+									<td style="padding: 5px;text-align: center;">
 										<span t-field="line.temp_corre"/> </td>
 								</tr>
 							</t>
@@ -4209,7 +4209,8 @@
 			</div> -->
 
 			<div style="margin-top:5px; text-align:center; font-weight:bold;">
-				PC : = <span t-esc="consolidation.PC_final" t-options='{"widget": "float", "precision": 2}'/>
+				PC : = <span t-esc="consolidation.pc_y" t-options='{"widget": "float", "precision": 2}'/> <span>   kg/cm2 </span>
+
 			</div>
 
 			<div style="margin-top:5px; text-align:center; font-weight:bold;">
@@ -4217,7 +4218,7 @@
 			</div>
 
 			<div style="margin-top:5px; text-align:center; font-weight:bold;">
-				Recompression Index, Cr  : = <span t-esc="consolidation.cr" t-options='{"widget": "float", "precision": 3}'/>
+				Recompression Index, Cr  : = <span t-esc="consolidation.cr" t-options='{"widget": "float", "precision": 4}'/>
 			</div>
 
 			

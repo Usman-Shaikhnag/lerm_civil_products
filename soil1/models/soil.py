@@ -5170,19 +5170,10 @@ class SoilGSALINE(models.Model):
     symbol_color = fields.Char(string="Symbol Color", readonly=True)
 
 
-<<<<<<< HEAD
-
-
-    bh_id = fields.Char(string="BH ID")
-    lab_no = fields.Char(string="LAB ID")
-    sample_depth = fields.Char(string="Sample Depth (m)")
-    sample_details = fields.Char(string="Sample Details")
-=======
     bh_id = fields.Char(string="BH ID",compute="_compute_gsa",store=True)
     lab_id = fields.Char(string="LAB ID")
     sample_depth = fields.Char(string="Sample Depth (m)",compute="_compute_gsa",store=True)
     sample_details = fields.Char(string="Sample Details",compute="_compute_gsa",store=True)
->>>>>>> 2129a0cb440584c0d255eec6d12dd7139c0577de
 
     
 
@@ -5871,15 +5862,6 @@ class SoilGSALINE1(models.Model):
         ondelete='cascade'
     )
 
-
-
-
-    
-
-    
-
-
-   
     
 
 
@@ -14120,47 +14102,128 @@ class ConsolidationLine(models.Model):
     cr = fields.Float(string="Recompression Index, Cr", digits=(8, 3), compute="_compute_ce_cr", store=True)
 
 
+    # @api.depends(
+    #     'consolidation_output_ids.e_void',
+    #     'consolidation_output_ids.applied_pressure',
+    #     'consolidation_output_ids.cylces',
+    # )
+    # def _compute_ce_cr(self):
+    #     for rec in self:
+    #         rec.ce = 0.0
+    #         rec.cr = 0.0
+
+    #         lines = rec.consolidation_output_ids
+
+    #         # --------- Ce from loading segment (choose same points as Excel) ---------
+    #         # example: use loading rows at 0.50 and 4.00 kg/cm²
+    #         l1 = lines.filtered(
+    #             lambda l: l.cylces == '1st Cycle Loading' and l.applied_pressure == 0.50
+    #         )[:1]
+    #         l2 = lines.filtered(
+    #             lambda l: l.cylces == '1st Cycle Loading' and l.applied_pressure == 4.00
+    #         )[:1]
+
+    #         if l1 and l2:
+    #             e1, p1 = l1.e_void or 0.0, l1.applied_pressure or 0.0
+    #             e2, p2 = l2.e_void or 0.0, l2.applied_pressure or 0.0
+    #             if p1 and p2 and p2 != p1:
+    #                 rec.ce = (e1 - e2) / log10(p2 / p1)
+
+    #         # --------- Cr from unloading segment (same as Excel) ---------
+    #         # example: use unloading rows at 0.50 and 0.10 kg/cm²
+    #         u1 = lines.filtered(
+    #             lambda l: l.cylces == '1st Cycle Unloading' and l.applied_pressure == 0.50
+    #         )[:1]
+    #         u2 = lines.filtered(
+    #             lambda l: l.cylces == '1st Cycle Unloading' and l.applied_pressure == 0.10
+    #         )[:1]
+
+    #         if u1 and u2:
+    #             e1, p1 = u1.e_void or 0.0, u1.applied_pressure or 0.0
+    #             e2, p2 = u2.e_void or 0.0, u2.applied_pressure or 0.0
+    #             if p1 and p2 and p2 != p1:
+    #                 rec.cr = (e1 - e2) / log10(p2 / p1)
+
+
+    from math import log10
+
     @api.depends(
-        'consolidation_output_ids.e_void',
-        'consolidation_output_ids.applied_pressure',
-        'consolidation_output_ids.cylces',
-    )
+    'consolidation_output_ids.e_void',
+    'consolidation_output_ids.applied_pressure',
+)
     def _compute_ce_cr(self):
-        for rec in self:
-            rec.ce = 0.0
-            rec.cr = 0.0
+     for rec in self:
 
-            lines = rec.consolidation_output_ids
+        rec.ce = 0.0
+        rec.cr = 0.0
 
-            # --------- Ce from loading segment (choose same points as Excel) ---------
-            # example: use loading rows at 0.50 and 4.00 kg/cm²
-            l1 = lines.filtered(
-                lambda l: l.cylces == '1st Cycle Loading' and l.applied_pressure == 0.50
-            )[:1]
-            l2 = lines.filtered(
-                lambda l: l.cylces == '1st Cycle Loading' and l.applied_pressure == 4.00
-            )[:1]
+        lines = rec.consolidation_output_ids.filtered(
+            lambda l: l.applied_pressure is not None and l.e_void is not None
+        )
 
-            if l1 and l2:
-                e1, p1 = l1.e_void or 0.0, l1.applied_pressure or 0.0
-                e2, p2 = l2.e_void or 0.0, l2.applied_pressure or 0.0
-                if p1 and p2 and p2 != p1:
-                    rec.ce = (e1 - e2) / log10(p2 / p1)
+        if not lines:
+            continue
 
-            # --------- Cr from unloading segment (same as Excel) ---------
-            # example: use unloading rows at 0.50 and 0.10 kg/cm²
-            u1 = lines.filtered(
-                lambda l: l.cylces == '1st Cycle Unloading' and l.applied_pressure == 0.50
-            )[:1]
-            u2 = lines.filtered(
-                lambda l: l.cylces == '1st Cycle Unloading' and l.applied_pressure == 0.10
-            )[:1]
+        # =========================
+        # SORT SAFELY (NO NewId ISSUE)
+        # =========================
+        lines = lines.sorted(key=lambda l: l._origin.id or 0)
 
-            if u1 and u2:
-                e1, p1 = u1.e_void or 0.0, u1.applied_pressure or 0.0
-                e2, p2 = u2.e_void or 0.0, u2.applied_pressure or 0.0
-                if p1 and p2 and p2 != p1:
-                    rec.cr = (e1 - e2) / log10(p2 / p1)
+        # =========================
+        # SPLIT BASED ON PRESSURE TREND
+        # =========================
+        loading = []
+        unloading = []
+
+        prev = None
+        is_unloading = False
+
+        for l in lines:
+            p = l.applied_pressure
+
+            if prev is not None and p < prev:
+                is_unloading = True
+
+            if is_unloading:
+                unloading.append(l)
+            else:
+                loading.append(l)
+
+            prev = p
+
+        # =========================
+        # HELPER: FIND EXACT PRESSURE
+        # =========================
+        def find(records, value):
+            for r in records:
+                if round(r.applied_pressure or 0.0, 2) == value:
+                    return r
+            return False
+
+        # =========================
+        # Ce → 0.50 → 4.00
+        # =========================
+        l1 = find(loading, 0.50)
+        l2 = find(loading, 4.00)
+
+        if l1 and l2:
+            rec.ce = (l1.e_void - l2.e_void) / (
+                log10(l2.applied_pressure) - log10(l1.applied_pressure)
+            )
+
+        # =========================
+        # Cr → 0.50 → 0.10
+        # =========================
+        u1 = find(unloading, 0.50)
+        u2 = find(unloading, 0.10)
+
+        if u1 and u2:
+            rec.cr = (u1.e_void - u2.e_void) / (
+                log10(u2.applied_pressure) - log10(u1.applied_pressure)
+            )
+            
+
+            
 
     preconsolidation_pressure = fields.Float(
     string="Preconsolidation Pressure",
