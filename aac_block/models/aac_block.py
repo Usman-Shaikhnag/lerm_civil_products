@@ -12,6 +12,7 @@ class AacBlockMechanical(models.Model):
     _rec_name = "name"
 
 
+
     name = fields.Char("Name",default="AAC Block")
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 
@@ -197,6 +198,45 @@ class AacBlockMechanical(models.Model):
             parameter_ids = user_param_results.mapped('parameter').ids
 
             record.sample_parameters = [(6, 0, parameter_ids)]
+
+
+
+
+
+    # remark
+
+    notes_id = fields.One2many('aac.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(AacBlockMechanical, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
+
+
+
+
 
     # Dimension
     dimension_name = fields.Char(default="Dimension")
@@ -631,6 +671,14 @@ class AacCompressiveStrengthLine(models.Model):
                 record.compressive_strength = round(compressive_strength,2)
             else:
                 record.compressive_strength = 0
+
+
+class aacNotes(models.Model):
+    _name = "aac.notes"
+
+    parent_id = fields.Many2one('mechanical.aac.block',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
 
 
 

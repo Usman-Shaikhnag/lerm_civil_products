@@ -54,6 +54,45 @@ class RcptConcreteCube(models.Model):
 
 
 
+    # remark
+
+    notes_id = fields.One2many('rcpt.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(RcptConcreteCube, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+    
+
+
+
+
+
+
+
+
+
 
 
     def prefill_data(self):
@@ -150,6 +189,7 @@ class RcptConcreteCube(models.Model):
         for result in technician_results:
 
 
+
         #  for result in self.eln_ref.parameters_result:
             if result.parameter.internal_id == '78954gh24-391c-4d7b-818d-28f7b75ea261':
                 # result.result_char = round(self.binder_content,2)
@@ -197,6 +237,10 @@ class RcptConcreteCube(models.Model):
             field_values[field_name] = field_value
 
         return field_values
+    
+
+
+
     
 
 
@@ -301,3 +345,14 @@ class RcptConcreteCubeLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.sr_no = index + 1
+
+
+
+
+            
+class rcptNotes(models.Model):
+    _name = "rcpt.notes"
+
+    parent_id = fields.Many2one('mechanical.rcpt',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
