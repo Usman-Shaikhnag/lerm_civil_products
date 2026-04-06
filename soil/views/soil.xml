@@ -639,25 +639,52 @@
                     <div invisible = "heavy_visible == False" class="custom_table_borders text-center">
                       <field name="graph_image_density" widget="image" readonly="1"/>
                     </div>
-                  
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not heavy_visible">
+
+
+
+                    <div class="d-flex gap-2">
+                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not sieve_visible">
                         <tbody>
                             <tr>
-                                <td><label for="heavy_table_conformity"></label></td>
+                                <td><span>Max Dry Density (g/cc) Conformity</span></td>
                                 <td><field  name="heavy_table_conformity"
                                             decoration-success="heavy_table_conformity == 'pass'" 
                                             decoration-danger="heavy_table_conformity == 'fail'" 
                                             readonly="1" /></td>
                             </tr>
                             <tr>
-                                <td><label for="heavy_table_nabl"></label></td>
+                                <td><span>Max Dry Density (g/cc) NABL</span></td>
                                 <td><field name="heavy_table_nabl"
                                             decoration-success="heavy_table_nabl == 'pass'" 
                                             decoration-danger="heavy_table_nabl == 'fail'" 
                                             readonly="1" /></td>
                             </tr>
+                            
+                            
                         </tbody>
                     </table>
+                        
+                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not sieve_visible">
+                        <tbody>
+                            <tr>
+                                <td><span>Optimum Moisture Content (OMC) Conformity</span></td>
+                                <td><field  name="heavy_table_omc_conformity"
+                                            decoration-success="heavy_table_omc_conformity == 'pass'" 
+                                            decoration-danger="heavy_table_omc_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                            <tr>
+                                <td><span>Optimum Moisture Content (OMC) NABL</span></td>
+                                <td><field name="heavy_table_omc_nabl"
+                                            decoration-success="heavy_table_omc_nabl == 'pass'" 
+                                            decoration-danger="heavy_table_omc_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+                  
+                    
 
                    
 
