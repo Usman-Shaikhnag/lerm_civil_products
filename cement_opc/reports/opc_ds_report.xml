@@ -16,6 +16,7 @@
 						</div>
 						
 						
+					
 						
 						<table style="margin-top:10px">
 
@@ -1990,24 +1991,50 @@
 						<table class="table table-bordered">
 						<tr>
 							<td style="padding: 5px; font-style: italic; font-size: 12px;">
-								<b>Conditions:-</b>
-								&#160;&#160;(1) The report shall not be reproduced in fullor partially without written approval of the laboratory HOD/CEO/Maganement.
-								&#160;&#160;(2) ampling is not done by us unless mentioned otherwide.
-								&#160;&#160;(3)  without a QR Code and hologram this report is considered invalid. 
-								&#160;&#160;(4) The Result listed refer only to tested samples &amp; applicable parameter Endorsement of product is neither interred nor inplied.
-								&#160;&#160;(5)  The use or report for arbitration, publicity &amp; evidence in legal dispute is forbidden except with prior written consent NBML Lab.
-								&#160;&#160;(6) Alldisputed are subject to Raipur jurisdiction 7 days correction to this report invalidates this report. 
-								&#160;&#160;(7) Sample willbe destroyed after 30-days from the date of test report unless otherwise Specified. 
+								
+								<!-- <t t-if="cement.notes_id">
+									<t t-foreach="cement.notes_id" t-as="n">
+										<div>
+											&#160;&#160;(<t t-esc="n.sr_no"/>) 
+											<t t-esc="n.notes"/>
+										</div>
+									</t>
+								</t> -->
+								<t t-if="cement.notes_id">
+									<b>Conditions:-</b>
+
+									<t t-foreach="cement.notes_id" t-as="n">
+										<span>
+											(<t t-esc="n.sr_no"/>) 
+											<t t-esc="n.notes"/>
+											&#160;&#160;
+										</span>
+									</t>
+								</t>
+							
 								<t t-if="eln.has_witness">
 									&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
 								</t>
 								<t t-if="eln.remarks">
 									&#160;&#160;<span t-esc="eln.remarks"/>
 								</t>
+							
 							</td>
 						</tr>
 					</table>
 					</div>
+
+
+					
+						 <!-- Remarks Section -->
+
+                    
+
+
+
+
+
+
 					<div class="signatureContainer girdgird">
 						<div>
 							<div>

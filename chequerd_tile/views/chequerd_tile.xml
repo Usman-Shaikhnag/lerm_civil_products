@@ -356,28 +356,29 @@
                     <group/>
                       <group/>
 
-                    <!-- <group style="white-space: nowrap; width:70%;">
-                        <field name='average_wet_transver' col="4"/>
-                       
-                    </group>
-
-                    <group>
-                      <group style="width:25%">
-                                <field name='average_wet_transver_conformity'
-                                       decoration-success="average_wet_transver_conformity == 'pass'" 
-                                       decoration-danger="average_wet_transver_conformity == 'fail'" 
-                                       readonly="1"/>
-                        </group>
-                          <group style="width:25%" >
-                                <field name="average_wet_transver_nabl"
-                                       decoration-success="average_wet_transver_nabl == 'pass'" 
-                                       decoration-danger="average_wet_transver_nabl == 'fail'" 
-                                       readonly="1"/>
-                            </group>
-                     </group> -->
 
 
 
+
+                    
+                           <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
+
+
+                    
 
 
                      <button
