@@ -615,6 +615,6 @@ class BrickInitialRateAbsorptionLine(models.Model):
 class brickflyNotes(models.Model):
     _name = "brickfly.notes"
 
-    parent_id = fields.Many2one('cement.opc',string="Parent Id")
+    parent_id = fields.Many2one('mechanical.bricks',string="Parent Id")
     sr_no = fields.Char("Sr. No.")
     notes = fields.Char("Notes")
