@@ -405,6 +405,7 @@ class MechanicalConcreteCube(models.Model):
             }),
         ]
 
+
         res['notes_id'] = default_notes
         return res
 
@@ -556,6 +557,7 @@ class MechanicalConcreteCube(models.Model):
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+            
 
         return {
                 'view_mode': 'form',
@@ -839,6 +841,7 @@ class WptMechanicalLine(models.Model):
         for record in self:
             average = round(((record.depth1 + record.depth2 + record.depth3)/3),2)
             record.average = average
+
 
 
     # @api.depends('parent_id')
