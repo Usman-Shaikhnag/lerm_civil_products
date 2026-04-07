@@ -69,6 +69,49 @@ class FineAggregate(models.Model):
         })
         return res
 
+
+    notes_id = fields.One2many('fine.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(FineAggregate, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The report shall not be reproduced in fullor partially without written approval of the laboratory HOD/CEO/Maganement.',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'ampling is not done by us unless mentioned otherwide.',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'without a QR Code and hologram this report is considered invalid.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'The Result listed refer only to tested samples & applicable parameter Endorsement of product is neither interred nor inplied.',
+            }),
+
+            (0, 0, {
+                'sr_no': 'e',
+                'notes': 'The use or report for arbitration, publicity & evidence in legal dispute is forbidden except with prior written consent NBML Lab.',
+            }),
+             (0, 0, {
+                'sr_no': 'f',
+                'notes': 'Alldisputed are subject to Raipur jurisdiction 7 days correction to this report invalidates this report.',
+            }),
+
+             (0, 0, {
+                'sr_no': 'g',
+                'notes': 'Sample willbe destroyed after 30-days from the date of test report unless otherwise Specified.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
   
 
 
@@ -242,43 +285,6 @@ class FineAggregate(models.Model):
         for record in self:
             print("recordd",record)
             record.total_sieve_analysis = sum(record.sieve_analysis_child_lines.mapped('wt_retained'))
-
-
-
-
-    notes_id = fields.One2many('fine.notes', 'parent_id', string="Notes")
-    
-    @api.model
-    def default_get(self, fields):
-        res = super(FineAggregate, self).default_get(fields)
-
-        default_notes = [
-            (0, 0, {
-                'sr_no': 'a',
-                'notes': 'The information marked with an # received from customer',
-            }),
-            (0, 0, {
-                'sr_no': 'b',
-                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
-            }),
-            (0, 0, {
-                'sr_no': 'c',
-                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
-            }),
-            (0, 0, {
-                'sr_no': 'd',
-                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
-            }),
-        ]
-
-        res['notes_id'] = default_notes
-        return res
-
-
-
-
-
-
 
 
 # Deleterious Content
@@ -1534,6 +1540,7 @@ class FineAggregate(models.Model):
         for result in self.eln_ref.parameters_result:
             if result.parameter.internal_id == '45875ght-7188-4086-b132-62b50e63f1245gt':
                 result.result_char = round(self.specific_gravity,2)
+                result.calculated = True
                 if self.specific_gravity_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1541,6 +1548,7 @@ class FineAggregate(models.Model):
                 continue
             if result.parameter.internal_id == '4587tyhloos-3fa3-4b83-ae31-9d281767188c':
                 result.result_char = round(self.loose_bulk_density,2)
+                result.calculated = True
                 if self.loose_bulk_density_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1548,6 +1556,7 @@ class FineAggregate(models.Model):
                 continue
             if result.parameter.internal_id == '45789bhgt25-3fa3-4b83-ae31-9d28176718457':
                 result.result_char = round(self.avg_bulking_of_sand,2)
+                result.calculated = True
                 if self.avg_bulking_of_sand_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1555,6 +1564,7 @@ class FineAggregate(models.Model):
                 continue
             if result.parameter.internal_id == '2547ghty124m-3fa3-4b83-ae31-9d281457nhy14':
                 result.result_char = round(self.avg_bulking_of_sand1,2)
+                result.calculated = True
                 if self.avg_bulking_of_sand1_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1562,6 +1572,7 @@ class FineAggregate(models.Model):
                 continue
             if result.parameter.internal_id == '1457htyu1245-3fa3-4b83-ae31-9d281457457hy':
                 result.result_char = round(self.avg_moisture,2)
+                result.calculated = True
                 if self.avg_moisture_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1571,6 +1582,7 @@ class FineAggregate(models.Model):
             # Compacted density
             if result.parameter.internal_id == '357f579d-a310-4015-bc11-28a85c53ac83':
                 result.result_char = round(self.avg_compacted,2)
+                result.calculated = True
                 if self.avg_compacted_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1582,6 +1594,7 @@ class FineAggregate(models.Model):
             # % void Compacted density
             if result.parameter.internal_id == '04a95dc1-4b45-4817-a9b2-dd722bbe6281':
                 result.result_char = round(self.avg_void_compacted_density,2)
+                result.calculated = True
                 if self.avg_void_compacted_density_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1592,6 +1605,7 @@ class FineAggregate(models.Model):
             # % void Loose density
             if result.parameter.internal_id == '919587f2-5b45-4da1-bb73-10164b861833':
                 result.result_char = round(self.avg_void_loose_density,2)
+                result.calculated = True
                 if self.avg_void_loose_density_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1634,6 +1648,50 @@ class FineAggregate(models.Model):
 
              #  Deleterious Material - Organic Impurities
             if result.parameter.internal_id == '0363075f-a3f2-440a-b634-76f469d220c7':
+                result.calculated = True
+
+
+           
+            if result.parameter.internal_id == '318d72a1-7188-4086-b132-62b50e63f5d1':
+                result.calculated = True
+
+            
+            if result.parameter.internal_id == 'c0340cb7-3f4a-4c15-a453-d63694b71f1d':
+                result.calculated = True
+
+           
+            if result.parameter.internal_id == 'a0e7aaf3-68ff-4e75-830d-91ae04c98f32':
+                result.calculated = True
+
+            
+            if result.parameter.internal_id == '7b921a25-4dc4-4752-a247-d8a223ffbec0':
+                result.calculated = True
+
+            #  Deleterious Material - Organic Impurities
+            if result.parameter.internal_id == '02d32c6b-9881-4152-9e79-9a660e2dda39':
+                result.calculated = True
+
+            #  Deleterious Material - Organic Impurities
+            if result.parameter.internal_id == '237ca3ca-3db7-4782-b863-1dc33be92bc2':
+                result.calculated = True
+
+
+            #  Deleterious Material - Organic Impurities
+            if result.parameter.internal_id == '2047739e-9941-4bc0-af9b-839767be6e1c':
+                result.calculated = True
+
+
+            #  Deleterious Material - Organic Impurities
+            if result.parameter.internal_id == '3cf93161-4452-4aa5-a8e0-b24ffea753b3':
+                result.calculated = True
+
+
+            #  Deleterious Material - Organic Impurities
+            if result.parameter.internal_id == '58e8035f-76e4-4cfb-be47-c18c228fd1b0':
+                result.calculated = True
+
+             #  Deleterious Material - Organic Impurities
+            if result.parameter.internal_id == 'a594196d-d59f-4044-a801-6388ba38a723':
                 result.calculated = True
 
 
@@ -1956,7 +2014,6 @@ class MoistureContentLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
-
 
 
 class fineNotes(models.Model):

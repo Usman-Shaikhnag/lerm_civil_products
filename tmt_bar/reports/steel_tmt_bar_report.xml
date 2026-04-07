@@ -10,97 +10,103 @@
 				<div class="container_eln">
 					<div t-foreach="eln" t-as="o">
 						
-						<table >
-							<tr>
-								<td style="font-size:12px;width:100%" >#Customer Party Name :
-																											<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.customer.name"/>
-									
+						<table style="width:100%; border-collapse: collapse;" border="1">
+
+						   <tr>
+								<td colspan="1">#Customer Party Name :</td>
+								  <td colspan="2">
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.customer.name"/><br/>
 									<span t-field="o.srf_id.customer.street"/>
 									<span t-field="o.srf_id.customer.street2"/>
 									<span t-field="o.srf_id.customer.city"/>
 									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
 									<span t-field="o.srf_id.customer.state_id"/>
-								
+											,
 									<span t-field="o.srf_id.customer.country_id"/>
-								</td>
-								
+									</td>
+
+									<td colspan="1" style="text-align: center;">
+									<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 75px; height: 70px;"/>
+									</td>
 								
 							</tr>
 							<tr>
-							<td style="font-size:12px;width:100%" >#Project / Site Address : 																		<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.name_work"/>
-								</td>
+								<td style="width:25%;">Samples Description :-</td>
+								<td style="width:25%;"><span t-field="o.material.lab_name"/></td>
+
+								<td style="width:20%;">Customer's Ref. No :-</td>
+								<td style="width:20%;"><span t-field="o.srf_id.client_refrence"/></td>
 							</tr>
-								
-						
-							
-						</table>
-						<table>
+
 							<tr>
-								<td style="font-size:12px;width:30%;" colspan="3">Test Start Date :																		<![CDATA[&nbsp;]]>
-									<span t-field="o.start_date"/>
-								</td>
-								<td style="font-size:12px;width:30%;" colspan="3">Test End Date :																		<![CDATA[&nbsp;]]>
-									<span t-field="o.end_date"/>
-								</td>
-								<td style="font-size:12px;width:40%;" colspan="4">Sample Receipt Date :																		<![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.sample_received_date"/>
-								</td>
-							</tr>
-							<tr>
-								<td style="font-size:12px;width:30%;" colspan="3">#Grade :
-																											<![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.grade_id.grade"/>
-								</td>
-								<td style="font-size:12px;width:30%;" colspan="3">#Size :
-																											<![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.size_id.size"/>
-								</td>
-								<td style="font-size:12px;width:40%;" colspan="4">#Sample Id Mark: 																		<![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.client_sample_id"/>
-								</td>
-								
-							</tr>
-							
-							
-							<tr>
-								<td style="font-size:12px;width:30%;" colspan="3">#Consultant :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.consultant_name1"/>
-								</td>
-								<td style="font-size:12px;width:30%4" colspan="3">#Client :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.client"/>
-								</td>
-								<td style="font-size:12px;width:40%;" colspan="4">#Client Ref :
-																											<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.client_refrence"/>
-								</td>
-							</tr>
-							<tr>
-								<td style="font-size:12px;" colspan="3">#Brand :
-									<span t-field="o.sample_id.brand"/>
-								</td>
-								<td style="font-size:12px;" colspan="3">Discipline :
-									<span t-field="o.discipline.discipline"/>
-								</td>
-								
-								<td style="font-size:12px;" colspan="3">Group :
-									<span t-field="o.group.group"/>
+								<!-- <td>Quantity of Samples :-</td>
+								<td>Litre</td> -->
+								<td>No. of Samples :-</td>
+								<td><span t-field="o.sample_id.quantity"/></td>
+
+								<td>Letter Date :-</td>
+								<td>
+									
 								</td>
 							</tr>
 
 							<tr>
-								<td style="font-size:12px;width:50%;" colspan="6">Material/Test Name :
-																											<![CDATA[&nbsp;]]>
-									<span t-field="o.material.name"/>
+								<td>Date of Samples Received :-</td>
+								<td>
+									<span t-field="o.sample_id.sample_received_date"/>
 								</td>
-								<td style="font-size:12px;width:50%;" colspan="6">#Sample Description : 																		<![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.sample_description"/>
+
+									<td>SRF No. :-</td>
+										<td >
+											<span t-field="o.srf_id"/>
+										</td>
+								
+							</tr>
+
+							<tr>
+								<td>Brand &amp; Grade :-</td>
+								<td><span t-field="o.sample_id.grade_id.grade"/></td>
+
+								<td>Date of Test Initiation  :-</td>
+								<td>
+									<span t-field="o.start_date"/>
 								</td>
+							</tr>
+
+							<tr>
+								<td>Week No. :-</td>
+								<td></td>
+
+								<td>Date of Test Completion  :-</td>
+								<td>
+									<span t-field="o.end_date"/>
+								</td>
+							</tr>
+
+							<!-- <tr>
+								<td t-if="o.material.source_sample">Source of Sample :-</td>
+								<td><span t-field="o.material.source_sample"/></td>
+
+								<td t-if="o.material.test_method_adopted" >Test method adopted  :-</td>
+								<td>
+									<span t-field="o.material.test_method_adopted"/>
+								</td>
+							</tr> -->
+
+							<tr t-if="o.material.test_method_adopted" >
+								
+
+									<td >Test method adopted:</td>
+									<td colspan="3"><span t-field="o.material.test_method_adopted"/></td>
+
 							
 							</tr>
+							<tr t-if="o.material.source_sample">
+									<td style="font-weight: bold;">Source of Sample</td>
+									<td colspan="3"><span t-field="o.material.source_sample"/></td>
+								</tr>
+
 						</table>
 					</div>
 				
@@ -140,11 +146,10 @@
 										Sr. No
 									</span>
 								</th>
-								<th style="text-align: center;font-size:12px;">
-									<span>
-										Parameter
-									</span>
-								</th>
+									<th style="text-align: center;font-size:12px;">
+									<span t-esc="eln.material.test_parameter"/>
+									<!-- Test Parameters -->
+									</th>
 								<th style="text-align: center;font-size:12px;">
 									<span>
 										Unit
@@ -988,64 +993,48 @@
 
 				
 							
-						<!-- <div style="margin-top:2px" class="noteContainer">
-							<div>
-								<b>Note :-</b>
-							</div>
-							<div>
-								<ul>
-									<li>
-										The Test Report(s) is/are valid only to the sample submitted to the laboratory.
-									</li>
-									<li>
-										Sample(s) was/were not drawn by laboratory.
-									</li>
-									<li>
-										This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.
-									</li>
-										<li>
-										# - Information provided by the customer.
-									</li>
-									<li t-if="eln.has_witness">
-										Test witnessed by : <span t-esc="eln.witness_name"/>
-										
-									</li>
-									<li t-if="eln.remarks">
-										<span t-esc="eln.remarks"/>
-									</li>
-								</ul>
-							</div>
-						</div> -->
-
-
-
-
-						 <!-- Remarks Section -->
-
-                    <div style="margin-top:50px" class="noteContainer">
-						<table >
-							<tr>
+						<div style="text-align:center;margin-top:2px">
+						......End of Report......
+					</div>
 							
-								<td style="padding: 5px; font-style: italic; font-size: 15px; line-height: 18px;">
-									<b>Remarks:</b><br/><br/>
-									    * Refer to Annexure-I for environmental and test conditions<br/><br/>
-									    * Refer to Annexure-I (A) to know NABL accredited scope, range and uncertainty of measurement for test parameter<br/><br/>
 
-									<b>Notes:-</b><br/><br/>
-								    	<!-- a. The information marked with an # received from customer<br/><br/>
-							        	b. The results listed refer only to tested parameters and sample as received from customer<br/><br/>
-							        	c. The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.<br/><br/>
-							        	d. This document shall not be reproduced in part or full without the approval of Genstru. -->
 
-										<t t-if="data.notes_id">
-										<t t-foreach="data.notes_id" t-as="n">
-											<span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span><br/><br/>
-										</t>
+					<div style="margin-top:5px; page-break-inside: avoid;" class="signatureContainer girdgird">
+						<table class="table table-bordered">
+						<tr>
+							<td style="padding: 5px; font-style: italic; font-size: 12px;">
+								
+								<!-- <t t-if="cement.notes_id">
+									<t t-foreach="cement.notes_id" t-as="n">
+										<div>
+											&#160;&#160;(<t t-esc="n.sr_no"/>) 
+											<t t-esc="n.notes"/>
+										</div>
 									</t>
-								</td>
-							</tr>
-							</table  >
-						</div>
+								</t> -->
+								<t t-if="data.notes_id">
+									<b>Conditions:-</b>
+
+									<t t-foreach="data.notes_id" t-as="n">
+										<span>
+											(<t t-esc="n.sr_no"/>) 
+											<t t-esc="n.notes"/>
+											&#160;&#160;
+										</span>
+									</t>
+								</t>
+							
+								<t t-if="eln.has_witness">
+									&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
+								</t>
+								<t t-if="eln.remarks">
+									&#160;&#160;<span t-esc="eln.remarks"/>
+								</t>
+							
+							</td>
+						</tr>
+					</table>
+					</div>
 
 
 					
@@ -1076,13 +1065,18 @@
 									</b>
 								</div>
 							</div>
+								<!-- QR Code -->
+							<div style="text-align:center; margin-bottom:10px;">
+								<img t-att-src="'data:image/png;base64,%s' % (qrcode_static or '')"
+									style="width:75px; height:70px;"/>
+							</div>
 							<div>
 								<div>
-									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image" style="width:65px;height:65px;"/>
-								</div>
-								<div style="padding-top:2px">
-								Format No. <span t-esc="eln.material.test_format_no"/>
-								</div>
+							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
+						</div>
+						<div style="padding-top:5px">
+							Format No. <span t-esc="eln.material.test_format_no"/>
+						</div>
 							</div>
 							<div>
 								<div>
@@ -1116,11 +1110,7 @@
 								......End of Report......
 						</div>
 				 -->
-				 	<div style="margin-top: 20px; text-align: center;">
-								<p style="border-top: 1px dashed #000; padding-top: 10px;">
-									...... End Of Report......
-								</p>
-							</div>
+				 
 
 				</div>
 			</t>
