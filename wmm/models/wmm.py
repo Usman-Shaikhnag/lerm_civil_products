@@ -190,6 +190,44 @@ class WmmMechanical(models.Model):
         res['elongation_table'] = default_elongated_sieve_sizes
 
         return res
+    
+
+
+
+
+    # remark
+
+    notes_id = fields.One2many('wmm.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(WmmMechanical, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
+
+
+
 
     # Water Absorbtion 
     water_absorbtion_name = fields.Char(default="Water Absorbtion")
@@ -1175,3 +1213,11 @@ class ImpactValueLine(models.Model):
                 rec.impact_value = (rec.wt_of_aggregate_passing / rec.total_wt_aggregate) * 100
             else:
                 rec.impact_value = 0.0
+
+
+class wmmNotes(models.Model):
+    _name = "wmm.notes"
+
+    parent_id = fields.Many2one('mechanical.wmm',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")

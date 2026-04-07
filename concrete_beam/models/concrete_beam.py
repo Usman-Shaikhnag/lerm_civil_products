@@ -9,6 +9,7 @@ class FlexuralStrengthConcreteBeam(models.Model):
     _inherit = "lerm.eln"
     _rec_name = "name"
 
+
     name = fields.Char("Name",default="Concrete Beam")
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     child_lines = fields.One2many('mechanical.concrete.beam.line','parent_id',string="Parameter")
@@ -18,6 +19,43 @@ class FlexuralStrengthConcreteBeam(models.Model):
     
     average_flexural_strength = fields.Float(string="Average Flexural Strength in N/mm2",compute="_compute_average_flexural_strength")
     sample_id = fields.Many2one('lerm.srf.sample',string='Sample')
+
+
+
+
+    
+                # remark
+
+    notes_id = fields.One2many('concretebeam.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(FlexuralStrengthConcreteBeam, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+    
+
+    
 
     # age_of_days = fields.Selection([
     #     ('3days', '3 Days'),
@@ -133,6 +171,8 @@ class FlexuralStrengthConcreteBeam(models.Model):
                     record.date_of_testing = False
             else:
                 record.date_of_testing = False
+
+
 
     # @api.depends('average_flexural_strength','eln_ref')
     # def _compute_average_flexural_strength_conformity(self):
@@ -296,3 +336,13 @@ class FlexuralStrengthConcreteBeamLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.sr_no = index + 1
+
+
+
+            
+class concretebeamNotes(models.Model):
+    _name = "concretebeam.notes"
+
+    parent_id = fields.Many2one('mechanical.concrete.beam',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")

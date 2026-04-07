@@ -18,6 +18,43 @@ class CrusherRunMacadamMechanical(models.Model):
     avg_compacted_unit  = fields.Char("Compacted Density", compute="_compute_units", store=False)
 
 
+   
+
+# remark
+
+    notes_id = fields.One2many('crusher.run.macadam.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(CrusherRunMacadamMechanical, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+    
+
+
+
+
+
     def prefill_data(self):
         # import wdb; wdb.set_trace()
         return {
@@ -1077,4 +1114,13 @@ class ImpactValueLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.sample_no = index + 1
+
+
+class crusherRunMacadamNotes(models.Model):
+    _name = "crusher.run.macadam.notes"
+
+    parent_id = fields.Many2one('mechanical.crusher.run.macadam',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
+
 

@@ -22,6 +22,8 @@ class MechanicalBricksBurntClay(models.Model):
     )
 
 
+
+
     def _compute_units(self):
         for rec in self:
             comp_param = self.env['lerm.parameter.master'].search([
@@ -37,6 +39,39 @@ class MechanicalBricksBurntClay(models.Model):
     length_in_mm = fields.Float(string="Length in mm")
     width_in_mm = fields.Float(string="Width in mm")
     height_in_mm = fields.Float(string="Height in mm")
+
+
+    # remark
+
+    notes_id = fields.One2many('brickbruntclay.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(MechanicalBricksBurntClay, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
+
 
 
 
@@ -518,19 +553,9 @@ class InitialRateAbsorptionLine(models.Model):
 
    
    
-    # @api.model
-    # def create(self, vals):
-    #     # Set the serial_no based on the existing records for the same parent
-    #     if vals.get('parent_id'):
-    #         existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-    #         if existing_records:
-    #             max_serial_no = max(existing_records.mapped('serial_no'))
-    #             vals['serial_no'] = max_serial_no + 1
+class brickbruntclayNotes(models.Model):
+    _name = "brickbruntclay.notes"
 
-    #     return super(InitialRateAbsorptionLine, self).create(vals)
-
-    # def _reorder_serial_numbers(self):
-    #     # Reorder the serial numbers based on the positions of the records in child_lines
-    #     records = self.sorted('id')
-    #     for index, record in enumerate(records):
-    #         record.serial_no = index + 1
+    parent_id = fields.Many2one('mechanical.bricks.burnt.clay',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
