@@ -25,7 +25,55 @@ class MechanicalConcreteCube(models.Model):
 
 
     notes_id = fields.One2many('mechanical.concrete.cube.notes','parent_id',string="Notes")
+    remarks = fields.Text(string="Remarks", compute="_compute_remarks", store=False)
 
+    @api.depends('eln_ref.grade_id.grade')
+    def _compute_remarks(self):
+        _logger.info("### REMARKS COMPUTE CALLED ###")
+        grade_data = {
+            'M10': {'7d_kg': '70.00', '7d_n': '7.00', '28d_kg': '100.00', '28d_n': '10.00', 'text_grade': 'M10'},
+            'M15': {'7d_kg': '100.00', '7d_n': '10.00', '28d_kg': '150.00', '28d_n': '15.00', 'text_grade': 'M15'},
+            'M20': {'7d_kg': '135.00', '7d_n': '13.50', '28d_kg': '200.00', '28d_n': '20.00', 'text_grade': 'M20'},
+            'M25': {'7d_kg': '170.00', '7d_n': '17.00', '28d_kg': '250.00', '28d_n': '25.00', 'text_grade': 'M25'},
+            'M30': {'7d_kg': '200.00', '7d_n': '20.00', '28d_kg': '300.00', '28d_n': '30.00', 'text_grade': 'M30'},
+            'M35': {'7d_kg': '250.00', '7d_n': '25.00', '28d_kg': '350.00', '28d_n': '35.00', 'text_grade': 'M35'},
+            'M40': {'7d_kg': '270.00', '7d_n': '27.00', '28d_kg': '400.00', '28d_n': '40.00', 'text_grade': 'M40'},
+        }
+
+        for rec in self:
+            rec.remarks = ""
+            grade_val = False
+            
+            # Prioritize fetching from eln_ref directly for maximum consistency
+            if rec.eln_ref and rec.eln_ref.grade_id:
+                grade_val = rec.eln_ref.grade_id.grade
+            elif rec.grade and rec.grade.grade:
+                grade_val = rec.grade.grade
+            elif rec.grade2:
+                grade_val = rec.grade2
+            
+            _logger.info(f"DEBUG: Record ID: {rec.id}, Grade Value: {grade_val}")
+
+            if grade_val:
+                grade_key = str(grade_val).strip().upper()
+                _logger.info(f"DEBUG: Grade Key: {grade_key}")
+
+                if grade_key in grade_data:
+                    data = grade_data[grade_key]
+                    _logger.info(f"DEBUG: Match found: {data['text_grade']}")
+
+                    rec.remarks = (
+                        f"As per IS:456-2000 & 1978 the crushing or characteristic compressive strength for "
+                        f"{data['text_grade']} Grade of concrete at 7 days is {data['7d_kg']} Kg/cm² "
+                        f"or {data['7d_n']} N/mm² and at 28 days is {data['28d_kg']} Kg/cm² "
+                        f"or {data['28d_n']} N/mm². "
+                        f"Since the cube test result shows that the characteristic compressive strength "
+                        f"of cubes are on higher side, hence it is satisfactory."
+                    )
+                else:
+                    _logger.info("DEBUG: No match found in grade_data")
+            else:
+                _logger.info("DEBUG: No grade data found from eln_ref, grade, or grade2")
 
     @api.model
     def default_get(self, fields):
