@@ -101,7 +101,7 @@
                                 <button name="download_attachment_report" type="object" string="Download" class="btn-primary" /> -->
 
 
-                                <field name='casting_date' invisible="casting != True" readonly="state != '1-allotment_pending'"/>
+                                <!-- <field name='casting_date' invisible="casting != True" readonly="state != '1-allotment_pending'"/> -->
                                 <field name="days_casting" invisible="casting != True" readonly="state != '1-allotment_pending'" />
                                 <field name="date_casting" invisible="casting != True" readonly="state != '1-allotment_pending'"/>
                                 <field name="testedby_signature_required" invisible="state not in ('4-in_report')"/>
@@ -327,7 +327,7 @@
                 <field name="technicians" string="Technicians" />
                 <field name="location" string="Location" />
                 <field name="scope" string="Scope" />
-                <field name="days_casting" string="Days of Testing" />
+                <field name="days_casting" string="Days of Casting" />
                 <field name="customer_id" string="Customer" />
                 <field name="status" string="Status" />
                 <field name="state" string="State" />

@@ -143,11 +143,11 @@ class ELN(models.Model):
             record.casting = record.sample_id.casting
 
 
-    @api.depends('sample_id')
+    @api.depends('sample_id', 'sample_id.casting', 'sample_id.casting_date', 'sample_id.date_casting', 'sample_id.days_casting')
     def _compute_date_testing(self):
         for record in self:
-            if record.sample_id.casting and record.sample_id.casting_date:
-                date_casting = record.sample_id.casting_date
+            if record.sample_id.casting and record.sample_id.date_casting:
+                date_casting = record.sample_id.date_casting
                 days_casting = 0
                 if record.sample_id.days_casting == '1':
                     days_casting = 1
@@ -182,7 +182,7 @@ class ELN(models.Model):
     #             raise ValidationError("Start Date cannot be before SRF creation date")
     #         else:
     #             pass
-    @api.depends('casting_date','sample_id')
+    @api.depends('sample_id', 'sample_id.casting', 'sample_id.date_casting')
     def _compute_casting_date(self):
         for record in self:
             if record.sample_id.casting:

@@ -30,7 +30,7 @@
                         <field name='discipline' readonly="1"/>
                         <field name='lab_no_value' invisible="1"/>
                         <field name='material' readonly="1"/>
-                        <field name='size_id' domain="[('id', 'in', size_ids)]"/>
+                        <field name='size_id' domain="[('id', 'in', size_ids)]" readonly="1"/>
                         <field name='start_date' required="1"/>
                         <field name='witness_description'/>
                         <field name='remarks'/>
@@ -45,9 +45,9 @@
                         <field name='sample_id' readonly="1"/>
                         <field name='kes_no' invisible="1" readonly="1"/>
                         <field name='group' readonly="1"/>
-                        <field name='department_id'/>
+                        <field name='department_id' readonly="1"/>
                         <field name='witness_name'/>
-                        <field name='grade_id' domain="[('id', 'in', grade_ids)]"/>
+                        <field name='grade_id' domain="[('id', 'in', grade_ids)]" readonly="1"/>
                         <field name='end_date'/>
 
                         <!-- <label string="Witness" for="witness_path" /> -->
