@@ -14099,7 +14099,166 @@ class ConsolidationLine(models.Model):
     
 
     ce = fields.Float(string="Ce", digits=(8, 3), compute="_compute_ce_cr", store=True)
-    cr = fields.Float(string="Recompression Index, Cr", digits=(8, 3), compute="_compute_ce_cr", store=True)
+    cr = fields.Float(string="Recompression Index, Cr", digits=(8, 3),compute="_compute_ce_cr")
+
+    slop = fields.Float(string="Slop m", digits=(8, 3),compute="_compute_slop")
+
+    @api.depends('slop1', 'slop2', 'slop3', 'slop4')
+    def _compute_slop(self):
+        for rec in self:
+            try:
+                if rec.slop1 > 0 and rec.slop2 > 0:
+                    rec.slop = (rec.slop3 - rec.slop4) / math.log10(rec.slop1 / rec.slop2)
+                else:
+                    rec.slop = 0.0
+            except Exception:
+                rec.slop = 0.0
+
+    slop1 = fields.Float(string="Slop 1", digits=(8, 3),compute="_compute_slop1")
+    slop2 = fields.Float(string="Slop 2", digits=(8, 3),compute="_compute_slop2")
+
+    slop3 = fields.Float(string="Slop 3", digits=(8, 3),compute="_compute_slop3")
+    slop4 = fields.Float(string="Slop 4", digits=(8, 3),compute="_compute_slop4")
+
+    slop5 = fields.Float(string="Slop 5", digits=(8, 3),compute="_compute_slop5")
+
+    @api.depends('slop4', 'slop', 'slop2')
+    def _compute_slop5(self):
+        for rec in self:
+            try:
+                if rec.slop2 > 0:
+                    rec.slop5 = rec.slop4 - (rec.slop * math.log10(rec.slop2))
+                else:
+                    rec.slop5 = 0.0
+            except Exception:
+                rec.slop5 = 0.0
+
+    @api.depends(
+    'slop1',
+    'consolidation_output_ids.applied_pressure',
+    'consolidation_output_ids.e_void'
+    )
+    def _compute_slop3(self):
+        for rec in self:
+            rec.slop3 = 0.0
+
+            if rec.slop1:
+                for line in rec.consolidation_output_ids:
+                    # 👉 X22 == slop1
+                    # 👉 B column == applied_pressure
+                    if abs(line.applied_pressure - rec.slop1) < 0.0001:
+                        # 👉 5th column == e_void
+                        rec.slop3 = line.e_void
+                        break
+
+   
+
+    @api.depends(
+    'slop2',
+    'consolidation_output_ids.applied_pressure',
+    'consolidation_output_ids.e_void'
+    )
+    def _compute_slop4(self):
+        for rec in self:
+            rec.slop4 = 0.0
+
+            if rec.slop2:
+                for line in rec.consolidation_output_ids:
+                    if abs(line.applied_pressure - rec.slop2) < 0.0001:
+                        rec.slop4 = line.e_void
+                        break
+
+
+
+    @api.depends('consolidation_output_ids.applied_pressure')
+    def _compute_slop1(self):
+        for rec in self:
+            rec.slop1 = 0.0
+
+            for line in rec.consolidation_output_ids:
+                if float(line.applied_pressure) == 4.0:
+                    rec.slop1 = line.applied_pressure
+                    break
+
+    @api.depends('consolidation_output_ids.applied_pressure')
+    def _compute_slop2(self):
+        for rec in self:
+            rec.slop2 = 0.0
+
+            for line in rec.consolidation_output_ids:
+                if float(line.applied_pressure) == 8.0:
+                    rec.slop2 = line.applied_pressure
+                    break
+
+    bisector1 = fields.Float(string="Bisector 1", digits=(8, 3),compute="_compute_bisector1")
+    bisector2 = fields.Float(string="Bisector 2", digits=(8, 3),compute="_compute_bisector2")
+
+    bisector3 = fields.Float(string="Bisector 3", digits=(8, 5),default=0.81903)
+    bisector4 = fields.Float(string="Bisector 4", digits=(8, 5),default=0.872173)
+
+    bisector = fields.Float(string="Bisector Slop", digits=(8, 5),compute="_compute_bisector")
+
+    bisector5 = fields.Float(string="Bisector C", digits=(8, 5),compute="_compute_bisector5")
+
+    
+
+    @api.depends('bisector5', 'slop5', 'slop', 'bisector')
+    def _compute_preconsolidation_pressure_x(self):
+        for rec in self:
+            try:
+                denominator = (rec.slop - rec.bisector)
+
+                if denominator != 0:
+                    power = (rec.bisector5 - rec.slop5) / denominator
+                    rec.preconsolidation_pressure_x = math.pow(10, power)
+                else:
+                    rec.preconsolidation_pressure_x = 0.0
+
+            except Exception:
+                rec.preconsolidation_pressure_x = 0.0
+
+    @api.depends('bisector3', 'bisector', 'bisector1')
+    def _compute_bisector5(self):
+        for rec in self:
+            try:
+                if rec.bisector1 > 0:
+                    rec.bisector5 = rec.bisector3 - (rec.bisector * math.log10(rec.bisector1))
+                else:
+                    rec.bisector5 = 0.0
+            except Exception:
+                rec.bisector5 = 0.0
+
+
+    @api.depends('consolidation_output_ids.applied_pressure')
+    def _compute_bisector1(self):
+        for rec in self:
+            rec.bisector1 = 0.0
+
+            for line in rec.consolidation_output_ids:
+                if float(line.applied_pressure) == 8.0:
+                    rec.bisector1 = line.applied_pressure
+                    break
+
+    @api.depends('consolidation_output_ids.applied_pressure')
+    def _compute_bisector2(self):
+        for rec in self:
+            rec.bisector2 = 0.0
+
+            for line in rec.consolidation_output_ids:
+                if float(line.applied_pressure) == 0.5:
+                    rec.bisector2 = line.applied_pressure
+                    break
+
+    @api.depends('bisector1', 'bisector2', 'bisector3', 'bisector4')
+    def _compute_bisector(self):
+        for rec in self:
+            try:
+                if rec.bisector1 > 0 and rec.bisector2 > 0:
+                    rec.bisector = (rec.bisector3 - rec.bisector4) / math.log10(rec.bisector1 / rec.bisector2)
+                else:
+                    rec.bisector = 0.0
+            except Exception:
+                rec.bisector = 0.0
 
 
     # @api.depends(
@@ -14355,7 +14514,18 @@ class ConsolidationLine(models.Model):
 )
 
     pc_x = fields.Float(string="Pc X", compute="_compute_pc_casagrande", store=True)
-    pc_y = fields.Float(string="Preconsolidation Pressure", compute="_compute_pc_casagrande", store=True)
+    pc_y = fields.Float(string="Preconsolidation Pressure",compute="_compute_pc_y")
+
+    @api.depends('preconsolidation_pressure_x')
+    def _compute_pc_y(self):
+        for rec in self:
+            if rec.preconsolidation_pressure_x:
+                # truncate to 2 decimal → 0.64902 → 0.63
+                rec.pc_y = math.floor(rec.preconsolidation_pressure_x * 100) / 100
+            else:
+                rec.pc_y = 0.0
+
+    preconsolidation_pressure_x = fields.Float(string="Preconsolidation Pressure X", digits=(8, 5),compute="_compute_preconsolidation_pressure_x")
 
     from math import log10
 
@@ -14442,15 +14612,15 @@ class ConsolidationLine(models.Model):
         rec.pc_y = y_pc
         rec.pc_casagrande = rec.pc_x
 
-    PC_final = fields.Float(string="PC", compute="_compute_PC_final", store=True)
+    pc_final = fields.Float(string="PC", compute="_compute_pc_final")
 
     @api.depends('pc_y')
-    def _compute_PC_final(self):
-        for line in self:
-            if line.pc_y:
-                line.PC_final = line.pc_y * 10000
+    def _compute_pc_final(self):
+        for rec in self:
+            if rec.pc_y:
+                rec.pc_final = rec.pc_y * 10000
             else:
-              line.PC_final = 0
+                rec.pc_final = 0.0
 
     pc_depth = fields.Float(string="Depth", store=True)
 
@@ -14470,19 +14640,18 @@ class ConsolidationLine(models.Model):
 
     ocr = fields.Float(string="OCR", compute="_compute_ocr", store=True)
 
-    @api.depends('PC_final', 'pc_overburden')
+    @api.depends('pc_final', 'pc_overburden')
     def _compute_ocr(self):
         for rec in self:
             if rec.pc_overburden:
-                rec.ocr = round(rec.PC_final / rec.pc_overburden, 2)
+                rec.ocr = round(rec.pc_final / rec.pc_overburden, 2)
             else:
                 rec.ocr = 0.0
 
     cc_final = fields.Float(
         string="Compression Index (Cc)",
-        digits=(16, 3),
-        compute="_compute_cc_final",
-        store=True
+        digits=(16, 3), compute="_compute_cc_final"
+      
     )
 
     @api.depends(
