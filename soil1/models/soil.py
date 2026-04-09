@@ -31,6 +31,8 @@ except ImportError:
 from matplotlib.ticker import FormatStrFormatter
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
+from decimal import Decimal, ROUND_HALF_UP
+
 
 # Smooth curve साठी या दोन लायब्ररीज लागतात.
 # जर त्या नसतील तर कोड एरर न देता साधी लाईन वापरेल.
@@ -6189,7 +6191,7 @@ class ConsolidationBothCycleLine(models.Model):
     final_read = fields.Float(string="Final Dial Reading mm" ,digits=(8,3),compute="_compute_final_read", store=True)
     delta_h = fields.Float(string=" Δ𝐻 cm" ,digits=(8,3),compute="_compute_delta_h" ,store=True)
     specimen_height = fields.Float(string="Specimen Height (H) cm" ,digits=(8,3) , compute="_compute_specimen_height" ,store=True )
-    e_void = fields.Float(string="e = (H/Hs)-1" ,digits=(8,3) , compute="_compute_e_void" ,store=True)
+    e_void = fields.Float(string="e = (H/Hs)-1" ,digits=(8,3) , compute="_compute_e_void1" ,store=True)
     change_void = fields.Float(string="de", digits=(16,6), compute="_compute_change_void" ,store=True)
     d_sigma = fields.Float(string=" dσ" ,digits=(16,6) , compute="_compute_d_sigma" ,store=True)
     av = fields.Float(string="aᵥ (cm²/kg)" ,digits=(16,6) ,compute="_compute_av" ,store=True)
@@ -6406,14 +6408,66 @@ class ConsolidationBothCycleLine(models.Model):
 
 
 
+    # @api.depends('specimen_height', 'parent_id_con_out.con_height_solid')
+    # def _compute_e_void1(self):
+    #  for line in self:
+    #     Hs = line.parent_id_con_out.con_height_solid or 0.0
+    #     if Hs:
+    #         line.e_void = (line.specimen_height / Hs) - 1.0
+    #     else:
+    #         line.e_void = 0.0
+
+   
+
+    
+
+    # @api.depends('specimen_height', 'parent_id_con_out.con_height_solid')
+    # def _compute_e_void1(self):
+    #     for line in self:
+    #         Hs = line.parent_id_con_out.con_height_solid or 0.0
+
+    #         if Hs:
+    #             value = (line.specimen_height / Hs) - 1.0
+
+    #             # IMPORTANT FIX
+    #             value_decimal = Decimal(f"{value:.6f}")
+
+    #             d = value_decimal.quantize(Decimal('0.000'), rounding=ROUND_HALF_UP)
+
+    #             line.e_void = float(d)
+    #         else:
+    #             line.e_void = 0.0
+
     @api.depends('specimen_height', 'parent_id_con_out.con_height_solid')
-    def _compute_e_void(self):
-     for line in self:
-        Hs = line.parent_id_con_out.con_height_solid or 0.0
-        if Hs:
-            line.e_void = (line.specimen_height / Hs) - 1.0
-        else:
-            line.e_void = 0.0
+    def _compute_e_void1(self):
+        for line in self:
+            Hs = line.parent_id_con_out.con_height_solid or 0.0
+
+            if Hs:
+                value = (line.specimen_height / Hs) - 1.0
+
+                # convert to string with enough precision
+                value_str = f"{value:.6f}"
+
+                # split decimal
+                int_part, dec_part = value_str.split('.')
+
+                # take first 3 decimals
+                first_three = int(dec_part[:3])
+
+                # check 4th decimal
+                fourth = int(dec_part[3]) if len(dec_part) > 3 else 0
+
+                # apply custom rule
+                if fourth >= 1:
+                    rounded = first_three + 1
+                else:
+                    rounded = first_three
+
+                line.e_void = float(f"{int_part}.{str(rounded).zfill(3)}")
+
+            else:
+                line.e_void = 0.0
 
     @api.depends('e_void', 'applied_pressure', 'cylces',
              'parent_id_con_out.consolidation_output_ids.e_void',
@@ -14151,6 +14205,7 @@ class ConsolidationLine(models.Model):
                         rec.slop3 = line.e_void
                         break
 
+    
    
 
     @api.depends(
@@ -14176,9 +14231,11 @@ class ConsolidationLine(models.Model):
             rec.slop1 = 0.0
 
             for line in rec.consolidation_output_ids:
-                if float(line.applied_pressure) == 4.0:
+                if float(line.applied_pressure) == 2.0:
                     rec.slop1 = line.applied_pressure
                     break
+
+    
 
     @api.depends('consolidation_output_ids.applied_pressure')
     def _compute_slop2(self):
@@ -14186,7 +14243,7 @@ class ConsolidationLine(models.Model):
             rec.slop2 = 0.0
 
             for line in rec.consolidation_output_ids:
-                if float(line.applied_pressure) == 8.0:
+                if float(line.applied_pressure) == 4.0:
                     rec.slop2 = line.applied_pressure
                     break
 
