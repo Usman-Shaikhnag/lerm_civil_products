@@ -1181,7 +1181,7 @@ class CreateSampleWizard(models.TransientModel):
         ('45', '45 Days'),
         ('56', '56 Days'),
         ('112', '112 Days'),
-    ], string='Days of Testing', default='3')
+    ], string='Days of Casting', default='3')
     date_casting = fields.Date(string="Date of Casting")
     customer_id = fields.Many2one('res.partner' , string="Customer",compute="_compute_customer_id")
     product_aliases = fields.Many2many('product.product',string="Product Aliases")
@@ -1454,6 +1454,7 @@ class CreateSampleWizard(models.TransientModel):
             'sample_description':sample_description,
             'casting':casting,
             'date_casting':self.date_casting,
+            'casting_date':self.date_casting,
             'days_casting':self.days_casting,
             'brand':brand,
             'sample_received_date':sample_received_date,
@@ -1468,9 +1469,8 @@ class CreateSampleWizard(models.TransientModel):
             'volume':volume,
             'product_name':product_name,
             'lab_location':self.lab_location.id,
-            'location_name':self.location_name.id
-
-            
+            'location_name':self.location_name.id,
+            'lab_id':self.lab_id
         })
         return {'type': 'ir.actions.act_window_close'}
 
@@ -1530,8 +1530,8 @@ class CreateSampleWizard(models.TransientModel):
                 'date_casting':date_casting,
                 'days_casting':days_casting,
                 'lab_location':self.lab_location.id,
-                'location_name':self.location_name.id
-
+                'location_name':self.location_name.id,
+                'lab_id':self.lab_id
 
             })
             
@@ -1928,8 +1928,11 @@ class CreateSampleWizard(models.TransientModel):
                     existing_tech_ids = eln.technician_ids.ids or []
                     combined_tech_ids = list(set(existing_tech_ids) | set(eln_tech_ids))
 
-                    # update technician_ids
-                    eln.write({'technician_ids': [(6, 0, combined_tech_ids)]})
+                    # update technician_ids and days_casting
+                    eln.write({
+                        'technician_ids': [(6, 0, combined_tech_ids)],
+                        'days_casting': sample.days_casting
+                    })
 
                     # add missing parameter_result lines (avoid duplicates)
                     existing_results = {
@@ -1978,6 +1981,7 @@ class CreateSampleWizard(models.TransientModel):
                         'size_id': sample.size_id.id if sample.size_id else False,
                         'grade_id': sample.grade_id.id if sample.grade_id else False,
                         'department_id': sample.department_id,
+                        'days_casting': sample.days_casting,
                         'casting_date': sample.casting_date,
                         'quantity': sample.quantity,
                         'uom_id': sample.uom_id.id if sample.uom_id else False,
