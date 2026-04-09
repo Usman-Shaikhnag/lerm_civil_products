@@ -15,212 +15,110 @@
 				<div class="container_eln" style="padding-top:20px;">
 					
 					<div t-foreach="eln" t-as="o">
-						<!-- <table>
-							<tr>
-								<td colspan="3">Report no :
-								</td>
-								<td colspan="3">
-									<span t-field="o.kes_no"/>
-								</td>
-								<td colspan="3">Report Date :
-								<span t-field="o.end_date"/>
-								</td>
-								<td colspan="3">
-									<span t-field="o.srf_date"/>
-								</td>
-								<td colspan="3" t-if="nabl">ULR NO :
-								</td>
-								<td colspan="3" t-if="nabl">
-									<span t-field="o.sample_id.ulr_no"/>
-								</td>
-							</tr>
-						</table> -->
-						<table style="margin-top:10px; border:none">
-							<tr>
-								<td colspan="2" style=" font-weight: bold;">Client Details:</td>
-								<td colspan="10">
-									<span t-field="o.srf_id.customer.name"/><br />
+						<table style="width:100%; border-collapse: collapse;" border="1">
+
+						   <tr>
+								<td colspan="1">Customer Party Name :</td>
+								  <td colspan="2">
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.customer.name"/><br/>
 									<span t-field="o.srf_id.customer.street"/>
 									<span t-field="o.srf_id.customer.street2"/>
 									<span t-field="o.srf_id.customer.city"/>
 									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
 									<span t-field="o.srf_id.customer.state_id"/>
-									,
+											,
 									<span t-field="o.srf_id.customer.country_id"/>
-								</td>
+									</td>
+
+									<td colspan="1" style="text-align: center;">
+									<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 75px; height: 70px;"/>
+									</td>
+								
 							</tr>
 							<tr>
-								<!-- <td colspan="12">Project / Site Address :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.site_address.name"/>
-									<span t-field="o.srf_id.site_address.street"/>
-									<span t-field="o.srf_id.site_address.street2"/>
-									<span t-field="o.srf_id.site_address.city"/>
-									<span t-if="o.srf_id.site_address.zip" t-field="o.srf_id.site_address.zip"/>
-									<span t-field="o.srf_id.site_address.state_id"/>
-									<span t-field="o.srf_id.site_address.country_id"/>
-								</td> -->
-								<td colspan="2" style=" font-weight: bold;">Client Reference:</td>
-								<td colspan="10"><span t-field="o.srf_id.client_refrence"/></td>
+								<td style="width:25%;">Samples Description :-</td>
+								<td style="width:25%;"><span t-field="o.material.lab_name"/></td>
+
+								<td style="width:20%;">Customer's Ref. No :-</td>
+								<td style="width:20%;"><span t-field="o.srf_id.client_refrence"/></td>
 							</tr>
 
 							<tr>
-								<td colspan="2" style=" font-weight: bold;">Name of Work:</td>
-								<td colspan="10"><span t-field="o.srf_id.name_work"/></td>
-							</tr>
-						<!-- </table>
+								<!-- <td>Quantity of Samples :-</td>
+								<td>Litre</td> -->
+								<td>No. of Samples :-</td>
+								<td><span t-field="o.sample_id.quantity"/></td>
 
-						<table class="table" style="width:100%; font-size: 13px;"> -->
-							<tr>
-								<td colspan="2" style=" font-weight: bold;">Date of Testing:</td>
-								<td colspan="10">
-									<span t-field="o.start_date"/> to <span t-field="o.end_date"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="2" style="font-weight: bold;">Size:</td>
-								<td colspan="10">
-									<span t-field="o.sample_id.size_id.size"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="2" style="font-weight: bold;">Grade:</td>
-								<td colspan="10">
-									<span t-field="o.grade_id.grade"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="2" style="font-weight: bold;">Material/Test Name:</td>
-								<td colspan="10">
-									<span t-field="o.material.name"/>
+								<td>Letter Date :-</td>
+								<td>
+									
 								</td>
 							</tr>
 
-							<!-- Source of Sample (only if value exists) -->
-							<tr t-if="o.material.source_sample">
-								<td colspan="2" style="font-weight: bold;">Source of Sample</td>
-								<td colspan="10">
-									<span t-field="o.material.source_sample"/>
+							<tr>
+								<td>Date of Samples Received :-</td>
+								<td>
+									<span t-field="o.sample_id.sample_received_date"/>
+								</td>
+
+									<td>SRF No. :-</td>
+										<td >
+											<span t-field="o.srf_id"/>
+										</td>
+								
+							</tr>
+
+							<tr>
+								<td>Brand &amp; Grade :-</td>
+								<td><span t-field="o.sample_id.grade_id.grade"/></td>
+
+								<td>Date of Test Initiation  :-</td>
+								<td>
+									<span t-field="o.start_date"/>
 								</td>
 							</tr>
 
-							<!-- Test method adopted (only if value exists) -->
-							<tr t-if="o.material.test_method_adopted">
-								<td colspan="2" style="font-weight: bold;">Test method adopted:</td>
-								<td colspan="10">
+							<tr>
+								<td>Week No. :-</td>
+								<td></td>
+
+								<td>Date of Test Completion  :-</td>
+								<td>
+									<span t-field="o.end_date"/>
+								</td>
+							</tr>
+
+							<!-- <tr>
+								<td t-if="o.material.source_sample">Source of Sample :-</td>
+								<td><span t-field="o.material.source_sample"/></td>
+
+								<td t-if="o.material.test_method_adopted" >Test method adopted  :-</td>
+								<td>
 									<span t-field="o.material.test_method_adopted"/>
 								</td>
+							</tr> -->
+
+							<tr t-if="o.material.test_method_adopted" >
+								
+
+									<td >Test method adopted:</td>
+									<td colspan="3"><span t-field="o.material.test_method_adopted"/></td>
+
+							
 							</tr>
+							<tr t-if="o.material.source_sample">
+									<td style="font-weight: bold;">Source of Sample</td>
+									<td colspan="3"><span t-field="o.material.source_sample"/></td>
+								</tr>
 
 						</table>
-
 					</div>
+
 					<div style="text-align:center;">
 						<h4 class="mb-0" style="text-decoration: underline;">Results</h4>
 					</div>
-						<!-- <table style="margin-top:10px; width: 100%;">
-							<tbody>
-								<tr>
-									<td colspan="12">
-										<strong>Customer Party Name:</strong>
-										<span t-field="o.srf_id.customer.name"/>
-										<br/>
-										<span t-field="o.srf_id.customer.street"/>
-										<span t-field="o.srf_id.customer.street2"/>
-										<span t-field="o.srf_id.customer.city"/>
-										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
-										<span t-field="o.srf_id.customer.state_id"/> ,
-										<span t-field="o.srf_id.customer.country_id"/>
-									</td>
-								</tr>
-
-								<tr>
-									<td colspan="12">
-										<strong>Project / Site Address:</strong>
-										<span t-field="o.srf_id.name_work"/>
-									</td>
-								</tr>
-
-								<tr>
-									<td colspan="12">
-										<strong>Sample Description:</strong>
-										<span t-field="o.sample_id.sample_description"/>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-
-						<table style="width: 100%; margin-top:10px;">
-							<tbody>
-								<tr>
-									<td colspan="6">
-										<strong>Test Start Date:</strong>
-										<span t-field="o.start_date"/>
-									</td>
-									<td colspan="6">
-										<strong>Test End Date:</strong>
-										<span t-field="o.end_date"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="6">
-										<strong>Sample Id Mark:</strong>
-										<span t-field="o.sample_id.client_sample_id"/>
-									</td>
-									<td colspan="6">
-										<strong>Sample Receipt Date:</strong>
-										<span t-field="o.sample_id.sample_received_date"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="6">
-										<strong>Size:</strong>
-										<span t-field="o.sample_id.size_id.size"/>
-									</td>
-									<td colspan="6">
-										<strong>Grade:</strong>
-										<span t-field="o.sample_id.grade_id.grade"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="6">
-										<strong>Brand:</strong>
-										<span t-field="o.sample_id.brand"/>
-									</td>
-									<td colspan="6">
-										<strong>Consultant Name:</strong>
-										<span t-field="o.srf_id.consultant_name1"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="6">
-										<strong>Client Name:</strong>
-										<span t-field="o.srf_id.client"/>
-									</td>
-									<td colspan="6">
-										<strong>Client Reference:</strong>
-										<span t-field="o.srf_id.client_refrence"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="6">
-										<strong>Discipline:</strong>
-										<span t-field="o.discipline.discipline"/>
-									</td>
-									<td colspan="6">
-										<strong>Group:</strong>
-										<span t-field="o.group.group"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="12">
-										<strong>Material/Test Name:</strong>
-										<span t-field="o.material.name"/>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div> -->
+						
 					
 					<div>
 						<table class="table table-bordered" style="width:100%; text-align:center;">
@@ -326,45 +224,82 @@
 							</tbody>
 						</table>
 					</div>
-					<div style="margin-top:20px; page-break-inside: avoid;" class="noteContainer">
+
+
+
+
+
+
+
+					<div style="text-align:center;margin-top:2px">
+						......End of Report......
+					</div>
+							
+
+
+					<div style="margin-top:5px; page-break-inside: avoid;" class="signatureContainer girdgird">
 						<table class="table table-bordered">
-							<tr>
-								<td style="padding: 5px; font-style: italic; font-size: 12px;">
-									<b>Note:-</b>
-									&#160;&#160;(i) The results relate only to the items tested 
-									&#160;&#160;(ii) This test report should not be reproduced except in full, without written approval of this Laboratory 
-									&#160;&#160;(iii) Any corrections invalidate the test reports 
-									&#160;&#160;(iv) Any Query regarding the report must be reported immediately. 
-									&#160;&#160;(v) * mark indicate tests which are not in the scope of NABL. 
-									&#160;&#160;(vi) # mark indicates Details given by Client.
-									<t t-if="eln.has_witness">
-										&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
+						<tr>
+							<td style="padding: 5px; font-style: italic; font-size: 12px;">
+								
+								<!-- <t t-if="cement.notes_id">
+									<t t-foreach="cement.notes_id" t-as="n">
+										<div>
+											&#160;&#160;(<t t-esc="n.sr_no"/>) 
+											<t t-esc="n.notes"/>
+										</div>
 									</t>
-									<t t-if="eln.remarks">
-										&#160;&#160;<span t-esc="eln.remarks"/>
+								</t> -->
+								<t t-if="cement.notes_id">
+									<b>Conditions:-</b>
+
+									<t t-foreach="cement.notes_id" t-as="n">
+										<span>
+											(<t t-esc="n.sr_no"/>) 
+											<t t-esc="n.notes"/>
+											&#160;&#160;
+										</span>
 									</t>
-								</td>
-							</tr>
-						</table>
+								</t>
+							
+								<t t-if="eln.has_witness">
+									&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
+								</t>
+								<t t-if="eln.remarks">
+									&#160;&#160;<span t-esc="eln.remarks"/>
+								</t>
+							
+							</td>
+						</tr>
+					</table>
 					</div>
 
-					<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
+
+					
+						 <!-- Remarks Section -->
+
+                    
+
+
+
+
+
+
+					<div class="signatureContainer girdgird">
 						<div>
 							<div>
 								<b>
-								Checked By
+									Checked By
 								</b>
 							</div>
-							<div style="height:40px">
+							<div style="height:30px">
 
 							</div>
-
 							<div>
 								<b>
-									<span t-esc="eln.sample_id.check_by.name"/>
+									<span t-esc="eln.technician.name"/>
 								</b>
 							</div>
-
 							<div>
 								<b>
 									(<span t-esc="eln.sample_id.check_by.job_title"/>)
@@ -372,7 +307,14 @@
 							</div>
 						</div>
 
+						<!-- QR Code -->
+							<div style="text-align:center; margin-bottom:10px;">
+								<img t-att-src="'data:image/png;base64,%s' % (qrcode_static or '')"
+									style="width:75px; height:70px;"/>
+							</div>
+
 						<div>
+
 						<div>
 							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
 						</div>
@@ -380,54 +322,36 @@
 							Format No. <span t-esc="eln.material.test_format_no"/>
 						</div>
 					</div>
-
-
-
-
-
 						<div>
 							<div>
 								<b>
-									Approved By
+									Approved By 
 								</b>
+								
 							</div>
-							<div style="height:40px">
+							<div style="height:30px">
 
 							</div>
 							<div>
 								<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
+								<span t-esc="eln.sample_id.approved_by.name"/>
 								</b>
 							</div>
-
+						
 							<div>
 								<b>
 									(<span t-esc="eln.sample_id.approved_by.job_title"/>)
 								</b>
 							</div>
+							
 							<!-- <div>
 								<b>
-									(<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									(Authorized Signatory)
 								</b>
 							</div> -->
 						</div>
 					</div>
-					
-				<!-- </div> -->
-
-				
-
-
-
-				
-			</div>
-
-			<div style="margin-top: 10px; text-align: center;">
-				<p style="padding-top: 10px;">
-						...... End Of Report......
-				</p>
-			</div>
-		<!-- </div> -->
+					</div>
 
 	</t>
 </t>

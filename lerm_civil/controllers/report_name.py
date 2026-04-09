@@ -1176,7 +1176,7 @@ class ReportDownloadControllerPaving(http.Controller):
             if not eln.exists():
                 return werkzeug.exceptions.NotFound("ELN record not found")
 
-            report_name = 'paver_block.paving_block_report'
+            report_name = 'paving_block_report'
             pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
                 report_name, res_ids=[eln.id], data={'nabl': True}
             )

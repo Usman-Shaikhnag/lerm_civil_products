@@ -40,9 +40,8 @@ class BrickDatasheet1(models.AbstractModel):
 
 
 
-
 class BrickReport1(models.AbstractModel):
-    _name = 'report.brick.lerm_brick_repor'
+    _name = 'report.brick.lerm_brick_report'
     _description = 'Brick Report'
     
     @api.model

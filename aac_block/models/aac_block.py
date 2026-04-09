@@ -12,6 +12,7 @@ class AacBlockMechanical(models.Model):
     _rec_name = "name"
 
 
+
     name = fields.Char("Name",default="AAC Block")
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 
@@ -197,6 +198,59 @@ class AacBlockMechanical(models.Model):
             parameter_ids = user_param_results.mapped('parameter').ids
 
             record.sample_parameters = [(6, 0, parameter_ids)]
+
+
+
+
+
+    # remark
+
+    notes_id = fields.One2many('aac.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(AacBlockMechanical, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The report shall not be reproduced in fullor partially without written approval of the laboratory HOD/CEO/Maganement.',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'ampling is not done by us unless mentioned otherwide.',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'without a QR Code and hologram this report is considered invalid.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'The Result listed refer only to tested samples & applicable parameter Endorsement of product is neither interred nor inplied.',
+            }),
+
+            (0, 0, {
+                'sr_no': 'e',
+                'notes': 'The use or report for arbitration, publicity & evidence in legal dispute is forbidden except with prior written consent NBML Lab.',
+            }),
+             (0, 0, {
+                'sr_no': 'f',
+                'notes': 'Alldisputed are subject to Raipur jurisdiction 7 days correction to this report invalidates this report.',
+            }),
+
+             (0, 0, {
+                'sr_no': 'g',
+                'notes': 'Sample willbe destroyed after 30-days from the date of test report unless otherwise Specified.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
+
+
+
+
 
     # Dimension
     dimension_name = fields.Char(default="Dimension")
@@ -631,6 +685,14 @@ class AacCompressiveStrengthLine(models.Model):
                 record.compressive_strength = round(compressive_strength,2)
             else:
                 record.compressive_strength = 0
+
+
+class aacNotes(models.Model):
+    _name = "aac.notes"
+
+    parent_id = fields.Many2one('mechanical.aac.block',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
 
 
 

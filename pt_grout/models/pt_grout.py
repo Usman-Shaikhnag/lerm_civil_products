@@ -12,6 +12,7 @@ class PtGrout(models.Model):
     _rec_name = "name_fly"
 
 
+
     name_fly = fields.Char("Name",default="PT Grout")
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 
@@ -41,6 +42,43 @@ class PtGrout(models.Model):
 
 
     tests = fields.Many2many("mechanical.grout.test",string="Tests")
+
+
+
+
+
+    # remark
+
+    notes_id = fields.One2many('ptgrout.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(PtGrout, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
+
+
 
     # Fluidity
 
@@ -1032,3 +1070,13 @@ class Casting28DaysLine(models.Model):
                 record.compressive_strength = (record.crushing_load / record.crosssectional_area) * 1000
             else:
                 record.compressive_strength = 0
+
+
+
+
+class ptgroutNotes(models.Model):
+    _name = "ptgrout.notes"
+
+    parent_id = fields.Many2one('mechanical.pt.grout',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")

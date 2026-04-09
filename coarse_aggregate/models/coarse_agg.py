@@ -18,6 +18,7 @@ class CoarseAggregateMechanical(models.Model):
     avg_compacted_unit  = fields.Char("Compacted Density", compute="_compute_units", store=False)
 
 
+
     def prefill_data(self):
         # import wdb; wdb.set_trace()
         return {
@@ -93,6 +94,58 @@ class CoarseAggregateMechanical(models.Model):
             field_values[field_name] = field_value
 
         return field_values
+    
+
+
+
+
+
+    # remark
+
+    notes_id = fields.One2many('coarse.notes','parent_id',string="Notes",default=lambda self: self._default_notes_lines())
+
+
+    @api.model
+    def _default_notes_lines(self):
+        return [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The report shall not be reproduced in fullor partially without written approval of the laboratory HOD/CEO/Maganement.',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'ampling is not done by us unless mentioned otherwide.',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'without a QR Code and hologram this report is considered invalid.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'The Result listed refer only to tested samples & applicable parameter Endorsement of product is neither interred nor inplied.',
+            }),
+
+            (0, 0, {
+                'sr_no': 'e',
+                'notes': 'The use or report for arbitration, publicity & evidence in legal dispute is forbidden except with prior written consent NBML Lab.',
+            }),
+             (0, 0, {
+                'sr_no': 'f',
+                'notes': 'Alldisputed are subject to Raipur jurisdiction 7 days correction to this report invalidates this report.',
+            }),
+
+             (0, 0, {
+                'sr_no': 'g',
+                'notes': 'Sample willbe destroyed after 30-days from the date of test report unless otherwise Specified.',
+            }),
+        ]
+    
+    
+
+
+
+
+
 
 
 
@@ -2960,6 +3013,15 @@ class CrushingValueLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.sample_no = index + 1
+
+
+
+class coarseNotes(models.Model):
+    _name = "coarse.notes"
+
+    parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
 
 
 

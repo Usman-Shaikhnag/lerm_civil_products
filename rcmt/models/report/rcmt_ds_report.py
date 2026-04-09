@@ -94,7 +94,7 @@ class RcmtDatasheet(models.AbstractModel):
 
 class RCMTReport(models.AbstractModel):
     _name = 'report.rcmt.rcmt_mec_report'
-    _description = 'RCMT Report
+    _description = 'RCMT Report'
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -114,7 +114,7 @@ class RCMTReport(models.AbstractModel):
 
         # Static QR
         qr_static = qrcode.QRCode(box_size=6, border=2)
-        qr_static.add_data("https://www.lerm.in")
+        qr_static.add_data("https://nablwp.qci.org.in/CertificateScopenew?x=4Rf+3mOSznNeFNvAasH49g==&a=MTI0NDAx")
         qr_static.make(fit=True)
         buf_static = BytesIO()
         qr_static.make_image(fill_color="black", back_color="white").save(buf_static, format="PNG")

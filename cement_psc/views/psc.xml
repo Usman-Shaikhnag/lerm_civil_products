@@ -9,6 +9,7 @@
             <form create="false">
                 <sheet>
                     <h1>
+                
                         <field name="name" readonly="1" nolabel="1"/>
                     </h1>
                     <button type="object" class="oe_highlight" name="prefill_data" string="Prefill Data"/>
@@ -736,6 +737,26 @@
                         </tbody>
                     </table>
 
+
+                    
+                           <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
+
+                    
+
                     <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
                 </sheet>
             </form>
@@ -743,8 +764,8 @@
     </record>
 
         <record id="view_cement_ppc_prefill_data_form" model="ir.ui.view">
-            <field name="name">cement.ppc.prefill.data.form</field>
-            <field name="model">cement.ppc.prefill.data</field>
+            <field name="name">cement.psc.prefill.data.form</field>
+            <field name="model">cement.psc.prefill.data</field>
             <field name="arch" type="xml">
                 <form string="Prefill Data">
                     <group>
@@ -763,7 +784,7 @@
         <record id="action_cement_ppc_prefill_data_wizard" model="ir.actions.act_window">
             <field name="name">Prefill Data</field>
             <field name="type">ir.actions.act_window</field>
-            <field name="res_model">cement.ppc.prefill.data</field>
+            <field name="res_model">cement.psc.prefill.data</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_cement_ppc_prefill_data_form"/>
             <field name="target">new</field>

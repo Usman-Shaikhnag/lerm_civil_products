@@ -13,6 +13,7 @@ from scipy.optimize import minimize_scalar
 from io import BytesIO
 
 
+
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -79,6 +80,44 @@ class ConcreteDesign(models.Model):
         for record in self:
             print("Size iD",record.eln_ref.size_id)
             record.size_id = record.eln_ref.size_id.id
+
+
+
+
+
+            # remark
+
+    notes_id = fields.One2many('mixdesign.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(ConcreteDesign, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
+
+
+
 
     
     # # Parameter Name = 1) CONCRETE MIX DESIGN FOR GRADE OF M-40
@@ -2142,6 +2181,18 @@ class CombinedGrandingLine(models.Model):
                     record.combine_grading_all = 0.0
             else:
                 record.combine_grading_all = 0.0
+
+
+
+
+                
+class mixdesignNotes(models.Model):
+    _name = "mixdesign.notes"
+
+    parent_id = fields.Many2one('mechanical.concrete.design',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
+
 
 
 

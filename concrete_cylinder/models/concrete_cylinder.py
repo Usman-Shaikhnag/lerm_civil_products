@@ -13,6 +13,7 @@ class MechanicalConcreteCube(models.Model):
     _description = 'mechanical.concrete.cylinder'
     _rec_name = "name"
 
+
     name = fields.Char("Name",default="Compressive Strength of Concrete Cube")
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
@@ -26,6 +27,43 @@ class MechanicalConcreteCube(models.Model):
 
     cube_name = fields.Char("Name",default=" Concrete Cylinder")
     cube_visible = fields.Boolean("Chequered Visible",compute="_compute_visible")   
+
+
+
+
+
+    # remark
+
+    notes_id = fields.One2many('concretecylinder.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(MechanicalConcreteCube, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
+
+  
 
     def action_calculate_avg_strength(self):
         for rec in self:
@@ -843,3 +881,14 @@ class WaterLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
+
+
+
+
+class concretecylinderNotes(models.Model):
+    _name = "concretecylinder.notes"
+
+    parent_id = fields.Many2one('mechanical.concrete.cylinder',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")

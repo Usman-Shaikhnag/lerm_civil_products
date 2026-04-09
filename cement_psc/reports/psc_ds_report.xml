@@ -16,6 +16,7 @@
 						</div>
 						
 						
+					
 						<table style="margin-top:10px">
 
 							<tr cols="12">
@@ -1146,62 +1147,103 @@
 				<div class="container_eln" style="padding-top:70px;">
 				
 					<div class="" t-foreach="eln" t-as="o">
-						<table style="margin-top:10px; width: 100%; border-collapse: collapse;">
-							<tbody>
-								<tr>
-									<td style="width: 30%; padding: 5px;"><strong>Client Details</strong></td>
-									<td style="padding-left: 10px;">
-										<span t-field="o.srf_id.customer.name"/>
-										<span t-field="o.srf_id.customer.street"/>
-										<span t-field="o.srf_id.customer.street2"/>
-										<span t-field="o.srf_id.customer.city"/>
-										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
-										<span t-field="o.srf_id.customer.state_id"/> ,
-										<span t-field="o.srf_id.customer.country_id"/>
+						<table style="width:100%; border-collapse: collapse;" border="1">
+
+						   <tr>
+								<td colspan="1">#Customer Party Name :</td>
+								  <td colspan="2">
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.customer.name"/><br/>
+									<span t-field="o.srf_id.customer.street"/>
+									<span t-field="o.srf_id.customer.street2"/>
+									<span t-field="o.srf_id.customer.city"/>
+									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
+									<span t-field="o.srf_id.customer.state_id"/>
+											,
+									<span t-field="o.srf_id.customer.country_id"/>
+									</td>
+
+									<td colspan="1" style="text-align: center;">
+									<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 75px; height: 70px;"/>
 									</td>
 								
-								</tr>
+							</tr>
+							<tr>
+								<td style="width:25%;">Samples Description :-</td>
+								<td style="width:25%;"><span t-field="o.material.lab_name"/></td>
+
+								<td style="width:20%;">Customer's Ref. No :-</td>
+								<td style="width:20%;"><span t-field="o.srf_id.client_refrence"/></td>
+							</tr>
+
+							<tr>
+								<!-- <td>Quantity of Samples :-</td>
+								<td>Litre</td> -->
+								<td>No. of Samples :-</td>
+								<td><span t-field="o.sample_id.quantity"/></td>
+
+								<td>Letter Date :-</td>
+								<td>
+									
+								</td>
+							</tr>
+
+							<tr>
+								<td>Date of Samples Received :-</td>
+								<td>
+									<span t-field="o.sample_id.sample_received_date"/>
+								</td>
+
+									<td>SRF No. :-</td>
+										<td >
+											<span t-field="o.srf_id"/>
+										</td>
 								
-								<tr>
-									<td><strong>Client's Reference</strong></td>
-									<td style="padding-left: 10px;"><span t-field="o.srf_id.client_refrence"/></td>
-								</tr>
+							</tr>
 
-								<tr>
-									<td><strong>Name of Work</strong></td>
-									<td style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
-								</tr>
+							<tr>
+								<td>Brand &amp; Grade :-</td>
+								<td><span t-field="o.sample_id.grade_id.grade"/></td>
 
-								<tr>
-									<td><strong>Date of Testing</strong></td>
-									<td style="padding-left: 10px;">
-										<span t-field="o.start_date" style="margin-right:10px;"/> to 
-										<span t-field="o.end_date" style="margin-left:10px;"/>
-									</td>
-								</tr>
+								<td>Date of Test Initiation  :-</td>
+								<td>
+									<span t-field="o.start_date"/>
+								</td>
+							</tr>
 
-								<tr>
-									<td><strong>Type of Sample</strong></td>
-									<td style="padding-left: 10px;"><span t-field="o.material.name"/></td>
-								</tr>
+							<tr>
+								<td>Week No. :-</td>
+								<td></td>
 
-								<tr>
-									<td><strong>Grade of Sample</strong></td>
-									<td style="padding-left: 10px;"><span t-field="o.grade_id.grade"/></td>
-								</tr>
+								<td>Date of Test Completion  :-</td>
+								<td>
+									<span t-field="o.end_date"/>
+								</td>
+							</tr>
 
-								<!-- Source of Sample (only if value exists) -->
-								<tr t-if="o.material.source_sample">
+							<!-- <tr>
+								<td t-if="o.material.source_sample">Source of Sample :-</td>
+								<td><span t-field="o.material.source_sample"/></td>
+
+								<td t-if="o.material.test_method_adopted" >Test method adopted  :-</td>
+								<td>
+									<span t-field="o.material.test_method_adopted"/>
+								</td>
+							</tr> -->
+
+							<tr t-if="o.material.test_method_adopted" >
+								
+
+									<td >Test method adopted:</td>
+									<td colspan="3"><span t-field="o.material.test_method_adopted"/></td>
+
+							
+							</tr>
+							<tr t-if="o.material.source_sample">
 									<td style="font-weight: bold;">Source of Sample</td>
-									<td><span t-field="o.material.source_sample"/></td>
+									<td colspan="3"><span t-field="o.material.source_sample"/></td>
 								</tr>
 
-								<!-- Test method adopted (only if value exists) -->
-								<tr t-if="o.material.test_method_adopted">
-									<td style="font-weight: bold;">Test method adopted:</td>
-									<td><span t-field="o.material.test_method_adopted"/></td>
-								</tr>
-							</tbody>
 						</table>
 					</div>
 					<!-- <div style="margin-top:20px;">
@@ -1224,15 +1266,16 @@
 									<span t-esc="eln.material.test_parameter"/>
 								</th>
 								<th style="text-align: center;">
-									<span t-field="eln.material.method_reference"></span>
-								</th>
-
-								<th style="text-align: center;">
 								<span t-esc="eln.material.unit"/>
 									<!-- <span>
 										Unit
 									</span> -->
 								</th>
+								<th style="text-align: center;">
+									<span t-field="eln.material.method_reference"></span>
+								</th>
+
+								
 								
 								<th style="text-align: center;">
 									<!-- <span>
@@ -1264,12 +1307,17 @@
 									<t t-set="i" t-value="i+1"/>
 									
 								</td>
-								<td style="text-align: center;">
+								<td >
 									
 									<span>
 										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','12457800-372f-4775-9bcb-e9dd70e6e6df')]).parameter_name"/>
 									</span>
 									
+								</td>
+								<td style="text-align: center;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','12457800-372f-4775-9bcb-e9dd70e6e6df')]).unit.name"/>
+									</span>
 								</td>
 								<td style="text-align: center;">
 									<span>
@@ -1281,11 +1329,7 @@
 									</span>
 								</td>
 
-								<td style="text-align: center;">
-									<span>
-										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','12457800-372f-4775-9bcb-e9dd70e6e6df')]).unit.name"/>
-									</span>
-								</td>
+								
 								
 								
 								<td style="text-align: center;">
@@ -1317,12 +1361,17 @@
 									<t t-set="i" t-value="i+1"/>
 									
 								</td>
-								<td style="text-align: center;">
+								<td >
 									
 									<span>
 										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','23145870-372f-4775-9bcb-e9dd70e3587g')]).parameter_name"/>
 									</span>
 									
+								</td>
+									<td style="text-align: center;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','23145870-372f-4775-9bcb-e9dd70e3587g')]).unit.name"/>
+									</span>
 								</td>
 								<td style="text-align: center;">
 									<span>
@@ -1334,11 +1383,7 @@
 									</span>
 								</td>
 
-									<td style="text-align: center;">
-									<span>
-										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','23145870-372f-4775-9bcb-e9dd70e3587g')]).unit.name"/>
-									</span>
-								</td>
+								
 								
 								
 								<td style="text-align: center;">
@@ -1370,12 +1415,18 @@
 									<t t-set="i" t-value="i+1"/>
 									
 								</td>
-								<td style="text-align: center;">
+								<td >
 									
 									<span>
 										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','3012478fffrr-372f-4775-9bcb-e9dd70214578r')]).parameter_name"/>
 									</span>
 									
+								</td>
+
+									<td style="text-align: center;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','3012478fffrr-372f-4775-9bcb-e9dd70214578r')]).unit.name"/>
+									</span>
 								</td>
 								<td style="text-align: center;">
 									<span>
@@ -1387,11 +1438,7 @@
 									</span>
 								</td>
 
-								<td style="text-align: center;">
-									<span>
-										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','3012478fffrr-372f-4775-9bcb-e9dd70214578r')]).unit.name"/>
-									</span>
-								</td>
+							
 								
 								
 								<td style="text-align: center;">
@@ -1423,12 +1470,18 @@
 									<t t-set="i" t-value="i+1"/>
 									
 								</td>
-								<td style="text-align: center;">
+								<td >
 									
 									<span>
 										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','21457896f-372f-4775-9bcb-e9dd723547htui')]).parameter_name"/>
 									</span>
 									
+								</td>
+
+								<td style="text-align: center;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','21457896f-372f-4775-9bcb-e9dd723547htui')]).unit.name"/>
+									</span>
 								</td>
 								<td style="text-align: center;">
 									<span>
@@ -1440,11 +1493,7 @@
 									</span>
 								</td>
 
-								<td style="text-align: center;">
-									<span>
-										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','21457896f-372f-4775-9bcb-e9dd723547htui')]).unit.name"/>
-									</span>
-								</td>
+								
 								
 								
 								<td style="text-align: center;">
@@ -1476,12 +1525,18 @@
 									<t t-set="i" t-value="i+1"/>
 									
 								</td>
-								<td style="text-align: center;">
+								<td >
 									
 									<span>
 										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','01247gggty-372f-4775-9bcb-e9dd723547htui')]).parameter_name"/>
 									</span>
 									
+								</td>
+
+								<td style="text-align: center;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','01247gggty-372f-4775-9bcb-e9dd723547htui')]).unit.name"/>
+									</span>
 								</td>
 								<td style="text-align: center;">
 									<span>
@@ -1493,11 +1548,7 @@
 									</span>
 								</td>
 
-								<td style="text-align: center;">
-									<span>
-										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','01247gggty-372f-4775-9bcb-e9dd723547htui')]).unit.name"/>
-									</span>
-								</td>
+								
 								
 								
 								
@@ -1529,12 +1580,18 @@
 										<t t-set="i" t-value="i+1"/>
 										
 									</td>
-									<td style="text-align: center;">
+									<td >
 										
 										<span>
 											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','psc5478-30fe-4043-b518-015f5c60d916')]).parameter_name"/>
 										</span>
 										
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','psc5478-30fe-4043-b518-015f5c60d916')]).unit.name"/>
+										</span>
 									</td>
 									<td style="text-align: center;">
 										<span>
@@ -1546,11 +1603,7 @@
 										</span>
 									</td>
 
-									<td style="text-align: center;">
-										<span>
-											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','psc5478-30fe-4043-b518-015f5c60d916')]).unit.name"/>
-										</span>
-									</td>
+									
 									
 									
 									<td style="text-align: center;">
@@ -1581,12 +1634,18 @@
 										<t t-set="i" t-value="i+1"/>
 										
 									</td>
-									<td style="text-align: center;">
+									<td >
 										
 										<span>
 											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','987psc47-5e9c-4335-9ea2-2d87624c3061')]).parameter_name"/>
 										</span>
 										
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','987psc47-5e9c-4335-9ea2-2d87624c3061')]).unit.name"/>
+										</span>
 									</td>
 									<td style="text-align: center;">
 										<span>
@@ -1598,11 +1657,7 @@
 										</span>
 									</td>
 
-										<td style="text-align: center;">
-										<span>
-											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','987psc47-5e9c-4335-9ea2-2d87624c3061')]).unit.name"/>
-										</span>
-									</td>
+										
 									
 									
 									<td style="text-align: center;">
@@ -1636,12 +1691,18 @@
 										<t t-set="i" t-value="i+1"/>
 										
 									</td>
-									<td style="text-align: center;">
+									<td >
 										
 										<span>
 											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','0157yutr1034-372f-4775-9bcb-e9dd723547htui')]).parameter_name"/>
 										</span>
 										
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','0157yutr1034-372f-4775-9bcb-e9dd723547htui')]).unit.name"/>
+										</span>
 									</td>
 									<td style="text-align: center;">
 										<span>
@@ -1653,11 +1714,7 @@
 										</span>
 									</td>
 
-										<td style="text-align: center;">
-										<span>
-											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','0157yutr1034-372f-4775-9bcb-e9dd723547htui')]).unit.name"/>
-										</span>
-									</td>
+										
 									
 									
 									<td style="text-align: center;">
@@ -1693,10 +1750,15 @@
 									<t t-set="i" t-value="i+1"/>
 									
 								</td>
-								<td style="text-align: center;">
+								<td >
 									<span>
 										Compressive Strength
 									</span>
+								</td>
+
+								<td>
+									<span>
+									</span>									
 								</td>
 								
 									<td rowspan="4" style="text-align: center; vertical-align: middle;">
@@ -1709,10 +1771,7 @@
 									</span>
 								</td>
 								
-								<td>
-									<span>
-									</span>									
-								</td>
+								
 								<td>
 									<span>
 									</span>
@@ -1732,7 +1791,7 @@
 									<t t-set="i" t-value="i+1"/> -->
 									
 								</td>
-								<td style="text-align: center;">
+								<td >
 									
 									<span>
 										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','358789gtyg-372f-4775-9bcb-e9dd723547htui')]).parameter_name"/>
@@ -1776,7 +1835,7 @@
 									<t t-set="i" t-value="i+1"/> -->
 									
 								</td>
-								<td style="text-align: center;">
+								<td >
 									
 									<span>
 										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','555888ggghhjy-372f-4775-9bcb-e9dd723547htui')]).parameter_name"/>
@@ -1826,7 +1885,7 @@
 									<t t-set="i" t-value="i+1"/> -->
 									
 								</td>
-								<td style="text-align: center;">
+								<td >
 									
 									<span>
 										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','5777fffrrtt11-372f-4775-9bcb-e9dd723547htui')]).parameter_name"/>
@@ -1881,26 +1940,50 @@
 
 
 						<div style="margin-top:5px; page-break-inside: avoid;" class="signatureContainer girdgird">
-							<table class="table table-bordered">
-							<tr>
-								<td style="padding: 5px; font-style: italic; font-size: 12px;">
-									<b>Note:-</b>
-									&#160;&#160;(i) The results relate only to the items tested 
-									&#160;&#160;(ii) This test report should not be reproduced except in full, without written approval of this Laboratory 
-									&#160;&#160;(iii) Any corrections invalidate the test reports 
-									&#160;&#160;(iv) Any Query regarding the report must be reported immediately. 
-									&#160;&#160;(v) * mark indicate tests which are not in the scope of NABL. 
-									&#160;&#160;(vi) # mark indicates Details given by Client.
-									<t t-if="eln.has_witness">
-										&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
+						<table class="table table-bordered">
+						<tr>
+							<td style="padding: 5px; font-style: italic; font-size: 12px;">
+								
+								<!-- <t t-if="cement.notes_id">
+									<t t-foreach="cement.notes_id" t-as="n">
+										<div>
+											&#160;&#160;(<t t-esc="n.sr_no"/>) 
+											<t t-esc="n.notes"/>
+										</div>
 									</t>
-									<t t-if="eln.remarks">
-										&#160;&#160;<span t-esc="eln.remarks"/>
+								</t> -->
+								<t t-if="cement.notes_id">
+									<b>Conditions:-</b>
+
+									<t t-foreach="cement.notes_id" t-as="n">
+										<span>
+											(<t t-esc="n.sr_no"/>) 
+											<t t-esc="n.notes"/>
+											&#160;&#160;
+										</span>
 									</t>
-								</td>
-							</tr>
-						</table>
-						</div>
+								</t>
+							
+								<t t-if="eln.has_witness">
+									&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
+								</t>
+								<t t-if="eln.remarks">
+									&#160;&#160;<span t-esc="eln.remarks"/>
+								</t>
+							
+							</td>
+						</tr>
+					</table>
+					</div>
+
+
+
+
+						
+					
+
+
+
 						<div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -1913,7 +1996,8 @@
 								</div>
 								<div>
 									<b>
-										<span t-esc="eln.technician.name"/>
+										<!-- <span t-esc="eln.technician.name"/> -->
+										<span t-esc="eln.sample_id.check_by.name"/>
 									</b>
 								</div>
 								<div>
@@ -1921,6 +2005,12 @@
 										(<span t-esc="eln.sample_id.check_by.job_title"/>)
 									</b>
 								</div>
+							</div>
+
+								<!-- QR Code -->
+							<div style="text-align:center; margin-bottom:10px;">
+								<img t-att-src="'data:image/png;base64,%s' % (qrcode_static or '')"
+									style="width:75px; height:70px;"/>
 							</div>
 
 							<div>

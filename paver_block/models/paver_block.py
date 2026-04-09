@@ -14,6 +14,7 @@ class PaverBlock(models.Model):
     _rec_name = "name_paver"
 
 
+
     name_paver = fields.Char("Name",default="Paver Block")
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 
@@ -140,6 +141,60 @@ class PaverBlock(models.Model):
                 rec.area_paver = (20000 * rec.mass_specimen) / rec.mass_size
             else:
                 rec.area_paver = 0.0
+
+
+
+
+
+                # remark
+
+    notes_id = fields.One2many('paverblock.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(PaverBlock, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The report shall not be reproduced in fullor partially without written approval of the laboratory HOD/CEO/Maganement.',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'ampling is not done by us unless mentioned otherwide.',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'without a QR Code and hologram this report is considered invalid.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'The Result listed refer only to tested samples & applicable parameter Endorsement of product is neither interred nor inplied.',
+            }),
+
+            (0, 0, {
+                'sr_no': 'e',
+                'notes': 'The use or report for arbitration, publicity & evidence in legal dispute is forbidden except with prior written consent NBML Lab.',
+            }),
+             (0, 0, {
+                'sr_no': 'f',
+                'notes': 'Alldisputed are subject to Raipur jurisdiction 7 days correction to this report invalidates this report.',
+            }),
+
+             (0, 0, {
+                'sr_no': 'g',
+                'notes': 'Sample willbe destroyed after 30-days from the date of test report unless otherwise Specified.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
+
+
+
+
+
 
 
        # 3. Water Absorption
@@ -433,6 +488,18 @@ class PaverBlock(models.Model):
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+            if result.parameter.internal_id == '4609c439-2ee4-4e3e-b40c-334e95b2bbda':
+                result.calculated = True
+
+
+            if result.parameter.internal_id == 'f079957b-608f-40c0-aebd-0db011ab0f2c':
+                result.calculated = True
+
+            if result.parameter.internal_id == '549532ef-08e1-46f7-9565-bf034ce334f4':
+                result.calculated = True
+
+        
             
 
         return {
@@ -640,4 +707,20 @@ class ThicknesscorrectionLine(models.Model):
     #     records = self.sorted('id')
     #     for index, record in enumerate(records):
     #         record.serial_no = index + 1
+
+
+
+
+
+
+
+
+    
+class paverblockNotes(models.Model):
+    _name = "paverblock.notes"
+
+    parent_id = fields.Many2one('mechanical.paver.block',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
+
 

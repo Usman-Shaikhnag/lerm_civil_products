@@ -6,6 +6,7 @@ import math
 from decimal import Decimal
 from matplotlib import pyplot as plt
 from datetime import datetime, timedelta
+from odoo.exceptions import UserError
 # import io
 # from PIL import Image
 # import base64
@@ -33,6 +34,7 @@ class ELN(models.Model):
     kes_no = fields.Char(string="UID",tracking=True)
     discipline = fields.Many2one('lerm_civil.discipline',string="Discipline",tracking=4)
     lab_no_value = fields.Char(string="Value")
+    lab_location = fields.Many2one('lerm.lab.master',string="Lab Name")
     # lab_l_id = fields.Integer(string="Lab Locations",domain="[('parent_id', '=', discipline_id)]")
     # lab_l_id = fields.Many2one('lab.location', string="Lab Locations",domain="[('parent_id', '=', discipline_id)]")
     group = fields.Many2one('lerm_civil.group',string="Group")
@@ -272,9 +274,12 @@ class ELN(models.Model):
     def open_product_based_form(self):
         for record in self:
             # Sample ला target कर
+            
+            # ✅ First time run → state change
             if record.sample_id:
                 record.sample_id.state = '7-calculated'
-                
+            
+                    
         model_record = self.material.product_based_calculation.filtered(lambda r: r.grade.id == self.grade_id.id)
         model = model_record.ir_model.model
 

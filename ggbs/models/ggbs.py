@@ -21,10 +21,48 @@ class GgbsMechanical(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
 
+
+
     @api.depends('eln_ref')
     def _compute_grade_id(self):
         if self.eln_ref:
             self.grade = self.eln_ref.grade_id.id
+
+
+
+
+
+            # remark
+
+    notes_id = fields.One2many('ggbs.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(GgbsMechanical, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
+
 
 
     ## Normal Consistency
@@ -1542,6 +1580,15 @@ class SoundnessLeChatelierLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.sr_no = index + 1
+
+
+
+class ggbsNotes(models.Model):
+    _name = "ggbs.notes"
+
+    parent_id = fields.Many2one('mechanical.ggbs',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
 
 
 
