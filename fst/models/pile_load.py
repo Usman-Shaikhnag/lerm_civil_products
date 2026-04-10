@@ -4,6 +4,7 @@ from odoo.exceptions import UserError, ValidationError
 import base64
 import io
 import math
+import re
 import matplotlib.pyplot as plt
 
 # Constants for graph styling
@@ -17,8 +18,14 @@ class PileLoadTestParent(models.Model):
     _order = "rec_date desc, id desc"
 
     work_name = fields.Char("Name of Work")
-    contractor = fields.Char("Contractor")
-    client = fields.Char("Client")
+
+    client = fields.Many2one("res.partner", string="Client")
+    contractor = fields.Many2one(
+        "lerm.contractor.line",
+        string="Contractor",
+        domain="[('partner_id', '=', client)]"
+    )
+
     cover_image = fields.Binary("Cover Image")
 
     ulr = fields.Char("ULR No", copy=False, readonly=True)
@@ -39,6 +46,20 @@ class PileLoadTestParent(models.Model):
 
     signatory_name = fields.Char("Authorized Signatory")
     signatory_designation = fields.Char("Designation")
+    
+    rec_date_str = fields.Char(
+        "Report Date (Text)",
+        compute="_compute_rec_date_str",
+        store=True
+    )
+
+    @api.depends('rec_date')
+    def _compute_rec_date_str(self):
+        for rec in self:
+            if rec.rec_date:
+                rec.rec_date_str = rec.rec_date.strftime("%d-%m-%Y")
+            else:
+                rec.rec_date_str = False
 
     # DIRECT One2many - no related fields!
     loading_reading_ids = fields.One2many(
@@ -103,20 +124,6 @@ class PileLoadTestParent(models.Model):
     )
 
     analysis_text = fields.Text("Analysis of Test Results")
-    
-    rec_date_str = fields.Char(
-        "Report Date (Text)",
-        compute="_compute_rec_date_str",
-        store=True
-    )
-
-    @api.depends('rec_date')
-    def _compute_rec_date_str(self):
-        for rec in self:
-            if rec.rec_date:
-                rec.rec_date_str = rec.rec_date.strftime("%d-%m-%Y")
-            else:
-                rec.rec_date_str = False
 
     def action_generate_report_no(self):
         for rec in self:
@@ -131,19 +138,23 @@ class PileLoadTestParent(models.Model):
                 return
 
             lab = self.env['lerm.lab.master'].search([], limit=1)
-
             if not lab:
                 return
 
             year = fields.Date.today().strftime('%y')
 
-            cert = lab.lab_certificate_no or ''
-            loc = lab.lab_location_line[:1].location_code or ''
+            cert = (lab.lab_certificate_no or '').split('(')[0]
+            loc = (lab.lab_location_line[:1].location_code or '').split('(')[0]
 
-            seq = self.env['ir.sequence'].next_by_code(
+            seq_raw = self.env['ir.sequence'].next_by_code(
                 lab.ulr_sequence.code
             )
 
+            # Extract only the numeric part (with optional suffix like F)
+            match = re.search(r'(\d+F?)$', seq_raw)
+            seq = match.group(1) if match else ''
+
+            # import wdb;wdb.set_trace()
             rec.ulr = f"{cert}{year}{loc}{seq}"
 
     @api.depends('loading_reading_ids.mean_mm', 'unloading_reading_ids.mean_mm')
@@ -353,7 +364,6 @@ class PileLoadTestParent(models.Model):
             for line in rec.unloading_reading_ids:
                 line._compute_mean()
                 line._compute_split_dt()
-
             # 3️⃣ Force recompute of parent computed fields
             rec._compute_settlement_values()
             rec._compute_max_settlement()
@@ -426,14 +436,12 @@ class PileLoadTestParent(models.Model):
         copy=False
     )
 
-    
     @api.depends('loading_reading_ids.reading_datetime')
     def _compute_last_reading_datetime(self):
         for rec in self:
             dates = rec.loading_reading_ids.mapped('reading_datetime')
             dates = [d for d in dates if d]
             rec.last_reading_datetime = max(dates) if dates else False
-
 
 # NEW: Separate Loading Model
 class PileLoadReadingLoading(models.Model):
