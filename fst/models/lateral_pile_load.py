@@ -20,12 +20,8 @@ class LateralPileLoadTestParent(models.Model):
     name = fields.Char("Project Name", required=True)
     rec_date = fields.Date("Report Date")
     work_name = fields.Char("Name of Work")
-    client = fields.Many2one("res.partner", string="Client")
-    contractor = fields.Many2one(
-        "lerm.contractor.line",
-        string="Contractor",
-        domain="[('partner_id', '=', client)]"
-    )
+    client = fields.Char(string="Client")
+    contractor = fields.Char(string="Contractor")
 
     ulr = fields.Char("ULR No", copy=False, readonly=True)
     report_no = fields.Char("Report No", copy=False, readonly=True)

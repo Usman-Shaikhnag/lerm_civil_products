@@ -19,12 +19,8 @@ class PileLoadTestParent(models.Model):
 
     work_name = fields.Char("Name of Work")
 
-    client = fields.Many2one("res.partner", string="Client")
-    contractor = fields.Many2one(
-        "lerm.contractor.line",
-        string="Contractor",
-        domain="[('partner_id', '=', client)]"
-    )
+    client = fields.Char(string="Client")
+    contractor = fields.Char(string="Contractor")
 
     cover_image = fields.Binary("Cover Image")
 
@@ -150,11 +146,11 @@ class PileLoadTestParent(models.Model):
                 lab.ulr_sequence.code
             )
 
+            # import wdb;wdb.set_trace()
             # Extract only the numeric part (with optional suffix like F)
             match = re.search(r'(\d+F?)$', seq_raw)
             seq = match.group(1) if match else ''
 
-            # import wdb;wdb.set_trace()
             rec.ulr = f"{cert}{year}{loc}{seq}"
 
     @api.depends('loading_reading_ids.mean_mm', 'unloading_reading_ids.mean_mm')
