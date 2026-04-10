@@ -3,6 +3,7 @@ from datetime import timedelta
 from odoo.exceptions import UserError, ValidationError
 import base64
 import io
+import re
 import math
 import matplotlib.pyplot as plt
 
@@ -19,8 +20,12 @@ class RoutinePulloutPileLoadTestParent(models.Model):
     name = fields.Char("Project Name", required=True)
     rec_date = fields.Date("Report Date")
     work_name = fields.Char("Name of Work")
-    contractor = fields.Char("Contractor")
-    client = fields.Char("Client")
+    client = fields.Many2one("res.partner", string="Client")
+    contractor = fields.Many2one(
+        "lerm.contractor.line",
+        string="Contractor",
+        domain="[('partner_id', '=', client)]"
+    )
 
     ulr = fields.Char("ULR No", copy=False, readonly=True)
     report_no = fields.Char("Report No", copy=False, readonly=True)
@@ -53,6 +58,13 @@ class RoutinePulloutPileLoadTestParent(models.Model):
         copy=False
     )
 
+    content_ids = fields.One2many(
+        "routine.pullout.pile.load.report.content",
+        "parent_id",
+        string="Contents",
+        copy=False
+    )
+
     basic_data_ids = fields.One2many(
         "routine.pullout.pile.load.basic.data",
         "parent_id",
@@ -70,9 +82,9 @@ class RoutinePulloutPileLoadTestParent(models.Model):
     graph_image = fields.Binary("Load Displacement Graph")
 
     # ================= DISPLACEMENT SUMMARY =================
-    gross_displacement = fields.Float(compute="_compute_displacement", store=True)
-    net_displacement = fields.Float(compute="_compute_displacement", store=True)
-    rebound = fields.Float(compute="_compute_displacement", store=True)
+    gross_settlement = fields.Float(compute="_compute_settlement", store=True)
+    net_settlement = fields.Float(compute="_compute_settlement", store=True)
+    rebound = fields.Float(compute="_compute_settlement", store=True)
 
     
     rec_date_str = fields.Char(
@@ -81,6 +93,8 @@ class RoutinePulloutPileLoadTestParent(models.Model):
         store=True
     )
 
+    analysis_text = fields.Text("Analysis of Test Results")
+    
     @api.depends('rec_date')
     def _compute_rec_date_str(self):
         for rec in self:
@@ -102,23 +116,27 @@ class RoutinePulloutPileLoadTestParent(models.Model):
                 return
 
             lab = self.env['lerm.lab.master'].search([], limit=1)
-
             if not lab:
                 return
 
             year = fields.Date.today().strftime('%y')
 
-            cert = lab.lab_certificate_no or ''
-            loc = lab.lab_location_line[:1].location_code or ''
+            cert = (lab.lab_certificate_no or '').split('(')[0]
+            loc = (lab.lab_location_line[:1].location_code or '').split('(')[0]
 
-            seq = self.env['ir.sequence'].next_by_code(
+            seq_raw = self.env['ir.sequence'].next_by_code(
                 lab.ulr_sequence.code
             )
 
+            # Extract only the numeric part (with optional suffix like F)
+            match = re.search(r'(\d+F?)$', seq_raw)
+            seq = match.group(1) if match else ''
+
+            # import wdb;wdb.set_trace()
             rec.ulr = f"{cert}{year}{loc}{seq}"
 
     @api.depends('loading_reading_ids.mean_mm', 'unloading_reading_ids.mean_mm')
-    def _compute_displacement(self):
+    def _compute_settlement(self):
         for rec in self:
             loading_map = {}
 
@@ -139,9 +157,9 @@ class RoutinePulloutPileLoadTestParent(models.Model):
             rebound = rebound_lines[-1].mean_mm if rebound_lines else 0.0
             net = gross - rebound
 
-            rec.gross_displacement = round(gross, 2)
+            rec.gross_settlement = round(gross, 2)
             rec.rebound = round(rebound, 2)
-            rec.net_displacement = round(net, 2)
+            rec.net_settlement = round(net, 2)
 
 
     # ================= GRAPH =================
@@ -309,7 +327,7 @@ class RoutinePulloutPileLoadTestParent(models.Model):
             for line in rec.unloading_reading_ids:
                 line._compute_mean()
                 line._compute_split_dt()
-            rec._compute_displacement()
+            rec._compute_settlement()
 
     def print_report(self):
         self.ensure_one()
@@ -372,14 +390,12 @@ class RoutinePulloutPileLoadTestParent(models.Model):
         copy=False
     )
 
-    
     @api.depends('loading_reading_ids.reading_datetime')
     def _compute_last_reading_datetime(self):
         for rec in self:
             dates = rec.loading_reading_ids.mapped('reading_datetime')
             dates = [d for d in dates if d]
             rec.last_reading_datetime = max(dates) if dates else False
-
 
 # =================CHILD MODELS =================
 class RoutinePulloutPileLoadReadingLoading(models.Model):
