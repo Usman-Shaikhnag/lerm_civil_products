@@ -6189,13 +6189,13 @@ class ConsolidationBothCycleLine(models.Model):
 
     applied_pressure = fields.Float(string="Applied Pressure kg/cm²" , digits=(8,2))
     final_read = fields.Float(string="Final Dial Reading mm" ,digits=(8,3),compute="_compute_final_read", store=True)
-    delta_h = fields.Float(string=" Δ𝐻 cm" ,digits=(8,3),compute="_compute_delta_h" ,store=True)
-    specimen_height = fields.Float(string="Specimen Height (H) cm" ,digits=(8,3) , compute="_compute_specimen_height" ,store=True )
-    e_void = fields.Float(string="e = (H/Hs)-1" ,digits=(8,3) , compute="_compute_e_void1" ,store=True)
-    change_void = fields.Float(string="de", digits=(16,6), compute="_compute_change_void" ,store=True)
+    delta_h = fields.Float(string=" Δ𝐻 cm" ,digits=(8,4),compute="_compute_delta_h" ,store=True)
+    specimen_height = fields.Float(string="Specimen Height (H) cm" ,digits=(8,6) , compute="_compute_specimen_height" ,store=True )
+    e_void = fields.Float(string="e = (H/Hs)-1" ,digits=(8,6) , compute="_compute_e_void1" ,store=True)
+    change_void = fields.Float(string="de", digits=(16,10), compute="_compute_change_void" ,store=True)
     d_sigma = fields.Float(string=" dσ" ,digits=(16,6) , compute="_compute_d_sigma" ,store=True)
     av = fields.Float(string="aᵥ (cm²/kg)" ,digits=(16,6) ,compute="_compute_av" ,store=True)
-    mv = fields.Float("mᵥ (cm²/kg)", digits=(8, 3),compute="_compute_mv" ,store=True)
+    mv = fields.Float("mᵥ (cm²/kg)", digits=(8, 4),compute="_compute_mv" ,store=True)
 
     t90 = fields.Float("t₉₀ (min)", digits=(8, 3))
     Hav = fields.Float("Hav (cm)", digits=(8, 3))
@@ -6357,14 +6357,14 @@ class ConsolidationBothCycleLine(models.Model):
                 line.delta_h = row_2.delta_h
             elif row_8 and line.final_read not in (False, None):
                 # (C19 - C20) / 10
-                line.delta_h = (row_8.final_read - line.final_read) / 10.0
+                line.delta_h = round((row_8.final_read - line.final_read) / 10.0 , 4)
             else:
                 line.delta_h = 0.0
             continue
 
         # default rule: (prevC - currC) / 10
         if prev and prev.final_read not in (False, None) and line.final_read not in (False, None):
-            line.delta_h = round((prev.final_read - line.final_read) / 10.0 , 3)
+            line.delta_h = round((prev.final_read - line.final_read) / 10.0 , 4)
         else:
             line.delta_h = 0.0
 
@@ -6399,44 +6399,10 @@ class ConsolidationBothCycleLine(models.Model):
         prev_line = lines[idx - 1]
 
         base_H = prev_line.specimen_height or 0.0
-        line.specimen_height = round(base_H - (line.delta_h or 0.0), 3)
+        line.specimen_height = round(base_H - (line.delta_h or 0.0), 6)
 
 
     
-
-
-
-
-
-    # @api.depends('specimen_height', 'parent_id_con_out.con_height_solid')
-    # def _compute_e_void1(self):
-    #  for line in self:
-    #     Hs = line.parent_id_con_out.con_height_solid or 0.0
-    #     if Hs:
-    #         line.e_void = (line.specimen_height / Hs) - 1.0
-    #     else:
-    #         line.e_void = 0.0
-
-   
-
-    
-
-    # @api.depends('specimen_height', 'parent_id_con_out.con_height_solid')
-    # def _compute_e_void1(self):
-    #     for line in self:
-    #         Hs = line.parent_id_con_out.con_height_solid or 0.0
-
-    #         if Hs:
-    #             value = (line.specimen_height / Hs) - 1.0
-
-    #             # IMPORTANT FIX
-    #             value_decimal = Decimal(f"{value:.6f}")
-
-    #             d = value_decimal.quantize(Decimal('0.000'), rounding=ROUND_HALF_UP)
-
-    #             line.e_void = float(d)
-    #         else:
-    #             line.e_void = 0.0
 
     @api.depends('specimen_height', 'parent_id_con_out.con_height_solid')
     def _compute_e_void1(self):
@@ -6447,24 +6413,24 @@ class ConsolidationBothCycleLine(models.Model):
                 value = (line.specimen_height / Hs) - 1.0
 
                 # convert to string with enough precision
-                value_str = f"{value:.6f}"
+                value_str = f"{value:.7f}"
 
                 # split decimal
                 int_part, dec_part = value_str.split('.')
 
                 # take first 3 decimals
-                first_three = int(dec_part[:3])
+                first_four  = int(dec_part[:6])
 
                 # check 4th decimal
-                fourth = int(dec_part[3]) if len(dec_part) > 3 else 0
+                fifth  = int(dec_part[6]) if len(dec_part) > 6 else 0
 
                 # apply custom rule
-                if fourth >= 1:
-                    rounded = first_three + 1
+                if fifth >= 1:
+                    rounded = first_four  + 1
                 else:
-                    rounded = first_three
+                    rounded = first_four 
 
-                line.e_void = float(f"{int_part}.{str(rounded).zfill(3)}")
+                line.e_void = float(f"{int_part}.{str(rounded).zfill(6)}")
 
             else:
                 line.e_void = 0.0
@@ -6503,7 +6469,7 @@ class ConsolidationBothCycleLine(models.Model):
                 prev_line = lines[idx - 1]
 
         if prev_line:
-            line.change_void = (prev_line.e_void or 0.0) - (line.e_void or 0.0)
+            line.change_void = round((prev_line.e_void or 0.0) - (line.e_void or 0.0) , 10)
         else:
             line.change_void = 0.0
 
