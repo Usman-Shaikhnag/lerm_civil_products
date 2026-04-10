@@ -98,7 +98,7 @@ class BrickReport1(models.AbstractModel):
         
         return {
             'eln': eln,
-            'data' : general_data,
+            'brick' : general_data,
             'qrcode': qr_code,
             'nabl' : nabl,
             'qrcode_static': qr_static_b64,
