@@ -49,42 +49,48 @@
 					</table> -->
 			
 			<!-- <div style="height: 110px;"></div> -->
+			
 			<div style="width:100%;text-align:center; margin-bottom:10px; padding-top: 10px;">
+			    <div style="margin-bottom:5px;text-align:right;" t-if="report_type == 'pdf'" class="footertext">
+                    Page: <span class="page"/> / <span class="topage"/>
+                </div>
 				<div style="font-size:1rem"><b>Test Report</b></div>
 			</div>
 			<div class="container_eln row p-0" style="margin-right:4px;margin-left:4px;">
 
+			
+
 					<table>
 						<tr>
-							<td colspan="3">Test Report no :
+							<td style="font-weight:bold;" colspan="3">Test Report no :
 							</td>
 							
 							<t t-if="fromEln">
 								<td t-if="(eln.sample_id.scope == 'non_nabl')" colspan="3">
-									<span t-field="o.kes_no"/><span>N</span>
+									<span style="font-weight:bold;" t-field="o.kes_no"/><span>N</span>
 								</td>
-								<td t-if="(eln.sample_id.scope == 'nabl')" colspan="3">
-									<span t-field="o.kes_no"/>
+								<td  t-if="(eln.sample_id.scope == 'nabl')" colspan="3">
+									<span style="font-weight:bold;" t-field="o.kes_no"/>
 								</td>
 							</t>
 							<t t-else="">
 								<td t-if="(eln.sample_id.scope == 'non_nabl') or not nabl" colspan="3">
-									<span t-field="o.kes_no"/><span>N</span>
+									<span style="font-weight:bold;" t-field="o.kes_no"/><span>N</span>
 								</td>
 								<td t-if="(eln.sample_id.scope == 'nabl') or nabl" colspan="3">
-									<span t-field="o.kes_no"/>
+									<span style="font-weight:bold;" t-field="o.kes_no"/>
 								</td>
 							</t>
 							
-							<td colspan="3">Report Issue Date :
+							<td style="font-weight:bold;" colspan="3">Report Issue Date :
 							</td>
 							<td colspan="3">
-								<span t-field="o.end_date"/>
+								<span style="font-weight:bold;" t-field="o.end_date"/>
 							</td>
-							<td colspan="3"  t-if="nabl or fromEln">ULR NO :
+							<td style="font-weight:bold;" colspan="3"  t-if="nabl or fromEln">ULR NO :
 							</td>
 							<td colspan="3" t-if="nabl or fromEln">
-								<span t-field="o.sample_id.ulr_no"/>
+								<span style="font-weight:bold;" t-field="o.sample_id.ulr_no"/>
 							</td>
 						</tr>
 					</table>
@@ -99,19 +105,111 @@
         </div>
 		
 		<div t-attf-class="footer o_standard_footer">
-            <div class="text-center" style="padding-top:45px; border-top: 1px solid black">					
+
+		<t t-if="eln.sample_id.lab_location">
+					<div t-if="(eln.sample_id.scope == 'nabl' and nabl) or fromEln" class="col-12 imageContainer" >
+						<div style="text-align:center; margin:1px 0;">
+             <span style="background-color:#1f2a7a;color:#ffffff;font-weight:700;font-size:13px;padding:3px 10px;border-top:2px solid #0d1b5e;border-bottom:2px solid #0d1b5e;display:inline-block;border-radius:6px;">
+                      NABL ACCREDITED TESTING LABORATORY VIDE CERTIFICATE NO. TC - 15960 &amp; BIS CERTIFIED LABORATORY
+                 </span>
+                      </div>
+					</div>
+					
+					<div t-if="(eln.sample_id.scope == 'non_nabl' or not nabl) and not fromEln" class="col-12 imageContainer" >
+						<div style="text-align:center; margin:1px 0;">
+             <span style="background-color:#1f2a7a;color:#ffffff;font-weight:700;font-size:13px;padding:3px 10px;border-top:2px solid #0d1b5e;border-bottom:2px solid #0d1b5e;display:inline-block;border-radius:6px;">
+                      BIS CERTIFIED LABORATORY APPROVED BY GOVT. OF INDIA
+                 </span>
+                      </div>
+					</div>
+				</t>
+				<t t-else="">
+					<div t-if="(eln.sample_id.scope == 'nabl' and nabl) or fromEln" class="col-12 imageContainer" >
+						<div style="text-align:center; margin:1px 0;">
+             <span style="background-color:#1f2a7a;color:#ffffff;font-weight:700;font-size:13px;padding:3px 10px;border-top:2px solid #0d1b5e;border-bottom:2px solid #0d1b5e;display:inline-block;border-radius:6px;">
+                      NABL ACCREDITED TESTING LABORATORY VIDE CERTIFICATE NO. TC - 15960 &amp; BIS CERTIFIED LABORATORY
+                 </span>
+                      </div>
+					</div>
+					
+					<div t-if="(eln.sample_id.scope == 'non_nabl' or not nabl) and not fromEln" class="col-12 imageContainer" >
+						<div style="text-align:center; margin:1px 0;">
+             <span style="background-color:#1f2a7a;color:#ffffff;font-weight:700;font-size:13px;padding:3px 10px;border-top:2px solid #0d1b5e;border-bottom:2px solid #0d1b5e;display:inline-block;border-radius:6px;">
+                      BIS CERTIFIED LABORATORY APPROVED BY GOVT. OF INDIA
+                 </span>
+                      </div>
+					</div>
+				</t>
+
+		             
+
+		
+					   <table style="width:100%; border:1px solid black; border-collapse:separate; border-spacing:0;">
+                           <tr>
+
+                          <!-- QR -->
+                           <td style="width:15%; padding:2px; border:none;">
+                                   <t t-if="qrcode_static">
+                                    <img t-att-src="'data:image/png;base64,%s' % qrcode_static"
+                                   style="width:100%;"/>
+                                      </t>
+                               </td>
+
+                              <!-- CONDITIONS -->
+                              <td style="width:85%; padding:2px; font-size:13px; line-height:1.5; border:none;">
+                                 <span>
+                                     <b>Conditions:-</b><br/>
+                                    <t t-foreach="data.notes_id" t-as="n">
+                                (<t t-esc="n.sr_no"/>) 
+                                 <t t-esc="n.notes"/>
+                                  &#160;&#160;
+                                    </t>
+                                  </span>
+                                </td>
+
+                             </tr>
+                            </table>
+
+            <div class="text-center" style="padding-top:10px; border-top: 1px solid black">					
 				<div class="footerQR" style="">
 					<div style="">
 						<!-- <img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 75px; height: 70px;"/> -->
 						
 					</div>
+
+
+
+					<!-- <div style="text-align:left; margin-bottom:10px;">
+								<img t-att-src="'data:image/png;base64,%s' % (qrcode_static or '')"
+									style="width:75px; height:70px;"/>
+							</div>
 					
-					<div style="">
+					<div style="text-align:right; margin-bottom:10px;">
 						<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.footer_image.decode('utf-8')" style="height: 65px;" />
+					</div> -->
+
+
+
+					<div>
+					<span> 
+					Lab Office Address : 28/31, Urkura, Beside Akashwani Radio Station, Rawabhata Village, Dharsiwa, Bhanpuri, Birgaon, Raipur-493221, Chattisgarh, India Website :- www.nbmtlab.com, Contact: Email: nbmtl2017@gmail.com, Mob. : +91-9285284469, +91-8208537198, Tel. : 07771-2998056
+                    </span>
 					</div>
+
+
+
+
+
+
 					<!-- <div style="">
 						<img src="/lerm_civil/static/src/img/qr_image.png" style="width: 65px; height: 60px"/>
 					</div> -->
+
+
+
+
+
+
 					<div>
 					<!-- <img t-att-src="'data:image/png;base64,%s' % (qrcode_static or '')"
                          style="width:75px; height:70px;"/> -->
@@ -119,9 +217,9 @@
 					
 
 				</div>
-                <div style="margin-bottom:5px;" t-if="report_type == 'pdf'" class="footertext">
+                <!-- <div style="margin-bottom:5px;" t-if="report_type == 'pdf'" class="footertext">
                     Page: <span class="page"/> / <span class="topage"/>
-                </div>
+                </div> -->
 				
 					
             </div>	
