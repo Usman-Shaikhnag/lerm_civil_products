@@ -910,7 +910,7 @@ class DirectShearTest(models.Model):
     shear_load = fields.Float(string='Shear Load (kg)',compute="_compute_shear_load")
     area_of_specimen = fields.Float(string='Area of specimen before starting the test (cm2) (A0)')
     displacement_dial = fields.Integer(string='Displacement dial gauge reading')
-    displacement = fields.Float(string='Displacement in cm (δ)',compute="_compute_displacement", digits=(16, 3))
+    displacement = fields.Float(string='Displacement in cm (δ)',compute="_compute_settlement", digits=(16, 3))
     corrected_area = fields.Float(string='Corrected Area \n (A0-( δ *6)) or A0 (1- δ /6) in cm2 (A)',compute="_compute_corrected_area")
     shear_stress = fields.Float(string='Shear Stress (Kg/cm²)',compute="_compute_shear_stress")
 
@@ -923,7 +923,7 @@ class DirectShearTest(models.Model):
             )
 
     @api.depends('displacement_dial')
-    def _compute_displacement(self):
+    def _compute_settlement(self):
         for record in self:
             record.displacement = round((record.displacement_dial or 0) / 1000, 3)
 

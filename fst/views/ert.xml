@@ -204,7 +204,6 @@
             <field name="res_model">lerm.ert.dashboard</field>
             <field name="view_mode">kanban</field>
             <field name="target">current</field>
-            <field name="limit">1</field>
         </record>
 
         <record id="action_lerm_ert_parent" model="ir.actions.act_window">
@@ -252,7 +251,7 @@
             <field name="res_model">pullout.pile.load.test.parent</field>
             <field name="view_mode">tree,form</field>
         </record>
-
+        
         <record id="action_routine_pullout_pile_load_test_parent" model="ir.actions.act_window">
             <field name="name">Routine Pull-Out Pile Load Tests</field>
             <field name="res_model">routine.pullout.pile.load.test.parent</field>
@@ -268,12 +267,6 @@
         <record id="action_routine_lateral_pile_load_test" model="ir.actions.act_window">
             <field name="name">Routine Lateral Load Tests</field>
             <field name="res_model">routine.lateral.pile.load.test.parent</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
-        <record id="action_plate_load_test" model="ir.actions.act_window">
-            <field name="name">Plate Load Test</field>
-            <field name="res_model">fst.plate.load.test</field>
             <field name="view_mode">tree,form</field>
         </record>
 
@@ -394,17 +387,6 @@
                                     name="%(action_temp_monitoring)d"
                                     class="btn btn-lg"
                                     style="background:#ffb300; color:#000;">
-                                        Records
-                                    </a>
-                                </div>
-
-                                <!-- Plate Load Test -->
-                                <div class="card-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
-                                    <h3 class="title">Plate Load Test</h3>
-                                    <a type="action"
-                                    name="%(action_plate_load_test)d"
-                                    class="btn btn-lg"
-                                    style="background:#ffb300; color:#fff;">
                                         Records
                                     </a>
                                 </div>

@@ -17,8 +17,14 @@ class PileLoadTestParent(models.Model):
     _order = "rec_date desc, id desc"
 
     work_name = fields.Char("Name of Work")
-    contractor = fields.Char("Contractor")
-    client = fields.Char("Client")
+
+    client = fields.Many2one("res.partner", string="Client")
+    contractor = fields.Many2one(
+        "lerm.contractor.line",
+        string="Contractor",
+        domain="[('partner_id', '=', client)]"
+    )
+
     cover_image = fields.Binary("Cover Image")
 
     ulr = fields.Char("ULR No", copy=False, readonly=True)
@@ -117,20 +123,6 @@ class PileLoadTestParent(models.Model):
     )
 
     analysis_text = fields.Text("Analysis of Test Results")
-    
-    rec_date_str = fields.Char(
-        "Report Date (Text)",
-        compute="_compute_rec_date_str",
-        store=True
-    )
-
-    @api.depends('rec_date')
-    def _compute_rec_date_str(self):
-        for rec in self:
-            if rec.rec_date:
-                rec.rec_date_str = rec.rec_date.strftime("%d-%m-%Y")
-            else:
-                rec.rec_date_str = False
 
     def action_generate_report_no(self):
         for rec in self:
@@ -439,7 +431,6 @@ class PileLoadTestParent(models.Model):
         copy=False
     )
 
-    
     @api.depends('loading_reading_ids.reading_datetime')
     def _compute_last_reading_datetime(self):
         for rec in self:

@@ -24,8 +24,12 @@ class RoutinePileLoadTest(models.Model):
     name = fields.Char("Project Name", required=True)
     rec_date = fields.Date("Report Date")
     work_name = fields.Char("Name of Work")
-    contractor = fields.Char("Contractor")
-    client = fields.Char("Client")
+    client = fields.Many2one("res.partner", string="Client")
+    contractor = fields.Many2one(
+        "lerm.contractor.line",
+        string="Contractor",
+        domain="[('partner_id', '=', client)]"
+    )
 
     ulr = fields.Char("ULR No", copy=False, readonly=True)
     report_no = fields.Char("Report No", copy=False, readonly=True)
@@ -386,7 +390,7 @@ class RoutinePileLoadTest(models.Model):
         store=False,
         copy=False
     )
-    
+
     @api.depends('loading_reading_ids.reading_datetime')
     def _compute_last_reading_datetime(self):
         for rec in self:
