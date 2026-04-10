@@ -87,80 +87,60 @@
 							</tr>
 						</table>
 						
-						<table style="margin-top:10px;">
+						<table style="margin-top:10px; width:100%; border-collapse: collapse; table-layout: fixed;">
+    
+							<colgroup>
+								<col style="width:16%;"/>
+								<col style="width:84%;"/>
+							</colgroup>
+
 							<tr>
-								<td colspan="12"> Contractor Name :	
-									</td>
-								<td>
-									<span t-field="o.srf_id.customer.name"/><br/>
-								</td>
+								<td>Project Name : </td>
+								<td><span t-field="o.srf_id.name_work"/></td>
 							</tr>
 							<tr>
-								<td colspan="12"> Sample Description: </td>
-								<td>
-									<span t-field="o.sample_id.sample_description"/>
-								</td>
+								<td>Contractor Name : </td>
+								<td><span t-field="o.srf_id.customer.name"/></td>
 							</tr>
 							<tr>
-							
-								<td colspan="12"> Project Name : </td>
-								<td>
-									<span t-field="o.srf_id.name_work"/>
-								</td>
+								<td>Sample Description: </td>
+								<td><span t-field="o.sample_id.sample_description"/></td>
 							</tr>
-							<tr>
-							
-								<td colspan="12"> Name of Work/Subject : </td>
+							<!-- <tr>
+								<td> Project Name : </td>
 								<td>
 									<span t-field="o.material.name"/>
 								</td>
-							</tr>
+							</tr> -->
 							<tr>
-								<td colspan="12"> Description Of Sample :
-								</td>
-								<td>
-									<span t-field="data.age_of_days"/>
-								</td>
-								
+								<td>Description Of Sample :</td>
+								<td><span t-field="data.age_of_days"/></td>
 							</tr>
 
 							<tr>
-							   <td colspan="12"> Type of Sample :
-									</td>
-								<td>
-									<span t-field="o.material.name"/>
-								</td>
-							</tr>
-
-						
-
-							<tr>
-							   <td colspan="12"> Date of Completion :
-									</td>
-								<td>
-									<span t-field="o.end_date"/>
-								</td>
+								<td>Type of Sample :</td>
+								<td><span t-field="o.material.name"/></td>
 							</tr>
 
 							<tr>
-							   <td colspan="12"> Curing Condition :
-									</td>
-								<td>
-									<span t-field="data.curing_condition"/>
-								</td>
+								<td>Date of Completion :</td>
+								<td><span t-field="o.end_date"/></td>
+							</tr>
+
+							<tr>
+								<td>Curing Condition :</td>
+								<td><span t-field="data.curing_condition"/></td>
 							</tr>
 
 							<tr t-if="o.material.source_sample">
-									<td style="font-weight: bold;">Source of Sample</td>
-									<td><span t-field="o.material.source_sample"/></td>
-								</tr>
-
-								
-								<tr t-if="o.material.test_method_adopted">
-									<td style="font-weight: bold;">Test method adopted:</td>
-									<td><span t-field="o.material.test_method_adopted"/></td>
-								</tr>
+								<td style="font-weight: bold;">Source of Sample</td>
+								<td><span t-field="o.material.source_sample"/></td>
+							</tr>
 							
+							<tr t-if="o.material.test_method_adopted">
+								<td style="font-weight: bold;">Test method adopted:</td>
+								<td><span t-field="o.material.test_method_adopted"/></td>
+							</tr>
 						</table>
 					
 					
