@@ -592,20 +592,10 @@ class MechanicalConcreteCubeLine(models.Model):
 
     area_of_cube = fields.Float(string="Area of Cube",compute="_compute_area_cube",store=True)
 
-    @api.depends('parent_id.size_id.size')
+    @api.depends('length', 'breadth')
     def _compute_area_cube(self):
-        import re
         for record in self:
-            size_str = record.parent_id.size_id.size
-            if size_str:
-                match = re.search(r'\d+', str(size_str))
-                if match:
-                    side = int(match.group())
-                    record.area_of_cube = side * side  # or whatever formula
-                else:
-                    record.area_of_cube = 0
-            else:
-                record.area_of_cube = 0
+            record.area_of_cube = record.length * record.breadth
 
 
 
@@ -615,10 +605,10 @@ class MechanicalConcreteCubeLine(models.Model):
 
     
 
-    @api.depends('load', 'parent_id.area_of_cube')
+    @api.depends('load', 'area_of_cube')
     def _compute_strength(self):
         for record in self:
-            area = record.parent_id.area_of_cube
+            area = record.area_of_cube
             if area:
                 record.compressive_strength = (record.load * 1000) / area
             else:
