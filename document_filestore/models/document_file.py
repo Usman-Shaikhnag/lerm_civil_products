@@ -258,7 +258,6 @@ class DriveFile(models.Model):
             if not file.external_url:
                 continue
                 
-<<<<<<< HEAD
             if file.external_url.startswith(storage.name):
                 remote_path = f"/home/{file.external_url}"
             else:
@@ -267,13 +266,6 @@ class DriveFile(models.Model):
             try:
                 sftp.stat(remote_path)
             except FileNotFoundError:
-=======
-            remote_path = file.sudo()._get_sftp_remote_path(sftp, storage.name, file.external_url)
-                
-            try:
-                sftp.stat(remote_path)
-            except IOError:
->>>>>>> 5ad20fd5238828436f69896b2d852822c3723efe
                 missing_ids.append(file.id)
                 missing_names.append(file.name)
             except Exception:
