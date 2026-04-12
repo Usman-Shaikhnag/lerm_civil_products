@@ -3196,7 +3196,7 @@
 								<td style="border:1px solid black; padding:4px;">gm</td>
 
 								<td colspan="2" style="border:1px solid black; padding:4px;"><b>Height of Solids, Hs</b></td>
-								<td style="border:1px solid black; padding:4px;"><span t-esc="sweeling.swelling_height"/></td>
+								<td style="border:1px solid black; padding:4px;"><span t-esc="round(sweeling.height_solid or 0, 2)"/></td>
 								<td colspan="2" style="border:1px solid black; padding:4px;">cm</td>
 							</tr>
 
@@ -3230,7 +3230,7 @@
 
 								<td colspan="2" style="border:1px solid black; padding:4px;"><b>Dry Density of Soil</b></td>
 								<td style="border:1px solid black; padding:4px;">
-								<span t-esc="round(sweeling.height_solid or 0, 2)"/>
+								<span t-esc="round(sweeling.dry_density_soil or 0, 2)"/>
 								<!-- <span t-esc="sweeling.height_solid"/> -->
 								</td>
 								<td colspan="2" style="border:1px solid black; padding:4px;">gm/cc</td>
@@ -3262,7 +3262,7 @@
 								<td style="border:1px solid black; padding:4px;">%</td>
 
 								<td colspan="2" style="border:1px solid black; padding:4px;"><b>Degree of Saturation, Sr</b></td>
-								<td style="border:1px solid black; padding:4px;"><span t-esc="sweeling.degree_sat_1"/></td>
+								<td style="border:1px solid black; padding:4px;"><span t-esc="sweeling.degree_sat"/></td>
 								<td colspan="2" style="border:1px solid black; padding:4px;">%</td>
 							</tr>
 
@@ -3792,11 +3792,11 @@
 
             <!-- 🔹 RESULT -->
             <div style="margin-top:20px; text-align:center; font-weight:bold;">
-				Cohesion (c) = <span t-esc="direct.cohesion"/> kg/cm²
+				Cohesion (c) = <span t-esc="round(direct.cohesion, 2)"/> kg/cm²
 			</div>
 
 			<div style="margin-top:5px; text-align:center; font-weight:bold;">
-				φ = <span t-esc="direct.phi"/> °
+				φ = <span t-esc="int(round(direct.phi))"/> °
 			</div>
 
 			</div>
