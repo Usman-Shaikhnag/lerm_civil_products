@@ -80,7 +80,7 @@
 							</tr>
 
 							<tr>
-							<td><strong>Size of Sample</strong> : <span t-field="o.sample_id.size_id.size"/></td>
+							<!-- <td><strong>Size of Sample</strong> : <span t-field="o.sample_id.size_id.size"/></td> -->
 							<td><strong>Area Of Cube  : </strong><span t-field="data.area_of_cube"/>  Sq.mm</td>
 										
 								</tr>
@@ -465,7 +465,7 @@
 							</tr>
 
 							<t t-set="i" t-value="0"/>
-							<tr t-foreach="data.child_lines" t-as="r">
+							<tr t-foreach="data.wpt_child_lines" t-as="r">
 								<td colspan="1">
 									<div>
 										<span t-esc="i + 1" />

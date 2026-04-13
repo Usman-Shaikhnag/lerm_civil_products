@@ -222,11 +222,11 @@
                          <tbody>
                             <tr>
                               <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Temperature °c</span></td>
-                              <td style="border: 1px solid black; padding: 8px;"><field name="temp_wpt"/></td>
+                              <td style="border: 1px solid black; padding: 8px;"><field name="temp_wpt"  class="blue-input"/></td>
                             </tr>
                             <tr>
                             <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Humidity %</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field name="humidity_percent_wpt"/></td>
+                            <td style="border: 1px solid black; padding: 8px;"><field name="humidity_percent_wpt" class="blue-input"/></td>
                             </tr>
                                  
                          </tbody>
@@ -239,7 +239,7 @@
                          <tbody>
                             <tr>
                               <td style="border: 1px solid black; padding: 12px; font-weight: bold;"><span>Quantity</span></td>
-                              <td style="border: 1px solid black; padding: 8px;width:200px;"><field name="quantity"  exception="quantity" identity="extra"/></td>
+                              <td style="border: 1px solid black; padding: 8px;width:200px;"><field name="quantity"  exception="quantity" identity="extra" class="blue-input"/></td>
                             </tr>
                             <!-- <tr>
                             <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Specimen Size (mm)</span></td>
@@ -311,10 +311,10 @@
                       
                         <field name="wpt_child_lines" colspan="2" nolabel="1">
                         <tree editable="bottom" class="custom_table_borders">
-                            <field name="sample" string="Sample"/>
-                            <field name="depth1" string="1"/>
-                            <field name="depth2" string="2"/>
-                            <field name="depth3" string="3"/>
+                            <field name="sample" string="Sample" class="blue-input" decoration-info="sample != 0"/>
+                            <field name="depth1" string="1" class="blue-input" decoration-info="depth1 != 0"/>
+                            <field name="depth2" string="2" class="blue-input" decoration-info="depth2 != 0"/>
+                            <field name="depth3" string="3" class="blue-input" decoration-info="depth3 != 0"/>
                             <field name="average" string="Average"/>
                         </tree>
                         </field>
