@@ -25,7 +25,7 @@ class PlateLoadTest(models.Model):
     _name = "lerm.plate.load.test"
     _rec_name = "project_name"
 
-    # --- Meta / Cover Block ---
+    # --- Meta / cover Block ---
     project_name = fields.Char("Project Name", compute="_compute_eln_data", store=True)
     site_address = fields.Char("Site Address", compute="_compute_eln_data", store=True)
     test_start_date = fields.Date("Test Start Date", compute="_compute_eln_data", store=True)
@@ -171,7 +171,7 @@ class PlateLoadTest(models.Model):
             json.dumps({"data": data, "sig": signature}).encode()
         ).decode()
 
-        react_url = f"http://147.93.154.53:5173/temp_monitoring/plate_load_test?token={token}"
+        react_url = f"https://demo17.lerm.in/temp_monitoring/plate_load_test?token={token}"
         # react_url = f"http://localhost:3000/plate_load_test?token={token}"
 
         return {

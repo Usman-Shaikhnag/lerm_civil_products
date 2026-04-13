@@ -12,6 +12,7 @@ import io, base64
 from math import sqrt, pi
 import math
 
+
 class SoilResistivity(models.Model):
     _name = "soil.resistivity"
     _inherit = "lerm.eln"
@@ -27,6 +28,39 @@ class SoilResistivity(models.Model):
 
     graph_images = fields.One2many('soil.resistivity.line', 'parent_id',string="Graphs")
     line_ids = fields.One2many("soil.resistivity.line", "parent_id", string="Resistivity Table")
+
+
+
+
+    # remark
+
+    notes_id = fields.One2many('soilresistivity.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(SoilResistivity, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
 
 
 
@@ -359,105 +393,7 @@ class SoilResistivityLine(models.Model):
         self.area = area
         self.radius = radius_equiv
 
-    # def action_generate_graph(self):
-    #     def _radar_factory(num_vars, frame='polygon', proj_name='radar_poly'):
-    #         theta_vars = np.linspace(0, 2*np.pi, num_vars, endpoint=False)
-
-    #         class RadarAxes(PolarAxes):
-    #             name = proj_name
-
-    #             def _gen_axes_patch(self):
-    #                 if frame == 'polygon':
-    #                     return RegularPolygon((0.5, 0.5), num_vars, radius=.5, edgecolor="0.5")
-    #                 return super()._gen_axes_patch()
-
-    #             def _gen_axes_spines(self):
-    #                 if frame == 'polygon':
-    #                     spine = Spine(axes=self, spine_type='circle',
-    #                                 path=Path.unit_regular_polygon(num_vars))
-    #                     spine.set_transform(Affine2D().scale(.5).translate(.5, .5) + self.transAxes)
-    #                     return {'polar': spine}
-    #                 return super()._gen_axes_spines()
-
-    #             def set_varlabels(self, labels):
-    #                 self.set_thetagrids(np.degrees(theta_vars), labels)
-
-    #         register_projection(RadarAxes)
-    #         return theta_vars, proj_name
-
-    #     for rec in self:
-    #         labels = ["N","NE","E","SE","S","SW","W","NW"]
-
-    #         # Take values from this line only
-    #         values = [
-    #             rec.resistivity_n,
-    #             rec.resistivity_ne,
-    #             rec.resistivity_e,
-    #             rec.resistivity_se,
-    #             rec.resistivity_s,
-    #             rec.resistivity_sw,
-    #             rec.resistivity_w,
-    #             rec.resistivity_nw,
-    #         ]
-
-    #         # Equivalent avg resistivity (exclude zeros)
-    #         nonzero = [v for v in values if v]
-    #         equivalent_resistivity = (sum(nonzero)/len(nonzero)) if nonzero else 0
-
-    #         theta_vars, proj_name = _radar_factory(8, frame='polygon')
-    #         theta_closed = np.r_[theta_vars, theta_vars[0]]
-
-    #         scale = 0.50
-    #         values_scaled = [v * scale for v in values]
-    #         values_scaled_closed = values_scaled + [values_scaled[0]]
-
-    #         fig, ax = plt.subplots(figsize=(7, 7), subplot_kw=dict(projection=proj_name))
-
-    #         ax.set_theta_zero_location("N")
-    #         ax.set_theta_direction(-1)
-    #         ax.set_xticks(theta_vars)
-    #         ax.set_xticklabels(labels, fontsize=10)
-    #         for t in ax.get_xticklabels():
-    #             t.set_rotation(0); t.set_ha("center"); t.set_va("center")
-    #         ax.set_rlabel_position(0)
-    #         ax.grid(True, linewidth=0.6, alpha=0.6)
-
-    #         ax.plot(theta_closed, values_scaled_closed, color="blue", linewidth=1.5, label="Measured Resistivity")
-    #         ax.scatter(theta_vars, values_scaled, color="blue", s=30, zorder=5)
-
-    #         for ang, val_s, val in zip(theta_vars, values_scaled, values):
-    #             if val:
-    #                 rotation = np.degrees(ang)
-    #                 if rotation > 90 and rotation < 270:
-    #                     rotation += 180  # flip text to stay upright
-    #                 elif rotation == 90:
-    #                     rotation = 0
-    #                 elif rotation == 270:
-    #                     rotation = 0
-
-    #                 ax.text(
-    #                     ang, val_s * 0.80, f"{val:.2f}",
-    #                     ha="center", va="center", fontsize=8,
-    #                     rotation=rotation,rotation_mode="anchor",
-    #                     )
-
-    #         circle_theta = np.linspace(0, 2*np.pi, 360)
-    #         circle_radius = equivalent_resistivity * scale
-    #         ax.plot(circle_theta, [circle_radius] * len(circle_theta),
-    #                 color="red", linewidth=2.5, alpha=0.9, label="Equivalent Resistivity")
-
-    #         ax.set_ylim(0, max(values_scaled) * 1.2 if any(values_scaled) else 1)
-
-    #         plt.figtext(0.10, 0.02, f"Equivalent radius (i.e., avg. Resistivity) = {equivalent_resistivity:.2f} Ωm",
-    #                     ha="left", fontsize=10)
-    #         plt.figtext(0.10, 0.00, "Corrosion assessment = Very mild corrosive",
-    #                     ha="left", fontsize=10)
-
-    #         buf = io.BytesIO()
-    #         plt.savefig(buf, format="png")
-    #         plt.close(fig)
-    #         buf.seek(0)
-    #         rec.graph_image = base64.b64encode(buf.read()).decode("utf-8")
+   
 
     @api.model
     def create(self, vals):
@@ -486,3 +422,14 @@ class SoilResistivityPinLine(models.Model):
     pin_spacing = fields.Float("Pin Spacing (m)")
     equivalent_radius = fields.Float("Equivalent Radius")
     class_of_soil = fields.Char("Class of Soil")
+
+
+
+
+    
+class soilresistivityNotes(models.Model):
+    _name = "soilresistivity.notes"
+
+    parent_id = fields.Many2one('soil.resistivity',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")

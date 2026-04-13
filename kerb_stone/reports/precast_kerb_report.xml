@@ -119,7 +119,7 @@
                     <div t-if="data.transverse_visible" style="margin-top:20px">
                             <div style="text-align:center;font-size:18px">
                                 <!-- Transverse Strength -->
-								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','0b48abe6-07a4-4345-bcc1-30ff6e4830af')]).parameter_name"/>
+								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','0b48abe6-07a4-4345-bcc1-30ff6e4830af')]).parameter_name"/>
 
                             </div>
                             
@@ -173,7 +173,7 @@
                     <div t-if="data.water_absorbtion_visible" style="margin-top:20px">
                         <div style="text-align:center;font-size:18px">
                             <!-- Water Absorbtion -->
-							<span t-field="env['lerm.parameter.master'].search([('internal_id','=','f913fc79-eeb4-4e16-a7fc-75608384d9b0')]).parameter_name"/>
+							<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','f913fc79-eeb4-4e16-a7fc-75608384d9b0')]).parameter_name"/>
                         </div>
                         
 
@@ -236,7 +236,7 @@
                     </div>
 
 					<div style="page-break-inside: avoid;">
-						<div style="margin-top:20px" class="noteContainer">
+						<!-- <div style="margin-top:20px" class="noteContainer">
 							<div>
 								<b>Note :-</b>
 							</div>
@@ -264,7 +264,39 @@
 									</li>
 								</ul>
 							</div>
+						</div> -->
+
+
+
+
+						 <!-- Remarks Section -->
+
+                    <div style="margin-top:50px" class="noteContainer">
+						<table >
+							<tr>
+							
+								<td style="padding: 5px; font-style: italic; font-size: 15px; line-height: 18px;">
+									<b>Remarks:</b><br/><br/>
+									    * Refer to Annexure-I for environmental and test conditions<br/><br/>
+									    * Refer to Annexure-I (A) to know NABL accredited scope, range and uncertainty of measurement for test parameter<br/><br/>
+
+									<b>Notes:-</b><br/><br/>
+								    	<!-- a. The information marked with an # received from customer<br/><br/>
+							        	b. The results listed refer only to tested parameters and sample as received from customer<br/><br/>
+							        	c. The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.<br/><br/>
+							        	d. This document shall not be reproduced in part or full without the approval of Genstru. -->
+
+										<t t-if="data.notes_id">
+										<t t-foreach="data.notes_id" t-as="n">
+											<span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span><br/><br/>
+										</t>
+									</t>
+								</td>
+							</tr>
+							</table  >
 						</div>
+
+
 						<div class="signatureContainer girdgird">
 							<div>
 								<div>

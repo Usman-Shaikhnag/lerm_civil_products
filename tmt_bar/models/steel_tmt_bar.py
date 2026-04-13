@@ -10,6 +10,7 @@ class SteelTmtBarLine(models.Model):
     _inherit = "lerm.eln"
     _rec_name = "name"
    
+
     
     Id_no = fields.Char("ID No")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
@@ -41,6 +42,40 @@ class SteelTmtBarLine(models.Model):
 
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     tests = fields.Many2many("mechanical.tmt.test",string="Tests")
+
+
+
+    # remark
+
+    notes_id = fields.One2many('steeltmtbar.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(SteelTmtBarLine, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+    
+
     # fracture_visible = fields.Boolean("Fracture visible",compute="_compute_visible",store=True)
     # bend_visible = fields.Boolean("Bend visible",compute="_compute_visible",store=True)
     # rebend_visible = fields.Boolean("Rebend visible",compute="_compute_visible",store=True)
@@ -724,3 +759,12 @@ class MechanicalTmtTest(models.Model):
     _name = "mechanical.tmt.test"
     _rec_name = "name"
     name = fields.Char("Name")
+
+
+
+class steeltmtbarNotes(models.Model):
+    _name = "steeltmtbar.notes"
+
+    parent_id = fields.Many2one('steel.tmt.bar',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
