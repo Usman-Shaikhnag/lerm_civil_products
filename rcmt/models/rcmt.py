@@ -534,6 +534,7 @@ class RCMT(models.Model):
     
 
 
+
 class DimensionRcmt(models.Model):
     _name = "mechanical.dimension.rcmt.line"
     parent_id = fields.Many2one('mechanical.rcmt',string="Parent Id")
