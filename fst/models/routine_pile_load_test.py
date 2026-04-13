@@ -3,6 +3,7 @@ from datetime import timedelta
 from odoo.exceptions import UserError, ValidationError
 import base64
 import io
+import re
 import math
 import matplotlib.pyplot as plt
 
@@ -129,19 +130,23 @@ class RoutinePileLoadTest(models.Model):
                 return
 
             lab = self.env['lerm.lab.master'].search([], limit=1)
-
             if not lab:
                 return
 
             year = fields.Date.today().strftime('%y')
 
-            cert = lab.lab_certificate_no or ''
-            loc = lab.lab_location_line[:1].location_code or ''
+            cert = (lab.lab_certificate_no or '').split('(')[0]
+            loc = (lab.lab_location_line[:1].location_code or '').split('(')[0]
 
-            seq = self.env['ir.sequence'].next_by_code(
+            seq_raw = self.env['ir.sequence'].next_by_code(
                 lab.ulr_sequence.code
             )
 
+            # Extract only the numeric part (with optional suffix like F)
+            match = re.search(r'(\d+F?)$', seq_raw)
+            seq = match.group(1) if match else ''
+
+            # import wdb;wdb.set_trace()
             rec.ulr = f"{cert}{year}{loc}{seq}"
 
     # =========================================================

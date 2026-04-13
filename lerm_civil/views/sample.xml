@@ -38,7 +38,7 @@
                         <button type="object" class="oe_highlight" groups="lerm_civil.lerm_sample_approval" name="approve_pending_sample" string="Approve"
                             invisible="state not in ('5-pending_approval')"/>
 
-                        <button type="object" name="reject_sample" groups="lerm_civil.lerm_sample_verification" string="Reject"
+                        <button type="object" name="reject_sample" groups="lerm_civil.lerm_sample_verification,lerm_civil.lerm_sample_approval" string="Reject"
                             invisible="state not in ('3-pending_verification', '5-pending_approval')"/>
 
                         <button type="object" name="reallocate_sample" groups="lerm_civil.lerm_job_allocation" string="Reallocate"
