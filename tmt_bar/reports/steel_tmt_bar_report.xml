@@ -10,13 +10,12 @@
 				<div class="container_eln">
 					<div t-foreach="eln" t-as="o">
 						
-						<table style="width:100%; border-collapse: collapse;" border="1">
-
-						   <tr>
-								<td colspan="1">#Customer Party Name :</td>
-								  <td colspan="2">
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.customer.name"/><br/>
+						<table style="margin-top:10px;">
+							<tr>
+								<td colspan="12">Customer Party Name :
+																		<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.customer.name"/>
+									<br/>
 									<span t-field="o.srf_id.customer.street"/>
 									<span t-field="o.srf_id.customer.street2"/>
 									<span t-field="o.srf_id.customer.city"/>
@@ -24,90 +23,99 @@
 									<span t-field="o.srf_id.customer.state_id"/>
 											,
 									<span t-field="o.srf_id.customer.country_id"/>
-									</td>
-
-									<td colspan="1" style="text-align: center;">
-									<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 75px; height: 70px;"/>
-									</td>
-								
+								</td>
 							</tr>
 							<tr>
-								<td style="width:25%;">Samples Description :-</td>
-								<td style="width:25%;"><span t-field="o.material.lab_name"/></td>
-
-								<td style="width:20%;">Customer's Ref. No :-</td>
-								<td style="width:20%;"><span t-field="o.srf_id.client_refrence"/></td>
+								<td colspan="12">Project / Site Address : 									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.name_work"/>
+								</td>
 							</tr>
-
 							<tr>
-								<!-- <td>Quantity of Samples :-</td>
-								<td>Litre</td> -->
-								<td>No. of Samples :-</td>
-								<td><span t-field="o.sample_id.quantity"/></td>
-
-								<td>Letter Date :-</td>
-								<td>
-									
+								<td colspan="12">Sample Description : 									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_description"/>
 								</td>
 							</tr>
 
+						</table>
+
+						<table>
 							<tr>
-								<td>Date of Samples Received :-</td>
-								<td>
-									<span t-field="o.sample_id.sample_received_date"/>
-								</td>
-
-									<td>SRF No. :-</td>
-										<td >
-											<span t-field="o.srf_id"/>
-										</td>
-								
-							</tr>
-
-							<tr>
-								<td>Brand &amp; Grade :-</td>
-								<td><span t-field="o.sample_id.grade_id.grade"/></td>
-
-								<td>Date of Test Initiation  :-</td>
-								<td>
+								<td colspan="6">Test Start Date :									<![CDATA[&nbsp;]]>
 									<span t-field="o.start_date"/>
 								</td>
-							</tr>
-
-							<tr>
-								<td>Week No. :-</td>
-								<td></td>
-
-								<td>Date of Test Completion  :-</td>
-								<td>
+								<td colspan="6">Test End Date :									<![CDATA[&nbsp;]]>
 									<span t-field="o.end_date"/>
 								</td>
 							</tr>
-
-							<!-- <tr>
-								<td t-if="o.material.source_sample">Source of Sample :-</td>
-								<td><span t-field="o.material.source_sample"/></td>
-
-								<td t-if="o.material.test_method_adopted" >Test method adopted  :-</td>
-								<td>
-									<span t-field="o.material.test_method_adopted"/>
+							<tr>
+								<td colspan="6">Sample Id Mark: 									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.client_sample_id"/>
 								</td>
-							</tr> -->
-
-							<tr t-if="o.material.test_method_adopted" >
-								
-
-									<td >Test method adopted:</td>
-									<td colspan="3"><span t-field="o.material.test_method_adopted"/></td>
-
-							
+								<td colspan="6">Sample Receipt Date :									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_received_date"/>
+								</td>
 							</tr>
-							<tr t-if="o.material.source_sample">
-									<td style="font-weight: bold;">Source of Sample</td>
-									<td colspan="3"><span t-field="o.material.source_sample"/></td>
+							<tr>
+								<td colspan="6">Size :
+																		<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.size_id.size"/>
+								</td>
+								<td colspan="6">Grade :
+																		<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.grade_id.grade"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Brand :
+																		<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.brand"/>
+								</td>
+								<td colspan="6">Consultant Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.consultant_name1"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Client Name :
+		                      	<![CDATA[&nbsp;]]>
+								<span t-field="o.srf_id.client"/>
+								</td>
+								<td colspan="6">Client Reference :
+																		<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client_refrence"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Discipline :
+																		<![CDATA[&nbsp;]]>
+									<span t-field="o.discipline.discipline"/>
+								</td>
+								<td colspan="6">Group :
+																		<![CDATA[&nbsp;]]>
+									<span t-field="o.group.group"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">Material/Test Name :
+																		<![CDATA[&nbsp;]]>
+									<span t-field="o.material.name"/>
+								</td>
+								<td colspan="6">Job Ref No :
+																		<![CDATA[&nbsp;]]>
+									<span t-field="o.kes_no"/>
+								</td>
+							</tr>
+								<!-- Source of Sample (only if value exists) -->
+								<tr t-if="o.material.source_sample">
+									<td colspan="12">Source of Sample: <![CDATA[&nbsp;]]><span t-field="o.material.source_sample"/></td>
 								</tr>
 
-						</table>
+								<!-- Test method adopted (only if value exists) -->
+								<tr t-if="o.material.test_method_adopted">
+									<td colspan="12">Test method adopted: <![CDATA[&nbsp;]]>
+									<span t-field="o.material.test_method_adopted"/></td>
+								</tr>
+						</table> 
 					</div>
 				
 			 <div style="padding-top:2px">
@@ -1066,10 +1074,10 @@
 								</div>
 							</div>
 								<!-- QR Code -->
-							<div style="text-align:center; margin-bottom:10px;">
+							<!-- <div style="text-align:center; margin-bottom:10px;">
 								<img t-att-src="'data:image/png;base64,%s' % (qrcode_static or '')"
 									style="width:75px; height:70px;"/>
-							</div>
+							</div> -->
 							<div>
 								<div>
 							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
