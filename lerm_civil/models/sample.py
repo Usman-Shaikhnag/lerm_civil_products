@@ -175,6 +175,27 @@ class LermSampleForm(models.Model):
     display_report_portal = fields.Boolean("Display on Portal")
     customer_portal_sample = fields.Many2one('customer.sample.line',string="Customer Portal Sample", readonly=True)
 
+    unread_sample = fields.Boolean("Unread Sample", default=True)
+
+    def write(self, vals):
+        if 'state' in vals:
+            vals['unread_sample'] = True
+        return super(LermSampleForm, self).write(vals)
+
+    def action_open_form(self):
+        """Called when clicking a record in the tree view — marks it as read and opens the form."""
+        self.ensure_one()
+        if self.unread_sample:
+            self.sudo().write({'unread_sample': False})
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'lerm.srf.sample',
+            'view_mode': 'form',
+            'res_id': self.id,
+            'target': 'current',
+        }
+
+        
     @api.depends('quantity_received', 'quantity_consumed','quantity_discarded')
     def compute_quantity_balance(self):
         for rec in self:
@@ -699,8 +720,6 @@ class RejectSampleWizard(models.Model):
             eln = self.env['lerm.eln'].sudo().search([('sample_id','=',sample_id)])
             eln.write({'state':'4-rejected'})
             eln.message_post(body="<b>Sample Rejected :<b> " + self.reject_reason)
-
-            
 
             return {'type': 'ir.actions.act_window_close'}
         else:

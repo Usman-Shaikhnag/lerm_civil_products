@@ -38,7 +38,7 @@
                         <button type="object" class="oe_highlight" groups="lerm_civil.lerm_sample_approval" name="approve_pending_sample" string="Approve"
                             invisible="state not in ('5-pending_approval')"/>
 
-                        <button type="object" name="reject_sample" groups="lerm_civil.lerm_sample_verification" string="Reject"
+                        <button type="object" name="reject_sample" groups="lerm_civil.lerm_sample_verification,lerm_civil.lerm_sample_approval" string="Reject"
                             invisible="state not in ('3-pending_verification', '5-pending_approval')"/>
 
                         <button type="object" name="reallocate_sample" groups="lerm_civil.lerm_job_allocation" string="Reallocate"
@@ -150,7 +150,7 @@
                         <table class="table table-sm">
                             <thead>
                                 <tr>
-                                    <th>Sample UOM</th>
+                                    <th>Sample Quantity</th>
                                     <th>Received</th>
                                     <th>Consumed</th>
                                     <th>Discarded</th>
@@ -266,7 +266,8 @@
         <field name="arch" type="xml">
 
 
-            <tree default_order='create_date desc' create="false">
+            <tree default_order='create_date desc' create="false" decoration-bf="unread_sample == True" decoration-info="unread_sample == True" action="action_open_form" type="object">
+              <field name="unread_sample" column_invisible="1"/>
               <header>
                     <button type="object" class="oe_highlight" name="open_sample_allotment_wizard"  string="Bulk Allotment" />
                     <button type="object" class="oe_highlight" name="reallocate_sample"  string="ReAllotment" />

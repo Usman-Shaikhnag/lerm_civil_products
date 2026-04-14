@@ -16,7 +16,6 @@ class PavingBlock(models.Model):
     _rec_name = "name_paving"
 
 
-
     name_paving = fields.Char("Name",default="Concrete Paving Block")
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 
@@ -143,42 +142,6 @@ class PavingBlock(models.Model):
                 rec.area_paver = (20000 * rec.mass_specimen) / rec.mass_size
             else:
                 rec.area_paver = 0.0
-
-
-
-    # remark
-
-    notes_id = fields.One2many('paver.notes', 'parent_id', string="Notes")
-    
-    @api.model
-    def default_get(self, fields):
-        res = super(PavingBlock, self).default_get(fields)
-
-        default_notes = [
-            (0, 0, {
-                'sr_no': 'a',
-                'notes': 'The information marked with an # received from customer',
-            }),
-            (0, 0, {
-                'sr_no': 'b',
-                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
-            }),
-            (0, 0, {
-                'sr_no': 'c',
-                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
-            }),
-            (0, 0, {
-                'sr_no': 'd',
-                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
-            }),
-        ]
-
-        res['notes_id'] = default_notes
-        return res
-    
-
-
-
 
 
        # 3. Water Absorption
@@ -719,15 +682,4 @@ class ThicknesscorrectionLine(models.Model):
     #     records = self.sorted('id')
     #     for index, record in enumerate(records):
     #         record.serial_no = index + 1
-
-
-
-
-    
-class paverNotes(models.Model):
-    _name = "paver.notes"
-
-    parent_id = fields.Many2one('mechanical.concrete.paving.block',string="Parent Id")
-    sr_no = fields.Char("Sr. No.")
-    notes = fields.Char("Notes")
 

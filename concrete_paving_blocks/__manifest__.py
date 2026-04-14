@@ -2,23 +2,22 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 
-
 {
-    'name': 'Concrete Paving Block',
+    'name': ' Concrete Paving Block',
     'version': '1.2',
     'category': 'Lerm Civil',
-    'summary': 'Concrete Paving Block Reports',
+    'summary': 'Sales internal machinery',
     'description': """
-This module contains Concrete Paving Block report templates and related features.
+This module contains all the common features of Sales Management and eCommerce.
     """,
-    'depends': ['base', 'sale', 'lerm_civil'],
+    'depends': ['base','sale','lerm_civil'],
     'data': [
-        'security/ir.model.access.csv',
-        'views/paving_block.xml',
-        'reports/paving_datasheet.xml',
+                 'security/ir.model.access.csv',
+                 'views/paving_block.xml',
+                 'reports/paving_datasheet.xml'
     ],
-
+   
     'installable': True,
     'auto_install': False,
-
+   
 }

@@ -25,7 +25,7 @@ class PlateLoadTest(models.Model):
     _name = "lerm.plate.load.test"
     _rec_name = "project_name"
 
-    # --- Meta / Cover Block ---
+    # --- Meta / cover Block ---
     project_name = fields.Char("Project Name", compute="_compute_eln_data", store=True)
     site_address = fields.Char("Site Address", compute="_compute_eln_data", store=True)
     test_start_date = fields.Date("Test Start Date", compute="_compute_eln_data", store=True)

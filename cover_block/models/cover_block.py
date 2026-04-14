@@ -11,6 +11,7 @@ class CoverblockMechanical(models.Model):
 
 
 
+
     eln_ref = fields.Many2one('lerm.eln', string="ELN")
     sample_parameters = fields.Many2many(
         'lerm.parameter.master', compute="_compute_sample_parameters",string="Parameters",store=True  )
@@ -28,14 +29,10 @@ class CoverblockMechanical(models.Model):
         return param.unit.name if param.unit else ""
 
 
-
-
-
-
-           
+       
 
 # remark
-
+#remarkkk
     notes_id = fields.One2many('cover.notes', 'parent_id', string="Notes")
     
     @api.model
@@ -70,53 +67,77 @@ class CoverblockMechanical(models.Model):
 
 
        # Water Absorption
-    water_absorption_name = fields.Char("Name", default="Water Absorption")
-
-    water_absorption_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
-    wt_surface_dry = fields.Float(string="Wt of Saturated surface dry Aggregate in Air (B)")
-    wt_sample_inwater = fields.Float(string="Wt of Saturated Aggregate in Water (A)")
-    oven_dried_wt = fields.Float(string="Wt of Oven Dried Aggregate in Air (C)")
-
-     # Trial 2
-    wt_surface_dry_2 = fields.Float(string="Wt of Saturated surface dry Aggregate in Air (B) [Trial 2]")
-    wt_sample_inwater_2 = fields.Float(string="Wt of Saturated Aggregate in Water (A) [Trial 2]")
-    oven_dried_wt_2 = fields.Float(string="Wt of Oven Dried Aggregate in Air (C) [Trial 2]")
-
-      # Average Results
-    result_wt_surface_dry = fields.Float(string="Average SSD Weight (B)", compute="_compute_result")
-    result_wt_sample_inwater = fields.Float(string="Average Water Weight (A)", compute="_compute_result")
-    result_oven_dried_wt = fields.Float(string="Average Oven Dry Weight (C)", compute="_compute_result")
-
-    water_absorption = fields.Float(string="Water Absorption (%)", compute="_compute_water_absorption")
 
 
-       # Compute Average
-    @api.depends(
-    'wt_surface_dry', 'wt_sample_inwater', 'oven_dried_wt',
-    'wt_surface_dry_2', 'wt_sample_inwater_2', 'oven_dried_wt_2'
-     )
-    def _compute_result(self):
-     for line in self:
-        line.result_wt_surface_dry = (line.wt_surface_dry + line.wt_surface_dry_2) / 2
-        line.result_wt_sample_inwater = (line.wt_sample_inwater + line.wt_sample_inwater_2) / 2
-        line.result_oven_dried_wt = (line.oven_dried_wt + line.oven_dried_wt_2) / 2
+    water_absorption_name = fields.Char("Name",default="Water Absorption ")
+    water_absorption_visible = fields.Boolean("Water Absorption Visible",compute="_compute_visible")
 
+    water_absorption_child_lines = fields.One2many('water.absorption.line','parent_id',string="Water Line")
 
-      # Water Absorption Formula
+    avg_water_absorption = fields.Float(
+        string="Avg. Water Absorption (%)",
+        compute="_compute_avg_water_absorption", store=True
+    )
 
-    @api.depends(
-    'result_wt_surface_dry',
-    'result_oven_dried_wt'
-      )
-    def _compute_water_absorption(self):
-      for line in self:
-        if line.result_oven_dried_wt:
-            wa = ((line.result_wt_surface_dry - line.result_oven_dried_wt) / line.result_oven_dried_wt) * 100
-            line.water_absorption = round(wa, 2)
-        else:
-            line.water_absorption = 0.0
+    @api.depends('water_absorption_child_lines.water_absorption')
+    def _compute_avg_water_absorption(self):
+        for rec in self:
+            lines = rec.water_absorption_child_lines
+            if lines:
+                total = sum(line.water_absorption for line in lines)
+                rec.avg_water_absorption = round(total / len(lines), 2)
+            else:
+                rec.avg_water_absorption = 0.0
 
+    avg_water_absorption_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
 
+    @api.depends('avg_water_absorption','eln_ref','grade')
+    def _compute_avg_water_absorption_conformity(self):
+        
+        for record in self:
+            record.avg_water_absorption_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a43a33a4-834e-40d4-afb3-80a4e61ece05')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a43a33a4-834e-40d4-afb3-80a4e61ece05')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_water_absorption - record.avg_water_absorption*mu_value
+                    upper = record.avg_water_absorption + record.avg_water_absorption*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.avg_water_absorption_conformity = 'pass'
+                        break
+                    else:
+                        record.avg_water_absorption_conformity = 'fail'
+
+    avg_water_absorption_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_avg_water_absorption_nabl", store=True)
+
+    @api.depends('avg_water_absorption','eln_ref','grade')
+    def _compute_avg_water_absorption_nabl(self):
+        
+        for record in self:
+            record.avg_water_absorption_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a43a33a4-834e-40d4-afb3-80a4e61ece05')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a43a33a4-834e-40d4-afb3-80a4e61ece05')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_water_absorption - record.avg_water_absorption*mu_value
+                    upper = record.avg_water_absorption + record.avg_water_absorption*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.avg_water_absorption_nabl = 'pass'
+                        break
+                    else:
+                        record.avg_water_absorption_nabl = 'fail'
 
 
 
@@ -233,7 +254,7 @@ class CoverblockMechanical(models.Model):
             rec.sample_parameters = [(6, 0, parameter_ids)]
 
    
-    # VISIBILITY
+    # VISIBILITY 
    
     crushing_visible = fields.Boolean(compute="_compute_visible")
     water_absorption_visible = fields.Boolean(compute="_compute_visible")
@@ -280,21 +301,19 @@ class CoverblockMechanical(models.Model):
                 continue
 
 
+          
+# water absorption
+
             if result.parameter.internal_id == 'a43a33a4-834e-40d4-afb3-80a4e61ece05':
-             
                 result.calculated = True
-                # if self.average_crushing_nabl == 'pass':
-                #     result.nabl_status = 'nabl'
-                # else:
-                #     result.nabl_status = 'non-nabl'
-                # continue
-
-         
-
-
-
-
-
+                result.result_char = round(self.avg_water_absorption,2)
+                if self.avg_water_absorption_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+              
+        
 
         return {
                 'view_mode': 'form',
@@ -374,6 +393,8 @@ class CrushingValueLine(models.Model):
     _name = "mechanical.crushing.value.line"
     parent_id = fields.Many2one('mechanical.cover.block',string="Parent Id")
 
+    
+
     sample_no = fields.Integer(string="Sample", readonly=True, copy=False, default=1)
     # wt_of_cylinder = fields.Integer(string="Weight of the empty cylinder in gms")
     # total_wt_of_dried = fields.Integer(string="Total weight of oven dried ( 4.0 hrs ) aggregate sample filling the cylindrical measure in gms")
@@ -414,6 +435,50 @@ class CrushingValueLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.sample_no = index + 1
+
+
+
+
+
+
+
+class WaterLine(models.Model):
+    _name = "water.absorption.line"
+    parent_id = fields.Many2one('mechanical.cover.block',string="Parent Id")
+
+    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
+    sample_identification = fields.Float(string="Sample Identification")
+    dry_wt_w1 = fields.Float(string="Dry wt (W1)")
+    wet_w2 = fields.Float(string="Wet wt (W2)")
+    water_absorption = fields.Float(string="  Water Absorption %",compute="_compute_water_absorption")
+
+    @api.depends('dry_wt_w1', 'wet_w2')
+    def _compute_water_absorption(self):
+        for rec in self:
+            if rec.dry_wt_w1:  # avoid division by zero
+                rec.water_absorption = round(((rec.wet_w2 - rec.dry_wt_w1) / rec.dry_wt_w1) * 100, 2)
+            else:
+                rec.water_absorption = 0.0
+
+   
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(WaterLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
 
 
 

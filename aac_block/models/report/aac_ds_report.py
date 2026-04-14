@@ -58,7 +58,6 @@ from lxml import etree
 #             'nabl' : nabl
 #         }
 
-
 class AacBlockReport1(models.AbstractModel):
     _name = 'report.aac_block.aac_block_mech_report'
     _description = 'Fine Aggregate  Report SSL'
