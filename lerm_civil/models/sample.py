@@ -700,8 +700,6 @@ class RejectSampleWizard(models.Model):
             eln.write({'state':'4-rejected'})
             eln.message_post(body="<b>Sample Rejected :<b> " + self.reject_reason)
 
-            
-
             return {'type': 'ir.actions.act_window_close'}
         else:
             raise UserError("Please Specify Reject Reason")

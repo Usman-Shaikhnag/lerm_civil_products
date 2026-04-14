@@ -202,12 +202,18 @@
                                             <div class="lerm-sub-list">
                                                 <t t-foreach="tech.product_breakdown" t-as="product_data" t-key="product_data.product_id">
                                                     <t t-if="product_data.alloted > 0">
-                                                        <div class="lerm-sub-item">
+                                                        <div class="lerm-sub-item" style="cursor: pointer; transition: background 0.1s;"
+                                                             t-on-click.stop="() => this._onTechnicianDetailsClick(tech.technician_id, '2-alloted', product_data.product_id)">
                                                             <span><t t-esc="product_data.product_name"/></span>
                                                             <span class="badge" style="background:#e5e7eb;color:#374151;"><t t-esc="product_data.alloted"/></span>
                                                         </div>
                                                     </t>
                                                 </t>
+                                                <div class="lerm-sub-item d-flex justify-content-center py-1 mt-1 rounded bg-light-subtle border"
+                                                     t-on-click.stop="() => this._onTechnicianDetailsClick(tech.technician_id, '2-alloted')"
+                                                     style="cursor: pointer; font-size: 0.65rem; color: #4b5563; font-weight: 600;">
+                                                    View All Alloted
+                                                </div>
                                             </div>
                                         </div>
                                     </t>
@@ -239,12 +245,18 @@
                                             <div class="lerm-sub-list">
                                                 <t t-foreach="tech.product_breakdown" t-as="product_data" t-key="product_data.product_id">
                                                     <t t-if="product_data.pending_verification > 0">
-                                                        <div class="lerm-sub-item">
+                                                        <div class="lerm-sub-item" style="cursor: pointer; transition: background 0.1s;"
+                                                             t-on-click.stop="() => this._onTechnicianDetailsClick(tech.technician_id, '3-pending_verification', product_data.product_id)">
                                                             <span><t t-esc="product_data.product_name"/></span>
                                                             <span class="badge" style="background:#e5e7eb;color:#374151;"><t t-esc="product_data.pending_verification"/></span>
                                                         </div>
                                                     </t>
                                                 </t>
+                                                <div class="lerm-sub-item d-flex justify-content-center py-1 mt-1 rounded bg-light-subtle border"
+                                                     t-on-click.stop="() => this._onTechnicianDetailsClick(tech.technician_id, '3-pending_verification')"
+                                                     style="cursor: pointer; font-size: 0.65rem; color: #4b5563; font-weight: 600;">
+                                                    View All Pending Verification
+                                                </div>
                                             </div>
                                         </div>
                                     </t>
@@ -276,12 +288,18 @@
                                             <div class="lerm-sub-list">
                                                 <t t-foreach="tech.product_breakdown" t-as="product_data" t-key="product_data.product_id">
                                                     <t t-if="product_data.pending_approval > 0">
-                                                        <div class="lerm-sub-item">
+                                                        <div class="lerm-sub-item" style="cursor: pointer; transition: background 0.1s;"
+                                                             t-on-click.stop="() => this._onTechnicianDetailsClick(tech.technician_id, '5-pending_approval', product_data.product_id)">
                                                             <span><t t-esc="product_data.product_name"/></span>
                                                             <span class="badge" style="background:#e5e7eb;color:#374151;"><t t-esc="product_data.pending_approval"/></span>
                                                         </div>
                                                     </t>
                                                 </t>
+                                                <div class="lerm-sub-item d-flex justify-content-center py-1 mt-1 rounded bg-light-subtle border"
+                                                     t-on-click.stop="() => this._onTechnicianDetailsClick(tech.technician_id, '5-pending_approval')"
+                                                     style="cursor: pointer; font-size: 0.65rem; color: #4b5563; font-weight: 600;">
+                                                    View All Pending Approval
+                                                </div>
                                             </div>
                                         </div>
                                     </t>
@@ -313,12 +331,18 @@
                                             <div class="lerm-sub-list">
                                                 <t t-foreach="tech.product_breakdown" t-as="product_data" t-key="product_data.product_id">
                                                     <t t-if="product_data.in_report > 0">
-                                                        <div class="lerm-sub-item">
+                                                        <div class="lerm-sub-item" style="cursor: pointer; transition: background 0.1s;"
+                                                             t-on-click.stop="() => this._onTechnicianDetailsClick(tech.technician_id, '4-in_report', product_data.product_id)">
                                                             <span><t t-esc="product_data.product_name"/></span>
                                                             <span class="badge" style="background:#e5e7eb;color:#374151;"><t t-esc="product_data.in_report"/></span>
                                                         </div>
                                                     </t>
                                                 </t>
+                                                <div class="lerm-sub-item d-flex justify-content-center py-1 mt-1 rounded bg-light-subtle border"
+                                                     t-on-click.stop="() => this._onTechnicianDetailsClick(tech.technician_id, '4-in_report')"
+                                                     style="cursor: pointer; font-size: 0.65rem; color: #4b5563; font-weight: 600;">
+                                                    View All In Report
+                                                </div>
                                             </div>
                                         </div>
                                     </t>
@@ -332,15 +356,28 @@
                                     </t>
 
                                     <!-- CANCELLED -->
-                                    <div class="lerm-status-row" style="cursor:default;opacity:0.6;">
-                                        <span class="status-label">
-                                            <i class="fa fa-times-circle" style="color:#9ca3af;font-size:0.8rem;"/>
-                                            Cancelled
-                                        </span>
-                                        <span class="status-badge" style="background:#f3f4f6;color:#6b7280;">
-                                            <t t-esc="tech.cancelled || 0"/>
-                                        </span>
-                                    </div>
+                                    <t t-if="tech.cancelled > 0">
+                                        <button class="lerm-status-row" type="button"
+                                                t-on-click="() => this._onTechnicianDetailsClick(tech.technician_id, '6-cancelled')"
+                                                style="opacity:0.8; cursor: pointer;">
+                                            <span class="status-label">
+                                                <i class="fa fa-times-circle" style="color:#9ca3af;font-size:0.8rem;"/>
+                                                Cancelled
+                                            </span>
+                                            <span class="status-badge" style="background:#f3f4f6;color:#6b7280;">
+                                                <t t-esc="tech.cancelled"/>
+                                            </span>
+                                        </button>
+                                    </t>
+                                    <t t-else="">
+                                        <div class="lerm-status-row" style="cursor:default;opacity:0.6;">
+                                            <span class="status-label">
+                                                <i class="fa fa-times-circle" style="color:#9ca3af;font-size:0.8rem;"/>
+                                                Cancelled
+                                            </span>
+                                            <span class="status-badge" style="background:#f3f4f6;color:#6b7280;">0</span>
+                                        </div>
+                                    </t>
 
                                 </div>
                             </div>

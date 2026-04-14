@@ -234,13 +234,13 @@
                                     <div class="tech-status-list">
                                         <!-- Shared helper for status rows -->
                                         <t t-foreach="[
-                                            {id: 'assignment-pending', label: 'Assignment Pending', icon: 'fa-clipboard', color: '#3b82f6', bg: '#eff6ff', text: '#1e40af', count: customer.assignment_pending},
-                                            {id: 'alloted', label: 'Alloted', icon: 'fa-play-circle', color: '#0066ff', bg: '#dbeafe', text: '#1d4ed8', count: customer.alloted},
-                                            {id: 'pending-verification', label: 'Verification Pending', icon: 'fa-hourglass-half', color: '#d97706', bg: '#fef3c7', text: '#92400e', count: customer.pending_verification},
-                                            {id: 'pending-approval', label: 'Approval Pending', icon: 'fa-clock-o', color: '#dc2626', bg: '#fee2e2', text: '#991b1b', count: customer.pending_approval},
-                                            {id: 'in-report', label: 'In Report', icon: 'fa-file-text-o', color: '#16a34a', bg: '#dcfce7', text: '#166534', count: customer.in_report},
-                                            {id: 'invoiced', label: 'Invoiced', icon: 'fa-file-powerpoint-o', color: '#059669', bg: '#d1fae5', text: '#065f46', count: customer.invoiced},
-                                            {id: 'uninvoiced', label: 'Uninvoiced', icon: 'fa-file-o', color: '#d97706', bg: '#fef3c7', text: '#92400e', count: customer.uninvoiced}
+                                            {id: 'assignment-pending', state_val: '1-allotment_pending', label: 'Assignment Pending', icon: 'fa-clipboard', color: '#3b82f6', bg: '#eff6ff', text: '#1e40af', count: customer.assignment_pending},
+                                            {id: 'alloted', state_val: '2-alloted', label: 'Alloted', icon: 'fa-play-circle', color: '#0066ff', bg: '#dbeafe', text: '#1d4ed8', count: customer.alloted},
+                                            {id: 'pending-verification', state_val: '3-pending_verification', label: 'Verification Pending', icon: 'fa-hourglass-half', color: '#d97706', bg: '#fef3c7', text: '#92400e', count: customer.pending_verification},
+                                            {id: 'pending-approval', state_val: '5-pending_approval', label: 'Approval Pending', icon: 'fa-clock-o', color: '#dc2626', bg: '#fee2e2', text: '#991b1b', count: customer.pending_approval},
+                                            {id: 'in-report', state_val: '4-in_report', label: 'In Report', icon: 'fa-file-text-o', color: '#16a34a', bg: '#dcfce7', text: '#166534', count: customer.in_report},
+                                            {id: 'invoiced', state_val: 'invoiced', label: 'Invoiced', icon: 'fa-file-powerpoint-o', color: '#059669', bg: '#d1fae5', text: '#065f46', count: customer.invoiced},
+                                            {id: 'uninvoiced', state_val: 'uninvoiced', label: 'Uninvoiced', icon: 'fa-file-o', color: '#d97706', bg: '#fef3c7', text: '#92400e', count: customer.uninvoiced}
                                         ]" t-as="st" t-key="st.id">
                                             
                                             <t t-set="collapse_id" t-value="st.id + '-' + customer.customer_id"/>
@@ -263,12 +263,18 @@
                                                             <!-- Use correct property name from backend product_breakdown_list structure -->
                                                             <t t-set="p_count" t-value="product_data[st.id.replace('-', '_')]"/>
                                                             <t t-if="p_count > 0">
-                                                                <div class="lerm-sub-item">
+                                                                <div class="lerm-sub-item" style="cursor: pointer; transition: background 0.1s;"
+                                                                     t-on-click.stop="() => this._onCustomerDetailsClick(customer.customer_id, customer.customer_name, st.state_val, product_data.product_id)">
                                                                     <span><t t-esc="product_data.product_name"/></span>
                                                                     <span class="badge" style="background:#e5e7eb;color:#374151;"><t t-esc="p_count"/></span>
                                                                 </div>
                                                             </t>
                                                         </t>
+                                                        <div class="lerm-sub-item d-flex justify-content-center py-1 mt-1 rounded bg-light-subtle border"
+                                                             t-on-click.stop="() => this._onCustomerDetailsClick(customer.customer_id, customer.customer_name, st.state_val)"
+                                                             style="cursor: pointer; font-size: 0.65rem; color: #4b5563; font-weight: 600;">
+                                                            View All <t t-esc="st.label"/>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </t>
@@ -282,15 +288,28 @@
                                                 </div>
                                             </t>
                                         </t>
-                                        <!-- Cancelled (Static) -->
-                                        <div class="lerm-status-row" style="cursor:default;opacity:0.6;">
-                                            <span class="status-label">
-                                                <i class="fa fa-times-circle" style="color:#9ca3af;font-size:0.8rem;"/> Cancelled
-                                            </span>
-                                            <span class="status-badge" style="background:#f3f4f6;color:#6b7280;">
-                                                <t t-esc="customer.cancelled || 0"/>
-                                            </span>
-                                        </div>
+                                        <!-- Cancelled -->
+                                        <t t-if="customer.cancelled > 0">
+                                            <button class="lerm-status-row" type="button"
+                                                    t-on-click="() => this._onCustomerDetailsClick(customer.customer_id, customer.customer_name, '6-cancelled')"
+                                                    style="opacity:0.8; cursor: pointer;">
+                                                <span class="status-label">
+                                                    <i class="fa fa-times-circle" style="color:#9ca3af;font-size:0.8rem;"/>
+                                                    Cancelled
+                                                </span>
+                                                <span class="status-badge" style="background:#f3f4f6;color:#6b7280;">
+                                                    <t t-esc="customer.cancelled"/>
+                                                </span>
+                                            </button>
+                                        </t>
+                                        <t t-else="">
+                                            <div class="lerm-status-row" style="cursor:default;opacity:0.6;">
+                                                <span class="status-label">
+                                                    <i class="fa fa-times-circle" style="color:#9ca3af;font-size:0.8rem;"/> Cancelled
+                                                </span>
+                                                <span class="status-badge" style="background:#f3f4f6;color:#6b7280;">0</span>
+                                            </div>
+                                        </t>
                                     </div>
                                 </div>
                             </div>
