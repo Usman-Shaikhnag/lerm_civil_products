@@ -208,7 +208,7 @@ class CustomerDashboard extends Component {
     await this.fetchData();
   }
 
-  async onAgingClick(bucketKey, stateKey = null, productId = null) {
+  async onAgingClick(bucketKey, stateKey = null, techId = null) {
     const today = new Date();
     let minDays, maxDays;
 
@@ -219,20 +219,28 @@ class CustomerDashboard extends Component {
     else if (bucketKey === "46-60") { minDays = 46; maxDays = 60; }
     else if (bucketKey === "60+") { minDays = 61; maxDays = null; }
 
+    const pad = (n) => n.toString().padStart(2, "0");
+    const toDateStr = (d) =>
+      `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+
     const dMax = new Date(today);
     dMax.setDate(today.getDate() - minDays);
-    dMax.setHours(23, 59, 59, 999);
+    const dMaxStr = `${toDateStr(dMax)} 23:59:59`;
 
-    const domain = [
-      ["eln_id", "!=", false],
-      ["eln_id.create_date", "<=", dMax.toISOString()],
-    ];
-
+    let dMinStr = null;
     if (maxDays !== null) {
       const dMin = new Date(today);
       dMin.setDate(today.getDate() - maxDays);
-      dMin.setHours(0, 0, 0, 0);
-      domain.push(["eln_id.create_date", ">=", dMin.toISOString()]);
+      dMinStr = `${toDateStr(dMin)} 00:00:00`;
+    }
+
+    const domain = [
+      ["eln_id", "!=", false],
+      ["eln_id.create_date", "<=", dMaxStr],
+    ];
+
+    if (dMinStr) {
+      domain.push(["eln_id.create_date", ">=", dMinStr]);
     }
 
     if (stateKey) {
@@ -241,8 +249,16 @@ class CustomerDashboard extends Component {
       domain.push(["state", "in", ["2-alloted", "7-calculated", "3-pending_verification", "5-pending_approval"]]);
     }
 
-    if (productId) {
-      domain.push(["material_id", "=", productId]);
+    if (techId) {
+      domain.push(
+        "|",
+        "|",
+        "|",
+        ["technicians", "in", [techId]],
+        ["eln_id.technician", "=", techId],
+        ["eln_id.technician_ids", "in", [techId]],
+        ["eln_id.parameters_result.technician", "=", techId],
+      );
     }
 
     // Apply dashboard-wide filters
@@ -295,9 +311,10 @@ class CustomerDashboard extends Component {
 
   // --- Customer Card Click Handler ---
 
-  async _onCustomerCardClick(customerId, customerName) {
+  // --- Customer Card Click Handler ---
+
+  async _onCustomerDetailsClick(customerId, customerName, stateName = null, productId = null) {
     const domain = [
-      ["customer_id", "=", customerId],
       ["sample_received_date", ">=", this.filter_state.start_date],
       ["sample_received_date", "<=", this.filter_state.end_date],
 
@@ -313,9 +330,48 @@ class CustomerDashboard extends Component {
         : []),
     ];
 
+    if (customerId === 0) {
+      domain.push(["customer_id", "=", false]);
+    } else {
+      domain.push(["customer_id", "=", customerId]);
+    }
+
+    if (stateName) {
+      if (stateName === "invoiced") {
+          domain.push(["invoice_status", "=", "2-invoiced"]);
+      } else if (stateName === "uninvoiced") {
+          domain.push(["invoice_status", "=", "1-uninvoiced"]);
+      } else {
+          domain.push(["state", "=", stateName]);
+      }
+    }
+
+    if (productId !== null) {
+      if (productId === 0) {
+        domain.push(["material_id", "=", false]);
+      } else {
+        domain.push(["material_id", "=", productId]);
+      }
+    }
+
+    let actionName = `Samples for Customer: ${customerName}`;
+    if (stateName) {
+      const stateLabelMap = {
+        "2-alloted": "Alloted",
+        "3-pending_verification": "Verification Pending",
+        "5-pending_approval": "Approval Pending",
+        "4-in_report": "In Report",
+        "6-cancelled": "Cancelled",
+        "invoiced": "Invoiced",
+        "uninvoiced": "Uninvoiced",
+        "1-allotment_pending": "Assignment Pending"
+      };
+      actionName = `${actionName} - ${stateLabelMap[stateName] || stateName}`;
+    }
+
     const action = {
       type: "ir.actions.act_window",
-      name: `Samples for Customer: ${customerName}`,
+      name: actionName,
       res_model: "lerm.srf.sample",
       views: [
         [false, "list"],
@@ -323,11 +379,15 @@ class CustomerDashboard extends Component {
       ],
       domain: domain,
       context: {
-        group_by: ["state"],
+        group_by: stateName ? ["material_id"] : ["state"],
       },
     };
 
     return this.action.doAction(action);
+  }
+
+  async _onCustomerCardClick(customerId, customerName) {
+      return this._onCustomerDetailsClick(customerId, customerName);
   }
 }
 CustomerDashboard.template = "lerm_civil_dashboard.CustomerDashboard";

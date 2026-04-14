@@ -248,24 +248,39 @@
 
                                     <div class="tech-status-list">
                                         <t t-foreach="[
-                                            {id: 'assignment-pending', label: 'Assignment Pending', icon: 'fa-clipboard', color: '#3b82f6', bg: '#eff6ff', text: '#1e40af', count: product.assignment_pending},
-                                            {id: 'alloted', label: 'Alloted', icon: 'fa-play-circle', color: '#0066ff', bg: '#dbeafe', text: '#1d4ed8', count: product.alloted},
-                                            {id: 'pending-verification', label: 'Verification Pending', icon: 'fa-hourglass-half', color: '#d97706', bg: '#fef3c7', text: '#92400e', count: product.pending_verification},
-                                            {id: 'pending-approval', label: 'Approval Pending', icon: 'fa-clock-o', color: '#dc2626', bg: '#fee2e2', text: '#991b1b', count: product.pending_approval},
-                                            {id: 'in-report', label: 'In Report', icon: 'fa-file-text-o', color: '#16a34a', bg: '#dcfce7', text: '#166534', count: product.in_report},
-                                            {id: 'invoiced', label: 'Invoiced', icon: 'fa-file-powerpoint-o', color: '#059669', bg: '#d1fae5', text: '#065f46', count: product.invoiced},
-                                            {id: 'uninvoiced', label: 'Uninvoiced', icon: 'fa-file-o', color: '#d97706', bg: '#fef3c7', text: '#92400e', count: product.uninvoiced},
-                                            {id: 'cancelled', label: 'Cancelled', icon: 'fa-times-circle', color: '#6b7280', bg: '#f3f4f6', text: '#374151', count: product.cancelled}
+                                            {id: 'assignment-pending', state_val: '1-allotment_pending', label: 'Assignment Pending', icon: 'fa-clipboard', color: '#3b82f6', bg: '#eff6ff', text: '#1e40af', count: product.assignment_pending},
+                                            {id: 'alloted', state_val: '2-alloted', label: 'Alloted', icon: 'fa-play-circle', color: '#0066ff', bg: '#dbeafe', text: '#1d4ed8', count: product.alloted},
+                                            {id: 'pending-verification', state_val: '3-pending_verification', label: 'Verification Pending', icon: 'fa-hourglass-half', color: '#d97706', bg: '#fef3c7', text: '#92400e', count: product.pending_verification},
+                                            {id: 'pending-approval', state_val: '5-pending_approval', label: 'Approval Pending', icon: 'fa-clock-o', color: '#dc2626', bg: '#fee2e2', text: '#991b1b', count: product.pending_approval},
+                                            {id: 'in-report', state_val: '4-in_report', label: 'In Report', icon: 'fa-file-text-o', color: '#16a34a', bg: '#dcfce7', text: '#166534', count: product.in_report},
+                                            {id: 'invoiced', state_val: 'invoiced', label: 'Invoiced', icon: 'fa-file-powerpoint-o', color: '#059669', bg: '#d1fae5', text: '#065f46', count: product.invoiced},
+                                            {id: 'uninvoiced', state_val: 'uninvoiced', label: 'Uninvoiced', icon: 'fa-file-o', color: '#d97706', bg: '#fef3c7', text: '#92400e', count: product.uninvoiced},
+                                            {id: 'cancelled', state_val: '6-cancelled', label: 'Cancelled', icon: 'fa-times-circle', color: '#6b7280', bg: '#f3f4f6', text: '#374151', count: product.cancelled}
                                         ]" t-as="st" t-key="st.id">
-                                            <div class="lerm-status-row" t-att-disabled="st.count == 0">
-                                                <div class="status-label">
-                                                    <i t-attf-class="fa #{st.icon}" t-att-style="'color: ' + st.color"/>
-                                                    <t t-esc="st.label"/>
+                                            <t t-if="st.count > 0">
+                                                <button class="lerm-status-row" type="button" 
+                                                        t-on-click.stop="() => this._onProductDetailsClick(product.product_id, product.product_name, st.state_val)"
+                                                        style="cursor: pointer; transition: background 0.15s; opacity: 0.95;">
+                                                    <div class="status-label">
+                                                        <i t-attf-class="fa #{st.icon}" t-att-style="'color: ' + st.color"/>
+                                                        <t t-esc="st.label"/>
+                                                    </div>
+                                                    <div class="status-badge" t-att-style="'background:' + st.bg + '; color:' + st.text">
+                                                        <t t-esc="st.count"/>
+                                                    </div>
+                                                </button>
+                                            </t>
+                                            <t t-else="">
+                                                <div class="lerm-status-row" disabled="disabled">
+                                                    <div class="status-label">
+                                                        <i t-attf-class="fa #{st.icon}" t-att-style="'color: ' + st.color"/>
+                                                        <t t-esc="st.label"/>
+                                                    </div>
+                                                    <div class="status-badge" t-att-style="'background:' + st.bg + '; color:' + st.text">
+                                                        <t t-esc="st.count"/>
+                                                    </div>
                                                 </div>
-                                                <div class="status-badge" t-att-style="'background:' + st.bg + '; color:' + st.text">
-                                                    <t t-esc="st.count"/>
-                                                </div>
-                                            </div>
+                                            </t>
                                         </t>
                                     </div>
                                 </div>
