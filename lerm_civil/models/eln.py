@@ -274,8 +274,11 @@ class ELN(models.Model):
         for record in self:
             # Sample ला target कर
             
-            # ✅ First time run → state change
-            if record.sample_id:
+            if (
+                record.state not in ['2-confirm', '3-approved', '4-rejected']
+                and record.sample_id
+                and record.sample_id.state != '7-calculated'
+            ):
                 record.sample_id.state = '7-calculated'
             
                     
