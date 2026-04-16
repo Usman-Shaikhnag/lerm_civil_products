@@ -9,16 +9,27 @@
             <field name="arch" type="xml">
                 <form string="">
                     <sheet>
-                        <group>
-                            <field name="project_name" />
-                        </group>
+                        
                         <button
                             type="object"
                             class="oe_highlight" 
                             name="open_form"
                             string="Open Form"
                             />
-                        
+                        <group>
+                            <group>
+                                <field name="grade"/>
+                                <field name="eln_ref"/>
+                                <field name="thickness"/>
+                                <field name="reference"/>
+
+                                
+                            </group>
+                            <group>
+                                <field name="size"/>
+                                <field name="data_logger_label"/>
+                            </group>
+                        </group>
                     </sheet>
                     
                 </form>
