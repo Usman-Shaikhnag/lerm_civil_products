@@ -25,10 +25,10 @@ class PlateLoadTest(models.Model):
     _rec_name = "project_name"
 
     # --- Meta / Cover Block ---
-    project_name = fields.Char("Project Name", compute="_compute_eln_data", store=True)
-    site_address = fields.Char("Site Address", compute="_compute_eln_data", store=True)
-    test_start_date = fields.Date("Test Start Date", compute="_compute_eln_data", store=True)
-    test_end_date = fields.Date("Test End Date", compute="_compute_eln_data", store=True)
+    project_name = fields.Char("Project Name")
+    site_address = fields.Char("Site Address")
+    test_start_date = fields.Date("Test Start Date")
+    test_end_date = fields.Date("Test End Date")
     location = fields.Char("Location")
     strata = fields.Char("Strata")
     plate_size = fields.Char("Size of Plate", default="300 x 300 mm")
@@ -37,12 +37,12 @@ class PlateLoadTest(models.Model):
     epc_contractor = fields.Char("EPC Contractor")
     letter_dated = fields.Date("Letter Dated On")
     references = fields.Char("References", default="IS 1888: 1982")
-    discipline = fields.Char("Discipline", compute="_compute_eln_data", store=True)
-    group = fields.Char("Group", compute="_compute_eln_data", store=True)
-    test_name = fields.Char("Test Name", compute="_compute_eln_data", store=True)
-    report_no = fields.Char("Report No", compute="_compute_eln_data", store=True)
-    ulr_no = fields.Char("ULR No", compute="_compute_eln_data", store=True)
-    report_issue_date = fields.Date("Report Issue Date", compute="_compute_eln_data", store=True)
+    discipline = fields.Char("Discipline")
+    group = fields.Char("Group")
+    test_name = fields.Char("Test Name")
+    report_no = fields.Char("Report No")
+    ulr_no = fields.Char("ULR No")
+    report_issue_date = fields.Date("Report Issue Date")
     plate_test_id = fields.Many2one('mechanical.plate.test1', string="Plate Test Reference")
 
     @api.depends('plate_test_id')
