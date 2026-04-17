@@ -85,7 +85,7 @@ class TempMonitoring(models.Model):
 
         # later replace with this 
         react_url = (
-            "https://demo17.lerm.in/"
+            "https://demo17.lerm.in/react/"
             f"temp_monitoring?token={token}"
         )
 
