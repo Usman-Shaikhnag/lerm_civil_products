@@ -21,8 +21,8 @@
                  'views/routine_pullout_pile_load_views.xml',
                  'views/routine_pile_load_test_views.xml',
                  'views/routine_lateral_pile_load_views.xml',
-                 
                  'views/temp_monitoring.xml',
+                 'views/plate_load_test_views.xml',
                  'data/sequence.xml',
                  'reports/soil_resistivity_report_docx.xml',
                  'security/ir.model.access.csv',

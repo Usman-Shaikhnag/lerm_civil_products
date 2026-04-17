@@ -43,7 +43,7 @@ class PlateLoadTest(models.Model):
     report_no = fields.Char("Report No")
     ulr_no = fields.Char("ULR No")
     report_issue_date = fields.Date("Report Issue Date")
-    plate_test_id = fields.Many2one('mechanical.plate.test1', string="Plate Test Reference")
+    # plate_test_id = fields.Many2one('mechanical.plate.test1', string="Plate Test Reference")
 
     @api.depends('plate_test_id')
     def _compute_eln_data(self):
