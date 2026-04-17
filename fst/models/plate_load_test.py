@@ -163,7 +163,10 @@ class PlateLoadTest(models.Model):
             json.dumps({"data": data, "sig": signature}).encode()
         ).decode()
 
-        react_url = f"http://147.93.154.53:5173/plate_load_test?token={token}"
+        react_url = (
+            "https://demo17.lerm.in/react/"
+            f"plate_load_test?token={token}"
+        )
 
         return {
             'type': 'ir.actions.act_url',
