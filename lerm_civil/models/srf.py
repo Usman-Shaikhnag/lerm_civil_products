@@ -127,14 +127,14 @@ class SrfForm(models.Model):
     client = fields.Char("Client")
     # site_address = fields.Many2one('res.partner',string="Site Address")
     site_address = fields.Char(string="Site Address",compute="_compute_site_address")
-    name_work = fields.Many2one('res.partner.project',string="Name of Work")
+    name_work = fields.Many2one('res.partner.project',string="Project Name")
 
     consultant_name1 = fields.Char(string="Consultant Name")
     # department_id = fields.Many2one('hr.department', string='Department')
 
     department_id = fields.Char(string='Department')
 
-    name_works = fields.Many2many('res.partner.project',string="Name of Work",compute="_compute_name_work")
+    name_works = fields.Many2many('res.partner.project',string="Project Name",compute="_compute_name_work")
 
     client_refrence = fields.Char(string="Client Reference Letter")
     samples = fields.One2many('lerm.srf.sample' , 'srf_id' , string="Samples",tracking=True)
