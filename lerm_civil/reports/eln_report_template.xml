@@ -148,12 +148,12 @@
                            <tr>
 
                           <!-- QR -->
-                           <td style="width:15%; padding:2px; border:none;">
+                           <!-- <td style="width:15%; padding:2px; border:none;">
                                    <t t-if="qrcode_static">
                                     <img t-att-src="'data:image/png;base64,%s' % qrcode_static"
                                    style="width:75px; height:70px;"/>
                                       </t>
-                               </td>
+                               </td> -->
 
                               <!-- CONDITIONS -->
                               <!-- <td style="width:85%; padding:2px; font-size:13px; line-height:1.5; border:none;">
@@ -166,7 +166,49 @@
                                     </t>
                                   </span>
                                 </td> -->
-								
+
+								<td style="width:85%; padding:2px; font-size:13px; line-height:1.5; border:none;">
+
+								<!-- IF -->
+								<!-- <t t-if="data and hasattr(data, 'notes_id') and data.notes_id">
+									<span>
+										<b>Conditions:-</b><br/>
+										<t t-foreach="data.notes_id" t-as="n">
+											(<t t-esc="n.sr_no"/>) 
+											<t t-esc="n.notes"/>
+											&#160;&#160;
+										</t>
+									</span>
+								</t> -->
+								<t t-if="notes_list">
+								<span>
+									<b>Conditions:-</b><br/>
+									<t t-foreach="notes_list" t-as="n">
+										(<t t-esc="n.sr_no"/>) 
+										<t t-esc="n.notes"/>
+										&#160;&#160;
+									</t>
+								</span>
+							</t>
+
+								<!-- ELSE -->
+								<t t-else="">
+									<b>Conditions:-</b>
+									&#160;&#160;(1) The results listed refer only to tested samples &amp; applicable parameters. Endorsement of product is neither inferred nor implied.
+									&#160;&#160;(2) The use of report for arbitration, publicity &amp; evidence in legal dispute is forbidden except with prior written consent NBML Lab.
+									&#160;&#160;(3) All disputes are subject to Raipur Jurisdiction. 7 days correction to this report invalidates this report.
+									&#160;&#160;(4) Sample will be destroyed after 30 days from the date of test report unless otherwise specified.
+
+									<t t-if="eln.has_witness">
+										&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
+									</t>
+									<t t-if="eln.remarks">
+										&#160;&#160;<span t-esc="eln.remarks"/>
+									</t>
+								</t>
+
+							</td>
+							
 
                              </tr>
                             </table>
@@ -1259,10 +1301,10 @@
 								</div>
 							</div>
 							<!-- QR Code -->
-							<!-- <div style="text-align:center; margin-bottom:10px;">
+							<div style="text-align:center; margin-bottom:10px;">
 								<img t-att-src="'data:image/png;base64,%s' % (qrcode_static or '')"
 									style="width:75px; height:70px;"/>
-							</div> -->
+							</div>
 							<div>
 								<div >
 									<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
@@ -1304,7 +1346,7 @@
 								</div>
 							</div>
 					   </div>
-					   <table class="table table-bordered">
+					   <!-- <table class="table table-bordered">
 							<tr>
 								<td style="padding: 5px; font-style: italic; font-size: 12px;">
 									<b>Conditions:-</b>
@@ -1321,7 +1363,7 @@
 									</t>
 								</td>
 							</tr>
-						</table>
+						</table> -->
 					
 			
 						<!-- <div style="text-align:center;margin-top:25px">
