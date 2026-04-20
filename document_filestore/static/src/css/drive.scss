@@ -5,6 +5,12 @@
   grid-template-columns: 260px 1fr;
   height: 100%;
   background: var(--o-view-background, #fff);
+  position: relative;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* HEADER */
@@ -15,14 +21,42 @@
   display: flex;
   align-items: center;
   gap: 12px;
+
+  .fa-bars, .fa-times {
+    font-size: 1.25rem;
+    color: #555;
+  }
 }
 
 /* SIDEBAR */
 .o-drive__sidebar {
   border-right: 1px solid var(--border, #e6e6e6);
   padding: 12px;
-  min-width: 240px;
+  background: #fff;
   overflow-y: auto;
+  transition: transform 0.3s ease;
+  z-index: 1000;
+
+  @media (max-width: 768px) {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 260px;
+    transform: translateX(-100%);
+    box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+    
+    .o-drive--sidebar-open & {
+      transform: translateX(0);
+    }
+  }
+}
+
+.o-drive__sidebar-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  z-index: 999;
 }
 
 /* MAIN CONTAINER */
@@ -210,12 +244,18 @@
 
 .file-preview-box {
   background: #fff;
-  width: 70%;
-  max-height: 85vh;
+  width: 90%;
+  max-width: 1000px;
+  max-height: 90vh;
   border-radius: 8px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+
+  @media (max-width: 768px) {
+    width: 95%;
+    max-height: 95vh;
+  }
 }
 
 .file-preview-header,
@@ -291,7 +331,8 @@
 .gd-modal-card {
   background: white;
   border-radius: 8px;
-  width: 720px;
+  width: 95%;
+  max-width: 720px;
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -443,4 +484,41 @@
   margin-left: 4px;
   color: #4c8a3d;
   font-size: 12px;
+}
+
+@media (max-width: 576px) {
+  .o_drive_header {
+    padding: 8px 12px !important;
+  }
+  .o_drive_header h1 {
+    font-size: 1.1rem !important;
+    margin: 0 !important;
+    line-height: 1.2;
+  }
+  .o_drive_header p {
+    display: none;
+  }
+  .o_drive_header .btn {
+    padding: 6px 10px !important;
+    font-size: 0.85rem;
+  }
+  .o_drive_grid_container {
+    padding: 12px !important;
+  }
+  .chip-search-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .chip-container {
+    flex: none;
+    width: 100%;
+  }
+  .access-dropdown {
+    flex: none;
+    width: 100%;
+  }
+  .gd-modal-header h3 {
+    font-size: 1.25rem;
+  }
 }

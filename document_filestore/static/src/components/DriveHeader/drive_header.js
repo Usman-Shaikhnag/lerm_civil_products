@@ -10,6 +10,8 @@ export class DriveHeader extends Component {
     onUploadClick: Function,
     onCreateFolder: { type: Function, optional: true },
     onSearch: { type: Function, optional: true },
+    toggleSidebar: { type: Function, optional: true },
+    isSidebarOpen: { type: Boolean, optional: true },
   };
 
   setup() {
