@@ -83,7 +83,7 @@
                             <button class="lerm-toggle-btn" style="padding:0.4rem 1rem;" t-on-click="_onDateFilter" data-days="365"
                                     t-att-style="filter_state.activeDays == 365 ? 'background:#0066ff;color:#fff;' : ''">365 days</button>
                         </div>
-                        <div class="d-flex align-items-center gap-2 px-2 py-1 rounded" style="background:#fff;border:1px solid #e0d9f3;">
+                        <div class="lerm-custom-date-container d-flex align-items-center gap-2 px-2 py-1 rounded" style="background:#fff;border:1px solid #e0d9f3;">
                             <span class="lerm-date-separator">From</span>
                             <input type="date" class="lerm-date-input"
                                    t-att-value="filter_state.start_date" t-on-change="_onDateInputChange" data-field="start_date"/>
