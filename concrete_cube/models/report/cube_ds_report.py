@@ -132,7 +132,7 @@ class ConcreteCubeCompresiveReport(models.AbstractModel):
         # qr_static.make_image(fill_color="black", back_color="white").save(buf_static, format="PNG")
         # qr_static_b64 = base64.b64encode(buf_static.getvalue()).decode()
         # Lab fetch करा (adjust field नाव)
-        lab = eln.lab_location  
+        lab = eln.sample_id.lab_location  
         nabl_link = lab.nabl_scope_link if lab and lab.nabl_scope_link else False
         qr_static_b64 = False
 
