@@ -485,6 +485,14 @@
 									<span t-field="o.srf_id.name_work"/>
 									</td>
 							</tr>
+
+							<tr t-if="o.srf_id.client">
+								<td colspan="1" >Name of Agency:</td>
+								  <td colspan="3" style="font-weight:bold;">
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client"/>
+									</td>
+							</tr>
 							
 							<tr>
 								<td style="width:25%;">Samples Description :-</td>
@@ -498,11 +506,11 @@
 								<!-- <td>Quantity of Samples :-</td>
 								<td>Litre</td> -->
 								<td>No. of Samples :-</td>
-								<td><span t-field="o.sample_id.quantity"/></td>
+								<td><span t-field="o.sample_id.sample_qty"/>  <span t-field="o.sample_id.uom_id"/>  </td>
 
 								<td>Letter Date :-</td>
 								<td>
-									
+									<span t-field="o.srf_id.letter_date"/>
 								</td>
 							</tr>
 
@@ -543,6 +551,18 @@
 							</tr>
 
 							<tr>
+								
+
+								<td>Week No.  :-</td>
+								<td>
+								</td>
+								<td>Sample ID  :-</td>
+								<td>
+									<span t-field="o.sample_id.kes_no"/>
+								</td>
+							</tr>
+
+							<tr>
 								<td colspan="1">Other Details:</td>
 								<td colspan="3"></td>
 
@@ -561,6 +581,11 @@
 							<tr t-if="o.material.source_sample">
 									<td style="font-weight: bold;">Source of Sample</td>
 									<td colspan="3"><span t-field="o.material.source_sample"/></td>
+								</tr>
+
+								<tr t-if="o.material.specifications">
+									<td style="font-weight: bold;">Specifications</td>
+									<td colspan="3"><span t-field="o.material.specifications"/></td>
 								</tr>
 
 						</table>
@@ -1343,10 +1368,10 @@
 								</div>
 							</div>
 							<!-- QR Code -->
-							<div style="text-align:center; margin-bottom:10px;">
+							<!-- <div style="text-align:center; margin-bottom:10px;">
 								<img t-att-src="'data:image/png;base64,%s' % (qrcode_static or '')"
 									style="width:75px; height:70px;"/>
-							</div>
+							</div> -->
 							<div>
 								<div >
 									<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
