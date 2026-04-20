@@ -2113,7 +2113,7 @@
 			<t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
 				<div class="container_eln" style="padding-top:70px;margin-bottom:0px;">
 					<div t-foreach="eln" t-as="o">
-						<table style="width:100%; border-collapse: collapse;" border="1">
+						 <table style="width:100%; border-collapse: collapse;" border="1">
 
 						   <tr>
 								<td colspan="1">Customer Party Name :</td>
@@ -2141,6 +2141,14 @@
 									<span t-field="o.srf_id.name_work"/>
 									</td>
 							</tr>
+
+							<tr t-if="o.srf_id.client">
+								<td colspan="1" >Name of Agency:</td>
+								  <td colspan="3" style="font-weight:bold;">
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client"/>
+									</td>
+							</tr>
 							
 							<tr>
 								<td style="width:25%;">Samples Description :-</td>
@@ -2154,11 +2162,11 @@
 								<!-- <td>Quantity of Samples :-</td>
 								<td>Litre</td> -->
 								<td>No. of Samples :-</td>
-								<td><span t-field="o.sample_id.quantity"/></td>
+								<td><span t-field="o.sample_id.sample_qty"/>  <span t-field="o.sample_id.uom_id"/>  </td>
 
 								<td>Letter Date :-</td>
 								<td>
-									
+									<span t-field="o.srf_id.letter_date"/>
 								</td>
 							</tr>
 
@@ -2199,6 +2207,18 @@
 							</tr>
 
 							<tr>
+								
+
+								<td>Week No.  :-</td>
+								<td>
+								</td>
+								<td>Sample ID  :-</td>
+								<td>
+									<span t-field="o.sample_id.kes_no"/>
+								</td>
+							</tr>
+
+							<tr>
 								<td colspan="1">Other Details:</td>
 								<td colspan="3"></td>
 
@@ -2217,6 +2237,11 @@
 							<tr t-if="o.material.source_sample">
 									<td style="font-weight: bold;">Source of Sample</td>
 									<td colspan="3"><span t-field="o.material.source_sample"/></td>
+								</tr>
+
+								<tr t-if="o.material.specifications">
+									<td style="font-weight: bold;">Specifications</td>
+									<td colspan="3"><span t-field="o.material.specifications"/></td>
 								</tr>
 
 						</table>
@@ -2820,44 +2845,7 @@
 							
 
 
-					<!-- <div style="margin-top:5px; page-break-inside: avoid;" class="signatureContainer girdgird">
-						<table class="table table-bordered">
-						<tr>
-							<td style="padding: 5px; font-style: italic; font-size: 12px;">
-								
-								<t t-if="data.notes_id">
-									<b>Conditions:-</b>
-
-									<t t-foreach="data.notes_id" t-as="n">
-										<span>
-											(<t t-esc="n.sr_no"/>) 
-											<t t-esc="n.notes"/>
-											&#160;&#160;
-										</span>
-									</t>
-								</t>
-							
-								<t t-if="eln.has_witness">
-									&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
-								</t>
-								<t t-if="eln.remarks">
-									&#160;&#160;<span t-esc="eln.remarks"/>
-								</t>
-							
-							</td>
-						</tr>
-					</table>
-					</div> -->
-
-
-					
-						 <!-- Remarks Section -->
-
-                    
-
-
-
-
+				
 
 
 					<div class="signatureContainer girdgird">
@@ -2867,9 +2855,12 @@
 									Checked By
 								</b>
 							</div>
-							<div style="height:25px">
-
-							</div>
+							<div style="height: 50px;">
+									<t t-if="eln.sample_id.checkby_signature_required and eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')"
+											style="max-width: 200px; max-height: 45px; margin-top: 1px; z-index: -10;"/>
+									</t>
+								</div>
 							<div>
 								<b>
 									<span t-esc="eln.technician.name"/>
@@ -2893,9 +2884,9 @@
 						<div>
 							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
 						</div>
-						<div style="padding-top:3px">
+						<!-- <div style="padding-top:3px">
 							Format No. <span t-esc="eln.material.test_format_no"/>
-						</div>
+						</div> -->
 					</div>
 						<div>
 							<div>
@@ -2904,9 +2895,14 @@
 								</b>
 								
 							</div>
-							<div style="height:20px">
-
-							</div>
+							<div style="height: 50px;">
+									<t t-if="eln.sample_id.approveby_signature_required">
+										<div t-if="eln.sample_id.approved_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 45px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
 							<div>
 								<b>
 								<span t-esc="eln.sample_id.approved_by.name"/>
