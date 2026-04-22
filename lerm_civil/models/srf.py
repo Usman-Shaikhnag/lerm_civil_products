@@ -121,6 +121,7 @@ class SrfForm(models.Model):
         tracking=True
     )
     job_date = fields.Date(string="JOB Date")
+    letter_date = fields.Date(string="Letter Date")
     customer = fields.Many2one('res.partner',string="Customer",tracking=True)
     billing_customer = fields.Many2one('res.partner',string="Billing Customer")
     contact_person = fields.Many2one('res.partner',string="Contact Person")

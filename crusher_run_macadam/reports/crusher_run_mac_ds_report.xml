@@ -617,85 +617,202 @@
 			<t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
 				<div class="container_eln" style="padding-top:70px">
 					<div t-foreach="eln" t-as="o">
-						<table style="margin-top:10px; border:none">
-							<tr>
-								<td colspan="2" style=" font-weight: bold;">Client Details:</td>
-								<td colspan="10">
-									<span t-field="o.srf_id.customer.name"/><br />
+						<table style="width:100%; border-collapse: collapse;" border="1">
+
+						   <tr>
+								<td colspan="1">Customer Party Name :</td>
+								  <td colspan="2" style="font-weight:bold;">
+									<![CDATA[&nbsp;]]>
+									<t t-if="o.srf_id.customer.name">
+									  <span t-field="o.srf_id.customer.name"/>
+									 </t>
+        							<t t-else="">--</t>
+		                            <br/>
 									<span t-field="o.srf_id.customer.street"/>
 									<span t-field="o.srf_id.customer.street2"/>
 									<span t-field="o.srf_id.customer.city"/>
 									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
 									<span t-field="o.srf_id.customer.state_id"/>
-									,
+											,
 									<span t-field="o.srf_id.customer.country_id"/>
-								</td>
+									</td>
+
+									<td colspan="1" style="text-align: center;">
+									<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 75px; height: 70px;"/>
+									</td>
+								
 							</tr>
-							<tr>
-								<!-- <td colspan="12">Project / Site Address :
+							<tr t-if="o.srf_id.name_work">
+								<td colspan="1" >Project Name:</td>
+								  <td colspan="3" style="font-weight:bold;">
 									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.site_address.name"/>
-									<span t-field="o.srf_id.site_address.street"/>
-									<span t-field="o.srf_id.site_address.street2"/>
-									<span t-field="o.srf_id.site_address.city"/>
-									<span t-if="o.srf_id.site_address.zip" t-field="o.srf_id.site_address.zip"/>
-									<span t-field="o.srf_id.site_address.state_id"/>
-									<span t-field="o.srf_id.site_address.country_id"/>
-								</td> -->
-								<td colspan="2" style=" font-weight: bold;">Client Reference:</td>
-								<td colspan="10"><span t-field="o.srf_id.client_refrence"/></td>
+									<span t-field="o.srf_id.name_work"/>
+									</td>
+							</tr>
+
+							<tr t-if="o.srf_id.client">
+								<td colspan="1" >Name of Agency:</td>
+								  <td colspan="3" style="font-weight:bold;">
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client"/>
+									</td>
+							</tr>
+							
+							<tr>
+								<td style="width:25%;">Samples Description :-</td>
+								<td style="width:25%;">
+								      <t t-if="o.material and o.material.lab_name">
+											<span t-field="o.material.lab_name"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+
+								<td style="width:20%;">Customer's Ref. No :-</td>
+								<td style="width:20%;">
+
+								  <t t-if="o.srf_id.client_refrence">
+											<span t-field="o.srf_id.client_refrence"/>
+										</t>
+									<t t-else="">--</t>
+								
+								</td>
 							</tr>
 
 							<tr>
-								<td colspan="2" style=" font-weight: bold;">Name of Work:</td>
-								<td colspan="10"><span t-field="o.srf_id.name_work"/></td>
-							</tr>
-						<!-- </table>
+								<!-- <td>Quantity of Samples :-</td>
+								<td>Litre</td> -->
+								<td>No. of Samples :-</td>
+								<td>
 
-						<table class="table" style="width:100%; font-size: 13px;"> -->
-							<tr>
-								<td colspan="2" style=" font-weight: bold;">Date of Testing:</td>
-								<td colspan="10">
-									<span t-field="o.start_date"/> to <span t-field="o.end_date"/>
+								<t t-if="o.sample_id.sample_qty">
+											<span t-field="o.sample_id.sample_qty"/>
+										</t>
+									<t t-else="">--</t>
+
+								<t t-if="o.sample_id.uom_id">
+											<span t-field="o.sample_id.uom_id"/>
+										</t>
+									<t t-else="">--</t>
+								
 								</td>
-							</tr>
-							<tr>
-								<td colspan="2" style="font-weight: bold;">Size:</td>
-								<td colspan="10">
-									<span t-field="o.sample_id.size_id"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="2" style="font-weight: bold;">Grade:</td>
-								<td colspan="10">
-									<span t-field="o.grade_id.grade"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="2" style="font-weight: bold;">Material/Test Name:</td>
-								<td colspan="10">
-									<span t-field="o.material.name"/>
+
+								<td>Letter Date :-</td>
+								<td>
+									
+
+									<t t-if="o.srf_id.letter_date">
+											<span t-field="o.srf_id.letter_date"/>
+										</t>
+									<t t-else="">--</t>
 								</td>
 							</tr>
 
-							<!-- Source of Sample (only if value exists) -->
+							<tr>
+								<td>Date of Samples Received :-</td>
+								<td>
+
+									<t t-if="o.sample_id.sample_received_date">
+											<span t-field="o.sample_id.sample_received_date"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+
+									<td>SRF No. :-</td>
+										<td >
+
+											<t t-if="o.srf_id">
+											<span t-field="o.srf_id"/>
+										</t>
+									<t t-else="">--</t>
+										</td>
+								
+							</tr>
+
+							<tr>
+								<td>Brand &amp; Grade :-</td>
+								<td>
+								<t t-if="o.sample_id.grade_id.grade">
+											<span t-field="o.sample_id.grade_id.grade"/>
+										</t>
+									<t t-else="">--</t>
+									</td>
+
+								<td>Date of Test Initiation  :-</td>
+								<td>
+
+									<t t-if="o.start_date">
+											<span t-field="o.start_date"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+							</tr>
+
+							<tr>
+								
+
+								<td>Size  :-</td>
+								<td>
+
+										<t t-if="o.sample_id.size_id.size">
+											<span t-field="o.sample_id.size_id.size"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+								<td>Date of Test Completion  :-</td>
+								<td>
+
+									<t t-if="o.end_date">
+											<span t-field="o.end_date"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+							</tr>
+
+							<tr>
+								
+
+								<td>Week No.  :-</td>
+								<td>
+
+								--
+								</td>
+								<td>Sample ID  :-</td>
+								<td>
+
+									<t t-if="o.sample_id.kes_no">
+											<span t-field="o.sample_id.kes_no"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="1">Other Details:</td>
+								<td colspan="3">--</td>
+
+								
+							</tr>
+
+
+							<tr t-if="o.material.test_method_adopted" >
+								
+
+									<td >Test method adopted:</td>
+									<td colspan="3"><span t-field="o.material.test_method_adopted"/></td>
+
+							
+							</tr>
 							<tr t-if="o.material.source_sample">
-								<td colspan="2" style="font-weight: bold;">Source of Sample</td>
-								<td colspan="10">
-									<span t-field="o.material.source_sample"/>
-								</td>
-							</tr>
+									<td style="font-weight: bold;">Source of Sample</td>
+									<td colspan="3"><span t-field="o.material.source_sample"/></td>
+								</tr>
 
-							<!-- Test method adopted (only if value exists) -->
-							<tr t-if="o.material.test_method_adopted">
-								<td colspan="2" style="font-weight: bold;">Test method adopted:</td>
-								<td colspan="10">
-									<span t-field="o.material.test_method_adopted"/>
-								</td>
-							</tr>
+								<tr t-if="o.material.specifications">
+									<td style="font-weight: bold;">Specifications</td>
+									<td colspan="3"><span t-field="o.material.specifications"/></td>
+								</tr>
 
 						</table>
-
 					</div>
 					<div style="text-align:center;">
 						<h4 class="mb-0" style="text-decoration: underline;">Results</h4>
@@ -767,11 +884,13 @@
 									<span t-esc="eln.material.test_parameter"/>
 									<!-- Test Parameter -->
 									</th>
-									<th style="text-align: center;"><span t-esc="eln.material.method_reference"/></th>
+
 									<th style="text-align: center;">
 									<span t-esc="eln.material.unit"/>
 									<!-- Unit -->
 									</th>
+									<th style="text-align: center;"><span t-esc="eln.material.method_reference"/></th>
+									
 									<th style="text-align: center;">
 									<span t-esc="eln.material.result_remark"/>
 									<!-- Test Result -->
@@ -793,6 +912,12 @@
 									
 										<span t-field="water_absorption.parameter_name"/>
 									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-field="water_absorption.unit.name"/>
+										</span>
+									</td>
 									
 									<td style="text-align: center;">
 										<span>
@@ -804,11 +929,7 @@
 										</span>
 									</td>
 
-									<td style="text-align: center;">
-										<span>
-											<span t-field="water_absorption.unit.name"/>
-										</span>
-									</td>
+									
 									
 									<td style="text-align: center;">
 										<span>
@@ -839,6 +960,12 @@
 									
 										<span t-field="impact_value.parameter_name"/>
 									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-field="impact_value.unit.name"/>
+										</span>
+									</td>
 									<td style="text-align: center;">
 										<span>
 											<t t-foreach="impact_value.parameter_table" t-as="parameter">
@@ -848,11 +975,7 @@
 											</t>
 										</span>
 									</td>
-									<td style="text-align: center;">
-										<span>
-											<span t-field="impact_value.unit.name"/>
-										</span>
-									</td>
+									
 									
 									<td style="text-align: center;">
 										<span>
@@ -885,6 +1008,11 @@
 									</td>
 									<td style="text-align: center;">
 										<span>
+											<span t-field="elongation.unit.name"/>
+										</span>
+									</td>
+									<td style="text-align: center;">
+										<span>
 											<t t-foreach="elongation.parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
 													<span t-field="parameter.specification"/>
@@ -892,11 +1020,7 @@
 											</t>
 										</span>
 									</td>
-									<td style="text-align: center;">
-										<span>
-											<span t-field="elongation.unit.name"/>
-										</span>
-									</td>
+									
 									
 									<td style="text-align: center;">
 										<span>
@@ -926,6 +1050,13 @@
 									
 										<span t-field="flakiness.parameter_name"/>
 									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-field="flakiness.unit.name"/>
+										</span>
+									</td>
+
 									<td style="text-align: center;">
 										<span>
 											<t t-foreach="flakiness.parameter_table" t-as="parameter">
@@ -935,11 +1066,7 @@
 											</t>
 										</span>
 									</td>
-									<td style="text-align: center;">
-										<span>
-											<span t-field="flakiness.unit.name"/>
-										</span>
-									</td>
+									
 									
 									<td style="text-align: center;">
 										<span>
@@ -971,6 +1098,16 @@
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','b22b1917-4510-4422-9869-d75f6e8893db')]).unit.name"/>
 							</span>
 						</td>
+
+							<td style="text-align: center;">
+							<span>
+								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','b22b1917-4510-4422-9869-d75f6e8893db')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+						</td>
 						
 						<td style="text-align: center;">
 							<span>
@@ -986,15 +1123,7 @@
 								</t>
 							</span>
 						</td>
-						<td style="text-align: center;">
-							<span>
-								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','b22b1917-4510-4422-9869-d75f6e8893db')]).parameter_table" t-as="parameter">
-									<t t-if="parameter.grade.id == eln.grade_id.id">
-										<span t-field="parameter.specification"/>
-									</t>
-								</t>
-							</span>
-						</td>
+					
 						
 					</tr>
 							</tbody>
@@ -1002,66 +1131,13 @@
 					</div>
 
 
+					<div style="text-align:center;margin-top:5px">
+							......End of Report......
+                        </div>
+
+
 
 				 
-
-<!-- 					
-
-					
-					
-					<div style="page-break-inside: avoid;">
-                        <div style="margin-top:10px; padding:0" class="noteContainer">
-                            <table class="table table-bordered">
-								<tr>
-									<td style="padding: 5px; font-style: italic; font-size: 12px;">
-										<b>Note:-</b>
-										&#160;&#160;(i) The results relate only to the items tested 
-										&#160;&#160;(ii) This test report should not be reproduced except in full, without written approval of this Laboratory 
-										&#160;&#160;(iii) Any corrections invalidate the test reports 
-										&#160;&#160;(iv) Any Query regarding the report must be reported immediately. 
-										&#160;&#160;(v) * mark indicate tests which are not in the scope of NABL. 
-										&#160;&#160;(vi) # mark indicates Details given by Client.
-										<t t-if="eln.has_witness">
-											&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
-										</t>
-										<t t-if="eln.remarks">
-											&#160;&#160;<span t-esc="eln.remarks"/>
-										</t>
-									</td>
-								</tr>
-							</table>
-                        </div> -->
-
-
-
-
-						 <!-- Remarks Section -->
-
-                    <div style="margin-top:50px" class="noteContainer">
-						<table >
-							<tr>
-							
-								<td style="padding: 5px; font-style: italic; font-size: 15px; line-height: 18px;">
-									<b>Remarks:</b><br/><br/>
-									    * Refer to Annexure-I for environmental and test conditions<br/><br/>
-									    * Refer to Annexure-I (A) to know NABL accredited scope, range and uncertainty of measurement for test parameter<br/><br/>
-
-									<b>Notes:-</b><br/><br/>
-								    	<!-- a. The information marked with an # received from customer<br/><br/>
-							        	b. The results listed refer only to tested parameters and sample as received from customer<br/><br/>
-							        	c. The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.<br/><br/>
-							        	d. This document shall not be reproduced in part or full without the approval of Genstru. -->
-
-										<t t-if="data.notes_id">
-										<t t-foreach="data.notes_id" t-as="n">
-											<span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span><br/><br/>
-										</t>
-									</t>
-								</td>
-							</tr>
-							</table  >
-						</div>
-
 
 
 
@@ -1074,9 +1150,12 @@
 								Checked By
                                     </b>
                                 </div>
-                                <div style="height:40px">
-
-                                </div>
+                                <div style="height: 50px;">
+									<t t-if="eln.sample_id.checkby_signature_required and eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')"
+											style="max-width: 200px; max-height: 45px; margin-top: 1px; z-index: -10;"/>
+									</t>
+								</div>
                                 <div>
                                     <b>
                                         <span t-esc="eln.sample_id.check_by.name"/>
@@ -1089,14 +1168,13 @@
                                 </div>
                             </div>
 
-							<div>
-						<div>
-							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
-						</div>
-						<div style="padding-top:5px">
-							Format No. <span t-esc="eln.material.test_format_no"/>
-						</div>
-					</div>
+							<t t-if="o.sample_id.stamp_attached">
+							<div >
+								<div>
+								<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
+							</div>
+							</div>
+						</t>
                             <div>
                                 <div>
                                     <b>
@@ -1104,9 +1182,14 @@
                                     </b>
 
                                 </div>
-                                <div style="height:40px">
-
-                                </div>
+                                <div style="height: 50px;">
+									<t t-if="eln.sample_id.approveby_signature_required">
+										<div t-if="eln.sample_id.approved_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 45px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
                                 <div>
                                     <b>
                                         <span t-esc="eln.sample_id.approved_by.name"/>
@@ -1120,9 +1203,7 @@
                                 
                             </div>
                         </div>
-						<div style="text-align:center;margin-top:25px">
-							......End of Report......
-                        </div>
+						
                     </div>
                         
 				<!-- </div>
