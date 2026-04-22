@@ -128,6 +128,48 @@
                         </tbody>
                     </table>
 
+                    <div class="d-flex gap-2">
+                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not sieve_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="d60">D60 (mm)</label></td>
+                                <td><field name="d60"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="d30">D30 (mm)</label></td>
+                                <td><field name="d30"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="d10">D10 (mm)</label></td>
+                                <td><field name="d10"/></td>
+                            </tr>
+                            
+                            
+                        </tbody>
+                    </table>
+                        
+                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not sieve_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="cu">Cu = D60/D10</label></td>
+                                <td><field name="cu"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="cc">Cc = D30^2/D10* D60</label></td>
+                                <td><field name="cc"/></td>
+                            </tr>
+                            
+                            
+                            
+                        </tbody>
+                    </table>
+                    </div>
+
+                    
+                    <div invisible = "sieve_visible == False" class="custom_table_borders text-center">
+                        <field name="graph_image_slive" widget="image" readonly="1"/>
+                    </div>
+
 
                     <!-- Texture -->
 
@@ -369,7 +411,7 @@
 
                     
 
-                    <button name="action_generate_graph" invisible = "liquid_limit_visible == False"
+                    <button name="action_generate_graphl" invisible = "liquid_limit_visible == False"
                     string="Generate Graph"
                     type="object"
                     class="btn-primary"/>
@@ -637,6 +679,61 @@
                         <field name="light1_graph_image" widget="image" readonly="1"/>
                     </div>
 
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not light_comp_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="light_optimum_moisture">Optimum Moisture Content</label></td>
+                                    <td><field name="light_optimum_moisture" /> <span>%</span></td>
+                                </tr>
+
+                                <tr>
+                                    <td><label for="light_optimum_moisture_conformity"></label></td>
+                                    <td><field  name="light_optimum_moisture_conformity"
+                                                decoration-success="light_optimum_moisture_conformity" 
+                                                decoration-danger="light_optimum_moisture_conformity == 'fail'" 
+                                                readonly="1" /></td>
+
+                                </tr>
+                                <tr>
+                                    <td><label for="light_optimum_moisture_nabl"></label></td>
+                                    <td><field name="light_optimum_moisture_nabl"
+                                                decoration-success="light_optimum_moisture_nabl == 'pass'" 
+                                                decoration-danger="light_optimum_moisture_nabl == 'fail'" 
+                                                readonly="1" /></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not light_comp_visible">
+                            <tbody>
+                                 <tr>
+                                    <td><label for="light_max_dry_density">Maximum Dry Density</label></td>
+                                    <td><field  name="light_max_dry_density" /> <span>g/cc</span></td>
+
+                                </tr>
+
+                                <tr>
+                                    <td><label for="light_max_dry_density_conformity"></label></td>
+                                    <td><field  name="light_max_dry_density_conformity"
+                                                decoration-success="light_max_dry_density_conformity == 'pass'" 
+                                                decoration-danger="light_max_dry_density_conformity == 'fail'" 
+                                                readonly="1" /></td>
+
+                                </tr>
+                                <tr>
+                                    <td><label for="light_max_dry_density_nabl"></label></td>
+                                    <td><field name="light_max_dry_density_nabl"
+                                                decoration-success="light_max_dry_density_nabl == 'pass'" 
+                                                decoration-danger="light_max_dry_density_nabl == 'fail'" 
+                                                readonly="1" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
 
                      <!-- Heavy Compaction Test -->
 
@@ -704,10 +801,65 @@
 
                     </div>
 
-                     <button name="action_generate_heavy_graph" string="Generate Graph" type="object" class="btn-primary" invisible = "heavy_visible == False"/>
+                     <button name="generate_line_chart_light_omc" string="Generate Graph" type="object" class="btn-primary" invisible = "heavy_visible == False"/>
 
                     <div invisible = "heavy_visible == False" class="custom_table_borders text-center">
                         <field name="heavy_graph_image" widget="image" readonly="1"/>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not heavy_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="optimum_moisture">Optimum Moisture Content</label></td>
+                                    <td><field name="optimum_moisture" readonly="1"/> <span>%</span></td>
+                                </tr>
+
+                                <tr>
+                                    <td><label for="optimum_moisture_conformity"></label></td>
+                                    <td><field  name="optimum_moisture_conformity"
+                                                decoration-success="optimum_moisture_conformity == 'pass'" 
+                                                decoration-danger="optimum_moisture_conformity == 'fail'" 
+                                                readonly="1" /></td>
+
+                                </tr>
+                                <tr>
+                                    <td><label for="optimum_moisture_nabl"></label></td>
+                                    <td><field name="optimum_moisture_nabl"
+                                                decoration-success="optimum_moisture_nabl == 'pass'" 
+                                                decoration-danger="optimum_moisture_nabl == 'fail'" 
+                                                readonly="1" /></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not heavy_visible">
+                            <tbody>
+                                 <tr>
+                                    <td><label for="max_dry_density">Maximum Dry Density</label></td>
+                                    <td><field  name="max_dry_density"  readonly="1"/> <span>g/cc</span></td>
+
+                                </tr>
+
+                                <tr>
+                                    <td><label for="max_dry_density_conformity"></label></td>
+                                    <td><field  name="max_dry_density_conformity"
+                                                decoration-success="max_dry_density_conformity == 'pass'" 
+                                                decoration-danger="max_dry_density_conformity == 'fail'" 
+                                                readonly="1" /></td>
+
+                                </tr>
+                                <tr>
+                                    <td><label for="max_dry_density_nabl"></label></td>
+                                    <td><field name="max_dry_density_nabl"
+                                                decoration-success="max_dry_density_nabl == 'pass'" 
+                                                decoration-danger="max_dry_density_nabl == 'fail'" 
+                                                readonly="1" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
                     </div>
 
 
@@ -796,6 +948,49 @@
                   <div invisible = "cbr_visible == False" class="custom_table_borders text-center">
                         <field name="cbr_chart_image" widget="image" readonly="1"/>
                     </div>
+
+                    
+                    <div class="d-flex gap-2">
+                    
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not moisture_content_visible">
+                            <tbody>
+                                <tr>
+                                <td><span>2.5 mm Penetration Value Conformity</span></td>
+                                <td><field name="avg_moisture_content_conformity"
+                                            decoration-success="avg_moisture_content_conformity == 'pass'" 
+                                            decoration-danger="avg_moisture_content_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                                <tr>
+                                <td><span>2.5 mm Penetration Value NABL</span></td>
+                                <td><field name="avg_moisture_content_nabl"
+                                            decoration-success="avg_moisture_content_nabl == 'pass'" 
+                                            decoration-danger="avg_moisture_content_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not moisture_content_visible">
+                            <tbody>
+                                <tr>
+                                <td><span>5 mm Penetration Value Conformity</span></td>
+                                <td><field name="avg_moisture_content_conformity"
+                                            decoration-success="avg_moisture_content_conformity == 'pass'" 
+                                            decoration-danger="avg_moisture_content_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                                <tr>
+                                <td><span>5 mm Penetration Value NABL</span></td>
+                                <td><field name="avg_moisture_content_nabl"
+                                            decoration-success="avg_moisture_content_nabl == 'pass'" 
+                                            decoration-danger="avg_moisture_content_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        </div>
+                        <group/>
 
 
                 <!-- Consolidation Test -->
@@ -976,6 +1171,14 @@
                                     <td><label for="constant_avg_k27"></label></td>
                                     <td><field name="constant_avg_k27"/></td>
                                 </tr>
+                                  <tr>
+                                <td><label for="constant_avg_k27_1000_conformity"></label></td>
+                                <td><field name="constant_avg_k27_1000_conformity"
+                                            decoration-success="constant_avg_k27_1000_conformity == 'pass'" 
+                                            decoration-danger="constant_avg_k27_1000_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
+                                
                             </tbody>
                         </table>
                         
@@ -984,6 +1187,13 @@
                                 <tr>
                                     <td><label for="constant_avg_k27_1000"></label></td>
                                     <td><field name="constant_avg_k27_1000"/> </td>
+                                </tr>
+                                <tr>
+                                <td><label for="constant_avg_k27_1000_nabl"></label></td>
+                                <td><field name="constant_avg_k27_1000_nabl"
+                                            decoration-success="constant_avg_k27_1000_nabl == 'pass'" 
+                                            decoration-danger="constant_avg_k27_1000_nabl == 'fail'" 
+                                            readonly="1" /></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1072,6 +1282,13 @@
                                     <td><label for="permeability_avg_k27"></label></td>
                                     <td><field name="permeability_avg_k27"/></td>
                                 </tr>
+                                <tr>
+                                <td><label for="permeability_avg_k27_1000_conformity"></label></td>
+                                <td><field name="permeability_avg_k27_1000_conformity"
+                                            decoration-success="permeability_avg_k27_1000_conformity == 'pass'" 
+                                            decoration-danger="permeability_avg_k27_1000_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                                </tr>
                             </tbody>
                         </table>
                         
@@ -1080,6 +1297,13 @@
                                 <tr>
                                     <td><label for="permeability_avg_k27_1000"></label></td>
                                     <td><field name="permeability_avg_k27_1000"/> </td>
+                                </tr>
+                                <tr>
+                                <td><label for="permeability_avg_k27_1000_nabl"></label></td>
+                                <td><field name="permeability_avg_k27_1000_nabl"
+                                            decoration-success="permeability_avg_k27_1000_nabl == 'pass'" 
+                                            decoration-danger="permeability_avg_k27_1000_nabl == 'fail'" 
+                                            readonly="1" /></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1179,6 +1403,205 @@
                             </tbody>
                         </table>
                     </div>
+
+                      <!-- Direct Shear Test -->
+                          <div invisible = "direct_shear_visible == False">
+                        <h1 class="text-center">
+                            <field name="direct_shear_name" readonly="1" nolabel="1"/>
+                            <field name="direct_shear_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                      <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="proving_ring_least"></label></td>
+                                <td><field name="proving_ring_least" class="blue-input" /></td>
+                            </tr>
+                            <tr>
+                                <td><label for="least_dial_gauge"></label></td>
+                                <td><field name="least_dial_gauge" class="blue-input" /></td>
+                            </tr>
+                            <tr>
+                                <td><label for="direct_area_specimen"></label></td>
+                                <td><field name="direct_area_specimen" class="blue-input" /></td>
+                            </tr>
+                          
+                            
+                        </tbody>
+                    </table>
+                        
+                      <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="direct_cp_proving_ring"></label></td>
+                                <td><field name="direct_cp_proving_ring" class="blue-input" /><span>kN</span></td>
+                            </tr>
+                            <tr>
+                                <td><label for="proving_ring_factor"></label></td>
+                                <td><field name="proving_ring_factor" class="blue-input" /><span>Kg</span></td>
+                            </tr>
+                            <tr>
+                                <td><label for="proving_ring_num"></label></td>
+                                <td><field name="proving_ring_num" class="blue-input" /></td>
+                            </tr>
+                          
+                            
+                        </tbody>
+                    </table>
+                    </div>
+
+
+                    
+
+                     <div invisible = "direct_shear_visible == False">
+                        <field name="direct_shear_ids">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no'/>
+                                <field name='displace_dial_read' />
+                                <field name='direct_displacement' />
+                                <field name='area_corrected' />
+                                <field name='shear_load_0_5_div' class="blue-input" />
+                                <field name='shear_load_0_5_kg' />
+                                <field name='shear_stress_0_5' />
+                                <field name='shear_load_1_0_div' class="blue-input" />
+                                <field name='shear_load_1_0_kg' />
+                                <field name='shear_stress_1_0' />
+                                <field name='shear_load_1_5_div' class="blue-input" />
+                                <field name='shear_load_1_5_kg' />
+                                <field name='shear_stress_1_5' />
+                              
+                            </tree>
+                        </field>
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-100" invisible="not direct_shear_visible">
+                        <tbody>
+                            <tr>
+                                <td><span>Normal Stress (Kg/cm2)</span></td>
+                                <td><span>Max. Shear Stress (Kg/cm2)</span></td>
+                                <td><span>Normal Stress (Ton/m2)</span></td>
+                                <td><span>Max. Shear Stress (Ton/m2)</span></td>
+                            </tr>
+                            <tr>
+                                <td><span>0.5</span></td>
+                                <td><field name="max_shear_0_5" /></td>
+                                <td><field name="normal_stress_0_5" /></td>
+                                <td><field name="shear_ton_0_5" class="blue-input" /></td>
+                            </tr>
+                            <tr>
+                                <td><span>1.0</span></td>
+                                <td><field name="max_shear_1_0" /></td>
+                                <td><field name="normal_stress_1_0" /></td>
+                                <td><field name="shear_ton_1_0" class="blue-input"/></td>
+                            </tr>
+                            <tr>
+                                <td><span>1.5</span></td>
+                                <td><field name="max_shear_1_5" /></td>
+                                <td><field name="normal_stress_1_5" /></td>
+                                <td><field name="shear_ton_1_5" class="blue-input"/></td>
+                            </tr>
+                          
+                            
+                        </tbody>
+                    </table>
+
+                    <div class="d-flex gap-3">
+                      <table class="table table-sm o_form_table table-bordered custom_table_borders w-100" invisible="not direct_shear_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="tan_phi"></label></td>
+                                <td><field name="tan_phi" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                        
+                     <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="angle_phi"></label></td>
+                                <td><field name="angle_phi" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="cohesion"></label></td>
+                                <td><field name="cohesion" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+
+                    <button name="action_generate_direct_graph" invisible = "liquid_limit_visible == False"
+                    string="Generate Graph"
+                    type="object"
+                    class="btn-primary"/>
+
+                     <div invisible = "liquid_limit_visible == False" class="custom_table_borders text-center">
+                        <field name="direct_graph_image" widget="image" readonly="1"/>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        
+                     <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="angle_phi"></label></td>
+                                <td><field name="angle_phi" /></td>
+                            </tr>
+                            <tr>
+                                    <td><label for="angle_phi_conformity"></label></td>
+                                    <td><field  name="angle_phi_conformity"
+                                                decoration-success="angle_phi_conformity == 'pass'" 
+                                                decoration-danger="angle_phi_conformity == 'fail'" 
+                                                readonly="1" /></td>
+
+                                </tr>
+                                <tr>
+                                    <td><label for="angle_phi_nabl"></label></td>
+                                    <td><field name="angle_phi_nabl"
+                                                decoration-success="angle_phi_nabl == 'pass'" 
+                                                decoration-danger="angle_phi_nabl == 'fail'" 
+                                                readonly="1" /></td>
+                                </tr>
+                        </tbody>
+                    </table>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="cohesion"></label></td>
+                                <td><field name="cohesion" /></td>
+                            </tr>
+                        
+                            <tr>
+                                    <td><label for="cohesion_conformity"></label></td>
+                                    <td><field  name="cohesion_conformity"
+                                                decoration-success="cohesion_conformity == 'pass'" 
+                                                decoration-danger="cohesion_conformity == 'fail'" 
+                                                readonly="1" /></td>
+
+                                </tr>
+                                <tr>
+                                    <td><label for="cohesion_nabl"></label></td>
+                                    <td><field name="cohesion_nabl"
+                                                decoration-success="cohesion_nabl == 'pass'" 
+                                                decoration-danger="cohesion_nabl == 'fail'" 
+                                                readonly="1" /></td>
+                                </tr>
+                                </tbody>
+                    </table>
+                    </div>
+
+
+
+
+                    
+
 
 
                     

@@ -195,13 +195,17 @@
 
 				<div class="container_eln" style="padding-top:70px;">
 					<div class="" t-foreach="eln" t-as="o">
-						 <table style="width:100%; border-collapse: collapse;" border="1">
+						<table style="width:100%; border-collapse: collapse;" border="1">
 
 						   <tr>
 								<td colspan="1">Customer Party Name :</td>
 								  <td colspan="2" style="font-weight:bold;">
 									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.customer.name"/><br/>
+									<t t-if="o.srf_id.customer.name">
+									  <span t-field="o.srf_id.customer.name"/>
+									 </t>
+        							<t t-else="">--</t>
+		                            <br/>
 									<span t-field="o.srf_id.customer.street"/>
 									<span t-field="o.srf_id.customer.street2"/>
 									<span t-field="o.srf_id.customer.city"/>
@@ -234,44 +238,90 @@
 							
 							<tr>
 								<td style="width:25%;">Samples Description :-</td>
-								<td style="width:25%;"><span t-field="o.material.lab_name"/></td>
+								<td style="width:25%;">
+								      <t t-if="o.material and o.material.lab_name">
+											<span t-field="o.material.lab_name"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
 
 								<td style="width:20%;">Customer's Ref. No :-</td>
-								<td style="width:20%;"><span t-field="o.srf_id.client_refrence"/></td>
+								<td style="width:20%;">
+
+								  <t t-if="o.srf_id.client_refrence">
+											<span t-field="o.srf_id.client_refrence"/>
+										</t>
+									<t t-else="">--</t>
+								
+								</td>
 							</tr>
 
 							<tr>
 								<!-- <td>Quantity of Samples :-</td>
 								<td>Litre</td> -->
 								<td>No. of Samples :-</td>
-								<td><span t-field="o.sample_id.sample_qty"/>  <span t-field="o.sample_id.uom_id"/>  </td>
+								<td>
+
+								<t t-if="o.sample_id.sample_qty">
+											<span t-field="o.sample_id.sample_qty"/>
+										</t>
+									<t t-else="">--</t>
+
+								<t t-if="o.sample_id.uom_id">
+											<span t-field="o.sample_id.uom_id"/>
+										</t>
+									<t t-else="">--</t>
+								
+								</td>
 
 								<td>Letter Date :-</td>
 								<td>
-									<span t-field="o.srf_id.letter_date"/>
+									
+
+									<t t-if="o.srf_id.letter_date">
+											<span t-field="o.srf_id.letter_date"/>
+										</t>
+									<t t-else="">--</t>
 								</td>
 							</tr>
 
 							<tr>
 								<td>Date of Samples Received :-</td>
 								<td>
-									<span t-field="o.sample_id.sample_received_date"/>
+
+									<t t-if="o.sample_id.sample_received_date">
+											<span t-field="o.sample_id.sample_received_date"/>
+										</t>
+									<t t-else="">--</t>
 								</td>
 
 									<td>SRF No. :-</td>
 										<td >
+
+											<t t-if="o.srf_id">
 											<span t-field="o.srf_id"/>
+										</t>
+									<t t-else="">--</t>
 										</td>
 								
 							</tr>
 
 							<tr>
 								<td>Brand &amp; Grade :-</td>
-								<td><span t-field="o.sample_id.grade_id.grade"/></td>
+								<td>
+								<t t-if="o.sample_id.grade_id.grade">
+											<span t-field="o.sample_id.grade_id.grade"/>
+										</t>
+									<t t-else="">--</t>
+									</td>
 
 								<td>Date of Test Initiation  :-</td>
 								<td>
-									<span t-field="o.start_date"/>
+
+									<t t-if="o.start_date">
+											<span t-field="o.start_date"/>
+										</t>
+									<t t-else="">--</t>
 								</td>
 							</tr>
 
@@ -280,11 +330,19 @@
 
 								<td>Size  :-</td>
 								<td>
-									<span t-field="o.sample_id.size_id.size"/>
+
+										<t t-if="o.sample_id.size_id.size">
+											<span t-field="o.sample_id.size_id.size"/>
+										</t>
+									<t t-else="">--</t>
 								</td>
 								<td>Date of Test Completion  :-</td>
 								<td>
-									<span t-field="o.end_date"/>
+
+									<t t-if="o.end_date">
+											<span t-field="o.end_date"/>
+										</t>
+									<t t-else="">--</t>
 								</td>
 							</tr>
 
@@ -293,16 +351,22 @@
 
 								<td>Week No.  :-</td>
 								<td>
+
+								--
 								</td>
 								<td>Sample ID  :-</td>
 								<td>
-									<span t-field="o.sample_id.kes_no"/>
+
+									<t t-if="o.sample_id.kes_no">
+											<span t-field="o.sample_id.kes_no"/>
+										</t>
+									<t t-else="">--</t>
 								</td>
 							</tr>
 
 							<tr>
 								<td colspan="1">Other Details:</td>
-								<td colspan="3"></td>
+								<td colspan="3">--</td>
 
 								
 							</tr>
@@ -632,15 +696,13 @@
 									</b>
 								</div>
 							</div>
-
-							<div>
-						<div>
-							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
-						</div>
-						<!-- <div style="padding-top:5px">
-							Format No. <span t-esc="eln.material.test_format_no"/>
-						</div> -->
-					</div>
+                        <t t-if="o.sample_id.stamp_attached">
+							<div >
+								<div>
+								<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
+							</div>
+							</div>
+						</t>
 							<div>
 								<div>
 									<b>
