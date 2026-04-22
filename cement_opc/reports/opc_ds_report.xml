@@ -1148,66 +1148,11 @@
 				
 				<div class="container_eln" style="padding-top:20px;">
 					<div class="" t-foreach="eln" t-as="o">
-						<!-- <table style="margin-top:10px; width: 100%; border-collapse: collapse;">
-							<tbody>
-								<tr>
-									<td style="width: 30%; padding: 5px;"><strong>Client Details</strong></td>
-									<td style="padding-left: 10px;">
-										<span t-field="o.srf_id.customer.name"/>
-										<span t-field="o.srf_id.customer.street"/>
-										<span t-field="o.srf_id.customer.street2"/>
-										<span t-field="o.srf_id.customer.city"/>
-										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
-										<span t-field="o.srf_id.customer.state_id"/> ,
-										<span t-field="o.srf_id.customer.country_id"/>
-									</td>
-								
-								</tr>
-								
-								<tr>
-									<td><strong>Client's Reference</strong></td>
-									<td style="padding-left: 10px;"><span t-field="o.srf_id.client_refrence"/></td>
-								</tr>
-
-								<tr>
-									<td><strong>Name of Work</strong></td>
-									<td style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
-								</tr>
-
-								<tr>
-									<td><strong>Date of Testing</strong></td>
-									<td style="padding-left: 10px;">
-										<span t-field="o.start_date" style="margin-right:10px;"/> to 
-										<span t-field="o.end_date" style="margin-left:10px;"/>
-									</td>
-								</tr>
-
-								<tr>
-									<td><strong>Type of Sample</strong></td>
-									<td style="padding-left: 10px;"><span t-field="o.material.name"/></td>
-								</tr>
-
-								<tr>
-									<td><strong>Grade of Sample</strong></td>
-									<td style="padding-left: 10px;"><span t-field="o.grade_id.grade"/></td>
-								</tr>
-
-								<tr t-if="o.material.source_sample">
-									<td style="font-weight: bold;">Source of Sample</td>
-									<td><span t-field="o.material.source_sample"/></td>
-								</tr>
-
-								<tr t-if="o.material.test_method_adopted">
-									<td style="font-weight: bold;">Test method adopted:</td>
-									<td><span t-field="o.material.test_method_adopted"/></td>
-								</tr>
-							</tbody>
-						</table> -->
-						<table style="width:100%; border-collapse: collapse;" border="1">
+				      <table style="width:100%; border-collapse: collapse;" border="1">
 
 						   <tr>
 								<td colspan="1">Customer Party Name :</td>
-								  <td colspan="2">
+								  <td colspan="2" style="font-weight:bold;">
 									<![CDATA[&nbsp;]]>
 									<span t-field="o.srf_id.customer.name"/><br/>
 									<span t-field="o.srf_id.customer.street"/>
@@ -1224,6 +1169,22 @@
 									</td>
 								
 							</tr>
+							<tr t-if="o.srf_id.name_work">
+								<td colspan="1" >Project Name:</td>
+								  <td colspan="3" style="font-weight:bold;">
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.name_work"/>
+									</td>
+							</tr>
+
+							<tr t-if="o.srf_id.client">
+								<td colspan="1" >Name of Agency:</td>
+								  <td colspan="3" style="font-weight:bold;">
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client"/>
+									</td>
+							</tr>
+							
 							<tr>
 								<td style="width:25%;">Samples Description :-</td>
 								<td style="width:25%;"><span t-field="o.material.lab_name"/></td>
@@ -1236,11 +1197,11 @@
 								<!-- <td>Quantity of Samples :-</td>
 								<td>Litre</td> -->
 								<td>No. of Samples :-</td>
-								<td><span t-field="o.sample_id.quantity"/></td>
+								<td><span t-field="o.sample_id.sample_qty"/>  <span t-field="o.sample_id.uom_id"/>  </td>
 
 								<td>Letter Date :-</td>
 								<td>
-									
+									<span t-field="o.srf_id.letter_date"/>
 								</td>
 							</tr>
 
@@ -1268,13 +1229,35 @@
 							</tr>
 
 							<tr>
-								<td>Week No. :-</td>
-								<td></td>
+								
 
+								<td>Size  :-</td>
+								<td>
+									<span t-field="o.sample_id.size_id.size"/>
+								</td>
 								<td>Date of Test Completion  :-</td>
 								<td>
 									<span t-field="o.end_date"/>
 								</td>
+							</tr>
+
+							<tr>
+								
+
+								<td>Week No.  :-</td>
+								<td>
+								</td>
+								<td>Sample ID  :-</td>
+								<td>
+									<span t-field="o.sample_id.kes_no"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="1">Other Details:</td>
+								<td colspan="3"></td>
+
+								
 							</tr>
 
 
@@ -1289,6 +1272,11 @@
 							<tr t-if="o.material.source_sample">
 									<td style="font-weight: bold;">Source of Sample</td>
 									<td colspan="3"><span t-field="o.material.source_sample"/></td>
+								</tr>
+
+								<tr t-if="o.material.specifications">
+									<td style="font-weight: bold;">Specifications</td>
+									<td colspan="3"><span t-field="o.material.specifications"/></td>
 								</tr>
 
 						</table>
@@ -2028,9 +2016,12 @@
 									Checked By
 								</b>
 							</div>
-							<div style="height:30px">
-
-							</div>
+							<div style="height: 50px;">
+									<t t-if="eln.sample_id.checkby_signature_required and eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')"
+											style="max-width: 200px; max-height: 45px; margin-top: 1px; z-index: -10;"/>
+									</t>
+								</div>
 							<div>
 								<b>
 									<!-- <span t-esc="eln.technician.name"/> -->
@@ -2045,19 +2036,19 @@
 						</div>
 
 						<!-- QR Code -->
-							<div style="text-align:center; margin-bottom:10px;">
+							<!-- <div style="text-align:center; margin-bottom:10px;">
 								<img t-att-src="'data:image/png;base64,%s' % (qrcode_static or '')"
 									style="width:75px; height:70px;"/>
-							</div>
+							</div> -->
 
 						<div>
 
 						<div>
 							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
 						</div>
-						<div style="padding-top:5px">
+						<!-- <div style="padding-top:5px">
 							Format No. <span t-esc="eln.material.test_format_no"/>
-						</div>
+						</div> -->
 					</div>
 						<div>
 							<div>
@@ -2066,9 +2057,14 @@
 								</b>
 								
 							</div>
-							<div style="height:30px">
-
-							</div>
+							<div style="height: 50px;">
+									<t t-if="eln.sample_id.approveby_signature_required">
+										<div t-if="eln.sample_id.approved_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 45px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
 							<div>
 								<b>
 								<span t-esc="eln.sample_id.approved_by.name"/>

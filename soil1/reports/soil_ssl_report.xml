@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	
+	   <template id="soil1_report">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			 <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
+				<!-- <div style="text-align:center;margin-top:10px">
+					<p style="font-size:15px"><b>Test Report</b></p>
+				</div> -->
+
+				<div class="container_eln" style="padding-top:0px;">
+					<div class="" t-foreach="eln" t-as="o">
+						<table style="margin-top:10px; width: 100%; border-collapse: collapse;">
+							<tbody>
+								<tr>
+									<td style="width: 30%; padding: 5px;"><strong>Client Details</strong></td>
+									<td style="padding-left: 10px;">
+										<span t-field="o.srf_id.customer.name"/>
+										<span t-field="o.srf_id.customer.street"/>
+										<span t-field="o.srf_id.customer.street2"/>
+										<span t-field="o.srf_id.customer.city"/>
+										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
+										<span t-field="o.srf_id.customer.state_id"/> ,
+										<span t-field="o.srf_id.customer.country_id"/>
+									</td>
+								
+								</tr>
+								
+								<tr>
+									<td><strong>Client's Reference</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.srf_id.client_refrence"/></td>
+								</tr>
+
+								<tr>
+									<td><strong>Name of Work</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
+								</tr>
+
+								<tr>
+									<td><strong>Date of Testing</strong></td>
+									<td style="padding-left: 10px;">
+										<span t-field="o.start_date" style="margin-right:10px;"/> to 
+										<span t-field="o.end_date" style="margin-left:10px;"/>
+									</td>
+								</tr>
+
+								<tr>
+									<td><strong>Type of Sample</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.material.name"/></td>
+								</tr>
+
+								<tr>
+									<td><strong>Grade of Sample</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.grade_id.grade"/></td>
+								</tr>
+
+								<!-- Source of Sample (only if value exists) -->
+								<tr t-if="o.material.source_sample">
+									<td style="font-weight: bold;">Source of Sample</td>
+									<td><span t-field="o.material.source_sample"/></td>
+								</tr>
+
+								<!-- Test method adopted (only if value exists) -->
+								<tr t-if="o.material.test_method_adopted">
+									<td style="font-weight: bold;">Test method adopted:</td>
+									<td><span t-field="o.material.test_method_adopted"/></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+
+
+
+						 <!-- Remarks Section -->
+
+                    <div style="margin-top:50px" class="noteContainer">
+						<table >
+							<tr>
+							
+								<td style="padding: 5px; font-style: italic; font-size: 15px; line-height: 18px;">
+									<b>Remarks:</b><br/><br/>
+									    * Refer to Annexure-I for environmental and test conditions<br/><br/>
+									    * Refer to Annexure-I (A) to know NABL accredited scope, range and uncertainty of measurement for test parameter<br/><br/>
+
+									<b>Notes:-</b><br/><br/>
+								    	<!-- a. The information marked with an # received from customer<br/><br/>
+							        	b. The results listed refer only to tested parameters and sample as received from customer<br/><br/>
+							        	c. The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.<br/><br/>
+							        	d. This document shall not be reproduced in part or full without the approval of Genstru. -->
+
+										<t t-if="data.notes_id">
+										<t t-foreach="data.notes_id" t-as="n">
+											<span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span><br/><br/>
+										</t>
+									</t>
+								</td>
+							</tr>
+							</table  >
+						</div>
+
+
+						<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Checked By
+									</b>
+								</div>
+								<div style="height:20px">
+
+								</div>
+								<div>
+									<b>
+										<span t-esc="eln.technician.name"/>
+									</b>
+								</div>
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.check_by.job_title"/>)
+									</b>
+								</div>
+							</div>
+
+							<div>
+						<div>
+							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
+						</div>
+						<div style="padding-top:5px">
+							Format No. <span t-esc="eln.material.test_format_no"/>
+						</div>
+					</div>
+							
+							<div>
+								<div>
+									<b>
+										Approved By 
+									</b>
+									
+								</div>
+								<div style="height:20px">
+
+								</div>
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+								<!-- <div>
+									<b>
+										(Authorized Signatory)
+									</b>
+								</div> -->
+							</div>
+						</div>
+						<div style="text-align:center;margin-top:10px">
+							......End of Report......
+						</div>
+
+				</div>
+			</t>
+		</t>
+	</template>
+</odoo>
