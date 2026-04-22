@@ -105,181 +105,55 @@ class SoilReport(models.AbstractModel):
         else:
             general_data = self.env['lerm.eln'].sudo().browse(docids)
 
-    #     graph_sieve = self._generate_sieve_log_chart(general_data)
-    #     graph_liquid = self.generate_line_chart_liquid(general_data)
+        # ✅ BOOLEAN CONTROL (IMPORTANT)
+        graph_sieve = False
+        if getattr(general_data, 'show_sieve_graph', False):
+            graph_sieve = self.generate_line_chart_slive(general_data)
 
-      
-    #     plt.figure(figsize=(12, 6))
-    #     cbrx_values = []
-    #     cbry_values = []
+        graph_liquid1 = False
+        if getattr(general_data, 'show_liquid_graph1', False):
+            graph_liquid1 = self.action_generate_graphl(general_data)
 
-    #     # Check if cbr_table exists and populate cbrx_values and cbry_values
-    #     if general_data.cbr_line_ids:
-    #         for line in general_data.cbr_line_ids:
-    #             cbrx_values.append(line.penetration)
-    #             cbry_values.append(line.load)
+        graph_liquid2 = False
+        if getattr(general_data, 'show_liquid_graph2', False):
+            graph_liquid2 = self.action_generate_cone_graph(general_data)
 
-    #         try:
-    #             max_y = max(cbry_values)
-    #         except ValueError:
-    #             max_y = 100  # Default value if cbry_values is empty
-    #         try:
-    #             min_y = round(min(cbry_values), 2)
-    #         except ValueError:
-    #             min_y = 0
-    #         try:
-    #             max_x = cbrx_values[cbry_values.index(max_y)]
-    #         except ValueError:
-    #             max_x = 100
-    #         try:
-    #             min_x = round(min(cbrx_values), 2)
-    #         except ValueError:
-    #             min_x = 0
+        graph_light1 = False
+        omc = 0
+        mdd = 0
+        if getattr(general_data, 'show_light_graph1', False):
+            result = self.action_generate_graph1(general_data)
+            if result:
+               graph_light1, omc, mdd = result
+        
+        
+        graph_light2 = False
+        if getattr(general_data, 'show_light_graph2', False):
+            graph_light2 = self.action_generate_light1_graph_image(general_data)
 
-    #         # Format max_y and max_x to display 2 digits after the decimal point
-    #         max_y = round(max_y, 2)
-    #         max_x = round(max_x, 2)
+        graph_heavy = False
+        heavy_omc = 0
+        heavy_mdd = 0
 
-    #         # Perform cubic spline interpolation if there are enough data points
-    #         if len(cbrx_values) > 1 and len(cbry_values) > 1:
-    #             cbrx_smooth = np.linspace(min(cbrx_values), max(cbrx_values), 100)
-    #             cbrcs = CubicSpline(cbrx_values, cbry_values)
+        if getattr(general_data, 'show_heavy_graph2', False):
+            result = self.generate_line_chart_light_omc(general_data)
+            if result:
+              graph_heavy, heavy_omc, heavy_mdd = result
 
-    #             # Create the line chart with a connected smooth line and markers
-    #             plt.plot(cbrx_smooth, cbrcs(cbrx_smooth), color='red', label='Smooth Curve')
-    #             plt.scatter(cbrx_values, cbry_values, marker='o', color='blue', s=30, label='Data Points')
+        graph_cbr = False
+        if getattr(general_data, 'show_cbr', False):
+            graph_cbr = self.action_generate_cbr_chart(general_data)
 
-    #             # Add horizontal lines with labels
-    #             if len(cbry_values) > 8:  # Ensure indices 5 and 8 exist
-    #                 plt.axhline(y=cbry_values[5], color='green', linestyle='--', label=f'Load at 2.5 mm = {cbry_values[5]}')
-    #                 plt.axhline(y=cbry_values[8], color='green', linestyle='--', label=f'Load at 5 mm = {cbry_values[8]}')
+        graph_consolidation = False
+        if getattr(general_data, 'show_graph_consolidation', False):
+            graph_consolidation = self.action_generate_graph(general_data)
 
-    #             # Add vertical lines at specific penetration values
-    #             plt.axvline(x=2.5, color='orange', linestyle='--')
-    #             plt.axvline(x=5.0, color='orange', linestyle='--')
-
-    #             # Set the grid
-    #             ax = plt.gca()
-    #             ax.grid(which='both', linestyle='--', linewidth=0.5)
-
-    #             # Set the x-axis major and minor tick marks
-    #             ax.xaxis.set_major_locator(ticker.MultipleLocator(1))  # Major gridlines every 1 unit
-    #             ax.xaxis.set_minor_locator(ticker.MultipleLocator(0.1))  # Minor gridlines every 0.1 unit
-
-    #             # Set the y-axis tick marks
-    #             plt.yticks(np.arange(min_y, max_y + 0.2, (max_y - min_y) / 5))
-
-    #             # Set the x-axis tick marks
-    #             if max_x != min_x:
-    #                 plt.xticks(np.arange(min_x, max_x + 1.0, (max_x - min_x) / 5))
-
-    #             # Set labels and title
-    #             plt.xlabel('Penetration in mm')
-    #             plt.ylabel('Load')
-    #             plt.title('Penetration in mm vs Load')
-    #             plt.legend()
-
-    #         # Save the Matplotlib plot to a BytesIO object
-    #         buffer2 = BytesIO()
-    #         plt.savefig(buffer2, format='png')
-    #         cbr_graph_image = base64.b64encode(buffer2.getvalue()).decode('utf-8')
-    #         plt.close()
-    #     else:
-    #         cbr_graph_image = None
-    #         cbry_values = []  # Reset to empty list
-    #         cbrx_values = []
-
-    #     plt.figure(figsize=(12, 6))
-    #     x_values = []
-    #     y_values = []
-    #     # import wdb;wdb.set_trace()
-    #     for line in general_data.omc_table:
-    #         x_values.append(line.water_content1)
-    #         y_values.append(line.dry_density1)
-
-
-    #     if general_data.omc_table:
-    #         try:
-    #             max_y = max(y_values)
-    #         except:
-    #             max_y = 100
-    #         try:
-    #             min_y = round(min(y_values),2)
-    #         except:
-    #             min_y = 0
-    #         try:
-    #             # max_x = round(max(x_values),2)
-    #             max_x = x_values[y_values.index(max_y)]
-    #         except:
-    #             max_x = 100
-    #         try:
-    #             min_x = round(min(x_values),2)
-    #         except:
-    #             min_x = 0 
-            
-            
-
-
-    #         # Format max_y and max_x to display 2 digits after the decimal point
-    #         max_y = round(max_y , 2)
-    #         max_x = round(max_x, 2)
-
-    
+        graph_direct_shear = False
+        if getattr(general_data, 'show_direct_graph', False):
+            graph_direct_shear = self.action_generate_direct_graph(general_data)
 
         
-    #         # Perform cubic spline interpolation
-    #         x_smooth = np.linspace(min(x_values), max(x_values), 100)
-    #         # cs = CubicSpline(x_values, y_values,1)
-    #         # cs = interp1d(x_values, y_values,kind='cubic')
-    #         cs = Akima1DInterpolator(x_values, y_values)
-
-    #         # Create the line chart with a connected smooth line and markers
-    #         plt.plot(x_smooth, cs(x_smooth), color='red', label='Smooth Curve')
-    #         plt.scatter(x_values, y_values, marker='o', color='blue', s=30, label='Data Points')
-
-            
-    #         # Add a horizontal line with a label(, linestyle='--', label=f'Max Y = {max_y}', linestyle='--', label=f'Max X = {max_x}')
-    #         plt.axhline(y=max_y, color='green',linestyle='--')
-
-    #         # Add a vertical line with a label
-    #         plt.axvline(x=max_x, color='orange',linestyle='--')
-
-            
-    #         # Set the grid
-    #         ax = plt.gca()
-    #         ax.grid(which='both', linestyle='--', linewidth=0.5)
-
-    #         # Set the x-axis major and minor tick marks
-    #         ax.xaxis.set_major_locator(ticker.MultipleLocator(1))  # Major gridlines every 1 unit
-    #         ax.xaxis.set_minor_locator(ticker.MultipleLocator(0.1))  # Minor gridlines every 0.1 unit
-
-    #         # Set the y-axis tick marks
-    #         # plt.yticks([1.60, 1.62, 1.64, 1.66, 1.68, 1.70, 1.72, 1.74, 1.76, 1.78, 1.80])
-
-    #         # edit range here
-    #         plt.yticks(np.arange(min_y , round(max_y,2) + 0.2 , (max_y - min_y) / 5))
-
-
-    #         if max_x != min_x:
-    #             plt.xticks(np.arange(min_x, round(max(x_values),2) + 1.0, (max_x - min_x) / 5))
-            
-    #         plt.gca().yaxis.set_major_formatter(ticker.FormatStrFormatter('%.2f'))
-    #         plt.xlabel('Water Content (%) ')
-    #         plt.ylabel('Dry density in gm/cc')
-    #         plt.title('% DETERMINATION OF COMPACTION OMC / MDD')
-    #         plt.legend()
-
-    #         # Save the Matplotlib plot to a BytesIO object
-    #         buffer = BytesIO()
-    #         plt.savefig(buffer, format='png')
-    #         graph_image1 = base64.b64encode(buffer.getvalue()).decode('utf-8')
-
-    #         # Close the Matplotlib plot to free up resources
-    #         plt.close()
-    #     else:
-    #         graph_image1 = None
-    #         max_y = 0
-    #         max_x = 0
+    
 
         return {
             'eln': eln,
@@ -288,184 +162,760 @@ class SoilReport(models.AbstractModel):
             'qrcode_static': qr_static_b64,
             'stamp' : inreport_value,
             'nabl' : nabl,
-            # # 'graphHeavy' : graph_image,
-            # 'graphSieve': graph_sieve,  # ✅ Added
-            # 'graphliquid': graph_liquid,  # ✅ Added
-            # 'graphLight' : graph_image1,
+            'graphSieve': graph_sieve,
+            'graph_liquid1': graph_liquid1, 
+            'graph_liquid2': graph_liquid2,
+            'graph_light1': graph_light1, 
+            'graph_light2': graph_light2,
+            'omc': omc,
+            'mdd': mdd,
+            'graph_heavy':graph_heavy,
+            'heavy_omc': heavy_omc,
+            'heavy_mdd': heavy_mdd,
+            'graph_cbr': graph_cbr,
+            'graph_consolidation': graph_consolidation,
+            'graph_direct_shear': graph_direct_shear, # ✅ Added
             
-            # 'mdd': max_y if cbry_values else 0,
-            # 'omc': max_x if cbrx_values else 0,
-            # 'graphCbr': cbr_graph_image,
-            # 'load2': cbry_values[5] if len(cbry_values) > 5 else 0,
-            # 'load5': cbry_values[8] if len(cbry_values) > 8 else 0,
         }
 
 
+    # ✅ GRAPH FUNCTION
+    def generate_line_chart_slive(self, data):
 
-    # def _generate_sieve_log_chart(self, data):
-   
-    #     x_values = []
-    #     y_values = []
-    #     x_labels = []
+        x_value = []
+        y_value = []
+        x_labels = []
 
-    #     # ✅ Use sieve_size field for X-axis and convert units
-    #     for line in data.sieve_analysis_child_lines:
-    #         if line.sieve_size and line.passing_percent is not None:
-    #             sieve_str = str(line.sieve_size).strip().lower()
-    #             try:
-    #                 if 'mm' in sieve_str:
-    #                     sieve_val = float(sieve_str.replace('mm', '').strip())
-    #                     label = f"{int(sieve_val)} mm"
-    #                 elif 'µ' in sieve_str or 'micron' in sieve_str:
-    #                     sieve_val = float(sieve_str.replace('µ', '').replace('micron', '').strip()) / 1000
-    #                     label = f"{int(float(sieve_str.replace('µ', '').replace('micron', '').strip()))} µm"
-    #                 else:
-    #                     sieve_val = float(sieve_str)
-    #                     label = f"{sieve_val} mm"
+        for line in data.sieve_analysis_child_lines:
+            if line.sieve_size and line.passing_percent is not None:
+                sieve_str = str(line.sieve_size).strip().lower()
+                try:
+                    if 'mm' in sieve_str:
+                        sieve_val = float(sieve_str.replace('mm', '').strip())
+                        label = f"{int(sieve_val)} mm"
 
-    #                 x_values.append(sieve_val)
-    #                 y_values.append(float(line.passing_percent))
-    #                 x_labels.append(label)
-    #             except ValueError:
-    #                 continue
+                    elif 'µ' in sieve_str or 'micron' in sieve_str:
+                        sieve_val = float(
+                            sieve_str.replace('µ', '').replace('micron', '').strip()
+                        ) / 1000
+                        label = f"{int(float(line.sieve_size.replace('µ', '').replace('micron', '').strip()))} µm"
 
-    #     if not x_values or not y_values:
-    #         return None
+                    else:
+                        sieve_val = float(sieve_str)
+                        label = f"{sieve_val} mm"
 
-    #     # ✅ Sort ascending for left-to-right X-axis
-    #     sorted_data = sorted(zip(x_values, y_values, x_labels))
-    #     x_values, y_values, x_labels = zip(*sorted_data)
+                    x_value.append(sieve_val)
+                    y_value.append(float(line.passing_percent))
+                    x_labels.append(label)
 
-    #     plt.figure(figsize=(12, 5))
-    #     ax = plt.gca()
-    #     ax.set_xscale('log')
+                except ValueError:
+                    continue
 
-    #     # ✅ Plot line and points
-    #     ax.plot(x_values, y_values, color='blue', marker='o', linestyle='-', linewidth=2)
-    #     ax.scatter(x_values, y_values, color='red', edgecolors='black', s=60, zorder=5)
+        if not x_value or not y_value:
+            return False
 
-    #     # ✅ Labels and title
-    #     ax.set_xlabel('Sieve Size', fontsize=12)
-    #     ax.set_ylabel('Passing %', fontsize=12)
-    #     ax.set_title('Grain Size Analysis', fontsize=14)
+        # ✅ Sort data
+        sorted_data = sorted(zip(x_value, y_value, x_labels))
+        x_value, y_value, x_labels = zip(*sorted_data)
 
-    #     # ✅ Y-axis on right
-    #     ax.yaxis.tick_right()
-    #     ax.yaxis.set_label_position("right")
+        plt.figure(figsize=(12, 5))
+        plt.xscale('log')
 
-    #     # ✅ X-axis custom labels (avoid overlap)
-    #     ax.set_xticks(x_values)
-    #     ax.set_xticklabels(x_labels, rotation=45, ha='right')
+        # ✅ Plot
+        plt.plot(x_value, y_value, color='blue', linewidth=2)
+        plt.scatter(x_value, y_value, color='red', s=50)
 
-    #     # ✅ Grid with minor ticks
-    #     ax.xaxis.set_minor_locator(LogLocator(base=10.0, subs=np.arange(1.0, 10.0) * 0.1, numticks=200))
-    #     ax.yaxis.set_minor_locator(MultipleLocator(2))
-    #     ax.grid(True, which='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
+        plt.xlabel('Sieve Size')
+        plt.ylabel('Passing %')
+        plt.title('Grain Size Analysis')
 
-    #     # ✅ Axis limits
-    #     ax.set_xlim(left=min(x_values)/1.5, right=max(x_values)*1.5)
-    #     ax.set_ylim(0, 100)
+        ax = plt.gca()
+        plt.xticks(ticks=x_value, labels=x_labels, rotation=45)
 
-    #     # --- D10, D30, D60 points with axis guide lines ---
-    #     d_points = [
-    #         (getattr(data, 'd10', None), 10, 'black'),
-    #         (getattr(data, 'd30', None), 30, 'yellow'),
-    #         (getattr(data, 'd60', None), 60, 'orange')
-    #     ]
+        ax.xaxis.set_minor_locator(
+            LogLocator(base=10.0, subs=np.arange(1.0, 10.0) * 0.1)
+        )
+        ax.yaxis.set_minor_locator(MultipleLocator(2))
 
-    #     for dx, dy, color in d_points:
-    #         if dx:
-    #             # Solid point
-    #             ax.scatter(dx, dy, color=color, s=80, zorder=10)
-    #             # Axis guide lines (X & Y) to intersection
-    #             ax.plot([dx, dx], [0, dy], color=color, linestyle='-', linewidth=1.2)
-    #             ax.plot([0, dx], [dy, dy], color=color, linestyle='-', linewidth=1.2)
+        plt.grid(True, which='both', linestyle='--', linewidth=0.3)
 
-    #     # ✅ Highlight max passing %
-    #     max_index = y_values.index(max(y_values))
-    #     max_x = x_values[max_index]
-    #     max_y = y_values[max_index]
+        plt.xlim(left=min(x_value) / 1.5, right=max(x_value) * 1.5)
+        plt.ylim(0, 100)
 
-    #     ax.axhline(y=max_y, color='red', linestyle='--', linewidth=1)
-    #     ax.axvline(x=max_x, color='red', linestyle='--', linewidth=1)
-    #     ax.plot(max_x, max_y, marker='o', color='red', markersize=8)
-    #     ax.text(max_x * 1.1, max_y + 2, f"{max_x:.3f}, {max_y:.2f}%", color='red')
+        # ✅ D10, D30, D60
+        d_points = [
+            (getattr(data, 'd10', None), 10, 'black'),
+            (getattr(data, 'd30', None), 30, 'yellow'),
+            (getattr(data, 'd60', None), 60, 'orange'),
+        ]
 
-    #     # ✅ Save to base64
-    #     buffer = io.BytesIO()
-    #     plt.tight_layout()
-    #     plt.savefig(buffer, format='png')
-    #     plt.close()
-    #     buffer.seek(0)
+        for dx, dy, color in d_points:
+            if dx:
+                plt.scatter(dx, dy, color=color, s=80)
+                plt.plot([dx, dx], [0, dy], color=color)
+                plt.plot([0, dx], [dy, dy], color=color)
 
-    #     return base64.b64encode(buffer.read()).decode('utf-8')
+        # ✅ Convert to base64
+        buffer = io.BytesIO()
+        plt.tight_layout()
+        plt.savefig(buffer, format='png')
+        plt.close()
+        buffer.seek(0)
 
-            
+        return base64.b64encode(buffer.read()).decode('utf-8')
+    
 
 
+    def action_generate_graphl(self, data):
+
+     import numpy as np
+     import matplotlib.pyplot as plt
+     from matplotlib.ticker import LogLocator, ScalarFormatter, MultipleLocator
+     import io
+     import base64
+
+     blows = np.array([float(l.blows or 0) for l in data.water_line_ids])
+     water = np.array([float(l.water_content or 0) for l in data.water_line_ids])
+
+     mask = (blows > 0) & (water > 0)
+     blows = blows[mask]
+     water = water[mask]
+
+     if len(blows) < 2:
+        return False
+
+     # Sort
+     idx = np.argsort(blows)
+     blows = blows[idx]
+     water = water[idx]
+
+    # -------------------------------
+    # LOG FIT
+    # -------------------------------
+     log_b = np.log10(blows)
+     coeffs = np.polyfit(log_b, water, 1)
+     fit = np.poly1d(coeffs)
+
+     log_x = np.linspace(np.log10(min(blows)*0.8), np.log10(max(blows)*1.5), 200)
+     x_smooth = 10 ** log_x
+     y_smooth = fit(log_x)
+
+    # -------------------------------
+    # GRAPH
+    # -------------------------------
+     fig, ax = plt.subplots(figsize=(10, 5))
+     ax.set_xscale('log')
+
+     x_min = max(1, min(blows)*0.8)
+     x_max = max(blows)*1.5
+     ax.set_xlim(x_min, x_max)
+
+     y_min = min(water) - 2
+     y_max = max(water) + 2
+     ax.set_ylim(y_min, y_max)
+
+    # Grid
+     ax.xaxis.set_major_locator(LogLocator(base=10))
+     ax.xaxis.set_minor_locator(LogLocator(base=10, subs=np.arange(2, 10)*0.1))
+
+     ax.yaxis.set_major_locator(MultipleLocator(1))
+     ax.yaxis.set_minor_locator(MultipleLocator(0.5))
+
+     ax.grid(which='major', linewidth=1, color='black')
+     ax.grid(which='minor', linewidth=0.5, color='gray')
+
+    # Excel-like ticks
+     xticks = sorted(set([10, 15, 18, 20, 22, 25, 30, 40, 50, 100] + list(blows.astype(int))))
+     xticks = [x for x in xticks if x_min <= x <= x_max]
+
+     ax.set_xticks(xticks)
+     ax.get_xaxis().set_major_formatter(ScalarFormatter())
+     ax.ticklabel_format(style='plain', axis='x')
+
+    # Fit line
+     ax.plot(x_smooth, y_smooth, color='orange', linewidth=2)
+
+    # Points
+     for i, (x, y) in enumerate(zip(blows, water)):
+        ax.scatter(x, y, color='#1f77b4', s=80, edgecolors='black', zorder=6)
+        offset = 0.5 if y < (y_max - 1) else -0.5
+        ax.text(x, y + offset, f"P{i+1}", fontsize=8, ha='center')
+
+    # Liquid Limit (25 blows)
+     ll_x = 25
+     ll_y = float(fit(np.log10(ll_x)))
+
+     if x_min < ll_x < x_max:
+        ax.axvline(ll_x, color='#2c6db2', linewidth=2)
+
+     if y_min < ll_y < y_max:
+        ax.axhline(ll_y, color='#6aa84f', linewidth=2)
+
+     ax.scatter(ll_x, ll_y, color='#2c6db2', s=120, zorder=10)
+
+     ax.set_title("LIQUID LIMIT TEST GRAPH (CASAGRANDE)")
+     ax.set_xlabel("No. of Blows")
+     ax.set_ylabel("Water Content (%)")
+
+    # Save
+     buffer = io.BytesIO()
+     plt.savefig(buffer, format='png', dpi=100, bbox_inches='tight')
+     plt.close()
+     buffer.seek(0)
+
+     return base64.b64encode(buffer.read()).decode('utf-8')
+    
+
+    def action_generate_cone_graph(self, data):
+
+     import numpy as np
+     import matplotlib.pyplot as plt
+     import io
+     import base64
+
+    # -------------------------------
+    # DATA
+    # -------------------------------
+     blows = []
+     water = []
+
+     for l in data.water_line_ids:
+        if l.blows and l.water_content > 0:
+            blows.append(float(l.blows))
+            water.append(float(l.water_content))
+
+     blows = np.array(blows)
+     water = np.array(water)
+
+     if len(blows) < 2:
+        return False
+
+    # -------------------------------
+    # SORT
+    # -------------------------------
+     idx = np.argsort(blows)
+     blows = blows[idx]
+     water = water[idx]
+
+    # -------------------------------
+    # REGRESSION
+    # -------------------------------
+     coeffs = np.polyfit(blows, water, 1)
+     fit = np.poly1d(coeffs)
+
+     x_smooth = np.linspace(min(blows), max(blows), 100)
+     y_smooth = fit(x_smooth)
+
+    # -------------------------------
+    # GRAPH
+    # -------------------------------
+     fig, ax = plt.subplots(figsize=(10, 5))
+     ax.set_axisbelow(True)
+
+    # Grid
+     ax.grid(which='major', linewidth=1)
+     ax.minorticks_on()
+     ax.grid(which='minor', linewidth=0.5)
+
+    # Dynamic axis
+     x_min = min(blows)
+     x_max = max(blows)
+     y_min = min(water)
+     y_max = max(water)
+
+     ax.set_xlim(x_min - 5, x_max + 5)
+     ax.set_ylim(y_min - 2, y_max + 2)
+
+     ax.margins(x=0.1, y=0.1)
+
+    # Line
+     ax.plot(x_smooth, y_smooth, color='black', linewidth=1.5, zorder=2)
+
+    # Points
+     ax.scatter(blows, water,
+               color='blue',
+               s=70,
+               edgecolors='black',
+               zorder=5)
+
+    # Labels
+     ax.set_title("LIQUID LIMIT GRAPH (CONE PENETRATION)", fontsize=14)
+     ax.set_xlabel("NO. BLOWS")
+     ax.set_ylabel("WATER CONTENT (%)")
+
+    # Save
+     buffer = io.BytesIO()
+     plt.savefig(buffer, format='png', dpi=100, bbox_inches='tight')
+     plt.close()
+     buffer.seek(0)
+
+     return base64.b64encode(buffer.read()).decode('utf-8')
+    
+
+    def action_generate_graph1(self, data):
+
+      import numpy as np
+      import matplotlib.pyplot as plt
+      from scipy.interpolate import PchipInterpolator
+      import io, base64
+
+      x = []
+      y = []
+
+      # -----------------------------
+      # COLLECT DATA
+      # -----------------------------
+      for line in data.light_line_ids:
+          if line.water_content and line.dry_density:
+              x.append(float(line.water_content))
+              y.append(float(line.dry_density))
+
+      if len(x) < 3:
+          return False, 0, 0
+
+      # -----------------------------
+      # SORT
+      # -----------------------------
+      data_sorted = sorted(zip(x, y))
+      x, y = zip(*data_sorted)
+  
+      x = np.array(x)
+      y = np.array(y)
+
+      # -----------------------------
+      # INTERPOLATION
+      # -----------------------------
+      interp = PchipInterpolator(x, y)
+
+      x_smooth = np.linspace(min(x), max(x), 300)
+      y_smooth = interp(x_smooth)
+
+      # -----------------------------
+      # FIND OMC & MDD
+      # -----------------------------
+      idx = np.argmax(y_smooth)
+      omc = float(x_smooth[idx])
+      mdd = float(y_smooth[idx])
+ 
+      # -----------------------------
+      # GRAPH
+      # -----------------------------
+      plt.figure(figsize=(12, 5))
+
+      plt.plot(x_smooth, y_smooth, color='blue', linewidth=2)
+      plt.scatter(x, y, color='orange', s=60)
+
+      plt.axvline(x=omc, color='black', linewidth=2)
+      plt.axhline(y=mdd, color='black', linewidth=2)
+
+      plt.scatter([omc], [mdd], color='black', s=70)
+
+      plt.title('Light Compaction Test')
+      plt.xlabel('Optimum Moisture Content (%)')
+      plt.ylabel('Maximum Dry Density (gm/cc)')
+
+      ax = plt.gca()
+      ax.set_facecolor('#f5fff5')
+      ax.minorticks_on()
+      ax.grid(which='major', color='black', linewidth=0.8)
+      ax.grid(which='minor', color='green', linestyle='--', linewidth=0.4)
+
+      plt.xlim(0, max(x) + 2)
+      plt.ylim(min(y) - 0.1, max(y) + 0.1)
+
+      plt.tight_layout()
+
+      # -----------------------------
+      # SAVE
+      # -----------------------------
+      buffer = io.BytesIO()
+      plt.savefig(buffer, format='png', dpi=120)
+      plt.close()
+      buffer.seek(0)
+
+      image = base64.b64encode(buffer.read()).decode('utf-8')
+
+      return image, round(omc, 2), round(mdd, 3)
+    
+
+    def action_generate_light1_graph_image(self, data):
+
+      import numpy as np
+      import matplotlib.pyplot as plt
+      from scipy.interpolate import PchipInterpolator
+      from scipy.ndimage import gaussian_filter1d
+      import io, base64
+
+      x = []
+      y = []
+
+      # -----------------------------
+      # COLLECT DATA
+      # -----------------------------
+      for line in data.light_line_ids:
+          if line.water_content and line.dry_density:
+              x.append(float(line.water_content))
+              y.append(float(line.dry_density))
+
+      if len(x) < 3:
+          return False
+
+      # -----------------------------
+      # SORT
+      # -----------------------------
+      data_sorted = sorted(zip(x, y))
+      x, y = zip(*data_sorted)
+
+      x = np.array(x, dtype=float)
+      y = np.array(y, dtype=float)
+
+      # -----------------------------
+      # INTERPOLATION
+      # -----------------------------
+      interp = PchipInterpolator(x, y)
+
+      x_smooth = np.linspace(min(x), max(x), 300)
+      y_smooth = interp(x_smooth)
+
+      # -----------------------------
+      # SMOOTHING
+      # -----------------------------
+      y_smooth = gaussian_filter1d(y_smooth, sigma=1.2)
+
+      # -----------------------------
+      # FIX FIRST SEGMENT (KINK FIX)
+      # -----------------------------
+      if len(x) > 1:
+          x1, x2 = x[0], x[1]
+          mask = (x_smooth >= x1) & (x_smooth <= x2)
+
+          y_start = y[0]
+          y_end = y[1]
+
+          t = (x_smooth[mask] - x1) / (x2 - x1)
+          y_smooth[mask] = y_start + (y_end - y_start) * (3*t**2 - 2*t**3)
+
+      # -----------------------------
+      # GRAPH
+      # -----------------------------
+      plt.figure(figsize=(10, 4))
+
+      plt.plot(x_smooth, y_smooth, linewidth=2)
+      plt.scatter(x, y, s=45, zorder=5)
+
+      plt.xlabel('Optimum Moisture Content (%)')
+      plt.ylabel('Maximum Dry Density (gm/cc)')
+      plt.title('Light Compaction Test')
+
+      plt.grid(True, linestyle='-', linewidth=0.5, alpha=0.3)
+
+      plt.xlim(0, max(x) + 2)
+      plt.ylim(0, max(y) + 0.2)
+
+      plt.tight_layout()
+
+      # -----------------------------
+      # SAVE
+      # -----------------------------
+      buffer = io.BytesIO()
+      plt.savefig(buffer, format='png', dpi=100)
+      plt.close()
+      buffer.seek(0)
+
+      return base64.b64encode(buffer.read()).decode('utf-8')
+    
 
 
-    # def generate_line_chart_liquid(self, general_data):
-    #     x_value = []
-    #     y_value = []
-    #     for line in general_data.water_line_ids:
-    #         if line.blwo_no1 and line.moisture_content is not None:
-    #             x_value.append(line.blwo_no1)
-    #             y_value.append(line.moisture_content)
+    def generate_line_chart_light_omc(self, data):
 
-    #     if not x_value or not y_value:
-    #         return False
+      import numpy as np
+      import matplotlib.pyplot as plt
+      from scipy.interpolate import make_interp_spline
+      from matplotlib.ticker import MultipleLocator
+      import io, base64
 
-    #     plt.figure(figsize=(10, 5))
+      x = []
+      y = []
 
-    #     # ✅ Blue line with red points
-    #     plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
-    #     plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
+      # -------------------------------
+      # DATA
+      # -------------------------------
+      for line in data.heavy_line_ids:
+          if line.water_content and line.dry_density:
+            x.append(float(line.water_content))
+            y.append(float(line.dry_density))
 
-    #     # ✅ Labels and title
-    #     plt.xlabel('No. of Blows', fontsize=12)
-    #     plt.ylabel('Water Content (%)', fontsize=12)
-    #     plt.title('LIQUID LIMIT', fontsize=14)
+      if len(x) < 3:
+        return False, 0, 0
 
-    #     # ✅ Axis limits (rounded)
-    #     max_y = max(y_value)
-    #     y_limit = (int(max_y / 10) + 1) * 10
-    #     plt.ylim(bottom=0, top=y_limit)
+      x = np.array(x)
+      y = np.array(y)
 
-    #     max_x = max(x_value)
-    #     x_limit = (int(max_x / 10) + 1) * 10
-    #     plt.xlim(left=0, right=x_limit)
+      # Sort
+      idx = np.argsort(x)
+      x = x[idx]
+      y = y[idx]
 
-    #     # ✅ Minor ticks for fine grid lines
-    #     ax = plt.gca()
-    #     ax.xaxis.set_minor_locator(MultipleLocator(1))
-    #     ax.yaxis.set_minor_locator(MultipleLocator(1))
+      # -------------------------------
+      # PARABOLA (OMC/MDD)
+      # -------------------------------
+      coeffs = np.polyfit(x, y, 2)
+      a, b, c = coeffs
 
-    #     # ✅ Fine grid
-    #     plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
+      if a < 0:
+        max_x = -b / (2 * a)
+        max_y = a * max_x**2 + b * max_x + c
+      else:
+        max_y = float(np.max(y))
+        max_x = float(x[np.argmax(y)])
 
-    #     # 🔹 Highlight Liquid Limit point (general_data field वापरून)
-    #     if general_data.liquid_limit:
-    #         highlight_x = 25                        # Blows (fixed at 25)
-    #         highlight_y = general_data.liquid_limit # Moisture content from record field
+      # -------------------------------
+      # ADD PEAK INTO DATA
+      # -------------------------------
+      x_aug = np.append(x, max_x)
+      y_aug = np.append(y, max_y)
 
-    #         # Dotted guide lines
-    #         plt.axhline(y=highlight_y, color='green', linestyle='--', linewidth=1)
-    #         plt.axvline(x=highlight_x, color='green', linestyle='--', linewidth=1)
+      idx = np.argsort(x_aug)
+      x_aug = x_aug[idx]
+      y_aug = y_aug[idx]
 
-    #         # Point mark
-    #         plt.plot(highlight_x, highlight_y, marker='o', color='green', markersize=8)
+      # -------------------------------
+      # SPLINE
+      # -------------------------------
+      x_smooth = np.linspace(min(x_aug), max(x_aug), 300)
+      spline = make_interp_spline(x_aug, y_aug, k=2)
+      y_smooth = spline(x_smooth)
 
-    #         # Label
-    #         plt.text(highlight_x + 1, highlight_y + 1, f"LL = {highlight_y:.2f}%", color='green')
+      # -------------------------------
+      # GRAPH
+      # -------------------------------
+      plt.figure(figsize=(10, 5))
 
-    #     # ✅ Save to buffer
-    #     buffer = io.BytesIO()
-    #     plt.tight_layout()
-    #     plt.legend()
-    #     plt.savefig(buffer, format='png')
-    #     plt.close()
-    #     buffer.seek(0)
+      plt.plot(x_smooth, y_smooth, color='blue', linewidth=2)
+      plt.scatter(x, y, color='orange', s=50)
 
-    #     return base64.b64encode(buffer.read()).decode('utf-8')
+      plt.axhline(y=max_y, color='black')
+      plt.axvline(x=max_x, color='black')
 
+      plt.scatter(max_x, max_y, color='black')
+
+      ax = plt.gca()
+      ax.xaxis.set_minor_locator(MultipleLocator(0.2))
+      ax.yaxis.set_minor_locator(MultipleLocator(0.01))
+
+      plt.grid(which='major', color='black', linewidth=0.6)
+      plt.grid(which='minor', color='green', linestyle='--', linewidth=0.3)
+
+      plt.xlim(min(x) - 0.5, max(x) + 1)
+      plt.ylim(min(y) - 0.05, max(y) + 0.05)
+
+      plt.title("MODIFIED PROCTOR TEST")
+      plt.xlabel("Optimum Moisture Content (%)")
+      plt.ylabel("Maximum Dry Density (gm/cc)")
+
+      plt.tight_layout()
+
+      # -------------------------------
+      # SAVE
+      # -------------------------------
+      buffer = io.BytesIO()
+      plt.savefig(buffer, format='png', dpi=120)
+      plt.close()
+      buffer.seek(0)
+
+      image = base64.b64encode(buffer.read()).decode('utf-8')
+
+      return image, round(max_x, 2), round(max_y, 3)
+    
+
+
+
+    def action_generate_cbr_chart(self, data):
+
+      import matplotlib.pyplot as plt
+      from matplotlib.ticker import AutoMinorLocator
+      import io, base64
+
+      # -------------------------------
+      # FETCH DATA
+      # -------------------------------
+      lines = self.env['california.bearing.test'].search([
+        ('parent_id', '=', data.id)
+    ], order='penetration asc')
+
+      penetration = [l.penetration for l in lines]
+
+      s1 = [l.sample1_load for l in lines]
+      s2 = [l.sample2_load for l in lines]
+      s3 = [l.sample3_load for l in lines]
+
+      if not penetration:
+          return False
+
+      # -------------------------------
+      # GRAPH
+      # -------------------------------
+      plt.figure(figsize=(12, 5))
+
+      plt.plot(penetration, s1, marker='o', label='Sample-1')
+      plt.plot(penetration, s2, marker='o', label='Sample-2')
+      plt.plot(penetration, s3, marker='o', label='Sample-3')
+
+      plt.xlabel('Penetration (mm)')
+      plt.ylabel('Load (Kg/cm²)')
+      plt.title('CBR Test Graph')
+
+      # Major grid
+      plt.grid(which='major', linestyle='-', linewidth=0.8)
+
+      # Minor grid
+      ax = plt.gca()
+      ax.xaxis.set_minor_locator(AutoMinorLocator(5))
+      ax.yaxis.set_minor_locator(AutoMinorLocator(5))
+      plt.grid(which='minor', linestyle=':', linewidth=0.5)
+
+      plt.legend()
+
+      # -------------------------------
+      # SAVE
+      # -------------------------------
+      buffer = io.BytesIO()
+      plt.savefig(buffer, format='png', bbox_inches='tight')
+      plt.close()
+      buffer.seek(0)
+
+      return base64.b64encode(buffer.read()).decode('utf-8')
+    
+    def action_generate_graph(self, data):
+
+      import matplotlib.pyplot as plt
+      import io, base64
+
+      x_vals = []
+      y_vals = []
+
+      # -------------------------------
+      # DATA
+      # -------------------------------
+      for line in data.consolidation_three_line_ids:
+          if line.sqrt_t and line.int_pressure:
+              if line.sqrt_t > 0:  # remove zero
+                  x_vals.append(float(line.sqrt_t))
+                  y_vals.append(float(line.int_pressure))
+
+      if not x_vals:
+          return False
+
+      # -------------------------------
+      # GRAPH
+      # -------------------------------
+      plt.figure(figsize=(11, 5))
+
+      plt.plot(x_vals, y_vals, marker='o')
+
+      plt.xlabel("√t")
+      plt.ylabel("Dial Reading (8 kg/cm²)")
+      plt.title("Consolidation Graph")
+
+      # Log scale
+      plt.xscale('log')
+
+      # Fix left gap
+      min_x = min(x_vals)
+      plt.xlim(left=min_x * 0.8)
+
+      # Grid
+      plt.grid(True, which='both', linestyle='--', linewidth=0.5)
+
+      plt.tight_layout()
+
+      # -------------------------------
+      # SAVE
+      # -------------------------------
+      buffer = io.BytesIO()
+      plt.savefig(buffer, format='png')
+      plt.close()
+      buffer.seek(0)
+
+      return base64.b64encode(buffer.read()).decode('utf-8')
+    
+
+    def action_generate_direct_graph(self, data):
+
+      import numpy as np
+      import matplotlib.pyplot as plt
+      import io, base64
+
+      # -------------------------------
+      # DATA
+      # -------------------------------
+      x = np.array([
+        data.normal_stress_0_5,
+        data.normal_stress_1_0,
+        data.normal_stress_1_5
+    ], dtype=float)
+
+      y = np.array([
+        data.shear_ton_0_5,
+        data.shear_ton_1_0,
+        data.shear_ton_1_5
+    ], dtype=float)
+
+      # Remove invalid values
+      mask = (x > 0) & (y > 0)
+      x = x[mask]
+      y = y[mask]
+  
+      if len(x) < 2:
+          return False
+
+      # -------------------------------
+      # LINE (Mohr-Coulomb)
+      # -------------------------------
+      m = float(data.tan_phi or 0)
+      c = float(data.cohesion or 0)
+
+      # -------------------------------
+      # GRAPH
+      # -------------------------------
+      plt.figure(figsize=(8, 5))
+
+      # Scatter points
+      plt.scatter(x, y, color='blue')
+
+      # Main line
+      x_line = np.linspace(0, max(x) + 5, 100)
+      y_line = m * x_line + c
+      plt.plot(x_line, y_line, color='red', label='Failure Envelope')
+
+      # Back dotted line
+      x_back = np.linspace(0, min(x), 50)
+      y_back = m * x_back + c
+      plt.plot(x_back, y_back, linestyle='dotted', color='blue')
+
+      # Labels
+      plt.title("DIRECT SHEAR TEST GRAPH")
+      plt.xlabel("Normal Stress (Ton/m²)")
+      plt.ylabel("Max Shear Stress (Ton/m²)")
+
+      plt.xlim(0, max(x) + 5)
+      plt.ylim(0, max(y) + 2)
+
+      # Grid
+      plt.minorticks_on()
+      plt.grid(which='major', color='green', linewidth=0.5)
+      plt.grid(which='minor', color='green', linewidth=0.2)
+
+      plt.legend()
+      plt.tight_layout()
+
+      # -------------------------------
+      # SAVE
+      # -------------------------------
+      buffer = io.BytesIO()
+      plt.savefig(buffer, format='png')
+      plt.close()
+      buffer.seek(0)
+
+      return base64.b64encode(buffer.read()).decode('utf-8')
+  
