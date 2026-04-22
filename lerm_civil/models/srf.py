@@ -1,7 +1,7 @@
 from odoo import api, fields, models,_
 from odoo.exceptions import UserError ,ValidationError
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 import paramiko
 import time
 from io import BytesIO
@@ -164,6 +164,7 @@ class SrfForm(models.Model):
     name_works = fields.Many2many('res.partner.project',string="Name of Work",compute="_compute_name_work")
 
     client_refrence = fields.Char(string="Client Reference Letter")
+    letter_date = fields.Date(string="Letter Date")
     samples = fields.One2many('lerm.srf.sample' , 'srf_id' , string="Samples",tracking=True)
     contact_other_ids = fields.Many2many('res.partner',string="Other Ids",compute="compute_other_ids")
     contact_contact_ids = fields.Many2many('res.partner',string="Contact Ids",compute="compute_contact_ids")
@@ -1377,6 +1378,7 @@ class SrfForm(models.Model):
             sample_description = samples[-1].sample_description
             source_sample = samples[-1].source_sample
             sample_received_date = self.srf_date
+            report_due_date = samples[-1].report_due_date
             # import wdb ; wdb.set_trace()
 
 
@@ -1404,7 +1406,8 @@ class SrfForm(models.Model):
                 'default_scope':scope,
                 'default_sample_description':sample_description,
                 'default_source_sample':source_sample,
-                'default_sample_received_date':sample_received_date
+                'default_sample_received_date':sample_received_date,
+                'default_report_due_date':report_due_date
             }
         }
         else:
@@ -1541,6 +1544,8 @@ class CreateSampleWizard(models.TransientModel):
     is_update = fields.Boolean('Is Update')
 
     department_id = fields.Char(string='Department')
+    report_due_date = fields.Date(string="Report Due Date", required=True)
+
     lab_location = fields.Many2one('lerm.lab.master',string="Lab Name",default=lambda self: self._get_oldest_lab())
     location_name = fields.Many2one('lerm.lab.location.master',string="Location Name")
     customer = fields.Many2one('res.partner', string="Customer")
@@ -1563,6 +1568,14 @@ class CreateSampleWizard(models.TransientModel):
     def _get_oldest_lab(self):
         oldest_lab = self.env['lerm.lab.master'].search([], order="create_date asc", limit=1)
         return oldest_lab.id if oldest_lab else False
+
+    @api.onchange('casting', 'days_casting', 'date_casting')
+    def _onchange_report_due_date(self):
+        if self.casting:
+            if self.date_casting and self.days_casting:
+                self.report_due_date = self.date_casting + timedelta(days=int(self.days_casting))
+
+
 
     @api.onchange('lab_location')
     def _default_location_name(self):
@@ -2034,6 +2047,8 @@ class CreateSampleWizard(models.TransientModel):
             'lab_location':self.lab_location.id,
             'location_name':self.location_name.id,
             'quantity': self.quantity,
+            'report_due_date': self.report_due_date
+
             # 'lab_id':self.lab_id,
 
             
@@ -2107,6 +2122,7 @@ class CreateSampleWizard(models.TransientModel):
                 'days_casting':days_casting,
                 'lab_location':self.lab_location.id,
                 'location_name':self.location_name.id,
+                'report_due_date': self.report_due_date
                 # 'lab_id':lab_id,
 
 
@@ -2250,6 +2266,7 @@ class CreateSampleWizard(models.TransientModel):
                         'date_casting':self.date_casting,
                         'product_alias':self.product_alias.id,
                         'lab_location':lab_location,
+                        'report_due_date': self.report_due_date,
                         'location_name':location_name,
                         'quantity':self.quantity,
                         'sample_qty':self.sample_qty,

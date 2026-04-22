@@ -1860,7 +1860,7 @@
                    
 						<table style="width:100%; border-collapse:collapse; font-size:13px;margin-top:30px;">
 
-						<tr>
+							<tr>
 								<td colspan="10" style="border:1px solid black; padding:6px; text-align:center; font-weight:bold;">
 								Swelling Pressure Test<br></br><b>Test Method/Reference Code :</b>
 								 <span>
@@ -1944,7 +1944,7 @@
 
 							
 
-						<tr>
+							<tr>
 								<td colspan="7" style="border:1px solid black; padding:6px;">
 									<b>Sample Type and Condition:</b> <span t-esc="sweeling.sample_type_swelling"/>
 								</td>
@@ -2055,61 +2055,42 @@
 
 						</table>
 
-					
+							<table style="width:100%; border-collapse:collapse; font-size:12px; margin-top:10px;">
+								<tr>
+									<th style="border:1px solid black; padding:4px;">Applied Pressure (kg/cm²)</th>
+									<th style="border:1px solid black; padding:4px;">Final Dial Reading (mm)</th>
+									<th style="border:1px solid black; padding:4px;">Δ H (mm)</th>
+								</tr>
 
-					<table style="width:100%; border-collapse:collapse; font-size:13px; margin-top:20px;">
-							<tr>
-								<td style="width:30%; vertical-align:top; border:1px solid black; padding:6px;">
+								<t t-foreach="sweeling.swelling_table_ids" t-as="line">
+									<tr>
+										<td style="border:1px solid black; padding:4px; text-align:center;">
+											<t t-esc="line.applied_pressure"/>
+										</td>
+										<td style="border:1px solid black; padding:4px; text-align:center; ">
+											<t t-esc="line.final_read"/>
+										</td>
+										<td style="border:1px solid black; padding:4px; text-align:center;">
+											<t t-esc="line.delta_h"/>
+										</td>
+									</tr>
+								</t>
+							</table>
+							<t t-if="sweeling.graph_image_swell">
+								<div style="text-align:center; margin-top:10px; width: 100%;">
+									<img t-att-src="'data:image/png;base64,%s' % sweeling.graph_image_swell.decode('utf-8')"
+										style="width: 100%; height: auto; max-height: 900px; object-fit: contain;"/>
+								</div>
+							</t>
 
-									<table style="width:100%; border-collapse:collapse; font-size:12px;">
-										<tr>
-											<th style="border:1px solid black; padding:4px;">Applied Pressure<br/>(kg/cm²)</th>
-											<th style="border:1px solid black; padding:4px;">Final Dial Reading<br/>(mm)</th>
-											<th style="border:1px solid black; padding:4px;">Δ H<br/>(mm)</th>
-										</tr>
+							<div style="border:1px solid black; padding:8px; text-align:center;">
+								<b>Swelling Pressure</b><br/>
+								<span style="font-size:14px; font-weight:bold;">
+									<t t-esc="sweeling.swelling_pressure"/>
+								</span><br/>
+								kg/cm²
+							</div>
 
-										<t t-foreach="sweeling.swelling_table_ids" t-as="line">
-											<tr>
-												<td style="border:1px solid black; padding:4px; text-align:center;">
-													<t t-esc="line.applied_pressure"/>
-												</td>
-												<td style="border:1px solid black; padding:4px; text-align:center; ">
-													<t t-esc="line.final_read"/>
-												</td>
-												<td style="border:1px solid black; padding:4px; text-align:center;">
-													<t t-esc="line.delta_h"/>
-												</td>
-											</tr>
-										</t>
-									</table>
-
-								</td>
-
-								<td style="width:100%; border:1px solid black; padding:6px; text-align:center;">
-
-									<t t-if="sweeling.graph_image_swell">
-										<div style="text-align:center; margin-top:10px; width: 100%;">
-											<img t-att-src="'data:image/png;base64,%s' % sweeling.graph_image_swell.decode('utf-8')"
-												style="width: 100%; height: auto; max-height: 900px; object-fit: contain;"/>
-										</div>
-										
-									</t>
-
-								</td>
-
-								<td style="width:15%; vertical-align:top; padding:10px;">
-
-									<div style="border:1px solid black; padding:8px; text-align:center;">
-										<b>Swelling Pressure</b><br/>
-										<span style="font-size:14px; font-weight:bold;">
-											<t t-esc="sweeling.swelling_pressure"/>
-										</span><br/>
-										kg/cm²
-									</div>
-
-								</td>
-							</tr>
-						</table>
 
 					
 
