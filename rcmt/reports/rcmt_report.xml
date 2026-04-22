@@ -15,10 +15,14 @@
 						<table style="width:100%; border-collapse: collapse;" border="1">
 
 						   <tr>
-								<td colspan="1">#Customer Party Name :</td>
-								  <td colspan="2">
+								<td colspan="1">Customer Party Name :</td>
+								  <td colspan="2" style="font-weight:bold;">
 									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.customer.name"/><br/>
+									<t t-if="o.srf_id.customer.name">
+									  <span t-field="o.srf_id.customer.name"/>
+									 </t>
+        							<t t-else="">--</t>
+		                            <br/>
 									<span t-field="o.srf_id.customer.street"/>
 									<span t-field="o.srf_id.customer.street2"/>
 									<span t-field="o.srf_id.customer.city"/>
@@ -33,68 +37,157 @@
 									</td>
 								
 							</tr>
+							<tr t-if="o.srf_id.name_work">
+								<td colspan="1" >Project Name:</td>
+								  <td colspan="3" style="font-weight:bold;">
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.name_work"/>
+									</td>
+							</tr>
+
+							<tr t-if="o.srf_id.client">
+								<td colspan="1" >Name of Agency:</td>
+								  <td colspan="3" style="font-weight:bold;">
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client"/>
+									</td>
+							</tr>
+							
 							<tr>
 								<td style="width:25%;">Samples Description :-</td>
-								<td style="width:25%;"><span t-field="o.material.lab_name"/></td>
+								<td style="width:25%;">
+								      <t t-if="o.material and o.material.lab_name">
+											<span t-field="o.material.lab_name"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
 
 								<td style="width:20%;">Customer's Ref. No :-</td>
-								<td style="width:20%;"><span t-field="o.srf_id.client_refrence"/></td>
+								<td style="width:20%;">
+
+								  <t t-if="o.srf_id.client_refrence">
+											<span t-field="o.srf_id.client_refrence"/>
+										</t>
+									<t t-else="">--</t>
+								
+								</td>
 							</tr>
 
 							<tr>
 								<!-- <td>Quantity of Samples :-</td>
 								<td>Litre</td> -->
 								<td>No. of Samples :-</td>
-								<td><span t-field="o.sample_id.quantity"/></td>
+								<td>
+
+								<t t-if="o.sample_id.sample_qty">
+											<span t-field="o.sample_id.sample_qty"/>
+										</t>
+									<t t-else="">--</t>
+
+								<t t-if="o.sample_id.uom_id">
+											<span t-field="o.sample_id.uom_id"/>
+										</t>
+									<t t-else="">--</t>
+								
+								</td>
 
 								<td>Letter Date :-</td>
 								<td>
 									
+
+									<t t-if="o.srf_id.letter_date">
+											<span t-field="o.srf_id.letter_date"/>
+										</t>
+									<t t-else="">--</t>
 								</td>
 							</tr>
 
 							<tr>
 								<td>Date of Samples Received :-</td>
 								<td>
-									<span t-field="o.sample_id.sample_received_date"/>
+
+									<t t-if="o.sample_id.sample_received_date">
+											<span t-field="o.sample_id.sample_received_date"/>
+										</t>
+									<t t-else="">--</t>
 								</td>
 
 									<td>SRF No. :-</td>
 										<td >
+
+											<t t-if="o.srf_id">
 											<span t-field="o.srf_id"/>
+										</t>
+									<t t-else="">--</t>
 										</td>
 								
 							</tr>
 
 							<tr>
 								<td>Brand &amp; Grade :-</td>
-								<td><span t-field="o.sample_id.grade_id.grade"/></td>
+								<td>
+								<t t-if="o.sample_id.grade_id.grade">
+											<span t-field="o.sample_id.grade_id.grade"/>
+										</t>
+									<t t-else="">--</t>
+									</td>
 
 								<td>Date of Test Initiation  :-</td>
 								<td>
-									<span t-field="o.start_date"/>
+
+									<t t-if="o.start_date">
+											<span t-field="o.start_date"/>
+										</t>
+									<t t-else="">--</t>
 								</td>
 							</tr>
 
 							<tr>
-								<td>Week No. :-</td>
-								<td></td>
+								
 
+								<td>Size  :-</td>
+								<td>
+
+										<t t-if="o.sample_id.size_id.size">
+											<span t-field="o.sample_id.size_id.size"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
 								<td>Date of Test Completion  :-</td>
 								<td>
-									<span t-field="o.end_date"/>
+
+									<t t-if="o.end_date">
+											<span t-field="o.end_date"/>
+										</t>
+									<t t-else="">--</t>
 								</td>
 							</tr>
 
-							<!-- <tr>
-								<td t-if="o.material.source_sample">Source of Sample :-</td>
-								<td><span t-field="o.material.source_sample"/></td>
+							<tr>
+								
 
-								<td t-if="o.material.test_method_adopted" >Test method adopted  :-</td>
+								<td>Week No.  :-</td>
 								<td>
-									<span t-field="o.material.test_method_adopted"/>
+
+								--
 								</td>
-							</tr> -->
+								<td>Sample ID  :-</td>
+								<td>
+
+									<t t-if="o.sample_id.kes_no">
+											<span t-field="o.sample_id.kes_no"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="1">Other Details:</td>
+								<td colspan="3">--</td>
+
+								
+							</tr>
+
 
 							<tr t-if="o.material.test_method_adopted" >
 								
@@ -107,6 +200,11 @@
 							<tr t-if="o.material.source_sample">
 									<td style="font-weight: bold;">Source of Sample</td>
 									<td colspan="3"><span t-field="o.material.source_sample"/></td>
+								</tr>
+
+								<tr t-if="o.material.specifications">
+									<td style="font-weight: bold;">Specifications</td>
+									<td colspan="3"><span t-field="o.material.specifications"/></td>
 								</tr>
 
 						</table>
@@ -455,44 +553,7 @@
 							
 
 
-					<div style="margin-top:5px; page-break-inside: avoid;" class="signatureContainer girdgird">
-						<table class="table table-bordered">
-						<tr>
-							<td style="padding: 5px; font-style: italic; font-size: 12px;">
-								
-								<!-- <t t-if="cement.notes_id">
-									<t t-foreach="cement.notes_id" t-as="n">
-										<div>
-											&#160;&#160;(<t t-esc="n.sr_no"/>) 
-											<t t-esc="n.notes"/>
-										</div>
-									</t>
-								</t> -->
-								<t t-if="rcmt.notes_id">
-									<b>Conditions:-</b>
-
-									<t t-foreach="rcmt.notes_id" t-as="n">
-										<span>
-											(<t t-esc="n.sr_no"/>) 
-											<t t-esc="n.notes"/>
-											&#160;&#160;
-										</span>
-									</t>
-								</t>
-							
-								<t t-if="eln.has_witness">
-									&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
-								</t>
-								<t t-if="eln.remarks">
-									&#160;&#160;<span t-esc="eln.remarks"/>
-								</t>
-							
-							</td>
-						</tr>
-					</table>
-					</div>
-
-
+					
 
 
 						
@@ -524,18 +585,17 @@
 						</div>
 					</div>
 					<!-- QR Code -->
-							<div style="text-align:center; margin-bottom:10px;">
+							<!-- <div style="text-align:center; margin-bottom:10px;">
 								<img t-att-src="'data:image/png;base64,%s' % (qrcode_static or '')"
 									style="width:75px; height:70px;"/>
+							</div> -->
+						<t t-if="o.sample_id.stamp_attached">
+							<div >
+								<div>
+								<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
 							</div>
-					<div>
-						<div>
-							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
-						</div>
-						<div style="padding-top:5px">
-							Format No. <span t-esc="eln.material.test_format_no"/>
-						</div>
-					</div>
+							</div>
+						</t>
 					<div>
 						<div>
 							<b>
