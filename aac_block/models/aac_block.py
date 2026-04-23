@@ -260,16 +260,19 @@ class AacBlockMechanical(models.Model):
     moisture_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='Confirmity', default='fail',compute="_compute_moisture_confirmity")
+    ('na', 'NA'),], string='Confirmity', default='fail',compute="_compute_moisture_confirmity")
     moisture_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'NON NABL'),
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
     ], string='NABL', default='fail',compute="_compute_moisture_nabl")
 
 
     @api.depends('average_moisture_content','eln_ref','grade')
     def _compute_moisture_confirmity(self):
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.moisture_confirmity = 'na'
+                continue
             record.moisture_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6478fde2-8097-4275-b80f-48ebdbcfe244')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6478fde2-8097-4275-b80f-48ebdbcfe244')]).parameter_table
