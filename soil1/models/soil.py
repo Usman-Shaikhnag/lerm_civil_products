@@ -684,6 +684,9 @@ class Soil(models.Model):
         buffer.seek(0)
 
         return base64.b64encode(buffer.read())
+
+
+    show_sieve_graph = fields.Boolean(string="Show Sieve Graph in Report")
     
 
 
@@ -866,7 +869,6 @@ class Soil(models.Model):
             ('na', 'NA'),
             ], string="Conformity", compute="_compute_avg_specific_gravity_conformity", store=True)
 
-
     @api.depends('avg_specific_gravity','eln_ref','grade')
     def _compute_avg_specific_gravity_conformity(self):
         
@@ -875,6 +877,7 @@ class Soil(models.Model):
             if not record.eln_ref or not record.eln_ref.conformity:
                 record.avg_specific_gravity_conformity = 'na'
                 continue
+
 
             record.avg_specific_gravity_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214hhj6gt21-ca64-44dd-b0ae-6587gghty')])
@@ -1049,120 +1052,7 @@ class Soil(models.Model):
                 record.liquid_limit_nabl = 'fail'
 
     graph_image = fields.Binary(string="Flow Curve Graph")
-
-
-
-
-    # def action_generate_graphl(self):
-    #  import numpy as np
-    #  import matplotlib.pyplot as plt
-    #  from matplotlib.ticker import LogLocator, ScalarFormatter, MultipleLocator
-    #  import io
-    #  import base64
-
-    #  for rec in self:
-
-    #     rec.water_line_ids._compute_values()
-
-    #     # -------------------------------
-    #     # DATA
-    #     # -------------------------------
-    #     blows = np.array([float(l.blows or 0) for l in rec.water_line_ids])
-    #     water = np.array([float(l.water_content or 0) for l in rec.water_line_ids])
-
-    #     mask = (blows > 0) & (water > 0)
-    #     blows = blows[mask]
-    #     water = water[mask]
-
-    #     if len(blows) < 2:
-    #         continue
-
-    #     # Sort
-    #     idx = np.argsort(blows)
-    #     blows = blows[idx]
-    #     water = water[idx]
-
-    #     # -------------------------------
-    #     # LOG FIT
-    #     # -------------------------------
-    #     log_b = np.log10(blows)
-    #     coeffs = np.polyfit(log_b, water, 1)
-    #     fit = np.poly1d(coeffs)
-
-    #     log_x = np.linspace(np.log10(10), np.log10(50), 200)
-    #     x_smooth = 10 ** log_x
-    #     y_smooth = fit(log_x)
-
-    #     # -------------------------------
-    #     # GRAPH
-    #     # -------------------------------
-    #     fig, ax = plt.subplots(figsize=(12, 6))
-
-    #     ax.set_xscale('log')
-    #     ax.set_xlim(1, 100)
-    #     ax.set_ylim(25, 40)
-
-    #     # -------------------------------
-    #     # GRID (LIKE GRAPH PAPER)
-    #     # -------------------------------
-    #     ax.xaxis.set_major_locator(LogLocator(base=10))
-    #     ax.xaxis.set_minor_locator(LogLocator(base=10, subs=np.arange(2, 10)*0.1))
-
-    #     ax.yaxis.set_major_locator(MultipleLocator(1))   # 1 unit bold
-    #     ax.yaxis.set_minor_locator(MultipleLocator(0.5)) # small lines
-
-    #     ax.grid(which='major', linewidth=1, color='black')
-    #     ax.grid(which='minor', linewidth=0.5, color='gray')
-
-    #     # -------------------------------
-    #     # NORMAL NUMBERS (NO 10^x)
-    #     # -------------------------------
-    #     ax.set_xticks([1, 10, 20, 30, 40, 50, 100])
-    #     ax.get_xaxis().set_major_formatter(ScalarFormatter())
-    #     ax.ticklabel_format(style='plain', axis='x')
-
-    #     # -------------------------------
-    #     # PLOT DATA
-    #     # -------------------------------
-    #     ax.plot(x_smooth, y_smooth, color='orange', linewidth=2)
-
-    #     ax.scatter(blows, water,
-    #                color='#1f77b4',
-    #                s=60,
-    #                zorder=5)
-
-    #     # -------------------------------
-    #     # LIQUID LIMIT (INTERSECTION)
-    #     # -------------------------------
-    #     ll_x = 25
-    #     ll_y = float(fit(np.log10(ll_x)))
-
-    #     # Vertical arrow
-    #     ax.annotate('', xy=(ll_x, 25), xytext=(ll_x, 39),
-    #                 arrowprops=dict(arrowstyle='-|>', color='#2c6db2', lw=2))
-
-    #     # Horizontal arrow
-    #     ax.annotate('', xy=(1, ll_y), xytext=(30, ll_y),
-    #                 arrowprops=dict(arrowstyle='-|>', color='#6aa84f', lw=2))
-
-    #     # Intersection point
-    #     ax.scatter(ll_x, ll_y, color='#2c6db2', s=100, zorder=10)
-
-    #     # -------------------------------
-    #     # LABELS
-    #     # -------------------------------
-    #     ax.set_title("LIQUID LIMIT TEST GRAPH (CASAGRANDE)")
-    #     ax.set_xlabel("No. of Blows")
-    #     ax.set_ylabel("Water Content (%)")
-
-    #     # -------------------------------
-    #     # SAVE
-    #     # -------------------------------
-    #     buffer = io.BytesIO()
-    #     plt.savefig(buffer, format='png', dpi=120, bbox_inches='tight')
-    #     plt.close()
-
-    #     rec.graph_image = base64.b64encode(buffer.getvalue())
+    show_liquid_graph1 = fields.Boolean(string="Show Liquid Limit Graph")
 
     def action_generate_graphl(self):
      import numpy as np
@@ -1304,6 +1194,7 @@ class Soil(models.Model):
 
 
     graph_image1 = fields.Binary(string="Flow Curve Graph")
+    show_liquid_graph2 = fields.Boolean(string="Show Liquid Limit Graph")
 
   
 
@@ -1594,7 +1485,6 @@ class Soil(models.Model):
             ('na', 'NA'),
             ], string="Conformity", compute="_compute_avg_fsi_conformity", store=True)
 
-
     @api.depends('avg_fsi','eln_ref','grade')
     def _compute_avg_fsi_conformity(self):
         
@@ -1736,6 +1626,7 @@ class Soil(models.Model):
 
 
     light_graph_image = fields.Binary("Graph", readonly=True)
+    show_light_graph1 = fields.Boolean(string="Show Light Compaction Graph")
 
     def action_generate_graph1(self):
      import numpy as np
@@ -1830,6 +1721,7 @@ class Soil(models.Model):
 
 
     light1_graph_image = fields.Binary("Graph", readonly=True)
+    show_light_graph2 = fields.Boolean(string="Show Light Compaction Graph")
 
     def action_generate_light1_graph_image(self):
         for rec in self:
@@ -2109,6 +2001,7 @@ class Soil(models.Model):
 
 
     heavy_graph_image = fields.Binary("Graph", attachment=True)
+    show_heavy_graph2 = fields.Boolean(string="Show Heavy Compaction Graph")
 
     def generate_line_chart_light_omc(self):
      import numpy as np
@@ -2232,7 +2125,6 @@ class Soil(models.Model):
             ('na', 'NA'),
             ], string="Conformity", compute="_compute_max_dry_density_conformity", store=True)
 
-
     @api.depends('max_dry_density','eln_ref','grade')
     def _compute_max_dry_density_conformity(self):
         
@@ -2289,7 +2181,6 @@ class Soil(models.Model):
             ('fail', 'Fail'),
             ('na', 'NA'),
             ], string="Conformity", compute="_compute_optimum_moisture_conformity", store=True)
-
 
     @api.depends('optimum_moisture','eln_ref','grade')
     def _compute_optimum_moisture_conformity(self):
@@ -2427,6 +2318,7 @@ class Soil(models.Model):
     
     cbr_chart_image = fields.Binary("CBR Chart", readonly=True)
     cbr_chart_filename = fields.Char("Filename")
+    show_cbr = fields.Boolean(string="Show CBR Graph")
 
 
     def action_generate_cbr_chart(self):
@@ -2481,7 +2373,6 @@ class Soil(models.Model):
             ('na', 'NA'),
             ], string="Conformity", compute="_compute_cbr_25_avg_conformity", store=True)
 
-
     @api.depends('cbr_25_avg','eln_ref','grade')
     def _compute_cbr_25_avg_conformity(self):
         
@@ -2535,7 +2426,9 @@ class Soil(models.Model):
 
     cbr_5_avg_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_cbr_5_avg_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_cbr_5_avg_conformity", store=True)
 
     @api.depends('cbr_5_avg','eln_ref','grade')
     def _compute_cbr_5_avg_conformity(self):
@@ -2666,6 +2559,7 @@ class Soil(models.Model):
       return default_lines
     
     con_graph_image = fields.Binary("Graph", readonly=True)
+    show_graph_consolidation = fields.Boolean(string="Show Consolidation Graph")
 
     def action_generate_graph(self):
         for rec in self:
@@ -2886,7 +2780,6 @@ class Soil(models.Model):
         ('fail', 'Fail'),
         ('na', 'NA'),
         ], string="NABL", compute="_compute_permeability_avg_k27_1000_conformity", store=True)
-
 
 
     @api.depends('permeability_avg_k27_1000','eln_ref','grade')
@@ -3128,6 +3021,8 @@ class Soil(models.Model):
     direct_graph_image = fields.Binary("Shear Test Graph", readonly=True)
     graph_filename = fields.Char("Filename")
 
+    show_direct_graph = fields.Boolean(string="Show Direct Shear Graph")
+
   
     def action_generate_direct_graph(self):
      
@@ -3251,7 +3146,6 @@ class Soil(models.Model):
             ('fail', 'Fail'),
             ('na', 'NA'),
             ], string="Conformity", compute="_compute_cohesion_conformity", store=True)
-
 
     @api.depends('cohesion','eln_ref','grade')
     def _compute_cohesion_conformity(self):
