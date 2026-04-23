@@ -134,7 +134,8 @@ class MechanicalBricksBurntClay(models.Model):
     comp_strength_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='Confirmity', default='fail',compute="_compute_comp_strength_conformity")
+        ('na', 'NA'),
+    ], string='Confirmity', compute="_compute_comp_strength_conformity")
 
     comp_strength_nabl = fields.Selection([
         ('pass', 'Pass'),
@@ -145,6 +146,11 @@ class MechanicalBricksBurntClay(models.Model):
     @api.depends('avrg_compressive_strength','eln_ref')
     def _compute_comp_strength_conformity(self):
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.comp_strength_confirmity = 'na'
+                continue
+
             record.comp_strength_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','97928829-9b1f-4091-aa7f-4b76f98eb47f')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','97928829-9b1f-4091-aa7f-4b76f98eb47f')]).parameter_table
@@ -236,7 +242,8 @@ class MechanicalBricksBurntClay(models.Model):
     water_absorption_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='Confirmity', default='fail',compute="_compute_water_absorption_confirmity")
+        ('na', 'NA'),
+    ], string='Confirmity', compute="_compute_water_absorption_confirmity")
 
     water_absorption_nabl = fields.Selection([
         ('pass', 'Pass'),
@@ -246,6 +253,11 @@ class MechanicalBricksBurntClay(models.Model):
     @api.depends('avrg_water_absorption','eln_ref')
     def _compute_water_absorption_confirmity(self):
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.water_absorption_confirmity = 'na'
+                continue
+
             record.water_absorption_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')]).parameter_table

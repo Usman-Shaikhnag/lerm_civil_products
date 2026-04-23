@@ -204,17 +204,22 @@ class GgbsMechanical(models.Model):
     specific_gravity_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-        ('not_applicable', 'Not Applicable'),
+        ('na', 'NA'),
     ], string='Confirmity', default='fail',compute="_compute_specific_gravity_confirmity")
     specific_gravity_nabl = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='NABL', default='fail',compute="_compute_specific_gravity_nabl")
+    ], string='NABL', compute="_compute_specific_gravity_nabl")
 
 
     @api.depends('average_specific_gravity','eln_ref','grade')
     def _compute_specific_gravity_confirmity(self):
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.specific_gravity_confirmity = 'na'
+                continue
+
             record.specific_gravity_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')]).parameter_table
@@ -456,18 +461,23 @@ class GgbsMechanical(models.Model):
     slag_7days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-        ('not_applicable', 'Not Applicable'),
+        ('na', 'NA'),
     ], string='Conformity', default='fail',compute="_compute_slag_7days_conformity")
 
     slag_7days_nabl = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='NABL', default='fail',compute="_compute_slag_7days_nabl")
+    ], string='NABL', compute="_compute_slag_7days_nabl")
 
 
     @api.depends('slag_activity_index_7days','eln_ref','grade')
     def _compute_slag_7days_conformity(self):
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.slag_7days_conformity = 'na'
+                continue
+
             record.slag_7days_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1452fgr0-8e67-4e94-86ea-98d9472f5c71')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1452fgr0-8e67-4e94-86ea-98d9472f5c71')]).parameter_table
@@ -510,17 +520,22 @@ class GgbsMechanical(models.Model):
     slag_28days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-        ('not_applicable', 'Not Applicable'),
+        ('na', 'NA'),
     ], string='Conformity', default='fail',compute="_compute_slag_28days_conformity")
 
     slag_28days_nabl = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='NABL', default='fail',compute="_compute_slag_28days_nabl")
+    ], string='NABL', compute="_compute_slag_28days_nabl")
 
     @api.depends('slag_activity_index_28days','eln_ref','grade')
     def _compute_slag_28days_conformity(self):
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.slag_28days_conformity = 'na'
+                continue
+
             record.slag_28days_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','bg21hy20-f42a-4405-b127-b5d84fe78485')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','bg21hy20-f42a-4405-b127-b5d84fe78485')]).parameter_table
@@ -635,17 +650,22 @@ class GgbsMechanical(models.Model):
     fineness_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-        ('not_applicable', 'Not Applicable'),
+        ('na', 'NA'),
     ], string='Confirmity', default='fail',compute="_compute_fineness_confirmity")
     fineness_nabl = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='NABL', default='fail',compute="_compute_fineness_nabl")
+    ], string='NABL', compute="_compute_fineness_nabl")
 
 
     @api.depends('fineness_air_permeability','eln_ref','grade')
     def _compute_fineness_confirmity(self):
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.fineness_confirmity = 'na'
+                continue
+
             record.fineness_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')]).parameter_table
@@ -804,7 +824,8 @@ class GgbsMechanical(models.Model):
     initial_setting_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='Conformity', default='fail',compute="_compute_initial_setting_conformity")
+        ('na', 'NA'),
+    ], string='Conformity', compute="_compute_initial_setting_conformity")
 
     initial_setting_nabl = fields.Selection([
         ('pass', 'NABL'),
@@ -815,6 +836,11 @@ class GgbsMechanical(models.Model):
     @api.depends('initial_setting_time_minutes_unrounded','eln_ref','grade')
     def _compute_initial_setting_conformity(self):
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.initial_setting_conformity = 'na'
+                continue
+
             record.initial_setting_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ytre147-30fe-4043-b518-015f5c60d916')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ytre147-30fe-4043-b518-015f5c60d916')]).parameter_table
@@ -903,7 +929,8 @@ class GgbsMechanical(models.Model):
     final_setting_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='Conformity', default='fail',compute="_compute_final_setting_conformity")
+        ('na', 'NA'),
+    ], string='Conformity', compute="_compute_final_setting_conformity")
 
     final_setting_nabl = fields.Selection([
         ('pass', 'NABL'),
@@ -914,6 +941,11 @@ class GgbsMechanical(models.Model):
     @api.depends('final_setting_time_minutes_unrounded','eln_ref','grade')
     def _compute_final_setting_conformity(self):
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.final_setting_conformity = 'na'
+                continue
+
             record.final_setting_conformity = 'fail'
             line = self.env['lerm.parameter.master'].search([('internal_id','=','yy1475u-5e9c-4335-9ea2-2d87624c3061')])
             materials = self.env['lerm.parameter.master'].search([('internal_id','=','yy1475u-5e9c-4335-9ea2-2d87624c3061')]).parameter_table
@@ -1025,12 +1057,20 @@ class GgbsMechanical(models.Model):
 
     avg_moisture_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_moisture_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_avg_moisture_conformity", store=True)
+
 
     @api.depends('avg_moisture','eln_ref','grade')
     def _compute_avg_moisture_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_moisture_conformity = 'na'
+                continue
+
             record.avg_moisture_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4578nhgrr245-3fa3-4b83-ae31-9d281457457hy')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4578nhgrr245-3fa3-4b83-ae31-9d281457457hy')]).parameter_table

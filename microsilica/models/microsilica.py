@@ -287,6 +287,7 @@ class Microsilica(models.Model):
     accelerated_pozzolanic_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('na', 'NA'),
         
     ], string='Confirmity', default='fail',compute="_compute_accelerated_pozzolanic_conformity")
 
@@ -299,6 +300,11 @@ class Microsilica(models.Model):
     @api.depends('control_compressive_strength_7_days','eln_ref')
     def _compute_accelerated_pozzolanic_conformity(self):
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.accelerated_pozzolanic_conformity = 'na'
+                continue
+
             record.accelerated_pozzolanic_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ddd2525aw-19f0-48b6-8e09-e7076a4b04b5')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ddd2525aw-19f0-48b6-8e09-e7076a4b04b5')]).parameter_table
@@ -360,6 +366,8 @@ class Microsilica(models.Model):
     oversize_retained_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('na', 'NA'),
+
     ], string='Confirmity', default='fail',compute="_compute_oversize_retained_conformity")
 
     oversize_retained_nabl = fields.Selection([
@@ -371,6 +379,11 @@ class Microsilica(models.Model):
     @api.depends('retain_wt_rounded','eln_ref')
     def _compute_oversize_retained_conformity(self):
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.oversize_retained_conformity = 'na'
+                continue
+
             record.oversize_retained_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')]).parameter_table
@@ -442,12 +455,13 @@ class Microsilica(models.Model):
     # end_date_specific = fields.Date("End Date")
     
     
-    specific_gravity_tables = fields.One2many('specific.gravity.line','parent_id',string="Specific Gravity")
+    specific_gravity_tables = fields.One2many('micro.specific.gravity.line','parent_id',string="Specific Gravity")
     specific_gravity_avrg = fields.Float(string="Average",compute="_compute_specific_gravity_avrg")
 
     specific_gravity_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('na', 'NA'),
     ], string='Confirmity', default='fail',compute="_compute_specific_gravity_conformity")
 
     specific_gravity_nabl = fields.Selection([
@@ -459,6 +473,11 @@ class Microsilica(models.Model):
     @api.depends('specific_gravity_avrg','eln_ref')
     def _compute_specific_gravity_conformity(self):
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.specific_gravity_conformity = 'na'
+                continue
+
             record.specific_gravity_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')]).parameter_table
@@ -664,6 +683,7 @@ class Microsilica(models.Model):
     comp_strngth_7_days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('na', 'NA'),
     ], string='Confirmity', default='fail',compute="_compute_comp_strngth_7_days_conformity")
 
     comp_strngth_7_days_nabl = fields.Selection([
@@ -675,6 +695,11 @@ class Microsilica(models.Model):
     @api.depends('comp_control_strngth_7_days','eln_ref')
     def _compute_comp_strngth_7_days_conformity(self):
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.comp_strngth_7_days_conformity = 'na'
+                continue
+
             record.comp_strngth_7_days_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','658798cvfd-889b-477c-a355-0476f6bcd0d7')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','658798cvfd-889b-477c-a355-0476f6bcd0d7')]).parameter_table
@@ -787,6 +812,7 @@ class Microsilica(models.Model):
     oversize_percent_retain_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('na', 'NA'),
     ], string='Confirmity', default='fail',compute="_compute_oversize_percent_retain_conformity")
 
     oversize_percent_retain_nabl = fields.Selection([
@@ -798,6 +824,11 @@ class Microsilica(models.Model):
     @api.depends('avrg_oversize_percent','eln_ref')
     def _compute_oversize_percent_retain_conformity(self):
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.oversize_percent_retain_conformity = 'na'
+                continue
+
             record.oversize_percent_retain_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')]).parameter_table
@@ -854,6 +885,7 @@ class Microsilica(models.Model):
     bulk_density_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('na', 'NA'),
     ], string='Confirmity', default='fail',compute="_compute_bulk_density_conformity")
 
     bulk_density_nabl = fields.Selection([
@@ -865,6 +897,12 @@ class Microsilica(models.Model):
     @api.depends('avrg_bulk_density','eln_ref')
     def _compute_bulk_density_conformity(self):
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.bulk_density_conformity = 'na'
+                continue
+
+
             record.bulk_density_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')]).parameter_table
@@ -1179,7 +1217,7 @@ class OversizeRetainLine(models.Model):
             record.sr_no = index + 1
                 
 class SpecificGravityLine(models.Model):
-    _name = "specific.gravity.line"
+    _name = "micro.specific.gravity.line"
     
     parent_id = fields.Many2one('mechanical.microsilica',string="Parent Id")
     

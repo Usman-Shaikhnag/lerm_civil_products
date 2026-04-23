@@ -31,12 +31,19 @@ class WptMechanical(models.Model):
 
     wpt_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_wpt_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_wpt_conformity", store=True)
 
     @api.depends('average_of_wpt','eln_ref','grade')
     def _compute_wpt_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.wpt_conformity = 'na'
+                continue
+
             record.wpt_conformity = 'fail'
             line = self.env['lerm.parameter.master'].search([('internal_id','=','32145ght-0268-46ef-ba88-9c0453210lkit1')])
             materials = self.env['lerm.parameter.master'].search([('internal_id','=','32145ght-0268-46ef-ba88-9c0453210lkit1')]).parameter_table

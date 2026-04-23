@@ -40,6 +40,7 @@ class LermSampleForm(models.Model):
         ('satisfactory', 'Satisfactory'),
         ('non_satisfactory', 'Non-Satisfactory'),
     ], string='Sample Condition', default='satisfactory')
+    report_due_date = fields.Date(string="Report Due Date")
     technicians = fields.Many2one("res.users",string="Technicians",tracking=5)
     location = fields.Integer(string="Location Code")
     sample_reject_reason = fields.Char(string="Sample Reject Reason")
@@ -278,6 +279,7 @@ class LermSampleForm(models.Model):
                 # 'default_pricelist':self.pricelist.id,
                 'default_main_name':self.main_name,
                 'default_price':self.price,
+                'default_report_due_date': self.report_due_date,
                 }
             }
 

@@ -162,12 +162,19 @@ class CrusherRunMacadamMechanical(models.Model):
 
     abrasion_value_percentage_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_abrasion_value_percentager_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_abrasion_value_percentager_conformity", store=True)
 
     @api.depends('abrasion_value_percentage','eln_ref','grade')
     def _compute_abrasion_value_percentager_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.abrasion_value_percentage_conformity = 'na'
+                continue
+
             record.abrasion_value_percentage_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b22b1917-4510-4422-9869-d75f6e8893db')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b22b1917-4510-4422-9869-d75f6e8893db')]).parameter_table
@@ -258,12 +265,19 @@ class CrusherRunMacadamMechanical(models.Model):
 
     water_absorp_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_water_absorp_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_water_absorp_conformity", store=True)
 
     @api.depends('water_absorption','eln_ref','grade')
     def _compute_water_absorp_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.water_absorp_conformity = 'na'
+                continue
+
             record.water_absorp_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2113f38a-d129-4efe-bac4-ff5826dface8')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2113f38a-d129-4efe-bac4-ff5826dface8')]).parameter_table
@@ -348,12 +362,19 @@ class CrusherRunMacadamMechanical(models.Model):
 
     aggregate_combine_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_aggregate_combine_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_aggregate_combine_conformity", store=True)
 
     @api.depends('aggregate_combine','eln_ref','grade')
     def _compute_aggregate_combine_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.aggregate_combine_conformity = 'na'
+                continue
+
             record.aggregate_combine_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','70ef993d-d2f8-424c-9729-4e081d647bb1')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','70ef993d-d2f8-424c-9729-4e081d647bb1')]).parameter_table
@@ -695,12 +716,19 @@ class CrusherRunMacadamMechanical(models.Model):
 
     average_impact_value_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_impact_value_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_average_impact_value_conformity", store=True)
 
     @api.depends('average_impact_value','eln_ref','grade')
     def _compute_average_impact_value_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_impact_value_conformity = 'na'
+                continue
+
             record.average_impact_value_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','fbf04a49-ea53-4b14-acd4-1797e06669ae')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','fbf04a49-ea53-4b14-acd4-1797e06669ae')]).parameter_table

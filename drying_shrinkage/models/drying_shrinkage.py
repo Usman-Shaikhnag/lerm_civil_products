@@ -47,12 +47,19 @@ class MechanicalDryingShrinkage(models.Model):
 
     drying_shrinkage_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_drying_shrinkage_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_drying_shrinkage_conformity", store=True)
 
     @api.depends('average1','eln_ref','grade')
     def _compute_drying_shrinkage_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.drying_shrinkage_conformity = 'na'
+                continue
+
             record.drying_shrinkage_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','20246345-407d-4ce8-ae0d-566bd4e3b52f')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','20246345-407d-4ce8-ae0d-566bd4e3b52f')]).parameter_table
@@ -135,12 +142,20 @@ class MechanicalDryingShrinkage(models.Model):
     
     moisture_movement_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_moisture_movement_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_moisture_movement_conformity", store=True)
 
     @api.depends('average2','eln_ref','grade')
     def _compute_moisture_movement_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.moisture_movement_conformity = 'na'
+                continue
+
+
             record.moisture_movement_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3e59cd18-c281-4737-aa89-5b1190808804')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3e59cd18-c281-4737-aa89-5b1190808804')]).parameter_table
