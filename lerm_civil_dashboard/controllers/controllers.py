@@ -114,8 +114,8 @@ class LermCivilDashboard(http.Controller):
 
         # --- Sample Aging Overview (Optimized with Nested Breakdowns) ---
         aging_domain = [
-            ('state', 'in', ['2-alloted', '7-calculated', '3-pending_verification', '5-pending_approval']),
-            ('eln_id', '!=', False)
+            ('state', 'in', ['1-allotment_pending', '2-alloted', '7-calculated', '3-pending_verification', '5-pending_approval']),
+            ('report_due_date', '!=', False)
         ]
         if discipline and discipline != "ALL":
             aging_domain.append(('discipline_id.discipline', '=', discipline))
@@ -124,7 +124,8 @@ class LermCivilDashboard(http.Controller):
         if company_id and company_id != 'ALL':
             aging_domain.append(('lab_location.company_id', '=', int(company_id)))
 
-        aging_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='technician')
+        aging_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='technician', mode='upcoming')
+        overdue_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='technician', mode='overdue')
 
         return {
             "labels": labels,
@@ -135,15 +136,16 @@ class LermCivilDashboard(http.Controller):
             "state_counts": state_counts,
             "total_states": len(state_labels),
             "aging_data": aging_buckets,
+            "overdue_data": overdue_buckets,
         }
 
-    def _get_detailed_aging_data(self, Sample, base_domain, breakdown_type='technician'):
+    def _get_detailed_aging_data(self, Sample, base_domain, breakdown_type='technician', mode='upcoming'):
         """
         Helper to calculate aging data with nested breakdowns (Technicians or Products).
         breakdown_type: 'technician' or 'product'
+        mode: 'upcoming' or 'overdue'
         """
         today_date = datetime.now().date()
-        from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
         
         aging_data = {}
         B_RANGES = [
@@ -155,18 +157,30 @@ class LermCivilDashboard(http.Controller):
             ("60+", 61, None)
         ]
 
+        _logger.info(f"DEBUG: mode={mode}, base_domain = {base_domain}")
         for key, min_days, max_days in B_RANGES:
-            d_max = datetime.combine(today_date - timedelta(days=min_days), time.max)
+            if mode == 'upcoming':
+                # Bucket logic: report_due_date due in the next X days (future)
+                d_min = today_date + timedelta(days=min_days)
+                bucket_domain = list(base_domain) + [('report_due_date', '>=', d_min)]
+                if max_days is not None:
+                    d_max = today_date + timedelta(days=max_days)
+                    bucket_domain.append(('report_due_date', '<=', d_max))
+            else:
+                # Overdue logic: due X days ago (past)
+                # min_days=0 means due today or in the past. 
+                # But for 'overdue', we usually start from yesterday (min_days=1)
+                effective_min = max(1, min_days)
+                d_max = today_date - timedelta(days=effective_min)
+                bucket_domain = list(base_domain) + [('report_due_date', '<=', d_max)]
+                if max_days is not None:
+                    d_min = today_date - timedelta(days=max_days)
+                    bucket_domain.append(('report_due_date', '>=', d_min))
             
-            bucket_domain = list(base_domain) + [
-                ('eln_id.create_date', '<=', d_max.strftime(DEFAULT_SERVER_DATETIME_FORMAT))
-            ]
-            if max_days is not None:
-                d_min = datetime.combine(today_date - timedelta(days=max_days), time.min)
-                bucket_domain.append(('eln_id.create_date', '>=', d_min.strftime(DEFAULT_SERVER_DATETIME_FORMAT)))
-            
+            _logger.info(f"DEBUG: bucket {key} domain = {bucket_domain}")
             # Fetch samples to build nested breakdown
             bucket_samples = Sample.search(bucket_domain)
+            _logger.info(f"DEBUG: bucket {key} found {len(bucket_samples)} samples")
             
             state_map = {} # state -> {count, breakdown_map}
             for s in bucket_samples:
@@ -497,8 +511,8 @@ class LermCivilDashboard(http.Controller):
         
         # 5. Add Sample Aging Overview (with Product Breakdown)
         aging_domain = [
-            ('state', 'in', ['2-alloted', '7-calculated', '3-pending_verification', '5-pending_approval']),
-            ('eln_id', '!=', False)
+            ('state', 'in', ['1-allotment_pending', '2-alloted', '7-calculated', '3-pending_verification', '5-pending_approval']),
+            ('report_due_date', '!=', False)
         ]
         if discipline and discipline != "ALL":
             aging_domain.append(('discipline_id.discipline', '=', discipline))
@@ -510,7 +524,8 @@ class LermCivilDashboard(http.Controller):
             # For customer dashboard, aging samples should also be filtered by the searched customer
             aging_domain.append(('customer_id.name', 'ilike', f'%{search_query}%'))
             
-        aging_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='technician')
+        aging_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='technician', mode='upcoming')
+        overdue_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='technician', mode='overdue')
 
         # 6. Sort and Paginate
         data.sort(key=itemgetter('total_samples'), reverse=True)
@@ -521,7 +536,8 @@ class LermCivilDashboard(http.Controller):
         return {
             'customers': paginated_data,
             'total_customers': total_customers,
-            'aging_data': aging_buckets
+            'aging_data': aging_buckets,
+            'overdue_data': overdue_buckets
         }
         
     @http.route(['/lerm/product/overview/data'], type='json', auth='user', methods=["POST"])
@@ -618,8 +634,8 @@ class LermCivilDashboard(http.Controller):
         # Use the same base domain logic from above (Date, Discipline, Search)
         # But filter for specific aging states as per requirement
         aging_domain = [
-            ('state', 'in', ['2-alloted', '7-calculated', '3-pending_verification', '5-pending_approval']),
-            ('eln_id', '!=', False)
+            ('state', 'in', ['1-allotment_pending', '2-alloted', '7-calculated', '3-pending_verification', '5-pending_approval']),
+            ('report_due_date', '!=', False)
         ]
         # Include current search filters if they match sample fields
         if discipline and discipline != "ALL":
@@ -636,7 +652,8 @@ class LermCivilDashboard(http.Controller):
             if search_type in ['all', 'product']:
                 aging_domain.append(('material_id.name', 'ilike', f'%{search_query}%'))
 
-        aging_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='product')
+        aging_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='product', mode='upcoming')
+        overdue_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='product', mode='overdue')
 
         # 6. Sort the complete data set (Descending by total_samples)
         data.sort(key=itemgetter('total_samples'), reverse=True)
@@ -649,134 +666,7 @@ class LermCivilDashboard(http.Controller):
         return {
             'products': paginated_data,
             'total_products': total_products,
-            'aging_data': aging_buckets
-        }
-        
-    @http.route(['/lerm/product/overview/data'], type='json', auth='user', methods=["POST"])
-    def product_overview_data(self, **kw):
-        """
-        Fetches sample counts grouped by product (material), filtered by date, discipline, and multi-field search query.
-        Returns the paginated product list and the total product count.
-        """
-        start_date = kw.get('start_date')
-        end_date = kw.get('end_date')
-        discipline = kw.get('discipline')
-        lab_id = kw.get('lab_id')
-        company_id = kw.get('company_id')
-        search_query = kw.get('search_query', '').strip()
-        search_type = kw.get('search_type', 'all') # Options: all, product, srf, ulr, report
-
-        # Pagination parameters
-        page_size = int(kw.get('page_size', 10))
-        page_number = int(kw.get('page_number', 1))
-
-        Sample = request.env['lerm.srf.sample'].sudo()
-        domain = []
-
-        # 1. Date Filtering
-        if start_date and end_date:
-            try:
-                domain += [
-                    ('sample_received_date', '>=', start_date),
-                    ('sample_received_date', '<=', end_date),
-                ]
-            except Exception:
-                pass
-        
-        if lab_id and lab_id != 'ALL':
-            domain.append(('lab_location', '=', int(lab_id)))
-            
-        if company_id and company_id != 'ALL':
-            domain.append(('lab_location.company_id', '=', int(company_id)))
-
-        # 2. Discipline Filtering
-        if discipline and discipline != "ALL":
-            domain.append(('discipline_id.discipline', '=', discipline))
-
-        # 3. Search Query Filtering
-        if search_query:
-            search_domain = []
-            if search_type in ['all', 'product']:
-                search_domain.append(('material_id.name', 'ilike', f'%{search_query}%'))
-            if search_type in ['all', 'srf']:
-                search_domain.append(('srf_id.srf_id', 'ilike', f'%{search_query}%'))
-            if search_type in ['all', 'ulr']:
-                search_domain.append(('ulr_no', 'ilike', f'%{search_query}%'))
-            if search_type in ['all', 'report']:
-                search_domain.append(('kes_no', 'ilike', f'%{search_query}%'))
-            
-            if search_domain:
-                if len(search_domain) > 1:
-                    actual_search_domain = ['|'] * (len(search_domain) - 1) + search_domain
-                else:
-                    actual_search_domain = search_domain
-                domain += actual_search_domain
-
-        # 4. Fetch samples and group by material
-        samples_in_period = Sample.search(domain)
-        # Using mapped and set to ensure we only get unique materials
-        materials = set(samples_in_period.mapped('material_id'))
-
-        data = []
-        for material in materials:
-            material_id = material.id if material else 0
-            material_name = material.name if material else "General / No Material"
-            
-            if material:
-                material_samples = samples_in_period.filtered(lambda s: s.material_id.id == material_id)
-            else:
-                material_samples = samples_in_period.filtered(lambda s: not s.material_id)
-            
-            if len(material_samples) > 0:
-                data.append({
-                    'product_id': material_id,
-                    'product_name': material_name,
-                    'total_samples': len(material_samples),
-                    'assignment_pending': len(material_samples.filtered(lambda s: s.state == '1-allotment_pending')),
-                    'alloted': len(material_samples.filtered(lambda s: s.state == '2-alloted')),
-                    'pending_verification': len(material_samples.filtered(lambda s: s.state == '3-pending_verification')),
-                    'pending_approval': len(material_samples.filtered(lambda s: s.state == '5-pending_approval')),
-                    'in_report': len(material_samples.filtered(lambda s: s.state == '4-in_report')),
-                    'cancelled': len(material_samples.filtered(lambda s: s.state == '6-cancelled')),
-                    'invoiced': len(material_samples.filtered(lambda s: s.invoice_status == '2-invoiced')),
-                    'uninvoiced': len(material_samples.filtered(lambda s: s.invoice_status == '1-uninvoiced')),
-                })
-
-        # 5. Add Sample Aging Overview (with Product Breakdown)
-        # Use the same base domain logic from above (Date, Discipline, Search)
-        # But filter for specific aging states as per requirement
-        aging_domain = [
-            ('state', 'in', ['2-alloted', '7-calculated', '3-pending_verification', '5-pending_approval']),
-            ('eln_id', '!=', False)
-        ]
-        # Include current search filters if they match sample fields
-        if discipline and discipline != "ALL":
-            aging_domain.append(('discipline_id.discipline', '=', discipline))
-            
-        if lab_id and lab_id != 'ALL':
-            aging_domain.append(('lab_location', '=', int(lab_id)))
-            
-        if company_id and company_id != 'ALL':
-            aging_domain.append(('lab_location.company_id', '=', int(company_id)))
-        
-        # Apply name filter if it exists
-        if search_query:
-            if search_type in ['all', 'product']:
-                aging_domain.append(('material_id.name', 'ilike', f'%{search_query}%'))
-
-        aging_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='product')
-
-        # 6. Sort the complete data set (Descending by total_samples)
-        data.sort(key=itemgetter('total_samples'), reverse=True)
-
-        # 7. Apply Pagination
-        total_products = len(data)
-        offset = (page_number - 1) * page_size
-        paginated_data = data[offset : offset + page_size]
-
-        return {
-            'products': paginated_data,
-            'total_products': total_products,
-            'aging_data': aging_buckets
+            'aging_data': aging_buckets,
+            'overdue_data': overdue_buckets
         }
 
