@@ -11,6 +11,7 @@ class ProductDashboard extends Component {
     this.dashboard_state = useState({
       product_data: [],
       aging_data: {},
+      overdue_data: {},
       labs: [],
       companies: [],
     });
@@ -79,6 +80,7 @@ class ProductDashboard extends Component {
 
       this.dashboard_state.product_data = result.products || [];
       this.dashboard_state.aging_data = result.aging_data || {};
+      this.dashboard_state.overdue_data = result.overdue_data || {};
       this.filter_state.totalProducts = Number(result.total_products) || 0;
     } catch (error) {
       console.error("Failed to fetch product data:", error);
@@ -216,8 +218,7 @@ class ProductDashboard extends Component {
     return buckets.map(bucket => {
       const bucketData = this.dashboard_state.aging_data[bucket.key] || { total: 0, states: {} };
       return {
-        key: bucket.key,
-        label: bucket.label,
+        ...bucket,
         count: bucketData.total,
         states: Object.entries(bucketData.states).map(([stateKey, stateData]) => {
           const style = this.styleMap[stateKey] || { icon: "fa-question-circle", color: "#6c757d", label: stateKey };
@@ -230,42 +231,107 @@ class ProductDashboard extends Component {
             color: style.color
           };
         }),
-        color: bucket.color,
-        icon: bucket.icon
+        mode: 'upcoming'
       };
     });
   }
 
-  async onAgingClick(bucketKey, stateKey = null, productId = null) {
+  get overdueKpiData() {
+    const buckets = [
+      { key: "0-7", label: "0-7 Days", color: "#10b981", icon: "fa-clock-o" },
+      { key: "8-15", label: "8-15 Days", color: "#f59e0b", icon: "fa-calendar-minus-o" },
+      { key: "16-30", label: "16-30 Days", color: "#ef4444", icon: "fa-calendar-plus-o" },
+      { key: "31-45", label: "31-45 Days", color: "#b91c1c", icon: "fa-hourglass-end" },
+      { key: "46-60", label: "46-60 Days", color: "#7f1d1d", icon: "fa-warning" },
+      { key: "60+", label: "60+ Days", color: "#450a0a", icon: "fa-history" },
+    ];
+
+    if (!this.dashboard_state.overdue_data) return [];
+
+    return buckets.map(bucket => {
+      const bucketData = this.dashboard_state.overdue_data[bucket.key] || { total: 0, states: {} };
+      return {
+        ...bucket,
+        count: bucketData.total,
+        states: Object.entries(bucketData.states).map(([stateKey, stateData]) => {
+          const style = this.styleMap[stateKey] || { icon: "fa-question-circle", color: "#6c757d", label: stateKey };
+          return {
+            key: stateKey,
+            label: style.label,
+            count: stateData.count,
+            breakdown: stateData.breakdown || [],
+            icon: style.icon,
+            color: style.color
+          };
+        }),
+        mode: 'overdue'
+      };
+    });
+  }
+
+  async onAgingClick(bucketKey, stateKey = null, productId = null, mode = 'upcoming') {
     const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
     let minDays, maxDays;
     if (bucketKey === "60+") {
-        minDays = 61;
-        maxDays = null;
+      minDays = 61;
+      maxDays = null;
     } else {
-        [minDays, maxDays] = bucketKey.split("-").map(Number);
+      [minDays, maxDays] = bucketKey.split("-").map(Number);
     }
     
-    // Create new date objects for boundaries
-    const dMax = new Date(today);
-    dMax.setDate(today.getDate() - minDays);
-    dMax.setHours(23, 59, 59, 999);
-    
-    let dMin = null;
-    if (maxDays !== null) {
-        dMin = new Date(today);
+    const pad = (n) => n.toString().padStart(2, "0");
+    const toDateStr = (d) =>
+      `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+
+    let dMinStr = null;
+    let dMaxStr = null;
+
+    if (mode === 'upcoming') {
+      const dMin = new Date(today);
+      dMin.setDate(today.getDate() + minDays);
+      dMinStr = toDateStr(dMin);
+
+      if (maxDays !== null) {
+        const dMax = new Date(today);
+        dMax.setDate(today.getDate() + maxDays);
+        dMaxStr = toDateStr(dMax);
+      }
+    } else {
+      // Overdue mode
+      const effectiveMin = Math.max(1, minDays);
+      const dMax = new Date(today);
+      dMax.setDate(today.getDate() - effectiveMin);
+      dMaxStr = toDateStr(dMax);
+
+      if (maxDays !== null) {
+        const dMin = new Date(today);
         dMin.setDate(today.getDate() - maxDays);
-        dMin.setHours(0, 0, 0, 0);
+        dMinStr = toDateStr(dMin);
+      }
     }
 
     const domain = [
-        ["state", "in", ["2-alloted", "7-calculated", "3-pending_verification", "5-pending_approval"]],
-        ["eln_id", "!=", false],
-        ["eln_id.create_date", "<=", dMax.toISOString()],
+      [
+        "state",
+        "in",
+        [
+          "1-allotment_pending",
+          "2-alloted",
+          "7-calculated",
+          "3-pending_verification",
+          "5-pending_approval",
+        ],
+      ],
+      ["report_due_date", "!=", false],
     ];
 
-    if (dMin) {
-        domain.push(["eln_id.create_date", ">=", dMin.toISOString()]);
+    if (dMinStr) {
+      domain.push(["report_due_date", ">=", dMinStr]);
+    }
+    if (dMaxStr) {
+      domain.push(["report_due_date", "<=", dMaxStr]);
     }
 
     if (stateKey) {
@@ -302,7 +368,7 @@ class ProductDashboard extends Component {
 
     const action = {
         type: "ir.actions.act_window",
-        name: `Samples - Aging ${bucketKey}`,
+        name: `${mode === 'upcoming' ? 'Upcoming Due' : 'Overdue'}: ${bucketKey} Days`,
         res_model: "lerm.srf.sample",
         views: [[false, "list"], [false, "form"]],
         domain: domain,
@@ -320,11 +386,10 @@ class ProductDashboard extends Component {
     }
   }
 
-  async _onProductCardClick(productId, productName) {
-    const { start_date, end_date, activeDiscipline, searchQuery, searchType } = this.filter_state;
+  async _onProductDetailsClick(productId, productName, stateName = null) {
+    const { start_date, end_date, activeDiscipline, activeLab, activeCompany, searchQuery, searchType } = this.filter_state;
 
     const domain = [
-      ["material_id", "=", productId],
       ["sample_received_date", ">=", start_date],
       ["sample_received_date", "<=", end_date],
       ...(activeDiscipline !== "ALL"
@@ -337,6 +402,22 @@ class ProductDashboard extends Component {
         ? [["lab_location.company_id", "=", parseInt(activeCompany)]]
         : []),
     ];
+
+    if (productId === 0) {
+      domain.push(["material_id", "=", false]);
+    } else {
+      domain.push(["material_id", "=", productId]);
+    }
+
+    if (stateName) {
+      if (stateName === "invoiced") {
+          domain.push(["invoice_status", "=", "2-invoiced"]);
+      } else if (stateName === "uninvoiced") {
+          domain.push(["invoice_status", "=", "1-uninvoiced"]);
+      } else {
+          domain.push(["state", "=", stateName]);
+      }
+    }
 
     if (searchQuery) {
       const search_domain = [];
@@ -364,9 +445,24 @@ class ProductDashboard extends Component {
       }
     }
 
+    let actionName = `Samples for Product: ${productName}`;
+    if (stateName) {
+      const stateLabelMap = {
+        "2-alloted": "Alloted",
+        "3-pending_verification": "Verification Pending",
+        "5-pending_approval": "Approval Pending",
+        "4-in_report": "In Report",
+        "6-cancelled": "Cancelled",
+        "invoiced": "Invoiced",
+        "uninvoiced": "Uninvoiced",
+        "1-allotment_pending": "Assignment Pending"
+      };
+      actionName = `${actionName} - ${stateLabelMap[stateName] || stateName}`;
+    }
+
     const action = {
       type: "ir.actions.act_window",
-      name: `Samples for Product: ${productName}`,
+      name: actionName,
       res_model: "lerm.srf.sample",
       views: [[false, "list"], [false, "form"]],
       domain: domain,
@@ -374,6 +470,10 @@ class ProductDashboard extends Component {
     };
 
     return this.action.doAction(action);
+  }
+
+  async _onProductCardClick(productId, productName) {
+      return this._onProductDetailsClick(productId, productName);
   }
 }
 
