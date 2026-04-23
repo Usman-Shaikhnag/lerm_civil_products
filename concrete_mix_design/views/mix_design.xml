@@ -13,6 +13,7 @@
                             <field name="name" readonly="1" nolabel="1"/>
                         </h1>
                     </group>
+
                     <group>
                         <field name="srf_id" invisible="1"/>
                         <field name="sample_id" readonly="1" />
@@ -605,6 +606,25 @@
                             </tbody>
                         </table>
                         </div>
+
+
+
+                        
+                    <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
 
                          <group style="margin-top: 20px;">
 

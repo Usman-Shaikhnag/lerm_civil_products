@@ -13,6 +13,48 @@ class ChemicalFineAggregate(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
+    notes_id = fields.One2many('chem.fine.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(ChemicalFineAggregate, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The report shall not be reproduced in fullor partially without written approval of the laboratory HOD/CEO/Maganement.',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'ampling is not done by us unless mentioned otherwide.',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'without a QR Code and hologram this report is considered invalid.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'The Result listed refer only to tested samples & applicable parameter Endorsement of product is neither interred nor inplied.',
+            }),
+
+            (0, 0, {
+                'sr_no': 'e',
+                'notes': 'The use or report for arbitration, publicity & evidence in legal dispute is forbidden except with prior written consent NBML Lab.',
+            }),
+             (0, 0, {
+                'sr_no': 'f',
+                'notes': 'Alldisputed are subject to Raipur jurisdiction 7 days correction to this report invalidates this report.',
+            }),
+
+             (0, 0, {
+                'sr_no': 'g',
+                'notes': 'Sample willbe destroyed after 30-days from the date of test report unless otherwise Specified.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
 
     ph_name = fields.Char("Name",default="pH of 1 % Solution in water")
     ph_visible = fields.Boolean("pH",compute="_compute_visible")
@@ -29,7 +71,9 @@ class ChemicalFineAggregate(models.Model):
 
     ph_average_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_ph_average_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_ph_average_conformity", store=True)
 
     @api.depends('ph_average','eln_ref','grade')
     def _compute_ph_average_conformity(self):
@@ -37,6 +81,11 @@ class ChemicalFineAggregate(models.Model):
             self.ph_average_conformity = 'fail'
         
             for record in self:
+
+                if not record.eln_ref or not record.eln_ref.conformity:
+                    record.ph_average_conformity = 'na'
+                    continue
+
                 record.ph_average_conformity = 'fail'
                 line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','628cf04d-645d-4794-a0fd-3daabff4b044')])
                 materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','628cf04d-645d-4794-a0fd-3daabff4b044')]).parameter_table
@@ -158,12 +207,19 @@ class ChemicalFineAggregate(models.Model):
 
     average_dissolved_silica_conformity_fine = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_average_dissolved_silica_conformity_fine", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity",compute="_compute_average_dissolved_silica_conformity_fine", store=True)
 
     @api.depends('average_dissolved_silica','eln_ref','grade')
     def _compute_average_dissolved_silica_conformity_fine(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_dissolved_silica_conformity_fine = 'na'
+                continue
+
             record.average_dissolved_silica_conformity_fine = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','fa80a69f-bf0f-4aa3-a9d3-70767e7bf24a')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','fa80a69f-bf0f-4aa3-a9d3-70767e7bf24a')]).parameter_table
@@ -279,12 +335,19 @@ class ChemicalFineAggregate(models.Model):
 
     average_reduction_alkalinity_conformity_fine = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_average_reduction_alkalinity_conformity_fine",  store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity",compute="_compute_average_reduction_alkalinity_conformity_fine",  store=True)
 
     @api.depends('average_reduction_alkalinity','eln_ref','grade')
     def _compute_average_reduction_alkalinity_conformity_fine(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_reduction_alkalinity_conformity_fine = 'na'
+                continue
+
             record.average_reduction_alkalinity_conformity_fine = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0437ea07-5283-4248-9430-e5d89866d3c5')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0437ea07-5283-4248-9430-e5d89866d3c5')]).parameter_table
@@ -360,12 +423,19 @@ class ChemicalFineAggregate(models.Model):
 
     chloride_percent_conformity_fine = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_chloride_percent_conformity_fine", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity",compute="_compute_chloride_percent_conformity_fine", store=True)
 
     @api.depends('chloride_percent','eln_ref','grade')
     def _compute_chloride_percent_conformity_fine(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.chloride_percent_conformity_fine = 'na'
+                continue
+
             record.chloride_percent_conformity_fine = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c87d2fa3-ba0b-4e64-84d1-e3b23f19dafa')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c87d2fa3-ba0b-4e64-84d1-e3b23f19dafa')]).parameter_table
@@ -438,12 +508,19 @@ class ChemicalFineAggregate(models.Model):
 
     sulphate_percent_conformity_fine = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_sulphate_percent_conformity_fine", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity",compute="_compute_sulphate_percent_conformity_fine", store=True)
 
     @api.depends('sulphate_percent','eln_ref','grade')
     def _compute_sulphate_percent_conformity_fine(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.sulphate_percent_conformity_fine = 'na'
+                continue
+
             record.sulphate_percent_conformity_fine = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f605daf3-ffb4-48c2-aa20-fffb1d556c07')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f605daf3-ffb4-48c2-aa20-fffb1d556c07')]).parameter_table
@@ -521,12 +598,19 @@ class ChemicalFineAggregate(models.Model):
 
     na2O_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_na2O_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity",compute="_compute_na2O_conformity", store=True)
 
     @api.depends('na2O','eln_ref','grade')
     def _compute_na2O_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.na2O_conformity = 'na'
+                continue
+
             record.na2O_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','03507018-bb06-4362-a2e7-6d70ec7d8870')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','03507018-bb06-4362-a2e7-6d70ec7d8870')]).parameter_table
@@ -608,12 +692,19 @@ class ChemicalFineAggregate(models.Model):
 
     k2O_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_k2O_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity",compute="_compute_k2O_conformity", store=True)
 
     @api.depends('k2O','eln_ref','grade')
     def _compute_k2O_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.k2O_conformity = 'na'
+                continue
+
             record.k2O_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3997903d-8a2e-49fc-baa1-531f0b805cac')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3997903d-8a2e-49fc-baa1-531f0b805cac')]).parameter_table
@@ -676,12 +767,20 @@ class ChemicalFineAggregate(models.Model):
 
     total_alkali_content_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_total_alkali_content_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity",compute="_compute_total_alkali_content_conformity", store=True)
 
     @api.depends('total_alkali_content','eln_ref','grade')
     def _compute_total_alkali_content_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.total_alkali_content_conformity = 'na'
+                continue
+
+
             record.total_alkali_content_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0510b578-b3de-4045-bd55-5f54198e9dc8')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0510b578-b3de-4045-bd55-5f54198e9dc8')]).parameter_table
@@ -795,4 +894,12 @@ class ChemicalFineAggregate(models.Model):
     def _compute_grade_id(self):
         if self.eln_ref:
             self.grade = self.eln_ref.grade_id.id
+
+
+class ChemFineNotes(models.Model):
+    _name = "chem.fine.notes"
+
+    parent_id = fields.Many2one('chemical.fine.aggregate',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
     

@@ -174,6 +174,7 @@ class LermSampleForm(models.Model):
     report_issued_date = fields.Date("Report Issued Date")
 
     display_report_portal = fields.Boolean("Display on Portal")
+    stamp_attached = fields.Boolean("Stamp Attached")
     customer_portal_sample = fields.Many2one('customer.sample.line',string="Customer Portal Sample", readonly=True)
 
     @api.depends('quantity_received', 'quantity_consumed','quantity_discarded')

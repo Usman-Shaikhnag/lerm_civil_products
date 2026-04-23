@@ -15,6 +15,48 @@ class ChemicalFlyAsh(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
+    notes_id = fields.One2many('chem.flyash.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(CementNormalConsistency, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The report shall not be reproduced in fullor partially without written approval of the laboratory HOD/CEO/Maganement.',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'ampling is not done by us unless mentioned otherwide.',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'without a QR Code and hologram this report is considered invalid.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'The Result listed refer only to tested samples & applicable parameter Endorsement of product is neither interred nor inplied.',
+            }),
+
+            (0, 0, {
+                'sr_no': 'e',
+                'notes': 'The use or report for arbitration, publicity & evidence in legal dispute is forbidden except with prior written consent NBML Lab.',
+            }),
+             (0, 0, {
+                'sr_no': 'f',
+                'notes': 'Alldisputed are subject to Raipur jurisdiction 7 days correction to this report invalidates this report.',
+            }),
+
+             (0, 0, {
+                'sr_no': 'g',
+                'notes': 'Sample willbe destroyed after 30-days from the date of test report unless otherwise Specified.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
 
     # % Silica
 
@@ -32,12 +74,19 @@ class ChemicalFlyAsh(models.Model):
 
     Silica_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_Silica_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_Silica_conformity", store=True)
 
     @api.depends('Silica','eln_ref','grade')
     def _compute_Silica_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.Silica_conformity = 'na'
+                continue
+
             record.Silica_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6b064931-b820-44dd-a096-99c2666bd191')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6b064931-b820-44dd-a096-99c2666bd191')]).parameter_table
@@ -126,12 +175,19 @@ class ChemicalFlyAsh(models.Model):
 
     r2o3_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_r2o3_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_r2o3_conformity", store=True)
 
     @api.depends('r2o3','eln_ref','grade')
     def _compute_r2o3_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.r2o3_conformity = 'na'
+                continue
+
             record.r2o3_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','de00fb1d-bf64-4c65-b098-b22066eed595')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','de00fb1d-bf64-4c65-b098-b22066eed595')]).parameter_table
@@ -199,12 +255,20 @@ class ChemicalFlyAsh(models.Model):
 
     ferric_oxide_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_ferric_oxide_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_ferric_oxide_conformity", store=True)
 
     @api.depends('ferric_oxide','eln_ref','grade')
     def _compute_ferric_oxide_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.ferric_oxide_conformity = 'na'
+                continue
+
+
             record.ferric_oxide_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f41a3a24-c81f-480d-88b1-5f0711870d3d')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f41a3a24-c81f-480d-88b1-5f0711870d3d')]).parameter_table
@@ -266,12 +330,19 @@ class ChemicalFlyAsh(models.Model):
 
     alumina_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_alumina_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_alumina_conformity", store=True)
 
     @api.depends('alumina','eln_ref','grade')
     def _compute_alumina_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.alumina_conformity = 'na'
+                continue
+
             record.alumina_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','399adf9d-d71d-486b-b40b-676b09173d18')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','399adf9d-d71d-486b-b40b-676b09173d18')]).parameter_table
@@ -345,12 +416,19 @@ class ChemicalFlyAsh(models.Model):
 
     cao_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_cao_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_cao_conformity", store=True)
 
     @api.depends('cao','eln_ref','grade')
     def _compute_cao_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.cao_conformity = 'na'
+                continue
+
             record.cao_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','cad7aa77-fad0-44bf-a374-48c100f86bfe')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','cad7aa77-fad0-44bf-a374-48c100f86bfe')]).parameter_table
@@ -420,12 +498,19 @@ class ChemicalFlyAsh(models.Model):
 
     mgo_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_mgo_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_mgo_conformity", store=True)
 
     @api.depends('mgo','eln_ref','grade')
     def _compute_mgo_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.mgo_conformity = 'na'
+                continue
+
             record.mgo_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a50a3026-4c50-4314-83b2-8c66b259756a')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a50a3026-4c50-4314-83b2-8c66b259756a')]).parameter_table
@@ -503,12 +588,19 @@ class ChemicalFlyAsh(models.Model):
 
     calicum_oxide_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_calicum_oxide_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_calicum_oxide_conformity", store=True)
 
     @api.depends('calicum_oxide','eln_ref','grade')
     def _compute_calicum_oxide_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.calicum_oxide_conformity = 'na'
+                continue
+
             record.calicum_oxide_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4ddec5e4-d9eb-480b-8965-78c1d92f7349')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4ddec5e4-d9eb-480b-8965-78c1d92f7349')]).parameter_table
@@ -585,12 +677,19 @@ class ChemicalFlyAsh(models.Model):
 
     magnesium_oxide_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_magnesium_oxide_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_magnesium_oxide_conformity", store=True)
 
     @api.depends('magnesium_oxide','eln_ref','grade')
     def _compute_magnesium_oxide_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.magnesium_oxide_conformity = 'na'
+                continue
+
             record.magnesium_oxide_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','bff1cbf6-c067-430d-9391-616a077daa73')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','bff1cbf6-c067-430d-9391-616a077daa73')]).parameter_table
@@ -662,12 +761,19 @@ class ChemicalFlyAsh(models.Model):
 
     so3_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_so3_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_so3_conformity", store=True)
 
     @api.depends('so3','eln_ref','grade')
     def _compute_so3_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.so3_conformity = 'na'
+                continue
+
             record.so3_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','789c0940-27b3-42a0-aacf-4d2a8d2e9a19')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','789c0940-27b3-42a0-aacf-4d2a8d2e9a19')]).parameter_table
@@ -746,12 +852,19 @@ class ChemicalFlyAsh(models.Model):
 
     loi_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_loi_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_loi_conformity", store=True)
 
     @api.depends('loi','eln_ref','grade')
     def _compute_loi_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.loi_conformity = 'na'
+                continue
+
             record.loi_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e09ddd61-2d20-4d5a-b922-bea8bbdeea72')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e09ddd61-2d20-4d5a-b922-bea8bbdeea72')]).parameter_table
@@ -844,12 +957,19 @@ class ChemicalFlyAsh(models.Model):
 
     na2o_round_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_na2o_round_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_na2o_round_conformity", store=True)
 
     @api.depends('na2o_round','eln_ref','grade')
     def _compute_na2o_round_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.na2o_round_conformity = 'na'
+                continue
+
             record.na2o_round_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3ccd6049-2b3d-42a0-a78f-b83e49eeff6a')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3ccd6049-2b3d-42a0-a78f-b83e49eeff6a')]).parameter_table
@@ -942,12 +1062,19 @@ class ChemicalFlyAsh(models.Model):
 
     k2o_round_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_k2o_round_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_k2o_round_conformity", store=True)
 
     @api.depends('k2o_round','eln_ref','grade')
     def _compute_k2o_round_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.k2o_round_conformity = 'na'
+                continue
+
             record.k2o_round_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b6fb80a6-b992-477e-9048-c40b58e28a6c')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b6fb80a6-b992-477e-9048-c40b58e28a6c')]).parameter_table
@@ -1009,12 +1136,19 @@ class ChemicalFlyAsh(models.Model):
 
     available_alkalis_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_available_alkalis_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_available_alkalis_conformity", store=True)
 
     @api.depends('available_alkalis','eln_ref','grade')
     def _compute_available_alkalis_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.available_alkalis_conformity = 'na'
+                continue
+
             record.available_alkalis_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5ab486ca-fb44-437b-adeb-8b6928ac43b0')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5ab486ca-fb44-437b-adeb-8b6928ac43b0')]).parameter_table
@@ -1094,12 +1228,19 @@ class ChemicalFlyAsh(models.Model):
 
     chloride_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_chloride_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_chloride_conformity", store=True)
 
     @api.depends('chloride','eln_ref','grade')
     def _compute_chloride_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.chloride_conformity = 'na'
+                continue
+
             record.chloride_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ab368a42-36c6-44f2-81af-7b81a6ea81e7')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ab368a42-36c6-44f2-81af-7b81a6ea81e7')]).parameter_table
@@ -1161,12 +1302,19 @@ class ChemicalFlyAsh(models.Model):
 
     combined_percentage_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_combined_percentage_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_combined_percentage_conformity", store=True)
 
     @api.depends('combined_percentage','eln_ref','grade')
     def _compute_combined_percentage_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.combined_percentage_conformity = 'na'
+                continue
+
             record.combined_percentage_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','fca3ebf1-b4fd-4597-81e1-37bf499c5a35')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','fca3ebf1-b4fd-4597-81e1-37bf499c5a35')]).parameter_table
@@ -1305,4 +1453,14 @@ class ChemicalFlyAsh(models.Model):
     def _compute_grade_id(self):
         if self.eln_ref:
             self.grade = self.eln_ref.grade_id.id
+
+
+
+class ChemFlyNotes(models.Model):
+    _name = "chem.flyash.notes"
+
+    parent_id = fields.Many2one('chemical.flyash',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
+
     

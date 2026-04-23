@@ -12,6 +12,7 @@ class AacBlockMechanical(models.Model):
     _rec_name = "name"
 
 
+
     name = fields.Char("Name",default="AAC Block")
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 
@@ -198,6 +199,59 @@ class AacBlockMechanical(models.Model):
 
             record.sample_parameters = [(6, 0, parameter_ids)]
 
+
+
+
+
+    # remark
+
+    notes_id = fields.One2many('aac.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(AacBlockMechanical, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The report shall not be reproduced in fullor partially without written approval of the laboratory HOD/CEO/Maganement.',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'ampling is not done by us unless mentioned otherwide.',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'without a QR Code and hologram this report is considered invalid.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'The Result listed refer only to tested samples & applicable parameter Endorsement of product is neither interred nor inplied.',
+            }),
+
+            (0, 0, {
+                'sr_no': 'e',
+                'notes': 'The use or report for arbitration, publicity & evidence in legal dispute is forbidden except with prior written consent NBML Lab.',
+            }),
+             (0, 0, {
+                'sr_no': 'f',
+                'notes': 'Alldisputed are subject to Raipur jurisdiction 7 days correction to this report invalidates this report.',
+            }),
+
+             (0, 0, {
+                'sr_no': 'g',
+                'notes': 'Sample willbe destroyed after 30-days from the date of test report unless otherwise Specified.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
+
+
+
+
+
     # Dimension
     dimension_name = fields.Char(default="Dimension")
     dimension_visible = fields.Boolean(compute="_compute_visible")
@@ -260,16 +314,22 @@ class AacBlockMechanical(models.Model):
     moisture_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('na', 'NA'),
     ], string='Confirmity', default='fail',compute="_compute_moisture_confirmity")
     moisture_nabl = fields.Selection([
         ('pass', 'NABL'),
         ('fail', 'NON NABL'),
-    ], string='NABL', default='fail',compute="_compute_moisture_nabl")
+    ], string='NABL', compute="_compute_moisture_nabl")
 
 
     @api.depends('average_moisture_content','eln_ref','grade')
     def _compute_moisture_confirmity(self):
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.moisture_confirmity = 'na'
+                continue
+
             record.moisture_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6478fde2-8097-4275-b80f-48ebdbcfe244')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6478fde2-8097-4275-b80f-48ebdbcfe244')]).parameter_table
@@ -331,16 +391,23 @@ class AacBlockMechanical(models.Model):
     density_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='Confirmity', default='fail',compute="_compute_density_confirmity")
+        ('na', 'NA'),
+    ], string='Confirmity', compute="_compute_density_confirmity")
     density_nabl = fields.Selection([
         ('pass', 'NABL'),
         ('fail', 'NON NABL'),
-    ], string='NABL', default='fail',compute="_compute_density_nabl")
+    ], string='NABL', compute="_compute_density_nabl")
 
 
     @api.depends('average_density','eln_ref','grade')
     def _compute_density_confirmity(self):
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.density_confirmity = 'na'
+                continue
+
+
             record.density_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','254879sw-4ef4-4e51-abeb-57dd2abe29a4')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','254879sw-4ef4-4e51-abeb-57dd2abe29a4')]).parameter_table
@@ -398,18 +465,24 @@ class AacBlockMechanical(models.Model):
     drying_shrinkage_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='Confirmity', default='fail',compute="_compute_drying_shrinkage_confirmity")
+        ('na', 'NA'),
+    ], string='Confirmity', compute="_compute_drying_shrinkage_confirmity")
     
 
     drying_shrinkage_aac_nabl = fields.Selection([
         ('pass', 'NABL'),
         ('fail', 'NON NABL'),
-    ], string='NABL', default='fail',compute="_compute_drying_shrinkage_nabl")
+    ], string='NABL', compute="_compute_drying_shrinkage_nabl")
 
 
     @api.depends('average_drying_shrinkage','eln_ref','grade')
     def _compute_drying_shrinkage_confirmity(self):
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.drying_shrinkage_confirmity = 'na'
+                continue
+
             record.drying_shrinkage_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214578ews-b1a2-4dac-b8cb-e077770af52f')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214578ews-b1a2-4dac-b8cb-e077770af52f')]).parameter_table
@@ -469,7 +542,8 @@ class AacBlockMechanical(models.Model):
     compressive_strength_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='Confirmity', default='fail',compute="_compute_compressive_strength_confirmity")
+        ('na', 'NA'),
+    ], string='Confirmity', compute="_compute_compressive_strength_confirmity")
     compressive_strength_nabl = fields.Selection([
         ('pass', 'NABL'),
         ('fail', 'NON NABL'),
@@ -479,6 +553,11 @@ class AacBlockMechanical(models.Model):
     @api.depends('average_compressive_strength','eln_ref','grade')
     def _compute_compressive_strength_confirmity(self):
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.compressive_strength_confirmity = 'na'
+                continue
+
             record.compressive_strength_confirmity = 'fail'   
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457896dfe-cb61-45db-91c5-0167b27a9ab5')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457896dfe-cb61-45db-91c5-0167b27a9ab5')]).parameter_table
@@ -631,6 +710,14 @@ class AacCompressiveStrengthLine(models.Model):
                 record.compressive_strength = round(compressive_strength,2)
             else:
                 record.compressive_strength = 0
+
+
+class aacNotes(models.Model):
+    _name = "aac.notes"
+
+    parent_id = fields.Many2one('mechanical.aac.block',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
 
 
 

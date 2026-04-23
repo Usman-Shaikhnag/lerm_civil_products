@@ -65,6 +65,44 @@ class Tile(models.Model):
             self.grade = self.eln_ref.grade_id.id
 
 
+
+
+        
+# remark
+
+
+    notes_id = fields.One2many('cube.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(Tile, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
+
+
+
+
     # Dimension
 
     dimension_name1 = fields.Char("Name",default="Dimension")
@@ -124,12 +162,19 @@ class Tile(models.Model):
 
     deviation_length_width_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Deviation in Length & Width Conformity", compute="_compute_deviation_length_width_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Deviation in Length & Width Conformity", compute="_compute_deviation_length_width_conformity", store=True)
 
     @api.depends('deviation_length_width','eln_ref','grade')
     def _compute_deviation_length_width_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.deviation_length_width_conformity = 'na'
+                continue
+
             record.deviation_length_width_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','25888f82-79c0-44a8-9379-f40dd33235bb')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','25888f82-79c0-44a8-9379-f40dd33235bb')]).parameter_table
@@ -174,13 +219,20 @@ class Tile(models.Model):
 
     deviation_thickness_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Deviation in Thickness Conformity", compute="_compute_deviation_thickness_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Deviation in Thickness Conformity", compute="_compute_deviation_thickness_conformity", store=True)
 
 
     @api.depends('deviation_thickness','eln_ref','grade')
     def _compute_deviation_thickness_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.deviation_thickness_conformity = 'na'
+                continue
+
             record.deviation_thickness_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35777f82-79c0-44a8-9379-f40dd33235uyt')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35777f82-79c0-44a8-9379-f40dd33235uyt')]).parameter_table
@@ -373,7 +425,9 @@ class Tile(models.Model):
 
     deviation_straightness_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_deviation_straightness_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_deviation_straightness_conformity", store=True)
 
 
 
@@ -381,6 +435,11 @@ class Tile(models.Model):
     def _compute_deviation_straightness_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.deviation_straightness_conformity = 'na'
+                continue
+
             record.deviation_straightness_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','19999f82-79c0-44a8-9379-f40dd33235aa')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','19999f82-79c0-44a8-9379-f40dd33235aa')]).parameter_table
@@ -498,7 +557,9 @@ class Tile(models.Model):
 
     deviation_rectangularity_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_deviation_rectangularity_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_deviation_rectangularity_conformity", store=True)
 
 
 
@@ -506,6 +567,11 @@ class Tile(models.Model):
     def _compute_deviation_rectangularity_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.deviation_rectangularity_conformity = 'na'
+                continue
+
             record.deviation_rectangularity_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4e209b70-f6b9-49b9-bab6-f38292f64b1c')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4e209b70-f6b9-49b9-bab6-f38292f64b1c')]).parameter_table
@@ -627,7 +693,9 @@ class Tile(models.Model):
 
     deviation_centre_curvature_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_deviation_centre_curvature_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_deviation_centre_curvature_conformity", store=True)
 
 
 
@@ -635,6 +703,11 @@ class Tile(models.Model):
     def _compute_deviation_centre_curvature_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.deviation_centre_curvature_conformity = 'na'
+                continue
+
             record.deviation_centre_curvature_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','873e02d1-db08-43d8-a88f-f6de09d41955')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','873e02d1-db08-43d8-a88f-f6de09d41955')]).parameter_table
@@ -753,7 +826,9 @@ class Tile(models.Model):
 
     deviation_edge_curvature_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_deviation_edge_curvature_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_deviation_edge_curvature_conformity", store=True)
 
 
 
@@ -761,6 +836,11 @@ class Tile(models.Model):
     def _compute_deviation_edge_curvature_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.deviation_edge_curvature_conformity = 'na'
+                continue
+
             record.deviation_edge_curvature_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2c4efee6-d22a-4eec-afbb-5435f3041f3f')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2c4efee6-d22a-4eec-afbb-5435f3041f3f')]).parameter_table
@@ -880,7 +960,9 @@ class Tile(models.Model):
 
     deviation_warpage_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_deviation_warpage_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_deviation_warpage_conformity", store=True)
 
 
 
@@ -888,6 +970,11 @@ class Tile(models.Model):
     def _compute_deviation_warpage_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.deviation_warpage_conformity = 'na'
+                continue
+
             record.deviation_warpage_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','91fc2258-6bd7-40d4-82d8-404af0928ae9')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','91fc2258-6bd7-40d4-82d8-404af0928ae9')]).parameter_table
@@ -948,7 +1035,9 @@ class Tile(models.Model):
 
     average_water_bulk_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Water Absorption, % (average) Conformity", compute="_compute_average_water_bulk_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Water Absorption, % (average) Conformity", compute="_compute_average_water_bulk_conformity", store=True)
 
 
 
@@ -956,6 +1045,11 @@ class Tile(models.Model):
     def _compute_average_water_bulk_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_water_bulk_conformity = 'na'
+                continue
+
             record.average_water_bulk_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5d81b405-ed58-4374-bda7-2825e12f307c')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5d81b405-ed58-4374-bda7-2825e12f307c')]).parameter_table
@@ -1002,7 +1096,9 @@ class Tile(models.Model):
 
     individual_water_bulk_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Water Absorption, % (Individual) Conformity", compute="_compute_individual_water_bulk_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Water Absorption, % (Individual) Conformity", compute="_compute_individual_water_bulk_conformity", store=True)
 
 
 
@@ -1010,6 +1106,11 @@ class Tile(models.Model):
     def _compute_individual_water_bulk_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.individual_water_bulk_conformity = 'na'
+                continue
+
             record.individual_water_bulk_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4211b8db-2bb3-4821-958d-ec2c81db5698')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4211b8db-2bb3-4821-958d-ec2c81db5698')]).parameter_table
@@ -1201,7 +1302,9 @@ class Tile(models.Model):
 
     bulk_density_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Bulk Density Conformity", compute="_compute_bulk_density_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Bulk Density Conformity", compute="_compute_bulk_density_conformity", store=True)
 
 
 
@@ -1209,6 +1312,11 @@ class Tile(models.Model):
     def _compute_bulk_density_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.bulk_density_conformity = 'na'
+                continue
+
             record.bulk_density_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','25489lku-2bb3-4821-958d-ec2c81db5698')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','25489lku-2bb3-4821-958d-ec2c81db5698')]).parameter_table
@@ -1325,7 +1433,9 @@ class Tile(models.Model):
 
     average_modulus_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Modulus of Rupture, N/mm2 (Average) Conformity", compute="_compute_average_modulus_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Modulus of Rupture, N/mm2 (Average) Conformity", compute="_compute_average_modulus_conformity", store=True)
 
 
 
@@ -1333,6 +1443,11 @@ class Tile(models.Model):
     def _compute_average_modulus_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_modulus_conformity = 'na'
+                continue
+
             record.average_modulus_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f9fb0d98-1891-496f-9ef3-4745c5598085')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f9fb0d98-1891-496f-9ef3-4745c5598085')]).parameter_table
@@ -1380,7 +1495,9 @@ class Tile(models.Model):
 
     individual_modulus_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Modulus of Rupture, N/mm2 (Individual) Conformity", compute="_compute_individual_modulus_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Modulus of Rupture, N/mm2 (Individual) Conformity", compute="_compute_individual_modulus_conformity", store=True)
 
 
 
@@ -1388,6 +1505,11 @@ class Tile(models.Model):
     def _compute_individual_modulus_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.individual_modulus_conformity = 'na'
+                continue
+
             record.individual_modulus_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5687pkf-6bd7-40d4-82d8-404af0928ae9')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5687pkf-6bd7-40d4-82d8-404af0928ae9')]).parameter_table
@@ -1528,7 +1650,9 @@ class Tile(models.Model):
 
     breaking_strenght_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Breaking Strength Conformity", compute="_compute_breaking_strenght_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Breaking Strength Conformity", compute="_compute_breaking_strenght_conformity", store=True)
 
 
 
@@ -1536,6 +1660,11 @@ class Tile(models.Model):
     def _compute_breaking_strenght_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.breaking_strenght_conformity = 'na'
+                continue
+
             record.breaking_strenght_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3257lhdg-6bd7-40d4-82d8-404af0928ae9')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3257lhdg-6bd7-40d4-82d8-404af0928ae9')]).parameter_table
@@ -2446,3 +2575,11 @@ class ModulusTile(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.sr_no = index + 1
+
+
+class tileNotes(models.Model):
+    _name = "tile.notes"
+
+    parent_id = fields.Many2one('mechanical.tile',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")

@@ -14,6 +14,7 @@ from scipy.interpolate import make_interp_spline
 
 
 
+
 class PlateLoad(models.Model):
     _name = "mechanical.plate.test1"
     _inherit = "lerm.eln"
@@ -30,6 +31,44 @@ class PlateLoad(models.Model):
     def _compute_grade_id(self):
         if self.eln_ref:
             self.grade = self.eln_ref.grade_id.id
+
+
+
+
+
+            # remark
+
+    notes_id = fields.One2many('plateload.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(PlateLoad, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+    
+
+
+
 
 
       # Dimensions
@@ -1331,6 +1370,17 @@ class LoadAndCumilitiveLine1(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.sr_no = index + 1
+
+
+
+
+class plateloadNotes(models.Model):
+    _name = "plateload.notes"
+
+    parent_id = fields.Many2one('mechanical.plate.test1',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
+
 
 
 

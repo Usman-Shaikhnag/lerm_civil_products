@@ -5,12 +5,22 @@
         <div t-attf-class="header article" t-att-style="report_header_style">
 			<div class="row">
 				<t t-if="eln.sample_id.lab_location">
-					<div t-if="(eln.sample_id.scope == 'nabl' and nabl) or fromEln" class="col-12 imageContainer" >
+					<!-- <div t-if="(eln.sample_id.scope == 'nabl' and nabl) or fromEln" class="col-12 imageContainer" >
 						<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.header_image.decode('utf-8')"/>
+					</div> -->
+					<div t-if="(eln.sample_id.scope == 'nabl' and nabl) or fromEln"
+						class="col-12 imageContainer"
+						style="text-align:center; margin-bottom:5px;">
+						
+						 <img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.header_image.decode('utf-8')"
+                          style="width:100%; height:150px; object-fit:contain;"/>
 					</div>
 					
-					<div t-if="(eln.sample_id.scope == 'non_nabl' or not nabl) and not fromEln" class="col-12 imageContainer" >
-						<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.non_nabl_header.decode('utf-8')"/>
+					<div t-if="(eln.sample_id.scope == 'non_nabl' or not nabl) and not fromEln" class="col-12 imageContainer"
+						style="text-align:center; margin-bottom:5px;" >
+						<!-- <img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.non_nabl_header.decode('utf-8')"/> -->
+						 <img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.non_nabl_header.decode('utf-8')"
+                          style="width:100%; height:150px; object-fit:contain;"/>
 					</div>
 				</t>
 				<t t-else="">
@@ -24,10 +34,45 @@
 				</t>
 				
 			</div>
-			<div style="position: fixed;top: 450px;left:250px ;transform: translate(-50%, -50%);z-index: -99;opacity: 0.1;pointer-events: none;">
-				<!-- <img src="/lerm_civil/static/src/img/watermark.png" style="max-height:370px;"/> -->
+			<!-- <div style="position: fixed;top: 450px;left:250px ;transform: translate(-50%, -50%);z-index: -99;opacity: 0.1;pointer-events: none;">
 				<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.watermark_image.decode('utf-8')" style="max-width: 400px;" />
-			</div>
+			</div> -->
+
+			<!-- <div style="position: fixed;
+							top: 50%;
+							left: 50%;
+							transform: translate(-50%, -50%);
+							z-index: -10;
+							opacity: 0.08;
+							width: 100%;
+							text-align: center;">
+
+					<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.watermark_image.decode('utf-8')"
+						style="width: 500px; height: 500px; object-fit: contain;"/>
+				</div> -->
+
+				<div style="position: fixed;
+							top: 0;
+							left: 0;
+							width: 100%;
+							height: 100%;
+							z-index: -10;
+							opacity: 0.08;
+							text-align: center;">
+
+					<table style="width:100%; height:100%;">
+						<tr>
+							<td style="vertical-align: middle;
+									text-align: center;
+									padding-top: 250px;">
+
+								<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.watermark_image.decode('utf-8')"
+									style="width:450px; height:450px; object-fit:contain;"/>
+							</td>
+						</tr>
+					</table>
+
+				</div>
 			
 					<!-- <table style="border:none;">
 						<tr cols="12" style="border:none;">
@@ -49,42 +94,48 @@
 					</table> -->
 			
 			<!-- <div style="height: 110px;"></div> -->
+			
 			<div style="width:100%;text-align:center; margin-bottom:10px; padding-top: 10px;">
+			    <div style="margin-bottom:5px;text-align:right;" t-if="report_type == 'pdf'" class="footertext">
+                    Page: <span class="page"/> / <span class="topage"/>
+                </div>
 				<div style="font-size:1rem"><b>Test Report</b></div>
 			</div>
 			<div class="container_eln row p-0" style="margin-right:4px;margin-left:4px;">
 
+			
+
 					<table>
 						<tr>
-							<td colspan="3">Test Report no :
+							<td style="font-weight:bold;" colspan="3">Test Report no :
 							</td>
 							
 							<t t-if="fromEln">
 								<td t-if="(eln.sample_id.scope == 'non_nabl')" colspan="3">
-									<span t-field="o.kes_no"/><span>N</span>
+									<span style="font-weight:bold;" t-field="o.kes_no"/><span>N</span>
 								</td>
-								<td t-if="(eln.sample_id.scope == 'nabl')" colspan="3">
-									<span t-field="o.kes_no"/>
+								<td  t-if="(eln.sample_id.scope == 'nabl')" colspan="3">
+									<span style="font-weight:bold;" t-field="o.kes_no"/>
 								</td>
 							</t>
 							<t t-else="">
 								<td t-if="(eln.sample_id.scope == 'non_nabl') or not nabl" colspan="3">
-									<span t-field="o.kes_no"/><span>N</span>
+									<span style="font-weight:bold;" t-field="o.kes_no"/><span>N</span>
 								</td>
 								<td t-if="(eln.sample_id.scope == 'nabl') or nabl" colspan="3">
-									<span t-field="o.kes_no"/>
+									<span style="font-weight:bold;" t-field="o.kes_no"/>
 								</td>
 							</t>
 							
-							<td colspan="3">Report Issue Date :
+							<td style="font-weight:bold;" colspan="3">Report Issue Date :
 							</td>
 							<td colspan="3">
-								<span t-field="o.end_date"/>
+								<span style="font-weight:bold;" t-field="o.end_date"/>
 							</td>
-							<td colspan="3"  t-if="nabl or fromEln">ULR NO :
+							<td style="font-weight:bold;" colspan="3"  t-if="nabl or fromEln">ULR NO :
 							</td>
 							<td colspan="3" t-if="nabl or fromEln">
-								<span t-field="o.sample_id.ulr_no"/>
+								<span style="font-weight:bold;" t-field="o.sample_id.ulr_no"/>
 							</td>
 						</tr>
 					</table>
@@ -99,19 +150,151 @@
         </div>
 		
 		<div t-attf-class="footer o_standard_footer">
-            <div class="text-center" style="padding-top:45px; border-top: 1px solid black">					
+
+		<t t-if="eln.sample_id.lab_location">
+					<div t-if="(eln.sample_id.scope == 'nabl' and nabl) or fromEln" class="col-12 imageContainer" >
+						<div style="text-align:center; margin:1px 0;">
+             <span style="background-color:#1f2a7a;color:#ffffff;font-weight:700;font-size:13px;padding:3px 10px;border-top:2px solid #0d1b5e;border-bottom:2px solid #0d1b5e;display:inline-block;border-radius:6px;">
+                      NABL ACCREDITED TESTING LABORATORY VIDE CERTIFICATE NO. TC - 15960 &amp; BIS CERTIFIED LABORATORY
+                 </span>
+                      </div>
+					</div>
+					
+					<div t-if="(eln.sample_id.scope == 'non_nabl' or not nabl) and not fromEln" class="col-12 imageContainer" >
+						<div style="text-align:center; margin:1px 0;">
+             <span style="background-color:#1f2a7a;color:#ffffff;font-weight:700;font-size:13px;padding:3px 10px;border-top:2px solid #0d1b5e;border-bottom:2px solid #0d1b5e;display:inline-block;border-radius:6px;">
+                      BIS CERTIFIED LABORATORY APPROVED BY GOVT. OF INDIA
+                 </span>
+                      </div>
+					</div>
+				</t>
+				<t t-else="">
+					<div t-if="(eln.sample_id.scope == 'nabl' and nabl) or fromEln" class="col-12 imageContainer" >
+						<div style="text-align:center; margin:1px 0;">
+             <span style="background-color:#1f2a7a;color:#ffffff;font-weight:700;font-size:13px;padding:3px 10px;border-top:2px solid #0d1b5e;border-bottom:2px solid #0d1b5e;display:inline-block;border-radius:6px;">
+                      NABL ACCREDITED TESTING LABORATORY VIDE CERTIFICATE NO. TC - 15960 &amp; BIS CERTIFIED LABORATORY
+                 </span>
+                      </div>
+					</div>
+					
+					<div t-if="(eln.sample_id.scope == 'non_nabl' or not nabl) and not fromEln" class="col-12 imageContainer" >
+						<div style="text-align:center; margin:1px 0;">
+             <span style="background-color:#1f2a7a;color:#ffffff;font-weight:700;font-size:13px;padding:3px 10px;border-top:2px solid #0d1b5e;border-bottom:2px solid #0d1b5e;display:inline-block;border-radius:6px;">
+                      BIS CERTIFIED LABORATORY APPROVED BY GOVT. OF INDIA
+                 </span>
+                      </div>
+					</div>
+				</t>
+
+		             
+
+		
+					   <table style="width:100%; border:1px solid black; border-collapse:separate; border-spacing:0;">
+                           <tr>
+
+                          <!-- QR -->
+                           <!-- <td style="width:15%; padding:2px; border:none;">
+                                   <t t-if="qrcode_static">
+                                    <img t-att-src="'data:image/png;base64,%s' % qrcode_static"
+                                   style="width:75px; height:70px;"/>
+                                      </t>
+                               </td> -->
+
+                              <!-- CONDITIONS -->
+                              <!-- <td style="width:85%; padding:2px; font-size:13px; line-height:1.5; border:none;">
+                                 <span>
+                                     <b>Conditions:-</b><br/>
+                                    <t t-foreach="data.notes_id" t-as="n">
+                                (<t t-esc="n.sr_no"/>) 
+                                 <t t-esc="n.notes"/>
+                                  &#160;&#160;
+                                    </t>
+                                  </span>
+                                </td> -->
+
+								
+
+							
+								 <td style="width:15%; padding:2px; border:none;">
+                                   <t t-if="qrcode_static">
+                                    <img t-att-src="'data:image/png;base64,%s' % qrcode_static"
+                                   style="width:75px; height:70px;"/>
+                                      </t>
+                               </td>
+							   <td style="width:85%; padding:2px; font-size:13px; line-height:1.5; border:none;">
+								<t t-if="notes_list">
+								<span>
+									<b>Conditions:-</b><br/>
+									<t t-foreach="notes_list" t-as="n">
+										(<t t-esc="n.sr_no"/>) 
+										<t t-esc="n.notes"/>
+										&#160;&#160;
+									</t>
+								</span>
+							</t>
+
+								<!-- ELSE -->
+								<t t-else="">
+									<b>Conditions:-</b>
+									&#160;&#160;(1) The results listed refer only to tested samples &amp; applicable parameters. Endorsement of product is neither inferred nor implied.
+									&#160;&#160;(2) The use of report for arbitration, publicity &amp; evidence in legal dispute is forbidden except with prior written consent NBML Lab.
+									&#160;&#160;(3) All disputes are subject to Raipur Jurisdiction. 7 days correction to this report invalidates this report.
+									&#160;&#160;(4) Sample will be destroyed after 30 days from the date of test report unless otherwise specified.
+
+									<t t-if="eln.has_witness">
+										&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
+									</t>
+									<t t-if="eln.remarks">
+										&#160;&#160;<span t-esc="eln.remarks"/>
+									</t>
+								</t>
+
+							</td>
+							
+
+                             </tr>
+                            </table>
+
+            <div class="text-center" style="padding-top:10px; border-top: 1px solid black">					
 				<div class="footerQR" style="">
 					<div style="">
 						<!-- <img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 75px; height: 70px;"/> -->
 						
 					</div>
+
+
+
+					<!-- <div style="text-align:left; margin-bottom:10px;">
+								<img t-att-src="'data:image/png;base64,%s' % (qrcode_static or '')"
+									style="width:75px; height:70px;"/>
+							</div>
 					
-					<div style="">
+					<div style="text-align:right; margin-bottom:10px;">
 						<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.footer_image.decode('utf-8')" style="height: 65px;" />
+					</div> -->
+
+
+
+					<div>
+					<span> 
+					Lab Office Address : 28/31, Urkura, Beside Akashwani Radio Station, Rawabhata Village, Dharsiwa, Bhanpuri, Birgaon, Raipur-493221, Chattisgarh, India Website :- www.nbmtlab.com, Contact: Email: nbmtl2017@gmail.com, Mob. : +91-9285284469, +91-8208537198, Tel. : 07771-2998056
+                    </span>
 					</div>
+
+
+
+
+
+
 					<!-- <div style="">
 						<img src="/lerm_civil/static/src/img/qr_image.png" style="width: 65px; height: 60px"/>
 					</div> -->
+
+
+
+
+
+
 					<div>
 					<!-- <img t-att-src="'data:image/png;base64,%s' % (qrcode_static or '')"
                          style="width:75px; height:70px;"/> -->
@@ -119,9 +302,9 @@
 					
 
 				</div>
-                <div style="margin-bottom:5px;" t-if="report_type == 'pdf'" class="footertext">
+                <!-- <div style="margin-bottom:5px;" t-if="report_type == 'pdf'" class="footertext">
                     Page: <span class="page"/> / <span class="topage"/>
-                </div>
+                </div> -->
 				
 					
             </div>	
@@ -195,156 +378,10 @@
 
 					<div t-foreach="eln" t-as="o">
 					
-						<!-- <table style="margin-top:20px;">
-							<tr>
-								<td colspan="12">#Customer Party Name :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.customer.name"/><br/>
-									<span t-field="o.srf_id.customer.street"/>
-									<span t-field="o.srf_id.customer.street2"/>
-									<span t-field="o.srf_id.customer.city"/>
-									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
-									<span t-field="o.srf_id.customer.state_id"/>
-											,
-									<span t-field="o.srf_id.customer.country_id"/>
-								</td>
-							</tr>
-							<tr>
-								
-								<td colspan="12">#Project / Site Address : <![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.name_work"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="12">#Sample Description : <![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.sample_description"/>
-								</td>
-							</tr>
-						</table>
 						
-						<table>
-							<tr>
-								<td colspan="6">Test Start Date :<![CDATA[&nbsp;]]>
-									<span t-field="o.start_date"/>
-								</td>
-								<td colspan="6">Test End Date :<![CDATA[&nbsp;]]>
-									<span t-field="o.end_date"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="6">#Sample Id Mark: <![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.client_sample_id"/>
-								</td>
-								<td colspan="6">Sample Receipt Date :<![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.sample_received_date"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="6">#Size :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.size_id.size"/>
-								</td>
-								<td colspan="6">#Grade :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.grade_id.grade"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="6">#Brand :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.brand"/>
-								</td>
-								<td colspan="6">#Consultant Name :
-									<![CDATA[&nbsp;]]>
-										<span t-field="o.srf_id.consultant_name1"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="6">#Client Name :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.client"/>
-								</td>
-								<td colspan="6">#Client Reference :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.client_refrence"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="6">Discipline :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.discipline.discipline"/>
-								</td>
-								<td colspan="6">Group :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.group.group"/>
-								</td>
-							</tr>
 
-							<tr>
-								<td colspan="12">Material/Test Name :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.material.lab_name"/>
-								</td>
-							</tr>
-						</table> -->
-
-						<!-- ata comment kel -->
-						<!-- <table style="margin-top:10px; width: 100%; border-collapse: collapse;">
-							<tbody>
-								<tr>
-									<td style="width: 30%; padding: 5px;"><strong>Client Details</strong></td>
-									<td style="padding-left: 10px;">
-										<span t-field="o.srf_id.customer.name"/>
-										<span t-field="o.srf_id.customer.street"/>
-										<span t-field="o.srf_id.customer.street2"/>
-										<span t-field="o.srf_id.customer.city"/>
-										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
-										<span t-field="o.srf_id.customer.state_id"/> ,
-										<span t-field="o.srf_id.customer.country_id"/>
-									</td>
-								
-								</tr>
-								
-								<tr>
-									<td><strong>Client's Reference</strong></td>
-									<td style="padding-left: 10px;"><span t-field="o.srf_id.client_refrence"/></td>
-								</tr>
-
-								<tr>
-									<td><strong>Name of Work</strong></td>
-									<td style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
-								</tr>
-
-								<tr>
-									<td><strong>Date of Testing</strong></td>
-									<td style="padding-left: 10px;">
-										<span t-field="o.start_date" style="margin-right:10px;"/> to 
-										<span t-field="o.end_date" style="margin-left:10px;"/>
-									</td>
-								</tr>
-
-								<tr>
-									<td><strong>Type of Sample</strong></td>
-									<td style="padding-left: 10px;"><span t-field="o.material.name"/></td>
-								</tr>
-
-								<tr>
-									<td><strong>Grade of Sample</strong></td>
-									<td style="padding-left: 10px;"><span t-field="o.grade_id.grade"/></td>
-								</tr>
-
-								<tr t-if="o.material.source_sample">
-									<td style="font-weight: bold;">Source of Sample</td>
-									<td><span t-field="o.material.source_sample"/></td>
-								</tr>
-
-								<tr t-if="o.material.test_method_adopted">
-									<td style="font-weight: bold;">Test method adopted:</td>
-									<td><span t-field="o.material.test_method_adopted"/></td>
-								</tr>
-							</tbody>
-						</table> -->
-						<table style="width:100%; border-collapse: collapse;" border="1">
+						
+						<!-- <table style="width:100%; border-collapse: collapse;" border="1">
 
 						   <tr>
 								<td colspan="1">#Customer Party Name :</td>
@@ -391,7 +428,6 @@
 
 									<td>Test Carried out on :-</td>
 										<td >
-											<!-- <t t-esc="doc.test_date"/> -->
 										</td>
 								
 							</tr>
@@ -417,6 +453,139 @@
 							<tr t-if="o.material.source_sample">
 									<td style="font-weight: bold;">Source of Sample</td>
 									<td colspan="3"><span t-field="o.material.source_sample"/></td>
+								</tr>
+
+						</table> -->
+
+						<table style="width:100%; border-collapse: collapse;" border="1">
+
+						   <tr>
+								<td colspan="1">Customer Party Name :</td>
+								  <td colspan="2" style="font-weight:bold;">
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.customer.name"/><br/>
+									<span t-field="o.srf_id.customer.street"/>
+									<span t-field="o.srf_id.customer.street2"/>
+									<span t-field="o.srf_id.customer.city"/>
+									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
+									<span t-field="o.srf_id.customer.state_id"/>
+											,
+									<span t-field="o.srf_id.customer.country_id"/>
+									</td>
+
+									<td colspan="1" style="text-align: center;">
+									<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 75px; height: 70px;"/>
+									</td>
+								
+							</tr>
+							<tr t-if="o.srf_id.name_work">
+								<td colspan="1" >Project Name:</td>
+								  <td colspan="3" style="font-weight:bold;">
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.name_work"/>
+									</td>
+							</tr>
+
+							<tr t-if="o.srf_id.client">
+								<td colspan="1" >Name of Agency:</td>
+								  <td colspan="3" style="font-weight:bold;">
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client"/>
+									</td>
+							</tr>
+							
+							<tr>
+								<td style="width:25%;">Samples Description :-</td>
+								<td style="width:25%;"><span t-field="o.material.lab_name"/></td>
+
+								<td style="width:20%;">Customer's Ref. No :-</td>
+								<td style="width:20%;"><span t-field="o.srf_id.client_refrence"/></td>
+							</tr>
+
+							<tr>
+								<!-- <td>Quantity of Samples :-</td>
+								<td>Litre</td> -->
+								<td>No. of Samples :-</td>
+								<td><span t-field="o.sample_id.sample_qty"/>  <span t-field="o.sample_id.uom_id"/>  </td>
+
+								<td>Letter Date :-</td>
+								<td>
+									<span t-field="o.srf_id.letter_date"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td>Date of Samples Received :-</td>
+								<td>
+									<span t-field="o.sample_id.sample_received_date"/>
+								</td>
+
+									<td>SRF No. :-</td>
+										<td >
+											<span t-field="o.srf_id"/>
+										</td>
+								
+							</tr>
+
+							<tr>
+								<td>Brand &amp; Grade :-</td>
+								<td><span t-field="o.sample_id.grade_id.grade"/></td>
+
+								<td>Date of Test Initiation  :-</td>
+								<td>
+									<span t-field="o.start_date"/>
+								</td>
+							</tr>
+
+							<tr>
+								
+
+								<td>Size  :-</td>
+								<td>
+									<span t-field="o.sample_id.size_id.size"/>
+								</td>
+								<td>Date of Test Completion  :-</td>
+								<td>
+									<span t-field="o.end_date"/>
+								</td>
+							</tr>
+
+							<tr>
+								
+
+								<td>Week No.  :-</td>
+								<td>
+								</td>
+								<td>Sample ID  :-</td>
+								<td>
+									<span t-field="o.sample_id.kes_no"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="1">Other Details:</td>
+								<td colspan="3"></td>
+
+								
+							</tr>
+
+
+							<tr t-if="o.material.test_method_adopted" >
+								
+
+									<td >Test method adopted:</td>
+									<td colspan="3"><span t-field="o.material.test_method_adopted"/></td>
+
+							
+							</tr>
+							<tr t-if="o.material.source_sample">
+									<td style="font-weight: bold;">Source of Sample</td>
+									<td colspan="3"><span t-field="o.material.source_sample"/></td>
+								</tr>
+
+								<tr t-if="o.material.specifications">
+									<td style="font-weight: bold;">Specifications</td>
+									<td colspan="3"><span t-field="o.material.specifications"/></td>
 								</tr>
 
 						</table>
@@ -460,6 +629,12 @@
 												Test Parameters
 											</span>
 										</th>
+											<th>
+											<span>
+											Units
+											
+											</span>
+										</th>
 										<th style="max-width: 200px;">
 											<span>
 												<span t-esc="eln.material.method_reference"/>
@@ -469,12 +644,7 @@
 										</th>
 										
 										
-										<th>
-											<span>
-											Units
-											
-											</span>
-										</th>
+									
 
 										<th>
 											<span>
@@ -510,24 +680,28 @@
 											<td>
 												<span t-esc="parameter['parameter'].parameter_name"/>
 											</td>
+											<td>
+												<span t-esc="parameter['unit'].name"/>
+											</td>
 										
 											
 											<td style="max-width: 250px;">
 												<span t-esc="parameter['specification']"/>
 											</td>
-											<td>
-												<span t-esc="parameter['unit'].name"/>
-											</td>
+											
 												<td t-if="parameter['result_type'] == 'number'">
 												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
 
-
+                                                <strong>
 												<span t-esc="'{:.{}f}'.format(parameter['result'], parameter['parameter'].decimal)"/>
+												</strong>
 												
 											</td>
 											<td t-if="parameter['result_type'] == 'char'">
 												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
+												<strong>
 												<span t-esc="parameter['result_char']"/>
+												</strong>
 											</td>
 											
 											
@@ -563,6 +737,12 @@
 												Test Parameters
 											</span>
 										</th>
+										<th>
+											<span>
+											Units
+											
+											</span>
+										</th>
 										<th style="max-width: 200px;">
 											<span>
 												<span t-esc="eln.material.method_reference"/>
@@ -572,12 +752,7 @@
 										</th>
 										
 										
-										<th>
-											<span>
-											Units
-											
-											</span>
-										</th>
+										
 
 										<th>
 											<span>
@@ -613,24 +788,28 @@
 											<td>
 												<span t-esc="parameter['parameter'].parameter_name"/>
 											</td>
+												<td>
+												<span t-esc="parameter['unit'].name"/>
+											</td>
 										
 											
 											<td style="max-width: 250px;">
 												<span t-esc="parameter['specification']"/>
 											</td>
-											<td>
-												<span t-esc="parameter['unit'].name"/>
-											</td>
+										
 												<td t-if="parameter['result_type'] == 'number'">
 												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
 
-
+                                              <strong>
 												<span t-esc="'{:.{}f}'.format(parameter['result'], parameter['parameter'].decimal)"/>
+												</strong>
 												
 											</td>
 											<td t-if="parameter['result_type'] == 'char'">
 												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
+												<strong>
 												<span t-esc="parameter['result_char']"/>
+												</strong>
 											</td>
 											
 											
@@ -677,6 +856,12 @@
 												Test Parameters
 											</span>
 										</th>
+										<th>
+											<span>
+											Units
+											
+											</span>
+										</th>
 										<th style="max-width: 200px;">
 											<span>
 												<span t-esc="eln.material.method_reference"/>
@@ -686,12 +871,7 @@
 										</th>
 										
 										
-										<th>
-											<span>
-											Units
-											
-											</span>
-										</th>
+										
 
 										<th>
 											<span>
@@ -727,24 +907,28 @@
 											<td>
 												<span t-esc="parameter['parameter'].parameter_name"/>
 											</td>
+											<td>
+												<span t-esc="parameter['unit'].name"/>
+											</td>
 										
 											
 											<td style="max-width: 250px;">
 												<span t-esc="parameter['specification']"/>
 											</td>
-											<td>
-												<span t-esc="parameter['unit'].name"/>
-											</td>
+											
 												<td t-if="parameter['result_type'] == 'number'">
 												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
 
-
+                                                <strong>
 												<span t-esc="'{:.{}f}'.format(parameter['result'], parameter['parameter'].decimal)"/>
+												</strong>
 												
 											</td>
 											<td t-if="parameter['result_type'] == 'char'">
 												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
+												<strong>
 												<span t-esc="parameter['result_char']"/>
+												</strong>
 											</td>
 											
 											
@@ -786,6 +970,12 @@
 												Test Parameters
 											</span>
 										</th>
+											<th>
+											<span>
+											Units
+											
+											</span>
+										</th>
 										<th style="max-width: 200px;">
 											<span>
 												<span t-esc="eln.material.method_reference"/>
@@ -795,12 +985,7 @@
 										</th>
 										
 										
-										<th>
-											<span>
-											Units
-											
-											</span>
-										</th>
+									
 
 										<th>
 											<span>
@@ -836,24 +1021,28 @@
 											<td>
 												<span t-esc="parameter['parameter'].parameter_name"/>
 											</td>
+												<td>
+												<span t-esc="parameter['unit'].name"/>
+											</td>
 										
 											
 											<td style="max-width: 250px;">
 												<span t-esc="parameter['specification']"/>
 											</td>
-											<td>
-												<span t-esc="parameter['unit'].name"/>
-											</td>
+										
 												<td t-if="parameter['result_type'] == 'number'">
 												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
 
-
+                                               <strong>
 												<span t-esc="'{:.{}f}'.format(parameter['result'], parameter['parameter'].decimal)"/>
+												</strong>
 												
 											</td>
 											<td t-if="parameter['result_type'] == 'char'">
 												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
+												<strong>
 												<span t-esc="parameter['result_char']"/>
+												</strong>
 											</td>
 											
 											
@@ -889,6 +1078,12 @@
 												Test Parameters
 											</span>
 										</th>
+											<th>
+											<span>
+											Units
+											
+											</span>
+										</th>
 										<th style="max-width: 200px;">
 											<span>
 												<span t-esc="eln.material.method_reference"/>
@@ -898,12 +1093,7 @@
 										</th>
 										
 										
-										<th>
-											<span>
-											Units
-											
-											</span>
-										</th>
+									
 
 										<th>
 											<span>
@@ -939,24 +1129,28 @@
 											<td>
 												<span t-esc="parameter['parameter'].parameter_name"/>
 											</td>
+											<td>
+												<span t-esc="parameter['unit'].name"/>
+											</td>
 										
 											
 											<td style="max-width: 250px;">
 												<span t-esc="parameter['specification']"/>
 											</td>
-											<td>
-												<span t-esc="parameter['unit'].name"/>
-											</td>
+											
 												<td t-if="parameter['result_type'] == 'number'">
 												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
 
-
+                                                <strong>
 												<span t-esc="'{:.{}f}'.format(parameter['result'], parameter['parameter'].decimal)"/>
+												</strong>
 												
 											</td>
 											<td t-if="parameter['result_type'] == 'char'">
 												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
+												<strong>
 												<span t-esc="parameter['result_char']"/>
+												</strong>
 											</td>
 											
 											
@@ -1003,6 +1197,12 @@
 												Test Parameters
 											</span>
 										</th>
+											<th>
+											<span>
+											Units
+											
+											</span>
+										</th>
 										<th style="max-width: 200px;">
 											<span>
 												<span t-esc="eln.material.method_reference"/>
@@ -1012,12 +1212,7 @@
 										</th>
 										
 										
-										<th>
-											<span>
-											Units
-											
-											</span>
-										</th>
+									
 
 										<th>
 											<span>
@@ -1053,24 +1248,27 @@
 											<td>
 												<span t-esc="parameter['parameter'].parameter_name"/>
 											</td>
+											<td>
+												<span t-esc="parameter['unit'].name"/>
+											</td>
 										
 											
 											<td style="max-width: 250px;">
 												<span t-esc="parameter['specification']"/>
 											</td>
-											<td>
-												<span t-esc="parameter['unit'].name"/>
-											</td>
+											
 												<td t-if="parameter['result_type'] == 'number'">
 												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
 
-
+                                               <strong>
 												<span t-esc="'{:.{}f}'.format(parameter['result'], parameter['parameter'].decimal)"/>
-												
+												</strong>
 											</td>
 											<td t-if="parameter['result_type'] == 'char'">
 												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
+												<strong>
 												<span t-esc="parameter['result_char']"/>
+												</strong>
 											</td>
 											
 											
@@ -1170,10 +1368,10 @@
 								</div>
 							</div>
 							<!-- QR Code -->
-							<div style="text-align:center; margin-bottom:10px;">
+							<!-- <div style="text-align:center; margin-bottom:10px;">
 								<img t-att-src="'data:image/png;base64,%s' % (qrcode_static or '')"
 									style="width:75px; height:70px;"/>
-							</div>
+							</div> -->
 							<div>
 								<div >
 									<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
@@ -1215,7 +1413,7 @@
 								</div>
 							</div>
 					   </div>
-					   <table class="table table-bordered">
+					   <!-- <table class="table table-bordered">
 							<tr>
 								<td style="padding: 5px; font-style: italic; font-size: 12px;">
 									<b>Conditions:-</b>
@@ -1232,7 +1430,7 @@
 									</t>
 								</td>
 							</tr>
-						</table>
+						</table> -->
 					
 			
 						<!-- <div style="text-align:center;margin-top:25px">

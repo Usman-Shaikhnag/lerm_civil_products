@@ -9,82 +9,203 @@
 					<p style="font-size:15px"><b>Test Report</b></p>
 				</div> -->
 
+
 				<div class="container_eln" style="padding-top:50px;">
 					<div class="" t-foreach="eln" t-as="o">
-						<table style="margin-top:10px; border:none">
-							<tr>
-								<td colspan="2" style=" font-weight: bold;">Client Details:</td>
-								<td colspan="10">
-									<span t-field="o.srf_id.customer.name"/><br />
+						 <table style="width:100%; border-collapse: collapse;" border="1">
+
+						   <tr>
+								<td colspan="1">Customer Party Name :</td>
+								  <td colspan="2" style="font-weight:bold;">
+									<![CDATA[&nbsp;]]>
+									<t t-if="o.srf_id.customer.name">
+									  <span t-field="o.srf_id.customer.name"/>
+									 </t>
+        							<t t-else="">--</t>
+		                            <br/>
 									<span t-field="o.srf_id.customer.street"/>
 									<span t-field="o.srf_id.customer.street2"/>
 									<span t-field="o.srf_id.customer.city"/>
 									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
 									<span t-field="o.srf_id.customer.state_id"/>
-									,
+											,
 									<span t-field="o.srf_id.customer.country_id"/>
-								</td>
+									</td>
+
+									<td colspan="1" style="text-align: center;">
+									<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 75px; height: 70px;"/>
+									</td>
+								
 							</tr>
-							<tr>
-								<!-- <td colspan="12">Project / Site Address :
+							<tr t-if="o.srf_id.name_work">
+								<td colspan="1" >Project Name:</td>
+								  <td colspan="3" style="font-weight:bold;">
 									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.site_address.name"/>
-									<span t-field="o.srf_id.site_address.street"/>
-									<span t-field="o.srf_id.site_address.street2"/>
-									<span t-field="o.srf_id.site_address.city"/>
-									<span t-if="o.srf_id.site_address.zip" t-field="o.srf_id.site_address.zip"/>
-									<span t-field="o.srf_id.site_address.state_id"/>
-									<span t-field="o.srf_id.site_address.country_id"/>
-								</td> -->
-								<td colspan="2" style=" font-weight: bold;">Client Reference:</td>
-								<td colspan="10"><span t-field="o.srf_id.client_refrence"/></td>
+									<span t-field="o.srf_id.name_work"/>
+									</td>
+							</tr>
+
+							<tr t-if="o.srf_id.client">
+								<td colspan="1" >Name of Agency:</td>
+								  <td colspan="3" style="font-weight:bold;">
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client"/>
+									</td>
+							</tr>
+							
+							<tr>
+								<td style="width:25%;">Samples Description :-</td>
+								<td style="width:25%;">
+								      <t t-if="o.material and o.material.lab_name">
+											<span t-field="o.material.lab_name"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+
+								<td style="width:20%;">Customer's Ref. No :-</td>
+								<td style="width:20%;">
+
+								  <t t-if="o.srf_id.client_refrence">
+											<span t-field="o.srf_id.client_refrence"/>
+										</t>
+									<t t-else="">--</t>
+								
+								</td>
 							</tr>
 
 							<tr>
-								<td colspan="2" style=" font-weight: bold;">Name of Work:</td>
-								<td colspan="10"><span t-field="o.srf_id.name_work"/></td>
+								<!-- <td>Quantity of Samples :-</td>
+								<td>Litre</td> -->
+								<td>No. of Samples :-</td>
+								<td>
+
+								<t t-if="o.sample_id.sample_qty">
+											<span t-field="o.sample_id.sample_qty"/>
+										</t>
+									<t t-else="">--</t>
+
+								<t t-if="o.sample_id.uom_id">
+											<span t-field="o.sample_id.uom_id"/>
+										</t>
+									<t t-else="">--</t>
+								
+								</td>
+
+								<td>Letter Date :-</td>
+								<td>
+									
+
+									<t t-if="o.srf_id.letter_date">
+											<span t-field="o.srf_id.letter_date"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
 							</tr>
 
 							<tr>
-								<td colspan="2" style=" font-weight: bold;">Date of Testing:</td>
-								<td colspan="10">
-									<span t-field="o.start_date"/> to <span t-field="o.end_date"/>
+								<td>Date of Samples Received :-</td>
+								<td>
+
+									<t t-if="o.sample_id.sample_received_date">
+											<span t-field="o.sample_id.sample_received_date"/>
+										</t>
+									<t t-else="">--</t>
 								</td>
+
+									<td>SRF No. :-</td>
+										<td >
+
+											<t t-if="o.srf_id">
+											<span t-field="o.srf_id"/>
+										</t>
+									<t t-else="">--</t>
+										</td>
+								
 							</tr>
+
 							<tr>
-								<td colspan="2" style="font-weight: bold;">Size:</td>
-								<td colspan="10">
-									<span t-field="o.sample_id.size_id.size"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="2" style="font-weight: bold;">Grade:</td>
-								<td colspan="10">
-									<span t-field="o.grade_id.grade"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="2" style="font-weight: bold;">Material/Test Name:</td>
-								<td colspan="10">
-									<span t-field="o.material.name"/>
+								<td>Brand &amp; Grade :-</td>
+								<td>
+								<t t-if="o.sample_id.grade_id.grade">
+											<span t-field="o.sample_id.grade_id.grade"/>
+										</t>
+									<t t-else="">--</t>
+									</td>
+
+								<td>Date of Test Initiation  :-</td>
+								<td>
+
+									<t t-if="o.start_date">
+											<span t-field="o.start_date"/>
+										</t>
+									<t t-else="">--</t>
 								</td>
 							</tr>
 
-							<!-- Source of Sample (only if value exists) -->
+							<tr>
+								
+
+								<td>Size  :-</td>
+								<td>
+
+										<t t-if="o.sample_id.size_id.size">
+											<span t-field="o.sample_id.size_id.size"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+								<td>Date of Test Completion  :-</td>
+								<td>
+
+									<t t-if="o.end_date">
+											<span t-field="o.end_date"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+							</tr>
+
+							<tr>
+								
+
+								<td>Week No.  :-</td>
+								<td>
+
+								--
+								</td>
+								<td>Sample ID  :-</td>
+								<td>
+
+									<t t-if="o.sample_id.kes_no">
+											<span t-field="o.sample_id.kes_no"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="1">Other Details:</td>
+								<td colspan="3">--</td>
+
+								
+							</tr>
+
+
+							<tr t-if="o.material.test_method_adopted" >
+								
+
+									<td >Test method adopted:</td>
+									<td colspan="3"><span t-field="o.material.test_method_adopted"/></td>
+
+							
+							</tr>
 							<tr t-if="o.material.source_sample">
-								<td colspan="2" style="font-weight: bold;">Source of Sample</td>
-								<td colspan="10">
-									<span t-field="o.material.source_sample"/>
-								</td>
-							</tr>
+									<td style="font-weight: bold;">Source of Sample</td>
+									<td colspan="3"><span t-field="o.material.source_sample"/></td>
+								</tr>
 
-							<!-- Test method adopted (only if value exists) -->
-							<tr t-if="o.material.test_method_adopted">
-								<td colspan="2" style="font-weight: bold;">Test method adopted:</td>
-								<td colspan="10">
-									<span t-field="o.material.test_method_adopted"/>
-								</td>
-							</tr>
+								<tr t-if="o.material.specifications">
+									<td style="font-weight: bold;">Specifications</td>
+									<td colspan="3"><span t-field="o.material.specifications"/></td>
+								</tr>
 
 						</table>
 					</div>
@@ -92,7 +213,7 @@
                      <div t-if="data.sieve_visible" style="margin-top:5px">
 						<!-- <div style="text-align:center;font-size:18px">
 							<span>Sieve Analysis </span>: <span>
-								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','318d72a1-7188-4086-b132-62b50e63f5d1')]).parameter_table" t-as="parameter">
+								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','318d72a1-7188-4086-b132-62b50e63f5d1')]).parameter_table" t-as="parameter">
 									<t t-if="parameter.grade.id == eln.grade_id.id">
 										<span t-field="parameter.specification"/>
 									</t>
@@ -103,7 +224,7 @@
 						<table t-if="data.sieve_visible">
                             <tr cols="12">
                                 <th colspan="6">1. Sieve Analysis (Gradation) :-</th>
-                                <th colspan="6"><span t-field="env['lerm.parameter.master'].search([('internal_id','=','318d72a1-7188-4086-b132-62b50e63f5d1')]).test_method.test_method"/></th>
+                                <th colspan="6"><span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','318d72a1-7188-4086-b132-62b50e63f5d1')]).test_method.test_method"/></th>
                             </tr>
 							<tr cols="12">
                                 <td class="text-center" colspan="2">IS Sieve Size
@@ -172,15 +293,19 @@
 							<thead>
 								<tr style="height:10px;">
 									<th style="text-align: center;">Sr.No</th>
+
 									<th style="text-align: center;">
 									<span t-esc="eln.material.test_parameter"/>
 									<!-- Test Parameters -->
 									</th>
-									<th style="text-align: center;"><span t-field="eln.material.method_reference"></span></th>
+
 									<th style="text-align: center;">
 									<span t-esc="eln.material.unit"/>
 									<!-- Unit -->
 									</th>
+
+									<th style="text-align: center;"><span t-field="eln.material.method_reference"></span></th>
+									
 									<th style="text-align: center;">
 									<span t-esc="eln.material.result_remark"/>
 									<!-- Test Result -->
@@ -193,14 +318,17 @@
 							<t t-set="i" t-value="1"/>
 							<tbody>
 								<tr t-if="data.specific_gravity_visible and (data.specific_gravity_nabl == 'pass' and nabl or (data.specific_gravity_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="specific_gravity" t-value="env['lerm.parameter.master'].search([('internal_id','=','45875ght-7188-4086-b132-62b50e63f1245gt')])"/>
+									<t t-set="specific_gravity" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','45875ght-7188-4086-b132-62b50e63f1245gt')])"/>
 									
 									<td style="text-align: center;">
 										<span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/>
 									</td>
-									<td style="text-align: center;">
+									<td >
 										<span t-field="specific_gravity.parameter_name"/>
+									</td>
+										<td style="text-align: center;">
+										<span t-field="specific_gravity.unit.name"/>
 									</td>
 									<td style="text-align: center;" >
 										<t t-foreach="specific_gravity.parameter_table" t-as="parameter">
@@ -209,9 +337,7 @@
 											</t>
 										</t>
 									</td>
-									<td style="text-align: center;">
-										<span t-field="specific_gravity.unit.name"/>
-									</td>
+								
 									<td style="text-align: center;">
 										<span t-field="data.water_absorption" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
@@ -228,15 +354,20 @@
 								</tr>
 
 								<tr t-if="data.bulking_sand_visible and (data.avg_bulking_of_sand_nabl == 'pass' and nabl or (data.avg_bulking_of_sand_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="bulking_sand" t-value="env['lerm.parameter.master'].search([('internal_id','=','45789bhgt25-3fa3-4b83-ae31-9d28176718457')])"/>
+									<t t-set="bulking_sand" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','45789bhgt25-3fa3-4b83-ae31-9d28176718457')])"/>
 									
 									<td style="text-align: center;">
 										<span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/>
 									</td>
-									<td style="text-align: center;">
+									<td >
 										<span t-field="bulking_sand.parameter_name"/>
 									</td>
+
+									<td style="text-align: center;">
+										<span t-field="bulking_sand.unit.name"/>
+									</td>
+
 									<td  style="text-align: center; vertical-align: middle;">
 										<t t-foreach="bulking_sand.parameter_table" t-as="parameter">
 											<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -244,9 +375,7 @@
 											</t>
 										</t>
 									</td >
-									<td style="text-align: center;">
-										<span t-field="bulking_sand.unit.name"/>
-									</td>
+									
 									<td style="text-align: center;">
 										<span t-field="data.avg_bulking_of_sand" t-options='{"widget": "float", "precision": 2}'/>
 									</td>							
@@ -264,13 +393,16 @@
 								</tr>
 
 								<tr t-if="data.loose_bulk_visible and (data.loose_bulk_density_nabl == 'pass' and nabl or (data.loose_bulk_density_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="loose_bulk" t-value="env['lerm.parameter.master'].search([('internal_id','=','4587tyhloos-3fa3-4b83-ae31-9d281767188c')])"/>
+									<t t-set="loose_bulk" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','4587tyhloos-3fa3-4b83-ae31-9d281767188c')])"/>
 									<td style="text-align: center;" >
 										<span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/>
 									</td>
-									<td style="text-align: center;">
+									<td >
 										<span t-field="loose_bulk.parameter_name"/>
+									</td>
+									<td style="text-align: center;">
+										<span t-field="loose_bulk.unit.name"/>
 									</td>
 									<td style="text-align: center;">
 										<t t-foreach="loose_bulk.parameter_table" t-as="parameter">
@@ -279,9 +411,7 @@
 											</t>
 										</t>
 									</td>
-									<td style="text-align: center;">
-										<span t-field="loose_bulk.unit.name"/>
-									</td>
+									
 									<td style="text-align: center;">
 										<span t-field="data.loose_bulk_density" t-options='{"widget": "float", "precision": 2}'/>
 									</td>								
@@ -298,13 +428,16 @@
 								</tr>
 
 								<tr t-if="data.site_content_visible and (data.avg_bulking_of_sand1_nabl == 'pass' and nabl or (data.avg_bulking_of_sand1_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="site_content" t-value="env['lerm.parameter.master'].search([('internal_id','=','2547ghty124m-3fa3-4b83-ae31-9d281457nhy14')])"/>
+									<t t-set="site_content" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','2547ghty124m-3fa3-4b83-ae31-9d281457nhy14')])"/>
 									<td style="text-align: center;">
 										<span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/>
 									</td>
-									<td style="text-align: center;">
+									<td >
 										<span t-field="site_content.parameter_name"/>
+									</td>
+									<td style="text-align: center;">
+										<span t-field="site_content.unit.name"/>
 									</td>
 									<td style="text-align: center;">
 										<t t-foreach="site_content.parameter_table" t-as="parameter">
@@ -313,9 +446,7 @@
 											</t>
 										</t>
 									</td>
-									<td style="text-align: center;">
-										<span t-field="site_content.unit.name"/>
-									</td>
+									
 									<td style="text-align: center;">
 										<span t-field="data.avg_bulking_of_sand1" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
@@ -332,14 +463,17 @@
 								</tr>
 
 								<tr t-if="data.moisture_content_visible and (data.avg_moisture_nabl == 'pass' and nabl or (data.avg_moisture_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="moisture_content" t-value="env['lerm.parameter.master'].search([('internal_id','=','1457htyu1245-3fa3-4b83-ae31-9d281457457hy')])"/>
+									<t t-set="moisture_content" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','1457htyu1245-3fa3-4b83-ae31-9d281457457hy')])"/>
 									
 									<td style="text-align: center;">
 										<span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/>
 									</td>
-									<td style="text-align: center;">
+									<td >
 										<span t-field="moisture_content.parameter_name"/>
+									</td>
+									<td style="text-align: center;">
+										<span t-field="moisture_content.unit.name"/>
 									</td>
 									<td style="text-align: center;">
 										<t t-foreach="moisture_content.parameter_table" t-as="parameter">
@@ -348,9 +482,7 @@
 											</t>
 										</t>
 									</td>
-									<td style="text-align: center;">
-										<span t-field="moisture_content.unit.name"/>
-									</td>
+									
 									<td style="text-align: center;">
 										<span t-field="data.avg_moisture" t-options='{"widget": "float", "precision": 2}'/>
 									</td>								
@@ -372,28 +504,15 @@
 					</div>         
 
 				
-					<div style="margin-top:0;margin-bottom:0;padding:0; page-break-inside: avoid;">
-						<div class="">
-							<table class="table table-bordered">
-								<tr>
-									<td style="padding: 5px; font-style: italic; font-size: 12px;">
-										<b>Note:-</b>
-										&#160;&#160;(i) The results relate only to the items tested 
-										&#160;&#160;(ii) This test report should not be reproduced except in full, without written approval of this Laboratory 
-										&#160;&#160;(iii) Any corrections invalidate the test reports 
-										&#160;&#160;(iv) Any Query regarding the report must be reported immediately. 
-										&#160;&#160;(v) * mark indicate tests which are not in the scope of NABL. 
-										&#160;&#160;(vi) # mark indicates Details given by Client.
-										<t t-if="eln.has_witness">
-											&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
-										</t>
-										<t t-if="eln.remarks">
-											&#160;&#160;<span t-esc="eln.remarks"/>
-										</t>
-									</td>
-								</tr>
-							</table>
-						</div>
+					<div style="text-align:center;margin-top:2px">
+						......End of Report......
+					</div>
+							
+
+
+					
+
+
 						<div style="margin-top:0;padding:0;" class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -401,12 +520,18 @@
 										Checked By
 									</b>
 								</div>
-								<div style="height:30px">
-
+								<div style="height: 30px;">
+									<t t-if="eln.sample_id.checkby_signature_required">
+										<div t-if="eln.sample_id.check_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 30px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
 								</div>
 								<div>
 									<b>
-										<span t-esc="eln.technician.name"/>
+										<!-- <span t-esc="eln.technician.name"/> -->
+										<span t-esc="eln.sample_id.check_by.name"/>
 									</b>
 								</div>
 								<div>
@@ -416,14 +541,19 @@
 								</div>
 							</div>
 
-							<div>
-						<div>
-							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
-						</div>
-						<div style="padding-top:5px">
-							Format No. <span t-esc="eln.material.test_format_no"/>
-						</div>
-					</div>
+								<!-- QR Code -->
+							<!-- <div style="text-align:center; margin-bottom:10px;">
+								<img t-att-src="'data:image/png;base64,%s' % (qrcode_static or '')"
+									style="width:75px; height:70px;"/>
+							</div> -->
+
+							<t t-if="o.sample_id.stamp_attached">
+							<div >
+								<div>
+								<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
+							</div>
+							</div>
+						</t>
 
 
 							<div>
@@ -432,7 +562,13 @@
 										Approved By 
 									</b>
 								</div>
-								<div style="height:30px">
+								<div style="height: 30px;">
+									<t t-if="eln.sample_id.approveby_signature_required">
+										<div t-if="eln.sample_id.approved_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,' + eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 30px;margin-top:1px;margin-bottom:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
 								</div>
 								<div>
 									<b>
@@ -446,11 +582,9 @@
 								</div>
 							</div>
 						</div>
-						<div style="text-align:center;margin-top:2px;margin-bottom:0;padding:0;">
-							......End of Report......
-						</div>
+						
 					</div>
-				</div>
+				<!-- </div> -->
 			</t>
 		</t>
 	</template>

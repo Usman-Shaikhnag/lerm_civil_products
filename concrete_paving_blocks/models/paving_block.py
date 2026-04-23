@@ -16,6 +16,7 @@ class PavingBlock(models.Model):
     _rec_name = "name_paving"
 
 
+
     name_paving = fields.Char("Name",default="Concrete Paving Block")
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 
@@ -65,12 +66,19 @@ class PavingBlock(models.Model):
 
     area_paver_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_area_paver_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_area_paver_conformity", store=True)
 
     @api.depends('area_paver','eln_ref','grade')
     def _compute_area_paver_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.area_paver_conformity = 'na'
+                continue
+
             record.area_paver_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f391245b-100a-4b84-ba27-af9918baea99')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f391245b-100a-4b84-ba27-af9918baea99')]).parameter_table
@@ -144,6 +152,42 @@ class PavingBlock(models.Model):
                 rec.area_paver = 0.0
 
 
+
+    # remark
+
+    notes_id = fields.One2many('paver.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(PavingBlock, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+    
+
+
+
+
+
        # 3. Water Absorption
 
     water_absorption_name = fields.Char("Name",default="Water Absorption ")
@@ -168,12 +212,19 @@ class PavingBlock(models.Model):
 
     avg_water_absorption_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
 
     @api.depends('avg_water_absorption','eln_ref','grade')
     def _compute_avg_water_absorption_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_water_absorption_conformity = 'na'
+                continue
+
             record.avg_water_absorption_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5bd8b6a3-4097-4125-befe-36c633ce7ae8')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5bd8b6a3-4097-4125-befe-36c633ce7ae8')]).parameter_table
@@ -227,12 +278,19 @@ class PavingBlock(models.Model):
 
     avg_commpressive_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Compressive Strength Conformity", compute="_compute_avg_commpressive_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Compressive Strength Conformity", compute="_compute_avg_commpressive_conformity", store=True)
 
     @api.depends('avg_commpressive','eln_ref','grade')
     def _compute_avg_commpressive_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_commpressive_conformity = 'na'
+                continue
+
             record.avg_commpressive_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d73e8ec7-63d5-40ff-ae41-db88b4f53cf0')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d73e8ec7-63d5-40ff-ae41-db88b4f53cf0')]).parameter_table
@@ -300,12 +358,19 @@ class PavingBlock(models.Model):
 
     avg_thickness_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Thickness Conformity", compute="_compute_avg_thickness_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Thickness Conformity", compute="_compute_avg_thickness_conformity", store=True)
 
     @api.depends('avg_thickness','eln_ref','grade')
     def _compute_avg_thickness_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_thickness_conformity = 'na'
+                continue
+
             record.avg_thickness_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2acf6ad3-ae04-46e4-a2f8-18bd39a20e18')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2acf6ad3-ae04-46e4-a2f8-18bd39a20e18')]).parameter_table
@@ -682,4 +747,15 @@ class ThicknesscorrectionLine(models.Model):
     #     records = self.sorted('id')
     #     for index, record in enumerate(records):
     #         record.serial_no = index + 1
+
+
+
+
+    
+class paverNotes(models.Model):
+    _name = "paver.notes"
+
+    parent_id = fields.Many2one('mechanical.concrete.paving.block',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
 

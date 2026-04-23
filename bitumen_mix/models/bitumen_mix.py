@@ -12,6 +12,7 @@ class BitumenConcrete(models.Model):
     _rec_name = "name_bitumen"
 
 
+
     name_bitumen = fields.Char("Name",default="Bituminous Mix")
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 
@@ -52,12 +53,19 @@ class BitumenConcrete(models.Model):
 
     binder_content_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_binder_content_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_binder_content_conformity", store=True)
 
     @api.depends('binder_content','eln_ref','grade')
     def _compute_binder_content_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_cement_conformity = 'na'
+                continue
+
             record.binder_content_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35789ght-7188-4086-b132-62b50e63f1247ui')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35789ght-7188-4086-b132-62b50e63f1247ui')]).parameter_table
@@ -115,6 +123,41 @@ class BitumenConcrete(models.Model):
                 rec.binder_content = ((rec.wt_of_samplew1 - (rec.wt_of_aggregate + rec.wt_of_filter)) / rec.wt_of_samplew1) * 100
             else:
                 rec.binder_content = 0.0
+
+
+
+
+
+ # remark
+
+    notes_id = fields.One2many('bitumen.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(BitumenConcrete, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
 
 
   
@@ -570,7 +613,12 @@ class BitumenConcrete(models.Model):
             self.grade = self.eln_ref.grade_id.id
 
 
+class bitumenNotes(models.Model):
+    _name = "bitumen.notes"
 
+    parent_id = fields.Many2one('mechanical.bitumen.mix',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
 
 
 class SieveAnalysisLine(models.Model):
@@ -682,3 +730,6 @@ class SieveAnalysisLine(models.Model):
             sorted_lines = sorted(record.parent_id.sieve_analysis_child_lines, key=lambda r: r.id)
             # index = sorted_lines.index(record)
             # print("Working")
+
+
+            

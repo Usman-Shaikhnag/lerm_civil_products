@@ -318,12 +318,19 @@ class MechanicalConcreteCube(models.Model):
 
     wpt_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_wpt_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_wpt_conformity", store=True)
 
     @api.depends('average_of_wpt','eln_ref','grade')
     def _compute_wpt_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.wpt_conformity = 'na'
+                continue
+
             record.wpt_conformity = 'fail'
             line = self.env['lerm.parameter.master'].search([('internal_id','=','1023457-0268-46ef-ba88-9c0453210lkit1')])
             materials = self.env['lerm.parameter.master'].search([('internal_id','=','1023457-0268-46ef-ba88-9c0453210lkit1')]).parameter_table
@@ -374,6 +381,54 @@ class MechanicalConcreteCube(models.Model):
     quantity = fields.Char("Quantity")
 
 
+
+
+    
+
+# remark
+
+    notes_id = fields.One2many('cube.notes', 'parent_id', string="Notes",default=lambda self: self._default_notes_lines())
+    
+    @api.model
+    def _default_notes_lines(self):
+        return [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The report shall not be reproduced in fullor partially without written approval of the laboratory HOD/CEO/Maganement.',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'ampling is not done by us unless mentioned otherwide.',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'without a QR Code and hologram this report is considered invalid.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'The Result listed refer only to tested samples & applicable parameter Endorsement of product is neither interred nor inplied.',
+            }),
+
+            (0, 0, {
+                'sr_no': 'e',
+                'notes': 'The use or report for arbitration, publicity & evidence in legal dispute is forbidden except with prior written consent NBML Lab.',
+            }),
+             (0, 0, {
+                'sr_no': 'f',
+                'notes': 'Alldisputed are subject to Raipur jurisdiction 7 days correction to this report invalidates this report.',
+            }),
+
+             (0, 0, {
+                'sr_no': 'g',
+                'notes': 'Sample willbe destroyed after 30-days from the date of test report unless otherwise Specified.',
+            }),
+        ]
+
+
+
+
+
+
      # 3. Water Absorption
 
     water_absorption_name = fields.Char("Name",default="Water Absorption ")
@@ -398,12 +453,19 @@ class MechanicalConcreteCube(models.Model):
 
     avg_water_absorption_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
 
     @api.depends('avg_water_absorption','eln_ref','grade')
     def _compute_avg_water_absorption_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_water_absorption_conformity = 'na'
+                continue
+
             record.avg_water_absorption_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','30214iu-eba3-4f15-b33d-679b39f73301')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','30214iu-eba3-4f15-b33d-679b39f73301')]).parameter_table
@@ -484,6 +546,8 @@ class MechanicalConcreteCube(models.Model):
 
         for result in technician_results:
          
+
+
   
             if result.parameter.internal_id == '23545tur-17c1-48ac-8462-9671e4d3d09f':
                 result.calculated = True
@@ -853,3 +917,13 @@ class WaterLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
+
+
+class CubeNotes(models.Model):
+    _name = "cube.notes"
+
+    parent_id = fields.Many2one('mechanical.concrete.cube',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
+

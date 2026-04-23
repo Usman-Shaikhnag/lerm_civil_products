@@ -15,6 +15,48 @@ class MechanicalBricks(models.Model):
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
 
+    notes_id = fields.One2many('brickfly.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(MechanicalBricks, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The report shall not be reproduced in fullor partially without written approval of the laboratory HOD/CEO/Maganement.',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'ampling is not done by us unless mentioned otherwide.',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'without a QR Code and hologram this report is considered invalid.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'The Result listed refer only to tested samples & applicable parameter Endorsement of product is neither interred nor inplied.',
+            }),
+
+            (0, 0, {
+                'sr_no': 'e',
+                'notes': 'The use or report for arbitration, publicity & evidence in legal dispute is forbidden except with prior written consent NBML Lab.',
+            }),
+             (0, 0, {
+                'sr_no': 'f',
+                'notes': 'Alldisputed are subject to Raipur jurisdiction 7 days correction to this report invalidates this report.',
+            }),
+
+             (0, 0, {
+                'sr_no': 'g',
+                'notes': 'Sample willbe destroyed after 30-days from the date of test report unless otherwise Specified.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
     def prefill_data(self):
         # import wdb; wdb.set_trace()
         return {
@@ -119,7 +161,8 @@ class MechanicalBricks(models.Model):
     comp_strength_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='Confirmity', default='fail',compute="_compute_comp_strength_conformity")
+        ('na', 'NA'),
+    ], string='Confirmity', compute="_compute_comp_strength_conformity")
 
     comp_strength_nabl = fields.Selection([
         ('pass', 'Pass'),
@@ -128,6 +171,11 @@ class MechanicalBricks(models.Model):
     @api.depends('avrg_compressive_strength','eln_ref')
     def _compute_comp_strength_conformity(self):
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.comp_strength_confirmity = 'na'
+                continue
+
             record.comp_strength_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')]).parameter_table
@@ -302,7 +350,8 @@ class MechanicalBricks(models.Model):
     water_absorption_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='Confirmity', default='fail',compute="_compute_water_absorption_confirmity")
+        ('na', 'NA'),
+    ], string='Confirmity',compute="_compute_water_absorption_confirmity")
 
     water_absorption_nabl = fields.Selection([
         ('pass', 'Pass'),
@@ -312,6 +361,11 @@ class MechanicalBricks(models.Model):
     @api.depends('avrg_water_absorption','eln_ref')
     def _compute_water_absorption_confirmity(self):
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.water_absorption_confirmity = 'na'
+                continue
+
             record.water_absorption_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')]).parameter_table
@@ -569,3 +623,10 @@ class BrickInitialRateAbsorptionLine(models.Model):
     def create(self, vals):
      vals['serial_no'] = self.search_count([]) + 1
      return super().create(vals)
+    
+class brickflyNotes(models.Model):
+    _name = "brickfly.notes"
+
+    parent_id = fields.Many2one('mechanical.bricks',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")

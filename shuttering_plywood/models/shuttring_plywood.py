@@ -16,10 +16,45 @@ class ShutteringPlywood(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
+
     @api.depends('eln_ref')
     def _compute_grade_id(self):
         if self.eln_ref:
             self.grade = self.eln_ref.grade_id.id
+
+
+
+            # remark
+
+    notes_id = fields.One2many('shutteringplaywood.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(ShutteringPlywood, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+    
+
 
 
       # Dimensions
@@ -106,7 +141,9 @@ class ShutteringPlywood(models.Model):
 
     average_length_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Length Conformity", compute="_compute_average_length_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Length Conformity", compute="_compute_average_length_conformity", store=True)
 
 
 
@@ -114,6 +151,12 @@ class ShutteringPlywood(models.Model):
     def _compute_average_length_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_length_conformity = 'na'
+                continue
+
+
             record.average_length_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3548tre-7a9c-4616-bad5-88eb1b294674')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3548tre-7a9c-4616-bad5-88eb1b294674')]).parameter_table
@@ -160,7 +203,9 @@ class ShutteringPlywood(models.Model):
 
     average_width_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Width Conformity", compute="_compute_average_width_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Width Conformity", compute="_compute_average_width_conformity", store=True)
 
 
 
@@ -168,6 +213,11 @@ class ShutteringPlywood(models.Model):
     def _compute_average_width_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_width_conformity = 'na'
+                continue
+
             record.average_width_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3548gtre-7a9c-4616-bad5-88eb1b29247u2')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3548gtre-7a9c-4616-bad5-88eb1b29247u2')]).parameter_table
@@ -214,7 +264,10 @@ class ShutteringPlywood(models.Model):
 
     average_thickness_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Thickness Conformity", compute="_compute_average_thickness_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Thickness Conformity", compute="_compute_average_thickness_conformity", store=True)
+
 
 
 
@@ -222,6 +275,11 @@ class ShutteringPlywood(models.Model):
     def _compute_average_thickness_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_thickness_conformity = 'na'
+                continue
+
             record.average_thickness_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','34587ght-7a9c-4616-bad5-88eb1b2923245t')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','34587ght-7a9c-4616-bad5-88eb1b2923245t')]).parameter_table
@@ -268,7 +326,10 @@ class ShutteringPlywood(models.Model):
 
     average_squareness_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Squareness Conformity", compute="_compute_average_squareness_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Squareness Conformity", compute="_compute_average_squareness_conformity", store=True)
+
 
 
 
@@ -276,6 +337,11 @@ class ShutteringPlywood(models.Model):
     def _compute_average_squareness_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_squareness_conformity = 'na'
+                continue
+
             record.average_squareness_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35478hgtr-7a9c-4616-bad5-88eb1b29232354l')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35478hgtr-7a9c-4616-bad5-88eb1b29232354l')]).parameter_table
@@ -322,7 +388,10 @@ class ShutteringPlywood(models.Model):
 
     average_edge_straightness_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Edge Straightness Conformity", compute="_compute_average_edge_straightness_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Edge Straightness Conformity", compute="_compute_average_edge_straightness_conformity", store=True)
+
 
 
 
@@ -330,6 +399,11 @@ class ShutteringPlywood(models.Model):
     def _compute_average_edge_straightness_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_edge_straightness_conformity = 'na'
+                continue
+
             record.average_edge_straightness_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35487kuy-7a9c-4616-bad5-88eb1b292323467t')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35487kuy-7a9c-4616-bad5-88eb1b292323467t')]).parameter_table
@@ -427,7 +501,9 @@ class ShutteringPlywood(models.Model):
 
     average_density_shuttering_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_density_shuttering_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_average_density_shuttering_conformity", store=True)
 
 
 
@@ -435,6 +511,11 @@ class ShutteringPlywood(models.Model):
     def _compute_average_density_shuttering_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_density_shuttering_conformity = 'na'
+                continue
+
             record.average_density_shuttering_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','124578gte-7a9c-4616-bad5-88eb1b29087y')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','124578gte-7a9c-4616-bad5-88eb1b29087y')]).parameter_table
@@ -689,3 +770,13 @@ class DensityLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.sr_no = index + 1
+
+
+
+
+class shutteringplaywoodNotes(models.Model):
+    _name = "shutteringplaywood.notes"
+
+    parent_id = fields.Many2one('mechanical.shuttering.plywood',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")

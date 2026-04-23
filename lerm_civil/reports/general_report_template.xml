@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="custom_layout_header_footer_lerm_eln_general">
-        <div t-attf-class="header article" t-att-style="report_header_style">
+        <div t-attf-class="header article" t-att-style="report_header_style" >
 			<div class="row">
 				<div t-if="nabl" class="col-12 imageContainer" >
 					<img t-attf-src="/lerm_civil/static/src/img/header.png" alt="Image"/>
@@ -16,10 +16,17 @@
 				<img src="/lerm_civil/static/src/img/watermark.png" style="width:100%;"/>
 			</div>
 
+			<!-- ✅ PAGE NUMBER -->
+    <!-- <div style="text-align:right; font-size:12px; padding-right:20px;">
+        Page: <span class="page"/> / <span class="topage"/>
+    </div> -->
+
 			
 			<div style="width:100%;text-align:center;">
 				<span style="font-size:1rem"><b>Test Report</b></span>
 			</div>
+			
+	
 			<div class="container_eln" style="margin-right:4px;margin-left:4px;">
 			
 
@@ -29,24 +36,25 @@
 							<td colspan="3">Report no :
 							</td>
 							<td t-if="(not nabl)" colspan="3">
-								<span t-field="o.kes_no"/><span>N</span>
+								<span style="font-weight:bold;" t-field="o.kes_no"/><span>N</span>
 							</td>
 							<td t-if="(nabl)" colspan="3">
 								<span t-field="o.kes_no"/>
 							</td>
 							<td colspan="3">Report Date :
 							</td>
-							<td colspan="3">
+							<td colspan="3" style="font-weight:bold;">
 								<span t-field="o.end_date"/>
 							</td>
 							<td colspan="3"  t-if="nabl">ULR NO :
 							</td>
-							<td colspan="3" t-if="nabl">
+							<td colspan="3" t-if="nabl" style="font-weight:bold;">
 								<span t-field="o.sample_id.ulr_no"/>
 							</td>
 						</tr>
 					</table>
 			</div>
+			
         </div>
 	
         <div t-attf-class="article" t-att-style="report_header_style">
@@ -72,6 +80,7 @@
 									<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 75px; height: 70px;"/>
 								</div>
 								
+								
 								<div style="margin-left:90px">
 									<div class="footertext">
 										<span>
@@ -91,9 +100,9 @@
 						</div>
 					</div>
                 </ul>
-                <div style="margin-bottom:5px;" t-if="report_type == 'pdf'" class="footertext">
+                <!-- <div style="margin-bottom:5px;" t-if="report_type == 'pdf'" class="footertext">
                     Page: <span class="page"/> / <span class="topage"/>
-                </div>
+                </div> -->
 				
 					
             </div>	

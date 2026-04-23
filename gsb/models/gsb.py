@@ -15,12 +15,61 @@ class GsbMechanical(models.Model):
     _rec_name = "name"
 
 
+
     name = fields.Char("Name",default="GSB")
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
+
+
+
+    # remark
+
+    notes_id = fields.One2many('gsb.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(GsbMechanical, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The report shall not be reproduced in fullor partially without written approval of the laboratory HOD/CEO/Maganement.',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'ampling is not done by us unless mentioned otherwide.',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'without a QR Code and hologram this report is considered invalid.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'The Result listed refer only to tested samples & applicable parameter Endorsement of product is neither interred nor inplied.',
+            }),
+
+            (0, 0, {
+                'sr_no': 'e',
+                'notes': 'The use or report for arbitration, publicity & evidence in legal dispute is forbidden except with prior written consent NBML Lab.',
+            }),
+             (0, 0, {
+                'sr_no': 'f',
+                'notes': 'Alldisputed are subject to Raipur jurisdiction 7 days correction to this report invalidates this report.',
+            }),
+
+             (0, 0, {
+                'sr_no': 'g',
+                'notes': 'Sample willbe destroyed after 30-days from the date of test report unless otherwise Specified.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
+
 
     def prefill_data(self):
         # import wdb; wdb.set_trace()
@@ -633,7 +682,9 @@ class GsbMechanical(models.Model):
 
     load_10percent_fine_values_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_load_10percent_fine_values_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_load_10percent_fine_values_conformity", store=True)
 
 
 
@@ -641,6 +692,11 @@ class GsbMechanical(models.Model):
     def _compute_load_10percent_fine_values_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.load_10percent_fine_values_conformity = 'na'
+                continue
+
             record.load_10percent_fine_values_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3244uuyy-4369-491d-93a6-030514c29661')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3244uuyy-4369-491d-93a6-030514c29661')]).parameter_table
@@ -693,12 +749,19 @@ class GsbMechanical(models.Model):
 
     material_finer75_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_material_finer75_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_material_finer75_conformity", store=True)
 
     @api.depends('material_finer75','eln_ref','grade')
     def _compute_material_finer75_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.material_finer75_conformity = 'na'
+                continue
+
             record.material_finer75_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214ytre-c865-453c-9cd6-993a5a59ad95')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214ytre-c865-453c-9cd6-993a5a59ad95')]).parameter_table
@@ -759,12 +822,19 @@ class GsbMechanical(models.Model):
 
     light_weight_percent_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_light_weight_percent_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_light_weight_percent_conformity", store=True)
 
     @api.depends('light_weight_percent','eln_ref','grade')
     def _compute_light_weight_percent_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.light_weight_percent_conformity = 'na'
+                continue
+
             record.light_weight_percent_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ii2145y-2550-4e1e-a28e-8526295e733f')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ii2145y-2550-4e1e-a28e-8526295e733f')]).parameter_table
@@ -825,12 +895,19 @@ class GsbMechanical(models.Model):
 
     clay_lumps_percent_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_clay_lumps_percent_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_clay_lumps_percent_conformity", store=True)
 
     @api.depends('clay_lumps_percent','eln_ref','grade')
     def _compute_clay_lumps_percent_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.clay_lumps_percent_conformity = 'na'
+                continue
+
             record.clay_lumps_percent_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214ytre-21ad-41eb-a602-f448f996eb2f')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214ytre-21ad-41eb-a602-f448f996eb2f')]).parameter_table
@@ -949,12 +1026,19 @@ class GsbMechanical(models.Model):
 
     average_specific_gravity_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_specific_gravity_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_average_specific_gravity_conformity", store=True)
 
     @api.depends('average_specific_gravity','eln_ref','grade')
     def _compute_average_specific_gravity_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_specific_gravity_conformity = 'na'
+                continue
+
             record.average_specific_gravity_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2147jjhy-1d2c-4d3b-9ebe-ecb0b5e1221e')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2147jjhy-1d2c-4d3b-9ebe-ecb0b5e1221e')]).parameter_table
@@ -1165,6 +1249,7 @@ class GsbMechanical(models.Model):
     def _compute_average_crushing_value_conformity(self):
         
         for record in self:
+            
             if not record.eln_ref or not record.eln_ref.conformity:
                 record.average_crushing_value_conformity = 'na'
                 continue
@@ -1312,7 +1397,9 @@ class GsbMechanical(models.Model):
 
     water_absorbtion_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_water_absorbtion_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_water_absorbtion_conformity", store=True)
 
 
 
@@ -1320,6 +1407,11 @@ class GsbMechanical(models.Model):
     def _compute_water_absorbtion_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.water_absorbtion_conformity = 'na'
+                continue
+
             record.water_absorbtion_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','216587ghtr-4e73-44ca-93ed-442f74cd1e9b')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','216587ghtr-4e73-44ca-93ed-442f74cd1e9b')]).parameter_table
@@ -1419,7 +1511,10 @@ class GsbMechanical(models.Model):
 
     aggregate_flakiness_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_aggregate_flakiness_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_aggregate_flakiness_conformity", store=True)
+
 
 
 
@@ -1427,6 +1522,11 @@ class GsbMechanical(models.Model):
     def _compute_aggregate_flakiness_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.aggregate_flakiness_conformity = 'na'
+                continue
+
             record.aggregate_flakiness_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','56482hgt1-70fb-4c47-baec-9880be12d765')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','56482hgt1-70fb-4c47-baec-9880be12d765')]).parameter_table
@@ -1473,7 +1573,9 @@ class GsbMechanical(models.Model):
 
     aggregate_elongation_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_aggregate_elongation_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_aggregate_elongation_conformity", store=True)
 
 
 
@@ -1481,6 +1583,11 @@ class GsbMechanical(models.Model):
     def _compute_aggregate_elongation_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.aggregate_elongation_conformity = 'na'
+                continue
+
             record.aggregate_elongation_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32147hgv4-599e-4569-8cd2-48e1dc120714')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32147hgv4-599e-4569-8cd2-48e1dc120714')]).parameter_table
@@ -1552,7 +1659,9 @@ class GsbMechanical(models.Model):
 
     abrasion_value_percentage_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_abrasion_value_percentage_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_abrasion_value_percentage_conformity", store=True)
 
 
 
@@ -1560,6 +1669,11 @@ class GsbMechanical(models.Model):
     def _compute_abrasion_value_percentage_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.abrasion_value_percentage_conformity = 'na'
+                continue
+
             record.abrasion_value_percentage_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2145hgt1-3f1c-4aca-ac94-3c2bb0f034e2')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2145hgt1-3f1c-4aca-ac94-3c2bb0f034e2')]).parameter_table
@@ -1623,7 +1737,9 @@ class GsbMechanical(models.Model):
 
     average_impact_value_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_impact_value_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_average_impact_value_conformity", store=True)
 
 
 
@@ -1631,6 +1747,11 @@ class GsbMechanical(models.Model):
     def _compute_average_impact_value_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_impact_value_conformity = 'na'
+                continue
+
             record.average_impact_value_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457gtr4-a55f-47ac-aee6-9f37d733ccca')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457gtr4-a55f-47ac-aee6-9f37d733ccca')]).parameter_table
@@ -1685,7 +1806,9 @@ class GsbMechanical(models.Model):
     
     liquid_limit_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_liquid_limit_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_liquid_limit_conformity", store=True)
     
 
 
@@ -1754,6 +1877,11 @@ class GsbMechanical(models.Model):
     def _compute_liquid_limit_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.liquid_limit_conformity = 'na'
+                continue
+
             record.liquid_limit_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','12547ftd4-3ed1-4021-90a2-47651f0ed81d')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','12547ftd4-3ed1-4021-90a2-47651f0ed81d')]).parameter_table
@@ -1821,7 +1949,9 @@ class GsbMechanical(models.Model):
 
     average_plastic_moisture_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_plastic_moisture_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_average_plastic_moisture_conformity", store=True)
 
 
 
@@ -1829,6 +1959,11 @@ class GsbMechanical(models.Model):
     def _compute_average_plastic_moisture_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_plastic_moisture_conformity = 'na'
+                continue
+
             record.average_plastic_moisture_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','14527gthy-f86e-4a5f-bd15-a5b0c173b5ed')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','14527gthy-f86e-4a5f-bd15-a5b0c173b5ed')]).parameter_table
@@ -1885,7 +2020,10 @@ class GsbMechanical(models.Model):
 
     plasticity_index_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_plasticity_index_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_plasticity_index_conformity", store=True)
+
 
 
 
@@ -1893,6 +2031,11 @@ class GsbMechanical(models.Model):
     def _compute_plasticity_index_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.plasticity_index_conformity = 'na'
+                continue
+
             record.plasticity_index_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','24584fgrt-1611-4790-9410-ef5db6233932')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','24584fgrt-1611-4790-9410-ef5db6233932')]).parameter_table
@@ -2681,4 +2824,14 @@ class QuantitativelyExaminationLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
+
+
+class gsbNotes(models.Model):
+    _name = "gsb.notes"
+
+    parent_id = fields.Many2one('mechanical.gsb',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
+
 

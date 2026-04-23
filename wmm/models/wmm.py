@@ -13,6 +13,7 @@ class WmmMechanical(models.Model):
     _rec_name = "name"
 
 
+
     name = fields.Char("Name",default="WMM")
 
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
@@ -190,6 +191,44 @@ class WmmMechanical(models.Model):
         res['elongation_table'] = default_elongated_sieve_sizes
 
         return res
+    
+
+
+
+
+    # remark
+
+    notes_id = fields.One2many('wmm.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(WmmMechanical, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
+
+
+
 
     # Water Absorbtion 
     water_absorbtion_name = fields.Char(default="Water Absorbtion")
@@ -211,7 +250,9 @@ class WmmMechanical(models.Model):
 
     water_absorbtion_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_water_absorbtion_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_water_absorbtion_conformity", store=True)
 
 
 
@@ -219,6 +260,11 @@ class WmmMechanical(models.Model):
     def _compute_water_absorbtion_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.water_absorbtion_conformity = 'na'
+                continue
+
             record.water_absorbtion_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1478578hgfr-6d14-468e-8488-6d100818e924')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1478578hgfr-6d14-468e-8488-6d100818e924')]).parameter_table
@@ -320,7 +366,9 @@ class WmmMechanical(models.Model):
 
     aggregate_flakiness_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_aggregate_flakiness_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_aggregate_flakiness_conformity", store=True)
 
 
 
@@ -328,6 +376,11 @@ class WmmMechanical(models.Model):
     def _compute_aggregate_flakiness_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.aggregate_flakiness_conformity = 'na'
+                continue
+
             record.aggregate_flakiness_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','asd21452-2d4b-47f4-b9ee-7a4a5b176b97')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','asd21452-2d4b-47f4-b9ee-7a4a5b176b97')]).parameter_table
@@ -374,7 +427,9 @@ class WmmMechanical(models.Model):
 
     aggregate_elongation_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_aggregate_elongation_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_aggregate_elongation_conformity", store=True)
 
 
 
@@ -382,6 +437,11 @@ class WmmMechanical(models.Model):
     def _compute_aggregate_elongation_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.aggregate_elongation_conformity = 'na'
+                continue
+
             record.aggregate_elongation_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','312gthdvfe-3e7e-4fff-b912-f7b046f5099c')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','312gthdvfe-3e7e-4fff-b912-f7b046f5099c')]).parameter_table
@@ -457,7 +517,9 @@ class WmmMechanical(models.Model):
 
     abrasion_value_percentage_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_abrasion_value_percentage_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_abrasion_value_percentage_conformity", store=True)
 
 
 
@@ -465,6 +527,11 @@ class WmmMechanical(models.Model):
     def _compute_abrasion_value_percentage_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.abrasion_value_percentage_conformity = 'na'
+                continue
+
             record.abrasion_value_percentage_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7edace9a-a4ae-451c-a4cf-36d2c042ed7d')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7edace9a-a4ae-451c-a4cf-36d2c042ed7d')]).parameter_table
@@ -528,7 +595,9 @@ class WmmMechanical(models.Model):
 
     average_impact_value_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_impact_value_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_average_impact_value_conformity", store=True)
 
 
 
@@ -536,6 +605,11 @@ class WmmMechanical(models.Model):
     def _compute_average_impact_value_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_impact_value_conformity = 'na'
+                continue
+
             record.average_impact_value_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','nbv21455-7446-446e-a018-8a5f9dcfd549')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','nbv21455-7446-446e-a018-8a5f9dcfd549')]).parameter_table
@@ -591,7 +665,9 @@ class WmmMechanical(models.Model):
 
     liquid_limit_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_liquid_limit_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_liquid_limit_conformity", store=True)
     
 
 
@@ -630,6 +706,11 @@ class WmmMechanical(models.Model):
     def _compute_liquid_limit_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.liquid_limit_conformity = 'na'
+                continue
+
             record.liquid_limit_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2145bghty-c438-4d13-bfde-330ee0005734')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2145bghty-c438-4d13-bfde-330ee0005734')]).parameter_table
@@ -699,7 +780,9 @@ class WmmMechanical(models.Model):
 
     average_plastic_moisture_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_plastic_moisture_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_average_plastic_moisture_conformity", store=True)
 
 
 
@@ -707,6 +790,11 @@ class WmmMechanical(models.Model):
     def _compute_average_plastic_moisture_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_plastic_moisture_conformity = 'na'
+                continue
+
             record.average_plastic_moisture_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ed625cc1-4295-4d00-977f-205b7a508363')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ed625cc1-4295-4d00-977f-205b7a508363')]).parameter_table
@@ -763,7 +851,9 @@ class WmmMechanical(models.Model):
 
     plasticity_index_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_plasticity_index_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_plasticity_index_conformity", store=True)
 
 
 
@@ -771,6 +861,11 @@ class WmmMechanical(models.Model):
     def _compute_plasticity_index_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.plasticity_index_conformity = 'na'
+                continue
+
             record.plasticity_index_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgvv-61fd-478f-9bcf-6817965312f1')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgvv-61fd-478f-9bcf-6817965312f1')]).parameter_table
@@ -1175,3 +1270,11 @@ class ImpactValueLine(models.Model):
                 rec.impact_value = (rec.wt_of_aggregate_passing / rec.total_wt_aggregate) * 100
             else:
                 rec.impact_value = 0.0
+
+
+class wmmNotes(models.Model):
+    _name = "wmm.notes"
+
+    parent_id = fields.Many2one('mechanical.wmm',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")

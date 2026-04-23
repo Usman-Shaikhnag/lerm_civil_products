@@ -16,9 +16,11 @@
 					
 					<div t-foreach="eln" t-as="o">
 						
-						<table style="margin-top:10px;">
-							<tr>
-								<td colspan="12">#Customer Party Name :
+						<table style="width:100%; border-collapse: collapse;" border="1">
+
+						   <tr>
+								<td colspan="1">Customer Party Name :</td>
+								  <td colspan="2">
 									<![CDATA[&nbsp;]]>
 									<span t-field="o.srf_id.customer.name"/><br/>
 									<span t-field="o.srf_id.customer.street"/>
@@ -28,95 +30,100 @@
 									<span t-field="o.srf_id.customer.state_id"/>
 											,
 									<span t-field="o.srf_id.customer.country_id"/>
-								</td>
+									</td>
+
+									<td colspan="1" style="text-align: center;">
+									<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 75px; height: 70px;"/>
+									</td>
+								
 							</tr>
 							<tr>
-							
-								<td colspan="12">#Project / Site Address : <![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.name_work"/>
-								</td>
+								<td style="width:25%;">Samples Description :-</td>
+								<td style="width:25%;"><span t-field="o.material.lab_name"/></td>
+
+								<td style="width:20%;">Customer's Ref. No :-</td>
+								<td style="width:20%;"><span t-field="o.srf_id.client_refrence"/></td>
 							</tr>
+
 							<tr>
-								<td colspan="12">#Sample Description : <![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.sample_description"/>
-								</td>
-							</tr>
-						</table>
-						<table>
-							<tr>
-								<td colspan="6">Test Start Date :<![CDATA[&nbsp;]]>
-									<span t-field="o.start_date"/>
-								</td>
-								<td colspan="6">Test End Date :<![CDATA[&nbsp;]]>
-									<span t-field="o.end_date"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="6">#Sample Id Mark: <![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.client_sample_id"/>
-								</td>
-								<td colspan="6">Sample Receipt Date :<![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.sample_received_date"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="6">#Size :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.size_id.size"/>
-								</td>
-								<td colspan="6">#Grade :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.grade_id.grade"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="6">#Brand :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.sample_id.brand"/>
-								</td>
-								<td colspan="6">#Consultant Name :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.consultant_name1"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="6">#Client Name :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.client"/>
-								</td>
-								<td colspan="6">#Client Reference :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.srf_id.client_refrence"/>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="6">Discipline :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.discipline.discipline"/>
-								</td>
-								<td colspan="6">Group :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.group.group"/>
+								<!-- <td>Quantity of Samples :-</td>
+								<td>Litre</td> -->
+								<td>No. of Samples :-</td>
+								<td><span t-field="o.sample_id.quantity"/></td>
+
+								<td>Letter Date :-</td>
+								<td>
+									
 								</td>
 							</tr>
 
 							<tr>
-								<td colspan="12">Material/Test Name :
-									<![CDATA[&nbsp;]]>
-									<span t-field="o.material.name"/>
+								<td>Date of Samples Received :-</td>
+								<td>
+									<span t-field="o.sample_id.sample_received_date"/>
+								</td>
+
+									<td>SRF No. :-</td>
+										<td >
+											<span t-field="o.srf_id"/>
+										</td>
+								
+							</tr>
+
+							<tr>
+								<td>Brand &amp; Grade :-</td>
+								<td><span t-field="o.sample_id.grade_id.grade"/></td>
+
+								<td>Date of Test Initiation  :-</td>
+								<td>
+									<span t-field="o.start_date"/>
 								</td>
 							</tr>
+
+							<tr>
+								<td>Week No. :-</td>
+								<td></td>
+
+								<td>Date of Test Completion  :-</td>
+								<td>
+									<span t-field="o.end_date"/>
+								</td>
+							</tr>
+
+							<!-- <tr>
+								<td t-if="o.material.source_sample">Source of Sample :-</td>
+								<td><span t-field="o.material.source_sample"/></td>
+
+								<td t-if="o.material.test_method_adopted" >Test method adopted  :-</td>
+								<td>
+									<span t-field="o.material.test_method_adopted"/>
+								</td>
+							</tr> -->
+
+							<tr t-if="o.material.test_method_adopted" >
+								
+
+									<td >Test method adopted:</td>
+									<td colspan="3"><span t-field="o.material.test_method_adopted"/></td>
+
+							
+							</tr>
+							<tr t-if="o.material.source_sample">
+									<td style="font-weight: bold;">Source of Sample</td>
+									<td colspan="3"><span t-field="o.material.source_sample"/></td>
+								</tr>
+
 						</table>
 					</div>
 
 
 					<!-- 1 Compressive strength  -->
 
-					<div t-if="brick.compressive_strength_visible and (brick.comp_strength_nabl == 'pass' and nabl or (brick.comp_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)" style="margin-top:20px;">
+					<div t-if="data.compressive_strength_visible and (data.comp_strength_nabl == 'pass' and nabl or (data.comp_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)" style="margin-top:20px;">
 						<td>
 							<span>
 								<strong>Compressive strength :</strong><![CDATA[&nbsp;]]>
-								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','97928829-9b1f-4091-aa7f-4b76f98eb47f')]).parameter_table" t-as="parameter">
+								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','97928829-9b1f-4091-aa7f-4b76f98eb47f')]).parameter_table" t-as="parameter">
 									<t t-if="parameter.grade.id == eln.grade_id.id">
 										<span t-field="parameter.specification"/>
 									</t>
@@ -124,7 +131,7 @@
 							</span>
 						</td>
 
-						<table t-if="brick.compressive_strength_visible" style="margin-top:30px;">
+						<table t-if="data.compressive_strength_visible" style="margin-top:30px;">
 							<t t-set="i" t-value="0"/>
 							<thead>
 								<tr>
@@ -156,7 +163,7 @@
 							<tbody>
 
 							<t t-set="k" t-value="0"/>
-                            <tr t-foreach="brick.compressive_strength_lines" t-as="r">
+                            <tr t-foreach="data.compressive_strength_lines" t-as="r">
                                 <td style="text-align: center">
                                     <div>
                                         <span t-esc="k + 1" />
@@ -182,23 +189,23 @@
 								
 							</tbody>
 						</table>
-						<table t-if="brick.compressive_strength_visible" style="margin-top: 20px;max-width:400px">
+						<table t-if="data.compressive_strength_visible" style="margin-top: 20px;max-width:400px">
 							<tr>
 								<td style="font-weight: bold;">Average Compressive Strength</td>
 								<td style="text-align: center;">
-									<span t-field="brick.avrg_compressive_strength" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','97928829-9b1f-4091-aa7f-4b76f98eb47f')]).unit.name"/>
+									<span t-field="data.avrg_compressive_strength" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','97928829-9b1f-4091-aa7f-4b76f98eb47f')]).unit.name"/>
 								</td>
 							</tr>
 						</table>
 					</div>
 
 					<!-- Efflorence -->
-					<div t-if="brick.efflorescence_visible" style="margin-top:50px;page-break-inside: avoid;">
+					<div t-if="data.efflorescence_visible" style="margin-top:50px;page-break-inside: avoid;">
 
 						<td>
 							<span>
 								<strong>Efflorescence :</strong><![CDATA[&nbsp;]]>
-								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','9dda88ca-75fa-4e60-bcac-3cf6609386ce')]).parameter_table" t-as="parameter">
+								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','9dda88ca-75fa-4e60-bcac-3cf6609386ce')]).parameter_table" t-as="parameter">
 									<t t-if="parameter.grade.id == eln.grade_id.id">
 										<span t-field="parameter.specification"/>
 									</t>
@@ -251,35 +258,35 @@
 							</thead>
 							<tbody>
 
-								<tr t-if="brick.efflorescence_visible">
+								<tr t-if="data.efflorescence_visible">
 									<td style="text-align: center;padding:0px">
 										<span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/>
 									</td>
 									<td style="text-align: center;max-width:200px">
 										<span style="text-align: center;">
-											<span t-field="brick.visual_observation_1"/>
+											<span t-field="data.visual_observation_1"/>
 										</span>
 									</td>
 
 									<td style="text-align: center;max-width:100px">
 										<span style="text-align: center;">
-											<span t-field="brick.visual_observation_2"/>
+											<span t-field="data.visual_observation_2"/>
 										</span>
 									</td>
 									<td style="text-align: center;">
 										<span style="text-align: center;">
-											<span t-field="brick.visual_observation_3"/>
+											<span t-field="data.visual_observation_3"/>
 										</span>
 									</td>
 									<td style="text-align: center;">
 										<span style="text-align: center;">
-											<span t-field="brick.visual_observation_4"/>
+											<span t-field="data.visual_observation_4"/>
 										</span>
 									</td>
 									<td style="text-align: center;">
 										<span style="text-align: center;">
-											<span t-field="brick.visual_observation_5"/>
+											<span t-field="data.visual_observation_5"/>
 										</span>
 									</td>
 									
@@ -291,11 +298,11 @@
 					</div>
 
 					<!-- Dimension -->
-					<div t-if="brick.dimension_visible" style="margin-top:20px; page-break-inside: avoid;">
+					<div t-if="data.dimension_visible" style="margin-top:20px; page-break-inside: avoid;">
 						<td>
 							<span>
 								<strong>Dimension :</strong><![CDATA[&nbsp;]]>
-								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','9f1689be-107d-4e30-9d3d-2aff6292264d')]).parameter_table" t-as="parameter">
+								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','9f1689be-107d-4e30-9d3d-2aff6292264d')]).parameter_table" t-as="parameter">
 									<t t-if="parameter.grade.id == eln.grade_id.id">
 										<span t-field="parameter.specification"/>
 									</t>
@@ -337,25 +344,25 @@
 							</thead>
 							<tbody>
 
-								<tr t-if="brick.dimension_visible">
+								<tr t-if="data.dimension_visible">
 									<td style="text-align: center;padding:0px">
 										<span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/>
 									</td>
 									<td style="text-align: center;max-width:200px">
 										<span style="text-align: center;">
-											<span t-field="brick.length_in_mm"/>
+											<span t-field="data.length_in_mm"/>
 										</span>
 									</td>
 
 									<td style="text-align: center;max-width:100px">
 										<span style="text-align: center;">
-											<span t-field="brick.width_in_mm"/>
+											<span t-field="data.width_in_mm"/>
 										</span>
 									</td>
 									<td style="text-align: center;">
 										<span style="text-align: center;">
-											<span t-field="brick.height_in_mm"/>
+											<span t-field="data.height_in_mm"/>
 										</span>
 									</td>
 									
@@ -368,12 +375,12 @@
 					</div>
 
 					<!-- Water Absorption -->
-					<div t-if="brick.water_absorbtion_visible and (brick.water_absorption_nabl == 'pass' and nabl or brick.water_absorption_nabl == 'fail' and not nabl)" style="margin-top:20px; page-break-inside: avoid;">
+					<div t-if="data.water_absorbtion_visible and (data.water_absorption_nabl == 'pass' and nabl or data.water_absorption_nabl == 'fail' and not nabl)" style="margin-top:20px; page-break-inside: avoid;">
 
-						<td t-if="brick.water_absorbtion_visible and (brick.water_absorption_nabl == 'pass' and nabl or brick.water_absorption_nabl == 'fail' and not nabl)">
+						<td t-if="data.water_absorbtion_visible and (data.water_absorption_nabl == 'pass' and nabl or data.water_absorption_nabl == 'fail' and not nabl)">
 							<span>
 								<strong>Water Absorption :</strong><![CDATA[&nbsp;]]>
-								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')]).parameter_table" t-as="parameter">
+								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')]).parameter_table" t-as="parameter">
 									<t t-if="parameter.grade.id == eln.grade_id.id">
 										<span t-field="parameter.specification"/>
 									</t>
@@ -381,7 +388,7 @@
 							</span>
 						</td>
 
-						<table style="margin-top:10px;" t-if="brick.water_absorbtion_visible and (brick.water_absorption_nabl == 'pass' and nabl or brick.water_absorption_nabl == 'fail' and not nabl)">
+						<table style="margin-top:10px;" t-if="data.water_absorbtion_visible and (data.water_absorption_nabl == 'pass' and nabl or data.water_absorption_nabl == 'fail' and not nabl)">
 							<t t-set="i" t-value="0"/>
 							<thead>
 								<tr>
@@ -412,7 +419,7 @@
 							<tbody>
 
 							<t t-set="k" t-value="0"/>
-                            <tr t-foreach="brick.water_absorption_lines" t-as="r">
+                            <tr t-foreach="data.water_absorption_lines" t-as="r">
                                 <td style="text-align: center">
                                     <div>
                                         <span t-esc="k + 1" />
@@ -439,127 +446,140 @@
 							</tbody>
 						</table>
 
-						<table style="margin-top: 20px;max-width:400px" t-if="brick.water_absorbtion_visible and (brick.water_absorption_nabl == 'pass' and nabl or brick.water_absorption_nabl == 'fail' and not nabl)">
+						<table style="margin-top: 20px;max-width:400px" t-if="data.water_absorbtion_visible and (data.water_absorption_nabl == 'pass' and nabl or data.water_absorption_nabl == 'fail' and not nabl)">
 							<tr>
 								<td style="font-weight: bold;">Average Water Absorption, %</td>
 								<td style="text-align: center;">
-									<span t-field="brick.avrg_water_absorption" t-options='{"widget": "float", "precision": 2}'/>   <span t-field="env['lerm.parameter.master'].search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')]).unit.name"/>
+									<span t-field="data.avrg_water_absorption" t-options='{"widget": "float", "precision": 2}'/>   <span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')]).unit.name"/>
 								</td>
 							</tr>
 						</table>
 					</div>
 
 					<div>
-
-					</div>
-					<div style="margin-top:20px; page-break-inside: avoid;" class="noteContainer">
-						<div>
-							<b>Remarks: -</b>
-						</div>
-						<div>
-							<ul>
-								<li>
-								The Test Report(s) is/are valid only to the sample submitted to the laboratory.
-								</li>
-								<li>
-								Sample(s) was/were not drawn by laboratory.
-								</li>
-								<li>
-								This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.
-								</li>
-									<li>
-										# - Information provided by the customer.
-									</li>
-
-								<li t-if="eln.has_witness">
-										Test witnessed by : <span t-esc="eln.witness_name"/>
-										
-									</li>
-									<li t-if="eln.remarks">
-										<span t-esc="eln.remarks"/>
-									</li>
-							</ul>
-						</div>
 					</div>
 
-					<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
-						<div>
-							<div>
-								<b>
-								Checked By
-								</b>
-							</div>
-							<div style="height: 40px;">
-							<t t-if="eln.sample_id.checkby_signature_required">
-								<div t-if="eln.sample_id.check_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
+
+					<div style="text-align:center;margin-top:2px">
+						......End of Report......
+					</div>
+							
+
+
+					<div style="margin-top:5px; page-break-inside: avoid;" class="signatureContainer girdgird">
+						<table class="table table-bordered">
+						<tr>
+							<td style="padding: 5px; font-style: italic; font-size: 12px;">
 								
-							</t>
-						</div>
+								<!-- <t t-if="cement.notes_id">
+									<t t-foreach="cement.notes_id" t-as="n">
+										<div>
+											&#160;&#160;(<t t-esc="n.sr_no"/>) 
+											<t t-esc="n.notes"/>
+										</div>
+									</t>
+								</t> -->
+								<t t-if="data.notes_id">
+									<b>Conditions:-</b>
 
-							<div>
-								<b>
-									<span t-esc="eln.sample_id.check_by.name"/>
-								</b>
-							</div>
+									<t t-foreach="data.notes_id" t-as="n">
+										<span>
+											(<t t-esc="n.sr_no"/>) 
+											<t t-esc="n.notes"/>
+											&#160;&#160;
+										</span>
+									</t>
+								</t>
+							
+								<t t-if="eln.has_witness">
+									&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
+								</t>
+								<t t-if="eln.remarks">
+									&#160;&#160;<span t-esc="eln.remarks"/>
+								</t>
+							
+							</td>
+						</tr>
+					</table>
+					</div>
 
-							<div>
-								<b>
-										(<span t-esc="eln.sample_id.check_by.job_title"/>)
-								</b>
-							</div>
-						</div>
+
+					
+						 <!-- Remarks Section -->
+
+                    
+
+
+
+
+
+
+					<div class="signatureContainer girdgird">
 						<div>
 							<div>
+								<b>
+									Checked By
+								</b>
+							</div>
+							<div style="height:30px">
+
+							</div>
+							<div>
+								<b>
+									<span t-esc="eln.technician.name"/>
+								</b>
+							</div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+
+						<!-- QR Code -->
+							<div style="text-align:center; margin-bottom:10px;">
+								<img t-att-src="'data:image/png;base64,%s' % (qrcode_static or '')"
+									style="width:75px; height:70px;"/>
+							</div>
+
+						<t t-if="o.sample_id.stamp_attached">
+							<div >
+								<div>
 								<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
 							</div>
-							<div style="padding-top:5px">
-									Format No. <span t-esc="eln.material.test_format_no"/>
 							</div>
-						</div>
+						</t>
 						<div>
 							<div>
 								<b>
-										Approved By
+									Approved By 
 								</b>
+								
 							</div>
-							<div style="height: 40px;">
-								<t t-if="eln.sample_id.approveby_signature_required">
-									<div t-if="eln.sample_id.approved_by.employee_id.signature">
-										<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-									</div>
-									
-								</t>
+							<div style="height:30px">
+
 							</div>
 							<div>
 								<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
+								<span t-esc="eln.sample_id.approved_by.name"/>
 								</b>
 							</div>
-
+						
 							<div>
 								<b>
 									(<span t-esc="eln.sample_id.approved_by.job_title"/>)
 								</b>
 							</div>
-							<div>
+							
+							<!-- <div>
 								<b>
-										(Authorized Signatory)
+									(Authorized Signatory)
 								</b>
-							</div>
+							</div> -->
 						</div>
 					</div>
+					</div>
 					
-				<!-- </div> -->
-			</div>
-
-			<div style="margin-top: 10px; text-align: center;">
-				<p style="border-top: 1px dashed #000; padding-top: 10px;">
-						...... End Of Report......
-				</p>
-			</div>
-		<!-- </div> -->
 
 	</t>
 </t>

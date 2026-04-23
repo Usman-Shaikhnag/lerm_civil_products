@@ -3,7 +3,7 @@ from odoo import api, fields, models
 class CoverblockMechanical(models.Model):
     _name = "mechanical.cover.block"
     _inherit = "lerm.eln"
-    _description = "Mechanical Cover Block"
+    _description = "mechanical.cover.block"
     _rec_name = "name"
 
     name = fields.Char(default="Cover Block")
@@ -18,6 +18,7 @@ class CoverblockMechanical(models.Model):
     grade = fields.Many2one('lerm.grade.line', compute="_compute_grade_id", store=True )
     avg_compacted_unit = fields.Char( "Compacted Density", compute="_compute_units" )
 
+
    
     def _get_unit(self, internal_id):
         param = self.env['lerm.parameter.master'].search([
@@ -25,6 +26,43 @@ class CoverblockMechanical(models.Model):
         ], limit=1)
 
         return param.unit.name if param.unit else ""
+
+
+
+
+
+
+           
+
+# remark
+
+    notes_id = fields.One2many('cover.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(CoverblockMechanical, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
     
 
 
@@ -91,12 +129,19 @@ class CoverblockMechanical(models.Model):
     average_crushing = fields.Float(string="Average Aggregate Crushing Value", compute="_compute_average_crushing")
     average_crushing_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_crushing_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_average_crushing_conformity", store=True)
 
     @api.depends('average_crushing','eln_ref','grade')
     def _compute_average_crushing_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_crushing_conformity = 'na'
+                continue
+
             record.average_crushing_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ee2d3ead-3bf8-4ae5-8e5d-dfe983111f71')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ee2d3ead-3bf8-4ae5-8e5d-dfe983111f71')]).parameter_table
@@ -227,6 +272,7 @@ class CoverblockMechanical(models.Model):
         technician_results = self.eln_ref.parameters_result.filtered(
             lambda r: r.technician == current_user
         )
+
 
 
         for result in technician_results:
@@ -375,6 +421,16 @@ class CrushingValueLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.sample_no = index + 1
+
+
+
+
+class coverblockNotes(models.Model):
+    _name = "cover.notes"
+
+    parent_id = fields.Many2one('mechanical.cover.block',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
 
 
 

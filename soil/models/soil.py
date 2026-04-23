@@ -20,6 +20,7 @@ from matplotlib.ticker import MultipleLocator, StrMethodFormatter
 
 
 
+
 class Soil(models.Model):
     _name = "mechanical.soil"
     _inherit = "lerm.eln"
@@ -33,6 +34,43 @@ class Soil(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
+
+
+
+
+    # remark
+
+    notes_id = fields.One2many('soil.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(Soil, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+    
+
+
+
 
     def prefill_data(self):
         # import wdb; wdb.set_trace()
@@ -1225,7 +1263,7 @@ class Soil(models.Model):
     soil_visible = fields.Boolean("California Bearing Ratio Visible",compute="_compute_visible")
    
     soil_table = fields.One2many('mechanical.cbr.line','parent_id',string="CBR")
-    # chart_image_cbr = fields.Binary("Line Chart", compute="_compute_chart_image_cbr", store=True)
+    
 
     ps_2mm = fields.Float("PS for 2.5mm",compute="_compute_ps_2mm")
     pt_2mm = fields.Float("PT at 2.5mm",default=1370)
@@ -4009,3 +4047,13 @@ class UUTriaxialCohesionLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
+
+
+            
+class soilNotes(models.Model):
+    _name = "soil.notes"
+
+    parent_id = fields.Many2one('mechanical.soil',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")

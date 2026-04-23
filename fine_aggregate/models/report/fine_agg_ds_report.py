@@ -70,7 +70,7 @@ class FineAggregateReportSSL(models.AbstractModel):
         # qr_image = qr.make_image()
 
         qr_static = qrcode.QRCode(box_size=6, border=2)
-        qr_static.add_data("https://www.lerm.in")
+        qr_static.add_data("https://nablwp.qci.org.in/CertificateScopenew?x=4Rf+3mOSznNeFNvAasH49g==&a=MTI0NDAx")
         qr_static.make(fit=True)
         buf_static = BytesIO()
         qr_static.make_image(fill_color="black", back_color="white").save(buf_static, format="PNG")
@@ -104,6 +104,7 @@ class FineAggregateReportSSL(models.AbstractModel):
         return {
             'eln': eln,
             'data' : general_data,
+            'notes_list': general_data.notes_id if hasattr(general_data, 'notes_id') and general_data.notes_id else [],
             'qrcode': qr_code,
             'qrcode_static': qr_static_b64,
             'stamp' : inreport_value,

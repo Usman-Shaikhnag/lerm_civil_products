@@ -9,6 +9,7 @@ class FlexuralStrengthConcreteBeam(models.Model):
     _inherit = "lerm.eln"
     _rec_name = "name"
 
+
     name = fields.Char("Name",default="Concrete Beam")
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     child_lines = fields.One2many('mechanical.concrete.beam.line','parent_id',string="Parameter")
@@ -18,6 +19,58 @@ class FlexuralStrengthConcreteBeam(models.Model):
     
     average_flexural_strength = fields.Float(string="Average Flexural Strength in N/mm2",compute="_compute_average_flexural_strength")
     sample_id = fields.Many2one('lerm.srf.sample',string='Sample')
+
+
+
+
+    
+                # remark
+
+    notes_id = fields.One2many('concretebeam.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(FlexuralStrengthConcreteBeam, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The report shall not be reproduced in fullor partially without written approval of the laboratory HOD/CEO/Maganement.',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'ampling is not done by us unless mentioned otherwide.',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'without a QR Code and hologram this report is considered invalid.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'The Result listed refer only to tested samples & applicable parameter Endorsement of product is neither interred nor inplied.',
+            }),
+
+            (0, 0, {
+                'sr_no': 'e',
+                'notes': 'The use or report for arbitration, publicity & evidence in legal dispute is forbidden except with prior written consent NBML Lab.',
+            }),
+             (0, 0, {
+                'sr_no': 'f',
+                'notes': 'Alldisputed are subject to Raipur jurisdiction 7 days correction to this report invalidates this report.',
+            }),
+
+             (0, 0, {
+                'sr_no': 'g',
+                'notes': 'Sample willbe destroyed after 30-days from the date of test report unless otherwise Specified.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
+    
+
+    
 
     # age_of_days = fields.Selection([
     #     ('3days', '3 Days'),
@@ -133,6 +186,8 @@ class FlexuralStrengthConcreteBeam(models.Model):
                     record.date_of_testing = False
             else:
                 record.date_of_testing = False
+
+
 
     # @api.depends('average_flexural_strength','eln_ref')
     # def _compute_average_flexural_strength_conformity(self):
@@ -296,3 +351,13 @@ class FlexuralStrengthConcreteBeamLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.sr_no = index + 1
+
+
+
+            
+class concretebeamNotes(models.Model):
+    _name = "concretebeam.notes"
+
+    parent_id = fields.Many2one('mechanical.concrete.beam',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")

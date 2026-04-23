@@ -33,7 +33,9 @@ class ChemicalHasdenedConcrete(models.Model):
 
     ph_average_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_ph_average_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_ph_average_conformity", store=True)
 
     @api.depends('ph_average','eln_ref','grade')
     def _compute_ph_average_conformity(self):
@@ -41,6 +43,12 @@ class ChemicalHasdenedConcrete(models.Model):
             self.ph_average_conformity = 'fail'
         
             for record in self:
+
+                if not record.eln_ref or not record.eln_ref.conformity:
+                    record.ph_average_conformity = 'na'
+                    continue
+
+
                 record.ph_average_conformity = 'fail'
                 line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e9f2301d-bba0-42a2-bca8-ecbc5882a2b7')])
                 materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e9f2301d-bba0-42a2-bca8-ecbc5882a2b7')]).parameter_table
@@ -169,13 +177,20 @@ class ChemicalHasdenedConcrete(models.Model):
 
     average_dissolved_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_average_dissolved_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity",compute="_compute_average_dissolved_conformity", store=True)
 
   
     @api.depends('average_dissolved_silica','eln_ref','grade')
     def _compute_average_dissolved_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_dissolved_conformity = 'na'
+                continue
+
             record.average_dissolved_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e714e0ff-0fec-4367-86a6-1e89d42810e9')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e714e0ff-0fec-4367-86a6-1e89d42810e9')]).parameter_table
@@ -292,12 +307,19 @@ class ChemicalHasdenedConcrete(models.Model):
 
     average_reduction_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_average_reduction_conformity",  store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity",compute="_compute_average_reduction_conformity",  store=True)
 
     @api.depends('average_reduction_alkalinity','eln_ref','grade')
     def _compute_average_reduction_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_reduction_conformity = 'na'
+                continue
+
             record.average_reduction_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5ddb48f6-5260-4db7-a3a5-94f341db6d97')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5ddb48f6-5260-4db7-a3a5-94f341db6d97')]).parameter_table
@@ -375,12 +397,19 @@ class ChemicalHasdenedConcrete(models.Model):
 
     chloride_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_chloride_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity",compute="_compute_chloride_conformity", store=True)
 
     @api.depends('chloride_percent','eln_ref','grade')
     def _compute_chloride_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.chloride_conformity = 'na'
+                continue
+
             record.chloride_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','034d2729-961c-40ae-a642-a26f03a2db5a')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','034d2729-961c-40ae-a642-a26f03a2db5a')]).parameter_table
@@ -459,12 +488,21 @@ class ChemicalHasdenedConcrete(models.Model):
 
     chloride_conformity1 = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_chloride_conformity1", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity",compute="_compute_chloride_conformity1", store=True)
+
 
     @api.depends('chloride_acide','eln_ref','grade')
     def _compute_chloride_conformity1(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.chloride_conformity1 = 'na'
+                continue
+
+
             record.chloride_conformity1 = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f324e2d6-649f-4223-887e-aec3d85dffa9')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f324e2d6-649f-4223-887e-aec3d85dffa9')]).parameter_table
@@ -540,12 +578,19 @@ class ChemicalHasdenedConcrete(models.Model):
 
     chloride_conformity2 = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_chloride_conformity2", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity",compute="_compute_chloride_conformity2", store=True)
 
     @api.depends('chloride_percent2','eln_ref','grade')
     def _compute_chloride_conformity2(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.chloride_conformity2 = 'na'
+                continue
+
             record.chloride_conformity2 = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','98d321ee-f77f-434c-8bae-3711912c80f5')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','98d321ee-f77f-434c-8bae-3711912c80f5')]).parameter_table
@@ -631,12 +676,19 @@ class ChemicalHasdenedConcrete(models.Model):
   
     sulphate_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_sulphate_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity",compute="_compute_sulphate_conformity", store=True)
 
     @api.depends('sulphate_percent','eln_ref','grade')
     def _compute_sulphate_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.sulphate_conformity = 'na'
+                continue
+
             record.sulphate_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7dfdb9dd-0d82-4c89-bab8-3853a78dbab3')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7dfdb9dd-0d82-4c89-bab8-3853a78dbab3')]).parameter_table
@@ -719,12 +771,19 @@ class ChemicalHasdenedConcrete(models.Model):
 
     cement_content_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_cement_content_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity",compute="_compute_cement_content_conformity", store=True)
 
     @api.depends('cement_content','eln_ref','grade')
     def _compute_cement_content_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.cement_content_conformity = 'na'
+                continue
+
             record.cement_content_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d8bbd906-0f24-4c77-abc6-b2a8a00d91e6')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d8bbd906-0f24-4c77-abc6-b2a8a00d91e6')]).parameter_table
@@ -807,12 +866,19 @@ class ChemicalHasdenedConcrete(models.Model):
 
     cement_content_1_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_cement_content_1_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity",compute="_compute_cement_content_1_conformity", store=True)
 
     @api.depends('cement_content','eln_ref','grade')
     def _compute_cement_content_1_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.cement_content_conformity = 'na'
+                continue
+
             record.cement_content_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','97527435-edbc-4d33-817f-9596b56b4cd0')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','97527435-edbc-4d33-817f-9596b56b4cd0')]).parameter_table
@@ -869,12 +935,19 @@ class ChemicalHasdenedConcrete(models.Model):
 
     lime_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_lime_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity",compute="_compute_lime_conformity", store=True)
 
     @api.depends('cement_content','eln_ref','grade')
     def _compute_lime_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.lime_conformity = 'na'
+                continue
+
             record.lime_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ad567820-1a05-4d8b-bc7e-f58b42f78076')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ad567820-1a05-4d8b-bc7e-f58b42f78076')]).parameter_table
@@ -972,12 +1045,20 @@ class ChemicalHasdenedConcrete(models.Model):
 
     cement_aggregate_ratio_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_cement_aggregate_ratio_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity",compute="_compute_cement_aggregate_ratio_conformity", store=True)
 
     @api.depends('cement_content_aggregate_ratio','eln_ref','grade')
     def _compute_cement_aggregate_ratio_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.cement_aggregate_ratio_conformity = 'na'
+                continue
+
+
             record.cement_aggregate_ratio_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9fa390be-1b85-4a6e-908d-cf3068e5ced4')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9fa390be-1b85-4a6e-908d-cf3068e5ced4')]).parameter_table

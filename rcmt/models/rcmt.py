@@ -301,6 +301,57 @@ class RCMT(models.Model):
     diameter_specimen1 = fields.Float("Diameter of specimen, mm")
     diameter_specimen2 = fields.Float("Diameter of specimen, mm")
     diameter_specimen3 = fields.Float("Diameter of specimen, mm")
+
+
+
+
+    # remark
+
+    notes_id = fields.One2many('rcmt.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(RCMT, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The report shall not be reproduced in fullor partially without written approval of the laboratory HOD/CEO/Maganement.',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'ampling is not done by us unless mentioned otherwide.',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'without a QR Code and hologram this report is considered invalid.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'The Result listed refer only to tested samples & applicable parameter Endorsement of product is neither interred nor inplied.',
+            }),
+
+            (0, 0, {
+                'sr_no': 'e',
+                'notes': 'The use or report for arbitration, publicity & evidence in legal dispute is forbidden except with prior written consent NBML Lab.',
+            }),
+             (0, 0, {
+                'sr_no': 'f',
+                'notes': 'Alldisputed are subject to Raipur jurisdiction 7 days correction to this report invalidates this report.',
+            }),
+
+             (0, 0, {
+                'sr_no': 'g',
+                'notes': 'Sample willbe destroyed after 30-days from the date of test report unless otherwise Specified.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+    
+
+
+
      
     #  Measurement for Chloride Penetration depth
      
@@ -497,6 +548,7 @@ class RCMT(models.Model):
     
 
 
+
 class DimensionRcmt(models.Model):
     _name = "mechanical.dimension.rcmt.line"
     parent_id = fields.Many2one('mechanical.rcmt',string="Parent Id")
@@ -550,6 +602,15 @@ class PenrtrationDepthRcmt(models.Model):
                 record.dx_avg = average
             else:
                 record.dx_avg = 0.0
+
+
+
+class rcmtNotes(models.Model):
+    _name = "rcmt.notes"
+
+    parent_id = fields.Many2one('mechanical.rcmt',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
 
 
 
