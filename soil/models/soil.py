@@ -1263,7 +1263,7 @@ class Soil(models.Model):
     soil_visible = fields.Boolean("California Bearing Ratio Visible",compute="_compute_visible")
    
     soil_table = fields.One2many('mechanical.cbr.line','parent_id',string="CBR")
-    # chart_image_cbr = fields.Binary("Line Chart", compute="_compute_chart_image_cbr", store=True)
+    
 
     ps_2mm = fields.Float("PS for 2.5mm",compute="_compute_ps_2mm")
     pt_2mm = fields.Float("PT at 2.5mm",default=1370)

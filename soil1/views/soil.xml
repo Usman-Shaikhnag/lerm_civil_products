@@ -165,6 +165,18 @@
                     </table>
                     </div>
 
+                    <div invisible="sieve_visible == False">
+
+                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not sieve_visible">
+                        <tbody>
+                            <tr>
+                                <td style="width:10%;"><label for="show_sieve_graph">Show Graph</label></td>
+                                <td style="width:10%;"><field name="show_sieve_graph" class="blue-input" decoration-info="show_sieve_graph != 0"/></td>
+                            </tr>
+                       </tbody>
+                    </table>
+                   </div>
+
                     
                     <div invisible = "sieve_visible == False" class="custom_table_borders text-center">
                         <field name="graph_image_slive" widget="image" readonly="1"/>
@@ -409,6 +421,16 @@
 
                     </div>
 
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not liquid_limit_visible">
+                        <tbody>
+                            
+                            <tr>
+                                <td style="width:10%;"><label for="show_liquid_graph1">Show Graph</label></td>
+                                <td style="width:10%;"><field name="show_liquid_graph1" class="blue-input" decoration-info="show_liquid_graph1 != 0"/></td>
+                            </tr>
+                       </tbody>
+                    </table>
+
                     
 
                     <button name="action_generate_graphl" invisible = "liquid_limit_visible == False"
@@ -419,6 +441,16 @@
                      <div invisible = "liquid_limit_visible == False" class="custom_table_borders text-center">
                         <field name="graph_image" widget="image" readonly="1"/>
                     </div>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not liquid_limit_visible">
+                        <tbody>
+                            
+                            <tr>
+                                <td style="width:10%;"><label for="show_liquid_graph2">Show Graph</label></td>
+                                <td style="width:10%;"><field name="show_liquid_graph2" class="blue-input" decoration-info="show_liquid_graph2 != 0"/></td>
+                            </tr>
+                       </tbody>
+                    </table>
 
                     <button name="action_generate_cone_graph" invisible = "liquid_limit_visible == False"
                     string="Generate Graph"
@@ -666,11 +698,31 @@
 
                     </div>
 
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not light_comp_visible">
+                        <tbody>
+                            
+                            <tr>
+                                <td style="width:10%;"><label for="show_light_graph1">Show Graph</label></td>
+                                <td style="width:10%;"><field name="show_light_graph1" class="blue-input" decoration-info="show_light_graph1 != 0"/></td>
+                            </tr>
+                       </tbody>
+                    </table>
+
                     <button name="action_generate_graph1" string="Generate Graph" type="object" class="btn-primary" invisible = "light_comp_visible == False"/>
 
                     <div invisible = "light_comp_visible == False" class="custom_table_borders text-center">
                         <field name="light_graph_image" widget="image" readonly="1"/>
                     </div>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not light_comp_visible">
+                        <tbody>
+                            
+                            <tr>
+                                <td style="width:10%;"><label for="show_light_graph2">Show Graph</label></td>
+                                <td style="width:10%;"><field name="show_light_graph2" class="blue-input" decoration-info="show_light_graph2 != 0"/></td>
+                            </tr>
+                       </tbody>
+                    </table>
 
 
                     <button name="action_generate_light1_graph_image" string="Generate Graph" type="object" class="btn-primary" invisible = "light_comp_visible == False"/>
@@ -800,6 +852,16 @@
                     </field>
 
                     </div>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not heavy_visible">
+                        <tbody>
+                            
+                            <tr>
+                                <td style="width:10%;"><label for="show_heavy_graph2">Show Graph</label></td>
+                                <td style="width:10%;"><field name="show_heavy_graph2" class="blue-input" decoration-info="show_heavy_graph2 != 0"/></td>
+                            </tr>
+                       </tbody>
+                    </table>
 
                      <button name="generate_line_chart_light_omc" string="Generate Graph" type="object" class="btn-primary" invisible = "heavy_visible == False"/>
 
@@ -940,6 +1002,16 @@
                                 </tr>
                             </tbody>
                         </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not cbr_visible">
+                        <tbody>
+                            
+                            <tr>
+                                <td style="width:10%;"><label for="show_cbr">Show Graph</label></td>
+                                <td style="width:10%;"><field name="show_cbr" class="blue-input" decoration-info="show_cbr != 0"/></td>
+                            </tr>
+                       </tbody>
+                    </table>
                     
                     <button name="action_generate_cbr_chart"
                          string="Generate Chart" invisible = "cbr_visible == False" type="object" class="btn-primary"/>
@@ -1087,6 +1159,16 @@
                             </tree>
                         </field>                      
                     </div>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not consolidation_visible">
+                        <tbody>
+                            
+                            <tr>
+                                <td style="width:10%;"><label for="show_graph_consolidation">Show Graph</label></td>
+                                <td style="width:10%;"><field name="show_graph_consolidation" class="blue-input" decoration-info="show_graph_consolidation != 0"/></td>
+                            </tr>
+                       </tbody>
+                    </table>
 
                     <button invisible = "consolidation_visible == False" name="action_generate_graph" string="Generate Graph" type="object" class="btn-primary"/>
 
@@ -1536,12 +1618,25 @@
                     </table>
                     </div>
 
-                    <button name="action_generate_direct_graph" invisible = "liquid_limit_visible == False"
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not consolidation_visible">
+                        <tbody>
+                            
+                            <tr>
+                                <td style="width:10%;"><label for="show_direct_graph">Show Graph</label></td>
+                                <td style="width:10%;"><field name="show_direct_graph" class="blue-input" decoration-info="show_direct_graph != 0"/></td>
+                            </tr>
+                       </tbody>
+                    </table>
+
+                     
+                  
+
+                    <button name="action_generate_direct_graph" invisible = "direct_shear_visible == False"
                     string="Generate Graph"
                     type="object"
                     class="btn-primary"/>
 
-                     <div invisible = "liquid_limit_visible == False" class="custom_table_borders text-center">
+                     <div invisible = "direct_shear_visible == False" class="custom_table_borders text-center">
                         <field name="direct_graph_image" widget="image" readonly="1"/>
                     </div>
 
