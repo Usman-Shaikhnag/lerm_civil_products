@@ -16,3 +16,4 @@ class EmployeeInherited(models.Model):
         if 'department_ids' in vals:
             self.env['ir.rule'].clear_caches()
         return res
+
