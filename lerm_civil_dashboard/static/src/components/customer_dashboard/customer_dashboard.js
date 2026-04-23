@@ -10,6 +10,7 @@ class CustomerDashboard extends Component {
     this.dashboard_state = useState({
       customer_data: [],
       aging_data: {},
+      overdue_data: {},
       labs: [],
       companies: [],
     });
@@ -81,6 +82,41 @@ class CustomerDashboard extends Component {
         ...b,
         count: bucketData.total,
         states: states,
+        mode: 'upcoming'
+      };
+    });
+  }
+
+  get overdueKpiData() {
+    const buckets = [
+      { key: "0-7", label: "0-7 Days", color: "#10b981", icon: "fa-clock-o" },
+      { key: "8-15", label: "8-15 Days", color: "#f59e0b", icon: "fa-calendar-minus-o" },
+      { key: "16-30", label: "16-30 Days", color: "#ef4444", icon: "fa-calendar-plus-o" },
+      { key: "31-45", label: "31-45 Days", color: "#b91c1c", icon: "fa-hourglass-end" },
+      { key: "46-60", label: "46-60 Days", color: "#7f1d1d", icon: "fa-warning" },
+      { key: "60+", label: "60+ Days", color: "#450a0a", icon: "fa-history" },
+    ];
+
+    const data = this.dashboard_state.overdue_data || {};
+    return buckets.map((b) => {
+      const bucketData = data[b.key] || { total: 0, states: {} };
+      const states = Object.entries(bucketData.states).map(([stateKey, stateData]) => {
+        const style = this.styleMap[stateKey] || { icon: "fa-question-circle", color: "#6c757d", label: stateKey };
+        return {
+          key: stateKey,
+          label: style.label,
+          icon: style.icon,
+          color: style.color,
+          count: stateData.count,
+          breakdown: stateData.breakdown || [],
+        };
+      });
+
+      return {
+        ...b,
+        count: bucketData.total,
+        states: states,
+        mode: 'overdue'
       };
     });
   }
@@ -138,6 +174,7 @@ class CustomerDashboard extends Component {
       // Update state with paginated data and total count from the backend
       this.dashboard_state.customer_data = result.customers || [];
       this.dashboard_state.aging_data = result.aging_data || {};
+      this.dashboard_state.overdue_data = result.overdue_data || {};
       this.filter_state.totalCustomers = Number(result.total_customers) || 0;
     } catch (error) {
       console.error("Failed to fetch customer data:", error);
@@ -208,41 +245,85 @@ class CustomerDashboard extends Component {
     await this.fetchData();
   }
 
-  async onAgingClick(bucketKey, stateKey = null, productId = null) {
+  async onAgingClick(bucketKey, stateKey = null, techId = null, mode = 'upcoming') {
     const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
     let minDays, maxDays;
+    if (bucketKey === "60+") {
+      minDays = 61;
+      maxDays = null;
+    } else {
+      [minDays, maxDays] = bucketKey.split("-").map(Number);
+    }
 
-    if (bucketKey === "0-7") { minDays = 0; maxDays = 7; }
-    else if (bucketKey === "8-15") { minDays = 8; maxDays = 15; }
-    else if (bucketKey === "16-30") { minDays = 16; maxDays = 30; }
-    else if (bucketKey === "31-45") { minDays = 31; maxDays = 45; }
-    else if (bucketKey === "46-60") { minDays = 46; maxDays = 60; }
-    else if (bucketKey === "60+") { minDays = 61; maxDays = null; }
+    const pad = (n) => n.toString().padStart(2, "0");
+    const toDateStr = (d) =>
+      `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 
-    const dMax = new Date(today);
-    dMax.setDate(today.getDate() - minDays);
-    dMax.setHours(23, 59, 59, 999);
+    let dMinStr = null;
+    let dMaxStr = null;
+
+    if (mode === 'upcoming') {
+      const dMin = new Date(today);
+      dMin.setDate(today.getDate() + minDays);
+      dMinStr = toDateStr(dMin);
+
+      if (maxDays !== null) {
+        const dMax = new Date(today);
+        dMax.setDate(today.getDate() + maxDays);
+        dMaxStr = toDateStr(dMax);
+      }
+    } else {
+      // Overdue mode
+      const effectiveMin = Math.max(1, minDays);
+      const dMax = new Date(today);
+      dMax.setDate(today.getDate() - effectiveMin);
+      dMaxStr = toDateStr(dMax);
+
+      if (maxDays !== null) {
+        const dMin = new Date(today);
+        dMin.setDate(today.getDate() - maxDays);
+        dMinStr = toDateStr(dMin);
+      }
+    }
 
     const domain = [
-      ["eln_id", "!=", false],
-      ["eln_id.create_date", "<=", dMax.toISOString()],
+      [
+        "state",
+        "in",
+        [
+          "1-allotment_pending",
+          "2-alloted",
+          "7-calculated",
+          "3-pending_verification",
+          "5-pending_approval",
+        ],
+      ],
+      ["report_due_date", "!=", false],
     ];
 
-    if (maxDays !== null) {
-      const dMin = new Date(today);
-      dMin.setDate(today.getDate() - maxDays);
-      dMin.setHours(0, 0, 0, 0);
-      domain.push(["eln_id.create_date", ">=", dMin.toISOString()]);
+    if (dMinStr) {
+      domain.push(["report_due_date", ">=", dMinStr]);
+    }
+    if (dMaxStr) {
+      domain.push(["report_due_date", "<=", dMaxStr]);
     }
 
     if (stateKey) {
       domain.push(["state", "=", stateKey]);
-    } else {
-      domain.push(["state", "in", ["2-alloted", "7-calculated", "3-pending_verification", "5-pending_approval"]]);
     }
 
-    if (productId) {
-      domain.push(["material_id", "=", productId]);
+    if (techId) {
+      domain.push(
+        "|",
+        "|",
+        "|",
+        ["technicians", "in", [techId]],
+        ["eln_id.technician", "=", techId],
+        ["eln_id.technician_ids", "in", [techId]],
+        ["eln_id.parameters_result.technician", "=", techId]
+      );
     }
 
     // Apply dashboard-wide filters
@@ -261,7 +342,7 @@ class CustomerDashboard extends Component {
 
     const action = {
       type: "ir.actions.act_window",
-      name: `Aging Samples (${bucketKey})`,
+      name: `${mode === 'upcoming' ? 'Upcoming Due' : 'Overdue'}: ${bucketKey} Days`,
       res_model: "lerm.srf.sample",
       views: [[false, "list"], [false, "form"]],
       domain: domain,
@@ -295,9 +376,10 @@ class CustomerDashboard extends Component {
 
   // --- Customer Card Click Handler ---
 
-  async _onCustomerCardClick(customerId, customerName) {
+  // --- Customer Card Click Handler ---
+
+  async _onCustomerDetailsClick(customerId, customerName, stateName = null, productId = null) {
     const domain = [
-      ["customer_id", "=", customerId],
       ["sample_received_date", ">=", this.filter_state.start_date],
       ["sample_received_date", "<=", this.filter_state.end_date],
 
@@ -313,9 +395,48 @@ class CustomerDashboard extends Component {
         : []),
     ];
 
+    if (customerId === 0) {
+      domain.push(["customer_id", "=", false]);
+    } else {
+      domain.push(["customer_id", "=", customerId]);
+    }
+
+    if (stateName) {
+      if (stateName === "invoiced") {
+          domain.push(["invoice_status", "=", "2-invoiced"]);
+      } else if (stateName === "uninvoiced") {
+          domain.push(["invoice_status", "=", "1-uninvoiced"]);
+      } else {
+          domain.push(["state", "=", stateName]);
+      }
+    }
+
+    if (productId !== null) {
+      if (productId === 0) {
+        domain.push(["material_id", "=", false]);
+      } else {
+        domain.push(["material_id", "=", productId]);
+      }
+    }
+
+    let actionName = `Samples for Customer: ${customerName}`;
+    if (stateName) {
+      const stateLabelMap = {
+        "2-alloted": "Alloted",
+        "3-pending_verification": "Verification Pending",
+        "5-pending_approval": "Approval Pending",
+        "4-in_report": "In Report",
+        "6-cancelled": "Cancelled",
+        "invoiced": "Invoiced",
+        "uninvoiced": "Uninvoiced",
+        "1-allotment_pending": "Assignment Pending"
+      };
+      actionName = `${actionName} - ${stateLabelMap[stateName] || stateName}`;
+    }
+
     const action = {
       type: "ir.actions.act_window",
-      name: `Samples for Customer: ${customerName}`,
+      name: actionName,
       res_model: "lerm.srf.sample",
       views: [
         [false, "list"],
@@ -323,11 +444,15 @@ class CustomerDashboard extends Component {
       ],
       domain: domain,
       context: {
-        group_by: ["state"],
+        group_by: stateName ? ["material_id"] : ["state"],
       },
     };
 
     return this.action.doAction(action);
+  }
+
+  async _onCustomerCardClick(customerId, customerName) {
+      return this._onCustomerDetailsClick(customerId, customerName);
   }
 }
 CustomerDashboard.template = "lerm_civil_dashboard.CustomerDashboard";
