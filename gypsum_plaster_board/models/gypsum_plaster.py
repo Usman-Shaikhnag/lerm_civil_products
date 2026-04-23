@@ -92,7 +92,10 @@ class GypsumPlaster(models.Model):
 
     average_density_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_density_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_average_density_conformity", store=True)
+
 
 
 
@@ -100,6 +103,11 @@ class GypsumPlaster(models.Model):
     def _compute_average_density_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_density_conformity = 'na'
+                continue
+
             record.average_density_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3587lpiy-7a9c-4616-bad5-88eb1b260747')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3587lpiy-7a9c-4616-bad5-88eb1b260747')]).parameter_table
@@ -174,7 +182,10 @@ class GypsumPlaster(models.Model):
 
     average_water_absorption_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_water_absorption_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_average_water_absorption_conformity", store=True)
+
 
 
 
@@ -182,6 +193,11 @@ class GypsumPlaster(models.Model):
     def _compute_average_water_absorption_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_water_absorption_conformity = 'na'
+                continue
+
             record.average_water_absorption_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','34597lpuy-f555-4f7c-beae-9547435d852a')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','34597lpuy-f555-4f7c-beae-9547435d852a')]).parameter_table
@@ -255,7 +271,9 @@ class GypsumPlaster(models.Model):
 
     average_flexural_tranverse_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_flexural_tranverse_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_average_flexural_tranverse_conformity", store=True)
 
 
 
@@ -263,6 +281,11 @@ class GypsumPlaster(models.Model):
     def _compute_average_flexural_tranverse_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_flexural_tranverse_conformity = 'na'
+                continue
+
             record.average_flexural_tranverse_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6587plyr2-b6bb-4100-bf91-24e750389f25')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6587plyr2-b6bb-4100-bf91-24e750389f25')]).parameter_table
@@ -336,7 +359,9 @@ class GypsumPlaster(models.Model):
 
     average_flexural_longitudinal_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_flexural_longitudinal_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_average_flexural_longitudinal_conformity", store=True)
 
 
 
@@ -344,6 +369,12 @@ class GypsumPlaster(models.Model):
     def _compute_average_flexural_longitudinal_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_flexural_longitudinal_conformity = 'na'
+                continue
+
+
             record.average_flexural_longitudinal_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','g1578pu2-cd1c-4fe1-804a-541a8e9ff19d')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','g1578pu2-cd1c-4fe1-804a-541a8e9ff19d')]).parameter_table

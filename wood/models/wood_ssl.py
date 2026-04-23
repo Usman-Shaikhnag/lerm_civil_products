@@ -36,12 +36,19 @@ class WOOD(models.Model):
 
     moisture_content_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_moisture_content_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_moisture_content_conformity", store=True)
 
     @api.depends('average_moisture','eln_ref','grade')
     def _compute_moisture_content_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.moisture_content_conformity = 'na'
+                continue
+
             record.moisture_content_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a90cdbd7-3fa3-4b83-ae31-9d28120458tyu32')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a90cdbd7-3fa3-4b83-ae31-9d28120458tyu32')]).parameter_table
@@ -103,12 +110,19 @@ class WOOD(models.Model):
 
     specific_gravity_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_specific_gravity_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_specific_gravity_conformity", store=True)
 
     @api.depends('average_specific_gravity','eln_ref','grade')
     def _compute_specific_gravity_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.specific_gravity_conformity = 'na'
+                continue
+
             record.specific_gravity_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','769b7052-d658-4d14-a5cc-c21dbe1487gbhjt')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','769b7052-d658-4d14-a5cc-c21dbe1487gbhjt')]).parameter_table

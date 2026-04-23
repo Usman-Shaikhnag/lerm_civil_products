@@ -128,23 +128,33 @@ class SteelTmtBarLine(models.Model):
 
     uts_conformity = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')],string="Conformity",compute="_compute_uts_conformity",store=True)
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+        ],string="Conformity",compute="_compute_uts_conformity",store=True)
 
     yield_conformity = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')],string="Conformity",compute="_compute_yield_conformity",store=True)
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+        ],string="Conformity",compute="_compute_yield_conformity",store=True)
 
     elongation_conformity = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')],string="Conformity",compute="_compute_elongation_conformity",store=True)
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+        ],string="Conformity",compute="_compute_elongation_conformity",store=True)
 
     ts_ys_conformity = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')],string="Conformity",compute="_compute_ts_ys_conformity",store=True)
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+        ],string="Conformity",compute="_compute_ts_ys_conformity",store=True)
 
     weight_per_meter_conformity = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')],string="Conformity",compute="_compute_weight_per_meter_conformity",store=True)
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+        ],string="Conformity",compute="_compute_weight_per_meter_conformity",store=True)
 
     fracture_visible = fields.Boolean("Fracture",compute="_compute_visible")
     bend_visible = fields.Boolean("Bend Test",compute="_compute_visible")
@@ -267,6 +277,11 @@ class SteelTmtBarLine(models.Model):
     @api.depends('weight_per_meter','eln_ref','size')
     def _compute_weight_per_meter_conformity(self):
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.weight_per_meter_conformity = 'na'
+                continue
+
             record.weight_per_meter_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','15558232-8a13-472c-b10d-1fc011e63aeb')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','15558232-8a13-472c-b10d-1fc011e63aeb')]).parameter_table
@@ -312,6 +327,11 @@ class SteelTmtBarLine(models.Model):
     def _compute_uts_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.uts_conformity = 'na'
+                continue
+
             record.uts_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7da4cce7-4027-4d73-955e-ca7f7a2a2228')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7da4cce7-4027-4d73-955e-ca7f7a2a2228')]).parameter_table
@@ -372,6 +392,11 @@ class SteelTmtBarLine(models.Model):
     def _compute_elongation_conformity(self):
        
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.elongation_conformity = 'na'
+                continue
+
             record.elongation_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b4ae8d8f-9cbd-4bf5-abe4-c0bf0379b725')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b4ae8d8f-9cbd-4bf5-abe4-c0bf0379b725')]).parameter_table
@@ -432,6 +457,11 @@ class SteelTmtBarLine(models.Model):
     def _compute_yield_conformity(self):
     
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.yield_conformity = 'na'
+                continue
+
             record.yield_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c732ed77-4c06-4cd4-ae85-b7424c1a24c7')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c732ed77-4c06-4cd4-ae85-b7424c1a24c7')]).parameter_table
@@ -492,6 +522,11 @@ class SteelTmtBarLine(models.Model):
     def _compute_ts_ys_conformity(self):
 
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.ts_ys_conformity = 'na'
+                continue
+
             record.ts_ys_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','de4bb55e-9318-4725-ac44-fd1850d9e2eb')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','de4bb55e-9318-4725-ac44-fd1850d9e2eb')]).parameter_table

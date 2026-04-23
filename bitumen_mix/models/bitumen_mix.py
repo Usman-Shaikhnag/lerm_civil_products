@@ -53,12 +53,19 @@ class BitumenConcrete(models.Model):
 
     binder_content_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_binder_content_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_binder_content_conformity", store=True)
 
     @api.depends('binder_content','eln_ref','grade')
     def _compute_binder_content_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_cement_conformity = 'na'
+                continue
+
             record.binder_content_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35789ght-7188-4086-b132-62b50e63f1247ui')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35789ght-7188-4086-b132-62b50e63f1247ui')]).parameter_table
