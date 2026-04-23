@@ -951,7 +951,6 @@ class CreateSampleWizard(models.TransientModel):
         ('satisfactory', 'Satisfactory'),
         ('non_satisfactory', 'Non-Satisfactory'),
     ], string='Sample Condition', default='satisfactory')
-    location = fields.Char(string="Location Code")
     sample_reject_reason = fields.Char(string="Sample Reject Reason")
     has_witness = fields.Boolean(string="Witness")
     witness = fields.Char(string="Witness name")
@@ -993,7 +992,16 @@ class CreateSampleWizard(models.TransientModel):
     department_id = fields.Char(string='Department')
     report_due_date = fields.Date(string="Report Due Date", required=True)
     lab_location = fields.Many2one('lerm.lab.master',string="Lab Name",default=lambda self: self._get_oldest_lab())
-    location_name = fields.Many2one('lerm.lab.location.master',string="Location Name")
+    location_name = fields.Many2one(
+        'lerm.lab.location.master',
+        string="Location Name",
+        domain="[('parent_id', '=', lab_location)]"
+    )
+    location = fields.Char(
+        string="Location Code",
+        related='location_name.location_code',
+        store=True
+    )
     customer = fields.Many2one('res.partner', string="Customer")
 
     show_reject_reason = fields.Boolean(compute='_compute_show_reject_reason')
@@ -1017,28 +1025,25 @@ class CreateSampleWizard(models.TransientModel):
         if self.casting:
             if self.date_casting and self.days_casting:
                 self.report_due_date = self.date_casting + timedelta(days=int(self.days_casting))
-
+    
     @api.onchange('lab_location')
-    def _default_location_name(self):
+    def _onchange_lab_location(self):
         for record in self:
-            if record.lab_location and len(record.lab_location.lab_location_line) > 0:
-                record.location_name = record.lab_location.lab_location_line[0]
-
-    # @api.onchange('lab_location')
-    # def _default_location(self):
-    #     for record in self:
-    #         if record.lab_location and len(record.lab_location.lab_location_line) > 0:
-    #             record.location = record.lab_location.lab_location_line[0]
-
-    @api.onchange('lab_location')
-    def _default_location(self):
-        for record in self:
-            location_code = False
             if record.lab_location and record.lab_location.lab_location_line:
-                location_line = record.lab_location.lab_location_line[0]
-                location_code = location_line.location_code
+                line = record.lab_location.lab_location_line[0]
+                record.location_name = line
+                record.location = line.location_code
+            else:
+                record.location_name = False
+                record.location = False
 
-            record.location = location_code
+    @api.onchange('location_name')
+    def _onchange_location_name(self):
+        for record in self:
+            if record.location_name:
+                record.location = record.location_name.location_code
+            else:
+                record.location = False
 
 
     @api.depends('material_id')
