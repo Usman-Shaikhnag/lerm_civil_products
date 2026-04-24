@@ -300,6 +300,8 @@ class LermSampleForm(models.Model):
                 'default_main_name':self.main_name,
                 'default_price':self.price,
                 'default_report_due_date': self.report_due_date,
+                'default_lab_location': self.lab_location.id,
+                'default_location_name': self.location_name.id,
                 }
             }
 
