@@ -85,8 +85,9 @@
                                 <field name='ulr_no'/>
                                 <field name="sample_received_date" readonly="state != '1-allotment_pending'"/>
                                 <field name="report_due_date" readonly="casting"/>
-                                <field name="location" readonly="1"/>
+                                <field name="location" readonly="1" force_save="1"/>
                                 <field name="lab_location"/>
+                                <field name="location_name" readonly="1"/>
                                 <field name="invoice_status" readonly="1" invisible="state not in ('4-in_report')"/>
                                 <field name="invoice_number" readonly="1"/>
                                 <field name='tested_by_signature_datasheet'/>

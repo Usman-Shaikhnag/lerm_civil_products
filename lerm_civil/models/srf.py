@@ -990,7 +990,7 @@ class CreateSampleWizard(models.TransientModel):
     is_update = fields.Boolean('Is Update')
 
     department_id = fields.Char(string='Department')
-    report_due_date = fields.Date(string="Report Due Date", required=True)
+    report_due_date = fields.Date(string="Report Due Date")
     lab_location = fields.Many2one('lerm.lab.master',string="Lab Name",default=lambda self: self._get_oldest_lab())
     location_name = fields.Many2one(
         'lerm.lab.location.master',
@@ -1030,9 +1030,11 @@ class CreateSampleWizard(models.TransientModel):
     def _onchange_lab_location(self):
         for record in self:
             if record.lab_location and record.lab_location.lab_location_line:
-                line = record.lab_location.lab_location_line[0]
-                record.location_name = line
-                record.location = line.location_code
+                # Only set default location if not already set or if it belongs to a different lab
+                if not record.location_name or record.location_name.parent_id != record.lab_location:
+                    line = record.lab_location.lab_location_line[0]
+                    record.location_name = line
+                    record.location = line.location_code
             else:
                 record.location_name = False
                 record.location = False
@@ -1126,6 +1128,13 @@ class CreateSampleWizard(models.TransientModel):
                 else:
                     record.grade_required = False
 
+    @api.onchange('material_id')
+    def onchange_material_id_casting(self):
+        for record in self:
+            if record.material_id:
+                record.casting = record.material_id.casting_required
+            else:
+                record.casting = False
 
     @api.onchange('material_id')
     def compute_grade(self):        
@@ -1268,14 +1277,13 @@ class CreateSampleWizard(models.TransientModel):
             'has_witness' : self.has_witness,
             'witness' : self.witness,
             'department_id': department_id,
+            'report_due_date': self.report_due_date if self.report_due_date else (self.date_casting + timedelta(days=int(self.days_casting)) if (self.casting and self.date_casting and self.days_casting) else False),
             'client_sample_id':client_sample_id,
             'conformity':conformity,
             'volume':volume,
             'product_name':product_name,
             'lab_location':self.lab_location.id,
-            'location_name':self.location_name.id,
-            'report_due_date': self.report_due_date
-
+            'location_name':self.location_name.id
             
         })
         return {'type': 'ir.actions.act_window_close'}
@@ -1337,7 +1345,7 @@ class CreateSampleWizard(models.TransientModel):
                 'days_casting':days_casting,
                 'lab_location':self.lab_location.id,
                 'location_name':self.location_name.id,
-                'report_due_date': data.get('report_due_date')
+                'report_due_date': data.get('report_due_date') if data.get('report_due_date') else (date_casting + timedelta(days=int(days_casting)) if (casting and date_casting and days_casting) else False)
 
 
             })
@@ -1359,7 +1367,7 @@ class CreateSampleWizard(models.TransientModel):
             sample_reject_reason = self.sample_reject_reason
             has_witness = self.has_witness
             witness = self.witness
-            department_id: self.department_id
+            department_id = self.department_id
             discipline_id = self.discipline_id.id
             lab_no_value = self.lab_no_value
             # lab_l_id = self.lab_l_id.id
@@ -1472,7 +1480,7 @@ class CreateSampleWizard(models.TransientModel):
                         'product_alias':self.product_alias.id,
                         'lab_location':lab_location,
                         'location_name':location_name,
-                        'report_due_date': self.report_due_date,
+                        'report_due_date': self.report_due_date if self.report_due_date else (self.date_casting + timedelta(days=int(self.days_casting)) if (self.casting and self.date_casting and self.days_casting) else False),
                         'quantity':self.quantity,
                         'uom_id':self.uom_id.id,
                         'quantity_received':self.quantity_received,
