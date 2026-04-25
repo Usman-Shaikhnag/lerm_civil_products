@@ -1123,6 +1123,14 @@ class CreateSampleWizard(models.TransientModel):
 
 
     @api.onchange('material_id')
+    def onchange_material_id_casting(self):
+        for record in self:
+            if record.material_id:
+                record.casting = record.material_id.casting_required
+            else:
+                record.casting = False
+
+    @api.onchange('material_id')
     def compute_grade(self):        
 
         
