@@ -217,8 +217,9 @@
   background: transparent;
   font-size: 0.88rem;
   color: #374151;
-  padding: 0;
-  width: 128px;
+  padding: 0.2rem 0.4rem;
+  min-width: 110px;
+  max-width: 100%;
 }
 .lerm-date-input:focus {
   outline: 1px solid var(--lerm-primary);
@@ -444,4 +445,40 @@
   background: #fff;
   border-radius: var(--lerm-radius-card);
   border: 1px dashed #e0d9f3;
+}
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .lerm-filter-panel {
+    padding: 1rem;
+  }
+  .lerm-btn-group .lerm-toggle-btn {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .lerm-date-section .d-flex.gap-3 {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 0.75rem !important;
+  }
+  .lerm-btn-group {
+    width: 100%;
+  }
+  .lerm-custom-date-container {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0.5rem !important;
+  }
+  .lerm-date-input {
+    flex: 1;
+    text-align: center;
+  }
+  .lerm-date-separator {
+    width: 100%;
+    text-align: center;
+    margin: 0.2rem 0;
+    font-size: 0.65rem;
+  }
 }
