@@ -176,7 +176,7 @@
 
                         <button name="open_form" type="object" class="btn btn-primary" string="Open Form" invisible="product_or_form_based == False"/>
             
-                        <field name="parameters" nolabel="1" options="{'no_create': True, 'no_open': True}" />
+                        <field name="parameters" nolabel="1" options="{'no_create': True, 'no_open': True}" invisible="1" />
                         <field name="parameters_result" nolabel="1" invisible="product_or_form_based == True">
                             <tree editable="bottom" >
                                 <field name="parameter"/>
