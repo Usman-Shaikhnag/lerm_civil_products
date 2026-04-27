@@ -13,16 +13,23 @@
                     </h1>
                     <button type="object" class="oe_highlight" name="prefill_data" string="Prefill Data"/>
 
-                      <field name="srf_id" invisible="1"/>
-                      <field name="sample_id"  readonly="1"/>
-                      <field name="eln_ref" readonly="1"/>
-                      <field name="parameter_id" invisible="1"/>
-                      <field name="sample_parameters" class="custom_table_borders">
+                       <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                        <field name="grade"/>
+
+                    </group>
+                    <div class="custom_table_borders">
+                      <field name="sample_parameters" nolabel="1">
                         <tree>
                           <field name="parameter_name"/>
                           <field name="test_method"/>
                         </tree>
                       </field>
+                    </div>
+                    <group/>
                     <!-- <group>
                       <field name="test_start_date"/>
                       <field name="test_end_date"/>
