@@ -944,6 +944,8 @@ class CreateSampleWizard(models.TransientModel):
     grade_ids = fields.Many2many('lerm.grade.line',string="Grades")
     grade_required = fields.Boolean(string="Grade Required",compute="compute_grade_required")
 
+    lab_id = fields.Char(string="Lab ID")
+
     sample_qty = fields.Integer(string="Sample Quantity",default=1)
     received_by_id = fields.Many2one('res.users',string="Received By",default=lambda self: self.env.user)
     sample_received_date = fields.Date(string="Sample Received Date")
@@ -1217,6 +1219,7 @@ class CreateSampleWizard(models.TransientModel):
         discipline_id = self.discipline_id
         casting = self.casting
         client_sample_id = self.client_sample_id
+        
         conformity = self.conformity
         volume = self.volume
         product_name = self.product_name
@@ -1298,6 +1301,7 @@ class CreateSampleWizard(models.TransientModel):
             casting = data["casting"]
             days_casting = data["days_casting"]
             date_casting = data["date_casting"]
+            
 
             
             sample_range = self.env['sample.range.line'].create({

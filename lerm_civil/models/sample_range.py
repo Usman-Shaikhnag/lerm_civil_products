@@ -81,6 +81,7 @@ class SampleRangeLine(models.Model):
     date_casting = fields.Date("Date of Casting")
     casting = fields.Boolean(string="Casting")
     client_sample_id = fields.Char(string="Client Sample Id")
+    
     conformity = fields.Boolean(string='Conformity')
     volume = fields.Char(string="Volume")
     product_name = fields.Many2one('product.template',string="Product Name")
