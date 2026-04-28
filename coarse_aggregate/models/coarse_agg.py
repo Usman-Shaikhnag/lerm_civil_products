@@ -2140,6 +2140,9 @@ class CoarseAggregateMechanical(models.Model):
                 result.calculated = True
 
 
+             # Bulk Density
+            if result.parameter.internal_id == '8b439d0e-2967-488a-9214-87d68599571a':
+                result.calculated = True
 
              # Loose bulk Density
             if result.parameter.internal_id == '65a41d1f-d557-438e-8fd1-2c619a334d02':
