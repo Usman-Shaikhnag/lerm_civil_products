@@ -1219,7 +1219,7 @@
 
 
 					<div style="page-break-inside: avoid;">
-                        <div style="margin-top:10px; padding:0" class="noteContainer">
+                        <!-- <div style="margin-top:10px; padding:0" class="noteContainer">
                             <table class="table table-bordered">
 								<tr>
 									<td style="padding: 5px; font-style: italic; font-size: 12px;">
@@ -1238,7 +1238,23 @@
 									</td>
 								</tr>
 							</table>
-                        </div>
+                        </div> -->
+                        <div style="margin-top:50px" class="noteContainer">
+						<table >
+							<tr>
+							
+								<td style="padding: 5px; font-style: italic; ">
+
+									<b>Notes:-</b>
+										<t t-if="data.notes_id">
+										<t t-foreach="data.notes_id" t-as="n">
+											<span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span>
+										</t>
+									</t>
+								</td>
+							</tr>
+							</table>
+						</div>
                         <div style="margin-top:10px; page-break-inside: avoid;" class="signatureContainer girdgird">
 
                             <div>
