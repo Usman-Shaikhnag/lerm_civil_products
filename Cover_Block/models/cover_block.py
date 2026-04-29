@@ -91,12 +91,16 @@ class CoverblockMechanical(models.Model):
     average_crushing = fields.Float(string="Average Aggregate Crushing Value", compute="_compute_average_crushing")
     average_crushing_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_crushing_conformity", store=True)
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Conformity", compute="_compute_average_crushing_conformity", store=True)
 
     @api.depends('average_crushing','eln_ref','grade')
     def _compute_average_crushing_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_crushing_conformity = 'na'
+                continue
             record.average_crushing_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ee2d3ead-3bf8-4ae5-8e5d-dfe983111f71')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ee2d3ead-3bf8-4ae5-8e5d-dfe983111f71')]).parameter_table

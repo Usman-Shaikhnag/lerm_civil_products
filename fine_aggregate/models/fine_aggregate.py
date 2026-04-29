@@ -255,12 +255,16 @@ class FineAggregate(models.Model):
 
     material_finer75_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_material_finer75_conformity", store=True)
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Conformity", compute="_compute_material_finer75_conformity", store=True)
 
     @api.depends('material_finer75','eln_ref','grade')
     def _compute_material_finer75_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.material_finer75_conformity = 'na'
+                continue
             record.material_finer75_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','988f5bf6-c865-453c-9cd6-993a5a59ad95')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','988f5bf6-c865-453c-9cd6-993a5a59ad95')]).parameter_table
@@ -329,12 +333,16 @@ class FineAggregate(models.Model):
 
     light_weight_percent_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_light_weight_percent_conformity", store=True)
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Conformity", compute="_compute_light_weight_percent_conformity", store=True)
 
     @api.depends('light_weight_percent','eln_ref','grade')
     def _compute_light_weight_percent_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.light_weight_percent_conformity = 'na'
+                continue
             record.light_weight_percent_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b405cb5b-4e2c-4a0f-9f55-f4165258d231')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b405cb5b-4e2c-4a0f-9f55-f4165258d231')]).parameter_table
@@ -406,12 +414,16 @@ class FineAggregate(models.Model):
 
     clay_lumps_percent_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_clay_lumps_percent_conformity", store=True)
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Conformity", compute="_compute_clay_lumps_percent_conformity", store=True)
 
     @api.depends('clay_lumps_percent','eln_ref','grade')
     def _compute_clay_lumps_percent_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.clay_lumps_percent_conformity = 'na'
+                continue
             record.clay_lumps_percent_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6daf868e-c850-4c80-8cf2-c37941cfc075')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6daf868e-c850-4c80-8cf2-c37941cfc075')]).parameter_table
@@ -584,12 +596,16 @@ class FineAggregate(models.Model):
 
     specific_gravity_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_specific_gravity_conformity", store=True)
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Conformity", compute="_compute_specific_gravity_conformity", store=True)
 
     @api.depends('specific_gravity','eln_ref','grade')
     def _compute_specific_gravity_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.specific_gravity_conformity = 'na'
+                continue
             record.specific_gravity_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','45875ght-7188-4086-b132-62b50e63f1245gt')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','45875ght-7188-4086-b132-62b50e63f1245gt')]).parameter_table
@@ -670,12 +686,16 @@ class FineAggregate(models.Model):
 
     loose_bulk_density_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_loose_bulk_density_conformity", store=True)
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Conformity", compute="_compute_loose_bulk_density_conformity", store=True)
 
     @api.depends('loose_bulk_density','eln_ref','grade')
     def _compute_loose_bulk_density_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.loose_bulk_density_conformity = 'na'
+                continue
             record.loose_bulk_density_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4587tyhloos-3fa3-4b83-ae31-9d281767188c')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4587tyhloos-3fa3-4b83-ae31-9d281767188c')]).parameter_table
@@ -781,12 +801,16 @@ class FineAggregate(models.Model):
 
     avg_bulking_of_sand_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_bulking_of_sand_conformity", store=True)
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Conformity", compute="_compute_avg_bulking_of_sand_conformity", store=True)
 
     @api.depends('avg_bulking_of_sand','eln_ref','grade')
     def _compute_avg_bulking_of_sand_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_bulking_of_sand_conformity = 'na'
+                continue
             record.avg_bulking_of_sand_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','45789bhgt25-3fa3-4b83-ae31-9d28176718457')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','45789bhgt25-3fa3-4b83-ae31-9d28176718457')]).parameter_table
@@ -884,12 +908,16 @@ class FineAggregate(models.Model):
 
     avg_bulking_of_sand1_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_bulking_of_sand1_conformity", store=True)
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Conformity", compute="_compute_avg_bulking_of_sand1_conformity", store=True)
 
     @api.depends('avg_bulking_of_sand1','eln_ref','grade')
     def _compute_avg_bulking_of_sand1_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_bulking_of_sand1_conformity = 'na'
+                continue
             record.avg_bulking_of_sand1_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2547ghty124m-3fa3-4b83-ae31-9d281457nhy14')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2547ghty124m-3fa3-4b83-ae31-9d281457nhy14')]).parameter_table
@@ -986,12 +1014,16 @@ class FineAggregate(models.Model):
 
     avg_moisture_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_moisture_conformity", store=True)
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Conformity", compute="_compute_avg_moisture_conformity", store=True)
 
     @api.depends('avg_moisture','eln_ref','grade')
     def _compute_avg_moisture_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_moisture_conformity = 'na'
+                continue
             record.avg_moisture_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1457htyu1245-3fa3-4b83-ae31-9d281457457hy')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1457htyu1245-3fa3-4b83-ae31-9d281457457hy')]).parameter_table
@@ -1080,12 +1112,16 @@ class FineAggregate(models.Model):
     
     avg_void_loose_density_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Loose Bulk Conformity", compute="_compute_avg_void_loose_density_conformity", store=True)
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Loose Bulk Conformity", compute="_compute_avg_void_loose_density_conformity", store=True)
     
     @api.depends('avg_void_loose_density','eln_ref','grade')
     def _compute_avg_void_loose_density_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_void_loose_density_conformity = 'na'
+                continue
             record.avg_void_loose_density_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','919587f2-5b45-4da1-bb73-10164b861833')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','919587f2-5b45-4da1-bb73-10164b861833')]).parameter_table
@@ -1218,12 +1254,16 @@ class FineAggregate(models.Model):
 
     avg_compacted_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Compacted Bulk Conformity", compute="_compute_avg_compacted_conformity", store=True)
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Compacted Bulk Conformity", compute="_compute_avg_compacted_conformity", store=True)
 
     @api.depends('avg_compacted','eln_ref','grade')
     def _compute_avg_compacted_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_compacted_conformity = 'na'
+                continue
             record.avg_compacted_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','357f579d-a310-4015-bc11-28a85c53ac83')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','357f579d-a310-4015-bc11-28a85c53ac83')]).parameter_table
@@ -1356,12 +1396,16 @@ class FineAggregate(models.Model):
     
     avg_void_compacted_density_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Compacted Bulk Conformity", compute="_compute_avg_void_compacted_density_conformity", store=True)
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Compacted Bulk Conformity", compute="_compute_avg_void_compacted_density_conformity", store=True)
     
     @api.depends('avg_void_compacted_density','eln_ref','grade')
     def _compute_avg_void_compacted_density_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_void_compacted_density_conformity = 'na'
+                continue
             record.avg_void_compacted_density_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','04a95dc1-4b45-4817-a9b2-dd722bbe6281')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','04a95dc1-4b45-4817-a9b2-dd722bbe6281')]).parameter_table
