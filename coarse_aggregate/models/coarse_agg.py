@@ -2397,7 +2397,11 @@ class CoarseAggregateMechanical(models.Model):
                 continue
 
             # Check if user is in Lerm Admin group
-            if current_user.has_group('lerm_civil.kes_admin_access_group'):
+            if (
+                current_user.has_group('lerm_civil.kes_admin_access_group')
+                or current_user.has_group('lerm_civil.lerm_sample_verification')
+                or current_user.has_group('lerm_civil.lerm_sample_approval')
+            ):
                 # Admin sees all parameters
                 parameter_ids = record.eln_ref.parameters_result.mapped('parameter').ids
             else:
