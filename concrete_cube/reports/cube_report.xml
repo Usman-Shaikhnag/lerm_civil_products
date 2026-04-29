@@ -8,6 +8,10 @@
 						<table style="width: 100%; border-collapse: collapse;">
 							<tbody>
 								<tr>
+									<td><strong>Name of Work</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
+								</tr>
+								<tr>
 									<td style="width: 30%; padding: 5px;"><strong>Client Details</strong></td>
 									<td style="padding-left: 10px;">
 										<span t-field="o.srf_id.customer.name"/>
@@ -22,10 +26,6 @@
 								<tr>
 									<td><strong>Client's Reference</strong></td>
 									<td style="padding-left: 10px;"><span t-field="o.srf_id.client_refrence"/></td>
-								</tr>
-								<tr>
-									<td><strong>Name of Work</strong></td>
-									<td style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
 								</tr>
 								<tr>
 									<td><strong>Date of Testing</strong></td>
@@ -46,8 +46,12 @@
 
 								<!-- Test method adopted (only if value exists) -->
 								<tr t-if="o.material.test_method_adopted">
-									<td style="font-weight: bold;">Test method adopted:</td>
+									<td style="font-weight: bold;">Curing Condition</td>
 									<td><span t-field="o.material.test_method_adopted"/></td>
+								</tr>
+								<tr t-if="o.instrument">
+									<td style="font-weight: bold;">Machine Used For Testing/Loading Range</td>
+									<td><span t-field="o.instrument.name"/></td>
 								</tr>
 							</tbody>
 						</table>
@@ -66,6 +70,21 @@
 						
 					</div> -->
 					
+					<div style="margin-top:2px">
+						<table class="custom_table_borders text-center">
+					
+							<tr>
+								<td><strong>Type of Failure</strong> : <span t-field="data.type_of_failure"/></td>
+								<td><strong>Temperature</strong> : <span t-field="data.temp"></span></td>
+							
+								<td><strong>Humidity</strong> : <span t-field="data.humidity"/>C</td>
+								<td><strong>Date of Calibration  : </strong><span t-field="data.date_of_calibration"/>%</td>		
+							
+								<td><strong>Condition of Sample</strong> : <span t-field="data.condition_of_sample"/></td>
+	
+							</tr>
+						</table>
+					</div> 
 					<div style="margin-top:2px">
 						<table class="custom_table_borders text-center">
 							<tr>
