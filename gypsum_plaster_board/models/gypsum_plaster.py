@@ -53,7 +53,8 @@ class GypsumPlaster(models.Model):
 
     average_density_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_density_conformity", store=True)
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Conformity", compute="_compute_average_density_conformity", store=True)
 
 
 
@@ -61,6 +62,9 @@ class GypsumPlaster(models.Model):
     def _compute_average_density_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_density_conformity = 'na'
+                continue
             record.average_density_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3587lpiy-7a9c-4616-bad5-88eb1b260747')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3587lpiy-7a9c-4616-bad5-88eb1b260747')]).parameter_table
