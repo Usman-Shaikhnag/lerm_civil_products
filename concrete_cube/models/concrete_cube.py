@@ -571,6 +571,16 @@ class MechanicalConcreteCube(models.Model):
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+        
+        for result in self.eln_ref.parameters_result:
+            if result.parameter.internal_id == '805c8980-43ba-11f1-b5e7-53e36b444a8d':
+                result.calculated = True
+                continue
+        
+        for result in self.eln_ref.parameters_result:
+            if result.parameter.internal_id == '46126492-43bb-11f1-9927-73ec8db785af':
+                result.calculated = True
+                continue
 
         return {
                 'view_mode': 'form',
