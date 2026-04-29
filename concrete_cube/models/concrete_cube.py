@@ -377,12 +377,16 @@ class MechanicalConcreteCube(models.Model):
 
     wpt_nabl = fields.Selection([
         ('pass', 'NABL'),
-        ('fail', 'NON NABL')], string="NABL", default='fail',compute="_compute_wpt_nabl", store=True)
+        ('fail', 'NON NABL'),
+    ('na', 'NA'),], string="NABL", default='fail',compute="_compute_wpt_nabl", store=True)
 
     @api.depends('average_of_wpt','eln_ref','grade')
     def _compute_wpt_nabl(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.wpt_nabl = 'na'
+                continue
             record.wpt_nabl = 'fail'
             line = self.env['lerm.parameter.master'].search([('internal_id','=','1023457-0268-46ef-ba88-9c0453210lkit1')])
             materials = self.env['lerm.parameter.master'].search([('internal_id','=','1023457-0268-46ef-ba88-9c0453210lkit1')]).parameter_table
@@ -431,12 +435,16 @@ class MechanicalConcreteCube(models.Model):
 
     avg_water_absorption_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
 
     @api.depends('avg_water_absorption','eln_ref','grade')
     def _compute_avg_water_absorption_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_water_absorption_conformity = 'na'
+                continue
             record.avg_water_absorption_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','30214iu-eba3-4f15-b33d-679b39f73301')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','30214iu-eba3-4f15-b33d-679b39f73301')]).parameter_table

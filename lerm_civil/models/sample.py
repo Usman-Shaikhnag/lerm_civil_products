@@ -75,6 +75,7 @@ class LermSampleForm(models.Model):
     kes_no = fields.Char("UID",required=True,readonly=True, default=lambda self: 'New' ,tracking=True)
     casting_date = fields.Date(string="Casting Date")
     client_sample_id = fields.Char(string='Client Sample ID')
+    
     filled_by = fields.Many2one('res.users',string="Filled By")
     check_by = fields.Many2one('res.users',string="Check By")
     approved_by = fields.Many2one('res.users',string="Approved By")

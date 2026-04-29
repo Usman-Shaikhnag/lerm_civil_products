@@ -44,7 +44,7 @@ class ChequeredCementTile(models.Model):
 
     average_cememt_flatness_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Flatness Conformity", compute="_compute_average_cememt_flatness_conformity", store=True)
+            ('fail', 'Fail'),('na', 'NA'),], string="Flatness Conformity", compute="_compute_average_cememt_flatness_conformity", store=True)
 
 
 
@@ -52,6 +52,9 @@ class ChequeredCementTile(models.Model):
     def _compute_average_cememt_flatness_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_cememt_flatness_conformity = 'na'
+                continue
             record.average_cememt_flatness_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2568fgt4-9cbe-4f6b-a53f-7aa6de46c884')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2568fgt4-9cbe-4f6b-a53f-7aa6de46c884')]).parameter_table
@@ -99,7 +102,7 @@ class ChequeredCementTile(models.Model):
 
     average_cement_perpendicularity_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Perpendicularity Conformity", compute="_compute_average_cement_perpendicularity_conformity", store=True)
+            ('fail', 'Fail'),('na', 'NA'),], string="Perpendicularity Conformity", compute="_compute_average_cement_perpendicularity_conformity", store=True)
 
 
 
@@ -107,6 +110,9 @@ class ChequeredCementTile(models.Model):
     def _compute_average_cement_perpendicularity_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_cement_perpendicularity_conformity = 'na'
+                continue
             record.average_cement_perpendicularity_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','256opy-7664-4997-b116-6bb1ad2d43d0')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','256opy-7664-4997-b116-6bb1ad2d43d0')]).parameter_table
@@ -155,7 +161,7 @@ class ChequeredCementTile(models.Model):
 
     average_cement_straightness_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Straightness Conformity", compute="_compute_average_cement_straightness_conformity", store=True)
+            ('fail', 'Fail'),('na', 'NA'),], string="Straightness Conformity", compute="_compute_average_cement_straightness_conformity", store=True)
 
 
 
@@ -163,6 +169,9 @@ class ChequeredCementTile(models.Model):
     def _compute_average_cement_straightness_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_cement_straightness_conformity = 'na'
+                continue
             record.average_cement_straightness_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','254opyt1-0a6a-4a00-ab70-04908d78524c')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','254opyt1-0a6a-4a00-ab70-04908d78524c')]).parameter_table
@@ -254,7 +263,7 @@ class ChequeredCementTile(models.Model):
 
     average_water_cement_absorption_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_water_cement_absorption_conformity", store=True)
+            ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_average_water_cement_absorption_conformity", store=True)
 
 
 
@@ -262,6 +271,9 @@ class ChequeredCementTile(models.Model):
     def _compute_average_water_cement_absorption_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_water_cement_absorption_conformity = 'na'
+                continue
             record.average_water_cement_absorption_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','258opk1-5406-4010-a81f-88e591d4197e')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','258opk1-5406-4010-a81f-88e591d4197e')]).parameter_table
@@ -332,7 +344,7 @@ class ChequeredCementTile(models.Model):
 
     average_cement_wet_transver_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_cement_wet_transver_conformity", store=True)
+            ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_average_cement_wet_transver_conformity", store=True)
 
 
 
@@ -340,6 +352,9 @@ class ChequeredCementTile(models.Model):
     def _compute_average_cement_wet_transver_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_cement_wet_transver_conformity = 'na'
+                continue
             record.average_cement_wet_transver_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2658piy-34eb-4442-bccb-3b13f9d05ea2')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2658piy-34eb-4442-bccb-3b13f9d05ea2')]).parameter_table

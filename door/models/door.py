@@ -46,7 +46,8 @@ class Door(models.Model):
 
     door_length_avg_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Length Conformity", compute="_compute_door_length_avg_conformity", store=True)
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Length Conformity", compute="_compute_door_length_avg_conformity", store=True)
 
 
 
@@ -54,6 +55,9 @@ class Door(models.Model):
     def _compute_door_length_avg_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.door_length_avg_conformity = 'na'
+                continue
             record.door_length_avg_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','cd31c1fa-aac8-4a92-b56e-37ace7f01f13')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','cd31c1fa-aac8-4a92-b56e-37ace7f01f13')]).parameter_table
@@ -122,7 +126,8 @@ class Door(models.Model):
 
     door_width_avg_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Length Conformity", compute="_compute_door_width_avg_conformity", store=True)
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Length Conformity", compute="_compute_door_width_avg_conformity", store=True)
 
 
 
@@ -130,6 +135,9 @@ class Door(models.Model):
     def _compute_door_width_avg_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.door_width_avg_conformity = 'na'
+                continue
             record.door_width_avg_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','426149cc-ee30-45bb-a7df-db54327c2de1')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','426149cc-ee30-45bb-a7df-db54327c2de1')]).parameter_table
@@ -199,7 +207,8 @@ class Door(models.Model):
 
     door_thickess_avg_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Length Conformity", compute="_compute_door_thickess_avg_conformity", store=True)
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Length Conformity", compute="_compute_door_thickess_avg_conformity", store=True)
 
 
 
@@ -207,6 +216,9 @@ class Door(models.Model):
     def _compute_door_thickess_avg_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.door_thickess_avg_conformity = 'na'
+                continue
             record.door_thickess_avg_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','80bacb3a-e725-4651-b476-3b1cc3fdd405')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','80bacb3a-e725-4651-b476-3b1cc3fdd405')]).parameter_table
@@ -273,7 +285,8 @@ class Door(models.Model):
 
     door_squareness_avg_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Length Conformity", compute="_compute_door_squareness_avg_conformity", store=True)
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Length Conformity", compute="_compute_door_squareness_avg_conformity", store=True)
 
 
 
@@ -281,6 +294,9 @@ class Door(models.Model):
     def _compute_door_squareness_avg_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.door_squareness_avg_conformity = 'na'
+                continue
             record.door_squareness_avg_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7f15645f-2d9f-4797-9a0f-978913968fd7')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7f15645f-2d9f-4797-9a0f-978913968fd7')]).parameter_table
@@ -337,7 +353,8 @@ class Door(models.Model):
 
     door_cupping_avg_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Cupping Conformity", compute="_compute_door_cupping_avg_conformity", store=True)
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Cupping Conformity", compute="_compute_door_cupping_avg_conformity", store=True)
 
 
 
@@ -345,6 +362,9 @@ class Door(models.Model):
     def _compute_door_cupping_avg_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.door_cupping_avg_conformity = 'na'
+                continue
             record.door_cupping_avg_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0a4af69d-a9b4-41f7-976b-0645cfb1d9fd')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0a4af69d-a9b4-41f7-976b-0645cfb1d9fd')]).parameter_table
@@ -403,7 +423,8 @@ class Door(models.Model):
 
     door_warping_avg_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Warping Conformity", compute="_compute_door_warping_avg_conformity", store=True)
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Warping Conformity", compute="_compute_door_warping_avg_conformity", store=True)
 
 
 
@@ -411,6 +432,9 @@ class Door(models.Model):
     def _compute_door_warping_avg_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.door_warping_avg_conformity = 'na'
+                continue
             record.door_warping_avg_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d6e5bbea-ef22-4f8e-89cd-39a60007aced')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d6e5bbea-ef22-4f8e-89cd-39a60007aced')]).parameter_table
@@ -469,7 +493,8 @@ class Door(models.Model):
 
     door_twisting_avg_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Twisting Conformity", compute="_compute_door_twisting_avg_conformity", store=True)
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Twisting Conformity", compute="_compute_door_twisting_avg_conformity", store=True)
 
 
 
@@ -477,6 +502,9 @@ class Door(models.Model):
     def _compute_door_twisting_avg_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.door_twisting_avg_conformity = 'na'
+                continue
             record.door_twisting_avg_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','86105e60-82a1-4578-bc7b-286cae494b41')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','86105e60-82a1-4578-bc7b-286cae494b41')]).parameter_table
@@ -550,7 +578,8 @@ class Door(models.Model):
 
     door_local_planeness_avg_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Local Planeness Conformity", compute="_compute_door_local_planeness_avg_conformity", store=True)
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Local Planeness Conformity", compute="_compute_door_local_planeness_avg_conformity", store=True)
 
 
 
@@ -558,6 +587,9 @@ class Door(models.Model):
     def _compute_door_local_planeness_avg_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.door_local_planeness_avg_conformity = 'na'
+                continue
             record.door_local_planeness_avg_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0020e36c-0431-4859-8713-5e40c743e23b')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0020e36c-0431-4859-8713-5e40c743e23b')]).parameter_table
@@ -631,7 +663,8 @@ class Door(models.Model):
 
     door_impact_avg_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Impact Indentation Conformity", compute="_compute_door_impact_avg_conformity", store=True)
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Impact Indentation Conformity", compute="_compute_door_impact_avg_conformity", store=True)
 
 
 
@@ -639,6 +672,9 @@ class Door(models.Model):
     def _compute_door_impact_avg_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.door_impact_avg_conformity = 'na'
+                continue
             record.door_impact_avg_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','bf8130ff-d00f-44c6-8216-da112646962c')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','bf8130ff-d00f-44c6-8216-da112646962c')]).parameter_table
@@ -701,7 +737,8 @@ class Door(models.Model):
 
     edge_loading_obsrvetions1_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Edge Loading Obsrvetions 1 Conformity", compute="_compute_edge_loading_obsrvetions1_conformity", store=True)
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Edge Loading Obsrvetions 1 Conformity", compute="_compute_edge_loading_obsrvetions1_conformity", store=True)
 
 
 
@@ -709,6 +746,9 @@ class Door(models.Model):
     def _compute_edge_loading_obsrvetions1_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.edge_loading_obsrvetions1_conformity = 'na'
+                continue
             record.edge_loading_obsrvetions1_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3a90fc7e-17dc-4517-be7a-d94522ebb1bf')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3a90fc7e-17dc-4517-be7a-d94522ebb1bf')]).parameter_table
@@ -753,7 +793,8 @@ class Door(models.Model):
 
     edge_loading_obsrvetions2_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Edge Loading Obsrvetions 2 Conformity", compute="_compute_edge_loading_obsrvetions2_conformity", store=True)
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Edge Loading Obsrvetions 2 Conformity", compute="_compute_edge_loading_obsrvetions2_conformity", store=True)
 
 
 
@@ -761,6 +802,9 @@ class Door(models.Model):
     def _compute_edge_loading_obsrvetions2_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.edge_loading_obsrvetions2_conformity = 'na'
+                continue
             record.edge_loading_obsrvetions2_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ffa12329-b217-4f34-87a4-f4cdd3f43d92')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ffa12329-b217-4f34-87a4-f4cdd3f43d92')]).parameter_table
@@ -823,7 +867,8 @@ class Door(models.Model):
 
     bucklin_resistance_obsrvetions1_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Buckling Resistance Obsrvetions 1 Conformity", compute="_compute_bucklin_resistance_obsrvetions1_conformity", store=True)
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Buckling Resistance Obsrvetions 1 Conformity", compute="_compute_bucklin_resistance_obsrvetions1_conformity", store=True)
 
 
 
@@ -831,6 +876,9 @@ class Door(models.Model):
     def _compute_bucklin_resistance_obsrvetions1_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.bucklin_resistance_obsrvetions1_conformity = 'na'
+                continue
             record.bucklin_resistance_obsrvetions1_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','14a75287-8e9d-48bb-a187-861b0c5e1dfa')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','14a75287-8e9d-48bb-a187-861b0c5e1dfa')]).parameter_table
@@ -875,7 +923,8 @@ class Door(models.Model):
 
     bucklin_resistance_obsrvetions2_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Buckling Resistance Obsrvetions 2 Conformity", compute="_compute_bucklin_resistance_obsrvetions2_conformity", store=True)
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Buckling Resistance Obsrvetions 2 Conformity", compute="_compute_bucklin_resistance_obsrvetions2_conformity", store=True)
 
 
 
@@ -883,6 +932,9 @@ class Door(models.Model):
     def _compute_bucklin_resistance_obsrvetions2_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.bucklin_resistance_obsrvetions2_conformity = 'na'
+                continue
             record.bucklin_resistance_obsrvetions2_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','cc6639db-457f-4959-b3e0-e280d9e7db7e')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','cc6639db-457f-4959-b3e0-e280d9e7db7e')]).parameter_table
@@ -954,7 +1006,8 @@ class Door(models.Model):
 
     door_varying_cupping_avg_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Cupping Conformity", compute="_compute_door_varying_cupping_avg_conformity", store=True)
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Cupping Conformity", compute="_compute_door_varying_cupping_avg_conformity", store=True)
 
 
 
@@ -962,6 +1015,9 @@ class Door(models.Model):
     def _compute_door_varying_cupping_avg_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.door_varying_cupping_avg_conformity = 'na'
+                continue
             record.door_varying_cupping_avg_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','58865fca-97fe-426d-aec7-ebf2ec20fedf')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','58865fca-97fe-426d-aec7-ebf2ec20fedf')]).parameter_table
@@ -1020,7 +1076,8 @@ class Door(models.Model):
 
     door_varying_warping_avg_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Warping Conformity", compute="_compute_door_varying_warping_avg_conformity", store=True)
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Warping Conformity", compute="_compute_door_varying_warping_avg_conformity", store=True)
 
 
 
@@ -1028,6 +1085,9 @@ class Door(models.Model):
     def _compute_door_varying_warping_avg_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.door_varying_warping_avg_conformity = 'na'
+                continue
             record.door_varying_warping_avg_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e970e60d-189f-4ebb-b1bd-9e0d8dc44d6f')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e970e60d-189f-4ebb-b1bd-9e0d8dc44d6f')]).parameter_table
@@ -1087,7 +1147,8 @@ class Door(models.Model):
 
     door_varying_twisting_avg_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Twisting Conformity", compute="_compute_door_varying_twisting_avg_conformity", store=True)
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Twisting Conformity", compute="_compute_door_varying_twisting_avg_conformity", store=True)
 
 
 
@@ -1095,6 +1156,9 @@ class Door(models.Model):
     def _compute_door_varying_twisting_avg_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.door_varying_twisting_avg_conformity = 'na'
+                continue
             record.door_varying_twisting_avg_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','10bb9da6-4d70-4921-b062-ca61e0b32cf3')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','10bb9da6-4d70-4921-b062-ca61e0b32cf3')]).parameter_table

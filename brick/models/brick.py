@@ -119,7 +119,7 @@ class MechanicalBricks(models.Model):
     comp_strength_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='Confirmity', default='fail',compute="_compute_comp_strength_conformity")
+    ('na', 'NA'),], string='Confirmity', compute="_compute_comp_strength_conformity")
 
     comp_strength_nabl = fields.Selection([
         ('pass', 'Pass'),
@@ -128,6 +128,9 @@ class MechanicalBricks(models.Model):
     @api.depends('avrg_compressive_strength','eln_ref')
     def _compute_comp_strength_conformity(self):
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.comp_strength_confirmity = 'na'
+                continue
             record.comp_strength_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')]).parameter_table
@@ -302,7 +305,7 @@ class MechanicalBricks(models.Model):
     water_absorption_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='Confirmity', default='fail',compute="_compute_water_absorption_confirmity")
+    ('na', 'NA'),], string='Confirmity', compute="_compute_water_absorption_confirmity")
 
     water_absorption_nabl = fields.Selection([
         ('pass', 'Pass'),
@@ -312,6 +315,9 @@ class MechanicalBricks(models.Model):
     @api.depends('avrg_water_absorption','eln_ref')
     def _compute_water_absorption_confirmity(self):
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.water_absorption_confirmity = 'na'
+                continue
             record.water_absorption_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')]).parameter_table
@@ -415,7 +421,7 @@ class MechanicalBricks(models.Model):
     confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='Confirmity', default='fail')
+    ('na', 'NA'),], string='Confirmity', default='fail')
 
 
     ### Compute Visible

@@ -45,7 +45,7 @@ class ChequeredTile(models.Model):
 
     average_flatness_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Flatness Conformity", compute="_compute_average_flatness_conformity", store=True)
+            ('fail', 'Fail'),('na', 'NA'),], string="Flatness Conformity", compute="_compute_average_flatness_conformity", store=True)
 
 
 
@@ -53,6 +53,9 @@ class ChequeredTile(models.Model):
     def _compute_average_flatness_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_flatness_conformity = 'na'
+                continue
             record.average_flatness_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1254785r-79c0-44a8-9379-f40dd3323rg34')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1254785r-79c0-44a8-9379-f40dd3323rg34')]).parameter_table
@@ -71,8 +74,8 @@ class ChequeredTile(models.Model):
                         record.average_flatness_conformity = 'fail'
 
     average_flatness_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="Flatness NABL", compute="_compute_average_flatness_nabl", store=True)
+        ('pass', 'Pass'),
+        ('fail', 'Fail')], string="Flatness NABL", compute="_compute_average_flatness_nabl", store=True)
 
     @api.depends('average_flatness','eln_ref','grade')
     def _compute_average_flatness_nabl(self):
@@ -100,7 +103,7 @@ class ChequeredTile(models.Model):
 
     average_perpendicularity_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Perpendicularity Conformity", compute="_compute_average_perpendicularity_conformity", store=True)
+            ('fail', 'Fail'),('na', 'NA'),], string="Perpendicularity Conformity", compute="_compute_average_perpendicularity_conformity", store=True)
 
 
 
@@ -108,6 +111,9 @@ class ChequeredTile(models.Model):
     def _compute_average_perpendicularity_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_perpendicularity_conformity = 'na'
+                continue
             record.average_perpendicularity_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2546369f82-79c0-44a8-9379-f40dd3323rg34')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2546369f82-79c0-44a8-9379-f40dd3323rg34')]).parameter_table
@@ -126,8 +132,8 @@ class ChequeredTile(models.Model):
                         record.average_perpendicularity_conformity = 'fail'
 
     average_perpendicularity_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="Perpendicularity NABL", compute="_compute_average_perpendicularity_nabl", store=True)
+        ('pass', 'Pass'),
+        ('fail', 'Fail')], string="Perpendicularity NABL", compute="_compute_average_perpendicularity_nabl", store=True)
 
     @api.depends('average_perpendicularity','eln_ref','grade')
     def _compute_average_perpendicularity_nabl(self):
@@ -156,7 +162,7 @@ class ChequeredTile(models.Model):
 
     average_straightness_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Straightness Conformity", compute="_compute_average_straightness_conformity", store=True)
+            ('fail', 'Fail'),('na', 'NA'),], string="Straightness Conformity", compute="_compute_average_straightness_conformity", store=True)
 
 
 
@@ -164,6 +170,9 @@ class ChequeredTile(models.Model):
     def _compute_average_straightness_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_straightness_conformity = 'na'
+                continue
             record.average_straightness_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23k45868469f82-79c0-44a8-9379-f40dd3323rg34')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23k45868469f82-79c0-44a8-9379-f40dd3323rg34')]).parameter_table
@@ -182,8 +191,8 @@ class ChequeredTile(models.Model):
                         record.average_straightness_conformity = 'fail'
 
     average_straightness_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="Straightness NABL", compute="_compute_average_straightness_nabl", store=True)
+        ('pass', 'Pass'),
+        ('fail', 'Fail')], string="Straightness NABL", compute="_compute_average_straightness_nabl", store=True)
 
     @api.depends('average_straightness','eln_ref','grade')
     def _compute_average_straightness_nabl(self):
@@ -255,7 +264,7 @@ class ChequeredTile(models.Model):
 
     average_water_absorption_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_water_absorption_conformity", store=True)
+            ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_average_water_absorption_conformity", store=True)
 
 
 
@@ -263,6 +272,9 @@ class ChequeredTile(models.Model):
     def _compute_average_water_absorption_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_water_absorption_conformity = 'na'
+                continue
             record.average_water_absorption_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','26579pi7-ef96-446d-9108-c13d740424ca')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','26579pi7-ef96-446d-9108-c13d740424ca')]).parameter_table
@@ -281,8 +293,8 @@ class ChequeredTile(models.Model):
                         record.average_water_absorption_conformity = 'fail'
 
     average_water_absorption_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_average_water_absorption_nabl", store=True)
+        ('pass', 'Pass'),
+        ('fail', 'Fail')], string="NABL", compute="_compute_average_water_absorption_nabl", store=True)
 
     @api.depends('average_water_absorption','eln_ref','grade')
     def _compute_average_water_absorption_nabl(self):
@@ -331,7 +343,7 @@ class ChequeredTile(models.Model):
 
     average_wet_transver_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_wet_transver_conformity", store=True)
+            ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_average_wet_transver_conformity", store=True)
 
 
 
@@ -339,6 +351,9 @@ class ChequeredTile(models.Model):
     def _compute_average_wet_transver_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_wet_transver_conformity = 'na'
+                continue
             record.average_wet_transver_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3258li68-d457-4f5d-a912-48c756bb7837')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3258li68-d457-4f5d-a912-48c756bb7837')]).parameter_table
@@ -357,8 +372,8 @@ class ChequeredTile(models.Model):
                         record.average_wet_transver_conformity = 'fail'
 
     average_wet_transver_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_average_wet_transver_nabl", store=True)
+        ('pass', 'Pass'),
+        ('fail', 'Fail')], string="NABL", compute="_compute_average_wet_transver_nabl", store=True)
 
     @api.depends('average_wet_transver','eln_ref','grade')
     def _compute_average_wet_transver_nabl(self):
