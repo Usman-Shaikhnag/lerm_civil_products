@@ -1,5 +1,19 @@
 
 <odoo>
+<record id="paperformat_makeinfra_report" model="report.paperformat">
+    <field name="name">Makeinfra PaperFormat</field>
+    <field name="default" eval="False"/>
+    <field name="format">A4</field>
+    <field name="orientation">Portrait</field>
+    <field name="margin_top">40</field>
+    <field name="margin_bottom">50</field>
+    <field name="margin_left">7</field>
+    <field name="margin_right">7</field>
+    <field name="header_line" eval="False"/>
+    <field name="header_spacing">35</field>
+    <field name="disable_shrinking" eval="False"/>
+    <field name="dpi">100</field>
+</record>
 <record id="eln_report_action" model="ir.actions.report">
     <field name="name">Report One Dim</field>
     <field name="model">lerm.eln</field>
@@ -130,6 +144,7 @@
     <field name="report_name">coarse_aggregate.lerm_coarse_aggregate_mech_report</field>
     <field name="report_file">coarse_aggregate.lerm_coarse_aggregate_mech_report</field>
     <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="paperformat_id" ref="paperformat_makeinfra_report"/>
     <field name="binding_type">report</field>
 </record>
 
@@ -170,6 +185,7 @@
     <field name="report_name">bituminous.bituminous_report</field>
     <field name="report_file">bituminous.bituminous_report</field>
     <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="paperformat_id" ref="paperformat_makeinfra_report"/>
     <field name="binding_type">report</field>
 </record>
 
@@ -523,6 +539,7 @@
     <field name="report_name">concrete_cube.compresive_concrete_cube_report</field>
     <field name="report_file">concrete_cube.compresive_concrete_cube_report</field>
     <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="paperformat_id" ref="paperformat_makeinfra_report"/>
     <field name="binding_type">report</field>
 </record>
 
@@ -1051,40 +1068,40 @@
         <field name="binding_type">report</field>
    </record>
    
-        <record id="report_crushed_sand_chemical_action" model="ir.actions.report">
-            <field name="name">Crushed Sand Chemical Report</field>
-            <field name="model">lerm.eln</field>
-            <field name="report_type">qweb-pdf</field>
-            <field name="report_name">crushed_sand_chemical.chemical_crushed_sand_report</field>
-            <field name="report_file">crushed_sand_chemical.chemical_crushed_sand_report</field>
-            <field name="binding_model_id" ref="model_lerm_eln"/>
-            <!--  <field name="binding_model_id" eval="False"/>  -->
-            <field name="binding_type">report</field>
-        </record>
+    <record id="report_crushed_sand_chemical_action" model="ir.actions.report">
+        <field name="name">Crushed Sand Chemical Report</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">crushed_sand_chemical.chemical_crushed_sand_report</field>
+        <field name="report_file">crushed_sand_chemical.chemical_crushed_sand_report</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <!--  <field name="binding_model_id" eval="False"/>  -->
+        <field name="binding_type">report</field>
+    </record>
 
-        <record id="datasheet_aac_block_action" model="ir.actions.report">
-            <field name="name">AAC Block Datasheet</field>
-            <field name="model">lerm.eln</field>
-            <field name="report_type">qweb-pdf</field>
-            <field name="report_name">aac_block.aac_block_datasheet</field>
-            <field name="report_file">aac_block.aac_block_datasheet</field>
-            <field name="binding_model_id" ref="model_lerm_eln"/>
-            <!--  <field name="binding_model_id" eval="False"/>  -->
-            <field name="binding_type">report</field>
-        </record>
+    <record id="datasheet_aac_block_action" model="ir.actions.report">
+        <field name="name">AAC Block Datasheet</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">aac_block.aac_block_datasheet</field>
+        <field name="report_file">aac_block.aac_block_datasheet</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <!--  <field name="binding_model_id" eval="False"/>  -->
+        <field name="binding_type">report</field>
+    </record>
 
-        <record id="report_aac_block_action" model="ir.actions.report">
-            <field name="name">AAC Block Report</field>
-            <field name="model">lerm.eln</field>
-            <field name="report_type">qweb-pdf</field>
-            <field name="report_name">aac_block.aac_block_mech_report</field>
-            <field name="report_file">aac_block.aac_block_mech_report</field>
-            <field name="binding_model_id" ref="model_lerm_eln"/>
-            <!--  <field name="binding_model_id" eval="False"/>  -->
-            <field name="binding_type">report</field>
-        </record>
+    <record id="report_aac_block_action" model="ir.actions.report">
+        <field name="name">AAC Block Report</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">aac_block.aac_block_mech_report</field>
+        <field name="report_file">aac_block.aac_block_mech_report</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="paperformat_id" ref="paperformat_makeinfra_report"/>
+        <field name="binding_type">report</field>
+    </record>
 
-        <record id="rock_datasheet_action" model="ir.actions.report">
+    <record id="rock_datasheet_action" model="ir.actions.report">
         <field name="name">ROCK DataSheet </field>
         <field name="model">lerm.eln</field>
         <field name="report_type">qweb-pdf</field>

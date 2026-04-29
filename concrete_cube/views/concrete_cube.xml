@@ -128,7 +128,11 @@
                         <tree editable="bottom">
                             <field name='sr_no' string="Sr. NO"/>
                             <field name='id_mark' />
+                            <field name='dimension'/>
                             <field name='wt_sample'  widget="char" class="blue-input" decoration-info="wt_sample != 0"/>
+                            <field name="volume"/>
+                            <field name="area"/>
+                            <field name="density"/>
                             <field name='dt_of_casting' widget="date" options="{'format': 'dd-MM-yy'}" readonly="1" class="blue-input" decoration-info="dt_of_casting != 0"/>
                             <field name='days' class="blue-input" decoration-info="days != 0"/>
                             <field name='dt_of_testing1'  widget="date" options="{'format': 'dd-MM-yy'}" readonly="1" class="blue-input" decoration-info="dt_of_testing1 != 0"/>
@@ -416,9 +420,18 @@
                         </tbody>
                     </table>
 
+                        <div class="custom_table_borders" style="margin-top: 15px;">
+                            <field name="notes_id" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="sr_no" width="100"/>
+                                    <field name="notes"  />
+                                </tree>
+                            </field>
+                            
+                        </div>
+                        
                         <group style="margin-top: 20px;">
-
-                        <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
+                            <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
                         </group>
                     </sheet>
                 </form>

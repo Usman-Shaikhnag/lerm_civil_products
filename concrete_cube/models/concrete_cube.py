@@ -28,6 +28,39 @@ class MechanicalConcreteCube(models.Model):
     cube_name = fields.Char("Name",default=" Cube")
     cube_visible = fields.Boolean("Chequered Visible",compute="_compute_visible")   
 
+    notes_id = fields.One2many('concrete.cube.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(MechanicalConcreteCube, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'i',
+                'notes': 'The results stated in this report apply only to the tested sample(s) and are based on the conditions and parameters at the time of testing.',
+            }),
+            (0, 0, {
+                'sr_no': 'ii',
+                'notes': 'This report is invalid without the official paper seal of Make Infracon.',
+            }),
+            (0, 0, {
+                'sr_no': 'iii',
+                'notes': 'All test results are confidential and will not be disclosed to any third party without written consent of the client, except where required by law.',
+            }),
+            (0, 0, {
+                'sr_no': 'iv',
+                'notes': 'The # points mentioned in the report which information is given by Client/Customer.',
+            }),
+
+            (0, 0, {
+                'sr_no': 'v',
+                'notes': 'Any disputes shall be subject to jurisdiction of Nashik courts only.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
     def action_calculate_avg_strength(self):
         for rec in self:
             lines = rec.child_lines.sorted(key=lambda l: l.sr_no)  # sr_no ने sort करायचं
@@ -637,16 +670,37 @@ class MechanicalConcreteCubeLine(models.Model):
     sr_no = fields.Integer(string="Sr.No.",readonly=True, copy=False, default=1)
   
     id_mark = fields.Char(string="Sample Identification",store=True)
-    wt_sample = fields.Float(string="Weight of Cube (gms)",digits=(16,3))
+    wt_sample = fields.Float(string="Weight of  Specimen (Kg)",digits=(16,3))
 
     dt_of_casting = fields.Date(string="Date of casting",compute="_compute_dt_of_casting",store=True)
     days = fields.Integer(string="No.of Days",compute="_compute_days",store=True)
     dt_of_testing1 = fields.Date(string="Date of Testing",compute="_compute_dt_of_testing",store=True)
 
-    load = fields.Float(string="Load (kN)")
+    load = fields.Float(string="Maximum Load (KN)")
     compressive_strength = fields.Float(string="Compressive Strength (N/mm2)",compute="_compute_strength",store=True)
 
     avg_compressive_strength = fields.Float(string="Avg. Compressive Strength (N/mm2)")
+    area = fields.Float(string="Area (m²)",compute="_compute_area",store=True)
+    dimension = fields.Char(string="Dimension (mm)",compute="_compute_dimension",store=True)
+    volume = fields.Float(string="Volume (m³)")
+    density = fields.Float(string="Density",compute="_compute_density",store=True,digits=(16,3))
+
+    @api.depends('parent_id.size_id') 
+    def _compute_area(self):
+        for rec in self:
+            rec.area = rec.parent_id.area_of_cube / 1000
+
+    def _compute_dimension(self):
+        for rec in self:
+            rec.dimension = rec.parent_id.size_id.size
+            
+    @api.depends('wt_sample','volume')
+    def _compute_density(self):
+        for rec in self:
+            if rec.wt_sample and rec.volume:
+                rec.density = round((rec.wt_sample * 1000) / rec.volume,3)
+            else:
+                rec.density = 0.0
 
     # @api.depends('parent_id', 'parent_id.child_lines.compressive_strength')
     # def _compute_avg_strength(self):
@@ -658,12 +712,11 @@ class MechanicalConcreteCubeLine(models.Model):
     #         else:
     #             rec.avg_compressive_strength = 0.0
 
-    @api.depends('load', 'parent_id.area_of_cube')
+    @api.depends('load', 'area')
     def _compute_strength(self):
         for record in self:
-            area = record.parent_id.area_of_cube
-            if area:
-                record.compressive_strength = (record.load * 1000) / area
+            if record.area:
+                record.compressive_strength = record.load / record.area
             else:
                 record.compressive_strength = 0.0
 
@@ -853,3 +906,10 @@ class WaterLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
+class ConcreteCubeNotes(models.Model):
+    _name = "concrete.cube.notes"
+
+    parent_id = fields.Many2one('mechanical.concrete.cube',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")

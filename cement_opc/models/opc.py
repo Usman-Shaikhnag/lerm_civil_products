@@ -18,6 +18,37 @@ class CementNormalConsistency(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
+    notes_id = fields.One2many('cement.opc.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(CementNormalConsistency, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'i',
+                'notes': 'The results stated in this report apply only to the tested sample(s) and are based on the conditions and parameters at the time of testing.',
+            }),
+            (0, 0, {
+                'sr_no': 'ii',
+                'notes': 'This report is invalid without the official paper seal of Make Infracon.',
+            }),
+            (0, 0, {
+                'sr_no': 'iii',
+                'notes': 'All test results are confidential and will not be disclosed to any third party without written consent of the client, except where required by law.',
+            }),
+            (0, 0, {
+                'sr_no': 'iv',
+                'notes': 'The # points mentioned in the report which information is given by Client/Customer.',
+            }),
+            (0, 0, {
+                'sr_no': 'v',
+                'notes': 'Any disputes shall be subject to jurisdiction of Nashik courts only.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
 
     def prefill_data(self):
         # import wdb; wdb.set_trace()
@@ -1552,10 +1583,11 @@ class FinalTimeLine(models.Model):
 
    
 
+class CementOPCNotes(models.Model):
+    _name = "cement.opc.notes"
 
-
-
-
-
+    parent_id = fields.Many2one('cement.opc',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
 
   

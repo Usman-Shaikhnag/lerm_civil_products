@@ -55,34 +55,25 @@ class SteelTmtBarLine(models.Model):
 
         default_notes = [
             (0, 0, {
-                'sr_no': 'a',
-                'notes': 'The report shall not be reproduced in fullor partially without written approval of the laboratory HOD/CEO/Maganement.',
+                'sr_no': 'i',
+                'notes': 'The results stated in this report apply only to the tested sample(s) and are based on the conditions and parameters at the time of testing.',
             }),
             (0, 0, {
-                'sr_no': 'b',
-                'notes': 'ampling is not done by us unless mentioned otherwide.',
+                'sr_no': 'ii',
+                'notes': 'This report is invalid without the official paper seal of Make Infracon.',
             }),
             (0, 0, {
-                'sr_no': 'c',
-                'notes': 'without a QR Code and hologram this report is considered invalid.',
+                'sr_no': 'iii',
+                'notes': 'All test results are confidential and will not be disclosed to any third party without written consent of the client, except where required by law.',
             }),
             (0, 0, {
-                'sr_no': 'd',
-                'notes': 'The Result listed refer only to tested samples & applicable parameter Endorsement of product is neither interred nor inplied.',
+                'sr_no': 'iv',
+                'notes': 'The # points mentioned in the report which information is given by Client/Customer.',
             }),
 
             (0, 0, {
-                'sr_no': 'e',
-                'notes': 'The use or report for arbitration, publicity & evidence in legal dispute is forbidden except with prior written consent NBML Lab.',
-            }),
-             (0, 0, {
-                'sr_no': 'f',
-                'notes': 'Alldisputed are subject to Raipur jurisdiction 7 days correction to this report invalidates this report.',
-            }),
-
-             (0, 0, {
-                'sr_no': 'g',
-                'notes': 'Sample willbe destroyed after 30-days from the date of test report unless otherwise Specified.',
+                'sr_no': 'v',
+                'notes': 'Any disputes shall be subject to jurisdiction of Nashik courts only.',
             }),
         ]
 
