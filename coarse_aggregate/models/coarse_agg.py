@@ -16,6 +16,40 @@ class CoarseAggregateMechanical(models.Model):
     size_id = fields.Many2one('lerm.size.line',compute="_compute_size_id")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     avg_compacted_unit  = fields.Char("Compacted Density", compute="_compute_units", store=False)
+    temperature = fields.Char("Temperature",store=True)
+
+
+    notes_id = fields.One2many('coarse.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(CoarseAggregateMechanical, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The results stated in this report apply only to the tested sample(s) and are based on the conditions and parameters at the time of testing. ',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'This report is invalid without the official paper seal of Make Infracon.',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'All test results are confidential and will not be disclosed to any third party without written consent of the client, except where required by law.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This report must not be used, in whole or in part, for advertising or promotional purposes without written authorization. or used as evidence in a court of law.',
+            }),
+            (0, 0, {
+                'sr_no': 'e',
+                'notes': 'Any disputes shall be subject to jurisdiction of {Your Nashik/Location}Courts Only.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
 
 
     def prefill_data(self):
@@ -3272,6 +3306,13 @@ class MagnesiumSulphateTwoLine(models.Model):
         rec.weighted_avg = (
             rec.grading_percent * rec.percent_loss
         ) / 100
+
+class coarseNotes(models.Model):
+    _name = "coarse.notes"
+
+    parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
 
 
 

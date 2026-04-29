@@ -169,10 +169,10 @@
                                 <td colspan="1">Sample ID  :-</td>
 								<td colspan="1">
 
-								  <!-- <t t-if="o.start_date">
-											<span t-field="o.start_date"/>
+								  <t t-if="o.sample_id.client_sample_id">
+											<span t-field="o.sample_id.client_sample_id"/>
 										</t>
-									<t t-else="">-</t> -->
+									<t t-else="">-</t>
 								
 								</td>
                                 </tr>
@@ -265,10 +265,10 @@
 
 									<td colspan="1">Temperature :-</td>
 										<td colspan="1" >
-											<!-- <t t-if="o.material.test_method_adopted">
-											<span t-field="o.material.test_method_adopted"/>
+											<t t-if="data.temperature is not None">
+											<span t-field="data.temperature"/>   °C
 										</t>
-									<t t-else="">-</t> -->
+									<t t-else="">-</t>
 										</td>
 								
 							</tr>
@@ -277,9 +277,7 @@
 					</div>
 
 
-					<div style="text-align:center;">
-						<h4 class="mb-0" style="text-decoration: underline;">Observation Table:-</h4>
-					</div>
+					
 					 
 					<div style="">
 						<table style="margin-top:10px;">
@@ -335,9 +333,15 @@
 										</span>
 									</td>
 
-                                    <td colspan="2"  style="text-align: center;">
+                                    <td   style="text-align: center;">
 										<span>
 											% of wt passing
+										</span>
+									</td>
+
+                                    <td   style="text-align: center;">
+										<span>
+											
 										</span>
 									</td>
 
@@ -361,12 +365,18 @@
 							     		<span t-esc="r['sieve_size']"/>
 									</td>
 
-                                    <td colspan="2" style="text-align: center;font-weight:bold;">
+                                    <td  style="text-align: center;font-weight:bold;">
 									  <span t-esc="r['passing_percent']" t-options='{"widget": "float", "precision": 2}'/>
                                      </td>
 
+                                     <td style="text-align: center;">
+										<span>
+											<span t-esc="sieve.unit.name"/>
+										</span>
+									</td>
+
                                     <td style="text-align: center;font-weight:bold;">
-									  <span t-esc="r['specific_limits']" t-options='{"widget": "float", "precision": 2}'/>
+									  <span t-esc="r['specific_limits']" />
                                      </td>
 
 									<!-- <td  style="text-align: center;">
@@ -1209,7 +1219,7 @@
 
 
 					<div style="page-break-inside: avoid;">
-                        <div style="margin-top:10px; padding:0" class="noteContainer">
+                        <!-- <div style="margin-top:10px; padding:0" class="noteContainer">
                             <table class="table table-bordered">
 								<tr>
 									<td style="padding: 5px; font-style: italic; font-size: 12px;">
@@ -1228,7 +1238,23 @@
 									</td>
 								</tr>
 							</table>
-                        </div>
+                        </div> -->
+                        <div style="margin-top:50px" class="noteContainer">
+						<table >
+							<tr>
+							
+								<td style="padding: 5px; font-style: italic; ">
+
+									<b>Notes:-</b>
+										<t t-if="data.notes_id">
+										<t t-foreach="data.notes_id" t-as="n">
+											<span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span>
+										</t>
+									</t>
+								</td>
+							</tr>
+							</table>
+						</div>
                         <div style="margin-top:10px; page-break-inside: avoid;" class="signatureContainer girdgird">
 
                             <div>

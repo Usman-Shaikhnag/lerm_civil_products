@@ -52,6 +52,19 @@
                             }
                     </style>
 
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                        <tbody>
+                            <tr>
+                                <td><label for="temperature">Temperature</label></td>
+                                <td>
+                                    <field name="temperature" class="blue-input" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+
                     <!-- Sieve Alanysis  -->
                     <div invisible="sieve_visible == False">
                         <h1 style="text-align: center;">
@@ -1257,7 +1270,21 @@
                    
                   
                    
-                  
+                   <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
 
              
 
