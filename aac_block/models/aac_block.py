@@ -27,12 +27,12 @@ class AacBlockMechanical(models.Model):
             record.size_id = record.eln_ref.size_id.id
 
 
-    @api.depends('eln_ref')
-    def _compute_sample_parameters(self):
-        for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
+    # @api.depends('eln_ref')
+    # def _compute_sample_parameters(self):
+    #     for record in self:
+    #         records = record.eln_ref.parameters_result.parameter.ids
+    #         record.sample_parameters = records
+    #         print("Records",records)
 
         
     def get_all_fields(self):
@@ -150,12 +150,12 @@ class AacBlockMechanical(models.Model):
         record.eln_ref.write({'model_id':record.id})
         return record
 
-    @api.depends('eln_ref')
-    def _compute_sample_parameters(self):
-        for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
+    # @api.depends('eln_ref')
+    # def _compute_sample_parameters(self):
+    #     for record in self:
+    #         records = record.eln_ref.parameters_result.parameter.ids
+    #         record.sample_parameters = records
+    #         print("Records",records)
 
     def get_all_fields(self):
         record = self.env['mechanical.aac.block'].browse(self.ids[0])
@@ -181,20 +181,23 @@ class AacBlockMechanical(models.Model):
 
     @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
-        # parameter_based_assignment
         current_user = self.env.user
+
         for record in self:
             if not record.eln_ref:
                 record.sample_parameters = [(6, 0, [])]
                 continue
 
-            # filter parameter results by current user
-            user_param_results = record.eln_ref.parameters_result.filtered(
-                lambda r: r.technician and r.technician.id == current_user.id
-            )
-
-            # map to parameter master IDs
-            parameter_ids = user_param_results.mapped('parameter').ids
+            # Check if user is in Lerm Admin group
+            if current_user.has_group('lerm_civil.kes_admin_access_group'):
+                # Admin sees all parameters
+                parameter_ids = record.eln_ref.parameters_result.mapped('parameter').ids
+            else:
+                # Other users only see parameters assigned to them
+                user_param_results = record.eln_ref.parameters_result.filtered(
+                    lambda r: r.technician and r.technician.id == current_user.id
+                )
+                parameter_ids = user_param_results.mapped('parameter').ids
 
             record.sample_parameters = [(6, 0, parameter_ids)]
 

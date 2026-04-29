@@ -7,7 +7,7 @@ import logging
 class PrintReportsWizard(models.TransientModel):
     _name = 'print.reports.wizard'
 
-    kes_no = fields.Char(string="SSL NO.")
+    kes_no = fields.Char(string="UID.")
 
     def print_nabl_report(self):
         # import wdb ; wdb.set_trace()

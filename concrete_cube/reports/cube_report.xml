@@ -8,6 +8,10 @@
 						<table style="width: 100%; border-collapse: collapse;">
 							<tbody>
 								<tr>
+									<td><strong>Name of Work</strong></td>
+									<td style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
+								</tr>
+								<tr>
 									<td style="width: 30%; padding: 5px;"><strong>Client Details</strong></td>
 									<td style="padding-left: 10px;">
 										<span t-field="o.srf_id.customer.name"/>
@@ -22,10 +26,6 @@
 								<tr>
 									<td><strong>Client's Reference</strong></td>
 									<td style="padding-left: 10px;"><span t-field="o.srf_id.client_refrence"/></td>
-								</tr>
-								<tr>
-									<td><strong>Name of Work</strong></td>
-									<td style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
 								</tr>
 								<tr>
 									<td><strong>Date of Testing</strong></td>
@@ -46,8 +46,12 @@
 
 								<!-- Test method adopted (only if value exists) -->
 								<tr t-if="o.material.test_method_adopted">
-									<td style="font-weight: bold;">Test method adopted:</td>
+									<td style="font-weight: bold;">Curing Condition</td>
 									<td><span t-field="o.material.test_method_adopted"/></td>
+								</tr>
+								<tr t-if="o.instrument">
+									<td style="font-weight: bold;">Machine Used For Testing/Loading Range</td>
+									<td><span t-field="o.instrument.name"/></td>
 								</tr>
 							</tbody>
 						</table>
@@ -68,6 +72,21 @@
 					
 					<div style="margin-top:2px">
 						<table class="custom_table_borders text-center">
+					
+							<tr>
+								<td><strong>Type of Failure</strong> : <span t-field="data.type_of_failure"/></td>
+								<td><strong>Temperature</strong> : <span t-field="data.temp"></span></td>
+							
+								<td><strong>Humidity</strong> : <span t-field="data.humidity"/>C</td>
+								<td><strong>Date of Calibration  : </strong><span t-field="data.date_of_calibration"/>%</td>		
+							
+								<td><strong>Condition of Sample</strong> : <span t-field="data.condition_of_sample"/></td>
+	
+							</tr>
+						</table>
+					</div> 
+					<div style="margin-top:2px">
+						<table class="custom_table_borders text-center">
 							<tr>
 								<td><strong>Grade of Sample</strong> : <span t-field="o.grade_id.grade"/></td>
 								<td><strong>Age Of Cubes</strong> : <span t-field="data.age_of_days"></span></td>
@@ -84,13 +103,15 @@
 							<thead>
 								<tr>
 									<th style="text-align: center; font-weight: bold; width: 4%;">Sr. No</th>
-									<th style="text-align: center; font-weight: bold; white-space: nowrap;">Sample Identification</th>
-									<th style="text-align: center; font-weight: bold; width: 10%;">Weight of Cube (gms)</th>
-									<th style="text-align: center; font-weight: bold; width: 9%;">Date of casting</th>
-									<th style="text-align: center; font-weight: bold; width: 9%;">Date of Testing</th>
+									<th style="text-align: center; font-weight: bold; white-space: nowrap;">Identification Mark</th>
+									<th style="text-align: center; font-weight: bold; width: 10%;">Weight of  Specimen (Kg)</th>
+									<th style="text-align: center; font-weight: bold; width: 9%;">Density (Kg/m³)</th>
+									<th style="text-align: center; font-weight: bold; width: 9%;">Maximum Load(KN)</th>
+									<!-- <th style="text-align: center; font-weight: bold; width: 9%;">Date of casting</th>
+									<th style="text-align: center; font-weight: bold; width: 9%;">Date of Testing</th> -->
 									<th style="text-align: center; font-weight: bold; width: 6%;">Load (kN)</th>
-									<th style="text-align: center; font-weight: bold; width: 13%;">Compressive Strength (N/mm²)</th>
-									<th style="text-align: center; font-weight: bold; width: 15%;">Avg. Compressive Strength (N/mm²)</th>
+									<th style="text-align: center; font-weight: bold; width: 13%;">Comp. Strength (N/mm2)</th>
+									<th style="text-align: center; font-weight: bold; width: 15%;">Avg. Comp. Strength (N/mm2)</th>
 								</tr>
 							</thead>
 
@@ -102,7 +123,9 @@
 									<td style="text-align: center;"><span t-esc="r.sr_no"/></td>
 									<td style="text-align: center; white-space: nowrap;"><span t-esc="r.id_mark"/></td>
 									<td style="text-align: center;"><span t-esc="r.wt_sample"/></td>
-									<t t-if="r.dt_of_casting">
+									<td style="text-align: center;"><span t-esc="r.density"/></td>
+									<td style="text-align: center;"><span t-esc="r.wt_sample"/></td>
+									<!-- <t t-if="r.dt_of_casting">
 										<td style="text-align: center;">
 											<span t-esc="r.dt_of_casting.strftime('%d-%m-%y')"/>
 										</td>
@@ -117,7 +140,7 @@
 									</t>
 									<t t-else="">
 										<td style="text-align: center;"><span t-esc="r.dt_of_testing1"/></td>
-									</t>
+									</t> -->
 									<td style="text-align: center;"><span t-esc="r.load"/></td>
 									<td style="text-align: center;">
 										<span t-esc="r.compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
@@ -139,7 +162,7 @@
 
 					 <!-- 3. Water Absorption -->
 
-						<div  style="margin-top:5px;">
+					<div t-if="data.water_absorption_visible" style="margin-top:5px;">
                         <div style="text-align:center;font-size:18px">
                               <span t-field="env['lerm.parameter.master'].search([('internal_id','=','30214iu-eba3-4f15-b33d-679b39f73301')]).parameter_name"/>
                             <span>
@@ -150,62 +173,60 @@
 								</t>
 							</span>
                         </div>
-                    <table style="margin-top:5px">
-					<thead >
-						<tr cols="12">
-							<td >Sr no 
-							</td>
+						<table style="margin-top:5px">
+							<thead >
+								<tr cols="12">
+									<td >Sr no 
+									</td>
 
-							<td  style="text-align:center;">Sample Identification
+									<td  style="text-align:center;">Sample Identification
 
-							</td>
+									</td>
 
-                            <td  style="text-align:center;">Dry wt (W1)
+									<td  style="text-align:center;">Dry wt (W1)
 
-							</td>
-                          
-                            <td  style="text-align:center;">Wet wt (W2)
-							</td>
+									</td>
+								
+									<td  style="text-align:center;">Wet wt (W2)
+									</td>
 
-                             <td  style="text-align:center;"> Water Absorption %
-							</td>
+									<td  style="text-align:center;"> Water Absorption %
+									</td>
 
-                        
-                           
-						
-						</tr>
-						
-						</thead>
-						  <tbody>
+								
+								
+								
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="i" t-value="0"/>
+								<tr t-foreach="data.water_absorption_child_lines" t-as="r">
+									<td  style="text-align:center;">
+										<div>
+											<span t-esc="i + 1" />
+											<t t-set="i" t-value="i+1"/>
+										</div>
+									</td >
+									<td  style="text-align:center;">
+										<span t-esc="r['sample_identification']" />
+									</td>
+									<td   style="text-align:center;">
+										<span t-esc="r['dry_wt_w1']" />
+									</td>
+									<td  style="text-align:center;">
+										<span t-esc="r['wet_w2']" />
+									</td>
+									<td  style="text-align:center;">
+										<span t-esc="r['water_absorption']" />
+									</td>
+								
 
-						<t t-set="i" t-value="0"/>
-						<tr t-foreach="data.water_absorption_child_lines" t-as="r">
-							<td  style="text-align:center;">
-								<div>
-									<span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/>
-								</div>
-							</td >
-							<td  style="text-align:center;">
-								<span t-esc="r['sample_identification']" />
-							</td>
-                            <td   style="text-align:center;">
-								<span t-esc="r['dry_wt_w1']" />
-							</td>
-                            <td  style="text-align:center;">
-								<span t-esc="r['wet_w2']" />
-							</td>
-                              <td  style="text-align:center;">
-								<span t-esc="r['water_absorption']" />
-							</td>
-                          
+									
+								</tr>
+							</tbody>
+						</table>
 
-							
-						</tr>
-						</tbody>
-					</table>
-
-                    <!-- <table style="margin-top:5px">
+						<!-- <table style="margin-top:5px">
                             <tr cols="12">
                                 <td colspan="6"><b>Water Absorption (%):</b></td>
                                 <td colspan="6" style="text-align: center;">
@@ -216,24 +237,23 @@
                           
                         </table> -->
 
-							<table style="margin-top:5px">
-							
-                            <tr>
+						<table style="margin-top:5px">
+							<tr>
 								<td colspan="12">Water Absorption:</td>
 								<![CDATA[&nbsp;]]>
 								<td>
 									<span t-field="data.avg_water_absorption" t-options='{"widget": "float", "precision": 2}'/>
 								</td>
 								<td>
-							 (%)
+							(%)
 								</td>
 							</tr>
 						</table>
-						</div>
+					</div>
 
-						<div  style="margin-top:5px;">
+					<div t-if="data.wpt_visible" style="margin-top:5px;">
                         <div style="text-align:center;font-size:18px">
-                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','1023457-0268-46ef-ba88-9c0453210lkit1')]).parameter_name"/>
+							<span t-field="env['lerm.parameter.master'].search([('internal_id','=','1023457-0268-46ef-ba88-9c0453210lkit1')]).parameter_name"/>
                             <span>
 								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','1023457-0268-46ef-ba88-9c0453210lkit1')]).parameter_table" t-as="parameter">
 									<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -242,48 +262,48 @@
 								</t>
 							</span>
 							<table style="margin-top:5px" >
-							<tr cols="12">
-								<td colspan="1">Sr no 
-								</td>
-								<td colspan="1">Sample 
-								</td>
-								<td colspan="1">Depth of Penetration 1
-								</td>
-								<td colspan="2">Depth of Penetration 2
-								</td>
-								<td colspan="2">Depth of Penetration 3
-								</td>
-								<td colspan="2">Average
-								</td>
-								
-							</tr>
+								<tr cols="12">
+									<td colspan="1">Sr no 
+									</td>
+									<td colspan="1">Sample 
+									</td>
+									<td colspan="1">Depth of Penetration 1
+									</td>
+									<td colspan="2">Depth of Penetration 2
+									</td>
+									<td colspan="2">Depth of Penetration 3
+									</td>
+									<td colspan="2">Average
+									</td>
+									
+								</tr>
 
-							<t t-set="i" t-value="0"/>
-							<tr t-foreach="data.wpt_child_lines" t-as="r">
-								<td colspan="1">
-									<div>
-										<span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/>
-									</div>
-                  				</td>
-								<td colspan="1">
-									<span t-esc="r['sample']"/>
-								</td>
-								<td colspan="1">
-									<span t-esc="r['depth1']"/>
-								</td>
-								<td colspan="2">
-									<span t-esc="r['depth2']"/>
-								</td>
-								<td colspan="2">
-									<span t-esc="r['depth3']"/>
-								</td>
-								<td colspan="2">
-									<span t-esc="r['average']"/>
-								</td>
-								
-							</tr>
-						</table>
+								<t t-set="i" t-value="0"/>
+								<tr t-foreach="data.wpt_child_lines" t-as="r">
+									<td colspan="1">
+										<div>
+											<span t-esc="i + 1" />
+											<t t-set="i" t-value="i+1"/>
+										</div>
+									</td>
+									<td colspan="1">
+										<span t-esc="r['sample']"/>
+									</td>
+									<td colspan="1">
+										<span t-esc="r['depth1']"/>
+									</td>
+									<td colspan="2">
+										<span t-esc="r['depth2']"/>
+									</td>
+									<td colspan="2">
+										<span t-esc="r['depth3']"/>
+									</td>
+									<td colspan="2">
+										<span t-esc="r['average']"/>
+									</td>
+									
+								</tr>
+							</table>
 							<table style="margin-top:5px">
 								<tr cols="12">
 									<td colspan="6">Average Of WPT :
@@ -297,19 +317,23 @@
 								
 							</table>
 						</div>
-						</div>
+					</div>
 
 					<div style="margin-top:5px; page-break-inside: avoid;" class="signatureContainer girdgird">
 						<table class="table table-bordered">
 							<tr>
 								<td style="padding: 5px; font-style: italic; font-size: 12px;">
-									<b>Note:-</b>
-									&#160;&#160;(i) The results relate only to the items tested 
-									&#160;&#160;(ii) This test report should not be reproduced except in full, without written approval of this Laboratory 
-									&#160;&#160;(iii) Any corrections invalidate the test reports 
-									&#160;&#160;(iv) Any Query regarding the report must be reported immediately. 
-									&#160;&#160;(v) * mark indicate tests which are not in the scope of NABL. 
-									&#160;&#160;(vi) # mark indicates Details given by Client.
+									<t t-if="data.notes_id">
+										<b>Notes:-</b>
+
+										<t t-foreach="data.notes_id" t-as="n">
+											<span>
+												(<t t-esc="n.sr_no"/>) 
+												<t t-esc="n.notes"/>
+												&#160;&#160;
+											</span><br/>
+										</t>
+									</t>
 									<t t-if="eln.has_witness">
 										&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
 									</t>
@@ -349,9 +373,9 @@
 							</div>
 
 							<div>
-						<div>
+						<!-- <div>
 							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
-						</div>
+						</div> -->
 						<div style="padding-top:5px">
 							Format No. <span t-esc="eln.material.test_format_no"/>
 						</div>

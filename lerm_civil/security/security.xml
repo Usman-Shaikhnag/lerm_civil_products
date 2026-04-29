@@ -189,6 +189,18 @@
             <field name="active" eval="True"/>
         </record>
 
+        <record id="admin_parameter_result_record" model="ir.rule">
+            <field name="name">Admin can see all Parameter Result</field>
+            <field ref="model_eln_parameters_result" name="model_id"/>
+            <field name="domain_force">[]</field>
+            <field name="groups" eval="[(4, ref('kes_admin_access_group'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
 
        
 
