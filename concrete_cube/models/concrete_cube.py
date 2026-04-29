@@ -27,9 +27,24 @@ class MechanicalConcreteCube(models.Model):
 
     cube_name = fields.Char("Name",default=" Cube")
     cube_visible = fields.Boolean("Chequered Visible",compute="_compute_visible")   
-
+    type_of_failure = fields.Selection(
+        [('satisfactory','Satisfactory'),
+        ('non_satisfactory','Non Satisfactory')],
+        string="Type of Failure")    
+    temp = fields.Float(string="Temperature")
+    humidity = fields.Float(string="Humidity")
+    date_of_calibration = fields.Date(string="Date of Calibration")
+    condition_of_sample = fields.Char(string="Condition of Sample")
     notes_id = fields.One2many('concrete.cube.notes', 'parent_id', string="Notes")
-    
+
+
+    # def _compute_date_of_calibration(self):
+    #     for rec in self:
+    #         if rec.eln_ref.instrument_id:
+    #             rec.date_of_calibration = rec.eln_ref.instrument_id.next_calibration_date
+    #         else:
+    #             rec.date_of_calibration = False
+
     @api.model
     def default_get(self, fields):
         res = super(MechanicalConcreteCube, self).default_get(fields)
