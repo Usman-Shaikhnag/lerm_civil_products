@@ -2409,9 +2409,6 @@ class CoarseAggregateMechanical(models.Model):
                 parameter_ids = user_param_results.mapped('parameter').ids
 
             record.sample_parameters = [(6, 0, parameter_ids)]
-
-
-
     def get_all_fields(self):
         record = self.env['mechanical.coarse.aggregate'].browse(self.ids[0])
         field_values = {}

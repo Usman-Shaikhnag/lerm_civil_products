@@ -50,24 +50,25 @@ class MechanicalBricksBurntClay(models.Model):
     def _default_notes_lines(self):
         return [
             (0, 0, {
-                'sr_no': 'a',
-                'notes': 'The results stated in this report apply only to the tested sample(s) and are based on the conditions and parameters at the time of testing. ',
+                'sr_no': 'i',
+                'notes': 'The results stated in this report apply only to the tested sample(s) and are based on the conditions and parameters at the time of testing.',
             }),
             (0, 0, {
-                'sr_no': 'b',
+                'sr_no': 'ii',
                 'notes': 'This report is invalid without the official paper seal of Make Infracon.',
             }),
             (0, 0, {
-                'sr_no': 'c',
+                'sr_no': 'iii',
                 'notes': 'All test results are confidential and will not be disclosed to any third party without written consent of the client, except where required by law.',
             }),
             (0, 0, {
-                'sr_no': 'd',
-                'notes': 'This report must not be used, in whole or in part, for advertising or promotional purposes without written authorization. or used as evidence in a court of law.',
+                'sr_no': 'iv',
+                'notes': 'The # points mentioned in the report which information is given by Client/Customer.',
             }),
+
             (0, 0, {
-                'sr_no': 'e',
-                'notes': 'Any disputes shall be subject to jurisdiction of {Your Nashik/Location}Courts Only.',
+                'sr_no': 'v',
+                'notes': 'Any disputes shall be subject to jurisdiction of Nashik courts only.',
             }),
         ]
     
@@ -602,7 +603,6 @@ class MechanicalBricksBurntClay(models.Model):
                 parameter_ids = user_param_results.mapped('parameter').ids
 
             record.sample_parameters = [(6, 0, parameter_ids)]
-
     def get_all_fields(self):
         record = self.env['mechanical.bricks.burnt.clay'].browse(self.ids[0])
         field_values = {}
@@ -611,6 +611,20 @@ class MechanicalBricksBurntClay(models.Model):
             field_values[field_name] = field_value
 
         return field_values
+
+
+    notes_id = fields.One2many('mechanical.bricks.clay.notes', 'parent_id', string="Notes", default=lambda self: self._default_notes_lines())
+
+    @api.model
+    def _default_notes_lines(self):
+        return [
+            (0, 0, {'sr_no': 'i', 'notes': 'The results stated in this report apply only to the tested sample(s) and are based on the conditions and parameters at the time of testing.'}),
+            (0, 0, {'sr_no': 'ii', 'notes': 'This report is invalid without the official paper seal of Make Infracon.'}),
+            (0, 0, {'sr_no': 'iii', 'notes': 'All test results are confidential and will not be disclosed to any third party without written consent of the client, except where required by law.'}),
+            (0, 0, {'sr_no': 'iv', 'notes': 'Any discrepancies or complaints regarding this report must be communicated in writing within 7 days from the date of issue.'}),
+            (0, 0, {'sr_no': 'v', 'notes': 'This report shall not be reproduced, except in full, without the prior written approval of Make Infracon.'}),
+            (0, 0, {'sr_no': 'vi', 'notes': 'The laboratory assumes no responsibility for the purpose for which the test results are used or for any subsequent actions taken based on these results.'}),
+        ]
 
 
 
@@ -735,6 +749,6 @@ class BrickDimensionLine(models.Model):
 class MechanicalBrickClaysNotes(models.Model):
     _name = "mechanical.bricks.clay.notes"
 
-    parent_id = fields.Many2one('mechanical.bricks.burnt.clay',string="Parent Id")
+    parent_id = fields.Many2one('mechanical.bricks.burnt.clay', string="Parent Id")
     sr_no = fields.Char("Sr. No.")
     notes = fields.Char("Notes")
