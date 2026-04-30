@@ -1,0 +1,835 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="chemical_fly_assh_form" model="ir.ui.view">
+        <field name="name">chemical.fly.ash.form</field>
+        <field name="model">chemical.fly.ash</field>
+        <field name="arch" type="xml">
+            <form string="Your Form View" create="false">
+                <sheet>
+                <div>
+                    <h1>
+                        <field name="name1" readonly="1" nolabel="1"/>
+                    </h1>
+                </div>
+                <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                </group>
+                    <div class="custom_table_borders">
+                      <field name="sample_parameters" nolabel="1">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </div>
+
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+
+
+                  
+
+                       <!-- Loass Ingnition-->
+                <div invisible="loass_ingnition_visible == False">
+                    <h1 class="text-center">
+                        <field name="loass_ingnition_name" readonly="1" nolabel="1"/>
+                        <field name="loass_ingnition_visible" invisible="1"/>
+
+                    </h1>
+                </div>
+
+
+                <div invisible="not loass_ingnition_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Loass Ingnition</td>
+                             <td>Weight of Moisture free sample taken, B</td>
+                             <td>Weight of Crucible and Sample (W2)</td>
+                             <td>Weight of Crucible after ignition (W3)</td>
+                             <td>Loss in Weight, A (W2-W3)</td>
+                             <td>Loass Ingnition %</td>
+                            
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="loass_ingnition_sampleb_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="loass_ingnition_cruciblew2_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="loass_ingnition_cruciblew3_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="loass_ingnition_a_1"  colspan="1"  nolabel="1" /></td>
+                              <td><field  name="loass_ingnition_1"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="loass_ingnition_sampleb_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="loass_ingnition_cruciblew2_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="loass_ingnition_cruciblew3_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="loass_ingnition_a_2"  colspan="1"  nolabel="1" /></td>
+                              <td><field  name="loass_ingnition_2"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                            <tr>
+                             <td></td>
+                             <td><field  name="loass_ingnition_sampleb_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="loass_ingnition_cruciblew2_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="loass_ingnition_cruciblew3_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="loass_ingnition_a_3"  colspan="1"  nolabel="1" /></td>
+                              <td><field  name="loass_ingnition_3"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="loass_ingnition_sampleb_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="loass_ingnition_cruciblew2_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="loass_ingnition_cruciblew3_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="loass_ingnition_a_4"  colspan="1"  nolabel="1" /></td>
+                              <td><field  name="loass_ingnition_4"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="loass_ingnition_sampleb_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="loass_ingnition_cruciblew2_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="loass_ingnition_cruciblew3_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="loass_ingnition_a_5"  colspan="1"  nolabel="1" /></td>
+                              <td><field  name="loass_ingnition_5"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+               
+
+
+                <div invisible="not loass_ingnition_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average Loass Ingnition (%)</span></td>
+                          <td style="padding: 8px;"><field name="avg_loass_ingnition"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='avg_loass_ingnition_conformity'
+                               decoration-success="avg_loass_ingnition_conformity == 'pass'" 
+                               decoration-danger="avg_loass_ingnition_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='avg_loass_ingnition_nabl'
+                               decoration-success="avg_loass_ingnition_nabl == 'pass'" 
+                               decoration-danger="avg_loass_ingnition_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+                      <!-- Loass Ingnition-->
+                <div invisible="silica_visible == False">
+                    <h1 class="text-center">
+                        <field name="silica_name" readonly="1" nolabel="1"/>
+                        <field name="silica_visible" invisible="1"/>
+
+                    </h1>
+                </div>
+
+                 <!-- SILICA -->
+                <div invisible="not silica_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Silica</td>
+                             <td>Weight of sample taken for test (W)</td>
+                             <td>Weight of crucible with insoluble residue (W2)</td>
+                             <td>Weight of empty crucible (W1)</td>
+                             <td>Silica %</td>
+                            
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="silica_samplew_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="silica_cruciblew2_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="silica_cruciblew1_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="silica_1"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="silica_samplew_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="silica_cruciblew2_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="silica_cruciblew1_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="silica_2"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                            <tr>
+                             <td></td>
+                             <td><field  name="silica_samplew_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="silica_cruciblew2_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="silica_cruciblew1_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="silica_3"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="silica_samplew_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="silica_cruciblew2_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="silica_cruciblew1_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="silica_4"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="silica_samplew_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="silica_cruciblew2_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="silica_cruciblew1_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="silica_5"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+               
+
+         
+                <div invisible="not silica_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average Silica (%)</span></td>
+                          <td style="padding: 8px;"><field name="avg_silica"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='avg_silica_conformity'
+                               decoration-success="avg_silica_conformity == 'pass'" 
+                               decoration-danger="avg_silica_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='avg_silica_nabl'
+                               decoration-success="avg_silica_nabl == 'pass'" 
+                               decoration-danger="avg_silica_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+                    <!-- Ferric Alumina -->
+
+                    <div invisible="ferric_alumina_visible == False">
+                    <h1 class="text-center">
+                        <field name="ferric_alumina_name" readonly="1" nolabel="1"/>
+                        <field name="ferric_alumina_visible" invisible="1"/>
+
+                    </h1>
+                </div> 
+                <div invisible="not ferric_alumina_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Ferric Alumina</td>
+                             <td>Weight of sample taken (W)</td>
+                             <td>Weight of Empty Crucible (W1)</td>
+                             <td>Weight of Crucible + Residue in gm. (W2)</td>
+                             <td>R2O3 %</td>
+                            
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="ferric_alumina_samplew_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ferric_alumina_cruciblew1_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ferric_alumina_cruciblew2_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="ferric_alumina_1"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="ferric_alumina_samplew_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ferric_alumina_cruciblew1_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ferric_alumina_cruciblew2_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="ferric_alumina_2"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                            <tr>
+                             <td></td>
+                             <td><field  name="ferric_alumina_samplew_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ferric_alumina_cruciblew1_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ferric_alumina_cruciblew2_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="ferric_alumina_3"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="ferric_alumina_samplew_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ferric_alumina_cruciblew1_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ferric_alumina_cruciblew2_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="ferric_alumina_4"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="ferric_alumina_samplew_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ferric_alumina_cruciblew1_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ferric_alumina_cruciblew2_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="ferric_alumina_5"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+               
+
+
+                <div invisible="not ferric_alumina_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average Ferric Alumina (%)</span></td>
+                          <td style="padding: 8px;"><field name="avg_ferric_alumina"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='avg_ferric_alumina_conformity'
+                               decoration-success="avg_ferric_alumina_conformity == 'pass'" 
+                               decoration-danger="avg_ferric_alumina_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='avg_ferric_alumina_nabl'
+                               decoration-success="avg_ferric_alumina_nabl == 'pass'" 
+                               decoration-danger="avg_ferric_alumina_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+
+                      <!-- Ferric Oxide -->
+                     <div invisible="ferric_oxide_visible == False">
+                    <h1 class="text-center">
+                        <field name="ferric_oxide_name" readonly="1" nolabel="1"/>
+                        <field name="ferric_oxide_visible" invisible="1"/>
+
+                    </h1>
+                </div> 
+                <div invisible="not ferric_oxide_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Ferric Oxide</td>
+                             <td>Volume of 0.04 N potassium permanganate solution used in ml,(V)</td>
+                             <td>Normality of Potassium permanganate (N)</td>
+                             <td>Weight of the sample (W)</td>
+                             <td>Ferric Oxide %</td>
+                            
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="ferric_oxide_potassiumv_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ferric_oxide_potassiumn_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ferric_oxide_samplew_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="ferric_oxide_1"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="ferric_oxide_potassiumv_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ferric_oxide_potassiumn_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ferric_oxide_samplew_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="ferric_oxide_2"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                            <tr>
+                             <td></td>
+                             <td><field  name="ferric_oxide_potassiumv_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ferric_oxide_potassiumn_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ferric_oxide_samplew_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="ferric_oxide_3"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="ferric_oxide_potassiumv_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ferric_oxide_potassiumn_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ferric_oxide_samplew_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="ferric_oxide_4"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="ferric_oxide_potassiumv_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ferric_oxide_potassiumn_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ferric_oxide_samplew_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="ferric_oxide_5"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+               
+
+
+                <div invisible="not ferric_oxide_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average Ferric Oxide (%)</span></td>
+                          <td style="padding: 8px;"><field name="avg_ferric_oxide"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='avg_ferric_oxide_conformity'
+                               decoration-success="avg_ferric_oxide_conformity == 'pass'" 
+                               decoration-danger="avg_ferric_oxide_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='avg_ferric_oxide_nabl'
+                               decoration-success="avg_ferric_oxide_nabl == 'pass'" 
+                               decoration-danger="avg_ferric_oxide_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+
+                      <!-- Alumina Oxide -->
+                     <div invisible="alumina_oxide_visible == False">
+                    <h1 class="text-center">
+                        <field name="alumina_oxide_name" readonly="1" nolabel="1"/>
+                        <field name="alumina_oxide_visible" invisible="1"/>
+
+                    </h1>
+                </div> 
+                <div invisible="not alumina_oxide_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Alumina Oxide</td>
+                             <td>Percentage Of Ferric Oxide (Fe2O3)</td>
+                              <td>Al2O3</td>
+                             <td>Alumina Oxide %</td>
+                            
+                           </tr>
+                           <tr>
+                           <td></td>
+                             <td><field  name="alumina_oxide_fe2o3_1"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="al2o3_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="alumina_oxide_1"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="alumina_oxide_fe2o3_2"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="al2o3_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="alumina_oxide_3"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                            <tr>
+                             <td></td>
+                             <td><field  name="alumina_oxide_fe2o3_3"  colspan="1"  nolabel="1"/></td>
+                             <td><field  name="al2o3_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="alumina_oxide_3"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="alumina_oxide_fe2o3_4"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="al2o3_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="alumina_oxide_4"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="alumina_oxide_fe2o3_5"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="al2o3_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="alumina_oxide_5"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+               
+
+
+                <div invisible="not alumina_oxide_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average Alumina Oxide (%)</span></td>
+                          <td style="padding: 8px;"><field name="avg_alumina_oxide"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='avg_alumina_oxide_conformity'
+                               decoration-success="avg_alumina_oxide_conformity == 'pass'" 
+                               decoration-danger="avg_alumina_oxide_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='avg_alumina_oxide_nabl'
+                               decoration-success="avg_alumina_oxide_nabl == 'pass'" 
+                               decoration-danger="avg_alumina_oxide_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+
+
+                      <!-- Magnesia (MgO) -->
+                     <div invisible="magnesia_visible == False">
+                    <h1 class="text-center">
+                        <field name="magnesia_name" readonly="1" nolabel="1"/>
+                        <field name="magnesia_visible" invisible="1"/>
+
+                    </h1>
+                </div> 
+                <div invisible="not magnesia_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Magnesia</td>
+                             <td>Weight of sample taken in gm.(W)</td>
+                             <td>Weight of empty crucible (W1)</td>
+                             <td>Weight of crucible + residue (W2)</td>
+                             <td>Magnesia (MgO) %</td>
+                            
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="magnesia_samplew_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="magnesia_cruciblew1_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="magnesia_cruciblew2_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="magnesia_1"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="magnesia_samplew_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="magnesia_cruciblew1_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="magnesia_cruciblew2_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="magnesia_2"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                            <tr>
+                             <td></td>
+                             <td><field  name="magnesia_samplew_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="magnesia_cruciblew1_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="magnesia_cruciblew2_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="magnesia_3"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="magnesia_samplew_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="magnesia_cruciblew1_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="magnesia_cruciblew2_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="magnesia_4"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="magnesia_samplew_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="magnesia_cruciblew1_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="magnesia_cruciblew2_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="magnesia_5"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+               
+
+
+                <div invisible="not magnesia_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average Magnesia (MgO) (%)</span></td>
+                          <td style="padding: 8px;"><field name="avg_magnesia"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='avg_magnesia_conformity'
+                               decoration-success="avg_magnesia_conformity == 'pass'" 
+                               decoration-danger="avg_magnesia_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='avg_magnesia_nabl'
+                               decoration-success="avg_magnesia_nabl == 'pass'" 
+                               decoration-danger="avg_magnesia_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+
+                    <!-- Calcium Oxide(CaO)  -->
+                     <div invisible="calcium_oxide_visible == False">
+                    <h1 class="text-center">
+                        <field name="calcium_oxide_name" readonly="1" nolabel="1"/>
+                        <field name="calcium_oxide_visible" invisible="1"/>
+
+                    </h1>
+                </div> 
+                <div invisible="not calcium_oxide_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Calcium Oxide</td>
+                             <td>Weight of sample taken in gm.(W)</td>
+                             <td>Weight of empty crucible (W1)</td>
+                             <td>Weight of crucible + residue (W2)</td>
+                             <td>Calcium Oxide(CaO)  %</td>
+                            
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="calcium_oxide_samplew_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="calcium_oxide_cruciblew1_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="calcium_oxide_cruciblew2_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="calcium_oxide_1"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="calcium_oxide_samplew_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="calcium_oxide_cruciblew1_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="calcium_oxide_cruciblew2_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="calcium_oxide_2"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                            <tr>
+                             <td></td>
+                             <td><field  name="calcium_oxide_samplew_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="calcium_oxide_cruciblew1_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="calcium_oxide_cruciblew2_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="calcium_oxide_3"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="calcium_oxide_samplew_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="calcium_oxide_cruciblew1_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="calcium_oxide_cruciblew2_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="calcium_oxide_4"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="calcium_oxide_samplew_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="calcium_oxide_cruciblew1_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="calcium_oxide_cruciblew2_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="calcium_oxide_5"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+               
+
+
+                <div invisible="not calcium_oxide_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average Calcium Oxide (CaO)  (%)</span></td>
+                          <td style="padding: 8px;"><field name="avg_calcium_oxide"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='avg_calcium_oxide_conformity'
+                               decoration-success="avg_calcium_oxide_conformity == 'pass'" 
+                               decoration-danger="avg_calcium_oxide_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='avg_calcium_oxide_nabl'
+                               decoration-success="avg_calcium_oxide_nabl == 'pass'" 
+                               decoration-danger="avg_calcium_oxide_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+
+                     <!-- SO3  -->
+                     <div invisible="sulpuric_so3_visible == False">
+                    <h1 class="text-center">
+                        <field name="sulpuric_so3_name" readonly="1" nolabel="1"/>
+                        <field name="sulpuric_so3_visible" invisible="1"/>
+
+                    </h1>
+                </div> 
+                <div invisible="not sulpuric_so3_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>SO3</td>
+                             <td>Weight of sample taken in gm.(W)</td>
+                             <td>Weight of empty crucible (W1)</td>
+                             <td>Weight of crucible + residue (W2)</td>
+                             <td>SO3 %</td>
+                            
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="sulpuric_so3_samplew_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sulpuric_so3_cruciblew1_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sulpuric_so3_cruciblew2_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="sulpuric_so3_1"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="sulpuric_so3_samplew_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sulpuric_so3_cruciblew1_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sulpuric_so3_cruciblew2_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="sulpuric_so3_2"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                            <tr>
+                             <td></td>
+                             <td><field  name="sulpuric_so3_samplew_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sulpuric_so3_cruciblew1_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sulpuric_so3_cruciblew2_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="sulpuric_so3_3"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="sulpuric_so3_samplew_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sulpuric_so3_cruciblew1_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sulpuric_so3_cruciblew2_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="sulpuric_so3_4"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="sulpuric_so3_samplew_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sulpuric_so3_cruciblew1_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sulpuric_so3_cruciblew2_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                              <td><field  name="sulpuric_so3_5"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+               
+
+
+                <div invisible="not sulpuric_so3_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average SO3 (%)</span></td>
+                          <td style="padding: 8px;"><field name="avg_sulpuric_so3"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='avg_sulpuric_so3_conformity'
+                               decoration-success="avg_sulpuric_so3_conformity == 'pass'" 
+                               decoration-danger="avg_sulpuric_so3_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='avg_sulpuric_so3_nabl'
+                               decoration-success="avg_sulpuric_so3_nabl == 'pass'" 
+                               decoration-danger="avg_sulpuric_so3_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+
+
+
+
+                     
+
+
+
+                     <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+
+
+                        </page>
+
+                    </notebook>
+
+
+
+
+                   
+                 <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                    
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+    </data>
+</odoo>
