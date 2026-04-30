@@ -669,6 +669,24 @@ class SoilReport(models.AbstractModel):
         }
 
 
+class SoilReportFirst(models.AbstractModel):
+    _name = 'report.soil1.soil_report_first'
+    _description = 'Soil Report First Parser'
+
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        return self.env['report.soil1.soil_report1']._get_report_values(docids, data)
+
+
+class SoilReportRest(models.AbstractModel):
+    _name = 'report.soil1.soil_report_rest'
+    _description = 'Soil Report Rest Parser'
+
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        return self.env['report.soil1.soil_report1']._get_report_values(docids, data)
+
+
 
 # from odoo import models, api
 

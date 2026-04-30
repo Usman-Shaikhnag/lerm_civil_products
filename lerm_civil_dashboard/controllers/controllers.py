@@ -114,8 +114,8 @@ class LermCivilDashboard(http.Controller):
 
         # --- Sample Aging Overview (Optimized with Nested Breakdowns) ---
         aging_domain = [
-            ('state', 'in', ['2-alloted', '7-calculated', '3-pending_verification', '5-pending_approval']),
-            ('eln_id', '!=', False)
+            ('state', 'in', ['1-allotment_pending', '2-alloted', '7-calculated', '3-pending_verification', '5-pending_approval']),
+            ('report_due_date', '!=', False)
         ]
         if discipline and discipline != "ALL":
             aging_domain.append(('discipline_id.discipline', '=', discipline))
@@ -124,7 +124,8 @@ class LermCivilDashboard(http.Controller):
         if company_id and company_id != 'ALL':
             aging_domain.append(('lab_location.company_id', '=', int(company_id)))
 
-        aging_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='technician')
+        aging_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='technician', mode='upcoming')
+        overdue_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='technician', mode='overdue')
 
         return {
             "labels": labels,
@@ -135,15 +136,16 @@ class LermCivilDashboard(http.Controller):
             "state_counts": state_counts,
             "total_states": len(state_labels),
             "aging_data": aging_buckets,
+            "overdue_data": overdue_buckets,
         }
 
-    def _get_detailed_aging_data(self, Sample, base_domain, breakdown_type='technician'):
+    def _get_detailed_aging_data(self, Sample, base_domain, breakdown_type='technician', mode='upcoming'):
         """
         Helper to calculate aging data with nested breakdowns (Technicians or Products).
         breakdown_type: 'technician' or 'product'
+        mode: 'upcoming' or 'overdue'
         """
         today_date = datetime.now().date()
-        from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
         
         aging_data = {}
         B_RANGES = [
@@ -155,18 +157,30 @@ class LermCivilDashboard(http.Controller):
             ("60+", 61, None)
         ]
 
+        _logger.info(f"DEBUG: mode={mode}, base_domain = {base_domain}")
         for key, min_days, max_days in B_RANGES:
-            d_max = datetime.combine(today_date - timedelta(days=min_days), time.max)
+            if mode == 'upcoming':
+                # Bucket logic: report_due_date due in the next X days (future)
+                d_min = today_date + timedelta(days=min_days)
+                bucket_domain = list(base_domain) + [('report_due_date', '>=', d_min)]
+                if max_days is not None:
+                    d_max = today_date + timedelta(days=max_days)
+                    bucket_domain.append(('report_due_date', '<=', d_max))
+            else:
+                # Overdue logic: due X days ago (past)
+                # min_days=0 means due today or in the past. 
+                # But for 'overdue', we usually start from yesterday (min_days=1)
+                effective_min = max(1, min_days)
+                d_max = today_date - timedelta(days=effective_min)
+                bucket_domain = list(base_domain) + [('report_due_date', '<=', d_max)]
+                if max_days is not None:
+                    d_min = today_date - timedelta(days=max_days)
+                    bucket_domain.append(('report_due_date', '>=', d_min))
             
-            bucket_domain = list(base_domain) + [
-                ('eln_id.create_date', '<=', d_max.strftime(DEFAULT_SERVER_DATETIME_FORMAT))
-            ]
-            if max_days is not None:
-                d_min = datetime.combine(today_date - timedelta(days=max_days), time.min)
-                bucket_domain.append(('eln_id.create_date', '>=', d_min.strftime(DEFAULT_SERVER_DATETIME_FORMAT)))
-            
+            _logger.info(f"DEBUG: bucket {key} domain = {bucket_domain}")
             # Fetch samples to build nested breakdown
             bucket_samples = Sample.search(bucket_domain)
+            _logger.info(f"DEBUG: bucket {key} found {len(bucket_samples)} samples")
             
             state_map = {} # state -> {count, breakdown_map}
             for s in bucket_samples:
@@ -497,8 +511,8 @@ class LermCivilDashboard(http.Controller):
         
         # 5. Add Sample Aging Overview (with Product Breakdown)
         aging_domain = [
-            ('state', 'in', ['2-alloted', '7-calculated', '3-pending_verification', '5-pending_approval']),
-            ('eln_id', '!=', False)
+            ('state', 'in', ['1-allotment_pending', '2-alloted', '7-calculated', '3-pending_verification', '5-pending_approval']),
+            ('report_due_date', '!=', False)
         ]
         if discipline and discipline != "ALL":
             aging_domain.append(('discipline_id.discipline', '=', discipline))
@@ -510,7 +524,8 @@ class LermCivilDashboard(http.Controller):
             # For customer dashboard, aging samples should also be filtered by the searched customer
             aging_domain.append(('customer_id.name', 'ilike', f'%{search_query}%'))
             
-        aging_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='technician')
+        aging_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='technician', mode='upcoming')
+        overdue_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='technician', mode='overdue')
 
         # 6. Sort and Paginate
         data.sort(key=itemgetter('total_samples'), reverse=True)
@@ -521,7 +536,8 @@ class LermCivilDashboard(http.Controller):
         return {
             'customers': paginated_data,
             'total_customers': total_customers,
-            'aging_data': aging_buckets
+            'aging_data': aging_buckets,
+            'overdue_data': overdue_buckets
         }
         
     @http.route(['/lerm/product/overview/data'], type='json', auth='user', methods=["POST"])
@@ -618,8 +634,8 @@ class LermCivilDashboard(http.Controller):
         # Use the same base domain logic from above (Date, Discipline, Search)
         # But filter for specific aging states as per requirement
         aging_domain = [
-            ('state', 'in', ['2-alloted', '7-calculated', '3-pending_verification', '5-pending_approval']),
-            ('eln_id', '!=', False)
+            ('state', 'in', ['1-allotment_pending', '2-alloted', '7-calculated', '3-pending_verification', '5-pending_approval']),
+            ('report_due_date', '!=', False)
         ]
         # Include current search filters if they match sample fields
         if discipline and discipline != "ALL":
@@ -636,7 +652,8 @@ class LermCivilDashboard(http.Controller):
             if search_type in ['all', 'product']:
                 aging_domain.append(('material_id.name', 'ilike', f'%{search_query}%'))
 
-        aging_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='product')
+        aging_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='product', mode='upcoming')
+        overdue_buckets = self._get_detailed_aging_data(Sample, aging_domain, breakdown_type='product', mode='overdue')
 
         # 6. Sort the complete data set (Descending by total_samples)
         data.sort(key=itemgetter('total_samples'), reverse=True)
@@ -649,6 +666,7 @@ class LermCivilDashboard(http.Controller):
         return {
             'products': paginated_data,
             'total_products': total_products,
-            'aging_data': aging_buckets
+            'aging_data': aging_buckets,
+            'overdue_data': overdue_buckets
         }
 

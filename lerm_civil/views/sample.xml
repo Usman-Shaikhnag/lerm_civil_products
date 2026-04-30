@@ -86,7 +86,8 @@
                                 <field name="kes_no" />
                                 <field name='ulr_no'/>
                                 <field name="sample_received_date" readonly="state != '1-allotment_pending'"/>
-                                <field name="location" readonly="state != '1-allotment_pending'" string="Location Code"/>
+                                <field name="report_due_date" readonly="casting"/>
+                                <field name="location" readonly="1" string="Location Code"/>
                                 <field name="lab_location" string="Lab Name"/>
                                 <field name="invoice_status" readonly="1" invisible="state not in ('4-in_report')"/>
                                 <field name="invoice_number" readonly="1"/>
@@ -277,6 +278,7 @@
                     <button type="object" class="oe_highlight" name="reallocate_sample"  string="ReAllotment" />
                 </header>
                       <field name="sample_received_date" optional="show"/>
+                      <field name="report_due_date" optional="show" class="text-danger"/>
                       <field name='kes_no' width="400px"/>
                       <field name="srf_id" optional="show" string="OR ID"/>
                       <!-- <field name="client_reference1" optional="show" /> -->
