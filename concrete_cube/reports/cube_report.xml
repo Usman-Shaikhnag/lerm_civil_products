@@ -72,15 +72,17 @@
 					
 					<div style="margin-top:2px">
 						<table class="custom_table_borders text-center">
-					
 							<tr>
 								<td><strong>Type of Failure</strong> : <span t-field="data.type_of_failure"/></td>
-								<td><strong>Temperature</strong> : <span t-field="data.temp"></span></td>
-							
-								<td><strong>Humidity</strong> : <span t-field="data.humidity"/>C</td>
-								<td><strong>Date of Calibration  : </strong><span t-field="data.date_of_calibration"/>%</td>		
-							
+								<td><strong>Temperature</strong> : <span t-field="data.temp"/>°C</td>
+							</tr>
+							<tr>
+								<td><strong>Humidity</strong> : <span t-field="data.humidity"/>%</td>
+								<td><strong>Date of Calibration  : </strong><span t-field="data.date_of_calibration"/></td>		
+							</tr>
+							<tr>
 								<td><strong>Condition of Sample</strong> : <span t-field="data.condition_of_sample"/></td>
+								<td><strong>Location of Performance</strong> : <span t-field="o.sample_id.location_name"/></td>
 	
 							</tr>
 						</table>
@@ -88,8 +90,8 @@
 					<div style="margin-top:2px">
 						<table class="custom_table_borders text-center">
 							<tr>
-								<td><strong>Grade of Sample</strong> : <span t-field="o.grade_id.grade"/></td>
-								<td><strong>Age Of Cubes</strong> : <span t-field="data.age_of_days"></span></td>
+								<td><strong># Description &amp; Grade of Concrete</strong> : <span t-field="o.grade_id.grade"/></td>
+								<td><strong># Age of Specimen</strong> : <span t-field="data.age_of_days"></span></td>
 							</tr>
 							<tr>
 								<td><strong>Size of Cube</strong> : <span t-field="o.sample_id.size_id.size"/></td>
