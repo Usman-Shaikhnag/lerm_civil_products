@@ -40,24 +40,25 @@ class MechanicalBricks(models.Model):
     def _default_notes_lines(self):
         return [
             (0, 0, {
-                'sr_no': 'a',
-                'notes': 'The results stated in this report apply only to the tested sample(s) and are based on the conditions and parameters at the time of testing. ',
+                'sr_no': 'i',
+                'notes': 'The results stated in this report apply only to the tested sample(s) and are based on the conditions and parameters at the time of testing.',
             }),
             (0, 0, {
-                'sr_no': 'b',
+                'sr_no': 'ii',
                 'notes': 'This report is invalid without the official paper seal of Make Infracon.',
             }),
             (0, 0, {
-                'sr_no': 'c',
+                'sr_no': 'iii',
                 'notes': 'All test results are confidential and will not be disclosed to any third party without written consent of the client, except where required by law.',
             }),
             (0, 0, {
-                'sr_no': 'd',
-                'notes': 'This report must not be used, in whole or in part, for advertising or promotional purposes without written authorization. or used as evidence in a court of law.',
+                'sr_no': 'iv',
+                'notes': 'The # points mentioned in the report which information is given by Client/Customer.',
             }),
+
             (0, 0, {
-                'sr_no': 'e',
-                'notes': 'Any disputes shall be subject to jurisdiction of {Your Nashik/Location}Courts Only.',
+                'sr_no': 'v',
+                'notes': 'Any disputes shall be subject to jurisdiction of Nashik courts only.',
             }),
         ]
     

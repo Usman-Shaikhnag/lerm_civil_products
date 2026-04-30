@@ -1240,19 +1240,18 @@
 							</table>
                         </div> -->
                         <div style="margin-top:50px" class="noteContainer">
-						<table >
-							<tr>
-							
-								<td style="padding: 5px; font-style: italic; ">
+							<table >
+								<tr>
+									<td style="padding: 5px; font-style: italic; ">
 
-									<b>Notes:-</b>
-										<t t-if="data.notes_id">
-										<t t-foreach="data.notes_id" t-as="n">
-											<span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span>
+										<b>Notes:-</b>
+											<t t-if="data.notes_id">
+											<t t-foreach="data.notes_id" t-as="n">
+												<span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span>
+											</t>
 										</t>
-									</t>
-								</td>
-							</tr>
+									</td>
+								</tr>
 							</table>
 						</div>
                         <div style="margin-top:10px; page-break-inside: avoid;" class="signatureContainer girdgird">
