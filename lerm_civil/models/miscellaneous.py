@@ -64,3 +64,24 @@ class MiscellaneousProduct(models.Model):
             field_values[field_name] = field_value
 
         return field_values
+
+
+    notes_id = fields.One2many('miscellaneouse.product.notes', 'parent_id', string="Notes", default=lambda self: self._default_notes_lines())
+
+    @api.model
+    def _default_notes_lines(self):
+        return [
+            (0, 0, {'sr_no': 'i', 'notes': 'The results stated in this report apply only to the tested sample(s) and are based on the conditions and parameters at the time of testing.'}),
+            (0, 0, {'sr_no': 'ii', 'notes': 'This report is invalid without the official paper seal of Make Infracon.'}),
+            (0, 0, {'sr_no': 'iii', 'notes': 'All test results are confidential and will not be disclosed to any third party without written consent of the client, except where required by law.'}),
+            (0, 0, {'sr_no': 'iv', 'notes': 'Any discrepancies or complaints regarding this report must be communicated in writing within 7 days from the date of issue.'}),
+            (0, 0, {'sr_no': 'v', 'notes': 'This report shall not be reproduced, except in full, without the prior written approval of Make Infracon.'}),
+            (0, 0, {'sr_no': 'vi', 'notes': 'The laboratory assumes no responsibility for the purpose for which the test results are used or for any subsequent actions taken based on these results.'}),
+        ]
+
+class MiscellaneousProductNotes(models.Model):
+    _name = "miscellaneouse.product.notes"
+
+    parent_id = fields.Many2one('miscellaneouse.product', string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")

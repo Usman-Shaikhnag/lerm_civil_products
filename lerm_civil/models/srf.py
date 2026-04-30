@@ -1278,6 +1278,7 @@ class CreateSampleWizard(models.TransientModel):
             'product_name':product_name,
             'lab_location':self.lab_location.id,
             'location_name':self.location_name.id,
+            'lab_id':self.lab_id,
             'report_due_date': self.report_due_date if self.report_due_date else (self.date_casting + timedelta(days=int(self.days_casting)) if (self.casting and self.date_casting and self.days_casting) else False),            
         })
         return {'type': 'ir.actions.act_window_close'}

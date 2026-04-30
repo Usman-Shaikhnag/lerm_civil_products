@@ -758,16 +758,31 @@ class SteelTmtBarLine(models.Model):
     #         if rebend_test in record.tests:
     #             record.rebend_visible = True
 
-    @api.depends('eln_ref')
+    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
+        current_user = self.env.user
+
         for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
-            
+            if not record.eln_ref:
+                record.sample_parameters = [(6, 0, [])]
+                continue
 
+            # Check if user is in Lerm Admin group
+            if (
+                current_user.has_group('lerm_civil.kes_admin_access_group')
+                or current_user.has_group('lerm_civil.lerm_sample_verification')
+                or current_user.has_group('lerm_civil.lerm_sample_approval')
+            ):
+                # Admin sees all parameters
+                parameter_ids = record.eln_ref.parameters_result.mapped('parameter').ids
+            else:
+                # Other users only see parameters assigned to them
+                user_param_results = record.eln_ref.parameters_result.filtered(
+                    lambda r: r.technician and r.technician.id == current_user.id
+                )
+                parameter_ids = user_param_results.mapped('parameter').ids
 
-
+            record.sample_parameters = [(6, 0, parameter_ids)]
 class MechanicalTmtTest(models.Model):
     _name = "mechanical.tmt.test"
     _rec_name = "name"

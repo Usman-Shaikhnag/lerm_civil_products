@@ -181,26 +181,6 @@ class CoverblockMechanical(models.Model):
         for rec in self:
             rec.grade = rec.eln_ref.grade_id.id if rec.eln_ref else False
 
-    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
-    def _compute_sample_parameters(self):
-
-        current_user = self.env.user
-
-        for rec in self:
-
-            if not rec.eln_ref:
-                rec.sample_parameters = [(6, 0, [])]
-                continue
-
-            results = rec.eln_ref.parameters_result.filtered(
-                lambda r: r.technician and r.technician.id == current_user.id
-            )
-            parameter_ids = results.mapped('parameter').ids
-            rec.sample_parameters = [(6, 0, parameter_ids)]
-
-   
-    # VISIBILITY
-   
     crushing_visible = fields.Boolean(compute="_compute_visible")
     water_absorption_visible = fields.Boolean(compute="_compute_visible")
 
@@ -292,25 +272,29 @@ class CoverblockMechanical(models.Model):
 
     @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
-        # parameter_based_assignment
         current_user = self.env.user
+
         for record in self:
             if not record.eln_ref:
                 record.sample_parameters = [(6, 0, [])]
                 continue
 
-            # filter parameter results by current user
-            user_param_results = record.eln_ref.parameters_result.filtered(
-                lambda r: r.technician and r.technician.id == current_user.id
-            )
-
-            # map to parameter master IDs
-            parameter_ids = user_param_results.mapped('parameter').ids
+            # Check if user is in Lerm Admin group
+            if (
+                current_user.has_group('lerm_civil.kes_admin_access_group')
+                or current_user.has_group('lerm_civil.lerm_sample_verification')
+                or current_user.has_group('lerm_civil.lerm_sample_approval')
+            ):
+                # Admin sees all parameters
+                parameter_ids = record.eln_ref.parameters_result.mapped('parameter').ids
+            else:
+                # Other users only see parameters assigned to them
+                user_param_results = record.eln_ref.parameters_result.filtered(
+                    lambda r: r.technician and r.technician.id == current_user.id
+                )
+                parameter_ids = user_param_results.mapped('parameter').ids
 
             record.sample_parameters = [(6, 0, parameter_ids)]
-
-
-
     def get_all_fields(self):
         record = self.env['mechanical.cover.block'].browse(self.ids[0])
         field_values = {}
@@ -324,6 +308,20 @@ class CoverblockMechanical(models.Model):
     def _compute_grade_id(self):
         if self.eln_ref:
             self.grade = self.eln_ref.grade_id.id
+
+
+    notes_id = fields.One2many('mechanical.cover.block.notes', 'parent_id', string="Notes", default=lambda self: self._default_notes_lines())
+
+    @api.model
+    def _default_notes_lines(self):
+        return [
+            (0, 0, {'sr_no': 'i', 'notes': 'The results stated in this report apply only to the tested sample(s) and are based on the conditions and parameters at the time of testing.'}),
+            (0, 0, {'sr_no': 'ii', 'notes': 'This report is invalid without the official paper seal of Make Infracon.'}),
+            (0, 0, {'sr_no': 'iii', 'notes': 'All test results are confidential and will not be disclosed to any third party without written consent of the client, except where required by law.'}),
+            (0, 0, {'sr_no': 'iv', 'notes': 'Any discrepancies or complaints regarding this report must be communicated in writing within 7 days from the date of issue.'}),
+            (0, 0, {'sr_no': 'v', 'notes': 'This report shall not be reproduced, except in full, without the prior written approval of Make Infracon.'}),
+            (0, 0, {'sr_no': 'vi', 'notes': 'The laboratory assumes no responsibility for the purpose for which the test results are used or for any subsequent actions taken based on these results.'}),
+        ]
 
 
 
@@ -386,3 +384,9 @@ class CrushingValueLine(models.Model):
     
    
    
+class CoverblockMechanicalNotes(models.Model):
+    _name = "mechanical.cover.block.notes"
+
+    parent_id = fields.Many2one('mechanical.cover.block', string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")

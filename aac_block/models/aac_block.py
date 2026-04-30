@@ -189,7 +189,11 @@ class AacBlockMechanical(models.Model):
                 continue
 
             # Check if user is in Lerm Admin group
-            if current_user.has_group('lerm_civil.kes_admin_access_group'):
+            if (
+                current_user.has_group('lerm_civil.kes_admin_access_group')
+                or current_user.has_group('lerm_civil.lerm_sample_verification')
+                or current_user.has_group('lerm_civil.lerm_sample_approval')
+            ):
                 # Admin sees all parameters
                 parameter_ids = record.eln_ref.parameters_result.mapped('parameter').ids
             else:
@@ -200,8 +204,6 @@ class AacBlockMechanical(models.Model):
                 parameter_ids = user_param_results.mapped('parameter').ids
 
             record.sample_parameters = [(6, 0, parameter_ids)]
-
-    # Dimension
     dimension_name = fields.Char(default="Dimension")
     dimension_visible = fields.Boolean(compute="_compute_visible")
     
@@ -542,6 +544,20 @@ class AacBlockMechanical(models.Model):
             except:
                 record.average_compressive_strength = 0
 
+
+    notes_id = fields.One2many('mechanical.aac.block.notes', 'parent_id', string="Notes", default=lambda self: self._default_notes_lines())
+
+    @api.model
+    def _default_notes_lines(self):
+        return [
+            (0, 0, {'sr_no': 'i', 'notes': 'The results stated in this report apply only to the tested sample(s) and are based on the conditions and parameters at the time of testing.'}),
+            (0, 0, {'sr_no': 'ii', 'notes': 'This report is invalid without the official paper seal of Make Infracon.'}),
+            (0, 0, {'sr_no': 'iii', 'notes': 'All test results are confidential and will not be disclosed to any third party without written consent of the client, except where required by law.'}),
+            (0, 0, {'sr_no': 'iv', 'notes': 'Any discrepancies or complaints regarding this report must be communicated in writing within 7 days from the date of issue.'}),
+            (0, 0, {'sr_no': 'v', 'notes': 'This report shall not be reproduced, except in full, without the prior written approval of Make Infracon.'}),
+            (0, 0, {'sr_no': 'vi', 'notes': 'The laboratory assumes no responsibility for the purpose for which the test results are used or for any subsequent actions taken based on these results.'}),
+        ]
+
 class AacDimensionLine(models.Model):
     _name = "mech.aac.dimension.line"
     parent_id = fields.Many2one('mechanical.aac.block', string="Parent Id")
@@ -649,3 +665,10 @@ class AacCompressiveStrengthLine(models.Model):
 
 
 
+
+class AacBlockMechanicalNotes(models.Model):
+    _name = "mechanical.aac.block.notes"
+
+    parent_id = fields.Many2one('mechanical.aac.block', string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
