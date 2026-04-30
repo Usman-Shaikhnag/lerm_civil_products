@@ -4094,18 +4094,23 @@ class Soil(models.Model):
 
     @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
+        current_user = self.env.user
+
         for record in self:
             if not record.eln_ref:
                 record.sample_parameters = [(6, 0, [])]
                 continue
 
-            current_user = self.env.user
-
-            # ✅ Discipline group can see all parameters
-            if current_user.has_group('lerm_civil.lerm_discipline_group'):
+            # Check if user is in Lerm Admin group
+            if (
+                current_user.has_group('lerm_civil.kes_admin_access_group')
+                or current_user.has_group('lerm_civil.lerm_sample_verification')
+                or current_user.has_group('lerm_civil.lerm_sample_approval')
+            ):
+                # Admin sees all parameters
                 parameter_ids = record.eln_ref.parameters_result.mapped('parameter').ids
             else:
-                # 🔒 Only parameters assigned to current technician
+                # Other users only see parameters assigned to them
                 user_param_results = record.eln_ref.parameters_result.filtered(
                     lambda r: r.technician and r.technician.id == current_user.id
                 )
@@ -14225,15 +14230,7 @@ class ConsolidationLine(models.Model):
 
 
 
-    @api.depends('consolidation_output_ids.applied_pressure')
-    def _compute_slop1(self):
-        for rec in self:
-            rec.slop1 = 0.0
-
-            for line in rec.consolidation_output_ids:
-                if float(line.applied_pressure) == 2.0:
-                    rec.slop1 = line.applied_pressure
-                    break
+     
 
     
 
