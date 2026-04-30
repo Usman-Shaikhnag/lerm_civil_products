@@ -19,13 +19,13 @@ class CoarseAggregateMechanical(models.Model):
     temperature = fields.Char("Temperature",store=True)
 
 
-    notes_id = fields.One2many('coarse.notes', 'parent_id', string="Notes")
+    notes_id = fields.One2many('coarse.notes', 'parent_id',string="Notes",
+    default=lambda self: self._default_notes_lines()
+)
     
     @api.model
-    def default_get(self, fields):
-        res = super(CoarseAggregateMechanical, self).default_get(fields)
-
-        default_notes = [
+    def _default_notes_lines(self):
+        return [
             (0, 0, {
                 'sr_no': 'i',
                 'notes': 'The results stated in this report apply only to the tested sample(s) and are based on the conditions and parameters at the time of testing.',
@@ -48,9 +48,6 @@ class CoarseAggregateMechanical(models.Model):
                 'notes': 'Any disputes shall be subject to jurisdiction of Nashik courts only.',
             }),
         ]
-
-        res['notes_id'] = default_notes
-        return res
 
 
     def prefill_data(self):
