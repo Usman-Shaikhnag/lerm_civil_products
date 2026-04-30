@@ -207,6 +207,33 @@
                         </tbody>
                     </table>
 
+                       <!-- efforescence visual_observation -->
+                    <div invisible="efflorescence_visible == False" style="text-align:center">
+                        <h1>
+                            <field name="visual_observation_name_efforescence" readonly="1" nolabel="1"/>
+                            <field name="efflorescence_visible" invisible='1'/>
+                        </h1>
+                    </div>
+
+                    <div invisible="efflorescence_visible == False" class="mb-3">
+                        <table class="table custom_table_borders o_form_table">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Observation 1</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            
+                             <tr>
+                                    <td><strong>Observation</strong></td>
+                                    <td><field name="visual_observation_1" nolabel="1" class="blue-input"/></td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
 
 
                     <notebook>

@@ -55,27 +55,38 @@
                         </field>
                     </div>
 
+
+                    <div class="d-flex gap-2"> 
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="brick_temperature"></label>
+                                    </td>
+                                    <td>
+                                        <field name="brick_temperature" class="blue-input"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="brick_humidity" ></label>
+                                    </td>
+                                    <td>
+                                        <field name="brick_humidity" class="blue-input"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
                  
-                    <table class="table o_form_table custom_table_borders">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th style="text-align: center;">L</th>
-                                <th style="text-align: center;">B</th>
-                                <th style="text-align: center;">H</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Size of the Brick :- (mm)</td>
-                                <td style="text-align: center;"><field name="length_in_mm" nolabel="1" class="blue-input"/></td>
-                                <td style="text-align: center;"><field name="width_in_mm" nolabel="1" class="blue-input"/></td>
-                                <td style="text-align: center;"><field name="height_in_mm" nolabel="1" class="blue-input"/></td>
-                            </tr>
-                        </tbody>
-                    </table>
          
-                        <!-- compressive Strength -->
+                    <!-- compressive Strength -->
 
                     <div invisible="compressive_strength_visible == False" style="text-align:center">
                       <h1>
@@ -89,7 +100,7 @@
                     <field name="compressive_strength_lines" nolabel="1" >
                             <tree editable="bottom"  class="custom_table_borders">
                                 <field name="serial_no" />
-                                <field name="identification_mark" class="blue-input" decoration-info="identification_mark != 0"/>
+                                <field name="identification_mark" width="100" class="blue-input" decoration-info="identification_mark != 0"/>
                                 <field name='length' class="blue-input" decoration-info="length != 0"/>
                                 <field name='width' class="blue-input" decoration-info="height != 0"/>
                                 <field name='height' class="blue-input" decoration-info="height != 0"/>
@@ -131,7 +142,7 @@
                     </table>
 
 
-                    <!--  -->
+                    <!-- Water Absorption -->
 
                   
                     <div invisible="water_absorbtion_visible == False" style="text-align:center">
@@ -183,6 +194,133 @@
                             </tr>
                         </tbody>
                     </table>
+                    <group/>
+
+                    <!-- Dimension -->
+
+                    <div invisible="dimension_visible == False" style="text-align:center">
+                      <h1>
+                          <field name="dimension_name" readonly="1" nolabel="1"/>
+                          <field name="dimension_visible" invisible='1'/>
+                      </h1>
+                    </div>
+                    
+                   
+                     <div invisible = "dimension_visible == False"  >
+                    <field name="dimension_lines" nolabel="1" >
+                            <tree editable="bottom"  class="custom_table_borders">
+                                <field name="serial_no" />
+                                <field name='lengthh' class="blue-input" decoration-info="lengthh != 0"/>
+                                <field name='width' class="blue-input" decoration-info="height != 0"/>
+                                <field name='height' class="blue-input" decoration-info="height != 0"/>
+                                
+                            </tree>
+                    </field>
+                    </div>
+
+                    <div class="d-flex gap-3" invisible="dimension_visible == False"> 
+                         <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="dimension_visible == False">
+                          <tbody>
+                             <tr>
+                                <td><label class="fw-bold" for="avrg_length"></label>
+                                </td>
+                                <td>
+                                    <field name="avrg_length"/>
+                                </td>
+                            </tr>
+                              <tr>
+                                <td>
+                                    <label class="fw-bold" for="avrg_length_confirmity"></label>
+                                </td>
+                                <td>
+                                    <field name="avrg_length_confirmity"
+                                        decoration-success="avrg_length_confirmity == 'pass'" 
+                                        decoration-danger="avrg_length_confirmity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="fw-bold" for="avrg_length_nabl"></label>
+                                </td>
+                                <td>
+                                    <field name="avrg_length_nabl"
+                                        decoration-success="avrg_length_nabl == 'pass'" 
+                                        decoration-danger="avrg_length_nabl == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                      <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="dimension_visible == False">
+                          <tbody>
+                             <tr>
+                                <td><label class="fw-bold" for="avrg_width"></label>
+                                </td>
+                                <td>
+                                    <field name="avrg_width"/>
+                                </td>
+                            </tr>
+                              <tr>
+                                <td>
+                                    <label class="fw-bold" for="avrg_width_confirmity"></label>
+                                </td>
+                                <td>
+                                    <field name="avrg_width_confirmity"
+                                        decoration-success="avrg_width_confirmity == 'pass'" 
+                                        decoration-danger="avrg_width_confirmity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="fw-bold" for="avrg_width_nabl"></label>
+                                </td>
+                                <td>
+                                    <field name="avrg_width_nabl"
+                                        decoration-success="avrg_width_nabl == 'pass'" 
+                                        decoration-danger="avrg_width_nabl == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                     <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="dimension_visible == False">
+                          <tbody>
+                             <tr>
+                                <td><label class="fw-bold" for="avrg_height"></label>
+                                </td>
+                                <td>
+                                    <field name="avrg_height"/>
+                                </td>
+                            </tr>
+                              <tr>
+                                <td>
+                                    <label class="fw-bold" for="avrg_height_confirmity"></label>
+                                </td>
+                                <td>
+                                    <field name="avrg_height_confirmity"
+                                        decoration-success="avrg_height_confirmity == 'pass'" 
+                                        decoration-danger="avrg_height_confirmity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="fw-bold" for="avrg_height_nabl"></label>
+                                </td>
+                                <td>
+                                    <field name="avrg_height_nabl"
+                                        decoration-success="avrg_height_nabl == 'pass'" 
+                                        decoration-danger="avrg_height_nabl == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
 
                       <!-- visual_observation -->
                     <div invisible="efflorescence_visible == False" style="text-align:center">
@@ -198,10 +336,6 @@
                                 <tr>
                                     <th></th>
                                     <th>Observation 1</th>
-                                    <th>Observation 2</th>
-                                    <th>Observation 3</th>
-                                    <th>Observation 4</th>
-                                    <th>Observation 5</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -209,50 +343,29 @@
                              <tr>
                                     <td><strong>Observation</strong></td>
                                     <td><field name="visual_observation_1" nolabel="1" class="blue-input"/></td>
-                                    <td><field name="visual_observation_2" nolabel="1" class="blue-input"/></td>
-                                    <td><field name="visual_observation_3" nolabel="1" class="blue-input"/></td>
-                                    <td><field name="visual_observation_4" nolabel="1" class="blue-input"/></td>
-                                    <td><field name="visual_observation_5" nolabel="1" class="blue-input"/></td>
                                 </tr>
 
                             </tbody>
                         </table>
                     </div>
 
-                    <!-- Initial Rate Of Absorption -->
+                     <notebook>
 
-                     <div invisible="ini_rate_absorption_visible == False" style="text-align:center">
-                      <h1>
-                          <field name="ini_rate_absorption_name" readonly="1" nolabel="1"/>
-                          <field name="ini_rate_absorption_visible" invisible='1'/>
-                      </h1>
-                    </div>
-                    
-                   
-                     <div invisible = "ini_rate_absorption_visible == False"  >
-                    <field name="absorption_line_ids" nolabel="1" >
-                            <tree editable="bottom"  class="custom_table_borders">
-                                <field name="serial_no" />
-                                <field name="iW1" class="blue-input" decoration-info="iW1 != 0"/>
-                                <field name='W2' class="blue-input" decoration-info="W2 != 0"/>
-                                <field name='W2_W1'/>
-                                <field name='area'/>
-                                <field name='initial_rate_absorp' />
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
                                 
-                            </tree>
-                    </field>
-                    </div>
+                            </div>
+                        </page>
 
-                    <table class="table o_form_table w-50 mt-2 custom_table_borders" invisible="not ini_rate_absorption_visible">
-                        <tbody>
-                            <tr>
-                                <td><strong>Average Initial Rate of Absorption (g/min/100 cm²)</strong></td>
-                                <td>
-                                    <field name="average_ira" readonly="1" nolabel="1"/>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    </notebook>
+
+                   
 
                   <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
                 </sheet>

@@ -4,7 +4,7 @@
     <t t-call="web.html_container">
 	<t t-call="lerm_civil.mechanical_data_sheet_header">
 		<div style="text-align:center;font-size:18px;font-weight: bold">
-			Clay Bricks
+			Burnt Clay Bricks
 		</div>
 		<div class="container_eln" style="margin-top:5px">
             <table style="margin-top:20px">
@@ -180,7 +180,136 @@
 
 
 
-                 <!-- Visual Observation -->
+                
+                <!-- Dimension -->
+
+            <div t-if="data.dimension_visible" style="margin-top:20px; page-break-before: always;">
+				<div style="text-align:center;font-size:18px;font-weight: bold">
+						Dimension (mm) 
+                        <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','9f1689be-107d-4e30-9d3d-2aff6292264d')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+
+				</div>
+                <table style="margin-top:30px;">
+                
+                    <thead>
+                        <tr>
+                            <th colspan="2" style="text-align: center;max-width:200px">
+                                <span style="font-weight: bold;">
+                                    Sr.No
+                                </span>
+                            </th>
+                            <th colspan="2" style="text-align: center;max-width:100px">
+                                <span style="font-weight: bold;">
+                                     Length in mm
+                                </span>
+                            </th>
+                            <th colspan="2" style="text-align: center;">
+                                <span style="font-weight: bold;">
+                                     Width in mm
+                                </span>
+                            </th>
+                            <th colspan="2" style="text-align: center;">
+                                <span style="font-weight: bold;">
+                                     Height in mm
+                                </span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <t t-set="k" t-value="0"/>
+								<tr t-foreach="data.dimension_lines" t-as="r" style="text-align: center;">
+									<td style="border: 1px solid black; padding: 6px;" colspan="2">
+										<span t-esc="k + 1" />
+										<t t-set="k" t-value="k+1"/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;" colspan="2">
+										<span t-esc="r['lengthh']"/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;" colspan="2">
+										<span t-esc="r['width']"/>
+									</td>
+									<td style="border: 1px solid black; padding: 6px;" colspan="2">
+										<span t-esc="r['height']"/>
+									</td>
+								</tr>
+                    </tbody>
+				
+				</table>	
+			</div>
+
+            <table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;">
+							<tr style="font-weight: bold;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid black;">Average Length :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid black;">
+									<span t-field="data.avrg_length"/>
+								</td>
+							</tr>
+                            <tr style="font-weight: bold;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid black;">Average Width :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid black;">
+									<span t-field="data.avrg_width"/>
+								</td>
+							</tr>
+                            <tr style="font-weight: bold;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid black;">Average Height :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid black;">
+									<span t-field="data.avrg_height"/>
+								</td>
+							</tr>
+						</table>
+
+
+            <div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+                     <!-- Visual Observation -->
 
             <div t-if="data.efflorescence_visible" style="margin-top:20px; page-break-before: always;">
 				<div style="text-align:center;font-size:18px;font-weight: bold">
@@ -205,27 +334,7 @@
                             </th>
                             <th style="text-align: center;max-width:100px">
                                 <span style="font-weight: bold;">
-                                     1 Observation
-                                </span>
-                            </th>
-                            <th style="text-align: center;">
-                                <span style="font-weight: bold;">
-                                     2 Observation
-                                </span>
-                            </th>
-                            <th style="text-align: center;">
-                                <span style="font-weight: bold;">
-                                     3 Observation
-                                </span>
-                            </th>
-                            <th style="text-align: center;">
-                                <span style="font-weight: bold;">
-                                     4 Observation
-                                </span>
-                            </th>
-                            <th style="text-align: center;">
-                                <span style="font-weight: bold;">
-                                     5 Observation
+                                     Observation
                                 </span>
                             </th>
                         </tr>
@@ -244,28 +353,6 @@
                                     <span t-field="data.visual_observation_1" />
                                 </span>									
                             </td>
-
-                            <td style="text-align: center;">
-                                <span style="text-align: center;" >
-                                    <span t-field="data.visual_observation_2" />
-                                </span>									
-                            </td>
-
-                            <td style="text-align: center;">
-                                <span style="text-align: center;" >
-                                    <span t-field="data.visual_observation_3" />
-                                </span>									
-                            </td>
-                            <td style="text-align: center;">
-                                <span style="text-align: center;" >
-                                    <span t-field="data.visual_observation_4" />
-                                </span>									
-                            </td>
-                            <td style="text-align: center;">
-                                <span style="text-align: center;" >
-                                    <span t-field="data.visual_observation_5" />
-                                </span>									
-                            </td>
                             
                         </tr>
                     </tbody>
@@ -318,125 +405,6 @@
 						</div>
 					</div>
 
-                <!-- Dimension -->
-
-            <div t-if="data.dimension_visible" style="margin-top:20px; page-break-before: always;">
-				<div style="text-align:center;font-size:18px;font-weight: bold">
-						Dimension (mm) 
-                        <span>
-								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','9f1689be-107d-4e30-9d3d-2aff6292264d')]).parameter_table" t-as="parameter">
-									<t t-if="parameter.grade.id == eln.grade_id.id">
-										<span t-field="parameter.specification"/>
-									</t>
-								</t>
-							</span>
-
-				</div>
-                <div style="text-align:center;font-size:18px;font-weight: bold">
-                        20 Bricks 
-				</div>
-                <table style="margin-top:30px;">
-                
-                    <thead>
-                        <tr>
-                            <th style="text-align: center;max-width:200px">
-                                <span style="font-weight: bold;">
-                                    Sr.No
-                                </span>
-                            </th>
-                            <th style="text-align: center;max-width:100px">
-                                <span style="font-weight: bold;">
-                                     Length in mm
-                                </span>
-                            </th>
-                            <th style="text-align: center;">
-                                <span style="font-weight: bold;">
-                                     Width in mm
-                                </span>
-                            </th>
-                            <th style="text-align: center;">
-                                <span style="font-weight: bold;">
-                                     Height in mm
-                                </span>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            
-                            <td style="text-align: center;max-width:200px">
-                                <span style="text-align: center;">
-                                    1
-                                </span>    
-                            </td>
-                            
-                            <td style="text-align: center;">
-                                <span style="text-align: center;" >
-                                    <span t-field="data.length_in_mm" t-options='{"widget": "float", "precision": 2}'/>
-                                </span>									
-                            </td>
-
-                            <td style="text-align: center;">
-                                <span style="text-align: center;" >
-                                    <span t-field="data.width_in_mm" t-options='{"widget": "float", "precision": 2}'/>
-                                </span>									
-                            </td>
-
-                            <td style="text-align: center;">
-                                <span style="text-align: center;" >
-                                    <span t-field="data.height_in_mm" t-options='{"widget": "float", "precision": 2}'/>
-                                </span>									
-                            </td>
-                        </tr>
-                    </tbody>
-				
-				</table>	
-			</div>
-
-
-            <div class="signatureContainer girdgird">
-							<div>
-								<div>
-									<b>
-										Prepared By
-									</b>
-								</div>
-								
-                            <div>
-                                <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
-                                </b>
-                            </div>
-                            <div>
-                                <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
-                                </b>
-                            </div>
-                        </div>
-                        
-                        <div style="margin-left:600px">
-                                    
-                            <div>
-                                <b>
-                                    Checked By
-                                </b>
-                            </div>
-						
-								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
-							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
-								
-							
-						</div>
-					</div>
 
 
 
