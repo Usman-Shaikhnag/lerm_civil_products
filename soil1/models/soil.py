@@ -14139,7 +14139,7 @@ class ConsolidationLine(models.Model):
             except Exception:
                 rec.slop = 0.0
 
-    slop1 = fields.Float(string="Slop 1", digits=(8, 3),compute="_compute_slop1")
+    slop1 = fields.Float(string="Slop 1", digits=(8, 3))
     slop2 = fields.Float(string="Slop 2", digits=(8, 3),compute="_compute_slop2")
 
     slop3 = fields.Float(string="Slop 3", digits=(8, 3),compute="_compute_slop3")
