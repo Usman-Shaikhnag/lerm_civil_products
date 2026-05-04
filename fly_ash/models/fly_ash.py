@@ -201,100 +201,6 @@ class FlyaschNormalConsistency(models.Model):
 
 
 
-    # Setting Time
-
-    # setting_time_visible = fields.Boolean("Setting Time Visible",compute="_compute_visible")
-    # setting_time_name = fields.Char("Name",default="Setting Time")
-
-    # temp_percent_setting = fields.Float("Temperature °c")
-    # humidity_percent_setting = fields.Float("Humidity %")
-    # start_date_setting = fields.Date("Start Date")
-    # end_date_setting = fields.Date("End Date")
-
-    # total_wt_of_sample_setting_time = fields.Float(string="Total Weight of Sample(g)",compute="_compute_total_wt_of_sample_setting_time",store=True)
-    # wt_of_water_required_setting_time = fields.Float("Wt.of water required (g)",compute="_compute_wt_of_water_required",store=True)
-
-
-    # @api.depends('total_wt_of_sample_fly_1')
-    # def _compute_total_wt_of_sample_setting_time(self):
-    #     for record in self:
-    #         record.total_wt_of_sample_setting_time = record.total_wt_of_sample_fly_1
-
-    # @api.depends('normal_consistency_fly_1','total_wt_of_sample_setting_time')
-    # def _compute_wt_of_water_required(self):
-    #     for record in self:
-    #         record.wt_of_water_required_setting_time =  (0.85 * record.normal_consistency_fly_1 * record.total_wt_of_sample_setting_time) / 100
-
-
-    # initial_setting_time = fields.Char("Name", default="Initial Setting Time")
-    # time_water_added = fields.Datetime("The Time When water is added to cement (t1)")
-    # time_needle_fails = fields.Datetime("The time at which needle fails to penetrate the test block to a point 5 ± 0.5 mm (t2)")
-    # initial_setting_time_hours = fields.Char("Initial Setting Time (t2-t1) (Hours)", compute="_compute_initial_setting_time")
-    # initial_setting_time_minutes = fields.Float("Initial Setting Time", compute="_compute_initial_setting_time")
-    # initial_setting_time_minutes_unrounded = fields.Char("Initial Setting Time",compute="_compute_initial_setting_time")
-
-   
-    
-
-    # @api.depends('time_water_added', 'time_needle_fails')
-    # def _compute_initial_setting_time(self):
-    #     for record in self:
-    #         if record.time_water_added and record.time_needle_fails:
-    #             t1 = record.time_water_added
-    #             t2 = record.time_needle_fails
-    #             time_difference = t2 - t1
-
-    #             # Convert time difference to seconds and then to minutes
-    #             time_difference_minutes = time_difference.total_seconds() / 60
-
-    #             initial_setting_time_hours = time_difference.total_seconds() / 3600
-    #             time_delta = timedelta(hours=initial_setting_time_hours)
-    #             record.initial_setting_time_hours = "{:0}:{:02}".format(int(time_delta.total_seconds() // 3600), int((time_delta.total_seconds() % 3600) // 60))
-    #             if time_difference_minutes % 5 == 0:
-    #                 record.initial_setting_time_minutes = time_difference_minutes
-    #             else:
-    #                 record.initial_setting_time_minutes = round(time_difference_minutes / 5) * 5
-
-    #             record.initial_setting_time_minutes_unrounded = time_difference_minutes
-
-    #         else:
-    #             record.initial_setting_time_hours = False
-    #             record.initial_setting_time_minutes = False
-    #             record.initial_setting_time_minutes_unrounded = False
-
-   
-
-    #  #Final setting Time
-
-    # final_setting_time = fields.Char("Name",default="Final Setting Time")
-    # time_needle_make_impression = fields.Datetime("The Time at which the needle make an impression on the surface of test block while attachment fails to do (t3)")
-    # final_setting_time_hours = fields.Char("Final Setting Time (t3-t1) (Hours)",compute="_compute_final_setting_time")
-    # final_setting_time_minutes = fields.Char("Final Setting Time",compute="_compute_final_setting_time")
-    # final_setting_time_minutes_unrounded = fields.Char("Final Setting Time Unrounded",compute="_compute_final_setting_time")
-
-
-
-
-    # @api.depends('time_needle_make_impression')
-    # def _compute_final_setting_time(self):
-    #     for record in self:
-    #         if record.time_needle_make_impression and record.time_water_added:
-    #             t1 = record.time_water_added
-    #             t2 = record.time_needle_make_impression
-    #             time_difference = t2 - t1
-
-    #             record.final_setting_time_hours = time_difference
-    #             final_setting_time = time_difference.total_seconds() / 60
-    #             if final_setting_time % 5 == 0:
-    #                 record.final_setting_time_minutes = final_setting_time
-    #             else:
-    #                 record.final_setting_time_minutes = round(final_setting_time / 5) * 5
-
-    #             record.final_setting_time_minutes_unrounded = final_setting_time
-    #         else:
-    #             record.final_setting_time_hours = False
-    #             record.final_setting_time_minutes = False
-    #             record.final_setting_time_minutes_unrounded = False
 
     ### setting Time,Final Setting Time	
 
@@ -1584,30 +1490,7 @@ class FlyaschNormalConsistency(models.Model):
             record.lime_reactivity_visible = False
             record.fineness_blaine_visible = False
 
-            # if normal_consistency_test in record.tests:
-            #     record.normal_consistency_visible = True
-
-            # if setting_time_test in record.tests:
-            #     record.normal_consistency_visible = True
-            #     record.setting_time_visible  = True
-            # if particles_retained_test in record.tests:
-            #     record.particles_retained_visible = True
-            # if soundness_test in record.tests:
-            #     record.normal_consistency_visible = True
-            #     record.soundness_visible = True
-            # if specific_gravity_test in record.tests:
-            #     record.specigic_gravity_visible = True
-            # if compressive_test in record.tests:
-            #     record.specigic_gravity_visible = True
-            #     record.normal_consistency_visible = True
-            #     record.compressive_visible = True
-            # if lime_reactivity_test in record.tests:
-            #     record.normal_consistency_visible = True
-            #     record.lime_reactivity_visible = True
-            # # if dry_sieving_test in record.tests:
-            # #     record.dry_sieving_visible = True
-            # if fineness_blaine in record.tests:
-            #     record.fineness_blaine_visible = True
+           
 
 
             for sample in record.sample_parameters:
@@ -1744,6 +1627,18 @@ class FlyaschNormalConsistency(models.Model):
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+            if result.parameter.internal_id == '03c1a445-e599-4ba9-ac67-f186a7c6dd61':
+                # result.result_char = round(self.fineness_air_permeability,2)
+                result.calculated = True
+
+            if result.parameter.internal_id == 'b0e2437d-514b-4875-9f3a-203d5fad1d83':
+                # result.result_char = round(self.fineness_air_permeability,2)
+                result.calculated = True
+
+            if result.parameter.internal_id == '4c16fe35-cd02-4d12-ba13-aa95bf000d73':
+                # result.result_char = round(self.fineness_air_permeability,2)
+                result.calculated = True
 
         
         return {

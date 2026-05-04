@@ -214,51 +214,39 @@
 					<table style="margin-top:10px;margin-bottom:0px;">
 					<t t-set="i" t-value="0"/>
 						<thead>
-							<tr>
-								<th style="text-align: center;font-weight: bold;">
-									<span>
-										Sr. No
-									</span>
-								</th>
-								<th style="text-align: center;font-weight: bold;">  
-								    <span t-esc="eln.material.test_parameter"/>
-									<!-- <span>
-										Test Parameters
-									</span> -->
-								</th>
-								<th style="text-align: center;font-weight: bold;">
-									<span t-esc="eln.material.unit"/>
-									<!-- <span>
-										Unit
-									</span> -->
-								</th>
-								<th style="text-align: center;font-weight: bold;">
+								<tr>
+									<th style="text-align: center;">
+										<span>
+											Sr. No
+										</span>
+									</th>
+									<th style="text-align: center;">
+									   <span t-esc="eln.material.test_parameter"/>
+									</th>
+
+									<th style="text-align: center;">
 									<span t-esc="eln.material.result_remark"/>
-									<!-- <span>
-										Result
-									</span> -->
-								</th>
+									</th>
 
-								<th  style="text-align: center;font-weight: bold;">
-									<span>
-										<span t-esc="eln.material.specifications"/>
-									</span>
-								</th>
+									<th style="text-align: center;">
+									  <span t-esc="eln.material.unit"/>
+									</th>
+									
+									<th rowspan="1" style="text-align: center;"> 
+										<span t-field="eln.material.specifications"></span>
+									</th>
 
-								<th  style="text-align: center;font-weight: bold;">
-									<span>
+									<th style="text-align: center;">
 										<span t-esc="eln.material.method_reference"/>
-									</span>
-								</th>
-								<th style="text-align: center;font-weight: bold;" t-if="eln.conformity">
-									<span>
-										Conformity
-									</span>
-								</th>
-
-								
-							</tr>
-						</thead>
+									</th>
+									
+									<th t-if="eln.conformity" style="text-align: center;">
+										<span>
+											Conformity
+										</span>
+									</th>
+								</tr>
+							</thead>
 						<tbody >
 							<!-- Specific Gravity  -->
 							<tr t-if="ggbs.specific_gravity_visible and ggbs.specific_gravity_nabl == 'pass' and nabl and not fromEln" >
@@ -273,14 +261,16 @@
 
 								<td style="text-align: center;">
 									<span>
-										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')]).unit.name"/>
-									</span>
-								</td>
-								<td style="text-align: center;">
-									<span>
 										<span t-field="ggbs.average_specific_gravity"/>
 									</span>									
 								</td>
+
+								<td style="text-align: center;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')]).unit.name"/>
+									</span>
+								</td>
+								
 
 								<td style="text-align: center;">
 									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')]).parameter_table" t-as="parameter">
@@ -316,14 +306,16 @@
 
 								<td style="text-align: center;">
 									<span>
-										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')]).unit.name"/>
-									</span>
-								</td>
-								<td style="text-align: center;">
-									<span>
 										<span t-field="ggbs.average_specific_gravity"/>
 									</span>									
 								</td>
+
+								<td style="text-align: center;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')]).unit.name"/>
+									</span>
+								</td>
+								
 
 								<td style="text-align: center;">
 									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')]).parameter_table" t-as="parameter">
@@ -359,14 +351,16 @@
 
 								<td style="text-align: center;">
 									<span>
-										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')]).unit.name"/>
-									</span>
-								</td>
-								<td style="text-align: center;">
-									<span>
 										<span t-field="ggbs.average_specific_gravity"/>
 									</span>									
 								</td>
+
+								<td style="text-align: center;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')]).unit.name"/>
+									</span>
+								</td>
+								
 
 								<td style="text-align: center;">
 									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')]).parameter_table" t-as="parameter">
@@ -403,16 +397,19 @@
 								<td style="text-align: center;" >
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')]).parameter_name"/>
 								</td>
-								<td style="text-align: center;">
-									<span>
-										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')]).unit.name"/>
-									</span>
-								</td>
+
 								<td style="text-align: center;">
 									<span>
 										<span t-field="ggbs.fineness_air_permeability"/>
 									</span>									
 								</td>
+
+								<td style="text-align: center;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')]).unit.name"/>
+									</span>
+								</td>
+								
 
 								<td style="text-align: center;">
 									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')]).parameter_table" t-as="parameter">
@@ -448,14 +445,15 @@
 								</td>
 								<td style="text-align: center;">
 									<span>
-										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')]).unit.name"/>
-									</span>
-								</td>
-								<td style="text-align: center;">
-									<span>
 										<span t-field="ggbs.fineness_air_permeability"/>
 									</span>									
 								</td>
+								<td style="text-align: center;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')]).unit.name"/>
+									</span>
+								</td>
+								
 
 								<td style="text-align: center;">
 									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')]).parameter_table" t-as="parameter">
@@ -488,16 +486,20 @@
 								<td style="text-align: center;" >
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')]).parameter_name"/>
 								</td>
-								<td style="text-align: center;">
-									<span>
-										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')]).unit.name"/>
-									</span>
-								</td>
+
 								<td style="text-align: center;">
 									<span>
 										<span t-field="ggbs.fineness_air_permeability"/>
 									</span>									
 								</td>
+
+
+								<td style="text-align: center;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')]).unit.name"/>
+									</span>
+								</td>
+								
 
 								<td style="text-align: center;">
 									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')]).parameter_table" t-as="parameter">
@@ -1619,8 +1621,8 @@
 									<td style="padding: 5px; font-style: italic; ">
 
 										<b>Notes:-</b>
-											<t t-if="data.notes_id">
-											<t t-foreach="data.notes_id" t-as="n">
+											<t t-if="ggbs.notes_id">
+											<t t-foreach="ggbs.notes_id" t-as="n">
 												<span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span>
 											</t>
 										</t>
