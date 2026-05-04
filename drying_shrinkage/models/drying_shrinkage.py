@@ -19,8 +19,7 @@ class MechanicalDryingShrinkage(models.Model):
     drying_shrinkage_name = fields.Char("Name", default="Drying Shrinkage")
     drying_shrinkage_visible = fields.Boolean("Drying Shrinkage", compute="_compute_visible")
 
-    drying_child_lines = fields.One2many('drying.shrinkage.line','parent_id',string="Parameter",
-                                         default=lambda self: self._default_drying_child_lines() )
+    drying_child_lines = fields.One2many('drying.shrinkage.line','parent_id',string="Parameter",default=lambda self: self._default_drying_child_lines() )
 
     average1 = fields.Float("Average %",compute="_compute_average_initial_drying",digits=(16, 3))
 

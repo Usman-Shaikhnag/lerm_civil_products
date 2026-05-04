@@ -135,125 +135,7 @@
                         </tbody>
                     </table>
 
-                    <!-- Density of Cement (Le-Chatlier Flask) -->
                     
-                    
-                    <div invisible = "density_cement_visible == False"  style="margin-top: 20px;">
-                        <h1 class="text-center">
-                            <field name="density_cement_name" readonly="1" nolabel="1"/>
-                            <field name="density_cement_visible" invisible="1"/>
-                        </h1>
-                    </div>
-
-
-                     
-                     
-                     <div invisible = "density_cement_visible == False">
-                        <field name="density_cement_lines">
-                                <tree editable="bottom" class="custom_table_borders">
-                                    <field name="serial_no"/>
-                                    <field name="wt_of_cement" class="blue-input" decoration-info="wt_of_cement != 0"/>
-                                    <field name="displaced_volume" class="blue-input" decoration-info="displaced_volume != 0"/>
-                                    <field name="density"/>
-                                </tree>
-                        </field>
-                    </div>
-
-
-                    <table invisible="density_cement_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
-                        <tbody>
-                            <tr>
-                                <td><label class="fw-bold" for="avg_density">Density of Cement</label></td>
-                                <td>
-                                    <field name="avg_density" nolabel="1"/>
-                                    <span>g/cm³</span>
-                                </td>
-                            </tr>
-                          
-                            <tr>
-                                <td><label class="fw-bold" for="avg_density_conformity"> Conformity</label></td>
-                                <td>
-                                    <field name="avg_density_conformity"
-                                        decoration-success="avg_density_conformity == 'pass'"
-                                        decoration-danger="avg_density_conformity == 'fail'"
-                                        readonly="1"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><label class="fw-bold" for="avg_density_nabl"> NABL</label></td>
-                                <td>
-                                    <field name="avg_density_nabl"
-                                        decoration-success="avg_density_nabl == 'pass'"
-                                        decoration-danger="avg_density_nabl == 'fail'"
-                                        readonly="1"/>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-
-                      <!-- Fineness by Blaine's Air Permeability -->
-                      
-                      <div invisible = "fineness_blaine_visible == False">
-                        <h1 class="text-center">
-                            <field name="fineness_blaine_name" readonly="1" nolabel="1"/>
-                            <field name="fineness_blaine_visible" invisible="1"/>
-                        </h1>
-                    </div>
-
-                    <table invisible="fineness_blaine_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
-                        <tbody>
-                            <tr>
-                                <td><label class="fw-bold" for="k">K</label></td>
-                                <td><field name="k" nolabel="1" class="blue-input"/></td>
-                            </tr>
-                            <tr>
-                                <td><label class="fw-bold" for="e">E</label></td>
-                                <td><field name="e" nolabel="1" class="blue-input"/></td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div invisible = "fineness_blaine_visible == False">
-                        <field name="fineness_blaine_lines">
-                            <tree editable="bottom" class="custom_table_borders">
-                                <field name="serial_no"/>
-                                <field name="wt_of_cement1" class="blue-input" decoration-info="wt_of_cement1 != 0"/>
-                                <field name="time_sec" class="blue-input" decoration-info="time_sec != 0"/>
-                                <field name="fineness"/>
-                            </tree>
-                        </field>
-                    </div>
-
-                    <table invisible="fineness_blaine_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
-                        <tbody>
-                            <tr>
-                                <td><label class="fw-bold" for="avg_fineness_blaine">Fineness of Cement</label></td>
-                                <td>
-                                    <field name="avg_fineness_blaine" nolabel="1"/>
-                                    <span class="ms-2">m²/kg</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><label class="fw-bold" for="avg_fineness_blaine_conformity">Fineness Conformity</label></td>
-                                <td>
-                                    <field name="avg_fineness_blaine_conformity"
-                                        decoration-success="avg_fineness_blaine_conformity == 'pass'"
-                                        decoration-danger="avg_fineness_blaine_conformity == 'fail'"
-                                        readonly="1"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><label class="fw-bold" for="avg_fineness_blaine_nabl">Fineness NABL</label></td>
-                                <td>
-                                    <field name="avg_fineness_blaine_nabl"
-                                        decoration-success="avg_fineness_blaine_nabl == 'pass'"
-                                        decoration-danger="avg_fineness_blaine_nabl == 'fail'"
-                                        readonly="1"/>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
 
                     <!-- Soundness of Cement -->
                     
@@ -756,6 +638,180 @@
                                     <field name="avg_28_days_nabl"
                                         decoration-success="avg_28_days_nabl == 'pass'"
                                         decoration-danger="avg_28_days_nabl == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Density of Cement (Le-Chatlier Flask) -->
+                    
+                    
+                    <div invisible = "density_cement_visible == False"  style="margin-top: 20px;">
+                        <h1 class="text-center">
+                            <field name="density_cement_name" readonly="1" nolabel="1"/>
+                            <field name="density_cement_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+
+                     
+                     
+                     <div invisible = "density_cement_visible == False">
+                        <field name="density_cement_lines">
+                                <tree editable="bottom" class="custom_table_borders">
+                                    <field name="serial_no"/>
+                                    <field name="wt_of_cement" class="blue-input" decoration-info="wt_of_cement != 0"/>
+                                    <field name="displaced_volume" class="blue-input" decoration-info="displaced_volume != 0"/>
+                                    <field name="density"/>
+                                </tree>
+                        </field>
+                    </div>
+
+
+                    <table invisible="density_cement_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_density">Density of Cement</label></td>
+                                <td>
+                                    <field name="avg_density" nolabel="1"/>
+                                    <span>g/cm³</span>
+                                </td>
+                            </tr>
+                          
+                            <tr>
+                                <td><label class="fw-bold" for="avg_density_conformity"> Conformity</label></td>
+                                <td>
+                                    <field name="avg_density_conformity"
+                                        decoration-success="avg_density_conformity == 'pass'"
+                                        decoration-danger="avg_density_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_density_nabl"> NABL</label></td>
+                                <td>
+                                    <field name="avg_density_nabl"
+                                        decoration-success="avg_density_nabl == 'pass'"
+                                        decoration-danger="avg_density_nabl == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                      <!-- Fineness by Blaine's Air Permeability -->
+                      
+                      <div invisible = "fineness_blaine_visible == False">
+                        <h1 class="text-center">
+                            <field name="fineness_blaine_name" readonly="1" nolabel="1"/>
+                            <field name="fineness_blaine_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <table invisible="fineness_blaine_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="k">K</label></td>
+                                <td><field name="k" nolabel="1" class="blue-input"/></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="e">E</label></td>
+                                <td><field name="e" nolabel="1" class="blue-input"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div invisible = "fineness_blaine_visible == False">
+                        <field name="fineness_blaine_lines">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name="serial_no"/>
+                                <field name="wt_of_cement1" class="blue-input" decoration-info="wt_of_cement1 != 0"/>
+                                <field name="time_sec" class="blue-input" decoration-info="time_sec != 0"/>
+                                <field name="fineness"/>
+                            </tree>
+                        </field>
+                    </div>
+
+                    <table invisible="fineness_blaine_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_fineness_blaine">Fineness of Cement</label></td>
+                                <td>
+                                    <field name="avg_fineness_blaine" nolabel="1"/>
+                                    <span class="ms-2">m²/kg</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_fineness_blaine_conformity">Fineness Conformity</label></td>
+                                <td>
+                                    <field name="avg_fineness_blaine_conformity"
+                                        decoration-success="avg_fineness_blaine_conformity == 'pass'"
+                                        decoration-danger="avg_fineness_blaine_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_fineness_blaine_nabl">Fineness NABL</label></td>
+                                <td>
+                                    <field name="avg_fineness_blaine_nabl"
+                                        decoration-success="avg_fineness_blaine_nabl == 'pass'"
+                                        decoration-danger="avg_fineness_blaine_nabl == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                    <!-- Drying Skrinkage Start -->
+                    <div invisible = "not drying_shrinkage_visible">
+                        <h1>
+                            
+                            <field name="drying_shrinkage_name" readonly="1" nolabel="1"/>
+                            <field name="drying_shrinkage_visible" invisible="1"/>                     
+                        </h1>
+                    </div>
+                    <group/>
+
+                    <div invisible = "not drying_shrinkage_visible">
+                       <field name="drying_child_lines" nolabel="1" >
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='sr_no'/>
+                                <field name='original_length'/>
+                                <field name='dry_mesurment'/>
+                                <field name='dry_length'/>
+                                <field name='initial_drying'/>
+                               
+                            </tree>
+                       </field> 
+                    </div>
+
+                    <table invisible="drying_shrinkage_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="average1">Average</label></td>
+                                <td>
+                                    <field name="average1" nolabel="1"/>
+                                </td>
+                            </tr>
+                          
+                            <tr>
+                                <td><label class="fw-bold" for="drying_shrinkage_conformity"> Conformity</label></td>
+                                <td>
+                                    <field name="drying_shrinkage_conformity"
+                                        decoration-success="drying_shrinkage_conformity == 'pass'"
+                                        decoration-danger="drying_shrinkage_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="drying_shrinkage_nabl"> NABL</label></td>
+                                <td>
+                                    <field name="drying_shrinkage_nabl"
+                                        decoration-success="drying_shrinkage_nabl == 'pass'"
+                                        decoration-danger="drying_shrinkage_nabl == 'fail'"
                                         readonly="1"/>
                                 </td>
                             </tr>
