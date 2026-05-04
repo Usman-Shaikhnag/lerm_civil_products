@@ -33,17 +33,23 @@ class MechanicalConcreteCube(models.Model):
         string="Type of Failure")    
     temp = fields.Float(string="Temperature")
     humidity = fields.Float(string="Humidity")
-    date_of_calibration = fields.Date(string="Date of Calibration")
+    date_of_calibration = fields.Date(string="Date of Calibration",compute="_compute_date_of_calibration",store=True)
     condition_of_sample = fields.Char(string="Condition of Sample")
     notes_id = fields.One2many('concrete.cube.notes', 'parent_id', string="Notes")
 
 
-    # def _compute_date_of_calibration(self):
-    #     for rec in self:
-    #         if rec.eln_ref.instrument_id:
-    #             rec.date_of_calibration = rec.eln_ref.instrument_id.next_calibration_date
-    #         else:
-    #             rec.date_of_calibration = False
+    @api.depends('eln_ref.instrument')
+    def _compute_date_of_calibration(self):
+        for rec in self:
+            if rec.eln_ref.instrument and rec.eln_ref.instrument.calibration_lines:
+                lines = rec.eln_ref.instrument.calibration_lines.filtered(lambda l: l.last_calibration_date)
+                if lines:
+                    latest_line = lines.sorted(key=lambda l: l.last_calibration_date, reverse=True)[0]
+                    rec.date_of_calibration = latest_line.last_calibration_date
+                else:
+                    rec.date_of_calibration = False
+            else:
+                rec.date_of_calibration = False
 
     @api.model
     def default_get(self, fields):

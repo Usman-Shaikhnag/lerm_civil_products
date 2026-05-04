@@ -5,19 +5,19 @@
 			 <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
 				<div class="container_eln" style="padding-top:0;">
 					<div class="" t-foreach="eln" t-as="o">
-						<table class="header_table">
+						<table style="margin-top:5px;" class="header_table">
 							<tbody>
 								<tr>
 									<td style="width: 25%;"><strong>Name of Work</strong></td>
-									<td colspan="5">: <span t-field="o.srf_id.name_work"/></td>
+									<td colspan="5"><span t-field="o.srf_id.name_work"/></td>
 								</tr>
 								<tr>
 									<td><strong>Customer Name</strong></td>
-									<td colspan="5">: <span t-field="o.srf_id.customer.name"/></td>
+									<td colspan="5"><span t-field="o.srf_id.customer.name"/></td>
 								</tr>
 								<tr>
 									<td><strong>Address</strong></td>
-									<td colspan="5">: <span t-field="o.srf_id.customer.street"/>
+									<td colspan="5"><span t-field="o.srf_id.customer.street"/>
 										<span t-field="o.srf_id.customer.street2"/>
 										<span t-field="o.srf_id.customer.city"/>
 										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
@@ -27,57 +27,55 @@
 								</tr>
 								<tr>
 									<td><strong>Location of Performance</strong></td>
-									<td colspan="2">: <span t-field="o.sample_id.location_name"/></td>
-									<td t-if="o.sample_id.lab_id" colspan="2"><strong>Sample ID :</strong></td>
+									<td colspan="2"><span t-field="o.sample_id.location_name"/></td>
+									<td t-if="o.sample_id.lab_id" colspan="2"><strong>Sample ID</strong></td>
 									<td t-if="o.sample_id.lab_id"><span t-field="o.sample_id.lab_id"/></td>
 								</tr>
 								<tr>
 									<td><strong># Nature of work</strong></td>
-									<td colspan="2">: <span t-field="o.srf_id.client_refrence"/></td>
+									<td colspan="2"><span t-field="o.srf_id.client_refrence"/></td>
 									<td colspan="2"><strong># Date of Cast</strong></td>
 									<td><span t-field="data.date_of_casting"/></td>
 								</tr>
 								<tr>
 									<td><strong># Description &amp; Grade of Concrete</strong></td>
-									<td colspan="2">: <span t-field="o.grade_id.grade"/> <span t-field="o.material.name"/></td>
+									<td colspan="2"><span t-field="o.grade_id.grade"/> <span t-field="o.material.name"/></td>
 									<td colspan="2"><strong>Received Date</strong></td>
 									<td><span t-field="o.sample_id.sample_received_date"/></td>
 								</tr>
 								<tr>
 									<td><strong># Age of Specimen</strong></td>
-									<td colspan="2">: <span t-field="data.age_of_days"/></td>
+									<td colspan="2"><span t-field="data.age_of_days"/></td>
 									<td colspan="2"><strong>Date of Test</strong></td>
-									<td>
-										<span t-field="o.start_date"/> to <span t-field="o.end_date"/>
-									</td>
+									<td><span t-field="o.end_date"/></td>
 								</tr>
 								<tr>
 									<td><strong>Curing Condition</strong></td>
-									<td colspan="2">: <span t-field="o.material.test_method_adopted"/></td>
+									<td colspan="2"><span t-field="o.material.test_method_adopted"/></td>
 									<td colspan="2"><strong>Date of Issue</strong></td>
-									<td><span t-field="o.sample_id.report_issued_date"/></td>
+									<td><span t-field="o.end_date"/></td>
 								</tr>
 								<tr>
 									<td><strong>Machine Used For Testing / Loading Range</strong></td>
-									<td colspan="2">: <span t-field="o.instrument.name"/></td>
+									<td colspan="2"><span t-field="o.instrument.name"/></td>
 									<td colspan="2"><strong>Date of Calibration</strong></td>
-									<td>:<span t-field="data.date_of_calibration"/></td>
+									<td><span t-field="data.date_of_calibration"/></td>
 								</tr>
 								<tr>
 									<td><strong>Type of Failure</strong></td>
-									<td style="width: 25%;">: <span t-field="data.type_of_failure"/></td>
-									<td style="width: 12.5%;"><strong>Temp :</strong></td>
+									<td style="width: 25%;"><span t-field="data.type_of_failure"/></td>
+									<td style="width: 12.5%;"><strong>Temp</strong></td>
 									<td style="width: 12.5%; text-align: center;"><span t-field="data.temp"/>° C</td>
-									<td style="width: 12.5%;"><strong>Humidity :</strong></td>
+									<td style="width: 12.5%;"><strong>Humidity</strong></td>
 									<td style="width: 12.5%; text-align: center;"><span t-field="data.humidity"/>%</td>
 								</tr>
 								<tr>
 									<td><strong>Condition of Sample</strong></td>
-									<td colspan="5">: <span t-field="data.condition_of_sample"/></td>
+									<td colspan="5"><span t-field="o.sample_id.sample_condition"/></td>
 								</tr>
 								<tr>
 									<td><strong>Discipline</strong></td>
-									<td colspan="5">: <span t-field="o.sample_id.discipline_id.discipline"/></td>
+									<td colspan="5"><span t-field="o.sample_id.discipline_id.discipline"/></td>
 								</tr>
 								<!-- <tr t-if="o.material.source_sample">
 									<td><strong>Source of Sample</strong></td>
@@ -309,7 +307,7 @@
 						</div>
 					</div>
 
-					<div style="margin-top:5px; page-break-inside: avoid;" class="signatureContainer girdgird">
+					<div style="margin-top:5px; page-break-inside: avoid;" class="noteContainer">
 						<table class="table table-bordered">
 							<tr>
 								<td style="padding: 5px; font-style: italic; font-size: 12px;">
@@ -324,17 +322,11 @@
 											</span><br/>
 										</t>
 									</t>
-									<t t-if="eln.has_witness">
-										&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
-									</t>
-									<t t-if="eln.remarks">
-										&#160;&#160;<span t-esc="eln.remarks"/>
-									</t>
 								</td>
 							</tr>
 						</table>
 						</div>
-						<div class="signatureContainer girdgird">
+						<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
 							<div>
 								<div>
 									<b>
@@ -370,34 +362,34 @@
 							Format No. <span t-esc="eln.material.test_format_no"/>
 						</div>
 					</div>
-							<div>
-								<div>
-									<b>
-										Approved By 
-									</b>
-									
-								</div>
-								<div style="height: 50px;">
-									<t t-if="eln.sample_id.approveby_signature_required">
-										<div t-if="eln.sample_id.approved_by.employee_id.signature">
-											<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 45px;margin-top:1px; z-index: -10;"/>
-										</div>
-										
-									</t>
+					<div>
+						<div>
+							<b>
+								Approved By 
+							</b>
+							
+						</div>
+						<div style="height: 50px;">
+							<t t-if="eln.sample_id.approveby_signature_required">
+								<div t-if="eln.sample_id.approved_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 45px;margin-top:1px; z-index: -10;"/>
 								</div>
 								
-								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
-								
-								<div>
-									<b>
-										(<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
-							</div>
+							</t>
+						</div>
+						
+						<div>
+							<b>
+							<span t-esc="eln.sample_id.approved_by.name"/>
+							</b>
+						</div>
+						
+						<div>
+							<b>
+								(<span t-esc="eln.sample_id.approved_by.job_title"/>)
+							</b>
+						</div>
+					</div>
 						</div>
 						<!-- <div style="text-align:center;margin-top:25px">
 							......End of Report......
