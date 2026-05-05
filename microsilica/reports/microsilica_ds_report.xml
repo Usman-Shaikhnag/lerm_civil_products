@@ -217,52 +217,30 @@
 						<thead>
 							<tr>
 								<th style="text-align: center;">
-									<span style="font-weight: bold;">
-										Sr No
-									</span>
-								</th>
-								<th style="text-align: center;max-width:200px">
-								    <span t-esc="eln.material.test_parameter"/>
+										<span>
+											Sr. No
+										</span>
+									</th>
+									<th style="text-align: center;">
+									   <span t-esc="eln.material.test_parameter"/>
+									</th>
 
-									<!-- <span style="font-weight: bold;">
-										Test Parameters
-									</span> -->
+									<th style="text-align: center;">
+									<span t-esc="eln.material.result_remark"/>
+									</th>
 
-								</th>
-								<th style="text-align: center;max-width:100px">
-								<span t-esc="eln.material.unit"/>
-									<!-- <span style="font-weight: bold;">
-										Unit
-									</span> -->
-								</th>
-								<th style="text-align: center;">
-								<span t-esc="eln.material.result_remark"/>
-									<!-- <span style="font-weight: bold;">
-										Result
-									</span> -->
-								</th>
-								<!-- <th style="text-align: center;">
-									<span style="font-weight: bold;">
-										Test Method
-									</span>
-								</th> -->
-								<th style="text-align: center;font-weight: bold;">
-									<span>
+									<th style="text-align: center;">
+									  <span t-esc="eln.material.unit"/>
+									</th>
+									
+									<th rowspan="1" style="text-align: center;"> 
+										<span t-field="eln.material.specifications"></span>
+									</th>
+
+									<th style="text-align: center;">
 										<span t-esc="eln.material.method_reference"/>
-										
-									</span>
-								</th>
-								<!-- <th style="text-align: center;max-width:150px">
-									<span colspan="3" style="font-weight: bold;">
-										Limits As per IS
-									</span>
-								</th> -->
-								<th style="text-align: center;font-weight: bold;">
-									<span>
-										<span t-esc="eln.material.specifications"/>
-										
-									</span>
-								</th>
+									</th>
+									
 							</tr>
 						</thead>
 					<tbody>
@@ -284,19 +262,28 @@
 							</td>
 							
 							
-							<td style="text-align: center; vertical-align: middle;">
-								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','ddd2525aw-19f0-48b6-8e09-e7076a4b04b5')]).unit"/>
-							</td>
+							
 							<td style="text-align: center; vertical-align: middle;">
 								<span style="text-align: center;" >
 									<span t-field="microsilica.control_compressive_strength_7_days" t-options='{"widget": "float", "precision": 2}'/>
 								</span>									
 							</td>
-							<!-- <td style="text-align: center;">
-								<span style="text-align: center;min-height:100px">
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','ddd2525aw-19f0-48b6-8e09-e7076a4b04b5')]).test_method.test_method"/>
-								</span>
-							</td> -->
+
+							<td style="text-align: center; vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','ddd2525aw-19f0-48b6-8e09-e7076a4b04b5')]).unit"/>
+							</td>
+
+							
+							
+							
+							<td style="text-align: center; vertical-align: middle;">
+								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','ddd2525aw-19f0-48b6-8e09-e7076a4b04b5')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.permissable_limit"/>
+									</t>
+								</t>
+							</td>
+
 							<td style="text-align: center; vertical-align: middle;">
 								<span>
 									<!-- <strong>Compressive strength As per IS:</strong><![CDATA[&nbsp;]]> -->
@@ -307,49 +294,40 @@
 									</t>
 								</span>
 							</td>
-							<!-- <td style="text-align: center;max-width:150px">
-								<span style="text-align: center;" >
-									Min 105 ,As per ASTM C1240 : 2020
-								</span>
-							</td> -->
-							<td style="text-align: center; vertical-align: middle;">
-								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','ddd2525aw-19f0-48b6-8e09-e7076a4b04b5')]).parameter_table" t-as="parameter">
-									<t t-if="parameter.grade.id == eln.grade_id.id">
-										<span t-field="parameter.permissable_limit"/>
-									</t>
-								</t>
-							</td>
+
 						</tr>
 
 
+						
+						<!--  -->
 						<tr t-if="microsilica.compressive_visible and fromEln">
-							
-
-							
 							<td style="text-align: center; vertical-align: middle;">
 								<span t-esc="i + 1" />
 								<t t-set="i" t-value="i+1"/>
 							</td>
-
-							
 							<td style="text-align: center;vertical-align: middle;">
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','ddd2525aw-19f0-48b6-8e09-e7076a4b04b5')]).parameter_name"/>
 							</td>
 							
 							
-							<td style="text-align: center; vertical-align: middle;">
-								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','ddd2525aw-19f0-48b6-8e09-e7076a4b04b5')]).unit"/>
-							</td>
+							
 							<td style="text-align: center; vertical-align: middle;">
 								<span style="text-align: center;" >
 									<span t-field="microsilica.control_compressive_strength_7_days" t-options='{"widget": "float", "precision": 2}'/>
 								</span>									
 							</td>
-							<!-- <td style="text-align: center;">
-								<span style="text-align: center;min-height:100px">
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','ddd2525aw-19f0-48b6-8e09-e7076a4b04b5')]).test_method.test_method"/>
-								</span>
-							</td> -->
+
+							<td style="text-align: center; vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','ddd2525aw-19f0-48b6-8e09-e7076a4b04b5')]).unit"/>
+							</td>
+							<td style="text-align: center; vertical-align: middle;">
+								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','ddd2525aw-19f0-48b6-8e09-e7076a4b04b5')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.permissable_limit"/>
+									</t>
+								</t>
+							</td>
+
 							<td style="text-align: center; vertical-align: middle;">
 								<span>
 									<!-- <strong>Compressive strength As per IS:</strong><![CDATA[&nbsp;]]> -->
@@ -360,58 +338,38 @@
 									</t>
 								</span>
 							</td>
-							<!-- <td style="text-align: center;max-width:150px">
-								<span style="text-align: center;" >
-									Min 105 ,As per ASTM C1240 : 2020
-								</span>
-							</td> -->
-							<td style="text-align: center; vertical-align: middle;">
-								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','ddd2525aw-19f0-48b6-8e09-e7076a4b04b5')]).parameter_table" t-as="parameter">
-									<t t-if="parameter.grade.id == eln.grade_id.id">
-										<span t-field="parameter.permissable_limit"/>
-									</t>
-								</t>
-							</td>
+
 						</tr>
 							<!--2 Oversize % Retained on 45 Micron wet sieve -->
 						<tr t-if="microsilica.oversize_retain_visible and (microsilica.oversize_retained_nabl == 'pass' and nabl or (microsilica.oversize_retained_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln)">
-							<!-- <td colspan="1" style="text-align: center;">
-								<div>
-									<span>2</span>
-								</div>
-							</td> -->
+							
 							<td style="text-align: center; vertical-align: middle;">
 								<span t-esc="i + 1" />
 								<t t-set="i" t-value="i+1"/>
 							</td>
-							<!-- <td style="text-align: center;max-width:200px">
-								<span style="text-align: center;">
-									Oversize % Retained on 45 Micron wet sieve
-								</span>
-								
-							</td> -->
+							
 							<td style="text-align: center; vertical-align: middle;">
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')]).parameter_name"/>
 							</td>
 							
-							<!-- <td style="text-align: center;max-width:100px">
-								<span style="text-align: center;" >
-									<span t-field="env['lerm.parameter.master'].sudo().search([('parameter_name','=','Oversize % Retained on 45 Micron IS sieve')]).unit.name"/>
-								</span>
-							</td> -->
-							<td style="text-align: center; vertical-align: middle;">
-								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')]).unit"/>
-							</td>
+							
 							<td style="text-align: center; vertical-align: middle;">
 								<span style="text-align: center;" >
 									<span t-field="microsilica.retain_wt_rounded" t-options='{"widget": "float", "precision": 2}'/>
 								</span>									
 							</td>
-							<!-- <td style="text-align: center;">
-								<span style="text-align: center;min-height:100px">
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')]).test_method.test_method"/>
-								</span>
-							</td> -->
+
+							<td style="text-align: center; vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')]).unit"/>
+							</td>
+
+							<td style="text-align: center; vertical-align: middle;">
+								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.permissable_limit"/>
+									</t>
+								</t>
+							</td>
 							<td style="text-align: center; vertical-align: middle;">
 								<span>
 									<!-- <strong>Compressive strength As per IS:</strong><![CDATA[&nbsp;]]> -->
@@ -422,58 +380,35 @@
 									</t>
 								</span>
 							</td>
-							<!-- <td style="text-align: center;max-width:150px">
-								<span style="text-align: center;" >
-									(10 Max) As Per IS 15388 : 2003
-								</span>
-							</td> -->
-							<td style="text-align: center; vertical-align: middle;">
-								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')]).parameter_table" t-as="parameter">
-									<t t-if="parameter.grade.id == eln.grade_id.id">
-										<span t-field="parameter.permissable_limit"/>
-									</t>
-								</t>
-							</td>
+
 						</tr>
 
+						<!--  -->
 						<tr t-if="microsilica.oversize_retain_visible and fromEln">
-							<!-- <td colspan="1" style="text-align: center;">
-								<div>
-									<span>2</span>
-								</div>
-							</td> -->
 							<td style="text-align: center; vertical-align: middle;">
 								<span t-esc="i + 1" />
 								<t t-set="i" t-value="i+1"/>
 							</td>
-							<!-- <td style="text-align: center;max-width:200px">
-								<span style="text-align: center;">
-									Oversize % Retained on 45 Micron wet sieve
-								</span>
-								
-							</td> -->
 							<td style="text-align: center; vertical-align: middle;">
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')]).parameter_name"/>
 							</td>
 							
-							<!-- <td style="text-align: center;max-width:100px">
-								<span style="text-align: center;" >
-									<span t-field="env['lerm.parameter.master'].sudo().search([('parameter_name','=','Oversize % Retained on 45 Micron IS sieve')]).unit.name"/>
-								</span>
-							</td> -->
-							<td style="text-align: center; vertical-align: middle;">
-								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')]).unit"/>
-							</td>
 							<td style="text-align: center; vertical-align: middle;">
 								<span style="text-align: center;" >
 									<span t-field="microsilica.retain_wt_rounded" t-options='{"widget": "float", "precision": 2}'/>
 								</span>									
 							</td>
-							<!-- <td style="text-align: center;">
-								<span style="text-align: center;min-height:100px">
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')]).test_method.test_method"/>
-								</span>
-							</td> -->
+							<td style="text-align: center; vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')]).unit"/>
+							</td>
+							
+							<td style="text-align: center; vertical-align: middle;">
+								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.permissable_limit"/>
+									</t>
+								</t>
+							</td>
 							<td style="text-align: center; vertical-align: middle;">
 								<span>
 									<!-- <strong>Compressive strength As per IS:</strong><![CDATA[&nbsp;]]> -->
@@ -484,55 +419,40 @@
 									</t>
 								</span>
 							</td>
-							<!-- <td style="text-align: center;max-width:150px">
-								<span style="text-align: center;" >
-									(10 Max) As Per IS 15388 : 2003
-								</span>
-							</td> -->
-							<td style="text-align: center; vertical-align: middle;">
-								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')]).parameter_table" t-as="parameter">
-									<t t-if="parameter.grade.id == eln.grade_id.id">
-										<span t-field="parameter.permissable_limit"/>
-									</t>
-								</t>
-							</td>
+
 						</tr>
 
 
 							<!--3 Specific Gravity -->
 						<tr t-if="microsilica.specific_gravity_visible and (microsilica.specific_gravity_nabl == 'pass' and nabl or (microsilica.specific_gravity_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln)">
-							<!-- <td colspan="1" style="text-align: center;">
-								<div>
-									<span>3</span>
-								</div>
-							</td> -->
 							<td style="text-align: center; vertical-align: middle;">
 								<span t-esc="i + 1" />
 								<t t-set="i" t-value="i+1"/>
 							</td>
-							<!-- <td style="text-align: center;max-width:200px">
-								<span style="text-align: center;">
-									Specific Gravity
-								</span>
-								
-							</td> -->
 							<td style="text-align: center; vertical-align: middle;">
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')]).parameter_name"/>
 							</td>
 							
-							<td style="text-align: center; vertical-align: middle;">
-								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')]).unit"/>
-							</td>
+							
 							<td style="text-align: center; vertical-align: middle;">
 								<span style="text-align: center;" >
 									<span t-field="microsilica.specific_gravity_avrg" t-options='{"widget": "float", "precision": 2}'/>
 								</span>									
 							</td>
-							<!-- <td style="text-align: center;">
-								<span style="text-align: center;min-height:100px">
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')]).test_method.test_method"/>
-								</span>
-							</td> -->
+
+							<td style="text-align: center; vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')]).unit"/>
+							</td>
+							
+
+							<td style="text-align: center; vertical-align: middle;">
+								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.permissable_limit"/>
+									</t>
+								</t>
+							</td>
+
 							<td style="text-align: center; vertical-align: middle;">
 								<span>
 									<!-- <strong>Compressive strength As per IS:</strong><![CDATA[&nbsp;]]> -->
@@ -544,49 +464,37 @@
 								</span>
 							</td>
 
-							<td style="text-align: center; vertical-align: middle;">
-								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')]).parameter_table" t-as="parameter">
-									<t t-if="parameter.grade.id == eln.grade_id.id">
-										<span t-field="parameter.permissable_limit"/>
-									</t>
-								</t>
-							</td>
-							
 						</tr>
 
+						<!--  -->
 						<tr t-if="microsilica.specific_gravity_visible and fromEln">
-							<!-- <td colspan="1" style="text-align: center;">
-								<div>
-									<span>3</span>
-								</div>
-							</td> -->
 							<td style="text-align: center; vertical-align: middle;">
 								<span t-esc="i + 1" />
 								<t t-set="i" t-value="i+1"/>
 							</td>
-							<!-- <td style="text-align: center;max-width:200px">
-								<span style="text-align: center;">
-									Specific Gravity
-								</span>
-								
-							</td> -->
 							<td style="text-align: center; vertical-align: middle;">
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')]).parameter_name"/>
 							</td>
 							
-							<td style="text-align: center; vertical-align: middle;">
-								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')]).unit"/>
-							</td>
+							
 							<td style="text-align: center; vertical-align: middle;">
 								<span style="text-align: center;" >
 									<span t-field="microsilica.specific_gravity_avrg" t-options='{"widget": "float", "precision": 2}'/>
 								</span>									
 							</td>
-							<!-- <td style="text-align: center;">
-								<span style="text-align: center;min-height:100px">
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')]).test_method.test_method"/>
-								</span>
-							</td> -->
+
+							<td style="text-align: center; vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')]).unit"/>
+							</td>
+							
+
+							<td style="text-align: center; vertical-align: middle;">
+								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.permissable_limit"/>
+									</t>
+								</t>
+							</td>
 							<td style="text-align: center; vertical-align: middle;">
 								<span>
 									<!-- <strong>Compressive strength As per IS:</strong><![CDATA[&nbsp;]]> -->
@@ -598,32 +506,22 @@
 								</span>
 							</td>
 
-							<td style="text-align: center; vertical-align: middle;">
-								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')]).parameter_table" t-as="parameter">
-									<t t-if="parameter.grade.id == eln.grade_id.id">
-										<span t-field="parameter.permissable_limit"/>
-									</t>
-								</t>
-							</td>
 							
 						</tr>
+
+
+
 							<!--4 Compressive Strength -->
-						<tr t-if="microsilica.compressive_strength_visible and (microsilica.comp_strngth_7_days_nabl == 'pass' and nabl or (microsilica.comp_strngth_7_days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln)">	
-							<!-- <td colspan="1" style="text-align: center;">
-								<div>
-									<span>4</span>
-								</div>
-							</td> -->
+						<tr t-if="microsilica.compressive_strength_visible and (microsilica.comp_strngth_7_days_nabl == 'pass' and nabl or (microsilica.comp_strngth_7_days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln)">
+
 							<td style="text-align: center; vertical-align: middle;">
 								<span t-esc="i + 1" />
 								<t t-set="i" t-value="i+1"/>
 							</td>
 							<td style="text-align: center;vertical-align: middle;padding:0px;max-width:200px">
 								<div style="text-align: center; border-bottom:1px solid black;min-height:50px">
-									<!-- Compressive Strength of Microsilica Sample 7 days -->
-									<!-- <td style="text-align: center;"> -->
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','658798cvfd-889b-477c-a355-0476f6bcd0d7')]).parameter_name"/>
-									<!-- </td> -->
+									
 								</div>
 								<div style="text-align: center; border-bottom:1px solid black;min-height:25px">
 									Compressive Strength of control Sample 7 days
@@ -631,6 +529,19 @@
 								<div style="text-align: center;min-height:25px">
 									In Percent
 								</div>	
+							</td>
+
+							
+							<td style="text-align: center;vertical-align: middle; padding: 0px">
+								<div style="text-align: center;vertical-align: middle; border-bottom: 1px solid black;min-height:50px">
+									<span t-field="microsilica.comp_average_casting_7days" t-options='{"widget": "float", "precision": 2}'/>
+								</div>
+								<div style="text-align: center;vertical-align: middle; border-bottom: 1px solid black;min-height:25px">
+									<span t-field="microsilica.comp_control_average_casting_7days" t-options='{"widget": "float", "precision": 2}'/>
+								</div>
+								<div style="text-align: center;vertical-align: middle;min-height:25px">
+									<span t-field="microsilica.comp_control_strngth_7_days" t-options='{"widget": "float", "precision": 2}'/>
+								</div>
 							</td>
 
 							<td style="text-align: center;vertical-align: middle;padding:0px;max-width:100px">
@@ -647,29 +558,13 @@
 								</div>	
 							</td>
 							
-							<!-- <td style="text-align: center;">
-								<span style="text-align: center;" >
-									<span t-field="env['lerm.parameter.master'].sudo().search([('parameter_name','=','Compressive Strength')]).unit.name"/>
-								</span>
-							</td> -->
-
-							
-							<td style="text-align: center;vertical-align: middle; padding: 0px">
-								<div style="text-align: center;vertical-align: middle; border-bottom: 1px solid black;min-height:50px">
-									<span t-field="microsilica.comp_average_casting_7days" t-options='{"widget": "float", "precision": 2}'/>
-								</div>
-								<div style="text-align: center;vertical-align: middle; border-bottom: 1px solid black;min-height:25px">
-									<span t-field="microsilica.comp_control_average_casting_7days" t-options='{"widget": "float", "precision": 2}'/>
-								</div>
-								<div style="text-align: center;vertical-align: middle;min-height:25px">
-									<span t-field="microsilica.comp_control_strngth_7_days" t-options='{"widget": "float", "precision": 2}'/>
-								</div>
+							<td style="text-align: center; vertical-align: middle;">
+								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','658798cvfd-889b-477c-a355-0476f6bcd0d7')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.permissable_limit"/>
+									</t>
+								</t>
 							</td>
-							<!-- <td style="text-align: center;max-width:200px">
-								<span style="text-align: center; display: block;min-height:100px">
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','658798cvfd-889b-477c-a355-0476f6bcd0d7')]).test_method.test_method"/>
-								</span>
-							</td> -->
 							<td style="text-align: center;vertical-align: middle;">
 								<span>
 									<!-- <strong>Compressive strength As per IS:</strong><![CDATA[&nbsp;]]> -->
@@ -681,36 +576,18 @@
 								</span>
 							</td>
 
-							<!-- <td style="text-align: center;max-width:150px">
-								<span style="text-align: center;" >
-									As Per IS 15388 : 2003 Compressive Strength at 7 days as Percent of Control Sample Min.85 %
-								</span>
-							</td> -->
-							<td style="text-align: center; vertical-align: middle;">
-								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','658798cvfd-889b-477c-a355-0476f6bcd0d7')]).parameter_table" t-as="parameter">
-									<t t-if="parameter.grade.id == eln.grade_id.id">
-										<span t-field="parameter.permissable_limit"/>
-									</t>
-								</t>
-							</td>
 						</tr>
 
 						<tr t-if="microsilica.compressive_strength_visible and fromEln">	
-							<!-- <td colspan="1" style="text-align: center;">
-								<div>
-									<span>4</span>
-								</div>
-							</td> -->
 							<td style="text-align: center; vertical-align: middle;">
 								<span t-esc="i + 1" />
 								<t t-set="i" t-value="i+1"/>
 							</td>
 							<td style="text-align: center;vertical-align: middle;padding:0px;max-width:200px">
 								<div style="text-align: center; border-bottom:1px solid black;min-height:50px">
-									<!-- Compressive Strength of Microsilica Sample 7 days -->
-									<!-- <td style="text-align: center;"> -->
+									
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','658798cvfd-889b-477c-a355-0476f6bcd0d7')]).parameter_name"/>
-									<!-- </td> -->
+									
 								</div>
 								<div style="text-align: center; border-bottom:1px solid black;min-height:25px">
 									Compressive Strength of control Sample 7 days
@@ -719,26 +596,6 @@
 									In Percent
 								</div>	
 							</td>
-
-							<td style="text-align: center;vertical-align: middle;padding:0px;max-width:100px">
-								<div rowspan="2" style="text-align: center;vertical-align: middle; border-bottom:1px solid black;min-height:50px">
-									
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','658798cvfd-889b-477c-a355-0476f6bcd0d7')]).unit.name"/>
-								</div>
-								<div style="text-align: center;vertical-align: middle; border-bottom:1px solid black;min-height:25px">
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','658798cvfd-889b-477c-a355-0476f6bcd0d7')]).unit.name"/>
-									
-								</div>
-								<div style="text-align: center;vertical-align: middle;min-height:25px">
-									%
-								</div>	
-							</td>
-							
-							<!-- <td style="text-align: center;">
-								<span style="text-align: center;" >
-									<span t-field="env['lerm.parameter.master'].sudo().search([('parameter_name','=','Compressive Strength')]).unit.name"/>
-								</span>
-							</td> -->
 
 							
 							<td style="text-align: center;vertical-align: middle; padding: 0px">
@@ -752,90 +609,56 @@
 									<span t-field="microsilica.comp_control_strngth_7_days" t-options='{"widget": "float", "precision": 2}'/>
 								</div>
 							</td>
-							<!-- <td style="text-align: center;max-width:200px">
-								<span style="text-align: center; display: block;min-height:100px">
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','658798cvfd-889b-477c-a355-0476f6bcd0d7')]).test_method.test_method"/>
-								</span>
-							</td> -->
-							<td style="text-align: center;vertical-align: middle;">
-								<span>
-									<!-- <strong>Compressive strength As per IS:</strong><![CDATA[&nbsp;]]> -->
-									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','658798cvfd-889b-477c-a355-0476f6bcd0d7')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-											<span t-field="parameter.specification"/>
-										</t>
-									</t>
-								</span>
+							<td style="text-align: center;vertical-align: middle;padding:0px;max-width:100px">
+								<div rowspan="2" style="text-align: center;vertical-align: middle; border-bottom:1px solid black;min-height:50px">
+									
+									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','658798cvfd-889b-477c-a355-0476f6bcd0d7')]).unit.name"/>
+								</div>
+								<div style="text-align: center;vertical-align: middle; border-bottom:1px solid black;min-height:25px">
+									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','658798cvfd-889b-477c-a355-0476f6bcd0d7')]).unit.name"/>
+									
+								</div>
+								<div style="text-align: center;vertical-align: middle;min-height:25px">
+									%
+								</div>	
 							</td>
-
-							<!-- <td style="text-align: center;max-width:150px">
-								<span style="text-align: center;" >
-									As Per IS 15388 : 2003 Compressive Strength at 7 days as Percent of Control Sample Min.85 %
-								</span>
-							</td> -->
 							<td style="text-align: center; vertical-align: middle;">
 								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','658798cvfd-889b-477c-a355-0476f6bcd0d7')]).parameter_table" t-as="parameter">
 									<t t-if="parameter.grade.id == eln.grade_id.id">
 										<span t-field="parameter.permissable_limit"/>
 									</t>
 								</t>
+							</td>
+							<td style="text-align: center;vertical-align: middle;">
+								<span>
+									
+									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','658798cvfd-889b-477c-a355-0476f6bcd0d7')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
+									</t>
+								</span>
 							</td>
 						</tr>
 
 							<!--5 Oversize Percent Retained on 45 Micron IS sieve variation from Avg. % -->
 						<tr t-if="microsilica.oversize_percent_retain_visible and (microsilica.oversize_retained_nabl == 'pass' and nabl or (microsilica.oversize_retained_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln)">
-							<!-- <td colspan="1" style="text-align: center;">
-								<div>
-									<span>5</span>
-								</div>
-							</td> -->
 							<td style="text-align: center; vertical-align: middle;">
 								<span t-esc="i + 1" />
 								<t t-set="i" t-value="i+1"/>
 							</td>
-							<!-- <td style="text-align: center;max-width:200px">
-								<span style="text-align: center;">
-									Oversize Percent Retained on 45 Micron IS sieve variation from Avg. %
-								</span>
-								
-							</td> -->
 							<td style="text-align: center;vertical-align: middle;">
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')]).parameter_name"/>
 							</td>
-							<td style="text-align: center;vertical-align: middle;">
-								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')]).unit"/>
-							</td>
 							
-							<!-- <td style="text-align: center;max-width:100px">
-								<span style="text-align: center;" >
-									<span t-field="env['lerm.parameter.master'].sudo().search([('parameter_name','=','Oversize Percent Retained on 45 Micron IS sieve variation from Avg. %')]).unit.name"/>
-								</span>
-							</td> -->
 							<td style="text-align: center;vertical-align: middle;">
 								<span style="text-align: center;" >
 									<span t-field="microsilica.avrg_oversize_percent" t-options='{"widget": "float", "precision": 2}'/>
 								</span>									
 							</td>
-							<!-- <td style="text-align: center;">
-								<span style="text-align: center;min-height:100px">
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')]).test_method.test_method"/>
-								</span>
-							</td> -->
-							<td style="text-align: center; vertical-align: middle;">
-								<span>
-									<!-- <strong>Compressive strength As per IS:</strong><![CDATA[&nbsp;]]> -->
-									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-											<span t-field="parameter.specification"/>
-										</t>
-									</t>
-								</span>
+							<td style="text-align: center;vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')]).unit"/>
 							</td>
-							<!-- <td style="text-align: center;max-width:150px">
-								<span style="text-align: center;" >
-									-
-								</span>
-							</td> -->
 							<td style="text-align: center; vertical-align: middle;">
 								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')]).parameter_table" t-as="parameter">
 									<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -843,61 +666,41 @@
 									</t>
 								</t>
 							</td>
+
+							<td style="text-align: center; vertical-align: middle;">
+								<span>
+									
+									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
+									</t>
+								</span>
+							</td>
+
+
 						</tr>
 
+						
+						<!--  -->
 						<tr t-if="microsilica.oversize_percent_retain_visible and fromEln">
-							<!-- <td colspan="1" style="text-align: center;">
-								<div>
-									<span>5</span>
-								</div>
-							</td> -->
 							<td style="text-align: center; vertical-align: middle;">
 								<span t-esc="i + 1" />
 								<t t-set="i" t-value="i+1"/>
 							</td>
-							<!-- <td style="text-align: center;max-width:200px">
-								<span style="text-align: center;">
-									Oversize Percent Retained on 45 Micron IS sieve variation from Avg. %
-								</span>
-								
-							</td> -->
 							<td style="text-align: center;vertical-align: middle;">
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')]).parameter_name"/>
 							</td>
-							<td style="text-align: center;vertical-align: middle;">
-								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')]).unit"/>
-							</td>
 							
-							<!-- <td style="text-align: center;max-width:100px">
-								<span style="text-align: center;" >
-									<span t-field="env['lerm.parameter.master'].sudo().search([('parameter_name','=','Oversize Percent Retained on 45 Micron IS sieve variation from Avg. %')]).unit.name"/>
-								</span>
-							</td> -->
 							<td style="text-align: center;vertical-align: middle;">
 								<span style="text-align: center;" >
 									<span t-field="microsilica.avrg_oversize_percent" t-options='{"widget": "float", "precision": 2}'/>
 								</span>									
 							</td>
-							<!-- <td style="text-align: center;">
-								<span style="text-align: center;min-height:100px">
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')]).test_method.test_method"/>
-								</span>
-							</td> -->
-							<td style="text-align: center; vertical-align: middle;">
-								<span>
-									<!-- <strong>Compressive strength As per IS:</strong><![CDATA[&nbsp;]]> -->
-									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-											<span t-field="parameter.specification"/>
-										</t>
-									</t>
-								</span>
+							<td style="text-align: center;vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')]).unit"/>
 							</td>
-							<!-- <td style="text-align: center;max-width:150px">
-								<span style="text-align: center;" >
-									-
-								</span>
-							</td> -->
+							
 							<td style="text-align: center; vertical-align: middle;">
 								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')]).parameter_table" t-as="parameter">
 									<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -905,47 +708,49 @@
 									</t>
 								</t>
 							</td>
+
+							<td style="text-align: center; vertical-align: middle;">
+								<span>
+									
+									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
+									</t>
+								</span>
+							</td>
+
+
 						</tr>
 
 							<!--6 Dry Loose Bulk Density -->
 						<tr t-if="microsilica.bulk_density_visible and (microsilica.bulk_density_nabl == 'pass' and nabl or (microsilica.bulk_density_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln)">
-							<!-- <td colspan="1" style="text-align: center;">
-								<div>
-									<span>6</span>
-								</div>
-							</td> -->
 							<td style="text-align: center; vertical-align: middle;">
 								<span t-esc="i + 1" />
 								<t t-set="i" t-value="i+1"/>
 							</td>
-							<!-- <td style="text-align: center;">
-								<span style="text-align: center;max-width:200px">
-									Dry Loose Bulk Density
-								</span>
-								
-							</td> -->
+							
 							<td style="text-align: center;vertical-align: middle;">
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')]).parameter_name"/>
 							</td>
 							
-							<!-- <td style="text-align: center;max-width:100px">
-								<span style="text-align: center;" >
-									<span t-field="env['lerm.parameter.master'].sudo().search([('parameter_name','=','Dry Loose Bulk Density')]).unit.name"/>
-								</span>
-							</td> -->
-							<td style="text-align: center;vertical-align: middle;">
-								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')]).unit"/>
-							</td>
+							
+							
 							<td style="text-align: center;vertical-align: middle;">
 								<span style="text-align: center;" >
 									<span t-field="microsilica.avrg_bulk_density" t-options='{"widget": "float", "precision": 2}'/>
 								</span>									
 							</td>
-							<!-- <td style="text-align: center;">
-								<span style="text-align: center;min-height:100px">
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')]).test_method.test_method"/>
-								</span>
-							</td> -->
+							<td style="text-align: center;vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')]).unit"/>
+							</td>
+							<td style="text-align: center; vertical-align: middle;">
+								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.permissable_limit"/>
+									</t>
+								</t>
+							</td>
 							<td style="text-align: center; vertical-align: middle;">
 								<span>
 									<!-- <strong>Compressive strength As per IS:</strong><![CDATA[&nbsp;]]> -->
@@ -955,80 +760,48 @@
 										</t>
 									</t>
 								</span>
-							</td>
-							<!-- <td style="text-align: center;max-width:150px">
-								<span style="text-align: center;" >
-									-
-								</span>
-							</td> -->
-							<td style="text-align: center; vertical-align: middle;">
-								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')]).parameter_table" t-as="parameter">
-									<t t-if="parameter.grade.id == eln.grade_id.id">
-										<span t-field="parameter.permissable_limit"/>
-									</t>
-								</t>
 							</td>
 						</tr>
 
 						<tr t-if="microsilica.bulk_density_visible and fromEln">
-							<!-- <td colspan="1" style="text-align: center;">
-								<div>
-									<span>6</span>
-								</div>
-							</td> -->
 							<td style="text-align: center; vertical-align: middle;">
 								<span t-esc="i + 1" />
 								<t t-set="i" t-value="i+1"/>
 							</td>
-							<!-- <td style="text-align: center;">
-								<span style="text-align: center;max-width:200px">
-									Dry Loose Bulk Density
-								</span>
-								
-							</td> -->
+							
 							<td style="text-align: center;vertical-align: middle;">
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')]).parameter_name"/>
 							</td>
 							
-							<!-- <td style="text-align: center;max-width:100px">
-								<span style="text-align: center;" >
-									<span t-field="env['lerm.parameter.master'].sudo().search([('parameter_name','=','Dry Loose Bulk Density')]).unit.name"/>
-								</span>
-							</td> -->
-							<td style="text-align: center;vertical-align: middle;">
-								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')]).unit"/>
-							</td>
+							
+							
 							<td style="text-align: center;vertical-align: middle;">
 								<span style="text-align: center;" >
 									<span t-field="microsilica.avrg_bulk_density" t-options='{"widget": "float", "precision": 2}'/>
 								</span>									
 							</td>
-							<!-- <td style="text-align: center;">
-								<span style="text-align: center;min-height:100px">
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')]).test_method.test_method"/>
-								</span>
-							</td> -->
-							<td style="text-align: center; vertical-align: middle;">
-								<span>
-									<!-- <strong>Compressive strength As per IS:</strong><![CDATA[&nbsp;]]> -->
-									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-											<span t-field="parameter.specification"/>
-										</t>
-									</t>
-								</span>
+
+							<td style="text-align: center;vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')]).unit"/>
 							</td>
-							<!-- <td style="text-align: center;max-width:150px">
-								<span style="text-align: center;" >
-									-
-								</span>
-							</td> -->
+							
 							<td style="text-align: center; vertical-align: middle;">
 								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')]).parameter_table" t-as="parameter">
 									<t t-if="parameter.grade.id == eln.grade_id.id">
 										<span t-field="parameter.permissable_limit"/>
 									</t>
 								</t>
+							</td>
+
+							<td style="text-align: center; vertical-align: middle;">
+								<span>
+									
+									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
+									</t>
+								</span>
 							</td>
 						</tr>
 
@@ -1043,14 +816,26 @@
 							<td style="text-align: center;vertical-align: middle;">
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','d62e47c1-64b1-4589-b412-677f1e21377b')]).parameter_name"/>
 							</td>
-							<td style="text-align: center;vertical-align: middle;">
-								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','d62e47c1-64b1-4589-b412-677f1e21377b')]).unit"/>
-							</td>
-							
+
 							<td style="text-align: center;vertical-align: middle;">
 								<span style="text-align: center;" >
 									<span t-field="microsilica.avg_moisture" t-options='{"widget": "float", "precision": 2}'/>
 								</span>									
+							</td>
+
+
+							<td style="text-align: center;vertical-align: middle;">
+								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','d62e47c1-64b1-4589-b412-677f1e21377b')]).unit"/>
+							</td>
+							
+							
+							
+							<td style="text-align: center; vertical-align: middle;">
+								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','d62e47c1-64b1-4589-b412-677f1e21377b')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.permissable_limit"/>
+									</t>
+								</t>
 							</td>
 							<td style="text-align: center; vertical-align: middle;">
 								<span>
@@ -1061,13 +846,6 @@
 										</t>
 									</t>
 								</span>
-							</td>
-							<td style="text-align: center; vertical-align: middle;">
-								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','d62e47c1-64b1-4589-b412-677f1e21377b')]).parameter_table" t-as="parameter">
-									<t t-if="parameter.grade.id == eln.grade_id.id">
-										<span t-field="parameter.permissable_limit"/>
-									</t>
-								</t>
 							</td>
 						</tr>
 
@@ -1086,8 +864,8 @@
 								<td style="padding: 5px; font-style: italic; ">
 
 									<b>Notes:-</b>
-										<t t-if="data.notes_id">
-										<t t-foreach="data.notes_id" t-as="n">
+										<t t-if="microsilica.notes_id">
+										<t t-foreach="microsilica.notes_id" t-as="n">
 											<span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span>
 										</t>
 									</t>

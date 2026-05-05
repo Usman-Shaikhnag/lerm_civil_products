@@ -1666,8 +1666,8 @@ class Soil(models.Model):
         
         for record in self:
             record.specific_gravity_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214hhj6gt21-ca64-44dd-b0ae-6587gghty')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214hhj6gt21-ca64-44dd-b0ae-6587gghty')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','26a889da-3ab8-40e9-af69-2399b62dce9f')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','26a889da-3ab8-40e9-af69-2399b62dce9f')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
@@ -1691,8 +1691,8 @@ class Soil(models.Model):
         
         for record in self:
             record.specific_gravity_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214hhj6gt21-ca64-44dd-b0ae-6587gghty')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214hhj6gt21-ca64-44dd-b0ae-6587gghty')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','26a889da-3ab8-40e9-af69-2399b62dce9f')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','26a889da-3ab8-40e9-af69-2399b62dce9f')]).parameter_table
             # for material in materials:
             #     if material.grade.id == record.grade.id:
             lab_min = line.lab_min_value
@@ -2472,7 +2472,7 @@ class Soil(models.Model):
                 if sample.internal_id == '897546gt21-ca64-44dd-b0ae-22145687':
                     record.permeability_falling_visible = True
 
-                if sample.internal_id == '214hhj6gt21-ca64-44dd-b0ae-6587gghty':
+                if sample.internal_id == '26a889da-3ab8-40e9-af69-2399b62dce9f':
                     record.specific_gravity_visible = True
 
                 if sample.internal_id == '21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr':
@@ -2656,7 +2656,7 @@ class Soil(models.Model):
 
 
             # Specific Gravity
-            if result.parameter.internal_id == '214hhj6gt21-ca64-44dd-b0ae-6587gghty':
+            if result.parameter.internal_id == '26a889da-3ab8-40e9-af69-2399b62dce9f':
                 result.calculated = True
                 result.result_char = round(self.specific_gravity,2)
                 if self.specific_gravity_nabl == 'pass':
@@ -2667,7 +2667,7 @@ class Soil(models.Model):
 
 
             # Direct Shear Test
-            if result.parameter.internal_id == '21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr':
+            if result.parameter.internal_id == '321456ki8hhhllly1-ca64-44dd-b0ae-3214654lk':
                 result.calculated = True
                 result.result_char = round(self.avg_shear_stress,2)
                 if self.avg_shear_stress_nabl == 'pass':
@@ -2700,7 +2700,7 @@ class Soil(models.Model):
 
 
             # Consolidation Test (Pc) Test
-            if result.parameter.internal_id == '98ggh7888hhhllly1-ca64-44dd-b0ae-6547ggt0r':
+            if result.parameter.internal_id == '32145888hhhllly1-ca64-44dd-b0ae-2578886oopp':
                 result.calculated = True
                 result.result_char = round(self.preconsolidation_pressure,2)
                 if self.preconsolidation_pressure_nabl == 'pass':
@@ -2733,7 +2733,7 @@ class Soil(models.Model):
 
 
             # Unconsolidated Undrained Triaxial Test (Angle of Friction)
-            if result.parameter.internal_id == '65478h88hhhllly1-ca64-44dd-b0ae-89745785gt41d':
+            if result.parameter.internal_id == 'yt25ec57-11f8-4249-9fa8-788889999rtt':
                 result.calculated = True
                 result.result_char = round(self.phi_deg_uu_triaxial_angle,2)
                 if self.phi_deg_uu_triaxial_angle_nabl == 'pass':
@@ -2751,6 +2751,30 @@ class Soil(models.Model):
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+            if result.parameter.internal_id == 'tyer4fgr-5c56-475b-9arty156878965uut':
+                result.calculated = True
+
+            if result.parameter.internal_id == '7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9':
+                result.calculated = True
+
+            if result.parameter.internal_id == '26a889da-3ab8-40e9-af69-2399b62dce9f':
+                result.calculated = True
+
+            if result.parameter.internal_id == '3825ec57-11f8-4249-9fa8-d99f64ffd396':
+                result.calculated = True
+
+            if result.parameter.internal_id == 'c800e59a-b847-4049-9e2b-673fcd1fcde5':
+                result.calculated = True
+
+            if result.parameter.internal_id == 'tyer4fgrtlmjy-475b-9arty156878901247':
+                result.calculated = True
+
+            if result.parameter.internal_id == 'jkt56888hhhllly1-ca64-44dd-b0ae-23120147g':
+                result.calculated = True
+
+            if result.parameter.internal_id == 'po567888hhhllly1-ca64-44dd-b0ae-23120114r':
+                result.calculated = True
 
 
 
