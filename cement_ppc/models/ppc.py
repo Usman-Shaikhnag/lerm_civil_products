@@ -19,6 +19,8 @@ class CementPPC(models.Model):
     start_date = fields.Date(string="Start Date", compute="_compute_start_date", store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
 
+    
+
     def prefill_data(self):
         # import wdb; wdb.set_trace()
         return {
