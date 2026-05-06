@@ -13,6 +13,9 @@ from scipy.optimize import minimize_scalar
 from matplotlib.ticker import MultipleLocator, StrMethodFormatter
 import io
 from matplotlib.ticker import LogLocator, MultipleLocator
+import base64
+from odoo import models, api
+from odoo.modules.module import get_module_resource
 
 
 class SoilDatasheet(models.AbstractModel):
@@ -918,4 +921,67 @@ class SoilReport(models.AbstractModel):
       buffer.seek(0)
 
       return base64.b64encode(buffer.read()).decode('utf-8')
-  
+
+
+class SoilReportAnnexure(models.AbstractModel):
+    _name = 'report.soil1.soil1_annexure_report'
+    _description = 'Soil Annexure Report'
+
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        
+        docs = self.env['mechanical.soil1'].browse(docids)
+        
+        
+        eln_records = self.env['lerm.eln'].search([
+            ('sample_id', 'in', docs.ids)
+        ])
+
+        qr_static = qrcode.QRCode(box_size=6, border=2)
+        qr_static.add_data("https://www.lerm.in")
+        qr_static.make(fit=True)
+        buf_static = BytesIO()
+        qr_static.make_image(fill_color="black", back_color="white").save(buf_static, format="PNG")
+        qr_static_b64 = base64.b64encode(buf_static.getvalue()).decode()
+
+        # 🧩 QR Code तयार करा
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+        )
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        report_url = f"{base_url}/download_report/soil/{'nabl' if nabl else 'nonnabl'}/{eln.id}"
+
+        qr.add_data(report_url)
+        qr.make(fit=True)
+        qr_image = qr.make_image()
+        buffered = BytesIO()
+        qr_image.save(buffered, format="PNG")
+        qr_code = base64.b64encode(buffered.getvalue()).decode()
+
+        # Logo Fetching Logic
+        # Module name 'soil1' asne garjeche ahe
+        logo_path = get_module_resource('soil1', 'static', 'src', 'img', 'raipur_header.png')
+        logo_base64 = False
+        if logo_path:
+            with open(logo_path, 'rb') as f:
+                logo_base64 = base64.b64encode(f.read()).decode('utf-8')
+
+      
+
+        
+    
+
+        return {
+           
+            'doc_ids': docids,
+            'doc_model': 'mechanical.soil1',
+            'data': docs,
+            'eln': eln_records,
+            'logo_base64': logo_base64,
+            'qrcode': qr_code,
+            'qrcode_static': qr_static_b64,
+        }
+    

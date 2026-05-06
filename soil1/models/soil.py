@@ -2169,6 +2169,10 @@ class Soil(models.Model):
     cbr_name = fields.Char("Name",default="California Bearing Ratio")
     cbr_visible = fields.Boolean("California Bearing Ratio Visible",compute="_compute_visible")
 
+    condition_cbr = fields.Selection([('soaked','Soaked'),('unsoaked','Unsoaked')],string="Condition")
+
+
+
 
     cbr_line_ids = fields.One2many('california.bearing.test','parent_id',string="CBR",default=lambda self: self._default_cbr_line_ids())
 
