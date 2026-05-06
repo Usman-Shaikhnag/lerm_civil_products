@@ -28,12 +28,39 @@ class AacBlockMechanical(models.Model):
             record.size_id = record.eln_ref.size_id.id
 
 
-    @api.depends('eln_ref')
+    # @api.depends('eln_ref')
+    # def _compute_sample_parameters(self):
+    #     for record in self:
+    #         records = record.eln_ref.parameters_result.parameter.ids
+    #         record.sample_parameters = records
+    #         print("Records",records)
+
+    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
+        current_user = self.env.user
+
         for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
+            if not record.eln_ref:
+                record.sample_parameters = [(6, 0, [])]
+                continue
+
+            # Check if user is in Lerm Admin group
+            if (
+                current_user.has_group('lerm_civil.kes_admin_access_group')
+                or current_user.has_group('lerm_civil.lerm_sample_verification')
+                or current_user.has_group('lerm_civil.lerm_sample_approval')
+            ):
+                # Admin sees all parameters
+                parameter_ids = record.eln_ref.parameters_result.mapped('parameter').ids
+            else:
+                # Other users only see parameters assigned to them
+                user_param_results = record.eln_ref.parameters_result.filtered(
+                    lambda r: r.technician and r.technician.id == current_user.id
+                )
+                parameter_ids = user_param_results.mapped('parameter').ids
+
+            record.sample_parameters = [(6, 0, parameter_ids)]
+
 
         
     def get_all_fields(self):
@@ -314,16 +341,22 @@ class AacBlockMechanical(models.Model):
     moisture_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('na', 'NA'),
     ], string='Confirmity', default='fail',compute="_compute_moisture_confirmity")
     moisture_nabl = fields.Selection([
         ('pass', 'NABL'),
         ('fail', 'NON NABL'),
-    ], string='NABL', default='fail',compute="_compute_moisture_nabl")
+    ], string='NABL', compute="_compute_moisture_nabl")
 
 
     @api.depends('average_moisture_content','eln_ref','grade')
     def _compute_moisture_confirmity(self):
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.moisture_confirmity = 'na'
+                continue
+
             record.moisture_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6478fde2-8097-4275-b80f-48ebdbcfe244')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6478fde2-8097-4275-b80f-48ebdbcfe244')]).parameter_table
@@ -385,16 +418,23 @@ class AacBlockMechanical(models.Model):
     density_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='Confirmity', default='fail',compute="_compute_density_confirmity")
+        ('na', 'NA'),
+    ], string='Confirmity', compute="_compute_density_confirmity")
     density_nabl = fields.Selection([
         ('pass', 'NABL'),
         ('fail', 'NON NABL'),
-    ], string='NABL', default='fail',compute="_compute_density_nabl")
+    ], string='NABL', compute="_compute_density_nabl")
 
 
     @api.depends('average_density','eln_ref','grade')
     def _compute_density_confirmity(self):
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.density_confirmity = 'na'
+                continue
+
+
             record.density_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','254879sw-4ef4-4e51-abeb-57dd2abe29a4')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','254879sw-4ef4-4e51-abeb-57dd2abe29a4')]).parameter_table
@@ -452,18 +492,24 @@ class AacBlockMechanical(models.Model):
     drying_shrinkage_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='Confirmity', default='fail',compute="_compute_drying_shrinkage_confirmity")
+        ('na', 'NA'),
+    ], string='Confirmity', compute="_compute_drying_shrinkage_confirmity")
     
 
     drying_shrinkage_aac_nabl = fields.Selection([
         ('pass', 'NABL'),
         ('fail', 'NON NABL'),
-    ], string='NABL', default='fail',compute="_compute_drying_shrinkage_nabl")
+    ], string='NABL', compute="_compute_drying_shrinkage_nabl")
 
 
     @api.depends('average_drying_shrinkage','eln_ref','grade')
     def _compute_drying_shrinkage_confirmity(self):
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.drying_shrinkage_confirmity = 'na'
+                continue
+
             record.drying_shrinkage_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214578ews-b1a2-4dac-b8cb-e077770af52f')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214578ews-b1a2-4dac-b8cb-e077770af52f')]).parameter_table
@@ -523,7 +569,8 @@ class AacBlockMechanical(models.Model):
     compressive_strength_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='Confirmity', default='fail',compute="_compute_compressive_strength_confirmity")
+        ('na', 'NA'),
+    ], string='Confirmity', compute="_compute_compressive_strength_confirmity")
     compressive_strength_nabl = fields.Selection([
         ('pass', 'NABL'),
         ('fail', 'NON NABL'),
@@ -533,6 +580,11 @@ class AacBlockMechanical(models.Model):
     @api.depends('average_compressive_strength','eln_ref','grade')
     def _compute_compressive_strength_confirmity(self):
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.compressive_strength_confirmity = 'na'
+                continue
+
             record.compressive_strength_confirmity = 'fail'   
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457896dfe-cb61-45db-91c5-0167b27a9ab5')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457896dfe-cb61-45db-91c5-0167b27a9ab5')]).parameter_table

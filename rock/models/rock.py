@@ -140,12 +140,19 @@ class MechanicalRock(models.Model):
 
     avg_usc_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_usc_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_avg_usc_conformity", store=True)
 
     @api.depends('avg_usc','eln_ref','grade')
     def _compute_avg_usc_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_usc_conformity = 'na'
+                continue
+
             record.avg_usc_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a1f9c5d0-0bc7-41a6-a2bb-0fe9d898008d')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a1f9c5d0-0bc7-41a6-a2bb-0fe9d898008d')]).parameter_table
@@ -213,12 +220,19 @@ class MechanicalRock(models.Model):
 
     cai_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_cai_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_cai_conformity", store=True)
 
     @api.depends('cai','eln_ref','grade')
     def _compute_cai_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.cai_conformity = 'na'
+                continue
+
             record.cai_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','71e24ae1-b9a9-41cb-86a5-89d87355786tt')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','71e24ae1-b9a9-41cb-86a5-89d87355786tt')]).parameter_table
@@ -282,12 +296,19 @@ class MechanicalRock(models.Model):
 
     modulus_e_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_modulus_e_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_modulus_e_conformity", store=True)
 
     @api.depends('modulus_e','eln_ref','grade')
     def _compute_modulus_e_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.modulus_e_conformity = 'na'
+                continue
+
             record.modulus_e_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','71e24ae1-b9a9-41cb-86a5-9654tyu145er2')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','71e24ae1-b9a9-41cb-86a5-9654tyu145er2')]).parameter_table
@@ -358,12 +379,19 @@ class MechanicalRock(models.Model):
 
     avg_is50_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_is50_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_avg_is50_conformity", store=True)
 
     @api.depends('avg_is50','eln_ref','grade')
     def _compute_avg_is50_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_is50_conformity = 'na'
+                continue
+
             record.avg_is50_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6tr24ae1-b9a9-41cb-86a5-9654578gtr32e')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6tr24ae1-b9a9-41cb-86a5-9654578gtr32e')]).parameter_table
@@ -427,12 +455,19 @@ class MechanicalRock(models.Model):
 
     avg_nu_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_nu_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_avg_nu_conformity", store=True)
 
     @api.depends('avg_nu','eln_ref','grade')
     def _compute_avg_nu_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_nu_conformity = 'na'
+                continue
+
             record.avg_nu_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3tr74ae1-b9a9-41cb-86a5-965457878tyrw')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3tr74ae1-b9a9-41cb-86a5-965457878tyrw')]).parameter_table
@@ -493,12 +528,19 @@ class MechanicalRock(models.Model):
 
     avg_index_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_index_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_avg_index_conformity", store=True)
 
     @api.depends('avg_index','eln_ref','grade')
     def _compute_avg_index_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_index_conformity = 'na'
+                continue
+
             record.avg_index_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78er74ae1-b9a9-41cb-86a5-96578rtew214q')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78er74ae1-b9a9-41cb-86a5-96578rtew214q')]).parameter_table
@@ -561,12 +603,19 @@ class MechanicalRock(models.Model):
 
     avg_tensile_strength_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_tensile_strength_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_avg_tensile_strength_conformity", store=True)
 
     @api.depends('avg_tensile_strength','eln_ref','grade')
     def _compute_avg_tensile_strength_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_tensile_strength_conformity = 'na'
+                continue
+
             record.avg_tensile_strength_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','88er74ae1-b9a9-41cb-86a5-9657878rte214w')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','88er74ae1-b9a9-41cb-86a5-9657878rte214w')]).parameter_table
@@ -626,12 +675,19 @@ class MechanicalRock(models.Model):
 
     phi_deg_uu_triaxial_angle_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_phi_deg_uu_triaxial_angle_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_phi_deg_uu_triaxial_angle_conformity", store=True)
 
     @api.depends('phi_deg_uu_triaxial_angle','eln_ref','grade')
     def _compute_phi_deg_uu_triaxial_angle_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.phi_deg_uu_triaxial_angle_conformity = 'na'
+                continue
+
             record.phi_deg_uu_triaxial_angle_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9rtr74ae1-b9a9-41cb-86a5-96578723147gtre')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9rtr74ae1-b9a9-41cb-86a5-96578723147gtre')]).parameter_table
@@ -726,12 +782,19 @@ class MechanicalRock(models.Model):
 
     cohesion_uu_triaxial_cohesion_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_cohesion_uu_triaxial_cohesion_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_cohesion_uu_triaxial_cohesion_conformity", store=True)
 
     @api.depends('cohesion_uu_triaxial_cohesion','eln_ref','grade')
     def _compute_cohesion_uu_triaxial_cohesion_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.cohesion_uu_triaxial_cohesion_conformity = 'na'
+                continue
+
             record.cohesion_uu_triaxial_cohesion_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0rte74ae1-b9a9-41cb-86a5-96578721254789rt')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0rte74ae1-b9a9-41cb-86a5-96578721254789rt')]).parameter_table
@@ -1042,15 +1105,41 @@ class MechanicalRock(models.Model):
 
 
 
-    @api.depends('eln_ref')
+    # @api.depends('eln_ref')
+    # def _compute_sample_parameters(self):
+    #     # records = self.env['lerm.eln'].sudo().search([('id','=', record.eln_id.id)]).parameters_result
+    #     # print("records",records)
+    #     # self.sample_parameters = records
+    #     for record in self:
+    #         records = record.eln_ref.parameters_result.parameter.ids
+    #         record.sample_parameters = records
+    #         print("Records",records)
+
+    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
-        # records = self.env['lerm.eln'].sudo().search([('id','=', record.eln_id.id)]).parameters_result
-        # print("records",records)
-        # self.sample_parameters = records
+        current_user = self.env.user
+
         for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
+            if not record.eln_ref:
+                record.sample_parameters = [(6, 0, [])]
+                continue
+
+            # Check if user is in Lerm Admin group
+            if (
+                current_user.has_group('lerm_civil.kes_admin_access_group')
+                or current_user.has_group('lerm_civil.lerm_sample_verification')
+                or current_user.has_group('lerm_civil.lerm_sample_approval')
+            ):
+                # Admin sees all parameters
+                parameter_ids = record.eln_ref.parameters_result.mapped('parameter').ids
+            else:
+                # Other users only see parameters assigned to them
+                user_param_results = record.eln_ref.parameters_result.filtered(
+                    lambda r: r.technician and r.technician.id == current_user.id
+                )
+                parameter_ids = user_param_results.mapped('parameter').ids
+
+            record.sample_parameters = [(6, 0, parameter_ids)]
 
 
 

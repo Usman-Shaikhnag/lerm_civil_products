@@ -92,7 +92,10 @@ class GypsumPlaster(models.Model):
 
     average_density_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_density_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_average_density_conformity", store=True)
+
 
 
 
@@ -100,6 +103,11 @@ class GypsumPlaster(models.Model):
     def _compute_average_density_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_density_conformity = 'na'
+                continue
+
             record.average_density_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3587lpiy-7a9c-4616-bad5-88eb1b260747')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3587lpiy-7a9c-4616-bad5-88eb1b260747')]).parameter_table
@@ -174,7 +182,10 @@ class GypsumPlaster(models.Model):
 
     average_water_absorption_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_water_absorption_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_average_water_absorption_conformity", store=True)
+
 
 
 
@@ -182,6 +193,11 @@ class GypsumPlaster(models.Model):
     def _compute_average_water_absorption_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_water_absorption_conformity = 'na'
+                continue
+
             record.average_water_absorption_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','34597lpuy-f555-4f7c-beae-9547435d852a')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','34597lpuy-f555-4f7c-beae-9547435d852a')]).parameter_table
@@ -255,7 +271,9 @@ class GypsumPlaster(models.Model):
 
     average_flexural_tranverse_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_flexural_tranverse_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_average_flexural_tranverse_conformity", store=True)
 
 
 
@@ -263,6 +281,11 @@ class GypsumPlaster(models.Model):
     def _compute_average_flexural_tranverse_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_flexural_tranverse_conformity = 'na'
+                continue
+
             record.average_flexural_tranverse_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6587plyr2-b6bb-4100-bf91-24e750389f25')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6587plyr2-b6bb-4100-bf91-24e750389f25')]).parameter_table
@@ -336,7 +359,9 @@ class GypsumPlaster(models.Model):
 
     average_flexural_longitudinal_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_flexural_longitudinal_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_average_flexural_longitudinal_conformity", store=True)
 
 
 
@@ -344,6 +369,12 @@ class GypsumPlaster(models.Model):
     def _compute_average_flexural_longitudinal_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_flexural_longitudinal_conformity = 'na'
+                continue
+
+
             record.average_flexural_longitudinal_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','g1578pu2-cd1c-4fe1-804a-541a8e9ff19d')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','g1578pu2-cd1c-4fe1-804a-541a8e9ff19d')]).parameter_table
@@ -509,15 +540,41 @@ class GypsumPlaster(models.Model):
 
 
 
-    @api.depends('eln_ref')
+    # @api.depends('eln_ref')
+    # def _compute_sample_parameters(self):
+    #     # records = self.env['lerm.eln'].sudo().search([('id','=', record.eln_id.id)]).parameters_result
+    #     # print("records",records)
+    #     # self.sample_parameters = records
+    #     for record in self:
+    #         records = record.eln_ref.parameters_result.parameter.ids
+    #         record.sample_parameters = records
+    #         print("Records",records)
+
+    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
-        # records = self.env['lerm.eln'].sudo().search([('id','=', record.eln_id.id)]).parameters_result
-        # print("records",records)
-        # self.sample_parameters = records
+        current_user = self.env.user
+
         for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
+            if not record.eln_ref:
+                record.sample_parameters = [(6, 0, [])]
+                continue
+
+            # Check if user is in Lerm Admin group
+            if (
+                current_user.has_group('lerm_civil.kes_admin_access_group')
+                or current_user.has_group('lerm_civil.lerm_sample_verification')
+                or current_user.has_group('lerm_civil.lerm_sample_approval')
+            ):
+                # Admin sees all parameters
+                parameter_ids = record.eln_ref.parameters_result.mapped('parameter').ids
+            else:
+                # Other users only see parameters assigned to them
+                user_param_results = record.eln_ref.parameters_result.filtered(
+                    lambda r: r.technician and r.technician.id == current_user.id
+                )
+                parameter_ids = user_param_results.mapped('parameter').ids
+
+            record.sample_parameters = [(6, 0, parameter_ids)]
 
 
 

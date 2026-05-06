@@ -892,7 +892,7 @@
         </record>
 
         <record id="flyash_chemical_report_action" model="ir.actions.report">
-            <field name="name">Fly Ash Chemical Report</field>
+            <field name="name">Fly Ash Chemical Report 1</field>
             <field name="model">lerm.eln</field>
             <field name="report_type">qweb-pdf</field>
             <field name="report_name">fly_ash_chemical.flyash_chemical_report</field>
@@ -904,7 +904,7 @@
         </record>
 
         <record id="flyash_chemical_datasheet_action" model="ir.actions.report">
-            <field name="name">Fly Ash Chemical Datasheet</field>
+            <field name="name">Fly Ash Chemical Datasheet 1</field>
             <field name="model">lerm.eln</field>
             <field name="report_type">qweb-pdf</field>
             <field name="report_name">fly_ash_chemical.flyash_chem_datasheet</field>
@@ -1247,6 +1247,122 @@
         <field name="binding_model_id" ref="model_lerm_eln"/>
         <field name="binding_type">report</field>
     </record>
+
+
+    <record id="fly_ash_chemical_datasheet_action" model="ir.actions.report">
+            <field name="name">Fly Ash Chemical Datasheet</field>
+            <field name="model">lerm.eln</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">fly_ash_chemical1.fly_ash_chem_datasheet</field>
+            <field name="report_file">fly_ash_chemical1.fly_ash_chem_datasheet</field>
+            <!--  <field name="binding_model_id" ref="model_lerm_eln"/>  -->
+            <field name="binding_model_id" eval="False"/>
+            <field name="binding_type">report</field>
+        </record>
+
+         <record id="fly_ash_chemical1_report_action" model="ir.actions.report">
+            <field name="name">Fly Ash Chemical Report</field>
+            <field name="model">lerm.eln</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">fly_ash_chemical1.fly_ash_chemical1_report</field>
+            <field name="report_file">fly_ash_chemical1.fly_ash_chemical1_report</field>
+            <!--  <field name="binding_model_id" ref="model_lerm_eln"/>  -->
+            <field name="binding_model_id" eval="False"/>
+            <field name="binding_type">report</field>
+        </record>
+   
+
+   <record id="waste_water_chemical_datasheet_action" model="ir.actions.report">
+            <field name="name">Waste Water Chemical Datasheet</field>
+            <field name="model">lerm.eln</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">waste_water_chemical.waste_water_chem_datasheet</field>
+            <field name="report_file">waste_water_chemical.waste_water_chem_datasheet</field>
+            <!--  <field name="binding_model_id" ref="model_lerm_eln"/>  -->
+            <field name="binding_model_id" eval="False"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <record id="waste_water_chemical_report_action" model="ir.actions.report">
+            <field name="name">Waste Water Chemical Report</field>
+            <field name="model">lerm.eln</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">waste_water_chemical.waste_water_chemical_report</field>
+            <field name="report_file">waste_water_chemical.waste_water_chemical_report</field>
+            <!--  <field name="binding_model_id" ref="model_lerm_eln"/>  -->
+            <field name="binding_model_id" eval="False"/>
+            <field name="binding_type">report</field>
+        </record>
+
+
+        <record id="admixture_chemical_datasheet_action" model="ir.actions.report">
+            <field name="name">Admixture Chemical Datasheet</field>
+            <field name="model">lerm.eln</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">admixture_chemical.admixture_chemical_datasheet</field>
+            <field name="report_file">admixture_chemical.admixture_chemical_datasheet</field>
+            <!--  <field name="binding_model_id" ref="model_lerm_eln"/>  -->
+            <field name="binding_model_id" eval="False"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <record id="admixture_chemical_report_action" model="ir.actions.report">
+            <field name="name">Admixture Chemical Report</field>
+            <field name="model">lerm.eln</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">admixture_chemical.admixture_chemical_report</field>
+            <field name="report_file">admixture_chemical.admixture_chemical_report</field>
+            <!--  <field name="binding_model_id" ref="model_lerm_eln"/>  -->
+            <field name="binding_model_id" eval="False"/>
+            <field name="binding_type">report</field>
+        </record>
+
+
+        <record id="drinking_water_chemi_datasheet_action" model="ir.actions.report">
+            <field name="name">Drinking Water Chemical Datasheet</field>
+            <field name="model">lerm.eln</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">drinking_water_chemi.drinking_water_chemi_datasheet</field>
+            <field name="report_file">drinking_water_chemi.drinking_water_chemi_datasheet</field>
+            <!--  <field name="binding_model_id" ref="model_lerm_eln"/>  -->
+            <field name="binding_model_id" eval="False"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <record id="drinking_water_chemi_report_action" model="ir.actions.report">
+            <field name="name">Drinking Water Chemical Report</field>
+            <field name="model">lerm.eln</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">drinking_water_chemi.drinking_water_chemi_report</field>
+            <field name="report_file">drinking_water_chemi.drinking_water_chemi_report</field>
+            <!--  <field name="binding_model_id" ref="model_lerm_eln"/>  -->
+            <field name="binding_model_id" eval="False"/>
+            <field name="binding_type">report</field>
+        </record>
+
+
+        <record id="coal_chemical_datasheet_action" model="ir.actions.report">
+            <field name="name">Coal Chemical Datasheet</field>
+            <field name="model">lerm.eln</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">coal_chemical.coal_chemical_datasheet</field>
+            <field name="report_file">coal_chemical.coal_chemical_datasheet</field>
+            <!--  <field name="binding_model_id" ref="model_lerm_eln"/>  -->
+            <field name="binding_model_id" eval="False"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <record id="coal_chemical_report_action" model="ir.actions.report">
+            <field name="name">Coal Chemical Report</field>
+            <field name="model">lerm.eln</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">coal_chemical.coal_chemical_report</field>
+            <field name="report_file">coal_chemical.coal_chemical_report</field>
+            <!--  <field name="binding_model_id" ref="model_lerm_eln"/>  -->
+            <field name="binding_model_id" eval="False"/>
+            <field name="binding_type">report</field>
+        </record>
+
 
 
 

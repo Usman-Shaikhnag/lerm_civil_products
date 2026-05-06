@@ -782,12 +782,19 @@ class Soil(models.Model):
 
     avg_moisture_content_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_moisture_content_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_avg_moisture_content_conformity", store=True)
 
     @api.depends('avg_moisture_content','eln_ref','grade')
     def _compute_avg_moisture_content_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_moisture_content_conformity = 'na'
+                continue
+
             record.avg_moisture_content_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','800a2dc9-49fe-4dab-83e8-63758c7f351a')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','800a2dc9-49fe-4dab-83e8-63758c7f351a')]).parameter_table
@@ -858,12 +865,20 @@ class Soil(models.Model):
 
     avg_specific_gravity_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_specific_gravity_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_avg_specific_gravity_conformity", store=True)
 
     @api.depends('avg_specific_gravity','eln_ref','grade')
     def _compute_avg_specific_gravity_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_specific_gravity_conformity = 'na'
+                continue
+
+
             record.avg_specific_gravity_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214hhj6gt21-ca64-44dd-b0ae-6587gghty')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','214hhj6gt21-ca64-44dd-b0ae-6587gghty')]).parameter_table
@@ -981,12 +996,19 @@ class Soil(models.Model):
 
     liquid_limit_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_liquid_limit_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_liquid_limit_conformity", store=True)
 
     @api.depends('liquid_limit','eln_ref','grade')
     def _compute_liquid_limit_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.liquid_limit_conformity = 'na'
+                continue
+
             record.liquid_limit_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')]).parameter_table
@@ -1306,12 +1328,19 @@ class Soil(models.Model):
 
     plastic_limit_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Plastic Limit Conformity", compute="_compute_plastic_limit_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Plastic Limit Conformity", compute="_compute_plastic_limit_conformity", store=True)
 
     @api.depends('plastic_limit','eln_ref','grade')
     def _compute_plastic_limit_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.plastic_limit_conformity = 'na'
+                continue
+
             record.plastic_limit_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','120vbf14-2ff0-4b81-aca1-0e07dab7cd87')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','120vbf14-2ff0-4b81-aca1-0e07dab7cd87')]).parameter_table
@@ -1365,12 +1394,19 @@ class Soil(models.Model):
     
     plasticity_index_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Plasticity Index Conformity", compute="_compute_plasticity_index_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Plasticity Index Conformity", compute="_compute_plasticity_index_conformity", store=True)
 
     @api.depends('plasticity_index','eln_ref','grade')
     def _compute_plasticity_index_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.plasticity_index_conformity = 'na'
+                continue
+
             record.plasticity_index_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1045789654-2ff0-4b81-aca1-0e07dab7cd87')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1045789654-2ff0-4b81-aca1-0e07dab7cd87')]).parameter_table
@@ -1445,12 +1481,19 @@ class Soil(models.Model):
 
     avg_fsi_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_fsi_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_avg_fsi_conformity", store=True)
 
     @api.depends('avg_fsi','eln_ref','grade')
     def _compute_avg_fsi_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_fsi_conformity = 'na'
+                continue
+
             record.avg_fsi_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ght4125-ca64-44dd-b0ae-228aacf04998')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ght4125-ca64-44dd-b0ae-228aacf04998')]).parameter_table
@@ -1753,12 +1796,19 @@ class Soil(models.Model):
 
     light_optimum_moisture_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_light_optimum_moisture_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_light_optimum_moisture_conformity", store=True)
 
     @api.depends('light_optimum_moisture','eln_ref','grade')
     def _compute_light_optimum_moisture_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.light_optimum_moisture_conformity = 'na'
+                continue
+
             record.light_optimum_moisture_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7606fd1e-91b2-4433-a4df-c717bd8283be')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7606fd1e-91b2-4433-a4df-c717bd8283be')]).parameter_table
@@ -1803,12 +1853,19 @@ class Soil(models.Model):
 
     light_max_dry_density_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_light_max_dry_density_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_light_max_dry_density_conformity", store=True)
 
     @api.depends('light_max_dry_density','eln_ref','grade')
     def _compute_light_max_dry_density_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.light_max_dry_density_conformity = 'na'
+                continue
+
             record.light_max_dry_density_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','90c1d609-0e28-4989-b840-9604bcfbfac2')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','90c1d609-0e28-4989-b840-9604bcfbfac2')]).parameter_table
@@ -2064,12 +2121,19 @@ class Soil(models.Model):
 
     max_dry_density_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_max_dry_density_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_max_dry_density_conformity", store=True)
 
     @api.depends('max_dry_density','eln_ref','grade')
     def _compute_max_dry_density_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.max_dry_density_conformity = 'na'
+                continue
+
             record.max_dry_density_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7fdc8311-213d-4f77-9bc0-9095a7ff265c')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7fdc8311-213d-4f77-9bc0-9095a7ff265c')]).parameter_table
@@ -2114,12 +2178,19 @@ class Soil(models.Model):
 
     optimum_moisture_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_optimum_moisture_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_optimum_moisture_conformity", store=True)
 
     @api.depends('optimum_moisture','eln_ref','grade')
     def _compute_optimum_moisture_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.optimum_moisture_conformity = 'na'
+                continue
+
             record.optimum_moisture_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','dc97b59a-3514-4e1b-8754-5ecfc43bd1a5')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','dc97b59a-3514-4e1b-8754-5ecfc43bd1a5')]).parameter_table
@@ -2169,15 +2240,13 @@ class Soil(models.Model):
     cbr_name = fields.Char("Name",default="California Bearing Ratio")
     cbr_visible = fields.Boolean("California Bearing Ratio Visible",compute="_compute_visible")
 
-    condition_cbr = fields.Selection([('soaked','Soaked'),('unsoaked','Unsoaked')],string="Condition")
-
-
-
 
     cbr_line_ids = fields.One2many('california.bearing.test','parent_id',string="CBR",default=lambda self: self._default_cbr_line_ids())
 
     plunger_area = fields.Float(string="Plunger Area",digits=(10,3),default=19.625)
     div_load = fields.Float(string="1 division Load",digits=(10,3),default=1.246)
+
+    condition_cbr = fields.Selection([('soaked','Soaked'),('unsoaked','Unsoaked')],string="Condition")
 
     cbr_25_s1 = fields.Float("2.5mm", compute="_compute_cbr", store=True)
     cbr_25_s2 = fields.Float("2.5mm", compute="_compute_cbr", store=True)
@@ -2302,12 +2371,19 @@ class Soil(models.Model):
 
     cbr_25_avg_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_cbr_25_avg_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_cbr_25_avg_conformity", store=True)
 
     @api.depends('cbr_25_avg','eln_ref','grade')
     def _compute_cbr_25_avg_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.cbr_25_avg_conformity = 'na'
+                continue
+
             record.cbr_25_avg_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0423e6c3-4253-42fb-8492-b1feae8e1b8d')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0423e6c3-4253-42fb-8492-b1feae8e1b8d')]).parameter_table
@@ -2352,12 +2428,19 @@ class Soil(models.Model):
 
     cbr_5_avg_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_cbr_5_avg_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_cbr_5_avg_conformity", store=True)
 
     @api.depends('cbr_5_avg','eln_ref','grade')
     def _compute_cbr_5_avg_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.cbr_5_avg_conformity = 'na'
+                continue
+
             record.cbr_5_avg_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','775d7276-e9a9-44e6-93d9-b4ee6236298e')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','775d7276-e9a9-44e6-93d9-b4ee6236298e')]).parameter_table
@@ -2584,12 +2667,19 @@ class Soil(models.Model):
 
     constant_avg_k27_1000_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_constant_avg_k27_1000_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_constant_avg_k27_1000_conformity", store=True)
 
     @api.depends('constant_avg_k27_1000','eln_ref','grade')
     def _compute_constant_avg_k27_1000_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.constant_avg_k27_1000_conformity = 'na'
+                continue
+
             record.constant_avg_k27_1000_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b2a605ac-6eb0-4101-a020-0b6b3f6304db')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b2a605ac-6eb0-4101-a020-0b6b3f6304db')]).parameter_table
@@ -2689,13 +2779,20 @@ class Soil(models.Model):
 
     permeability_avg_k27_1000_conformity = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_permeability_avg_k27_1000_conformity", store=True)
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="NABL", compute="_compute_permeability_avg_k27_1000_conformity", store=True)
 
 
     @api.depends('permeability_avg_k27_1000','eln_ref','grade')
     def _compute_permeability_avg_k27_1000_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.permeability_avg_k27_1000_conformity = 'na'
+                continue
+
             record.permeability_avg_k27_1000_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5487gt21-ca64-44dd-b0ae-228aacf04965')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5487gt21-ca64-44dd-b0ae-228aacf04965')]).parameter_table
@@ -2991,12 +3088,19 @@ class Soil(models.Model):
 
     angle_phi_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_angle_phi_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_angle_phi_conformity", store=True)
 
     @api.depends('angle_phi','eln_ref','grade')
     def _compute_angle_phi_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.angle_phi_conformity = 'na'
+                continue
+
             record.angle_phi_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','946ba303-bb07-48c6-981e-dcd4d7a6b1eb')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','946ba303-bb07-48c6-981e-dcd4d7a6b1eb')]).parameter_table
@@ -3041,12 +3145,19 @@ class Soil(models.Model):
 
     cohesion_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_cohesion_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_cohesion_conformity", store=True)
 
     @api.depends('cohesion','eln_ref','grade')
     def _compute_cohesion_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.cohesion_conformity = 'na'
+                continue
+
             record.cohesion_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','91fabf52-7b42-4544-9125-495d98fe4d6a')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','91fabf52-7b42-4544-9125-495d98fe4d6a')]).parameter_table
@@ -3451,20 +3562,27 @@ class Soil(models.Model):
 
     @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
-        # parameter_based_assignment
         current_user = self.env.user
+
         for record in self:
             if not record.eln_ref:
                 record.sample_parameters = [(6, 0, [])]
                 continue
 
-            # filter parameter results by current user
-            user_param_results = record.eln_ref.parameters_result.filtered(
-                lambda r: r.technician and r.technician.id == current_user.id
-            )
-
-            # map to parameter master IDs
-            parameter_ids = user_param_results.mapped('parameter').ids
+            # Check if user is in Lerm Admin group
+            if (
+                current_user.has_group('lerm_civil.kes_admin_access_group')
+                or current_user.has_group('lerm_civil.lerm_sample_verification')
+                or current_user.has_group('lerm_civil.lerm_sample_approval')
+            ):
+                # Admin sees all parameters
+                parameter_ids = record.eln_ref.parameters_result.mapped('parameter').ids
+            else:
+                # Other users only see parameters assigned to them
+                user_param_results = record.eln_ref.parameters_result.filtered(
+                    lambda r: r.technician and r.technician.id == current_user.id
+                )
+                parameter_ids = user_param_results.mapped('parameter').ids
 
             record.sample_parameters = [(6, 0, parameter_ids)]
 

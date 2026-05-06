@@ -72,7 +72,9 @@ class ChemicalCrushedSand(models.Model):
 
     ph_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_ph_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_ph_conformity", store=True)
 
     @api.depends('ph_average','eln_ref','grade')
     def _compute_ph_conformity(self):
@@ -80,6 +82,11 @@ class ChemicalCrushedSand(models.Model):
             self.ph_conformity = 'fail'
         
             for record in self:
+
+                if not record.eln_ref or not record.eln_ref.conformity:
+                    record.ph_conformity = 'na'
+                    continue
+
                 record.ph_conformity = 'fail'
                 line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','481fb826-5804-40f1-b7a1-54d435149afb')])
                 materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','481fb826-5804-40f1-b7a1-54d435149afb')]).parameter_table
@@ -222,12 +229,19 @@ class ChemicalCrushedSand(models.Model):
 
     dissolved_silica_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_dissolved_silica_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity",compute="_compute_dissolved_silica_conformity", store=True)
 
     @api.depends('average_dissolved_silica','eln_ref','grade')
     def _compute_dissolved_silica_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.dissolved_silica_conformity = 'na'
+                continue
+
             record.dissolved_silica_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3a228b5d-5c83-4bb7-b6c7-2e7767b6181b')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3a228b5d-5c83-4bb7-b6c7-2e7767b6181b')]).parameter_table
@@ -363,12 +377,19 @@ class ChemicalCrushedSand(models.Model):
 
     reduction_alkalinity_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_reduction_alkalinity_conformity",  store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity",compute="_compute_reduction_alkalinity_conformity",  store=True)
 
     @api.depends('average_reduction_alkalinity','eln_ref','grade')
     def _compute_reduction_alkalinity_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.reduction_alkalinity_conformity = 'na'
+                continue
+
             record.reduction_alkalinity_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','98067b4a-3581-4712-b691-3df067e49a2c')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','98067b4a-3581-4712-b691-3df067e49a2c')]).parameter_table
@@ -480,12 +501,19 @@ class ChemicalCrushedSand(models.Model):
 
     chloride_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_chloride_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity",compute="_compute_chloride_conformity", store=True)
 
     @api.depends('chloride_percent','eln_ref','grade')
     def _compute_chloride_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.chloride_conformity = 'na'
+                continue
+
             record.chloride_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','83c6e99e-d967-4162-8124-93fc8240ae24')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','83c6e99e-d967-4162-8124-93fc8240ae24')]).parameter_table
@@ -580,12 +608,19 @@ class ChemicalCrushedSand(models.Model):
 
     sulphate_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_sulphate_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity",compute="_compute_sulphate_conformity", store=True)
 
     @api.depends('sulphate_percent','eln_ref','grade')
     def _compute_sulphate_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.sulphate_conformity = 'na'
+                continue
+
             record.sulphate_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8765b291-5596-4d10-9702-0e221e9379cd')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8765b291-5596-4d10-9702-0e221e9379cd')]).parameter_table
@@ -694,12 +729,19 @@ class ChemicalCrushedSand(models.Model):
 
     na2O_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_na2O_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity",compute="_compute_na2O_conformity", store=True)
 
     @api.depends('na2O','eln_ref','grade')
     def _compute_na2O_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.na2O_conformity = 'na'
+                continue
+
             record.na2O_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3380972d-6290-4e34-aa61-6a707a4d788a')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3380972d-6290-4e34-aa61-6a707a4d788a')]).parameter_table
@@ -785,12 +827,19 @@ class ChemicalCrushedSand(models.Model):
 
     k2O_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_k2O_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity",compute="_compute_k2O_conformity", store=True)
 
     @api.depends('k2O','eln_ref','grade')
     def _compute_k2O_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.k2O_conformity = 'na'
+                continue
+
             record.k2O_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ec3bb101-9088-4156-8af5-608a64fe4b7b')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ec3bb101-9088-4156-8af5-608a64fe4b7b')]).parameter_table
@@ -852,12 +901,19 @@ class ChemicalCrushedSand(models.Model):
 
     total_alkali_content_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_total_alkali_content_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity",compute="_compute_total_alkali_content_conformity", store=True)
 
     @api.depends('total_alkali_content','eln_ref','grade')
     def _compute_total_alkali_content_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.total_alkali_content_conformity = 'na'
+                continue
+
             record.total_alkali_content_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','338565ad-67d6-4795-880b-def72791b2c3')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','338565ad-67d6-4795-880b-def72791b2c3')]).parameter_table
@@ -1020,12 +1076,38 @@ class ChemicalCrushedSand(models.Model):
     
 
 
-    @api.depends('eln_ref')
+    # @api.depends('eln_ref')
+    # def _compute_sample_parameters(self):
+    #     for record in self:
+    #         records = record.eln_ref.parameters_result.parameter.ids
+    #         record.sample_parameters = records
+    #         print("Records",records)
+
+    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
+        current_user = self.env.user
+
         for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
+            if not record.eln_ref:
+                record.sample_parameters = [(6, 0, [])]
+                continue
+
+            # Check if user is in Lerm Admin group
+            if (
+                current_user.has_group('lerm_civil.kes_admin_access_group')
+                or current_user.has_group('lerm_civil.lerm_sample_verification')
+                or current_user.has_group('lerm_civil.lerm_sample_approval')
+            ):
+                # Admin sees all parameters
+                parameter_ids = record.eln_ref.parameters_result.mapped('parameter').ids
+            else:
+                # Other users only see parameters assigned to them
+                user_param_results = record.eln_ref.parameters_result.filtered(
+                    lambda r: r.technician and r.technician.id == current_user.id
+                )
+                parameter_ids = user_param_results.mapped('parameter').ids
+
+            record.sample_parameters = [(6, 0, parameter_ids)]
 
     @api.depends('eln_ref')
     def _compute_grade_id(self):

@@ -67,13 +67,21 @@ class HtStrand(models.Model):
 
     crossectional_area_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string=" Conformity", compute="_compute_crossectional_area_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string=" Conformity", compute="_compute_crossectional_area_conformity", store=True)
+
 
 
     @api.depends('crossectional_area','eln_ref','grade')
     def _compute_crossectional_area_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.crossectional_area_conformity = 'na'
+                continue
+
             record.crossectional_area_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65895-a3df-4990-93d1-9904984644aoo2')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65895-a3df-4990-93d1-9904984644aoo2')]).parameter_table
@@ -124,13 +132,21 @@ class HtStrand(models.Model):
 
     per_diff_dia_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string=" Conformity", compute="_compute_per_diff_dia_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string=" Conformity", compute="_compute_per_diff_dia_conformity", store=True)
 
 
     @api.depends('per_diff_dia','eln_ref','grade')
     def _compute_per_diff_dia_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.per_diff_dia_conformity = 'na'
+                continue
+
+
             record. per_diff_dia_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','632547l-a3df-4990-93d1-9904984644au4')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','632547l-a3df-4990-93d1-9904984644au4')]).parameter_table
@@ -184,13 +200,20 @@ class HtStrand(models.Model):
 
     weight_per_meter_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string=" Conformity", compute="_compute_weight_per_meter_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string=" Conformity", compute="_compute_weight_per_meter_conformity", store=True)
 
 
     @api.depends('weight_per_meter','eln_ref','grade')
     def _compute_weight_per_meter_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.weight_per_meter_conformity = 'na'
+                continue
+
             record. weight_per_meter_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6897ert-a3df-4978-93d1-990498464785yt')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6897ert-a3df-4978-93d1-990498464785yt')]).parameter_table
@@ -242,13 +265,20 @@ class HtStrand(models.Model):
 
     lay_length_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string=" Conformity", compute="_compute_lay_length_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string=" Conformity", compute="_compute_lay_length_conformity", store=True)
 
 
     @api.depends('lay_length','eln_ref','grade')
     def _compute_lay_length_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.lay_length_conformity = 'na'
+                continue
+
             record. lay_length_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','984fgtrvv-a3df-4978-93d1-990498464785yt')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','984fgtrvv-a3df-4978-93d1-990498464785yt')]).parameter_table
@@ -301,13 +331,20 @@ class HtStrand(models.Model):
 
     proof_stress2per_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string=" Conformity", compute="_compute_proof_stress2per_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string=" Conformity", compute="_compute_proof_stress2per_conformity", store=True)
 
 
     @api.depends('proof_stress2per','eln_ref','grade')
     def _compute_proof_stress2per_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.proof_stress2per_conformity = 'na'
+                continue
+
             record. proof_stress2per_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6325578-a3df-4990-93d1-9904984644a75')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6325578-a3df-4990-93d1-9904984644a75')]).parameter_table
@@ -358,13 +395,20 @@ class HtStrand(models.Model):
 
     breaking_load_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string=" Conformity", compute="_compute_breaking_load_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string=" Conformity", compute="_compute_breaking_load_conformity", store=True)
 
 
     @api.depends('breaking_load','eln_ref','grade')
     def _compute_breaking_load_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.breaking_load_conformity = 'na'
+                continue
+
             record. breaking_load_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6325487-a3df-4978-93d1-9904984644au4')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6325487-a3df-4978-93d1-9904984644au4')]).parameter_table
@@ -416,13 +460,20 @@ class HtStrand(models.Model):
 
     tensile_strength_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string=" Conformity", compute="_compute_tensile_strength_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string=" Conformity", compute="_compute_tensile_strength_conformity", store=True)
 
 
     @api.depends('tensile_strength','eln_ref','grade')
     def _compute_tensile_strength_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.tensile_strength_conformity = 'na'
+                continue
+
             record. tensile_strength_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','879542-a3df-4978-93d1-990498464785yt')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','879542-a3df-4978-93d1-990498464785yt')]).parameter_table
@@ -474,13 +525,20 @@ class HtStrand(models.Model):
 
     elongation_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string=" Conformity", compute="_compute_elongation_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string=" Conformity", compute="_compute_elongation_conformity", store=True)
 
 
     @api.depends('elongation','eln_ref','grade')
     def _compute_elongation_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.elongation_conformity = 'na'
+                continue
+
             record. elongation_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','36578ee-a3df-4978-93d1-990498464785yt')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','36578ee-a3df-4978-93d1-990498464785yt')]).parameter_table
@@ -537,13 +595,21 @@ class HtStrand(models.Model):
 
     modulus_of_ela_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string=" Conformity", compute="_compute_modulus_of_ela_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string=" Conformity", compute="_compute_modulus_of_ela_conformity", store=True)
 
 
     @api.depends('modulus_of_ela','eln_ref','grade')
     def _compute_modulus_of_ela_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.modulus_of_ela_conformity = 'na'
+                continue
+
+
             record. modulus_of_ela_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3147tyr4-a3df-4978-93d1-990498464785yt')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3147tyr4-a3df-4978-93d1-990498464785yt')]).parameter_table
@@ -828,15 +894,41 @@ class HtStrand(models.Model):
 
 
 
-    @api.depends('eln_ref')
+    # @api.depends('eln_ref')
+    # def _compute_sample_parameters(self):
+    #     # records = self.env['lerm.eln'].sudo().search([('id','=', record.eln_id.id)]).parameters_result
+    #     # print("records",records)
+    #     # self.sample_parameters = records
+    #     for record in self:
+    #         records = record.eln_ref.parameters_result.parameter.ids
+    #         record.sample_parameters = records
+    #         print("Records",records)
+
+    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
-        # records = self.env['lerm.eln'].sudo().search([('id','=', record.eln_id.id)]).parameters_result
-        # print("records",records)
-        # self.sample_parameters = records
+        current_user = self.env.user
+
         for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
+            if not record.eln_ref:
+                record.sample_parameters = [(6, 0, [])]
+                continue
+
+            # Check if user is in Lerm Admin group
+            if (
+                current_user.has_group('lerm_civil.kes_admin_access_group')
+                or current_user.has_group('lerm_civil.lerm_sample_verification')
+                or current_user.has_group('lerm_civil.lerm_sample_approval')
+            ):
+                # Admin sees all parameters
+                parameter_ids = record.eln_ref.parameters_result.mapped('parameter').ids
+            else:
+                # Other users only see parameters assigned to them
+                user_param_results = record.eln_ref.parameters_result.filtered(
+                    lambda r: r.technician and r.technician.id == current_user.id
+                )
+                parameter_ids = user_param_results.mapped('parameter').ids
+
+            record.sample_parameters = [(6, 0, parameter_ids)]
 
 
 

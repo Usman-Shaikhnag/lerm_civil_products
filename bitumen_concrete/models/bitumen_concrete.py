@@ -52,12 +52,19 @@ class BitumenConcrete(models.Model):
 
     binder_content_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_binder_content_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_binder_content_conformity", store=True)
 
     @api.depends('binder_content','eln_ref','grade')
     def _compute_binder_content_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.binder_content_conformity = 'na'
+                continue
+
             record.binder_content_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32578999-7188-4086-b132-62b50e63f1247ui')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32578999-7188-4086-b132-62b50e63f1247ui')]).parameter_table
@@ -128,12 +135,19 @@ class BitumenConcrete(models.Model):
 
     avg_sp_bitumen_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_sp_bitumen_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_avg_sp_bitumen_conformity", store=True)
 
     @api.depends('avg_sp_bitumen','eln_ref','grade')
     def _compute_avg_sp_bitumen_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_sp_bitumen_conformity = 'na'
+                continue
+
             record.avg_sp_bitumen_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5487698-4587-4086-b132-62b50e63f1247ui')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5487698-4587-4086-b132-62b50e63f1247ui')]).parameter_table
@@ -230,12 +244,19 @@ class BitumenConcrete(models.Model):
 
     mean_flash_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_mean_flash_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_mean_flash_conformity", store=True)
 
     @api.depends('mean_flash','eln_ref','grade')
     def _compute_mean_flash_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.mean_flash_conformity = 'na'
+                continue
+
             record.mean_flash_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','012457hy-4587-4086-b132-62b50e63f124772')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','012457hy-4587-4086-b132-62b50e63f124772')]).parameter_table
@@ -282,12 +303,19 @@ class BitumenConcrete(models.Model):
 
     mean_fire_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_mean_fire_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_mean_fire_conformity", store=True)
 
     @api.depends('mean_fire','eln_ref','grade')
     def _compute_mean_fire_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.mean_fire_conformity = 'na'
+                continue
+
             record.mean_fire_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','98547ytrg-4587-4086-b132-62b50e63f124714')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','98547ytrg-4587-4086-b132-62b50e63f124714')]).parameter_table
@@ -359,12 +387,19 @@ class BitumenConcrete(models.Model):
 
     avg_temp_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_temp_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_avg_temp_conformity", store=True)
 
     @api.depends('avg_temp','eln_ref','grade')
     def _compute_avg_temp_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_temp_conformity = 'na'
+                continue
+
             record.avg_temp_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3587914-4587-4086-b132-62b50e63f124772')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3587914-4587-4086-b132-62b50e63f124772')]).parameter_table
@@ -427,12 +462,19 @@ class BitumenConcrete(models.Model):
 
     avg_penetration_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_penetration_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_avg_penetration_conformity", store=True)
 
     @api.depends('avg_penetration','eln_ref','grade')
     def _compute_avg_penetration_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_penetration_conformity = 'na'
+                continue
+
             record.avg_penetration_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','68574nht-4587-4086-b132-62b50e63f12474h')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','68574nht-4587-4086-b132-62b50e63f12474h')]).parameter_table
@@ -969,15 +1011,41 @@ class BitumenConcrete(models.Model):
 
 
 
-    @api.depends('eln_ref')
+    # @api.depends('eln_ref')
+    # def _compute_sample_parameters(self):
+    #     # records = self.env['lerm.eln'].sudo().search([('id','=', record.eln_id.id)]).parameters_result
+    #     # print("records",records)
+    #     # self.sample_parameters = records
+    #     for record in self:
+    #         records = record.eln_ref.parameters_result.parameter.ids
+    #         record.sample_parameters = records
+    #         print("Records",records)
+
+    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
-        # records = self.env['lerm.eln'].sudo().search([('id','=', record.eln_id.id)]).parameters_result
-        # print("records",records)
-        # self.sample_parameters = records
+        current_user = self.env.user
+
         for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
+            if not record.eln_ref:
+                record.sample_parameters = [(6, 0, [])]
+                continue
+
+            # Check if user is in Lerm Admin group
+            if (
+                current_user.has_group('lerm_civil.kes_admin_access_group')
+                or current_user.has_group('lerm_civil.lerm_sample_verification')
+                or current_user.has_group('lerm_civil.lerm_sample_approval')
+            ):
+                # Admin sees all parameters
+                parameter_ids = record.eln_ref.parameters_result.mapped('parameter').ids
+            else:
+                # Other users only see parameters assigned to them
+                user_param_results = record.eln_ref.parameters_result.filtered(
+                    lambda r: r.technician and r.technician.id == current_user.id
+                )
+                parameter_ids = user_param_results.mapped('parameter').ids
+
+            record.sample_parameters = [(6, 0, parameter_ids)]
 
 
 

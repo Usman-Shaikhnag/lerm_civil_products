@@ -45,12 +45,19 @@ class ChemicalGyspum(models.Model):
   
     so3_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_so3_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_so3_conformity", store=True)
 
     @api.depends('so3','eln_ref','grade')
     def _compute_so3_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.so3_conformity = 'na'
+                continue
+
             record.so3_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a58cb5bc-d2d2-4756-81d2-6571ae81a813')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a58cb5bc-d2d2-4756-81d2-6571ae81a813')]).parameter_table
@@ -131,12 +138,20 @@ class ChemicalGyspum(models.Model):
 
     loss_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_loss_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_loss_conformity", store=True)
 
     @api.depends('loi','eln_ref','grade')
     def _compute_loss_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.loss_conformity = 'na'
+                continue
+
+
             record.loss_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','df12ceda-8e7d-4cb0-af54-0561796f5fdf')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','df12ceda-8e7d-4cb0-af54-0561796f5fdf')]).parameter_table
@@ -208,12 +223,19 @@ class ChemicalGyspum(models.Model):
 
     cao1_conformity = fields.Selection([
            ('pass', 'Pass'),
-           ('fail', 'Fail')], string="Conformity", compute="_compute_cao1_conformity", store=True)
+           ('fail', 'Fail'),
+           ('na', 'NA'),
+           ], string="Conformity", compute="_compute_cao1_conformity", store=True)
 
     @api.depends('cao1','eln_ref','grade')
     def _compute_cao1_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.cao1_conformity = 'na'
+                continue
+
             record.cao1_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','80cbb8c4-5b52-4c0b-97f8-b5b66af79982')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','80cbb8c4-5b52-4c0b-97f8-b5b66af79982')]).parameter_table
@@ -292,12 +314,19 @@ class ChemicalGyspum(models.Model):
   
     mgo_conformity1 = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_mgo_conformity1", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_mgo_conformity1", store=True)
 
     @api.depends('mgo1','eln_ref','grade')
     def _compute_mgo_conformity1(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.mgo_conformity1 = 'na'
+                continue
+
             record.mgo_conformity1 = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3ef8ce36-8db8-4557-ad95-14b199bc9ff0')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3ef8ce36-8db8-4557-ad95-14b199bc9ff0')]).parameter_table
@@ -369,12 +398,19 @@ class ChemicalGyspum(models.Model):
 
     cao_conformity2 = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_cao_conformity2", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_cao_conformity2", store=True)
 
     @api.depends('cao2','eln_ref','grade')
     def _compute_cao_conformity2(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.cao_conformity2 = 'na'
+                continue
+
             record.cao_conformity2 = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','abc60d60-0e94-4a2a-a08f-04650534fa9f')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','abc60d60-0e94-4a2a-a08f-04650534fa9f')]).parameter_table
@@ -446,12 +482,19 @@ class ChemicalGyspum(models.Model):
   
     mgo_conformity2 = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_mgo_conformity2", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_mgo_conformity2", store=True)
 
     @api.depends('mgo2','eln_ref','grade')
     def _compute_mgo_conformity2(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.mgo_conformity2 = 'na'
+                continue
+
             record.mgo_conformity2 = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b3b623fc-ff8b-44b8-884b-869139ff0912')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b3b623fc-ff8b-44b8-884b-869139ff0912')]).parameter_table
@@ -523,12 +566,20 @@ class ChemicalGyspum(models.Model):
   
     free_lime_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_free_lime_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_free_lime_conformity", store=True)
+
 
     @api.depends('free_lime','eln_ref','grade')
     def _compute_free_lime_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.free_lime_conformity = 'na'
+                continue
+
             record.free_lime_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1959c613-48ed-494d-93a3-b4c831e37b51')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1959c613-48ed-494d-93a3-b4c831e37b51')]).parameter_table
@@ -602,12 +653,19 @@ class ChemicalGyspum(models.Model):
   
     soluble_sodium_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_soluble_sodium_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_soluble_sodium_conformity", store=True)
 
     @api.depends('soluble_sodium','eln_ref','grade')
     def _compute_soluble_sodium_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.soluble_sodium_conformity = 'na'
+                continue
+
             record.soluble_sodium_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e54abac7-52ff-41a2-8ef1-cd536cde4e2d')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e54abac7-52ff-41a2-8ef1-cd536cde4e2d')]).parameter_table
@@ -712,12 +770,19 @@ class ChemicalGyspum(models.Model):
   
     free_water_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_free_water_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_free_water_conformity", store=True)
 
     @api.depends('free_water','eln_ref','grade')
     def _compute_free_water_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.free_water_conformity = 'na'
+                continue
+
             record.free_water_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c3ac1330-a4d9-4526-9533-4130ff635bf6')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c3ac1330-a4d9-4526-9533-4130ff635bf6')]).parameter_table
@@ -795,12 +860,19 @@ class ChemicalGyspum(models.Model):
   
     combined_water_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_combined_water_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_combined_water_conformity", store=True)
 
     @api.depends('combined_water','eln_ref','grade')
     def _compute_combined_water_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.combined_water_conformity = 'na'
+                continue
+
             record.combined_water_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1afa0443-8649-48a3-b73e-49f9fbb08d3d')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1afa0443-8649-48a3-b73e-49f9fbb08d3d')]).parameter_table
@@ -875,12 +947,19 @@ class ChemicalGyspum(models.Model):
 
     calcium_oxide_conformity2 = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_calcium_oxide_conformity2", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_calcium_oxide_conformity2", store=True)
 
     @api.depends('calcium_oxide','eln_ref','grade')
     def _compute_calcium_oxide_conformity2(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.calcium_oxide_conformity2 = 'na'
+                continue
+
             record.calcium_oxide_conformity2 = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','966341bc-cef0-49da-8f72-df520a8c702e')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','966341bc-cef0-49da-8f72-df520a8c702e')]).parameter_table
@@ -1000,12 +1079,38 @@ class ChemicalGyspum(models.Model):
     
 
 
-    @api.depends('eln_ref')
+    # @api.depends('eln_ref')
+    # def _compute_sample_parameters(self):
+    #     for record in self:
+    #         records = record.eln_ref.parameters_result.parameter.ids
+    #         record.sample_parameters = records
+    #         print("Records",records)
+
+    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
+        current_user = self.env.user
+
         for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
+            if not record.eln_ref:
+                record.sample_parameters = [(6, 0, [])]
+                continue
+
+            # Check if user is in Lerm Admin group
+            if (
+                current_user.has_group('lerm_civil.kes_admin_access_group')
+                or current_user.has_group('lerm_civil.lerm_sample_verification')
+                or current_user.has_group('lerm_civil.lerm_sample_approval')
+            ):
+                # Admin sees all parameters
+                parameter_ids = record.eln_ref.parameters_result.mapped('parameter').ids
+            else:
+                # Other users only see parameters assigned to them
+                user_param_results = record.eln_ref.parameters_result.filtered(
+                    lambda r: r.technician and r.technician.id == current_user.id
+                )
+                parameter_ids = user_param_results.mapped('parameter').ids
+
+            record.sample_parameters = [(6, 0, parameter_ids)]
 
     @api.depends('eln_ref')
     def _compute_grade_id(self):

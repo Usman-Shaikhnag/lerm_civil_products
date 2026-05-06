@@ -66,12 +66,19 @@ class PavingBlock(models.Model):
 
     area_paver_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_area_paver_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_area_paver_conformity", store=True)
 
     @api.depends('area_paver','eln_ref','grade')
     def _compute_area_paver_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.area_paver_conformity = 'na'
+                continue
+
             record.area_paver_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f391245b-100a-4b84-ba27-af9918baea99')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f391245b-100a-4b84-ba27-af9918baea99')]).parameter_table
@@ -205,12 +212,19 @@ class PavingBlock(models.Model):
 
     avg_water_absorption_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
 
     @api.depends('avg_water_absorption','eln_ref','grade')
     def _compute_avg_water_absorption_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_water_absorption_conformity = 'na'
+                continue
+
             record.avg_water_absorption_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5bd8b6a3-4097-4125-befe-36c633ce7ae8')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5bd8b6a3-4097-4125-befe-36c633ce7ae8')]).parameter_table
@@ -264,12 +278,19 @@ class PavingBlock(models.Model):
 
     avg_commpressive_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Compressive Strength Conformity", compute="_compute_avg_commpressive_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Compressive Strength Conformity", compute="_compute_avg_commpressive_conformity", store=True)
 
     @api.depends('avg_commpressive','eln_ref','grade')
     def _compute_avg_commpressive_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_commpressive_conformity = 'na'
+                continue
+
             record.avg_commpressive_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d73e8ec7-63d5-40ff-ae41-db88b4f53cf0')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d73e8ec7-63d5-40ff-ae41-db88b4f53cf0')]).parameter_table
@@ -337,12 +358,19 @@ class PavingBlock(models.Model):
 
     avg_thickness_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Thickness Conformity", compute="_compute_avg_thickness_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Thickness Conformity", compute="_compute_avg_thickness_conformity", store=True)
 
     @api.depends('avg_thickness','eln_ref','grade')
     def _compute_avg_thickness_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_thickness_conformity = 'na'
+                continue
+
             record.avg_thickness_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2acf6ad3-ae04-46e4-a2f8-18bd39a20e18')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2acf6ad3-ae04-46e4-a2f8-18bd39a20e18')]).parameter_table
@@ -509,20 +537,27 @@ class PavingBlock(models.Model):
     #         print("Records",records)
     @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
-        # parameter_based_assignment
         current_user = self.env.user
+
         for record in self:
             if not record.eln_ref:
                 record.sample_parameters = [(6, 0, [])]
                 continue
 
-            # filter parameter results by current user
-            user_param_results = record.eln_ref.parameters_result.filtered(
-                lambda r: r.technician and r.technician.id == current_user.id
-            )
-
-            # map to parameter master IDs
-            parameter_ids = user_param_results.mapped('parameter').ids
+            # Check if user is in Lerm Admin group
+            if (
+                current_user.has_group('lerm_civil.kes_admin_access_group')
+                or current_user.has_group('lerm_civil.lerm_sample_verification')
+                or current_user.has_group('lerm_civil.lerm_sample_approval')
+            ):
+                # Admin sees all parameters
+                parameter_ids = record.eln_ref.parameters_result.mapped('parameter').ids
+            else:
+                # Other users only see parameters assigned to them
+                user_param_results = record.eln_ref.parameters_result.filtered(
+                    lambda r: r.technician and r.technician.id == current_user.id
+                )
+                parameter_ids = user_param_results.mapped('parameter').ids
 
             record.sample_parameters = [(6, 0, parameter_ids)]
 

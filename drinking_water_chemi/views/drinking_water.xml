@@ -1,0 +1,1213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="chemical_drinking_water_form" model="ir.ui.view">
+        <field name="name">chemical.drinking.water.form</field>
+        <field name="model">chemical.drinking.water</field>
+        <field name="arch" type="xml">
+            <form string="Your Form View" create="false">
+                <sheet>
+                <div>
+                    <h1>
+                        <field name="name" readonly="1" nolabel="1"/>
+                    </h1>
+                </div>
+                <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                </group>
+                    <div class="custom_table_borders">
+                      <field name="sample_parameters" nolabel="1">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </div>
+
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+
+
+                    <!-- ph at 1% -->
+                    <div invisible="not ph_visible">
+
+                        <h1 class="text-center">
+                            <field name="ph_name" readonly="1" nolabel="1"/>
+                            <field name="ph_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <!-- pH -->
+
+                    <div>
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td><label for="ph_1_percent_a">pH</label></td>
+                             <td>Observation 1</td>
+                             <td>Observation 2</td>
+                             <td>Observation 3</td>
+                             <td>Observation 4</td>
+                             <td>Observation 5</td>
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="ph_1_percent_a"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ph_1_percent_b"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ph_1_percent_c"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ph_1_percent_d"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ph_1_percent_e"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+
+                    <div>
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average</span></td>
+                          <td style="padding: 8px;"><field name="ph_average"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='ph_average_conformity'
+                               decoration-success="ph_average_conformity == 'pass'" 
+                               decoration-danger="ph_average_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='ph_average_nabl'/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+                    <!-- Conductivity -->
+
+                     <div invisible="not conductivity_visible">
+
+                        <h1 class="text-center">
+                            <field name="conductivity_name" readonly="1" nolabel="1"/>
+                            <field name="conductivity_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div invisible="not conductivity_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Conductivity</td>
+                             <td>Observation 1</td>
+                             <td>Observation 2</td>
+                             <td>Observation 3</td>
+                             <td>Observation 4</td>
+                             <td>Observation 5</td>
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="conductivity_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="conductivity_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="conductivity_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="conductivity_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="conductivity_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+
+                    <div invisible="not conductivity_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average</span></td>
+                          <td style="padding: 8px;"><field name="conductivity_average"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='conductivity_average_conformity'
+                               decoration-success="conductivity_average_conformity == 'pass'" 
+                               decoration-danger="conductivity_average_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='conductivity_average_nabl'
+                               decoration-success="conductivity_average_nabl == 'pass'" 
+                               decoration-danger="conductivity_average_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+                 <!-- dissolved_solid_visible -->
+                <div invisible="dissolved_solid_visible == False">
+                    <h1 class="text-center">
+                        <field name="dissolved_solid_name" readonly="1" nolabel="1"/>
+                        <field name="dissolved_solid_visible" invisible="1"/>
+
+                    </h1>
+                </div>
+
+
+                <div invisible="not dissolved_solid_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Total Dissolved Solids</td>
+                             <td>Sample taken (V)</td>
+                             <td>Initial wt. evaporating dish</td>
+                             <td>Final wt. of evaporating dish</td>
+                             <td>Mass in mg of filterable residue ( M )</td>
+                             <td>Result Filterable residue ( TDS ), in mg/l=</td>
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="sample_taken1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="initial_dish1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="final_dish1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="mass_residue1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="filterable1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="sample_taken2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="initial_dish2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="final_dish2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="mass_residue2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="filterable2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           </tr>
+
+                            <tr>
+                             <td></td>
+                             <td><field  name="sample_taken3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="initial_dish3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="final_dish3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="mass_residue3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="filterable3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="sample_taken4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="initial_dish4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="final_dish4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="mass_residue4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="filterable4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="sample_taken5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="initial_dish5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="final_dish5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="mass_residue5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="filterable5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+               
+
+
+                <div invisible="not dissolved_solid_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average</span></td>
+                          <td style="padding: 8px;"><field name="avg_dissolved_solid"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='avg_dissolved_solid_conformity'
+                               decoration-success="avg_dissolved_solid_conformity == 'pass'" 
+                               decoration-danger="avg_dissolved_solid_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='avg_dissolved_solid_nabl'
+                               decoration-success="avg_dissolved_solid_nabl == 'pass'" 
+                               decoration-danger="avg_dissolved_solid_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+                         <!-- TURBIDITY -->
+                    <div invisible="not turbidity_visible">
+
+                        <h1 class="text-center">
+                            <field name="turbidity_name" readonly="1" nolabel="1"/>
+                            <field name="turbidity_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div invisible="not turbidity_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Turbidity</td>
+                             <td>Observation 1</td>
+                             <td>Observation 2</td>
+                             <td>Observation 3</td>
+                             <td>Observation 4</td>
+                             <td>Observation 5</td>
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="turbidity_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="turbidity_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="turbidity_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="turbidity_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="turbidity_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+
+                    <div invisible="not turbidity_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average</span></td>
+                          <td style="padding: 8px;"><field name="turbidity_average"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='turbidity_average_conformity'
+                               decoration-success="turbidity_average_conformity == 'pass'" 
+                               decoration-danger="turbidity_average_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='turbidity_average_nabl'
+                               decoration-success="turbidity_average_nabl == 'pass'" 
+                               decoration-danger="turbidity_average_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+                     <!-- CHLORIDE -->
+                <div invisible="chloride_visible == False">
+                    <h1 class="text-center">
+                        <field name="chloride_name" readonly="1" nolabel="1"/>
+                        <field name="chloride_visible" invisible="1"/>
+
+                    </h1>
+                </div>
+
+
+                <div invisible="not chloride_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Chloride</td>
+                             <td>Volume of sample to be taken. (V)</td>
+                             <td>Normality of AgNo3   0.0141N</td>
+                             <td>Volume in ml of silver nitrate 0.0141 N used in the blank titration. (V2)</td>
+                             <td>Volume in ml of silver nitrate 0.0141 N used in the sample titration. (V1)</td>
+                             <td>Chloride,(mg/l)=</td>
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="chloride_sample_taken1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chloride_normality1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chloride_nitratev2_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chloride_nitratev1_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chloride1"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="chloride_sample_taken2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chloride_normality2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chloride_nitratev2_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chloride_nitratev1_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chloride2"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                            <tr>
+                             <td></td>
+                             <td><field  name="chloride_sample_taken3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chloride_normality3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chloride_nitratev2_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chloride_nitratev1_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chloride3"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="chloride_sample_taken4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chloride_normality4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chloride_nitratev2_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chloride_nitratev1_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chloride4"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="chloride_sample_taken5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chloride_normality5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chloride_nitratev2_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chloride_nitratev1_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chloride5"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+               
+
+
+                <div invisible="not chloride_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average Chloride (mg/l)</span></td>
+                          <td style="padding: 8px;"><field name="avg_chloride"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='avg_chloride_conformity'
+                               decoration-success="avg_chloride_conformity == 'pass'" 
+                               decoration-danger="avg_chloride_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='avg_chloride_nabl'
+                               decoration-success="avg_chloride_nabl == 'pass'" 
+                               decoration-danger="avg_chloride_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+
+
+                     <!-- HARDNESS-->
+                <div invisible="hardness_visible == False">
+                    <h1 class="text-center">
+                        <field name="hardness_name" readonly="1" nolabel="1"/>
+                        <field name="hardness_visible" invisible="1"/>
+
+                    </h1>
+                </div>
+
+
+                <div invisible="not hardness_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>CF</span></td>
+                          <td style="padding: 8px;"><field name="cf"/></td>
+                         </tr>
+
+                     </tbody>
+                      </table>
+                    </div>
+
+
+                <div invisible="not hardness_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Hardness</td>
+
+                             <td>Volume in ml of the sample taken for the test.(V3)</td>
+                             <td>Volume in ml of EDTA solution used in the titration for blank. (V2)</td>
+                             <td>Volume in ml of the EDTA standard solution0.02 N used in the titration for the sample, ( V1 )</td>
+                             <td>Total Hardness as ( CaCO3 ), mg/l </td>
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="hardness_sample_takenv3_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="hardness_titrationv2_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="hardness_titrationv1_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="hardness1"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="hardness_sample_takenv3_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="hardness_titrationv2_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="hardness_titrationv1_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="hardness2"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                            <tr>
+                             <td></td>
+                             <td><field  name="hardness_sample_takenv3_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="hardness_titrationv2_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="hardness_titrationv1_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="hardness3"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="hardness_sample_takenv3_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="hardness_titrationv1_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chloride_nitratev2_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="hardness4"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="hardness_sample_takenv3_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="hardness_titrationv2_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="hardness_titrationv1_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="hardness5"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+               
+
+
+                <div invisible="not hardness_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average Hardness (mg/l)</span></td>
+                          <td style="padding: 8px;"><field name="avg_hardness"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='avg_hardness_conformity'
+                               decoration-success="avg_hardness_conformity == 'pass'" 
+                               decoration-danger="avg_hardness_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='avg_hardness_nabl'
+                               decoration-success="avg_hardness_nabl == 'pass'" 
+                               decoration-danger="avg_hardness_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+
+                     <!-- Alkalinity-->
+                <div invisible="alkalinity_visible == False">
+                    <h1 class="text-center">
+                        <field name="alkalinity_name" readonly="1" nolabel="1"/>
+                        <field name="alkalinity_visible" invisible="1"/>
+
+                    </h1>
+                </div>
+
+
+               
+                <div invisible="not alkalinity_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Alkalinity</td>
+
+                             <td>Volume in ml of the sample taken for the test.(V)</td>
+                             <td>Volume in ml of Sulphuric acid 0.02 N solution used in the titration. (X1)</td>
+                             <td>Normality of H2SO4  (0.02 N)</td>
+                             <td>Total Alkalinity, mg/l </td>
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="alkalinity_sample_takenv3_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="alkalinity_titrationx1_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="alkalinity_normality_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="alkalinity1"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="alkalinity_sample_takenv3_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="alkalinity_titrationx1_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="alkalinity_normality_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="alkalinity2"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                            <tr>
+                             <td></td>
+                             <td><field  name="alkalinity_sample_takenv3_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="alkalinity_titrationx1_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="alkalinity_normality_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="alkalinity3"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="alkalinity_sample_takenv3_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="alkalinity_titrationx1_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="alkalinity_normality_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="alkalinity4"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="alkalinity_sample_takenv3_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="alkalinity_titrationx1_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="alkalinity_normality_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="alkalinity5"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+               
+
+
+                <div invisible="not alkalinity_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average Alkalinity (mg/l)</span></td>
+                          <td style="padding: 8px;"><field name="avg_alkalinity"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='avg_alkalinity_conformity'
+                               decoration-success="avg_alkalinity_conformity == 'pass'" 
+                               decoration-danger="avg_alkalinity_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='avg_alkalinity_nabl'
+                               decoration-success="avg_alkalinity_nabl == 'pass'" 
+                               decoration-danger="avg_alkalinity_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+
+
+                     <!-- calcium-->
+                <div invisible="calcium_visible == False">
+                    <h1 class="text-center">
+                        <field name="calcium_name" readonly="1" nolabel="1"/>
+                        <field name="calcium_visible" invisible="1"/>
+
+                    </h1>
+                </div>
+
+
+               
+                <div invisible="not calcium_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Calcium</td>
+
+                             <td>Volume in ml of the sample taken for the test. (V)</td>
+                             <td>Volume in ml of EDTA solution used in the titration for Sample. (V1)</td>
+                             <td>Calcium (mg/l)</td>
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="calcium_sample_takenv_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="calcium_titrationv1_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="calcium1"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="calcium_sample_takenv_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="calcium_titrationv1_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="calcium2"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                            <tr>
+                             <td></td>
+                             <td><field  name="calcium_sample_takenv_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="calcium_titrationv1_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="calcium3"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="calcium_sample_takenv_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="calcium_titrationv1_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="calcium4"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="calcium_sample_takenv_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="calcium_titrationv1_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="calcium5"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+               
+
+
+                <div invisible="not calcium_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average Calcium (mg/l)</span></td>
+                          <td style="padding: 8px;"><field name="avg_calcium"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='avg_calcium_conformity'
+                               decoration-success="avg_calcium_conformity == 'pass'" 
+                               decoration-danger="avg_calcium_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='avg_calcium_nabl'
+                               decoration-success="avg_calcium_nabl == 'pass'" 
+                               decoration-danger="avg_calcium_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+                       <!-- Magnesium -->
+                <div invisible="magnesium_visible == False">
+                    <h1 class="text-center">
+                        <field name="magnesium_name" readonly="1" nolabel="1"/>
+                        <field name="magnesium_visible" invisible="1"/>
+
+                    </h1>
+                </div>
+
+                <div invisible="not magnesium_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>CF</span></td>
+                          <td style="padding: 8px;"><field name="cf_magnesium"/></td>
+                         </tr>
+
+                     </tbody>
+                      </table>
+                    </div>
+
+
+                <div invisible="not magnesium_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Magnesium</td>
+                             <td>sample taken</td>
+                             <td>calcium Titre Value</td>
+                             <td>Total Hardness (mg/l)</td>
+                             <td>Calcium Hardness (mg/l)</td>
+                             <td>Magnesium Hardness</td>
+                             <td>Magnesium (mg/l)</td>
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="magnesium_sample_taken_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="magnesium_calcium_titre_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="magnesium_th_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="magnesium_ch_1"  colspan="1" nolabel="1"  /></td>
+                             <td><field  name="magnesium_mh_1"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="magnesium_1"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="magnesium_sample_taken_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="magnesium_calcium_titre_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="magnesium_th_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="magnesium_ch_2"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="magnesium_mh_2"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="magnesium_2"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                            <tr>
+                             <td></td>
+                             <td><field  name="magnesium_sample_taken_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="magnesium_calcium_titre_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="magnesium_th_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="magnesium_ch_3"  colspan="1" nolabel="1"  /></td>
+                             <td><field  name="magnesium_mh_3"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="magnesium_3"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="magnesium_sample_taken_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="magnesium_calcium_titre_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="magnesium_th_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="magnesium_ch_4"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="magnesium_mh_4"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="magnesium_4"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="magnesium_sample_taken_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="magnesium_calcium_titre_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="magnesium_th_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="magnesium_ch_5"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="magnesium_mh_5"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="magnesium_5"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+               
+
+
+                <div invisible="not magnesium_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average Magnesium (mg/l)</span></td>
+                          <td style="padding: 8px;"><field name="avg_magnesium"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='avg_magnesium_conformity'
+                               decoration-success="avg_magnesium_conformity == 'pass'" 
+                               decoration-danger="avg_magnesium_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='avg_magnesium_nabl'
+                               decoration-success="avg_magnesium_nabl == 'pass'" 
+                               decoration-danger="avg_magnesium_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+                    <!-- SULPHATE -->
+
+                     <div invisible="not sulphate_visible">
+
+                        <h1 class="text-center">
+                            <field name="sulphate_name" readonly="1" nolabel="1"/>
+                            <field name="sulphate_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div invisible="not sulphate_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Sulphate</td>
+                             <td>Observation 1</td>
+                             <td>Observation 2</td>
+                             <td>Observation 3</td>
+                             <td>Observation 4</td>
+                             <td>Observation 5</td>
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="sulphate_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sulphate_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sulphate_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sulphate_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sulphate_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+
+                    <div invisible="not sulphate_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average Sulphate (mg/l)</span></td>
+                          <td style="padding: 8px;"><field name="sulphate_average"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='sulphate_average_conformity'
+                               decoration-success="sulphate_average_conformity == 'pass'" 
+                               decoration-danger="sulphate_average_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='sulphate_average_nabl'
+                               decoration-success="sulphate_average_nabl == 'pass'" 
+                               decoration-danger="sulphate_average_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+ 
+                     <!-- NITRATE -->
+                    <div invisible="not nitrate_visible">
+
+                        <h1 class="text-center">
+                            <field name="nitrate_name" readonly="1" nolabel="1"/>
+                            <field name="nitrate_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div invisible="not nitrate_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Nitrate</td>
+                             <td>Observation 1</td>
+                             <td>Observation 2</td>
+                             <td>Observation 3</td>
+                             <td>Observation 4</td>
+                             <td>Observation 5</td>
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="nitrate_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="nitrate_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="nitrate_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="nitrate_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="nitrate_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+
+                    <div invisible="not nitrate_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average Nitrate (mg/l)</span></td>
+                          <td style="padding: 8px;"><field name="nitrate_average"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='nitrate_average_conformity'
+                               decoration-success="nitrate_average_conformity == 'pass'" 
+                               decoration-danger="nitrate_average_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='nitrate_average_nabl'
+                               decoration-success="nitrate_average_nabl == 'pass'" 
+                               decoration-danger="nitrate_average_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+                     <!-- Reactive Silica (mg/l) -->
+                     <div invisible="not silica_visible">
+
+                        <h1 class="text-center">
+                            <field name="silica_name" readonly="1" nolabel="1"/>
+                            <field name="silica_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div invisible="not silica_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Reactive Silica</td>
+                             <td>Observation 1</td>
+                             <td>Observation 2</td>
+                             <td>Observation 3</td>
+                             <td>Observation 4</td>
+                             <td>Observation 5</td>
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="silica_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="silica_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="silica_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="silica_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="silica_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+
+                    <div invisible="not silica_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average Reactive Silica (mg/l)</span></td>
+                          <td style="padding: 8px;"><field name="silica_average"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='silica_average_conformity'
+                               decoration-success="silica_average_conformity == 'pass'" 
+                               decoration-danger="silica_average_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='silica_average_nabl'
+                               decoration-success="silica_average_nabl == 'pass'" 
+                               decoration-danger="silica_average_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+                     <!-- Phosphorus -->
+                     <div invisible="not phosphorus_visible">
+
+                        <h1 class="text-center">
+                            <field name="phosphorus_name" readonly="1" nolabel="1"/>
+                            <field name="phosphorus_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div invisible="not phosphorus_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Phosphorus</td>
+                             <td>Observation 1</td>
+                             <td>Observation 2</td>
+                             <td>Observation 3</td>
+                             <td>Observation 4</td>
+                             <td>Observation 5</td>
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="phosphorus_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="phosphorus_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="phosphorus_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="phosphorus_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="phosphorus_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+
+                    <div invisible="not phosphorus_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average Phosphorus (mg/l)</span></td>
+                          <td style="padding: 8px;"><field name="phosphorus_average"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='phosphorus_average_conformity'
+                               decoration-success="phosphorus_average_conformity == 'pass'" 
+                               decoration-danger="phosphorus_average_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='phosphorus_average_nabl'
+                               decoration-success="phosphorus_average_nabl == 'pass'" 
+                               decoration-danger="phosphorus_average_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+                      <!-- Sodium -->
+                    <div invisible="not sodium_visible">
+
+                        <h1 class="text-center">
+                            <field name="sodium_name" readonly="1" nolabel="1"/>
+                            <field name="sodium_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div invisible="not sodium_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Sodium</td>
+                             <td>Observation 1</td>
+                             <td>Observation 2</td>
+                             <td>Observation 3</td>
+                             <td>Observation 4</td>
+                             <td>Observation 5</td>
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="sodium_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sodium_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sodium_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sodium_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="sodium_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+
+                    <div invisible="not sodium_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average Sodium</span></td>
+                          <td style="padding: 8px;"><field name="sodium_average"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='sodium_average_conformity'
+                               decoration-success="sodium_average_conformity == 'pass'" 
+                               decoration-danger="sodium_average_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='sodium_average_nabl'
+                               decoration-success="sodium_average_nabl == 'pass'" 
+                               decoration-danger="sodium_average_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+                       <!-- potassium -->
+                    <div invisible="not potassium_visible">
+
+                        <h1 class="text-center">
+                            <field name="potassium_name" readonly="1" nolabel="1"/>
+                            <field name="potassium_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div invisible="not potassium_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Potassium</td>
+                             <td>Observation 1</td>
+                             <td>Observation 2</td>
+                             <td>Observation 3</td>
+                             <td>Observation 4</td>
+                             <td>Observation 5</td>
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="potassium_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="potassium_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="potassium_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="potassium_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="potassium_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+
+                    <div invisible="not potassium_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average Potassium (mg/l)</span></td>
+                          <td style="padding: 8px;"><field name="potassium_average"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='potassium_average_conformity'
+                               decoration-success="potassium_average_conformity == 'pass'" 
+                               decoration-danger="potassium_average_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='potassium_average_nabl'
+                               decoration-success="potassium_average_nabl == 'pass'" 
+                               decoration-danger="potassium_average_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+
+                    
+                     <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+
+
+                        </page>
+
+                    </notebook>
+
+
+
+
+                   
+                 <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                    
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+    </data>
+</odoo>

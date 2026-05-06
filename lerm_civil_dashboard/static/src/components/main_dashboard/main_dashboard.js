@@ -21,6 +21,7 @@ class MainDashboard extends Component {
       labs: [],
       companies: [],
       aging_data: {},
+      overdue_data: {},
     });
     this.filter_state = useState({
       // <-- NEW REACTIVE STATE OBJECT
@@ -61,8 +62,9 @@ class MainDashboard extends Component {
   }
 
   async fetchData() {
-    const { start_date, end_date, activeDiscipline, activeLab, activeCompany } = this.filter_state;
-    
+    const { start_date, end_date, activeDiscipline, activeLab, activeCompany } =
+      this.filter_state;
+
     const data_result = await jsonrpc("/dashboard/getdata", {
       start_date,
       end_date,
@@ -94,6 +96,7 @@ class MainDashboard extends Component {
         (item) => item.count,
       );
       this.dashboard_state.aging_data = data_result.aging_data || {};
+      this.dashboard_state.overdue_data = data_result.overdue_data || {};
     }
 
     const tech_data_result = await jsonrpc("/lerm/overview/data", {
@@ -150,37 +153,74 @@ class MainDashboard extends Component {
   }
   get styleMap() {
     return {
-      "1-allotment_pending": { icon: "fa-hourglass-o", color: "#fd7e14", label: "Assignment Pending" },
-      "7-partially-alloted": { icon: "fa-adjust", color: "#8b5cf6", label: "Partially Alloted" },
-      "2-alloted": { icon: "fa-play-circle", color: "#0066ff", label: "Alloted" },
-      "7-calculated": { icon: "fa-calculator", color: "#6366f1", label: "In-Test" },
-      "3-pending_verification": { icon: "fa-hourglass-half", color: "#d97706", label: "Pending Verification" },
-      "5-pending_approval": { icon: "fa-clock-o", color: "#dc2626", label: "Pending Approval" },
-      "4-in_report": { icon: "fa-file-text-o", color: "#16a34a", label: "In Report" },
-      "6-cancelled": { icon: "fa-times-circle", color: "#9ca3af", label: "Cancelled" },
+      "1-allotment_pending": {
+        icon: "fa-hourglass-o",
+        color: "#fd7e14",
+        label: "Assignment Pending",
+      },
+      "7-partially-alloted": {
+        icon: "fa-adjust",
+        color: "#8b5cf6",
+        label: "Partially Alloted",
+      },
+      "2-alloted": {
+        icon: "fa-play-circle",
+        color: "#0066ff",
+        label: "Alloted",
+      },
+      "7-calculated": {
+        icon: "fa-calculator",
+        color: "#6366f1",
+        label: "In-Test",
+      },
+      "3-pending_verification": {
+        icon: "fa-hourglass-half",
+        color: "#d97706",
+        label: "Pending Verification",
+      },
+      "5-pending_approval": {
+        icon: "fa-clock-o",
+        color: "#dc2626",
+        label: "Pending Approval",
+      },
+      "4-in_report": {
+        icon: "fa-file-text-o",
+        color: "#16a34a",
+        label: "In Report",
+      },
+      "6-cancelled": {
+        icon: "fa-times-circle",
+        color: "#9ca3af",
+        label: "Cancelled",
+      },
     };
   }
 
   get kpiData() {
     const styleMap = this.styleMap;
 
+    const data = [
+      {
+        state: "total",
+        state_label: "Total Samples",
+        count: this.dashboard_state.projects_count,
+        icon: "fa-bar-chart",
+        color: "#007bff",
+        isTotal: true,
+      },
+    ];
 
-    const data = [{
-      state: 'total',
-      state_label: 'Total Samples',
-      count: this.dashboard_state.projects_count,
-      icon: "fa-bar-chart",
-      color: "#007bff",
-      isTotal: true
-    }];
-
-    this.dashboard_state.state_data.forEach(item => {
-      const style = styleMap[item.state] || { icon: "fa-question-circle", color: "#6c757d", label: item.state_label };
+    this.dashboard_state.state_data.forEach((item) => {
+      const style = styleMap[item.state] || {
+        icon: "fa-question-circle",
+        color: "#6c757d",
+        label: item.state_label,
+      };
       data.push({
         ...item,
         icon: style.icon,
         color: style.color,
-        state_label: style.label || item.state_label
+        state_label: style.label || item.state_label,
       });
     });
 
@@ -190,33 +230,135 @@ class MainDashboard extends Component {
   get agingKpiData() {
     const buckets = [
       { key: "0-7", label: "0-7 Days", color: "#10b981", icon: "fa-clock-o" },
-      { key: "8-15", label: "8-15 Days", color: "#f59e0b", icon: "fa-calendar-minus-o" },
-      { key: "16-30", label: "16-30 Days", color: "#ef4444", icon: "fa-calendar-plus-o" },
-      { key: "31-45", label: "31-45 Days", color: "#b91c1c", icon: "fa-hourglass-end" },
-      { key: "46-60", label: "46-60 Days", color: "#7f1d1d", icon: "fa-warning" },
+      {
+        key: "8-15",
+        label: "8-15 Days",
+        color: "#f59e0b",
+        icon: "fa-calendar-minus-o",
+      },
+      {
+        key: "16-30",
+        label: "16-30 Days",
+        color: "#ef4444",
+        icon: "fa-calendar-plus-o",
+      },
+      {
+        key: "31-45",
+        label: "31-45 Days",
+        color: "#b91c1c",
+        icon: "fa-hourglass-end",
+      },
+      {
+        key: "46-60",
+        label: "46-60 Days",
+        color: "#7f1d1d",
+        icon: "fa-warning",
+      },
       { key: "60+", label: "60+ Days", color: "#450a0a", icon: "fa-history" },
     ];
 
-
-    return buckets.map(bucket => {
-      const bucketData = this.dashboard_state.aging_data[bucket.key] || { total: 0, states: {} };
+    return buckets.map((bucket) => {
+      const bucketData = this.dashboard_state.aging_data[bucket.key] || {
+        total: 0,
+        states: {},
+      };
       return {
         key: bucket.key,
         label: bucket.label,
         count: bucketData.total,
-        states: Object.entries(bucketData.states).map(([stateKey, stateData]) => {
-          const style = this.styleMap[stateKey] || { icon: "fa-question-circle", color: "#6c757d", label: stateKey };
-          return {
-            key: stateKey,
-            label: style.label,
-            count: stateData.count,
-            breakdown: stateData.breakdown || [],
-            icon: style.icon,
-            color: style.color
-          };
-        }),
+        states: Object.entries(bucketData.states).map(
+          ([stateKey, stateData]) => {
+            const style = this.styleMap[stateKey] || {
+              icon: "fa-question-circle",
+              color: "#6c757d",
+              label: stateKey,
+            };
+            return {
+              key: stateKey,
+              label: style.label,
+              count: stateData.count,
+              breakdown: stateData.breakdown || [],
+              icon: style.icon,
+              color: style.color,
+            };
+          },
+        ),
         color: bucket.color,
-        icon: bucket.icon
+        icon: bucket.icon,
+        mode: "upcoming",
+      };
+    });
+  }
+
+  get overdueKpiData() {
+    const buckets = [
+      {
+        key: "0-7",
+        label: "OVERDUE 0-7 DAYS",
+        color: "#10b981",
+        icon: "fa-clock-o",
+      },
+      {
+        key: "8-15",
+        label: "OVERDUE 8-15 DAYS",
+        color: "#f59e0b",
+        icon: "fa-calendar-minus-o",
+      },
+      {
+        key: "16-30",
+        label: "OVERDUE 16-30 DAYS",
+        color: "#ef4444",
+        icon: "fa-calendar-plus-o",
+      },
+      {
+        key: "31-45",
+        label: "OVERDUE 31-45 DAYS",
+        color: "#b91c1c",
+        icon: "fa-hourglass-end",
+      },
+      {
+        key: "46-60",
+        label: "OVERDUE 46-60 DAYS",
+        color: "#7f1d1d",
+        icon: "fa-warning",
+      },
+      {
+        key: "60+",
+        label: "OVERDUE 60+ DAYS",
+        color: "#450a0a",
+        icon: "fa-history",
+      },
+    ];
+
+    return buckets.map((bucket) => {
+      const bucketData = this.dashboard_state.overdue_data[bucket.key] || {
+        total: 0,
+        states: {},
+      };
+      return {
+        key: bucket.key,
+        label: bucket.label,
+        count: bucketData.total,
+        states: Object.entries(bucketData.states).map(
+          ([stateKey, stateData]) => {
+            const style = this.styleMap[stateKey] || {
+              icon: "fa-question-circle",
+              color: "#6c757d",
+              label: stateKey,
+            };
+            return {
+              key: stateKey,
+              label: style.label,
+              count: stateData.count,
+              breakdown: stateData.breakdown || [],
+              icon: style.icon,
+              color: style.color,
+            };
+          },
+        ),
+        color: bucket.color,
+        icon: bucket.icon,
+        mode: "overdue",
       };
     });
   }
@@ -277,57 +419,110 @@ class MainDashboard extends Component {
     this.stateChartType = type;
     this.renderStateChart();
   }
-  async onAgingClick(bucketKey, stateKey = null, techId = null) {
+  async onAgingClick(
+    bucketKey,
+    stateKey = null,
+    techId = null,
+    mode = "upcoming",
+  ) {
     const today = new Date();
-    // Handle 60+ specifically or parse min-max
+    today.setHours(0, 0, 0, 0);
+
     let minDays, maxDays;
     if (bucketKey === "60+") {
-        minDays = 61;
-        maxDays = null;
+      minDays = 61;
+      maxDays = null;
     } else {
-        [minDays, maxDays] = bucketKey.split("-").map(Number);
+      [minDays, maxDays] = bucketKey.split("-").map(Number);
     }
-    
-    // Create new date objects for boundaries
-    const dMax = new Date(today);
-    dMax.setDate(today.getDate() - minDays);
-    dMax.setHours(23, 59, 59, 999);
-    
-    let dMin = null;
-    if (maxDays !== null) {
-        dMin = new Date(today);
+
+    const pad = (n) => n.toString().padStart(2, "0");
+    const toDateStr = (d) =>
+      `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+
+    let dMinStr = null;
+    let dMaxStr = null;
+
+    if (mode === "upcoming") {
+      const dMin = new Date(today);
+      dMin.setDate(today.getDate() + minDays);
+      dMinStr = toDateStr(dMin);
+
+      if (maxDays !== null) {
+        const dMax = new Date(today);
+        dMax.setDate(today.getDate() + maxDays);
+        dMaxStr = toDateStr(dMax);
+      }
+    } else {
+      // Overdue mode
+      const effectiveMin = Math.max(1, minDays);
+      const dMax = new Date(today);
+      dMax.setDate(today.getDate() - effectiveMin);
+      dMaxStr = toDateStr(dMax);
+
+      if (maxDays !== null) {
+        const dMin = new Date(today);
         dMin.setDate(today.getDate() - maxDays);
-        dMin.setHours(0, 0, 0, 0);
+        dMinStr = toDateStr(dMin);
+      }
     }
 
     const domain = [
-        ["state", "in", ["2-alloted", "7-calculated", "3-pending_verification", "5-pending_approval"]],
-        ["eln_id", "!=", false],
-        ["eln_id.create_date", "<=", dMax.toISOString()],
+      [
+        "state",
+        "in",
+        [
+          "1-allotment_pending",
+          "2-alloted",
+          "7-calculated",
+          "3-pending_verification",
+          "5-pending_approval",
+        ],
+      ],
+      ["report_due_date", "!=", false],
     ];
 
-    if (dMin) {
-        domain.push(["eln_id.create_date", ">=", dMin.toISOString()]);
+    if (dMinStr) {
+      domain.push(["report_due_date", ">=", dMinStr]);
+    }
+    if (dMaxStr) {
+      domain.push(["report_due_date", "<=", dMaxStr]);
     }
 
     if (stateKey) {
-        domain.push(["state", "=", stateKey]);
+      domain.push(["state", "=", stateKey]);
     }
 
     if (techId) {
-        domain.push("|", ["technicians", "=", techId], ["eln_id.technician", "=", techId]);
+      domain.push(
+        "|",
+        "|",
+        "|",
+        ["technicians", "in", [techId]],
+        ["eln_id.technician", "=", techId],
+        ["eln_id.technician_ids", "in", [techId]],
+        ["eln_id.parameters_result.technician", "=", techId]
+      );
     }
-
     if (this.filter_state.activeDiscipline !== "ALL") {
-        domain.push(["discipline_id.discipline", "=", this.filter_state.activeDiscipline]);
+      domain.push([
+        "discipline_id.discipline",
+        "=",
+        this.filter_state.activeDiscipline,
+      ]);
     }
     if (this.filter_state.activeLab !== "ALL") {
-        domain.push(["lab_location", "=", parseInt(this.filter_state.activeLab)]);
+      domain.push(["lab_location", "=", parseInt(this.filter_state.activeLab)]);
     }
     if (this.filter_state.activeCompany !== "ALL") {
-        domain.push(["lab_location.company_id", "=", parseInt(this.filter_state.activeCompany)]);
+      domain.push([
+        "lab_location.company_id",
+        "=",
+        parseInt(this.filter_state.activeCompany),
+      ]);
     }
 
+    // debugger;
     this.action.doAction({
       type: "ir.actions.act_window",
       name: `Samples Aging: ${bucketKey} Days`,
@@ -339,7 +534,7 @@ class MainDashboard extends Component {
       ],
       context: {
         group_by: ["state"],
-      }
+      },
     });
   }
 
@@ -385,16 +580,26 @@ class MainDashboard extends Component {
     this.renderStateChart();
   }
 
-  // --- New Event Handler (Technician Card Click) ---
+  // --- New Event Handlers (Technician Card Clicks) ---
 
   async _onTechnicianCardClick(technicianId) {
+    return this._onTechnicianDetailsClick(technicianId);
+  }
+
+  async _onTechnicianDetailsClick(
+    technicianId,
+    stateName = null,
+    productId = null,
+  ) {
     // Construct the action to open the 'Sample' model filtered by the technician
     const domain = [
       "|",
-      ["technicians", "in", [technicianId]],
       "|",
+      "|",
+      ["technicians", "in", [technicianId]],
       ["eln_id.technician", "=", technicianId],
       ["eln_id.technician_ids", "in", [technicianId]],
+      ["eln_id.parameters_result.technician", "=", technicianId],
       // Use the current dates from the filter_state
       ["sample_received_date", ">=", this.filter_state.start_date],
       ["sample_received_date", "<=", this.filter_state.end_date],
@@ -422,11 +627,34 @@ class MainDashboard extends Component {
         : []),
     ];
 
+    if (stateName) {
+      domain.push(["state", "=", stateName]);
+    }
+
+    if (productId !== null) {
+      if (productId === 0) {
+        domain.push(["material_id", "=", false]);
+      } else {
+        domain.push(["material_id", "=", productId]);
+      }
+    }
+
+    let actionName = "Samples for Technician";
+    if (stateName) {
+      const stateLabelMap = {
+        "2-alloted": "Alloted",
+        "3-pending_verification": "Pending Verification",
+        "5-pending_approval": "Pending Approval",
+        "4-in_report": "In Report",
+        "6-cancelled": "Cancelled",
+      };
+      actionName = `${actionName} - ${stateLabelMap[stateName] || stateName}`;
+    }
+
     // The action config to open the standard Odoo tree/form view
     const action = {
       type: "ir.actions.act_window",
-      // FIX: Replaced this.env._t(...) with a plain string to avoid env error
-      name: "Samples for Technician",
+      name: actionName,
       res_model: "lerm.srf.sample", // <--- USE YOUR CORRECT SAMPLE MODEL NAME
       views: [
         [false, "list"],
@@ -434,8 +662,8 @@ class MainDashboard extends Component {
       ],
       domain: domain,
       context: {
-        // Group by state as requested
-        group_by: ["state"],
+        // Group by state or material based on context
+        group_by: stateName ? ["material_id"] : ["state"],
       },
     };
 

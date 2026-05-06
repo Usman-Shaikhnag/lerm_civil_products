@@ -120,23 +120,33 @@ class StainlessSteel(models.Model):
 
     uts_conformity = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')],string="Conformity",compute="_compute_uts_conformity",store=True)
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+        ],string="Conformity",compute="_compute_uts_conformity",store=True)
 
     yield_conformity = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')],string="Conformity",compute="_compute_yield_conformity",store=True)
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+        ],string="Conformity",compute="_compute_yield_conformity",store=True)
 
     elongation_conformity = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')],string="Conformity",compute="_compute_elongation_conformity",store=True)
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+        ],string="Conformity",compute="_compute_elongation_conformity",store=True)
 
     ts_ys_conformity = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')],string="Conformity",compute="_compute_ts_ys_conformity",store=True)
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+        ],string="Conformity",compute="_compute_ts_ys_conformity",store=True)
 
     weight_per_meter_conformity = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')],string="Conformity",compute="_compute_weight_per_meter_conformity",store=True)
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+        ],string="Conformity",compute="_compute_weight_per_meter_conformity",store=True)
 
     fracture_visible = fields.Boolean("Fracture",compute="_compute_visible")
     bend_visible = fields.Boolean("Bend Test",compute="_compute_visible")
@@ -237,6 +247,11 @@ class StainlessSteel(models.Model):
     @api.depends('weight_per_meter','eln_ref','size')
     def _compute_weight_per_meter_conformity(self):
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.weight_per_meter_conformity = 'na'
+                continue
+
             record.weight_per_meter_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','51b0c744-b113-477a-8fde-b33cf309c1e3')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','51b0c744-b113-477a-8fde-b33cf309c1e3')]).parameter_table
@@ -282,6 +297,11 @@ class StainlessSteel(models.Model):
     def _compute_uts_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.uts_conformity = 'na'
+                continue
+
             record.uts_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ad88ad89-cb0b-4f51-88a5-1d1fbf5a31fe')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ad88ad89-cb0b-4f51-88a5-1d1fbf5a31fe')]).parameter_table
@@ -342,6 +362,11 @@ class StainlessSteel(models.Model):
     def _compute_elongation_conformity(self):
        
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.elongation_conformity = 'na'
+                continue
+
             record.elongation_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f244daa5-d08f-4336-bdbf-968dfc3c37dc')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f244daa5-d08f-4336-bdbf-968dfc3c37dc')]).parameter_table
@@ -402,6 +427,11 @@ class StainlessSteel(models.Model):
     def _compute_yield_conformity(self):
     
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.yield_conformity = 'na'
+                continue
+
             record.yield_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d46dfca3-0395-4c5b-86a8-918bca950ef3')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d46dfca3-0395-4c5b-86a8-918bca950ef3')]).parameter_table
@@ -462,6 +492,11 @@ class StainlessSteel(models.Model):
     def _compute_ts_ys_conformity(self):
 
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.ts_ys_conformity = 'na'
+                continue
+
             record.ts_ys_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c7908eda-7bf1-4fd4-aae6-f89c9fdab187')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c7908eda-7bf1-4fd4-aae6-f89c9fdab187')]).parameter_table
@@ -688,13 +723,31 @@ class StainlessSteel(models.Model):
                 
             }
 
-    @api.depends('eln_ref')
+    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
-        for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
+        current_user = self.env.user
 
+        for record in self:
+            if not record.eln_ref:
+                record.sample_parameters = [(6, 0, [])]
+                continue
+
+            # Check if user is in Lerm Admin group
+            if (
+                current_user.has_group('lerm_civil.kes_admin_access_group')
+                or current_user.has_group('lerm_civil.lerm_sample_verification')
+                or current_user.has_group('lerm_civil.lerm_sample_approval')
+            ):
+                # Admin sees all parameters
+                parameter_ids = record.eln_ref.parameters_result.mapped('parameter').ids
+            else:
+                # Other users only see parameters assigned to them
+                user_param_results = record.eln_ref.parameters_result.filtered(
+                    lambda r: r.technician and r.technician.id == current_user.id
+                )
+                parameter_ids = user_param_results.mapped('parameter').ids
+
+            record.sample_parameters = [(6, 0, parameter_ids)]
 class StainlessTMTBarLine(models.Model):
     _name = 'stainless.tmt.bar.line'
     _description = 'TMT Bar Line'

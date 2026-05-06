@@ -141,7 +141,9 @@ class ShutteringPlywood(models.Model):
 
     average_length_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Length Conformity", compute="_compute_average_length_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Length Conformity", compute="_compute_average_length_conformity", store=True)
 
 
 
@@ -149,6 +151,12 @@ class ShutteringPlywood(models.Model):
     def _compute_average_length_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_length_conformity = 'na'
+                continue
+
+
             record.average_length_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3548tre-7a9c-4616-bad5-88eb1b294674')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3548tre-7a9c-4616-bad5-88eb1b294674')]).parameter_table
@@ -195,7 +203,9 @@ class ShutteringPlywood(models.Model):
 
     average_width_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Width Conformity", compute="_compute_average_width_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Width Conformity", compute="_compute_average_width_conformity", store=True)
 
 
 
@@ -203,6 +213,11 @@ class ShutteringPlywood(models.Model):
     def _compute_average_width_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_width_conformity = 'na'
+                continue
+
             record.average_width_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3548gtre-7a9c-4616-bad5-88eb1b29247u2')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3548gtre-7a9c-4616-bad5-88eb1b29247u2')]).parameter_table
@@ -249,7 +264,10 @@ class ShutteringPlywood(models.Model):
 
     average_thickness_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Thickness Conformity", compute="_compute_average_thickness_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Thickness Conformity", compute="_compute_average_thickness_conformity", store=True)
+
 
 
 
@@ -257,6 +275,11 @@ class ShutteringPlywood(models.Model):
     def _compute_average_thickness_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_thickness_conformity = 'na'
+                continue
+
             record.average_thickness_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','34587ght-7a9c-4616-bad5-88eb1b2923245t')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','34587ght-7a9c-4616-bad5-88eb1b2923245t')]).parameter_table
@@ -303,7 +326,10 @@ class ShutteringPlywood(models.Model):
 
     average_squareness_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Squareness Conformity", compute="_compute_average_squareness_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Squareness Conformity", compute="_compute_average_squareness_conformity", store=True)
+
 
 
 
@@ -311,6 +337,11 @@ class ShutteringPlywood(models.Model):
     def _compute_average_squareness_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_squareness_conformity = 'na'
+                continue
+
             record.average_squareness_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35478hgtr-7a9c-4616-bad5-88eb1b29232354l')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35478hgtr-7a9c-4616-bad5-88eb1b29232354l')]).parameter_table
@@ -357,7 +388,10 @@ class ShutteringPlywood(models.Model):
 
     average_edge_straightness_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Edge Straightness Conformity", compute="_compute_average_edge_straightness_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Edge Straightness Conformity", compute="_compute_average_edge_straightness_conformity", store=True)
+
 
 
 
@@ -365,6 +399,11 @@ class ShutteringPlywood(models.Model):
     def _compute_average_edge_straightness_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_edge_straightness_conformity = 'na'
+                continue
+
             record.average_edge_straightness_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35487kuy-7a9c-4616-bad5-88eb1b292323467t')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35487kuy-7a9c-4616-bad5-88eb1b292323467t')]).parameter_table
@@ -462,7 +501,9 @@ class ShutteringPlywood(models.Model):
 
     average_density_shuttering_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_density_shuttering_conformity", store=True)
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_average_density_shuttering_conformity", store=True)
 
 
 
@@ -470,6 +511,11 @@ class ShutteringPlywood(models.Model):
     def _compute_average_density_shuttering_conformity(self):
         
         for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_density_shuttering_conformity = 'na'
+                continue
+
             record.average_density_shuttering_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','124578gte-7a9c-4616-bad5-88eb1b29087y')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','124578gte-7a9c-4616-bad5-88eb1b29087y')]).parameter_table
@@ -623,15 +669,41 @@ class ShutteringPlywood(models.Model):
 
 
 
-    @api.depends('eln_ref')
+    # @api.depends('eln_ref')
+    # def _compute_sample_parameters(self):
+    #     # records = self.env['lerm.eln'].sudo().search([('id','=', record.eln_id.id)]).parameters_result
+    #     # print("records",records)
+    #     # self.sample_parameters = records
+    #     for record in self:
+    #         records = record.eln_ref.parameters_result.parameter.ids
+    #         record.sample_parameters = records
+    #         print("Records",records)
+
+    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
-        # records = self.env['lerm.eln'].sudo().search([('id','=', record.eln_id.id)]).parameters_result
-        # print("records",records)
-        # self.sample_parameters = records
+        current_user = self.env.user
+
         for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
+            if not record.eln_ref:
+                record.sample_parameters = [(6, 0, [])]
+                continue
+
+            # Check if user is in Lerm Admin group
+            if (
+                current_user.has_group('lerm_civil.kes_admin_access_group')
+                or current_user.has_group('lerm_civil.lerm_sample_verification')
+                or current_user.has_group('lerm_civil.lerm_sample_approval')
+            ):
+                # Admin sees all parameters
+                parameter_ids = record.eln_ref.parameters_result.mapped('parameter').ids
+            else:
+                # Other users only see parameters assigned to them
+                user_param_results = record.eln_ref.parameters_result.filtered(
+                    lambda r: r.technician and r.technician.id == current_user.id
+                )
+                parameter_ids = user_param_results.mapped('parameter').ids
+
+            record.sample_parameters = [(6, 0, parameter_ids)]
 
 
 
