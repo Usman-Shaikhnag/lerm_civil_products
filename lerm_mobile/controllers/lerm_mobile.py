@@ -1305,3 +1305,100 @@ class MobileAppController(http.Controller):
         except Exception as e:
             _logger.exception("Error rendering mobile PDF for report %s", data.get('report_name', ''))
             return {'success': False, 'error': str(e)}
+
+    @http.route('/mobile/call_button', type='json', auth='user', methods=['POST'], csrf=False, cors='*')
+    def call_button(self, **kwargs):
+        """
+        Call a button method on a record.
+        Expects: model, id, method, and optionally context.
+        """
+        data = request.params or kwargs
+        try:
+            model = data.get('model')
+            record_id = data.get('id')
+            method = data.get('method')
+            context = data.get('context', {})
+
+            if not model or not record_id or not method:
+                return {'success': False, 'error': 'Model, ID, and method are required'}
+
+            Model = request.env[model]
+            if context:
+                Model = Model.with_context(**context)
+
+            record = Model.browse(int(record_id))
+            if not record.exists():
+                return {'success': False, 'error': 'Record not found'}
+
+            # Call the method
+            result = getattr(record, method)()
+
+            # If the method returns a dict (like an action), pass it through
+            if isinstance(result, dict):
+                # For mobile webview, if an action returns a form without a res_id but with context,
+                # we need to pre-create the record so the mobile app has an ID to navigate to.
+                if result.get('type') == 'ir.actions.act_window' and not result.get('res_id') and result.get('context'):
+                    try:
+                        ctx = result['context']
+                        new_record = request.env[result['res_model']].with_context(**ctx).create({})
+                        result['res_id'] = new_record.id
+                        # Link back to the ELN if this was the open_product_based_form action
+                        if method == 'open_product_based_form' and model == 'lerm.eln':
+                            record.write({'model_id': new_record.id})
+                    except Exception as e:
+                        _logger.error("Failed to pre-create record for mobile action: %s", e)
+                return {'success': True, **result}
+
+            return {'success': True, 'message': f'{method} executed successfully'}
+
+        except Exception as e:
+            _logger.exception("Error calling button %s on %s(%s)", data.get('method', ''), data.get('model', ''), data.get('id', ''))
+            return {'success': False, 'error': str(e)}
+
+    @http.route('/mobile/allot_sample', type='json', auth='user', methods=['POST'], csrf=False, cors='*')
+    def allot_sample_mobile(self, **kwargs):
+        """
+        Mobile-specific endpoint to allot or re-allot a sample.
+        Handles the full wizard creation + execution in a single call.
+        Expects: sample_id, technician_id, is_reallocation (bool)
+        """
+        data = request.params or kwargs
+        try:
+            sample_id = data.get('sample_id')
+            technician_id = data.get('technician_id')
+            is_reallocation = data.get('is_reallocation', False)
+
+            if not sample_id or not technician_id:
+                return {'success': False, 'error': 'sample_id and technician_id are required'}
+
+            sample = request.env['lerm.srf.sample'].browse(int(sample_id))
+            if not sample.exists():
+                return {'success': False, 'error': 'Sample not found'}
+
+            ctx = dict(request.env.context)
+            ctx.update({
+                'active_ids': [sample.id],
+                'active_id': sample.id,
+                'is_reallocation': is_reallocation,
+            })
+
+            if is_reallocation:
+                # Create reallocation wizard and execute
+                wizard = request.env['sample.reallocation.wizard'].with_context(**ctx).create({
+                    'allocation_type': 'sample',
+                    'technicians': int(technician_id),
+                })
+                wizard.with_context(**ctx).reallocate_current_sample()
+            else:
+                # Create allotment wizard and execute
+                wizard = request.env['sample.allotment.wizard'].with_context(**ctx).create({
+                    'allocation_type': 'sample',
+                    'technicians': int(technician_id),
+                })
+                wizard.with_context(**ctx).allot_sample()
+
+            return {'success': True, 'message': 'Sample allotted successfully'}
+
+        except Exception as e:
+            _logger.exception("Error in mobile allot_sample for sample %s", data.get('sample_id', ''))
+            return {'success': False, 'error': str(e)}

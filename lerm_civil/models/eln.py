@@ -70,7 +70,7 @@ class ELN(models.Model):
         ('3-approved','Approved'),
         ('4-rejected','Rejected'),
         ('5-cancelled','Cancelled')
-    ], string='State',default='1-draft')
+    ], string='State',default='5-alloted')
     start_date = fields.Date(string="Start Date")
     end_date = fields.Date(string="End Date")
     remarks = fields.Text("Remarks")
@@ -126,6 +126,10 @@ class ELN(models.Model):
     quantity_consumed = fields.Integer(string="Quantity Consumed")
     quantity_balance = fields.Integer(string="Quantity Balance", compute="compute_quantity_balance", readonly=True)
     unread_eln = fields.Boolean(string="Unread ELN", default=True)
+
+    test_started = fields.Boolean(string="Test Started", default=False)
+
+
 
     def action_open_form(self):
         """Called when clicking a record in the tree view — marks it as read and opens the form."""
@@ -287,7 +291,7 @@ class ELN(models.Model):
 
     def open_product_based_form(self):
         for record in self:
-            # Sample ला target कर
+            
             
             if (
                 record.state not in ['2-confirm', '3-approved', '4-rejected']
@@ -303,6 +307,10 @@ class ELN(models.Model):
         # print("model ",model)
 
         # import wdb; wdb.set_trace()
+        if not self.test_started:
+            self.test_started = True
+            self.state = '1-draft'
+
         if self.model_id != 0:
             return {
                 'view_mode': 'form',

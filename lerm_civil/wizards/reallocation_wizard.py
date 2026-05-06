@@ -111,6 +111,12 @@ class ReallocationWizard(models.TransientModel):
         required=True,
     )
 
+    reallocation_mode = fields.Selection(
+        [('partial','Partial'), ('full','Full')],
+        default='full',
+        required=True,
+    )
+
     technicians = fields.Many2one("res.users", string="Technician")
     technician_ids = fields.Many2many('res.users', string='Technicians')
     line_ids = fields.One2many(
@@ -166,9 +172,20 @@ class ReallocationWizard(models.TransientModel):
         active_ids = self.env.context.get('active_ids') or []
         if not active_ids:
             raise UserError(_("No sample selected."))
+
+        #full reallocation    
+        sample = self.env['lerm.srf.sample'].browse(active_ids[0])
+        if self.reallocation_mode == 'full':
+            import wdb; wdb.set_trace()
+
+            eln = sample.eln_id
+            if eln and eln.ir_model and eln.model_id:
+                model_name = eln.ir_model.model
+                calc_record = self.env[model_name].sudo().browse(eln.model_id)
+                import wdb; wdb.set_trace()
         
         # 🔑 Pass context flag to indicate this is a reallocation
-        allot_wizard = self.env['sample.allotment.wizard'].with_context(
+        allot_wizard = self.env['sample.allotment.wizard'].sudo().with_context(
             is_reallocation=True  # 🔑 ADD THIS CONTEXT FLAG
         ).create({
             'allocation_type': self.allocation_type,

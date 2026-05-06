@@ -1804,10 +1804,7 @@ class CreateSampleWizard(models.TransientModel):
                     eln = ELN.create(eln_vals)
 
                 # Update sample state and link eln if not already linked
-                # if new_state == '2-alloted':
-                #     eln.write({'state': '2-confirm'})
-                # else:
-                #     eln.write({'state': '1-draft'})
+                eln.write({'state': '5-alloted'})
                 sample_vals = {'state': new_state, 'eln_id': eln.id}
                 sample.write(sample_vals)
 
