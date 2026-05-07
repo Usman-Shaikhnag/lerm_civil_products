@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="chemical_coal_form" model="ir.ui.view">
+        <field name="name">chemical.coal.form</field>
+        <field name="model">chemical.coal</field>
+        <field name="arch" type="xml">
+            <form string="Your Form View" create="false">
+                <sheet>
+                <div>
+                    <h1>
+                        <field name="name1" readonly="1" nolabel="1"/>
+                    </h1>
+                </div>
+                <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                </group>
+                    <div class="custom_table_borders">
+                      <field name="sample_parameters" nolabel="1">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </div>
+
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+
+
+                  
+
+                       <!-- moisture-->
+                <div invisible="moisture_visible == False">
+                    <h1 class="text-center">
+                        <field name="moisture_name" readonly="1" nolabel="1"/>
+                        <field name="moisture_visible" invisible="1"/>
+
+                    </h1>
+                </div>
+
+
+                <div invisible="not moisture_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Moisture</td>
+                             <td>Weight of Empty Crucible, (W1)</td>
+                             <td>Weight of Crucible and Sample (W2)</td>
+                             <td>Weight of Crucible and sample after ignition (W3)</td>
+                             <td>Moisture %</td>
+                            
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="moisture_cruciblew1_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="moisture_cruciblew2_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="moisture_cruciblew3_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="moisture_residue1"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="moisture_cruciblew1_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="moisture_cruciblew2_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="moisture_cruciblew3_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="moisture_residue2"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                            <tr>
+                             <td></td>
+                             <td><field  name="moisture_cruciblew1_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="moisture_cruciblew2_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="moisture_cruciblew3_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="moisture_residue3"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="moisture_cruciblew1_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="moisture_cruciblew2_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="moisture_cruciblew3_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="moisture_residue4"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="moisture_cruciblew1_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="moisture_cruciblew2_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="moisture_cruciblew3_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="moisture_residue5"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+               
+
+
+                <div invisible="not moisture_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average Moisture (%)</span></td>
+                          <td style="padding: 8px;"><field name="avg_moisture"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='avg_moisture_conformity'
+                               decoration-success="avg_moisture_conformity == 'pass'" 
+                               decoration-danger="avg_moisture_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='avg_moisture_nabl'
+                               decoration-success="avg_moisture_nabl == 'pass'" 
+                               decoration-danger="avg_moisture_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+                     <!-- Ash -->
+                    <div invisible="ash_visible == False">
+                    <h1 class="text-center">
+                        <field name="ash_name" readonly="1" nolabel="1"/>
+                        <field name="ash_visible" invisible="1"/>
+
+                    </h1>
+                </div>
+
+
+                <div invisible="not ash_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Ash</td>
+                             <td>Weight of dish (W1)</td>
+                             <td>Weight of dish and sample (W2)</td>
+                             <td>Weight of dish and ash (W3)</td>
+                             <td>Weight of dish after brushing out the ash and on reweighing (W4)</td>
+                             <td>Ash %</td>
+                            
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="ash_dishw1_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ash_dishw2_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ash_dishw3_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ash_dishw4_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ash_1"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="ash_dishw1_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ash_dishw2_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ash_dishw3_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ash_dishw4_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ash_2"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                            <tr>
+                             <td></td>
+                             <td><field  name="ash_dishw1_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ash_dishw2_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ash_dishw3_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ash_dishw4_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ash_3"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="ash_dishw1_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ash_dishw2_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ash_dishw3_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ash_dishw4_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ash_4"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="ash_dishw1_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ash_dishw2_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ash_dishw3_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ash_dishw4_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ash_5"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+               
+
+
+                <div invisible="not ash_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average Ash (%)</span></td>
+                          <td style="padding: 8px;"><field name="avg_ash"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='avg_ash_conformity'
+                               decoration-success="avg_ash_conformity == 'pass'" 
+                               decoration-danger="avg_ash_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='avg_ash_nabl'
+                               decoration-success="avg_ash_nabl == 'pass'" 
+                               decoration-danger="avg_ash_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+                     <!-- Volatile Matter -->
+                    <div invisible="volatile_matter_visible == False">
+                    <h1 class="text-center">
+                        <field name="volatile_matter_name" readonly="1" nolabel="1"/>
+                        <field name="volatile_matter_visible" invisible="1"/>
+
+                    </h1>
+                </div>
+
+
+                <div invisible="not volatile_matter_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Volatile Matter</td>
+                             <td>Weight of empty crucible and lid (W1)</td>
+                             <td>Weight of crucible plus lid and sample before heating (W2)</td>
+                             <td>Weight of crucible plus lid and sample after heating (W3)</td>
+                             <td>Percentage of moisture in the sample on air dried basis (W°)</td>
+                             <td>Volatile Matter %</td>
+                            
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="volatile_matter_cruciblew1_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="volatile_matter_cruciblew2_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="volatile_matter_cruciblew3_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="volatile_matter_driedw4_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="volatile_matter_1"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="volatile_matter_cruciblew1_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="volatile_matter_cruciblew2_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="volatile_matter_cruciblew3_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="volatile_matter_driedw4_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="volatile_matter_2"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                            <tr>
+                             <td></td>
+                             <td><field  name="volatile_matter_cruciblew1_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="volatile_matter_cruciblew2_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="volatile_matter_cruciblew3_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="volatile_matter_driedw4_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="volatile_matter_3"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="volatile_matter_cruciblew1_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="volatile_matter_cruciblew2_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="volatile_matter_cruciblew3_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="volatile_matter_driedw4_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="volatile_matter_4"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="volatile_matter_cruciblew1_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="volatile_matter_cruciblew2_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="volatile_matter_cruciblew3_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="volatile_matter_driedw4_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="volatile_matter_5"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+               
+
+
+                <div invisible="not volatile_matter_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average Volatile Matter (%)</span></td>
+                          <td style="padding: 8px;"><field name="avg_volatile_matter"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='avg_volatile_matter_conformity'
+                               decoration-success="avg_volatile_matter_conformity == 'pass'" 
+                               decoration-danger="avg_volatile_matter_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='avg_volatile_matter_nabl'
+                               decoration-success="avg_volatile_matter_nabl == 'pass'" 
+                               decoration-danger="avg_volatile_matter_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+
+                    <!-- Fixed Carbon -->
+                    <div invisible="carbon_visible == False">
+                    <h1 class="text-center">
+                        <field name="carbon_name" readonly="1" nolabel="1"/>
+                        <field name="carbon_visible" invisible="1"/>
+
+                    </h1>
+                </div>
+
+
+                <div invisible="not carbon_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Fixed Carbon</td>
+                             <td>Moisture % (M %)</td>
+                             <td>Volatile Matter % (VM %)</td>
+                             <td>Ash % (A %)</td>
+                             <td>% of Fixed Carbon </td>
+                            
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="carbon_mosturem_1"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="carbon_vm_1"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="carbon_asha_1"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="carbon_1"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="carbon_mosturem_2"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="carbon_vm_2"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="carbon_asha_2"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="carbon_2"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                            <tr>
+                             <td></td>
+                             <td><field  name="carbon_mosturem_3"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="carbon_vm_3"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="carbon_asha_3"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="carbon_3"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="carbon_mosturem_4"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="carbon_vm_4"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="carbon_asha_4"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="carbon_4"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="carbon_mosturem_5"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="carbon_vm_5"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="carbon_asha_5"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="carbon_5"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+               
+
+
+                <div invisible="not carbon_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average Fixed Carbon (%)</span></td>
+                          <td style="padding: 8px;"><field name="avg_carbon"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='avg_carbon_conformity'
+                               decoration-success="avg_carbon_conformity == 'pass'" 
+                               decoration-danger="avg_carbon_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='avg_carbon_nabl'
+                               decoration-success="avg_carbon_nabl == 'pass'" 
+                               decoration-danger="avg_carbon_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+                    <!-- GCV, Kcal/Kg -->
+                    <div invisible="gross_calorific_visible == False">
+                    <h1 class="text-center">
+                        <field name="gross_calorific_name" readonly="1" nolabel="1"/>
+                        <field name="gross_calorific_visible" invisible="1"/>
+
+                    </h1>
+                </div>
+
+
+                <div invisible="not gross_calorific_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>GCV</td>
+                             <td>Sample Weight (W)</td>
+                             <td>Rise in Temperature, (ΔT)</td>
+                             <td>Cotton thread Correction (E1)</td>
+                             <td>Ignition Wire (E2)</td>
+                             <td>Water Equivalent Weight (Weqv)</td>
+                             <td>GCV, Kcal/Kg</td>
+                            
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="gross_calorific_w_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="gross_calorific_t_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="gross_calorific_e1_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="gross_calorific_e2_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="gross_calorific_weqv_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="gross_calorific_gcv_1"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="gross_calorific_w_2"  colspan="1"  nolabel="1" class="blue-input" /></td>
+                             <td><field  name="gross_calorific_t_2"  colspan="1"  nolabel="1" class="blue-input" /></td>
+                             <td><field  name="gross_calorific_e1_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="gross_calorific_e2_2"  colspan="1"  nolabel="1"  class="blue-input"/></td>
+                             <td><field  name="gross_calorific_weqv_2"  colspan="1"  nolabel="1"  class="blue-input"/></td>
+                             <td><field  name="gross_calorific_gcv_2"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                            <tr>
+                             <td></td>
+                             <td><field  name="gross_calorific_w_3"  colspan="1"  nolabel="1"  class="blue-input"/></td>
+                             <td><field  name="gross_calorific_t_3"  colspan="1"  nolabel="1"  class="blue-input"/></td>
+                             <td><field  name="gross_calorific_e1_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="gross_calorific_e2_3"  colspan="1"  nolabel="1"  class="blue-input"/></td>
+                             <td><field  name="gross_calorific_weqv_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="gross_calorific_gcv_3"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="gross_calorific_w_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="gross_calorific_t_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="gross_calorific_e1_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="gross_calorific_e2_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="gross_calorific_weqv_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="gross_calorific_gcv_4"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="gross_calorific_w_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="gross_calorific_t_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="gross_calorific_e1_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="gross_calorific_e2_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="gross_calorific_weqv_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="gross_calorific_gcv_5"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+               
+
+
+                <div invisible="not gross_calorific_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average GCV, Kcal/Kg</span></td>
+                          <td style="padding: 8px;"><field name="avg_gross_calorific"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='avg_gross_calorific_conformity'
+                               decoration-success="avg_gross_calorific_conformity == 'pass'" 
+                               decoration-danger="avg_gross_calorific_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='avg_gross_calorific_nabl'
+                               decoration-success="avg_gross_calorific_nabl == 'pass'" 
+                               decoration-danger="avg_gross_calorific_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+
+                     <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+
+
+                        </page>
+
+                    </notebook>
+
+
+
+
+                   
+                 <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                    
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+    </data>
+</odoo>
