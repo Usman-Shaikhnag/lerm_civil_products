@@ -307,7 +307,7 @@ class ELN(models.Model):
         # print("model ",model)
 
         # import wdb; wdb.set_trace()
-        if not self.test_started:
+        if not self.test_started or self.state == '5-alloted':
             self.test_started = True
             self.state = '1-draft'
 

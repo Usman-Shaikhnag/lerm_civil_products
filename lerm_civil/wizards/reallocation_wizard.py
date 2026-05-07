@@ -176,13 +176,21 @@ class ReallocationWizard(models.TransientModel):
         #full reallocation    
         sample = self.env['lerm.srf.sample'].browse(active_ids[0])
         if self.reallocation_mode == 'full':
-            import wdb; wdb.set_trace()
-
             eln = sample.eln_id
-            if eln and eln.ir_model and eln.model_id:
-                model_name = eln.ir_model.model
-                calc_record = self.env[model_name].sudo().browse(eln.model_id)
-                import wdb; wdb.set_trace()
+            if eln:
+                # 1. Fetch calculation form model
+                model_record = eln.material.product_based_calculation.filtered(lambda r: r.grade.id == eln.grade_id.id)
+                model_name = model_record.ir_model.model if model_record and model_record.ir_model else False
+                
+                # 2. Delete calculation form if it exists
+                if model_name and eln.model_id:
+                    calc_record = self.env[model_name].sudo().browse(eln.model_id)
+                    if calc_record.exists():
+                        calc_record.unlink()
+                
+                # 3. Disconnect and delete ELN
+                sample.write({'eln_id': False})
+                eln.unlink()
         
         # 🔑 Pass context flag to indicate this is a reallocation
         allot_wizard = self.env['sample.allotment.wizard'].sudo().with_context(

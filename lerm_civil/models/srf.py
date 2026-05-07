@@ -558,7 +558,7 @@ class SrfForm(models.Model):
 
 
 
-
+    # ir sequence approach
     def confirm_srf(self):
         import re
         import paramiko
