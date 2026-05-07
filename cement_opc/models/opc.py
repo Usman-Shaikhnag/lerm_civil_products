@@ -1001,6 +1001,80 @@ class CementNormalConsistency(models.Model):
             rec.avg_28_days = mean(strengths_28) if strengths_28 else 0.0
 
 
+    # Drying Shrinkage
+    drying_shrinkage_name = fields.Char("Name", default="Drying Shrinkage")
+    drying_shrinkage_visible = fields.Boolean("Drying Shrinkage", compute="_compute_visible")
+
+    drying_child_lines = fields.One2many('drying.shrinkage.line','parent_id',string="Parameter" )
+
+    average1 = fields.Float("Average %",compute="_compute_average_initial_drying",digits=(16, 3))
+
+    @api.depends('drying_child_lines.initial_drying')
+    def _compute_average_initial_drying(self):
+        for record in self:
+            initial_drying_values = record.drying_child_lines.mapped('initial_drying')
+            if initial_drying_values:
+                record.average1 = sum(initial_drying_values) / len(initial_drying_values)
+            else:
+                record.average1 = 0
+
+    
+
+    drying_shrinkage_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Conformity", compute="_compute_drying_shrinkage_conformity", store=True)
+
+    @api.depends('average1','eln_ref','grade')
+    def _compute_drying_shrinkage_conformity(self):
+        
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.drying_shrinkage_conformity = 'na'
+                continue
+            record.drying_shrinkage_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','20246345-407d-4ce8-ae0d-566bd4e3b52f')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','20246345-407d-4ce8-ae0d-566bd4e3b52f')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.average1 - record.average1*mu_value
+                    upper = record.average1 + record.average1*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.drying_shrinkage_conformity = 'pass'
+                        break
+                    else:
+                        record.drying_shrinkage_conformity = 'fail'
+
+    drying_shrinkage_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_drying_shrinkage_nabl", store=True)
+
+    @api.depends('average1','eln_ref','grade')
+    def _compute_drying_shrinkage_nabl(self):
+        
+        for record in self:
+            record.drying_shrinkage_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','20246345-407d-4ce8-ae0d-566bd4e3b52f')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','20246345-407d-4ce8-ae0d-566bd4e3b52f')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                  lab_min = line.lab_min_value
+                  lab_max = line.lab_max_value
+                  mu_value = line.mu_value
+            
+                  lower = record.average1 - record.average1*mu_value
+                  upper = record.average1 + record.average1*mu_value
+                  if lower >= lab_min and upper <= lab_max:
+                      record.drying_shrinkage_nabl = 'pass'
+                      break
+                  else:
+                      record.drying_shrinkage_nabl = 'fail'
+
+
 
 
   
@@ -1019,6 +1093,8 @@ class CementNormalConsistency(models.Model):
             record.compressive_visible = False
             record.initial_setting_time_visible = False
             record.specific_gravity_visible = False
+            record.drying_shrinkage_visible = False
+
          
             
 
@@ -1053,6 +1129,9 @@ class CementNormalConsistency(models.Model):
 
                 if sample.internal_id == '63254170yt0-372f-4775-9bcb-e9dd723547htui':
                     record.specific_gravity_visible = True
+
+                if sample.internal_id == "20246345-407d-4ce8-ae0d-566bd4e3b52f":
+                    record.drying_shrinkage_visible = True
              
 
     
@@ -1065,6 +1144,16 @@ class CementNormalConsistency(models.Model):
         )
 
         for result in technician_results:
+
+
+            if result.parameter.internal_id == '20246345-407d-4ce8-ae0d-566bd4e3b52f':
+                result.result_char = round(self.average1,2)
+                result.calculated = True
+                if self.drying_shrinkage_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
 
             # Fineness of Cement by Dry Sieving
             if result.parameter.internal_id == 'a9e97cea-372f-4775-9bcb-e9dd70e6e6df':
@@ -1628,7 +1717,40 @@ class FinalTimeLine(models.Model):
             record.serial_no = index + 1
     
     
+class MechanicalDryingShrinkageLine(models.Model):
+    _name = "drying.shrinkage.line"
+    parent_id = fields.Many2one('cement.opc',string="Parent Id")
+   
+    sr_no = fields.Integer(string="Sample No.", readonly=True, copy=False, default=1)
+    original_length = fields.Float("original length measurment W1",digits=(16, 3))
+    dry_mesurment = fields.Float("Dry measurement ,W2",digits=(16, 3))
+    dry_length = fields.Float("Dry length , W3",digits=(16, 3))
+    initial_drying = fields.Float("Initial drying shrinkage",compute="_compute_initial_drying",digits=(16, 3))
 
+    @api.depends('original_length', 'dry_mesurment', 'dry_length')
+    def _compute_initial_drying(self):
+        for record in self:
+            if record.dry_length != 0:
+                record.initial_drying = ((record.original_length - record.dry_mesurment) / record.dry_length) * 100
+            else:
+                record.initial_drying = 0
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sr_no'))
+                vals['sr_no'] = max_serial_no + 1
+
+        return super(MechanicalDryingShrinkageLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.sr_no = index + 1
    
 
 class CementOPCNotes(models.Model):

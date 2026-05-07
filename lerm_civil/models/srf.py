@@ -1520,11 +1520,6 @@ class CreateSampleWizard(models.TransientModel):
         # used in Parameter mode (final technician set to be stored in ELN)
         technician_ids = fields.Many2many('res.users',string='Technicians',store=True)
 
-        allowed_technician_domain_ids = fields.Many2many(
-            'res.users',
-            compute='_compute_allowed_technician_domain_ids',
-            store=False
-        )
 
         allowed_technician_domain_ids = fields.Many2many(
             'res.users',

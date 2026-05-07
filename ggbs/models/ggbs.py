@@ -1256,6 +1256,16 @@ class GgbsMechanical(models.Model):
                             result.nabl_status = 'non-nabl'
                         continue
 
+                    if result.parameter.internal_id == '5214hgtb-c526-4092-a3a7-321478658':
+                        # result.result_char = self.slag_activity_index_28days
+                        result.calculated = True
+
+                    if result.parameter.internal_id == '5214hgtb-c526-4092-a3a7-3214855pp':
+                        # result.result_char = self.slag_activity_index_28days
+                        result.calculated = True
+
+
+
         return {
                 'view_mode': 'form',
                 'res_model': "lerm.eln",

@@ -260,6 +260,123 @@
 					</div>
 
 
+					<!-- Drying Shrinkage -->
+
+					<div t-if="data.drying_shrinkage_visible" style="margin-top:10px;page-break-before: always;">
+						<div style="text-align:center;font-size:18px">
+							Drying Shrinkage
+						</div>
+						
+						
+						<table style="margin-top:10px">
+
+							<tr cols="12">
+								<td colspan="3">Sr No.
+								</td>
+								<td colspan="3">original length measurment W1
+								</td>
+								<td colspan="3">Dry measurement ,W2
+								</td>
+								<td colspan="3">Dry length , W3
+								</td>
+								<td colspan="3">Initial drying shrinkage
+								</td>
+							</tr>
+
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.drying_child_lines" t-as="r">
+								<td colspan="3">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+                  				</td>
+								<td colspan="3">
+									<span t-esc="r['original_length']"/>
+								</td>
+								<td colspan="3">
+									<span t-esc="r['dry_mesurment']"/>
+								</td>
+								<td colspan="3">
+									<span t-esc="r['dry_length']"/>
+								</td>
+								<td colspan="3">
+									<span t-esc="r['initial_drying']"/>
+								</td>
+							</tr>
+						</table>
+						<table t-if="data.drying_shrinkage_visible"  style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Average  :
+									<![CDATA[&nbsp;]]>
+									</td>
+									<td>
+									<span t-field="data.average1" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+						
+						</table>
+						<div t-if="data.drying_shrinkage_visible"  class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<!-- <div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div> -->
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<!-- <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div> -->
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+					</div>
+
+
 					<!-- Fineness by Blaine's Air Permeability  -->
 
 					<div t-if="data.fineness_blaine_visible" style="margin-top:10px;page-break-before: always;">
@@ -1507,6 +1624,63 @@
 									
 									<td t-if="eln.conformity" style="text-align: center;">
 										<span t-field="cement.avg_density_conformity"/>
+									</td>
+								</tr>
+
+
+								<!-- Drying Shrinkage -->
+								<tr t-if="cement.drying_shrinkage_visible and (cement.drying_shrinkage_nabl == 'pass' and nabl or (cement.drying_shrinkage_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+									<td style="text-align: center;">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+										
+									</td>
+									<td style="text-align: center;">
+										
+										<span>
+											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','20246345-407d-4ce8-ae0d-566bd4e3b52f')]).parameter_name"/>
+										</span>
+										
+									</td>
+									<td style="text-align: center;">
+										<span>
+											<span t-field="cement.average1" t-options='{"widget": "float", "precision": 2}'/>
+										</span>									
+									</td>
+									
+
+										<td style="text-align: center;">
+										<span>
+											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','20246345-407d-4ce8-ae0d-566bd4e3b52f')]).unit.name"/>
+										</span>
+									</td>
+									
+									
+									
+									
+									<td style="text-align: center;">
+										<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','20246345-407d-4ce8-ae0d-566bd4e3b52f')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+											</t>
+										</t>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','20246345-407d-4ce8-ae0d-566bd4e3b52f')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+											</t>
+										</t>
+										</span>
+									</td>
+								
+									
+									<td t-if="eln.conformity" style="text-align: center;">
+										<span t-field="cement.drying_shrinkage_conformity"/>
 									</td>
 								</tr>
 
