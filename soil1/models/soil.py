@@ -2246,6 +2246,8 @@ class Soil(models.Model):
     plunger_area = fields.Float(string="Plunger Area",digits=(10,3),default=19.625)
     div_load = fields.Float(string="1 division Load",digits=(10,3),default=1.246)
 
+    condition_cbr = fields.Selection([('soaked','Soaked'),('unsoaked','Unsoaked')],string="Condition")
+
     cbr_25_s1 = fields.Float("2.5mm", compute="_compute_cbr", store=True)
     cbr_25_s2 = fields.Float("2.5mm", compute="_compute_cbr", store=True)
     cbr_25_s3 = fields.Float("2.5mm ", compute="_compute_cbr", store=True)
