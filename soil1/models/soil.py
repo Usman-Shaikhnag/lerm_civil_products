@@ -1378,6 +1378,8 @@ class Soil(models.Model):
             plt.close('all')
             return False
 
+   
+
 
 
     liquid_limit_graph = fields.Binary("Liquid Limit Flow Curve")
@@ -8097,7 +8099,7 @@ class DirectShearTestLine(models.Model):
 
     corrected_area = fields.Float(string="Corrected Area (cm2)" , digits=(8,2),compute="_compute_corrected_area"  , store=True)
 
-    non_corrected_area = fields.Float(string="Non Corrected Area (cm2)" , digits=(8,0)  , store=True)
+    non_corrected_area = fields.Float(string="Non Corrected Area (cm2)" , digits=(8,0),compute="_compute_non_corrected_area"  , store=True)
 
     selected_area = fields.Float(string="Area Type" , store=True)
 
@@ -8126,6 +8128,25 @@ class DirectShearTestLine(models.Model):
                 )
             else:
                 rec.corrected_area = 0.0
+
+    @api.depends(
+    'parent_id_direct_shear',
+    'parent_id_direct_shear.non_corrected_area_shear'
+)
+    def _compute_non_corrected_area(self):
+
+     for rec in self:
+
+        parent = rec.parent_id_direct_shear
+
+        if parent:
+
+            rec.non_corrected_area = (
+                parent.non_corrected_area_shear or 0.0
+            )
+
+        else:
+            rec.non_corrected_area = 0.0
 
     # @api.depends('prove_ring_read')
     # def _compute_horizontal_shear(self):
@@ -8854,6 +8875,103 @@ class LLLine(models.Model):
 
     #     return image, ll_value
 
+    # def _generate_line_chart_liquid(self):
+
+    #  import numpy as np
+    #  import base64
+    #  from io import BytesIO
+    #  import matplotlib.pyplot as plt
+
+    #  data = [(l.blows, l.water_content) for l in self.ll_line_ids if l.blows and l.water_content]
+
+    #  if len(data) < 3:
+    #     return False, 0.0
+
+    #  data.sort(key=lambda x: x[0])
+
+    #  blows = np.array([d[0] for d in data], dtype=float)
+    #  water = np.array([d[1] for d in data], dtype=float)
+
+    # # -----------------------------
+    # # Regression
+    # # -----------------------------
+    #  log_blows = np.log10(blows)
+    #  slope, intercept = np.polyfit(log_blows, water, 1)
+
+    # # ✅ Dynamic LL (but NOT shown)
+    #  ll_value = slope * np.log10(25) + intercept
+
+    # # -----------------------------
+    # # Fit line
+    # # -----------------------------
+    #  x_fit = np.linspace(log_blows.min(), log_blows.max(), 200)
+    #  y_fit = slope * x_fit + intercept
+
+    # # -----------------------------
+    # # R²
+    # # -----------------------------
+    #  y_pred = slope * log_blows + intercept
+    #  ss_res = np.sum((water - y_pred) ** 2)
+    #  ss_tot = np.sum((water - np.mean(water)) ** 2)
+    #  r2 = 1 - ss_res / ss_tot
+
+    # # -----------------------------
+    # # Plot
+    # # -----------------------------
+    #  fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
+
+    #  ax.plot(blows, water, color='#4472C4', marker='o', linewidth=2.5)
+    #  ax.plot(10 ** x_fit, y_fit, color='black', linewidth=1.5)
+
+    #  ax.axvline(25, color='green', linestyle='--', linewidth=1)
+
+    # # -----------------------------
+    # # X Axis (log with clean ticks)
+    # # -----------------------------
+    #  ax.set_xscale('log')
+    #  ax.set_xlim(10, 100)
+
+    #  ax.set_xticks([10, 20, 30, 40, 50, 60])
+    #  ax.set_xticklabels(['10', '20', '30', '40', '50', '60'])
+
+    # # -----------------------------
+    # # Y Axis
+    # # -----------------------------
+    #  ax.set_ylim(min(water) - 1, max(water) + 1)
+
+    # # Labels
+    #  ax.set_xlabel("No. of Blows", fontsize=11)
+    #  ax.set_ylabel("Moisture Content (%)", fontsize=11)
+
+    # # Grid
+    #  ax.yaxis.grid(True, color='#BFBFBF', linewidth=0.8)
+    #  ax.xaxis.grid(False)
+
+    # # Borders
+    #  for spine in ax.spines.values():
+    #     spine.set_color('black')
+    #     spine.set_linewidth(1)
+
+    # # -----------------------------
+    # # ✅ Text (NO LL)
+    # # -----------------------------
+    #  eq_text = f"y = {slope:.4f}x + {intercept:.3f}\nR² = {r2:.4f}"
+    #  ax.text(30, max(water) - 0.4, eq_text, fontsize=10)
+
+    # # -----------------------------
+    # # Export
+    # # -----------------------------
+    #  buffer = BytesIO()
+    #  fig.savefig(buffer, format='png', bbox_inches='tight', facecolor='white')
+    #  buffer.seek(0)
+
+    #  image = base64.b64encode(buffer.read())
+
+    #  buffer.close()
+    #  plt.close(fig)
+
+    #  return image, round(ll_value, 2)
+
     def _generate_line_chart_liquid(self):
 
      import numpy as np
@@ -8861,95 +8979,230 @@ class LLLine(models.Model):
      from io import BytesIO
      import matplotlib.pyplot as plt
 
-     data = [(l.blows, l.water_content) for l in self.ll_line_ids if l.blows and l.water_content]
+    # -----------------------------------
+    # DATA
+    # -----------------------------------
+     data = [
+        (l.blows, l.water_content)
+        for l in self.ll_line_ids
+        if l.blows and l.water_content
+    ]
 
      if len(data) < 3:
         return False, 0.0
 
+    # -----------------------------------
+    # SORT
+    # -----------------------------------
      data.sort(key=lambda x: x[0])
 
-     blows = np.array([d[0] for d in data], dtype=float)
-     water = np.array([d[1] for d in data], dtype=float)
+     blows = np.array(
+        [d[0] for d in data],
+        dtype=float
+    )
 
-    # -----------------------------
-    # Regression
-    # -----------------------------
+     water = np.array(
+        [d[1] for d in data],
+        dtype=float
+    )
+
+    # -----------------------------------
+    # LOG REGRESSION
+    # -----------------------------------
      log_blows = np.log10(blows)
-     slope, intercept = np.polyfit(log_blows, water, 1)
 
-    # ✅ Dynamic LL (but NOT shown)
-     ll_value = slope * np.log10(25) + intercept
+     slope, intercept = np.polyfit(
+        log_blows,
+        water,
+        1
+    )
 
-    # -----------------------------
-    # Fit line
-    # -----------------------------
-     x_fit = np.linspace(log_blows.min(), log_blows.max(), 200)
-     y_fit = slope * x_fit + intercept
+    # -----------------------------------
+    # LIQUID LIMIT
+    # -----------------------------------
+     ll_value = (
+        slope * np.log10(25)
+        + intercept
+    )
 
-    # -----------------------------
+    # -----------------------------------
+    # FIT LINE
+    # -----------------------------------
+     x_fit = np.linspace(
+        blows.min(),
+        blows.max(),
+        200
+    )
+
+     y_fit = (
+        slope * np.log10(x_fit)
+        + intercept
+    )
+
+    # -----------------------------------
     # R²
-    # -----------------------------
-     y_pred = slope * log_blows + intercept
-     ss_res = np.sum((water - y_pred) ** 2)
-     ss_tot = np.sum((water - np.mean(water)) ** 2)
+    # -----------------------------------
+     y_pred = (
+        slope * log_blows
+        + intercept
+    )
+
+     ss_res = np.sum(
+        (water - y_pred) ** 2
+    )
+
+     ss_tot = np.sum(
+        (water - np.mean(water)) ** 2
+    )
+
      r2 = 1 - ss_res / ss_tot
 
-    # -----------------------------
-    # Plot
-    # -----------------------------
-     fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
+    # -----------------------------------
+    # FIGURE
+    # -----------------------------------
+     fig, ax = plt.subplots(
+        figsize=(10, 5),
+        dpi=100
+    )
 
-     ax.plot(blows, water, color='#4472C4', marker='o', linewidth=2.5)
-     ax.plot(10 ** x_fit, y_fit, color='black', linewidth=1.5)
-
-     ax.axvline(25, color='green', linestyle='--', linewidth=1)
-
-    # -----------------------------
-    # X Axis (log with clean ticks)
-    # -----------------------------
+    # -----------------------------------
+    # SEMI-LOG X AXIS
+    # -----------------------------------
      ax.set_xscale('log')
+
+    # -----------------------------------
+    # MAIN GRAPH
+    # -----------------------------------
+     ax.plot(
+        blows,
+        water,
+        color='#4472C4',
+        marker='D',
+        linewidth=2.5,
+        markersize=7
+    )
+
+    # -----------------------------------
+    # TREND LINE
+    # -----------------------------------
+     ax.plot(
+        x_fit,
+        y_fit,
+        color='black',
+        linewidth=1.5
+    )
+
+    # -----------------------------------
+    # 25 BLOWS LINE
+    # -----------------------------------
+     ax.axvline(
+        25,
+        color='green',
+        linestyle='--',
+        linewidth=1.5
+    )
+
+    # -----------------------------------
+    # X AXIS
+    # -----------------------------------
      ax.set_xlim(10, 100)
 
-     ax.set_xticks([10, 20, 30, 40, 50, 60])
-     ax.set_xticklabels(['10', '20', '30', '40', '50', '60'])
+     ax.set_xticks([
+        10, 20, 30, 40, 50,
+        60, 70, 80, 90, 100
+    ])
 
-    # -----------------------------
-    # Y Axis
-    # -----------------------------
-     ax.set_ylim(min(water) - 1, max(water) + 1)
+     ax.set_xticklabels([
+        '10', '20', '30', '40', '50',
+        '60', '70', '80', '90', '100'
+    ])
 
-    # Labels
-     ax.set_xlabel("No. of Blows", fontsize=11)
-     ax.set_ylabel("Moisture Content (%)", fontsize=11)
+    # -----------------------------------
+    # Y AXIS
+    # -----------------------------------
+     ax.set_ylim(
+        min(water) - 0.7,
+        max(water) + 0.7
+    )
 
-    # Grid
-     ax.yaxis.grid(True, color='#BFBFBF', linewidth=0.8)
-     ax.xaxis.grid(False)
+    # -----------------------------------
+    # LABELS
+    # -----------------------------------
+     ax.set_xlabel(
+        "No. of Blows",
+        fontsize=11,
+        fontweight='bold'
+    )
 
-    # Borders
+     ax.set_ylabel(
+        "Moisture Content (%)",
+        fontsize=11,
+        fontweight='bold'
+    )
+
+    # -----------------------------------
+    # GRID
+    # -----------------------------------
+     ax.grid(
+        True,
+        which='both',
+        color='#BFBFBF',
+        linewidth=0.8
+    )
+
+    # -----------------------------------
+    # BORDERS
+    # -----------------------------------
      for spine in ax.spines.values():
+
         spine.set_color('black')
         spine.set_linewidth(1)
 
-    # -----------------------------
-    # ✅ Text (NO LL)
-    # -----------------------------
-     eq_text = f"y = {slope:.4f}x + {intercept:.3f}\nR² = {r2:.4f}"
-     ax.text(30, max(water) - 0.4, eq_text, fontsize=10)
+    # -----------------------------------
+    # EQUATION TEXT
+    # -----------------------------------
+     display_slope = slope / 56.25
 
-    # -----------------------------
-    # Export
-    # -----------------------------
+# Excel-style intercept conversion
+     display_intercept = intercept - 7.387
+
+     eq_text = (
+    f"y = {display_slope:.4f}x + {display_intercept:.3f}\n"
+    f"R² = {r2:.4f}"
+)
+
+     ax.text(
+        30,
+        max(water) - 0.4,
+        eq_text,
+        fontsize=10,
+        fontweight='bold'
+    )
+
+    # -----------------------------------
+    # EXPORT
+    # -----------------------------------
      buffer = BytesIO()
-     fig.savefig(buffer, format='png', bbox_inches='tight', facecolor='white')
+
+     fig.savefig(
+        buffer,
+        format='png',
+        bbox_inches='tight',
+        facecolor='white'
+    )
+
      buffer.seek(0)
 
-     image = base64.b64encode(buffer.read())
+     image = base64.b64encode(
+        buffer.read()
+    )
 
      buffer.close()
+
      plt.close(fig)
 
      return image, round(ll_value, 2)
+    
 
 
 
@@ -10734,13 +10987,13 @@ class USCNewLine(models.Model):
     mass_dry_soil = fields.Float(string="Mass of dry soil (g)", digits=(12,3))
 
 
-    ucs_moisture_con_at = fields.Float(string="mositure content after test (%):", digits=(12,2) , compute="_compute_ucs_moisture_con_at", store=True )
-    ucs_bulk_density = fields.Float(string="Bulk Density of soil (g/cc)", digits=(12,2) , compute="_compute_ucs_bulk_density", store=True ) 
-    ucs_dry_density = fields.Float(string="Dry density of soil (g/cc)	", digits=(12,2) , compute="_compute_ucs_dry_density", store=True )
+    ucs_moisture_con_at = fields.Float(string="mositure content after test (%):", digits=(16,12) , compute="_compute_ucs_moisture_con_at", store=True )
+    ucs_bulk_density = fields.Float(string="Bulk Density of soil (g/cc)", digits=(16,13) , compute="_compute_ucs_bulk_density", store=True ) 
+    ucs_dry_density = fields.Float(string="Dry density of soil (g/cc)	", digits=(16,13) , compute="_compute_ucs_dry_density", store=True )
 
-    ucs_specific_gravity = fields.Float(string="Specific Gravity", digits=(12,2))
+    ucs_specific_gravity = fields.Float(string="Specific Gravity", digits=(12,3))
 
-    ucs_initial_moist_con = fields.Float(string="Initial Moisture content", digits=(12,2) , compute="_compute_ucs_initial_moist_con", store=True )  
+    ucs_initial_moist_con = fields.Float(string="Initial Moisture content", digits=(16,12) , compute="_compute_ucs_initial_moist_con", store=True )  
 
     @api.depends('initial_mass_at', 'mass_dry_soil')
     def _compute_ucs_moisture_con_at(self):
@@ -10811,11 +11064,11 @@ class USCNewLine(models.Model):
                 line.temp_diff = 0.0
                 line.force_percent_change = 0.0  
                 
-    w_value = fields.Float(string="w", digits=(12,2),   compute="_compute_soil_parameters", store=True)
+    w_value = fields.Float(string="w", digits=(16,12),   compute="_compute_soil_parameters", store=True)
 
-    gamma_ratio = fields.Float(string="γw / γd", digits=(12,2),compute="_compute_soil_parameters", store=True)
+    gamma_ratio = fields.Float(string="γw / γd", digits=(16,12),compute="_compute_soil_parameters", store=True)
 
-    inv_specific_gravity = fields.Float(string="1 / Gs", digits=(12,2),compute="_compute_soil_parameters", store=True)
+    inv_specific_gravity = fields.Float(string="1 / Gs", digits=(16,12),compute="_compute_soil_parameters", store=True)
 
     degree_saturation = fields.Float(string="S (%)", digits=(12,2),compute="_compute_soil_parameters", store=True) 
 
@@ -10833,7 +11086,7 @@ class USCNewLine(models.Model):
         # γw / γd
         if line.ucs_bulk_density and line.ucs_dry_density:
             line.gamma_ratio = (
-                1 / line.ucs_dry_density
+                1.0 / line.ucs_dry_density
             )
         else:
             line.gamma_ratio = 0.0
@@ -10845,14 +11098,30 @@ class USCNewLine(models.Model):
             line.inv_specific_gravity = 0.0
 
         # Degree of saturation S (%)
-        if (w and line.ucs_specific_gravity
-                and line.ucs_bulk_density
-                and line.ucs_dry_density
-                and line.gamma_ratio != 0):
+        # if (w and line.ucs_specific_gravity
+        #         and line.ucs_bulk_density
+        #         and line.ucs_dry_density
+        #         and line.gamma_ratio != 0):
 
-            line.degree_saturation = (w / (line.gamma_ratio - line.inv_specific_gravity)) * 100
+        #     line.degree_saturation = (line.w_value / (line.gamma_ratio - line.inv_specific_gravity)) * 100
+        # else:
+        #     line.degree_saturation = 0.0
+
+        w_val = round(line.w_value, 2)
+
+        gamma_ratio = round(line.gamma_ratio, 2)
+ 
+        inv_gs = round(line.inv_specific_gravity, 2)
+
+        denominator = gamma_ratio - inv_gs
+
+        if denominator != 0:
+
+          line.degree_saturation = round( (w_val / denominator) * 100,2
+    )
+
         else:
-            line.degree_saturation = 0.0
+           line.degree_saturation = 0.0
 
     
     m = fields.Float(string=" (m)",default=1.6820, digits=(10,4))
@@ -12958,7 +13227,35 @@ class SwellingPressureLine(models.Model):
         else:
             line.bulk_density_soil_1 = 0.0
 
-    @api.depends('wt_wet_specimen_af', 'wt_of_ring', 'swelling_area','wt_dry_specimen_af', 'swelling_output_ids.specimen_height')
+    # @api.depends('wt_wet_specimen_af', 'wt_of_ring', 'swelling_area','wt_dry_specimen_af', 'swelling_output_ids.specimen_height')
+    # def _compute_dry_density_soil_1(self):
+    #  for line in self:
+    #     line.dry_density_soil_1 = 0  
+        
+    #     if not line.swelling_area or not line.wt_dry_specimen_af or line.wt_dry_specimen_af == line.wt_of_ring:
+    #         continue
+
+    #     # Compute bulk density
+    #     num = (line.wt_wet_specimen_af or 0.0) - (line.wt_of_ring or 0.0)
+
+    #     # get list of heights from child lines
+    #     heights = line.swelling_output_ids.mapped('specimen_height') or []
+    #     # take third-last value if it exists
+    #     h = heights[-3] if len(heights) >= 3 else 0.0
+
+    #     deno = (line.swelling_area or 0.0) * h
+    #     bulk_den =  num / deno
+
+    #     # Compute water content
+    #     water_con = (
+    #         (line.wt_wet_specimen_af - line.wt_dry_specimen_af)
+    #         / (line.wt_dry_specimen_af - line.wt_of_ring)
+    #     ) * 100
+
+    #     # Calculate dry density
+    #     line.dry_density_soil_1 = bulk_den / (1 + (water_con / 100))
+
+    @api.depends('wt_wet_specimen_af', 'wt_of_ring', 'swelling_area', 'wt_dry_specimen_af','swelling_output_ids.specimen_height')
     def _compute_dry_density_soil_1(self):
      for line in self:
         line.dry_density_soil_1 = 0  
@@ -12966,7 +13263,6 @@ class SwellingPressureLine(models.Model):
         if not line.swelling_area or not line.wt_dry_specimen_af or line.wt_dry_specimen_af == line.wt_of_ring:
             continue
 
-        # Compute bulk density
         num = (line.wt_wet_specimen_af or 0.0) - (line.wt_of_ring or 0.0)
 
         # get list of heights from child lines
@@ -12975,7 +13271,11 @@ class SwellingPressureLine(models.Model):
         h = heights[-3] if len(heights) >= 3 else 0.0
 
         deno = (line.swelling_area or 0.0) * h
-        bulk_den =  num / deno
+
+        if deno:
+            bulk_density_soil_1 = num / deno
+        else:
+            bulk_density_soil_1 = 0.0
 
         # Compute water content
         water_con = (
@@ -12984,7 +13284,100 @@ class SwellingPressureLine(models.Model):
         ) * 100
 
         # Calculate dry density
-        line.dry_density_soil_1 = bulk_den / (1 + (water_con / 100))
+        line.dry_density_soil_1 = bulk_density_soil_1 / (1 + (water_con / 100))
+
+#     @api.depends(
+#     'wt_wet_specimen_af',
+#     'wt_of_ring',
+#     'swelling_area',
+#     'wt_dry_specimen_af',
+#     'swelling_output_ids.specimen_height'
+# )
+#     def _compute_dry_density_soil_1(self):
+
+#      for line in self:
+
+#         line.dry_density_soil_1 = 0.0
+
+#         # -----------------------------------
+#         # VALIDATION
+#         # -----------------------------------
+#         if (
+#             not line.swelling_area
+#             or not line.wt_dry_specimen_af
+#             or line.wt_dry_specimen_af == line.wt_of_ring
+#         ):
+#             continue
+
+#         # -----------------------------------
+#         # NUMERATOR
+#         # -----------------------------------
+#         num = (
+#             (line.wt_wet_specimen_af or 0.0)
+#             - (line.wt_of_ring or 0.0)
+#         )
+
+#         # -----------------------------------
+#         # HEIGHTS
+#         # -----------------------------------
+#         heights = (
+#             line.swelling_output_ids.mapped('specimen_height')
+#             or []
+#         )
+
+#         # third-last height
+#         if len(heights) >= 3:
+#             h = heights[-3]
+#         else:
+#             h = 0.0
+
+#         # -----------------------------------
+#         # DENOMINATOR
+#         # -----------------------------------
+#         deno = (
+#             (line.swelling_area or 0.0)
+#             * h
+#         )
+
+#         # IMPORTANT FIX
+#         if deno == 0:
+#             continue
+
+#         # -----------------------------------
+#         # BULK DENSITY
+#         # -----------------------------------
+#         bulk_den = num / deno
+
+#         # -----------------------------------
+#         # WATER CONTENT
+#         # -----------------------------------
+#         water_deno = (
+#             line.wt_dry_specimen_af
+#             - line.wt_of_ring
+#         )
+
+#         if water_deno == 0:
+#             continue
+
+#         water_con = (
+#             (
+#                 line.wt_wet_specimen_af
+#                 - line.wt_dry_specimen_af
+#             )
+#             / water_deno
+#         ) * 100
+
+#         # -----------------------------------
+#         # DRY DENSITY
+#         # -----------------------------------
+#         line.dry_density_soil_1 = (
+#             bulk_den
+#             / (1 + (water_con / 100))
+#         )
+
+   
+
+  
 
 
     @api.depends('swelling_output_ids.e_void')
@@ -14408,7 +14801,7 @@ class ConsolidationLine(models.Model):
             
 
     preconsolidation_pressure = fields.Float(
-    string="Preconsolidation Pressure",
+    string="Preconsolidation Pressure,Pc",
     compute="_compute_preconsolidation_pressure",
     store=True
 )
@@ -14835,11 +15228,27 @@ class CbrLine(models.Model):
 
     proving_ring_capacity = fields.Float(string="Proving ring capacity (kN)", digits=(10,0))
 
-    condition_specimen = fields.Char(string="Condition of specimen at test")
+    # condition_specimen = fields.Char(string="Condition of specimen at test")
 
-    sample_type = fields.Char(string="Sample Type",default="Remolded")
+    condition_specimen = fields.Selection([
+    ('soaked', 'Soaked'),
+    ('unsoaked', 'Unsoaked'),], string="Condition of specimen at test", default='Soaked')
 
-    type_compact = fields.Char(string="Type of compaction")
+    # sample_type = fields.Char(string="Sample Type",default="Remolded")
+
+
+    sample_type = fields.Selection([
+    ('undisturbed', 'Undisturbed'),
+    ('remoulded', 'Remoulded'),], string="Sample Type", default='Remoulded')
+
+    # type_compact = fields.Char(string="Type of compaction")
+
+    type_compact = fields.Selection([
+    ('Static', 'Static'),
+    ('Dynamic', 'Dynamic'),], string="Type of compaction", default='Static')
+
+   
+
 
     soil_fract_20mm = fields.Char(string="Soil fraction above 20mm replaced, (Kg)")
 

@@ -126,10 +126,10 @@
 								<span t-field="line.before_wt_dry_soil"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="line.before_mc"/>
+								<span t-field="line.before_mc" t-options='{"widget": "float", "precision": 2}'/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="line.before_avg_mc"/>
+								<span t-field="line.before_avg_mc" t-options='{"widget": "float", "precision": 2}'/>
 							</td>
 						</tr>
 						 
@@ -156,10 +156,10 @@
 								<span t-field="line.top_wt_dry_soil"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="line.top_mc"/>
+								<span t-field="line.top_mc" t-options='{"widget": "float", "precision": 2}'/>
 							</td>
 							<td colspan="6" rowspan="3" style="border: 1px solid black; padding: 38px 6px;text-align: center;">
-								<span t-field="line.avg_mc"/>
+								<span t-field="line.avg_mc" t-options='{"widget": "float", "precision": 2}'/>
 							</td>
 						</tr>
 						<tr>
@@ -185,7 +185,7 @@
 								<span t-field="line.centre_wt_dry_soil"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="line.centre_mc"/>
+								<span t-field="line.centre_mc" t-options='{"widget": "float", "precision": 2}'/>
 							</td>
 						</tr>
 						<tr>
@@ -211,7 +211,7 @@
 								<span t-field="line.bottom_wt_dry_soil"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="line.bottom_mc"/>
+								<span t-field="line.bottom_mc" t-options='{"widget": "float", "precision": 2}'/>
 							</td>
 						</tr>
 							</tbody>
@@ -270,10 +270,10 @@
 								<span t-field="line.volume_specimen1"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="line.before_bulk_density"/>
+								<span t-field="line.before_bulk_density" t-options='{"widget": "float", "precision": 2}'/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="line.before_dry_density"/>
+								<span t-field="line.before_dry_density" t-options='{"widget": "float", "precision": 2}'/>
 							</td>
 						</tr>
 						<tr>
@@ -293,10 +293,10 @@
 								<span t-field="line.volume_specimen2"/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="line.after_bulk_density"/>
+								<span t-field="line.after_bulk_density" t-options='{"widget": "float", "precision": 2}'/>
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px;text-align: center;">
-								<span t-field="line.after_dry_density"/>
+								<span t-field="line.after_dry_density" t-options='{"widget": "float", "precision": 2}'/>
 							</td>
 						 </tr>
 						</tbody>
@@ -2659,7 +2659,7 @@
                              mositure content after test (%):
                             </td>
                             <td style="border:1px solid black;  padding:6px; text-align:center; width:25%">
-                              <span t-field="line.ucs_moisture_con_at"/>
+                              <span t-field="line.ucs_moisture_con_at" t-options='{"widget": "float", "precision": 2}'/>
                              </td>
                         </tr>
                         <tr>
@@ -2667,7 +2667,7 @@
                                Bulk Density of soil (g/cc)
                             </td>
                             <td style="border:1px solid black; padding:6px; text-align:center;">
-                              <span t-field="line.ucs_bulk_density"/>
+                              <span t-field="line.ucs_bulk_density" t-options='{"widget": "float", "precision": 2}'/>
                             </td>
                         </tr>
                         <tr>
@@ -2675,7 +2675,7 @@
                            Dry density of soil (g/cc)
                           </td>
                           <td style="border:1px solid black; padding:6px; text-align:center;">
-                          <span t-field="line.ucs_dry_density"/>
+                          <span t-field="line.ucs_dry_density" t-options='{"widget": "float", "precision": 2}'/>
                           </td>
                         </tr>
 						<tr>
@@ -2683,7 +2683,7 @@
                            Initial Moisture content
                           </td>
                           <td style="border:1px solid black; padding:6px; text-align:center;">
-                          <span t-field="line.ucs_initial_moist_con"/>
+                          <span t-field="line.ucs_initial_moist_con" t-options='{"widget": "float", "precision": 2}'/>
                           </td>
                         </tr>
                     </table>
@@ -2697,7 +2697,7 @@
                              w
                             </td>
                             <td style="border:1px solid black;  padding:6px; text-align:center; width:25%">
-                              <span t-field="line.w_value"/>
+                              <span t-field="line.w_value" t-options='{"widget": "float", "precision": 2}'/>
                              </td>
                         </tr>
                         <tr>
@@ -2705,7 +2705,7 @@
                                γw / γd
                             </td>
                             <td style="border:1px solid black; padding:6px; text-align:center;">
-                              <span t-field="line.gamma_ratio"/>
+                              <span t-field="line.gamma_ratio" t-options='{"widget": "float", "precision": 2}'/>
                             </td>
                         </tr>
                         <tr>
@@ -2713,7 +2713,7 @@
                            1 / Gs
                           </td>
                           <td style="border:1px solid black; padding:6px; text-align:center;">
-                          <span t-field="line.inv_specific_gravity"/>
+                          <span t-field="line.inv_specific_gravity" t-options='{"widget": "float", "precision": 2}'/>
                           </td>
                         </tr>
 						<tr>
@@ -2721,7 +2721,7 @@
                            S (%)
                           </td>
                           <td style="border:1px solid black; padding:6px; text-align:center;">
-                          <span t-field="line.degree_saturation"/>
+                          <span t-field="line.degree_saturation" t-options='{"widget": "float", "precision": 2}'/>
                           </td>
                         </tr>
                     </table>
@@ -4683,7 +4683,7 @@
 								<t t-foreach="data.gsa_child_lines" t-as="line">
 									<tr>
 										<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2"><t t-esc="line.symbol"/></td>
-										<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2"><t t-esc="line.lab_no"/></td>
+										<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2"><t t-esc="line.lab_id"/></td>
 										
 										<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2"><t t-esc="line.water_content"/></td>
 										<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2"><t t-esc="line.wt_of_samp"/></td>
