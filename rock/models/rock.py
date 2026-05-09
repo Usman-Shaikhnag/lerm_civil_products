@@ -2320,8 +2320,23 @@ class MechanicalElasticityLine(models.Model):
     
    
 
-    stress = fields.Float(string="Stress (mPa)",digits=(16, 2))
+    stress = fields.Float(string="Stress (MPa)",digits=(16, 2))
     strain = fields.Float(string="Strain",digits=(16, 6))
+
+    stress_range = fields.Float(
+    string="Stress Range (MPa)",
+    digits=(16, 2)
+)
+
+    modulus_e = fields.Float(
+    string="Modulus, E (GPa)",
+    digits=(16, 2)
+)
+
+    poissons_ratio = fields.Float(
+    string="Poissons Ratio, μ",
+    digits=(16, 2)
+)
     
 
 
@@ -2406,6 +2421,29 @@ class ElasticityLine(models.Model):
                 line.bh_id = review_line.source        # BH ID / Location
                 line.depth = review_line.depth         # Depth (m)
 
+    rock_line_id = fields.Many2one(
+    'mechanical.rock.line',
+    compute="_compute_rock_line",
+    store=True
+)
+
+    @api.depends('lab_id')
+    def _compute_rock_line(self):
+
+     for rec in self:
+
+        rec.rock_line_id = False
+
+        if rec.lab_id:
+
+            rock_line = self.env[
+                'mechanical.rock.line'
+            ].search([
+                ('lab_id', '=', rec.lab_id)
+            ], limit=1)
+
+            rec.rock_line_id = rock_line.id 
+    
     elasticity_child_lines = fields.One2many('mechanical.elasticity.line','parent_id_elasticity',string="Parameter")
 
     elasticity_graph = fields.Binary("Stress-Strain Graph")
@@ -2437,35 +2475,145 @@ class ElasticityLine(models.Model):
 
             record.elasticity_graph = base64.b64encode(buffer.getvalue())
 
-    lithologic_dic = fields.Char(string="Lithologic description of rock")
+    room_temp_elasticity = fields.Float(
+        related="rock_line_id.room_temp",
+        string="Room Temperature",
+        store=True
+    )
 
-    avg_dia = fields.Float(string="Average Diameter (D) mm",)
-    avg_height = fields.Float(string="Average Height (H) mm",)
-    hd = fields.Float(string="H/D",digits=(16, 2),store=True)
+    relative_humidity_elasticity = fields.Float(
+        related="rock_line_id.relative_humidity",
+        string="Relative humidity",
+        store=True
+    )
 
-    bulk_density = fields.Float(string="Bulk Density g/cc",digits=(16, 2),store=True)
-    sat_density = fields.Float(string="Sat Density g/cc",digits=(16, 2),store=True)
-    dry_density = fields.Float(string="Dry Density g/cc",digits=(16, 2),store=True,)
-    water_absorption = fields.Float(string="Water Absorption %",digits=(16, 2))
+    lithological = fields.Char(
+        related="rock_line_id.lithological",
+        string="Lithologic description of rock",
+        store=True
+    )
 
-    room_temp_elasticity = fields.Float(string="Room Temperature")
-    relative_humidity_elasticity = fields.Float(string="Relative humidity",digits=(16, 2))
-    
+    avg_dia = fields.Float(
+        related="rock_line_id.avg_dia",
+        string="Average Diameter (D)",
+        store=True
+    )
+
+    avg_height = fields.Float(
+        related="rock_line_id.avg_height",
+        string="Average Height (H)",
+        store=True
+    )
+
+    hd = fields.Float(
+        related="rock_line_id.hd",
+        string="H/D",
+        store=True
+    )
+
+    bulk_density = fields.Float(
+        related="rock_line_id.bulk_density",
+        string="Bulk Density",
+        store=True
+    )
+
+    sat_density = fields.Float(
+        related="rock_line_id.sat_density",
+        string="Sat Density",
+        store=True
+    )
+
+    dry_density = fields.Float(
+        related="rock_line_id.dry_density",
+        string="Dry Density",
+        store=True
+    )
+
+    water_absorption = fields.Float(
+        related="rock_line_id.water_absorption",
+        string="Water Absorption",
+        store=True
+    )
+
+    sp_gravity = fields.Float(
+        related="rock_line_id.sp_gravity",
+        string="Sp. Gravity",
+        store=True
+    )
+
+    porosity = fields.Float(
+        related="rock_line_id.porosity",
+        string="Porosity",
+        store=True
+    )
+
+    moisture_content = fields.Float(
+        related="rock_line_id.moisture_content",
+        string="Water Content",
+        store=True
+    )
+
+    duration_of_test = fields.Float(
+        related="rock_line_id.duration_of_test",
+        string="Duration of test",
+        store=True
+    )
+
+    stress_rate = fields.Float(
+        related="rock_line_id.stress_rate",
+        string="Stress Rate",
+        store=True
+    )
+
+    comp_strength1 = fields.Float(
+        related="rock_line_id.comp_strength1",
+        string="Compressive Strength qc",
+        store=True
+    )
+
+    comp_strength2 = fields.Float(
+        related="rock_line_id.comp_strength2",
+        string="Compressive Strength qc at H/D=2",
+        store=True
+    )
+
+    mode_of_failure = fields.Char(
+        related="rock_line_id.mode_of_failure",
+        string="Mode of failure",
+        store=True
+    )
+
     machine_used = fields.Char(string="Type of Sample & Condition")
 
+    # lithologic_dic = fields.Char(string="Lithologic description of rock")
 
-    sp_gravity = fields.Float(string="Sp. Gravity",digits=(16, 2),store=True)
+    # avg_dia = fields.Float(string="Average Diameter (D) mm",)
+    # avg_height = fields.Float(string="Average Height (H) mm",)
+    # hd = fields.Float(string="H/D",digits=(16, 2),store=True)
+
+    # bulk_density = fields.Float(string="Bulk Density g/cc",digits=(16, 2),store=True)
+    # sat_density = fields.Float(string="Sat Density g/cc",digits=(16, 2),store=True)
+    # dry_density = fields.Float(string="Dry Density g/cc",digits=(16, 2),store=True,)
+    # water_absorption = fields.Float(string="Water Absorption %",digits=(16, 2))
+
+    # room_temp_elasticity = fields.Float(string="Room Temperature")
+    # relative_humidity_elasticity = fields.Float(string="Relative humidity",digits=(16, 2))
     
-    porosity = fields.Float(string="Porosity",digits=(16, 2),store=True)
-    water_content = fields.Float(string="Water Content",digits=(16, 2))
-
-    duration_of_test = fields.Float(string="Duration of the test (Sec)",digits=(16, 2))
-    stress_rate = fields.Float(string="Stress Rate",digits=(16, 2),store=True)
-    mode_of_failure = fields.Char(string="Mode of failure",digits=(16, 2))
+    # machine_used = fields.Char(string="Type of Sample & Condition")
 
 
-    comp_strength1 = fields.Float(string="Compressive Strength qc ",digits=(16, 2),store=True)
-    comp_strength2 = fields.Float(string="Compressive Strength  qc at H/D=2",digits=(16, 2),store=True)
+    # sp_gravity = fields.Float(string="Sp. Gravity",digits=(16, 2),store=True)
+    
+    # porosity = fields.Float(string="Porosity",digits=(16, 2),store=True)
+    # water_content = fields.Float(string="Water Content",digits=(16, 2))
+
+    # duration_of_test = fields.Float(string="Duration of the test (Sec)",digits=(16, 2))
+    # stress_rate = fields.Float(string="Stress Rate",digits=(16, 2),store=True)
+    # mode_of_failure = fields.Char(string="Mode of failure",digits=(16, 2))
+
+
+    # comp_strength1 = fields.Float(string="Compressive Strength qc ",digits=(16, 2),store=True)
+    # comp_strength2 = fields.Float(string="Compressive Strength  qc at H/D=2",digits=(16, 2),store=True)
     
 
     

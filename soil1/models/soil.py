@@ -14942,88 +14942,226 @@ class ConsolidationLine(models.Model):
 
     from math import log10
 
+#     @api.depends(
+#     'consolidation_output_ids.e_void',
+#     'consolidation_output_ids.applied_pressure',
+#     'consolidation_output_ids.cylces',
+# )
+#     def _compute_pc_casagrande(self):
+#      for rec in self:
+#         rec.pc_casagrande = 0.0
+#         rec.pc_x = 0.0
+#         rec.pc_y = 0.0
+
+#         # --- LOADING CURVE ONLY ---
+#         pts = [
+#             (log10(l.applied_pressure), l.e_void)
+#             for l in rec.consolidation_output_ids
+#             if l.cylces == '1st Cycle Loading'
+#             and l.applied_pressure
+#             and l.e_void
+#             and l.applied_pressure > 0
+#         ]
+
+#         if len(pts) < 4:
+#             continue
+
+#         # sort by pressure
+#         pts.sort(key=lambda x: x[0])
+
+#         # --- STEP 1: MAX CURVATURE POINT (numerical) ---
+#         max_k = 0
+#         idx = None
+
+#         for i in range(1, len(pts) - 1):
+#             x1, y1 = pts[i - 1]
+#             x2, y2 = pts[i]
+#             x3, y3 = pts[i + 1]
+
+#             k = abs(
+#                 (x2 - x1) * (y3 - y1) -
+#                 (y2 - y1) * (x3 - x1)
+#             )
+
+#             if k > max_k:
+#                 max_k = k
+#                 idx = i
+
+#         if idx is None:
+#             continue
+
+#         xm, ym = pts[idx]
+
+#         # --- STEP 2: TANGENT AT MAX CURVATURE ---
+#         x1, y1 = pts[idx - 1]
+#         x3, y3 = pts[idx + 1]
+
+#         m_t = (y3 - y1) / (x3 - x1)
+#         c_t = ym - m_t * xm
+
+#         # --- STEP 3: HORIZONTAL LINE ---
+#         m_h = 0
+#         c_h = ym
+
+#         # --- STEP 4: BISECTOR ---
+#         m_b = (m_t + m_h) / 2
+#         c_b = ym - m_b * xm
+
+#         # --- STEP 5: NORMAL CONSOLIDATION LINE (last two points) ---
+#         x_nc1, y_nc1 = pts[-2]
+#         x_nc2, y_nc2 = pts[-1]
+
+#         m_nc = (y_nc2 - y_nc1) / (x_nc2 - x_nc1)
+#         c_nc = y_nc2 - m_nc * x_nc2
+
+#         # --- STEP 6: INTERSECTION (BISECTOR × NC LINE) ---
+#         if m_b == m_nc:
+#             continue
+
+#         x_pc = (c_nc - c_b) / (m_b - m_nc)
+#         y_pc = m_b * x_pc + c_b
+
+#         rec.pc_x = 10 ** x_pc
+#         rec.pc_y = y_pc
+#         rec.pc_casagrande = rec.pc_x
+
     @api.depends(
-    'consolidation_output_ids.e_void',
-    'consolidation_output_ids.applied_pressure',
-    'consolidation_output_ids.cylces',
-)
+        'consolidation_output_ids.e_void',
+        'consolidation_output_ids.applied_pressure',
+        'consolidation_output_ids.cylces',
+    )
     def _compute_pc_casagrande(self):
-     for rec in self:
-        rec.pc_casagrande = 0.0
-        rec.pc_x = 0.0
-        rec.pc_y = 0.0
 
-        # --- LOADING CURVE ONLY ---
-        pts = [
-            (log10(l.applied_pressure), l.e_void)
-            for l in rec.consolidation_output_ids
-            if l.cylces == '1st Cycle Loading'
-            and l.applied_pressure
-            and l.e_void
-            and l.applied_pressure > 0
-        ]
+        for rec in self:
 
-        if len(pts) < 4:
-            continue
+            rec.pc_casagrande = 0.0
+            rec.pc_x = 0.0
+            rec.pc_y = 0.0
+           
+            rec.preconsolidation_pressure_x = 0.0
 
-        # sort by pressure
-        pts.sort(key=lambda x: x[0])
+            # -----------------------------------
+            # LOADING CURVE ONLY
+            # -----------------------------------
+            pts = [
+                (
+                    log10(l.applied_pressure),
+                    l.e_void
+                )
+                for l in rec.consolidation_output_ids
+                if (
+                    l.cylces == '1st Cycle Loading'
+                    and l.applied_pressure
+                    and l.e_void
+                    and l.applied_pressure > 0
+                )
+            ]
 
-        # --- STEP 1: MAX CURVATURE POINT (numerical) ---
-        max_k = 0
-        idx = None
+            if len(pts) < 4:
+                continue
 
-        for i in range(1, len(pts) - 1):
-            x1, y1 = pts[i - 1]
-            x2, y2 = pts[i]
-            x3, y3 = pts[i + 1]
+            # -----------------------------------
+            # SORT BY PRESSURE
+            # -----------------------------------
+            pts.sort(key=lambda x: x[0])
 
-            k = abs(
-                (x2 - x1) * (y3 - y1) -
-                (y2 - y1) * (x3 - x1)
+            # -----------------------------------
+            # MAX CURVATURE
+            # -----------------------------------
+            max_k = 0
+            idx = None
+
+            for i in range(1, len(pts) - 1):
+
+                x1, y1 = pts[i - 1]
+                x2, y2 = pts[i]
+                x3, y3 = pts[i + 1]
+
+                k = abs(
+                    ((x2 - x1) * (y3 - y1))
+                    -
+                    ((y2 - y1) * (x3 - x1))
+                )
+
+                if k > max_k:
+                    max_k = k
+                    idx = i
+
+            if idx is None:
+                continue
+
+            xm, ym = pts[idx]
+
+            # -----------------------------------
+            # TANGENT LINE
+            # -----------------------------------
+            x1, y1 = pts[idx - 1]
+            x3, y3 = pts[idx + 1]
+
+            if (x3 - x1) == 0:
+                continue
+
+            m_t = (y3 - y1) / (x3 - x1)
+            c_t = ym - (m_t * xm)
+
+            # -----------------------------------
+            # HORIZONTAL LINE
+            # -----------------------------------
+            m_h = 0
+            c_h = ym
+
+            # -----------------------------------
+            # BISECTOR
+            # -----------------------------------
+            m_b = (m_t + m_h) / 2
+            c_b = ym - (m_b * xm)
+
+            # -----------------------------------
+            # NORMAL CONSOLIDATION LINE
+            # -----------------------------------
+            x_nc1, y_nc1 = pts[-2]
+            x_nc2, y_nc2 = pts[-1]
+
+            if (x_nc2 - x_nc1) == 0:
+                continue
+
+            m_nc = (
+                (y_nc2 - y_nc1)
+                /
+                (x_nc2 - x_nc1)
             )
 
-            if k > max_k:
-                max_k = k
-                idx = i
+            c_nc = y_nc2 - (m_nc * x_nc2)
 
-        if idx is None:
-            continue
+            # -----------------------------------
+            # INTERSECTION
+            # -----------------------------------
+            if m_b == m_nc:
+                continue
 
-        xm, ym = pts[idx]
+            x_pc = (
+                (c_nc - c_b)
+                /
+                (m_b - m_nc)
+            )
 
-        # --- STEP 2: TANGENT AT MAX CURVATURE ---
-        x1, y1 = pts[idx - 1]
-        x3, y3 = pts[idx + 1]
+            y_pc = (m_b * x_pc) + c_b
 
-        m_t = (y3 - y1) / (x3 - x1)
-        c_t = ym - m_t * xm
+            # -----------------------------------
+            # FINAL VALUES
+            # -----------------------------------
 
-        # --- STEP 3: HORIZONTAL LINE ---
-        m_h = 0
-        c_h = ym
+            # kg/cm²
+            rec.pc_x = 10 ** x_pc
 
-        # --- STEP 4: BISECTOR ---
-        m_b = (m_t + m_h) / 2
-        c_b = ym - m_b * xm
+            rec.preconsolidation_pressure_x = rec.pc_x
 
-        # --- STEP 5: NORMAL CONSOLIDATION LINE (last two points) ---
-        x_nc1, y_nc1 = pts[-2]
-        x_nc2, y_nc2 = pts[-1]
+            rec.pc_y = y_pc
 
-        m_nc = (y_nc2 - y_nc1) / (x_nc2 - x_nc1)
-        c_nc = y_nc2 - m_nc * x_nc2
+            # kg/cm²
+            rec.pc_casagrande = rec.pc_x
 
-        # --- STEP 6: INTERSECTION (BISECTOR × NC LINE) ---
-        if m_b == m_nc:
-            continue
-
-        x_pc = (c_nc - c_b) / (m_b - m_nc)
-        y_pc = m_b * x_pc + c_b
-
-        rec.pc_x = 10 ** x_pc
-        rec.pc_y = y_pc
-        rec.pc_casagrande = rec.pc_x
+            
 
     pc_final = fields.Float(string="PC", compute="_compute_pc_final")
 
@@ -15219,6 +15357,20 @@ class CbrLine(models.Model):
 
     cbr_2_5_mm = fields.Float(string="CBR At Penetration Of 2.5 mm",compute="_compute_cbr_values") 
     cbr_5_mm = fields.Float(string="CBR At Penetration Of 5 mm",compute="_compute_cbr_values")
+
+    final_cbr = fields.Float(
+    string="Final CBR",
+    compute="_compute_final_cbr",
+    store=True
+)
+
+    @api.depends('cbr_2_5_mm', 'cbr_5_mm')
+    def _compute_final_cbr(self):
+     for rec in self:
+        rec.final_cbr = max(
+            rec.cbr_2_5_mm or 0.0,
+            rec.cbr_5_mm or 0.0
+        )
 
     m = fields.Float(string="Applied force (kN) (m)",default=0.0133, digits=(10,4))
     c = fields.Float(string="Applied force (kN) (c)",default=0.0404 , digits=(10,4))

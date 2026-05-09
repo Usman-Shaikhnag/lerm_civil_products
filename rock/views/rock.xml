@@ -148,7 +148,7 @@
                                 <field name='water_absorption'/>
                                 <field name='porosity'/>
                                 <field name='load_ucs'   class="blue-input" decoration-info="load_ucs != 0"/>
-                                <field name='load'/>
+                                <field name='load' digits="[16,2]"/>
                                 <field name='comp_strength1' digits="[16,2]"/>
                                 <field name='comp_strength2' digits="[16,2]"/>
 
@@ -1048,8 +1048,8 @@
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                                     <tbody>
                                         <tr>
-                                            <td><label for="lithologic_dic"></label></td>
-                                            <td><field name="lithologic_dic" class="blue-input" /></td>
+                                            <td><label for="lithological"></label></td>
+                                            <td><field name="lithological" class="blue-input" /></td>
                                         </tr>
                                         
                                     </tbody>
@@ -1059,7 +1059,7 @@
                                     <tbody>
                                         <tr>
                                             <td><label for="machine_used"></label></td>
-                                            <td><field name="machine_used"  /></td>
+                                            <td><field name="machine_used"  class="blue-input"/></td>
                                         </tr>
                                         
                                     </tbody>
@@ -1071,7 +1071,7 @@
                                     <tbody>
                                         <tr>
                                             <td><label for="avg_dia"></label></td>
-                                            <td><field name="avg_dia" class="blue-input" /></td>
+                                            <td><field name="avg_dia" class="blue-input" digits="[16,2]"/></td>
                                         </tr>
                                         
                                     </tbody>
@@ -1081,7 +1081,7 @@
                                     <tbody>
                                         <tr>
                                             <td><label for="avg_height"></label></td>
-                                            <td><field name="avg_height"  /></td>
+                                            <td><field name="avg_height"  digits="[16,2]"/></td>
                                         </tr>
                                         
                                     </tbody>
@@ -1094,7 +1094,7 @@
                                     <tbody>
                                         <tr>
                                             <td><label for="hd"></label></td>
-                                            <td><field name="hd" class="blue-input" /></td>
+                                            <td><field name="hd" class="blue-input" digits="[16,2]"/></td>
                                         </tr>
                                         
                                     </tbody>
@@ -1104,7 +1104,7 @@
                                     <tbody>
                                         <tr>
                                             <td><label for="bulk_density"></label></td>
-                                            <td><field name="bulk_density" /></td>
+                                            <td><field name="bulk_density" digits="[16,2]"/></td>
                                         </tr>
                                         
                                     </tbody>
@@ -1116,7 +1116,7 @@
                                     <tbody>
                                         <tr>
                                             <td><label for="sat_density"></label></td>
-                                            <td><field name="sat_density" class="blue-input" /></td>
+                                            <td><field name="sat_density" class="blue-input" digits="[16,2]"/></td>
                                         </tr>
                                         
                                     </tbody>
@@ -1126,7 +1126,7 @@
                                     <tbody>
                                         <tr>
                                             <td><label for="dry_density"></label></td>
-                                            <td><field name="dry_density" class="blue-input" /></td>
+                                            <td><field name="dry_density" class="blue-input" digits="[16,2]"/></td>
                                         </tr>
                                         
                                     </tbody>
@@ -1141,7 +1141,7 @@
                                     <tbody>
                                         <tr>
                                             <td><label for="water_absorption"></label></td>
-                                            <td><field name="water_absorption" class="blue-input" /></td>
+                                            <td><field name="water_absorption" class="blue-input" digits="[16,2]"/></td>
                                         </tr>
                                         
                                     </tbody>
@@ -1151,7 +1151,7 @@
                                     <tbody>
                                         <tr>
                                             <td><label for="sp_gravity"></label></td>
-                                            <td><field name="sp_gravity" class="blue-input" /></td>
+                                            <td><field name="sp_gravity" class="blue-input" digits="[16,2]"/></td>
                                         </tr>
                                         
                                     </tbody>
@@ -1165,7 +1165,7 @@
                                     <tbody>
                                         <tr>
                                             <td><label for="porosity"></label></td>
-                                            <td><field name="porosity" class="blue-input" /></td>
+                                            <td><field name="porosity" class="blue-input" digits="[16,2]"/></td>
                                         </tr>
                                         
                                     </tbody>
@@ -1174,8 +1174,8 @@
                                 <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                                     <tbody>
                                         <tr>
-                                            <td><label for="water_content"></label></td>
-                                            <td><field name="water_content" class="blue-input" /></td>
+                                            <td><label for="moisture_content"></label></td>
+                                            <td><field name="moisture_content" class="blue-input" digits="[16,2]"/></td>
                                         </tr>
                                         
                                     </tbody>
@@ -1214,7 +1214,7 @@
                                     <tbody>
                                         <tr>
                                             <td><label for="comp_strength1"></label></td>
-                                            <td><field name="comp_strength1" class="blue-input" /></td>
+                                            <td><field name="comp_strength1" class="blue-input" digits="[16,2]"/></td>
                                         </tr>
                                         
                                     </tbody>
@@ -1224,7 +1224,7 @@
                                     <tbody>
                                         <tr>
                                             <td><label for="comp_strength2"></label></td>
-                                            <td><field name="comp_strength2" class="blue-input" /></td>
+                                            <td><field name="comp_strength2" class="blue-input" digits="[16,2]"/></td>
                                         </tr>
                                         
                                     </tbody>
@@ -1268,6 +1268,11 @@
                                 <field name='sr_no'/>
                                 <field name='stress'  class="blue-input" decoration-info="stress != 0"/>
                                 <field name='strain' class="blue-input" decoration-info="strain != 0"/>
+                                <field name="stress_range" class="blue-input" decoration-info="stress_range != 0"/>
+
+                               <field name="modulus_e" class="blue-input" decoration-info="modulus_e != 0"/>
+
+                              <field name="poissons_ratio" class="blue-input" decoration-info="poissons_ratio != 0"/>
                                
                             </tree>
                         </field>
