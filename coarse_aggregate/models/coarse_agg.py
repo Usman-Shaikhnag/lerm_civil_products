@@ -197,37 +197,9 @@ class CoarseAggregateMechanical(models.Model):
             record.size_id = record.eln_ref.size_id.id
 
 
-    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
-    def _compute_sample_parameters(self):
-        for record in self:
-            if not record.eln_ref:
-                record.sample_parameters = [(6, 0, [])]
-                continue
-
-            current_user = self.env.user
-
-            # ✅ Discipline group can see all parameters
-            if current_user.has_group('lerm_civil.lerm_discipline_group'):
-                parameter_ids = record.eln_ref.parameters_result.mapped('parameter').ids
-            else:
-                # 🔒 Only parameters assigned to current technician
-                user_param_results = record.eln_ref.parameters_result.filtered(
-                    lambda r: r.technician and r.technician.id == current_user.id
-                )
-                parameter_ids = user_param_results.mapped('parameter').ids
-
-            record.sample_parameters = [(6, 0, parameter_ids)]
-
+    
         
-    def get_all_fields(self):
-        record = self.env['mechanical.coarse.aggregate'].browse(self.ids[0])
-        field_values = {}
-        for field_name, field in record._fields.items():
-            field_value = record[field_name]
-            field_values[field_name] = field_value
-
-        return field_values
-
+    
 
 
 
@@ -2852,24 +2824,30 @@ class CoarseAggregateMechanical(models.Model):
    
     @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
+        current_user = self.env.user
+
         for record in self:
             if not record.eln_ref:
                 record.sample_parameters = [(6, 0, [])]
                 continue
 
-            current_user = self.env.user
-
-            # ✅ Discipline group can see all parameters
-            if current_user.has_group('lerm_civil.lerm_discipline_group'):
+            # Check if user is in Lerm Admin group
+            if (
+                current_user.has_group('lerm_civil.kes_admin_access_group')
+                or current_user.has_group('lerm_civil.lerm_sample_verification')
+                or current_user.has_group('lerm_civil.lerm_sample_approval')
+            ):
+                # Admin sees all parameters
                 parameter_ids = record.eln_ref.parameters_result.mapped('parameter').ids
             else:
-                # 🔒 Only parameters assigned to current technician
+                # Other users only see parameters assigned to them
                 user_param_results = record.eln_ref.parameters_result.filtered(
                     lambda r: r.technician and r.technician.id == current_user.id
                 )
                 parameter_ids = user_param_results.mapped('parameter').ids
 
             record.sample_parameters = [(6, 0, parameter_ids)]
+
 
 
 

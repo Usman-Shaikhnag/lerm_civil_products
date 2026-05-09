@@ -84,6 +84,7 @@
                             <field name="contact_person" domain="[('id', 'in', contact_site_ids)]" readonly="state == '2-confirm'"/>
                             <field name="site_address"/>
                             <field name="client_refrence" readonly="state == '2-confirm'"  string="Reference (letter/W.O./Mail)"/>
+                            <field name="letter_date"/>
                             <field name="date_editable" invisible='1'/>
                             <field name="active" invisible='1'/>
                             <field name="name_work" domain="[('id', 'in', name_works)]"  readonly="state == '2-confirm'"/>
@@ -260,7 +261,7 @@
                             <field name="grade_ids" invisible='1'/>
                             <field name="conformity"/>
                             <field name="lab_location"/>
-                            <field name="location_name"/>
+                            <field name="location_name" force_save="1"/>
                             <field name="sample" invisible="is_update != True" readonly="1"/>
                         </group>
                         <group style="width:50%">
@@ -272,7 +273,8 @@
                             <field name="size_id" domain="[('id', 'in', size_ids)]" options="{'no_create': True}"/>
                             <field name="sample_qty" readonly="is_update == True" string="No. of ULR Required"/>
                             <field name="sample_received_date" readonly="1"/>
-                            <field name="location" readonly="1"/>
+                            <field name="report_due_date" required="1" readonly="casting" force_save="1"/>
+                            <field name="location" readonly="1" force_save="1"/>
                             <field name="casting"/>
                             <field name="grade_required"/>
                             <field name="group_ids" invisible='1'/>

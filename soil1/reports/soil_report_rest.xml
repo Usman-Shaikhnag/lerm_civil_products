@@ -1,0 +1,3065 @@
+<odoo>
+  <template id="soil_report_rest">
+    <t t-call="web.html_container">	  
+        <div class="page">
+
+            <t t-foreach="data" t-as="o">
+                <div class="article page">
+                    <t t-call="soil1.report_gsa_template">
+                        <t t-set="o" t-value="o"/> 
+                        <t t-set="logo_base64" t-value="logo_base64"/>
+                        <t t-set="eln_obj" t-value="eln.filtered(lambda x: x.sample_id.id == o.sample_id.id)"/>
+                    </t>
+                </div>
+            </t>
+        
+            <t t-foreach="data" t-as="o">
+                <div class="article page">
+                    <t t-call="soil1.report_cbr_template">
+                        <t t-set="o" t-value="o"/> 
+                        <t t-set="logo_base64" t-value="logo_base64"/>
+                        <t t-set="eln_obj" t-value="eln.filtered(lambda x: x.sample_id.id == o.sample_id.id)"/>
+                    </t>
+                </div>
+            </t>
+
+            <t t-foreach="data" t-as="o">
+                <div class="article page">
+                    <t t-call="soil1.report_proctor_template">
+                        <t t-set="o" t-value="o"/> 
+                        <t t-set="logo_base64" t-value="logo_base64"/>
+                        <t t-set="eln_obj" t-value="eln.filtered(lambda x: x.sample_id.id == o.sample_id.id)"/>
+                    </t>
+                </div>
+            </t>
+
+            <t t-foreach="data" t-as="o">
+                <div class="article page">
+                    <t t-call="soil1.report_triaxial_template">
+                        <t t-set="o" t-value="o"/> 
+                        <t t-set="logo_base64" t-value="logo_base64"/>
+                        <t t-set="eln_obj" t-value="eln.filtered(lambda x: x.sample_id.id == o.sample_id.id)"/>
+                    </t>
+                </div>
+            </t>
+
+            <t t-foreach="data" t-as="o">
+                <div class="article page">
+                    <t t-call="soil1.report_swelling_template">
+                        <t t-set="o" t-value="o"/> 
+                        <t t-set="logo_base64" t-value="logo_base64"/>
+                        <t t-set="eln_obj" t-value="eln.filtered(lambda x: x.sample_id.id == o.sample_id.id)"/>
+                    </t>
+                </div>
+            </t>
+
+            <t t-foreach="data" t-as="o">
+                <div class="article page">
+                    <t t-call="soil1.report_direct_template">
+                        <t t-set="o" t-value="o"/> 
+                        <t t-set="logo_base64" t-value="logo_base64"/>
+                        <t t-set="eln_obj" t-value="eln.filtered(lambda x: x.sample_id.id == o.sample_id.id)"/>
+                    </t>
+                </div>
+            </t>
+
+
+            <t t-foreach="data" t-as="o">
+                <div class="article page">
+                    <t t-call="soil1.report_consoilidation_template">
+                        <t t-set="o" t-value="o"/> 
+                        <t t-set="logo_base64" t-value="logo_base64"/>
+                        <t t-set="eln_obj" t-value="eln.filtered(lambda x: x.sample_id.id == o.sample_id.id)"/>
+                    </t>
+                </div>
+            </t>
+        </div>
+	</t>
+  </template>
+
+
+  <template id="report_cbr_template">
+    <t t-call="web.html_container">
+
+                <t t-foreach="data" t-as="o">
+
+                    <!-- Only checked CBR lines -->
+                    <t t-foreach="o.cbr_ids.filtered(lambda c: c.is_checked)" t-as="cbr">
+
+						<div style="width:100%;">
+							<table style="width:100%; border-collapse:collapse; border:1px solid #000; font-size:12px;">
+								<tr>
+
+									<!-- LOGO -->
+									<!-- <td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
+										<img t-if="logo_base64"
+											t-att-src="'data:image/png;base64,%s' % logo_base64"
+											style="height:50px;"/>
+									</td> -->
+									<!-- <t t-if="data.image">
+										<td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
+											<img t-att-src="'data:image/png;base64,%s' % data.image.decode('utf-8')"
+												style="width: 100%; height: auto; max-height: 900px; object-fit: contain;"/>
+										</td>
+									</t> -->
+
+									<td style="width:20%; text-align:center; vertical-align:middle; padding: 5px;">
+                                       <img t-att-src="'/lerm_civil/static/src/img/genstru_logo.png'"
+                                        style="height:75px;"/>
+                                    </td>
+
+									<!-- COMPANY HEADER -->
+									<td style="width:77%; border:1px solid #000; padding:0;">
+										<table style="width:100%; border-collapse:collapse; font-size:12px;">
+
+											<tr>
+												<td colspan="6" style="border:1px solid #000; padding:4px;">
+													<b>GENSTRU CONSULTANTS PVT. LTD</b>
+												</td>
+											</tr>
+
+											<!-- FIRST REVIEW ONLY FOR HEADER -->
+										
+											<tr>
+												<td style="border:1px solid #000; padding:3px;"><b>Doc. Name</b></td>
+												<td colspan="5" style="padding-left: 10px;">Laboratory test results -<span t-field="o.doc_name1"/></td>
+
+											</tr>
+
+											<tr>
+												<td style="border:1px solid #000; padding:3px;"><b>Doc. No.</b></td>
+												<td colspan="3" style="border:1px solid #000; padding:3px;">
+													<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')], limit=1).report_format_no"/>
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Issue No</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')], limit=1).issue_no"/>
+												</td>
+											</tr>
+
+											<!-- <tr>
+												<td style="border:1px solid #000; padding:3px;"><b>Rev. No</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')], limit=1).issue_date.strftime('%d/%m/%y')"/>
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Rev. Dt</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')], limit=1).revision_no"/>
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Issue Dt</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')], limit=1).revision_date.strftime('%d/%m/%y')"/>
+												</td>
+											</tr> -->
+
+											<t t-set="param"
+											t-value="env['lerm.parameter.master']
+											.search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')], limit=1)"/>
+
+											<tr>
+												<td style="border:1px solid #000; padding:3px;"><b>Rev. No</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+													<span t-esc="param.revision_no or ''"/>
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Rev. Dt</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+													<span t-esc="param.revision_date.strftime('%d/%m/%y') if param and param.revision_date else ''"/>
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Issue Dt</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+													<span t-esc="param.issue_date.strftime('%d/%m/%y') if param and param.issue_date else ''"/>
+												</td>
+											</tr>
+
+										</table>
+									</td>
+
+								</tr>
+							</table>
+						</div>
+
+						<table style="width:100%; border-collapse:collapse; font-size:13px;">
+
+							<tr>
+								<td colspan="6" style="border:1px solid black; padding:6px; text-align:center; font-weight:bold;">
+								CBR
+								</td>
+
+								
+							</tr>
+
+							<!-- <tr>
+								<td colspan="6" style="border:1px solid black; padding:6px; text-align:center; font-weight:bold;">
+									LAB ID :
+									<span t-esc="cbr.lab_id"/>
+								</td>
+
+								
+							</tr> -->
+
+							<tr>
+								<td colspan="4" style="border:1px solid black; padding:4px;">
+									<b>Test Method/Reference Code :</b> 
+									<span>
+									
+										<t t-if="not eln.grade_id">
+											<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')],limit=1).test_method.test_method"/>
+										</t>
+
+									
+										<t t-if="eln.grade_id">
+											<t t-set="printed" t-value="False"/>
+
+											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')],limit=1).parameter_table" t-as="parameter">
+												<t t-if="parameter.grade and parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+													<t t-set="printed" t-value="True"/>
+												</t>
+											</t>
+
+										
+											<t t-if="printed == False">
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')],limit=1).test_method.test_method"/>
+											</t>
+										</t>
+									</span>
+								</td>
+								<td colspan="1" style="border:1px solid black; padding:4px;text-align:left;">
+									<b>Annexure- II to ULR</b>
+									
+								</td>
+								<td colspan="1" style="border:1px solid black; padding:4px;">
+									
+									<span style=" padding:2px 6px;">
+										<span t-field="o.sample_id.ulr_no"/>
+									</span>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="6" style="border:1px solid black; padding:4px;">
+									<b>Project Name :</b>
+									<span t-field="o.srf_id.name_work"/>
+								</td>
+							</tr>
+						
+                          
+
+							<tr>
+								<td colspan="6" style="border:1px solid black; padding:4px;">
+									<b>Name &amp; Address of Customer :</b>
+									
+										<!-- <span t-field="o.srf_id.customer.name"/> -->
+										<span t-field="o.srf_id.customer.street"/>
+										<span t-field="o.srf_id.customer.street2"/>
+										<span t-field="o.srf_id.customer.city"/>
+										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
+										<span t-field="o.srf_id.customer.state_id"/> ,
+										<span t-field="o.srf_id.customer.country_id"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="6" style="border:1px solid black; padding:4px;">
+									<b>Report No.:   </b><span t-field="o.sample_id.kes_no"/> </td>
+								
+							</tr>
+
+							
+
+							<tr>
+								<td  style="border:1px solid black; padding:4px;">
+								<b>Location/BH ID :</b>
+									
+								</td>
+								<td  style="border:1px solid black; padding:4px; text-align:center;">
+								<t t-esc="cbr.bh_id"/>
+								</td>
+								
+								<td style="border:1px solid black; padding:4px;">
+									<b>Proving ring capacity (kN)</b>
+								</td>
+								<td style="border:1px solid black; padding:4px; text-align:center;">
+									<t t-esc="cbr.proving_ring_capacity"/>
+								</td>
+								<td style="border:1px solid black; padding:4px;">
+									<b>Test No.</b>
+								</td>
+								<td style="border:1px solid black; padding:4px; text-align:center;">
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:4px;">
+									<b>Date Sample Received</b>
+								</td>
+								<td style="border:1px solid black; padding:4px;text-align:center;">
+								<span t-field="o.sample_id.sample_received_date"/>
+								</td>
+								<td style="border:1px solid black; padding:4px;">
+									<b>Start date of testing</b>
+								</td>
+								<td style="border:1px solid black; padding:4px;text-align:center;">
+									<span t-field="cbr.start_date" />
+								
+								</td>
+								<td style="border:1px solid black; padding:4px;">
+									<b>End date of testing</b>
+								</td>
+								<td style="border:1px solid black; padding:4px;text-align:center;">
+									<span t-field="cbr.end_date" style="margin-right:10px;"/>
+									
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="1" style="border:1px solid black; padding:4px;">
+									<b>Room Temperature (°C)</b>
+								</td>
+								<td  colspan="1"  style="border:1px solid black; padding:4px; text-align:center;">
+									<t t-esc="int((cbr.room_temp or 0) + 0.5)"/>
+								</td>
+								<td colspan="1" style="border:1px solid black; padding:4px;">
+									<b>Relative humidity (%)</b>
+								</td>
+								<td colspan="1" style="border:1px solid black; padding:4px; text-align:center;">
+									<t t-esc="cbr.humidity"/>
+								</td>
+								<td colspan="1" style="border:1px solid black; padding:4px;">
+									<b>Load Gauge Constant</b>
+								</td>
+								<td colspan="1" style="border:1px solid black; padding:4px; text-align:center;">
+									[0.0133 x Deflection] + 0.0331
+								</td>
+							</tr>
+
+							<tr>
+								<td  style="border:1px solid black; padding:4px;">
+									<b>Condition of specimen at test :</b>
+								</td>
+								<td  style="border:1px solid black; padding:4px;text-align:center;">
+								  <t t-esc="cbr.condition_specimen"/>
+									
+								</td>
+								<td style="border:1px solid black; padding:4px;">
+									<b>Sample Type</b>
+								</td>
+								<td style="border:1px solid black; padding:4px;text-align:center;">
+								   <t t-esc="cbr.sample_type"/>
+								</td>
+								<td style="border:1px solid black; padding:4px;">
+									<b>Type of compaction</b>
+								</td>
+								<td style="border:1px solid black; padding:4px;text-align:center;">
+								   <t t-esc="cbr.type_compact"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:4px;">
+									<b>Soil fraction above 20mm replaced, (Kg)</b>
+								</td>
+								<td style="border:1px solid black; padding:4px;text-align:center;">
+								   <t t-esc="cbr.soil_fract_20mm"/>
+								</td>
+								<td style="border:1px solid black; padding:4px; ">
+								   <b>Period of soaking(days)</b>
+								</td>
+								<td style="border:1px solid black; padding:4px; text-align:center;">
+								   <t t-esc="cbr.period_soaked"/>
+								</td>
+								<td style="border:1px solid black; padding:4px;">
+									<b>Surcharge weight (kg)</b>
+								</td>
+								<td style="border:1px solid black; padding:4px;text-align:center;">
+								   <t t-esc="cbr.surcharge_weight"/>
+								</td>
+							
+							</tr>
+
+							<tr>
+								<td  style="border:1px solid black; padding:4px;">
+									<b>Initial height of specimen, h (mm)</b>
+								</td>
+								<td style="border:1px solid black; padding:4px; text-align:center;">
+								     <t t-esc="cbr.initial_height"/>
+								</td>
+								<td  style="border:1px solid black; padding:4px;">
+									<b>Initial dial gauge reading, ds (mm)</b>
+								</td>
+								<td style="border:1px solid black; padding:4px; text-align:center;">
+								   <t t-esc="cbr.initial_dial_guage"/>
+								</td>
+								<td  style="border:1px solid black; padding:4px;">
+									<b>Final dial gauge reading, df (mm)</b>
+								</td>
+								<td style="border:1px solid black; padding:4px; text-align:center;">
+								  <t t-esc="cbr.final_dial_guage"/>
+								</td>
+							</tr>
+
+
+
+							<tr colspan="6">
+								<th colspan="2" style="border:1px solid black; padding:6px;"></th>
+								<th style="border:1px solid black; padding:6px;text-align:center;"><b>Avg. water content</b></th>
+								<th style="border:1px solid black; padding:6px;text-align:center;"><b>Volume of the specimen (cc)</b></th>
+								<th style="border:1px solid black; padding:6px;text-align:center;"><b>Bulk density (g/cc)</b></th>
+								<th style="border:1px solid black; padding:6px;text-align:center;"><b>Dry density (g/cc)</b></th>
+							</tr>
+
+							<tr colspan="6">
+								<td  colspan="2" style="border:1px solid black; padding:6px;text-align:center;"><b>Before soaking</b></td>
+								<td style="border:1px solid black; padding:6px; text-align:center;">
+									<t t-esc="cbr.before_avg_mc" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td style="border:1px solid black; padding:6px; text-align:center;"><t t-esc="cbr.volume_specimen1"/></td>
+								<td style="border:1px solid black; padding:6px; text-align:center;">
+									<t t-esc="cbr.before_bulk_density" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td style="border:1px solid black; padding:6px; text-align:center;">
+									<t t-esc="cbr.before_dry_density" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+
+							<tr >
+								<td colspan="2" style="border:1px solid black; padding:6px;text-align:center;"><b>After test</b></td>
+								<td colspan="1" style="border:1px solid black; padding:6px; text-align:center;">
+									<t t-esc="cbr.avg_mc" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td colspan="1" style="border:1px solid black; padding:6px; text-align:center;"><t t-esc="cbr.volume_specimen2" t-options='{"widget": "float", "precision": 2}'/></td>
+								<td colspan="1" style="border:1px solid black; padding:6px; text-align:center;">
+									<t t-esc="cbr.after_bulk_density" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td colspan="1" style="border:1px solid black; padding:6px; text-align:center;">
+									<t t-esc="cbr.after_dry_density"  t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+
+							<tr>
+								<th colspan="2" style="border:1px solid black; padding:6px;text-align:center;"><b>Penetration in (mm)</b></th>
+								<th colspan="2" style="border:1px solid black; padding:6px;text-align:center;"><b>Dial Gauge Reading</b></th>
+								<th style="border:1px solid black; padding:6px;text-align:center;"><b>Number of Division</b></th>
+								<th style="border:1px solid black; padding:6px;text-align:center;"><b>Average Load in kN</b></th>
+							</tr>
+
+							<t t-foreach="cbr.soil_table" t-as="line">
+								<tr>
+									<td colspan="2" style="border:1px solid black; padding:6px; text-align:center;">
+										<t t-esc="line.penetration"/>
+									</td>
+									<td colspan="2" style="border:1px solid black; padding:6px; text-align:center;">
+										<t t-esc="line.proving_reading"/>
+									</td>
+									<td style="border:1px solid black; padding:6px; text-align:center;">
+										<t t-esc="line.no_division"/>
+									</td>
+									<td style="border:1px solid black; padding:6px; text-align:center;">
+										<t t-esc="line.avg_load"/>
+									</td>
+								</tr>
+							</t>
+
+							
+
+							
+
+
+
+						</table>
+
+						<t t-if="cbr.cbr_graph">
+							<div style="text-align:center; margin-top:10px; width: 80%;">
+								<img t-att-src="'data:image/png;base64,%s' % cbr.cbr_graph.decode('utf-8')"
+									style="width: 100%; height: auto; max-height: 750px; object-fit: contain;"/>
+							</div>
+						<tr>
+						<td  style="border:1px solid black; padding:6px;"><b>CBR at Penetration of 2.5mm= </b></td>
+						<td  style="border:1px solid black; padding:6px; text-align:center;">
+							<t t-esc="cbr.cbr_2_5_mm" t-options='{"widget": "float", "precision": 2}'/>
+						</td>
+						<br></br>
+						<td  style="border:1px solid black; padding:6px;"><b>CBR at Penetration of 5mm= </b></td>
+						<td  style="border:1px solid black; padding:6px; text-align:center;">
+							<t t-esc="cbr.cbr_5_mm" t-options='{"widget": "float", "precision": 2}'/>
+						</td>
+							
+							</tr>
+                    </t>
+					
+
+
+                    </t>
+
+
+        </t>
+    </t>
+</template>
+
+
+<template id="report_gsa_template">
+    <t t-call="web.html_container">
+
+		<t t-foreach="data" t-as="o">
+
+			<t t-foreach="o.gsa_child_lines.filtered(lambda c: c.is_checked)" t-as="gsa">
+
+			
+			<div style="width:100%;">
+				<table style="width:100%; border-collapse:collapse; border:1px solid #000; font-size:12px;">
+					<tr>
+
+						<!-- LOGO -->
+						<!-- <td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
+							<img t-if="logo_base64"
+								t-att-src="'data:image/png;base64,%s' % logo_base64"
+								style="height:50px;"/>
+						</td> -->
+
+						<!-- <t t-if="data.image">
+							<td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
+								<img t-att-src="'data:image/png;base64,%s' % data.image.decode('utf-8')"
+									style="width: 100%; height: auto; max-height: 900px; object-fit: contain;"/>
+							</td>
+						</t> -->
+
+						<td style="width:20%; text-align:center; vertical-align:middle; padding: 5px;">
+							<img t-att-src="'/lerm_civil/static/src/img/genstru_logo.png'"
+							style="height:75px;"/>
+						</td>
+
+						<!-- COMPANY HEADER -->
+						<td style="width:77%; border:1px solid #000; padding:0;">
+							<table style="width:100%; border-collapse:collapse; font-size:12px;">
+
+								<tr>
+									<td colspan="6" style="border:1px solid #000; padding:4px;">
+										<b>GENSTRU CONSULTANTS PVT. LTD</b>
+									</td>
+								</tr>
+
+								<!-- FIRST REVIEW ONLY FOR HEADER -->
+							
+								<tr>
+									<td style="border:1px solid #000; padding:3px;"><b>Doc. Name</b></td>
+									<td colspan="5" style="padding-left: 10px;">Laboratory test results -<span t-field="o.doc_name"/></td>
+
+								</tr>
+
+								<tr>
+									<td style="border:1px solid #000; padding:3px;"><b>Doc. No.</b></td>
+									<td colspan="3" style="border:1px solid #000; padding:3px;">
+										<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','tyer4fgr-5c56-475b-9arty156878965uut')], limit=1).report_format_no"/>
+									</td>
+
+									<td style="border:1px solid #000; padding:3px;"><b>Issue No</b></td>
+									<td style="border:1px solid #000; padding:3px;">
+									<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','tyer4fgr-5c56-475b-9arty156878965uut')], limit=1).issue_no"/>
+									</td>
+								</tr>
+
+								<t t-set="param"
+								t-value="env['lerm.parameter.master']
+								.search([('internal_id','=','tyer4fgr-5c56-475b-9arty156878965uut')], limit=1)"/>
+
+								<tr>
+									<td style="border:1px solid #000; padding:3px;"><b>Rev. No</b></td>
+									<td style="border:1px solid #000; padding:3px;">
+										<span t-esc="param.revision_no or ''"/>
+									</td>
+
+									<td style="border:1px solid #000; padding:3px;"><b>Rev. Dt</b></td>
+									<td style="border:1px solid #000; padding:3px;">
+										<span t-esc="param.revision_date.strftime('%d/%m/%y') if param and param.revision_date else ''"/>
+									</td>
+
+									<td style="border:1px solid #000; padding:3px;"><b>Issue Dt</b></td>
+									<td style="border:1px solid #000; padding:3px;">
+										<span t-esc="param.issue_date.strftime('%d/%m/%y') if param and param.issue_date else ''"/>
+									</td>
+								</tr>
+
+							</table>
+						</td>
+
+					</tr>
+				</table>
+			</div>
+
+			<table class="table table-sm" style="width: 100%; border-collapse: collapse;" border="1">
+					<tr>
+					
+					</tr>
+
+					<tr>
+						<td colspan="3" style="border:1px solid black; padding:4px;">
+							<b>Test Method/Reference Code :</b> 
+						</td>
+						<td colspan="3" style="border:1px solid black; padding:4px;">
+							<span>
+							
+							<t t-if="not eln.grade_id">
+								<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','tyer4fgr-5c56-475b-9arty156878965uut')],limit=1).test_method.test_method"/>
+							</t>
+
+						
+							<t t-if="eln.grade_id">
+								<t t-set="printed" t-value="False"/>
+
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','tyer4fgr-5c56-475b-9arty156878965uut')],limit=1).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade and parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+										<t t-set="printed" t-value="True"/>
+									</t>
+								</t>
+
+							
+								<t t-if="printed == False">
+									<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','tyer4fgr-5c56-475b-9arty156878965uut')],limit=1).test_method.test_method"/>
+								</t>
+							</t>
+						</span>
+						</td>
+						<td colspan="3" style="border:1px solid black; padding:4px;text-align:right;">
+							<b>Annexure- II to ULR</b>
+						</td>
+						<td colspan="3" style="border:1px solid black; padding:4px;">
+							<span style=" padding:2px 6px;">
+							<span t-field="o.sample_id.ulr_no"/>
+							</span>
+						</td>
+					</tr>
+
+					<tr>
+						<td colspan="3"><strong>Project Name</strong>: </td>
+						<td colspan="9" style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
+
+					
+					</tr>
+
+					<tr>
+					<td colspan="3" style="width:20%;"><strong>Name &amp; Address of Customer</strong>: </td>
+					<td colspan="9" style="padding-left: 10px;width:25%;">
+								<!-- <span t-field="o.srf_id.customer.name"/> -->
+								<span t-field="o.srf_id.customer.street"/>
+								<span t-field="o.srf_id.customer.street2"/>
+								<span t-field="o.srf_id.customer.city"/>
+								<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
+								<span t-field="o.srf_id.customer.state_id"/> ,
+								<span t-field="o.srf_id.customer.country_id"/>
+						</td>
+						</tr>
+
+						<tr>
+						<td colspan="3" style="border:1px solid black; padding:4px;">
+							<b>Report No.:   </b> </td>
+
+						<td colspan="9" style="border:1px solid black; padding:4px;"><span t-field="o.sample_id.kes_no"/> </td>
+						
+					</tr>
+
+				
+					
+
+					
+				
+
+					<tr>
+						
+						
+						
+						<td colspan="3"><strong>Location</strong>: </td>
+						<td colspan="9">
+							Permanent facility
+						</td>
+						</tr>
+				
+					
+				
+					
+					
+					<tr>
+
+						<td colspan="3"><strong>Date Sample Received</strong>:</td>
+						<td colspan="3">
+							<span t-field="o.sample_id.sample_received_date"/>
+						</td>
+						<td ><strong>Start date of testing:</strong>: </td>
+						<td >
+							<span t-field="gsa.start_date" style="margin-right:10px;"/>
+						</td>
+							<td ><strong>End date of testing:</strong>: </td>
+						<td >
+							<span t-field="gsa.end_date" style="margin-right:10px;"/>
+							
+						</td>
+					</tr>
+					
+					<!-- <tr>
+
+						<td colspan="3"><strong>Type of Sample &amp; Condition</strong>: </td>
+						<td colspan="3"><span t-field="o.material.name"/></td>
+
+					<td colspan="3"><strong>Completion Date</strong>: </td>
+						<td colspan="3">
+						<span t-field="o.end_date" />
+						</td>
+				</tr> -->
+
+			
+
+				
+
+					
+				</table>
+
+			<table border="1" width="100%" style="border-collapse: collapse;margin-top:30px;">
+				<div style="border:1px solid black; padding:6px; text-align:center; font-weight:bold;margin-top:10px;">
+						Grain Size Analysis
+				</div>
+
+					<thead>
+						<tr>
+							<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Symbol</th>
+							<!-- <th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;width: 7%;">Lab ID</th> -->
+							<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">BH ID</th>
+							<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Sample Depth (m)</th>
+							<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Sample Details</th>
+							<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Weight of total sample (gm)</th>
+							<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Water Content (%)</th>
+							<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Room temp. °C</th>
+							<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Relative humidity (%)</th>
+							<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Specific gravity</th>
+							
+							<th colspan="4" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Result of Fraction Passing</th>
+							
+							<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">IS Classification of Soil</th>
+						</tr>
+
+						<tr>
+							<th style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Gravel (%)</th>
+							<th style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Sand (%)</th>
+							<th style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Silt (%)</th>
+							<th style="border: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold;">Clay (%)</th>
+						</tr>
+					</thead>
+
+				<tbody>
+
+				<t t-foreach="data.gsa_child_lines" t-as="line">
+						<tr>
+							<td style=" text-align: center;"><t t-esc="line.symbol_html"/></td>
+							<!-- <td style="width: 7%; "><t t-esc="line.lab_no"/></td> -->
+							<td style=" text-align: center;"><t t-esc="line.bh_id"/></td>
+							<td style=" text-align: center;"><t t-esc="line.sample_depth"/></td>
+							<td style=" text-align: center;"><t t-esc="line.sample_details"/></td>
+
+							<td style=" text-align: center;" colspan="1">
+								<t t-esc="int(line.wt_of_samp1 or 0)"/>
+							</td>
+
+							<!-- <td><t t-esc="line.wt_of_samp1"/></td> -->
+							<td style=" text-align: center;"><t t-esc="line.water_content"/></td>
+
+							<td style=" text-align: center;" colspan="1">
+								<t t-esc="int(line.temp or 0)"/>
+							</td>
+
+							<!-- <td><t t-esc="line.temp"/></td> -->
+
+							<td style=" text-align: center;" colspan="1">
+								<t t-esc="int(line.humidity or 0)"/>
+							</td>
+
+							<!-- <td><t t-esc="line.humidity"/></td> -->
+
+							<td style=" text-align: center;">
+								<t t-esc="'%.2f' % (line.specific_gravity or 0)"/>
+							</td>
+							<!-- <td><t t-esc="line.specific_gravity"/></td> -->
+
+							<td style=" text-align: center;" colspan="1">
+								<t t-esc="int(line.gravel or 0)"/>
+							</td>
+							
+							<!-- <td colspan="1"><t t-esc="line.gravel"/></td> -->
+
+							<td style=" text-align: center;" colspan="1">
+								<t t-esc="int(line.sand or 0)"/>
+							</td>
+
+							<!-- <td colspan="1"><t t-esc="line.sand"/></td> -->
+
+							<td style=" text-align: center;" colspan="1">
+								<t t-esc="int(line.silt or 0)"/>
+							</td>
+
+							<!-- <td colspan="1"><t t-esc="line.silt"/></td> -->
+
+							<td style=" text-align: center;" colspan="1">
+								<t t-esc="int(line.silt_clay or 0)"/>
+							</td>
+
+							<!-- <td colspan="1"><t t-esc="line.silt_clay"/></td> -->
+							<td style=" text-align: center;">
+								<t t-esc="dict(line._fields['soil_classification'].selection).get(line.soil_classification)"/>
+							</td>
+							
+						</tr>
+					</t>
+
+				
+				
+				</tbody>
+
+			</table>
+
+
+			
+
+				<t t-if="data.gsa_graph_image">
+				<div style="text-align:center; margin-top:20px; width: 100%;">
+					<img t-att-src="'data:image/png;base64,%s' % data.gsa_graph_image.decode('utf-8')"
+							style="width: 100%; height: auto; max-height: 900px; object-fit: contain;"/>
+				</div>
+			</t>
+
+			<table class="table table-bordered" style="width: 100%; border: 1px solid black; margin-top: 20px;">
+				<tr>
+					<td style="width: 50%; border: 1px solid black;">
+						<div><strong>D<sub>10</sub> :</strong>  (Particle size at 10% percentage of finer)</div>
+						<div><strong>D<sub>30</sub> :</strong>  (Particle size at 30% percentage of finer)</div>
+						<div><strong>D<sub>60</sub> :</strong> (Particle size at 60% percentage of finer)</div>
+					</td>
+					<td style="width: 50%; border: 1px solid black;">
+						<div><strong>C<sub>u</sub> :</strong> (D<sub>60</sub> / D<sub>10</sub>) = </div>
+						<div><strong>C<sub>c</sub> :</strong> (D<sub>30</sub><sup>2</sup>) / (D<sub>60</sub> x D<sub>10</sub>) = </div>
+					</td>
+				</tr>
+			</table>
+
+			<table border="1" width="100%" style="border-collapse: collapse; text-align: center; font-size: 10px;">
+				<thead>
+					<tr>
+						<th style="padding: 5px; background-color: #f2f2f2;text-align: center;">BH ID</th>
+						<th style="padding: 5px; background-color: #f2f2f2;text-align: center;">Sample Depth (m)</th>
+						
+						<th style="padding: 5px; background-color: #f2f2f2;text-align: center;">D<sub>10</sub></th>
+						<th style="padding: 5px; background-color: #f2f2f2;text-align: center;">D<sub>30</sub></th>
+						<th style="padding: 5px; background-color: #f2f2f2;text-align: center;">D<sub>60</sub></th>
+						<th style="padding: 5px; background-color: #f2f2f2;text-align: center;">C<sub>u</sub></th>
+						<th style="padding: 5px; background-color: #f2f2f2;text-align: center;">C<sub>c</sub></th>
+						
+						<th style="padding: 5px; background-color: #f2f2f2;text-align: center;">Meniscus correction, Cm</th>
+						<th style="padding: 5px; background-color: #f2f2f2;text-align: center;">Dispersing agent correction, x</th>
+						<th style="padding: 5px; background-color: #f2f2f2;text-align: center;">Temperature Correction, Mt</th>
+					</tr>
+				</thead>
+				<tbody>
+					<t t-foreach="data.gsa_particle_child_lines" t-as="line">
+						<tr>
+							<td style="padding: 5px;text-align: center;"><span t-field="line.bh_id"/></td>
+							<td style="padding: 5px;text-align: center;"><span t-field="line.sample_depth"/></td>
+
+							<td style="padding: 5px;text-align: center;">
+								<span t-field="line.d_10"/> </td>
+							<td style="padding: 5px;text-align: center;">
+								<span t-field="line.d_30"/> </td>
+							<td style="padding: 5px;text-align: center;">
+								<span t-field="line.d_60"/> </td>
+							<td style="padding: 5px;text-align: center;">
+								<span t-field="line.c_u"/> </td>
+							<td style="padding: 5px;text-align: center;">
+								<span t-field="line.c_c"/> </td>
+
+							<td style="padding: 5px;text-align: center;">
+								<span t-field="line.meniscus_corre"/> </td>
+							<td style="padding: 5px;text-align: center;">
+								<span t-field="line.dispersion"/> </td>
+							<td style="padding: 5px;text-align: center;">
+								<span t-field="line.temp_corre"/> </td>
+						</tr>
+					</t>
+				</tbody>
+			</table>
+		</t>
+
+
+        </t>
+    </t>
+
+	</template>
+
+
+	<!--  -->
+
+
+	  <template id="report_proctor_template">
+    <t t-call="web.html_container">
+
+                <t t-foreach="data" t-as="o">
+
+                    <!-- Only checked CBR lines -->
+                    <t t-foreach="o.soil_light_heavy_ids.filtered(lambda c: c.is_checked)" t-as="proctor">
+
+					
+
+
+						<div style="width:100%;">
+							<table style="width:100%; border-collapse:collapse; border:1px solid #000; font-size:12px;">
+								<tr>
+
+									<!-- LOGO -->
+									<!-- <td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
+										<img t-if="logo_base64"
+											t-att-src="'data:image/png;base64,%s' % logo_base64"
+											style="height:50px;"/>
+									</td> -->
+									<!-- <t t-if="data.image">
+										<td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
+											<img t-att-src="'data:image/png;base64,%s' % data.image.decode('utf-8')"
+												style="width: 100%; height: auto; max-height: 900px; object-fit: contain;"/>
+										</td>
+									</t> -->
+
+									<td style="width:20%; text-align:center; vertical-align:middle; padding: 5px;">
+                                       <img t-att-src="'/lerm_civil/static/src/img/genstru_logo.png'"
+                                        style="height:75px;"/>
+                                    </td>
+
+									<!-- COMPANY HEADER -->
+									<td style="width:77%; border:1px solid #000; padding:0;">
+										<table style="width:100%; border-collapse:collapse; font-size:12px;">
+
+											<tr>
+												<td colspan="6" style="border:1px solid #000; padding:4px;">
+													<b>GENSTRU CONSULTANTS PVT. LTD</b>
+												</td>
+											</tr>
+
+											<!-- FIRST REVIEW ONLY FOR HEADER -->
+										
+											<tr>
+												<td style="border:1px solid #000; padding:3px;"><b>Doc. Name</b></td>
+												<td colspan="5" style="padding-left: 10px;">Laboratory test results -<span t-field="o.doc_name_proctor"/></td>
+
+											</tr>
+
+											<tr>
+												<td style="border:1px solid #000; padding:3px;"><b>Doc. No.</b></td>
+												<td colspan="3" style="border:1px solid #000; padding:3px;">
+													<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','c800e59a-b847-4049-9e2b-673fcd1fcde5')], limit=1).report_format_no"/>
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Issue No</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','c800e59a-b847-4049-9e2b-673fcd1fcde5')], limit=1).issue_no"/>
+												</td>
+											</tr>
+
+											<t t-set="param"
+											t-value="env['lerm.parameter.master']
+											.search([('internal_id','=','c800e59a-b847-4049-9e2b-673fcd1fcde5')], limit=1)"/>
+
+											<tr>
+												<td style="border:1px solid #000; padding:3px;"><b>Rev. No</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+													<span t-esc="param.revision_no or ''"/>
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Rev. Dt</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+													<span t-esc="param.revision_date.strftime('%d/%m/%y') if param and param.revision_date else ''"/>
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Issue Dt</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+													<span t-esc="param.issue_date.strftime('%d/%m/%y') if param and param.issue_date else ''"/>
+												</td>
+											</tr>
+
+										</table>
+									</td>
+
+								</tr>
+							</table>
+						</div>
+
+						
+				 
+					
+
+						<table style="width:100%; border-collapse:collapse; font-size:13px;margin-top:30px;">
+
+							<!-- 🔹 HEADER -->
+							<tr>
+								<td colspan="6" style="border:1px solid black; padding:6px; text-align:center; font-weight:bold;">
+								DETERMINATION OF WATER CONTENT–DRY DENSITY RELATION USING LIGHT/HEAVY COMPACTION
+								</td>
+
+								
+							</tr>
+							<!-- <tr>
+								<td colspan="6" style="border:1px solid black; padding:6px; text-align:center; font-weight:bold;">
+									LAB ID :
+									<span t-esc="proctor.lab_id"/>
+								</td>
+
+								
+							</tr> -->
+
+							<tr>
+								<td colspan="2" style="border:1px solid black; padding:4px;">
+									<b>Test Method/Reference Code :</b>
+									<span>
+									<!-- <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','c800e59a-b847-4049-9e2b-673fcd1fcde5')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+												<span t-field="parameter.specification"/>
+										</t>
+									</t> -->
+									<t t-if="not eln.grade_id">
+										<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','c800e59a-b847-4049-9e2b-673fcd1fcde5')],limit=1).test_method.test_method"/>
+									</t>
+
+								
+									<t t-if="eln.grade_id">
+										<t t-set="printed" t-value="False"/>
+
+										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','c800e59a-b847-4049-9e2b-673fcd1fcde5')],limit=1).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade and parameter.grade.id == eln.grade_id.id">
+												<span t-field="parameter.specification"/>
+												<t t-set="printed" t-value="True"/>
+											</t>
+										</t>
+
+									
+										<t t-if="printed == False">
+											<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','c800e59a-b847-4049-9e2b-673fcd1fcde5')],limit=1).test_method.test_method"/>
+										</t>
+									</t>
+								</span>
+								</td>
+								<td colspan="1" style="border:1px solid black; padding:4px;text-align:right;">
+									<b>Annexure- II to ULR</b>
+									
+								</td>
+								<td colspan="1" style="border:1px solid black; padding:4px;">
+									
+									<span style=" padding:2px 6px;">
+										<span t-field="o.sample_id.ulr_no"/>
+									</span>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="6" style="border:1px solid black; padding:4px;">
+									<b>Project Name :</b>
+									<span t-field="o.srf_id.name_work"/>
+								</td>
+							</tr>
+							
+                         
+
+							<tr>
+								<td colspan="6" style="border:1px solid black; padding:4px;">
+									<b>Name &amp; Address of Customer :</b>
+									<!-- <t t-esc="data.customer_name"/> -->
+									<!-- <td colspan="3" style="padding-left: 10px;width:25%;"> -->
+										<!-- <span t-field="o.srf_id.customer.name"/> -->
+										<span t-field="o.srf_id.customer.street"/>
+										<span t-field="o.srf_id.customer.street2"/>
+										<span t-field="o.srf_id.customer.city"/>
+										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
+										<span t-field="o.srf_id.customer.state_id"/> ,
+										<span t-field="o.srf_id.customer.country_id"/>
+								<!-- </td> -->
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6" style="border:1px solid black; padding:4px;">
+									<b>Report No.:   </b><span t-field="o.sample_id.kes_no"/> </td>
+								
+							</tr>
+
+							
+
+							<tr >
+
+							    <td colspan="6" style="border:1px solid black; padding:4px;">
+									<b>Date Sample Received :   </b><span t-field="o.sample_id.sample_received_date"/> </td>
+								
+								<!-- <td colspan="3" style="border:1px solid black; padding:6px; font-weight:bold;">
+									Date Sample Received
+								</td>
+								<td colspan="3" style="border:1px solid black; padding:6px;">
+									<span t-field="o.sample_id.sample_received_date"/>
+								</td> -->
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Location /BH ID
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								 <t t-esc="proctor.bh_id"/>
+								
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Starting Date
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+										<span t-field="proctor.start_date" />
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Depth (m)
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								 <t t-esc="proctor.depth"/>
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Completion Date
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+										<span t-field="proctor.end_date" />
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Room Temperature (deg)
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+
+								 <t t-esc="int((proctor.room_temp_proctor or 0) + 0.5)"/>
+
+								 <!-- <t t-esc="proctor.room_temp_proctor"/> -->
+
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Relative humidity (%)
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								    <t t-esc="int((proctor.humidity_proctor or 0) + 0.5)"/>
+
+								 	 <!-- <t t-esc="proctor.humidity_proctor"/> -->
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Type of compaction
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								   <t t-esc="proctor.type_of_compaction"/>
+								
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Sample type and condition
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+									<t t-esc="proctor.type_of_sample_proctor"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Empty weight of mould, gm
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+
+								  <t t-esc="int((proctor.empty_wt_proctor or 0) + 0.5)"/>
+
+
+								 <!-- <t t-esc="proctor.empty_wt_proctor"/> -->
+									
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Volume of mould, cc
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+
+								  <t t-esc="int((proctor.volumn_proctor or 0) + 0.5)"/>
+
+								<!-- <t t-esc="proctor.volumn_proctor"/> -->
+									
+								</td>
+							</tr>
+
+						</table>
+
+						<t t-if="proctor.graph_image_light_heavy">
+                        <div style="text-align:center; margin-top:10px; width: 80%;">
+                            <img t-att-src="'data:image/png;base64,%s' % proctor.graph_image_light_heavy.decode('utf-8')"
+                                 style="width: 80%; height: auto; max-height: 900px; object-fit: contain;"/>
+                        </div>
+						<tr  style="border:1px solid black; padding:6px; text-align:center;">
+						<td  style="border:1px solid black; padding:6px;"><b>Maximum Dry Density (gm/cc) </b></td>
+						<td  style="border:1px solid black; padding:6px; text-align:center;">
+							<t t-esc="proctor.max_dry_density" t-options='{"widget": "float", "precision": 2}'/>
+						</td>
+						<br></br>
+						<td  style="border:1px solid black; padding:6px;"><b>Optimum Moisture (%)</b></td>
+						<td  style="border:1px solid black; padding:6px; text-align:center;">
+							<t t-esc="proctor.omc" t-options='{"widget": "float", "precision": 2}'/>
+						</td>
+							
+							</tr>
+                    </t>
+					
+
+
+						</t>
+					</t>
+				</t>
+</template>
+
+
+    <template id="report_triaxial_template">
+    <t t-call="web.html_container">
+
+                <t t-foreach="data" t-as="o">
+
+                    <!-- Only checked CBR lines -->
+                    <t t-foreach="o.triaxial_test_ids.filtered(lambda c: c.is_checked)" t-as="triaxial">
+
+					
+
+
+						<div style="width:100%;">
+							<table style="width:100%; border-collapse:collapse; border:1px solid #000; font-size:12px;">
+								<tr>
+
+									<!-- LOGO -->
+									<!-- <td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
+										<img t-if="logo_base64"
+											t-att-src="'data:image/png;base64,%s' % logo_base64"
+											style="height:50px;"/>
+									</td> -->
+									<!-- <t t-if="data.image">
+										<td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
+											<img t-att-src="'data:image/png;base64,%s' % data.image.decode('utf-8')"
+												style="width: 100%; height: auto; max-height: 900px; object-fit: contain;"/>
+										</td>
+									</t> -->
+
+									<td style="width:20%; text-align:center; vertical-align:middle; padding: 5px;">
+                                       <img t-att-src="'/lerm_civil/static/src/img/genstru_logo.png'"
+                                        style="height:75px;"/>
+                                    </td>
+
+									<!-- COMPANY HEADER -->
+									<td style="width:77%; border:1px solid #000; padding:0;">
+										<table style="width:100%; border-collapse:collapse; font-size:12px;">
+
+											<tr>
+												<td colspan="6" style="border:1px solid #000; padding:4px;">
+													<b>GENSTRU CONSULTANTS PVT. LTD</b>
+												</td>
+											</tr>
+
+											<!-- FIRST REVIEW ONLY FOR HEADER -->
+										
+											<tr>
+												<td style="border:1px solid #000; padding:3px;"><b>Doc. Name</b></td>
+												<td colspan="5" style="padding-left: 10px;">Laboratory test results -<span t-field="o.triaxial_doc_name"/></td>
+
+											</tr>
+
+											<tr>
+												<td style="border:1px solid #000; padding:3px;"><b>Doc. No.</b></td>
+												<td colspan="3" style="border:1px solid #000; padding:3px;">
+													<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','yt25ec57-11f8-4249-9fa8-788889999rtt')], limit=1).report_format_no"/>
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Issue No</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','yt25ec57-11f8-4249-9fa8-788889999rtt')], limit=1).issue_no"/>
+												</td>
+											</tr>
+
+											<!-- <tr>
+												<td style="border:1px solid #000; padding:3px;"><b>Rev. No</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+												
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','yt25ec57-11f8-4249-9fa8-788889999rtt')], limit=1).revision_no"/>
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Rev. Dt</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','yt25ec57-11f8-4249-9fa8-788889999rtt')], limit=1).issue_date.strftime('%d/%m/%y')"/>
+												
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Issue Dt</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','yt25ec57-11f8-4249-9fa8-788889999rtt')], limit=1).revision_date.strftime('%d/%m/%y')"/>
+												</td>
+											</tr> -->
+											<t t-set="param"
+											t-value="env['lerm.parameter.master']
+											.search([('internal_id','=','yt25ec57-11f8-4249-9fa8-788889999rtt')], limit=1)"/>
+
+											<tr>
+												<td style="border:1px solid #000; padding:3px;"><b>Rev. No</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+													<span t-esc="param.revision_no or ''"/>
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Rev. Dt</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+													<span t-esc="param.revision_date.strftime('%d/%m/%y') if param and param.revision_date else ''"/>
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Issue Dt</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+													<span t-esc="param.issue_date.strftime('%d/%m/%y') if param and param.issue_date else ''"/>
+												</td>
+											</tr>
+
+										</table>
+									</td>
+
+								</tr>
+							</table>
+						</div>
+
+
+
+						
+                 <div >
+						<!-- 🔹 HEADER -->
+						<table style="width:100%; border-collapse:collapse; font-size:13px; margin-top:30px;">
+                        <tr>
+								<td colspan="6" style="border:1px solid black; padding:6px; text-align:center; font-weight:bold;">
+								DETERMINE THE SHEAR STRENGTH BY TRIAXIAL SHEAR TEST
+								</td>
+
+								
+							</tr>
+							<!-- <tr>
+								<td colspan="6" style="border:1px solid black; padding:6px; text-align:center; font-weight:bold;">
+									LAB ID :
+									<span t-esc="triaxial.lab_id"/>
+								</td>
+
+								
+							</tr> -->
+
+							<tr>
+								<td colspan="2" style="border:1px solid black; padding:4px;">
+									<b>Test Method/Reference Code :</b>
+									<span>
+									<!-- <t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','c800e59a-b847-4049-9e2b-673fcd1fcde5')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+												<span t-field="parameter.specification"/>
+										</t>
+									</t> -->
+									<t t-if="not eln.grade_id">
+										<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','yt25ec57-11f8-4249-9fa8-788889999rtt')],limit=1).test_method.test_method"/>
+									</t>
+
+								
+									<t t-if="eln.grade_id">
+										<t t-set="printed" t-value="False"/>
+
+										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','yt25ec57-11f8-4249-9fa8-788889999rtt')],limit=1).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade and parameter.grade.id == eln.grade_id.id">
+												<span t-field="parameter.specification"/>
+												<t t-set="printed" t-value="True"/>
+											</t>
+										</t>
+
+									
+										<t t-if="printed == False">
+											<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','yt25ec57-11f8-4249-9fa8-788889999rtt')],limit=1).test_method.test_method"/>
+										</t>
+									</t>
+								</span>
+								</td>
+								<td colspan="1" style="border:1px solid black; padding:4px;text-align:right;">
+									<b>Annexure- II to ULR</b>
+									
+								</td>
+								<td colspan="1" style="border:1px solid black; padding:4px;">
+									
+									<span style=" padding:2px 6px;">
+										<span t-field="o.sample_id.ulr_no"/>
+									</span>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="6" style="border:1px solid black; padding:4px;">
+									<b>Project Name :</b>
+									<span t-field="o.srf_id.name_work"/>
+								</td>
+							</tr>
+							
+                         
+
+							<tr>
+								<td colspan="6" style="border:1px solid black; padding:4px;">
+									<b>Name &amp; Address of Customer :</b>
+									<!-- <t t-esc="data.customer_name"/> -->
+									<!-- <td colspan="3" style="padding-left: 10px;width:25%;"> -->
+										<!-- <span t-field="o.srf_id.customer.name"/> -->
+										<span t-field="o.srf_id.customer.street"/>
+										<span t-field="o.srf_id.customer.street2"/>
+										<span t-field="o.srf_id.customer.city"/>
+										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
+										<span t-field="o.srf_id.customer.state_id"/> ,
+										<span t-field="o.srf_id.customer.country_id"/>
+								<!-- </td> -->
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6" style="border:1px solid black; padding:4px;">
+									<b>Report No.:   </b><span t-field="o.sample_id.kes_no"/> </td>
+								
+							</tr>
+						
+
+							
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Sample ID
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+									<span t-esc="triaxial.lab_id"/>
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Date Sample Received
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+									<span t-field="o.sample_id.sample_received_date"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Location /BH ID
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								 <t t-esc="triaxial.bh_id"/>
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Starting Date
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+										<span t-field="triaxial.start_date" />
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Depth (m)
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								 <t t-esc="triaxial.depth"/>
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Completion Date
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+										<span t-field="triaxial.end_date" />
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Room Temperature (deg)
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+
+								  <t t-esc="int((triaxial.temp_triaxial or 0) + 0.5)"/>
+								 <!-- <t t-esc="triaxial.temp_triaxial"/> -->
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Relative humidity (%)
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								    <t t-esc="int((triaxial.humidity_triaxial or 0) + 0.5)"/>
+								 	 <!-- <t t-esc="triaxial.humidity_triaxial"/> -->
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Type of Test
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								 <t t-esc="triaxial.type_of_test_traxial"/>
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Type of Sample 
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+									 <t t-esc="triaxial.type_of_sample_traxial"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Diameter of Specimen, mm 
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+
+								   <t t-esc="int((triaxial.dia_triaxial or 0) + 0.5)"/>
+
+								 <!-- <t t-esc="triaxial.dia_triaxial"/> -->
+									
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Wet Weight of Sample (gm)  
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								  
+								<t t-esc="round(triaxial.mass_before_avg or 0, 1)"/>
+									
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Length of Specimen, mm
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+
+								   <t t-esc="int((triaxial.height_triaxial or 0) + 0.5)"/>
+
+								 <!-- <t t-esc="triaxial.height_triaxial"/> -->
+									
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Dry Weight of Sample (gm) 
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								   <t t-esc="round(triaxial.mass_dry_avg or 0, 1)"/>
+								<!-- <t t-esc="triaxial.mass_dry_avg"/> -->
+									
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Area of Specimen, cm2
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+
+								   
+
+								 <t t-esc="triaxial.area11_triaxial"/>
+									
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Rate of Strain in mm / min 
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								<t t-esc="triaxial.displacement_triaxial"/>
+									
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Volume of Specimen, cm3
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+
+								  
+
+								 <t t-esc="triaxial.soil_volume1"/>
+									
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Least Count of Strain Dial Gauge in mm 
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								<t t-esc="triaxial.least_count_triaxial"/>
+									
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Specific Gravity
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+
+								 <t t-esc="triaxial.specific_gravity"/>
+									
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Proving Ring Capacity kN 
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+
+								  <t t-esc="int((triaxial.proving_triaxial or 0) + 0.5)"/>
+
+								<!-- <t t-esc="triaxial.proving_triaxial"/> -->
+									
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Bulk Density, g/cc
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+
+								 <t t-esc="triaxial.bulk_density_avg"/>
+									
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Load Gauge Constant 
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								[<t t-esc="triaxial.m_traxial"  />* Deflection ] + <t t-esc="triaxial.c_traxial"  />
+									
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Moisture Content, w ,%
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+
+								 <t t-esc="triaxial.moisture_avg"/>
+									
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Angle of shear plane with vertical axis
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+
+								<t t-esc="int((triaxial.angle_phi or 0) + 0.5)"/>
+								<!-- <t t-esc="triaxial.angle_phi"/> -->
+									
+								</td>
+							</tr>
+							<tr>
+							<td colspan="6" style="border:1px solid black; padding:6px; font-weight:bold;">
+									Dry Density, g/cc : <t t-esc="triaxial.dry_density_avg"/>
+								</td>
+								
+							</tr>
+
+
+							<!-- Row 6 -->
+							
+
+
+						
+
+
+						</table>
+
+            <!-- 🔹 OBSERVATION TABLE -->
+                <div style="margin-top:20px;">
+					<table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-left:auto; margin-right:auto;">
+						<tbody>
+							<tr>
+								<td style="border:1px solid black;text-align:center;font-weight:bold;">Sr No</td>
+								<td style="text-align:center;border:1px solid black;font-weight:bold;">Cell Pressure  σ₃  kg/cm²</td>
+								<td style="text-align:center;border:1px solid black;font-weight:bold;">Deviatoric Stress at Failure σd kg/cm²</td>
+								<td style="text-align:center;border:1px solid black;font-weight:bold;">Effective Normal Stress at Failure σ1 kg/cm²</td>
+							</tr>
+
+							<tr>
+								<td style="text-align:center;border:1px solid black;font-weight:bold;">1</td>
+								<td style="text-align:center;border:1px solid black;">
+									<t t-esc="triaxial.cell_pressure1"/>
+								</td>
+								<td style="text-align:center;border:1px solid black;">
+									<t t-esc="triaxial.deviatoric_stress1"/>
+								</td>
+								<td style="text-align:center;border:1px solid black;">
+									<t t-esc="triaxial.effect_norm_stress1"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="text-align:center;font-weight:bold;border:1px solid black;">2</td>
+								<td style="text-align:center;border:1px solid black;">
+									<t t-esc="triaxial.cell_pressure2"/>
+								</td>
+								<td style="text-align:center;border:1px solid black;">
+									<t t-esc="triaxial.deviatoric_stress2"/>
+								</td>
+								<td style="text-align:center;border:1px solid black;">
+									<t t-esc="triaxial.effect_norm_stress2"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="text-align:center;border:1px solid black;font-weight:bold;">3</td>
+								<td style="text-align:center;border:1px solid black;">
+									<t t-esc="triaxial.cell_pressure3"/>
+								</td>
+								<td style="text-align:center;border:1px solid black;">
+									<t t-esc="triaxial.deviatoric_stress3"/>
+								</td>
+								<td style="text-align:center;border:1px solid black;">
+									<t t-esc="triaxial.effect_norm_stress3"/>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+
+            <!-- 🔹 GRAPH -->
+            <t t-if="triaxial.mohr_graph">
+					<div style="text-align:center; margin-top:10px; width: 100%;">
+						<img t-att-src="'data:image/png;base64,%s' % triaxial.mohr_graph.decode('utf-8')"
+							style="width: 100%; height: auto; max-height: 900px; object-fit: contain;"/>
+					</div>
+					
+				</t>
+
+            <!-- 🔹 RESULT -->
+            <div style="margin-top:20px; text-align:center; font-weight:bold;">
+				Cohesion, Cu (kg/cm2) : = <span t-esc="triaxial.cohesion"/> 
+			</div>
+
+			<div style="margin-top:5px; text-align:center; font-weight:bold;">
+				Angle of internal friction  °  : = <span t-esc="int((triaxial.phi or 0) + 0.5)"/>
+			</div>
+
+			</div>
+
+						</t>
+					</t>
+				</t>
+	</template>
+
+
+
+	<template id="report_swelling_template">
+    <t t-call="web.html_container">
+
+                <t t-foreach="data" t-as="o">
+
+                
+                    <t t-foreach="o.swelling_pressure_ids.filtered(lambda c: c.is_checked)" t-as="sweeling">
+
+					
+
+
+						<div style="width:100%;">
+							<table style="width:100%; border-collapse:collapse; border:1px solid #000; font-size:12px;">
+								<tr>
+
+								
+									<!-- <td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
+										<img t-if="logo_base64"
+											t-att-src="'data:image/png;base64,%s' % logo_base64"
+											style="height:50px;"/>
+									</td> -->
+									<!-- <t t-if="data.image">
+										<td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
+											<img t-att-src="'data:image/png;base64,%s' % data.image.decode('utf-8')"
+												style="width: 100%; height: auto; max-height: 900px; object-fit: contain;"/>
+										</td>
+									</t> -->
+
+									<td style="width:20%; text-align:center; vertical-align:middle; padding: 5px;">
+                                       <img t-att-src="'/lerm_civil/static/src/img/genstru_logo.png'"
+                                        style="height:75px;"/>
+                                    </td>
+
+									<td style="width:77%; border:1px solid #000; padding:0;">
+										<table style="width:100%; border-collapse:collapse; font-size:12px;">
+
+											<tr>
+												<td colspan="6" style="border:1px solid #000; padding:4px;">
+													<b>GENSTRU CONSULTANTS PVT. LTD</b>
+												</td>
+											</tr>
+
+										
+										
+											<tr>
+												<td style="border:1px solid #000; padding:3px;"><b>Doc. Name</b></td>
+												<td colspan="5" style="padding-left: 10px;">Laboratory test results -<span t-field="o.swelling_pressure_doc_name"/></td>
+
+											</tr>
+
+											<tr>
+												<td style="border:1px solid #000; padding:3px;"><b>Doc. No.</b></td>
+												<td colspan="3" style="border:1px solid #000; padding:3px;">
+													<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')], limit=1).report_format_no"/>
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Issue No</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')], limit=1).issue_no"/>
+												</td>
+											</tr>
+
+											<!-- <tr>
+												<td style="border:1px solid #000; padding:3px;"><b>Rev. No</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')], limit=1).revision_no"/>
+												
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Rev. Dt</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+												
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')], limit=1).issue_date.strftime('%d/%m/%y')"/>
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Issue Dt</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')], limit=1).revision_date.strftime('%d/%m/%y')"/>
+												</td>
+											</tr> -->
+
+											<t t-set="param"
+											t-value="env['lerm.parameter.master']
+											.search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')], limit=1)"/>
+
+											<tr>
+												<td style="border:1px solid #000; padding:3px;"><b>Rev. No</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+													<span t-esc="param.revision_no or ''"/>
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Rev. Dt</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+													<span t-esc="param.revision_date.strftime('%d/%m/%y') if param and param.revision_date else ''"/>
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Issue Dt</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+													<span t-esc="param.issue_date.strftime('%d/%m/%y') if param and param.issue_date else ''"/>
+												</td>
+											</tr>
+
+										</table>
+									</td>
+
+								</tr>
+							</table>
+						</div>
+
+                 <div >
+				 
+					
+                   
+						<table style="width:100%; border-collapse:collapse; font-size:13px;margin-top:30px;">
+
+							<tr>
+								<td colspan="10" style="border:1px solid black; padding:6px; text-align:center; font-weight:bold;">
+								Swelling Pressure Test<br></br><b>Test Method/Reference Code :</b>
+								 <span>
+									
+
+									<t t-if="not eln.grade_id">
+										<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')],limit=1).test_method.test_method"/>
+									</t>
+
+								
+									<t t-if="eln.grade_id">
+										<t t-set="printed" t-value="False"/>
+
+										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')],limit=1).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade and parameter.grade.id == eln.grade_id.id">
+												<span t-field="parameter.specification"/>
+												<t t-set="printed" t-value="True"/>
+											</t>
+										</t>
+
+									
+										<t t-if="printed == False">
+											<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')],limit=1).test_method.test_method"/>
+										</t>
+									</t>
+								</span>
+								</td>
+
+								
+							</tr>
+							<!-- <tr>
+								<td colspan="10" style="border:1px solid black; padding:6px; text-align:center; font-weight:bold;">
+									LAB ID :
+									<span t-esc="sweeling.lab_id"/>
+								</td>
+
+								
+							</tr> -->
+							<tr>
+							</tr>
+
+							  <td colspan="1" style="border:1px solid black; padding:4px;text-align:left;">
+									<b>Annexure- II to ULR</b>
+									
+								</td>
+								<td colspan="9" style="border:1px solid black; padding:4px;">
+									
+									<span style=" padding:2px 6px;">
+										<span t-field="o.sample_id.ulr_no"/>
+									</span>
+								</td>
+
+							
+							<tr>
+								<td colspan="10" style="border:1px solid black; padding:4px;">
+									<b>Project Name :</b>
+									<span t-field="o.srf_id.name_work"/>
+								</td>
+							</tr>
+							
+                         
+
+							<tr>
+								<td colspan="10" style="border:1px solid black; padding:4px;">
+									<b>Name &amp; Address of Customer :</b>
+									
+										<!-- <span t-field="o.srf_id.customer.name"/> -->
+										<span t-field="o.srf_id.customer.street"/>
+										<span t-field="o.srf_id.customer.street2"/>
+										<span t-field="o.srf_id.customer.city"/>
+										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
+										<span t-field="o.srf_id.customer.state_id"/> ,
+										<span t-field="o.srf_id.customer.country_id"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="10" style="border:1px solid black; padding:4px;">
+									<b>Report No.:   </b><span t-field="o.sample_id.kes_no"/> </td>
+								
+							</tr>
+
+							
+
+							<tr>
+								<td colspan="7" style="border:1px solid black; padding:6px;">
+									<b>Sample Type and Condition:</b> <span t-esc="sweeling.sample_type_swelling"/>
+								</td>
+								<td colspan="2" style="border:1px solid black; padding:6px; text-align:right;" >
+									<b>Depth (m):</b>
+								</td>
+								<td style="border:1px solid black; padding:6px; text-align:center;">
+									<span t-esc="sweeling.depth"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:4px;"><b>Sample ID</b></td>
+								<td style="border:1px solid black; padding:4px;"><span t-esc="sweeling.lab_id"/></td>
+								<td>
+								</td>
+
+								<td style="border:1px solid black; padding:4px;"><b>Weight of Ring, w1</b></td>
+								<td style="border:1px solid black; padding:4px;"><span t-esc="round(sweeling.wt_of_ring or 0, 2)"/></td>
+								<td style="border:1px solid black; padding:4px;">gm</td>
+
+								<td colspan="2" style="border:1px solid black; padding:4px;"><b>Height of Solids, Hs</b></td>
+								<td style="border:1px solid black; padding:4px;"><span t-esc="round(sweeling.height_solid or 0, 2)"/></td>
+								<td colspan="2" style="border:1px solid black; padding:4px;">cm</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:4px;"><b>Specific Gravity, G</b></td>
+								<td style="border:1px solid black; padding:4px;"><span t-esc="sweeling.swelling_specific_gravity"/></td>
+								<td>
+								</td>
+
+								<td style="border:1px solid black; padding:4px;"><b>Weight of Wet Specimen + Ring, w2</b></td>
+								<td style="border:1px solid black; padding:4px;"><span t-esc="round(sweeling.wt_wet_specimen_bf or 0, 2)"/>
+								<!-- <span t-esc="sweeling.wt_wet_specimen_bf"/> -->
+								</td>
+								<td style="border:1px solid black; padding:4px;">gm</td>
+
+								<td colspan="2" style="border:1px solid black; padding:4px;"><b>Bulk Density of Soil</b></td>
+								<td style="border:1px solid black; padding:4px;"><span t-esc="sweeling.bulk_density_soil"/></td>
+								<td colspan="2" style="border:1px solid black; padding:4px;">gm/cc</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:4px;"><b>Diameter, D</b></td>
+								<td style="border:1px solid black; padding:4px;"><span t-esc="sweeling.swelling_diameter"/></td>
+								<td style="border:1px solid black; padding:4px;"><span>  cm</span></td>
+
+								<td style="border:1px solid black; padding:4px;"><b>Weight of Dry Specimen + Ring, w3</b></td>
+								<td style="border:1px solid black; padding:4px;"><span t-esc="round(sweeling.wt_dry_specimen_af or 0, 2)"/>
+								<!-- <span t-esc="sweeling.wt_dry_specimen_af"/> -->
+								</td>
+								<td style="border:1px solid black; padding:4px;">gm</td>
+
+								<td colspan="2" style="border:1px solid black; padding:4px;"><b>Dry Density of Soil</b></td>
+								<td style="border:1px solid black; padding:4px;">
+								<span t-esc="round(sweeling.dry_density_soil or 0, 2)"/>
+								<!-- <span t-esc="sweeling.height_solid"/> -->
+								</td>
+								<td colspan="2" style="border:1px solid black; padding:4px;">gm/cc</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:4px;"><b>Height, H</b></td>
+								<td style="border:1px solid black; padding:4px;"><span t-esc="sweeling.swelling_height"/></td>
+								<td style="border:1px solid black; padding:4px;"><span>  cm</span></td>
+
+								<td style="border:1px solid black; padding:4px;"><b>Dry weight of soil, wd</b></td>
+								<td style="border:1px solid black; padding:4px;"><span t-esc="round(sweeling.wt_dry_soil_swell or 0, 2)"/>
+								<!-- <span t-esc="sweeling.wt_dry_soil_swell"/> -->
+								</td>
+								<td style="border:1px solid black; padding:4px;">gm</td>
+
+								<td colspan="2" style="border:1px solid black; padding:4px;"><b>Initial void ratio, e₀</b></td>
+								<td style="border:1px solid black; padding:4px;"><span t-esc="sweeling.swell_void_ratio"/></td>
+								<td colspan="2" style="border:1px solid black; padding:4px;"></td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:4px;"><b>Area, A</b></td>
+								<td style="border:1px solid black; padding:4px;"><span t-esc="sweeling.swelling_area"/></td>
+								<td style="border:1px solid black; padding:4px;"><span>  cm²</span></td>
+
+								<td style="border:1px solid black; padding:4px;"><b>Water Content, wc</b></td>
+								<td style="border:1px solid black; padding:4px;"><span t-esc="sweeling.water_content"/></td>
+								<td style="border:1px solid black; padding:4px;">%</td>
+
+								<td colspan="2" style="border:1px solid black; padding:4px;"><b>Degree of Saturation, Sr</b></td>
+								<td style="border:1px solid black; padding:4px;"><span t-esc="sweeling.degree_sat"/></td>
+								<td colspan="2" style="border:1px solid black; padding:4px;">%</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:4px;"><b>Volume, Vol</b></td>
+								<td style="border:1px solid black; padding:4px;"><span t-esc="sweeling.swelling_volume"/></td>
+								<td style="border:1px solid black; padding:4px;"><span>  cm³</span></td>
+
+								<td style="border:1px solid black; padding:4px;"><b>Initial Reading</b></td>
+								<td style="border:1px solid black; padding:4px;"><span t-esc="sweeling.initial_read"/></td>
+								<td style="border:1px solid black; padding:4px;"></td>
+
+								<td colspan="5" style="border:1px solid black; padding:4px;"></td>
+							</tr>
+
+
+						
+
+
+						</table>
+
+							<table style="width:100%; border-collapse:collapse; font-size:12px; margin-top:10px;">
+								<tr>
+									<th style="border:1px solid black; padding:4px;">Applied Pressure (kg/cm²)</th>
+									<th style="border:1px solid black; padding:4px;">Final Dial Reading (mm)</th>
+									<th style="border:1px solid black; padding:4px;">Δ H (mm)</th>
+								</tr>
+
+								<t t-foreach="sweeling.swelling_table_ids" t-as="line">
+									<tr>
+										<td style="border:1px solid black; padding:4px; text-align:center;">
+											<t t-esc="line.applied_pressure"/>
+										</td>
+										<td style="border:1px solid black; padding:4px; text-align:center; ">
+											<t t-esc="line.final_read"/>
+										</td>
+										<td style="border:1px solid black; padding:4px; text-align:center;">
+											<t t-esc="line.delta_h"/>
+										</td>
+									</tr>
+								</t>
+							</table>
+							<t t-if="sweeling.graph_image_swell">
+								<div style="text-align:center; margin-top:10px; width: 100%;">
+									<img t-att-src="'data:image/png;base64,%s' % sweeling.graph_image_swell.decode('utf-8')"
+										style="width: 100%; height: auto; max-height: 900px; object-fit: contain;"/>
+								</div>
+							</t>
+
+							<div style="border:1px solid black; padding:8px; text-align:center;">
+								<b>Swelling Pressure</b><br/>
+								<span style="font-size:14px; font-weight:bold;">
+									<t t-esc="sweeling.swelling_pressure"/>
+								</span><br/>
+								kg/cm²
+							</div>
+
+
+					
+
+						</div>
+
+
+					
+
+					</t>
+				</t>
+			</t>
+</template>
+
+
+
+  <template id="report_direct_template">
+    <t t-call="web.html_container">
+
+                <t t-foreach="data" t-as="o">
+
+                    <!-- Only checked CBR lines -->
+                    <t t-foreach="o.direct_shear_line.filtered(lambda c: c.is_checked)" t-as="direct">
+
+					
+
+
+						<div style="width:100%;">
+							<table style="width:100%; border-collapse:collapse; border:1px solid #000; font-size:12px;">
+								<tr>
+
+									<!-- LOGO -->
+									<!-- <td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
+										<img t-if="logo_base64"
+											t-att-src="'data:image/png;base64,%s' % logo_base64"
+											style="height:50px;"/>
+									</td> -->
+									<!-- <t t-if="data.image">
+										<td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
+											<img t-att-src="'data:image/png;base64,%s' % data.image.decode('utf-8')"
+												style="width: 100%; height: auto; max-height: 900px; object-fit: contain;"/>
+										</td>
+									</t> -->
+
+									<td style="width:20%; text-align:center; vertical-align:middle; padding: 5px;">
+                                       <img t-att-src="'/lerm_civil/static/src/img/genstru_logo.png'"
+                                        style="height:75px;"/>
+                                    </td>
+
+									<!-- COMPANY HEADER -->
+									<td style="width:77%; border:1px solid #000; padding:0;">
+										<table style="width:100%; border-collapse:collapse; font-size:12px;">
+
+											<tr>
+												<td colspan="6" style="border:1px solid #000; padding:4px;">
+													<b>GENSTRU CONSULTANTS PVT. LTD</b>
+												</td>
+											</tr>
+
+											<!-- FIRST REVIEW ONLY FOR HEADER -->
+										
+											<tr>
+												<td style="border:1px solid #000; padding:3px;"><b>Doc. Name</b></td>
+												<td colspan="5" style="padding-left: 10px;">Laboratory test results -<span t-field="o.direct_shear_doc_name"/></td>
+
+											</tr>
+
+											<tr>
+												<td style="border:1px solid #000; padding:3px;"><b>Doc. No.</b></td>
+												<td colspan="3" style="border:1px solid #000; padding:3px;">
+													<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')], limit=1).report_format_no"/>
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Issue No</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')], limit=1).issue_no"/>
+												</td>
+											</tr>
+
+											<!-- <tr>
+												<td style="border:1px solid #000; padding:3px;"><b>Rev. No</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')], limit=1).revision_no"/>
+												
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Rev. Dt</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+												
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')], limit=1).issue_date.strftime('%d/%m/%y')"/>
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Issue Dt</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+												<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')], limit=1).revision_date.strftime('%d/%m/%y')"/>
+												</td>
+											</tr> -->
+
+											<t t-set="param"
+											t-value="env['lerm.parameter.master']
+											.search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')], limit=1)"/>
+
+											<tr>
+												<td style="border:1px solid #000; padding:3px;"><b>Rev. No</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+													<span t-esc="param.revision_no or ''"/>
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Rev. Dt</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+													<span t-esc="param.revision_date.strftime('%d/%m/%y') if param and param.revision_date else ''"/>
+												</td>
+
+												<td style="border:1px solid #000; padding:3px;"><b>Issue Dt</b></td>
+												<td style="border:1px solid #000; padding:3px;">
+													<span t-esc="param.issue_date.strftime('%d/%m/%y') if param and param.issue_date else ''"/>
+												</td>
+											</tr>
+
+										</table>
+									</td>
+
+								</tr>
+							</table>
+						</div>
+
+
+
+						<!-- <t t-foreach="data.direct_shear_line" t-as="direct"> -->
+			
+                 <div >
+						<!-- 🔹 HEADER -->
+						<table style="width:100%; border-collapse:collapse; font-size:13px;margin-top:5px;">
+                        <tr>
+								<td colspan="6" style="border:1px solid black; padding:6px; text-align:center; font-weight:bold;">
+								DETERMINE SHEAR STRENGTH BY DIRECT SHEAR TEST
+								</td>
+
+								
+							</tr>
+							<!-- <tr>
+								<td colspan="6" style="border:1px solid black; padding:6px; text-align:center; font-weight:bold;">
+									LAB ID :
+									<span t-esc="direct.lab_id"/>
+								</td>
+
+								
+							</tr> -->
+
+							<tr>
+								<td colspan="2" style="border:1px solid black; padding:4px;">
+									<b>Test Method/Reference Code :</b> 
+									<span>
+									
+
+									<t t-if="not eln.grade_id">
+										<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')],limit=1).test_method.test_method"/>
+									</t>
+
+								
+									<t t-if="eln.grade_id">
+										<t t-set="printed" t-value="False"/>
+
+										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')],limit=1).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade and parameter.grade.id == eln.grade_id.id">
+												<span t-field="parameter.specification"/>
+												<t t-set="printed" t-value="True"/>
+											</t>
+										</t>
+
+									
+										<t t-if="printed == False">
+											<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')],limit=1).test_method.test_method"/>
+										</t>
+									</t>
+								</span>
+								</td>
+								<td colspan="1" style="border:1px solid black; padding:4px;text-align:left;">
+									<b>Annexure- II to ULR</b>
+									
+								</td>
+								<td colspan="1" style="border:1px solid black; padding:4px;">
+									
+									<span style=" padding:2px 6px;">
+										<span t-field="o.sample_id.ulr_no"/>
+									</span>
+								</td>
+								
+							</tr>
+
+							<tr>
+								<td colspan="6" style="border:1px solid black; padding:4px;">
+									<b>Project Name :</b>
+									<span t-field="o.srf_id.name_work"/>
+								</td>
+							</tr>
+							
+
+							<tr>
+								<td colspan="6" style="border:1px solid black; padding:4px;">
+									<b>Name &amp; Address of Customer :</b>
+									<!-- <t t-esc="data.customer_name"/> -->
+									<!-- <td colspan="3" style="padding-left: 10px;width:25%;"> -->
+										<!-- <span t-field="o.srf_id.customer.name"/> -->
+										<span t-field="o.srf_id.customer.street"/>
+										<span t-field="o.srf_id.customer.street2"/>
+										<span t-field="o.srf_id.customer.city"/>
+										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
+										<span t-field="o.srf_id.customer.state_id"/> ,
+										<span t-field="o.srf_id.customer.country_id"/>
+								<!-- </td> -->
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6" style="border:1px solid black; padding:4px;">
+									<b>Report No.:   </b><span t-field="o.sample_id.kes_no"/> </td>
+								
+							</tr>
+
+							
+
+							<tr>
+								<!-- <td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Report No.
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+									<span t-esc="o.material.test_format_no"/>
+								</td> -->
+								<td colspan="3" style="border:1px solid black; padding:6px; font-weight:bold;">
+									Date Sample Received
+								</td>
+								<td colspan="9" style="border:1px solid black; padding:6px;">
+									<span t-field="o.sample_id.sample_received_date"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Location /BH ID
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								 <t t-esc="direct.bh_id"/>
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Starting Date
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+										<span t-field="direct.start_date" />
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Depth (m)
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								 <t t-esc="direct.depth"/>
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Completion Date
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+										<span t-field="direct.end_date" />
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Room Temperature (deg)
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								 <t t-esc="direct.shear_room_temp"/>
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Relative humidity (%)
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								 	 <t t-esc="direct.direct_humidity"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Type of Test
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								    <t t-esc="direct.drainage_condition"/>
+								
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Type of Sample 
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								    <t t-esc="direct.sample_type"/>
+									
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Proving Ring Capacity kN 
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+
+								 <t t-esc="direct.proving_ring_capacity"/>
+									
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Load Gauge Constant 
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								    [0.0133 x Deflection] + 0.0331
+									
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Initial wet wt. of Soil (g)
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+
+								 <t t-esc="direct.initial_mass_soil"/>
+									
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Dimesnions of sample (mm)
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								<!-- <span t-field="o.sample_id.size_id.size"/> -->
+
+								<t t-esc="direct.dimension_sample"/>
+									
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Avg. Moisture Content %
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+
+								 <t t-esc="direct.initial_mc_final"/>
+									
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Displacement Rate
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								<t t-esc="direct.displacement_rate"/>
+									
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Final wet wt. of soil (g)
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+
+								 <t t-esc="direct.final_mass_soil"/>
+									
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Bulk Density (g/cc)
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								<t t-esc="direct.density_soil_shear"/>
+									
+								</td>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Moisture content at shear zone (%)
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+
+								 <t t-esc="direct.mass_dry_soil"/>
+									
+								</td>
+								<td style="border:1px solid black; padding:6px; font-weight:bold;">
+									Dry Density (g/cc)
+								</td>
+								<td style="border:1px solid black; padding:6px;">
+								<t t-esc="direct.dry_density_soil_shear"/>
+									
+								</td>
+							</tr>
+
+							<!-- Row 6 -->
+							
+
+
+						
+
+
+						</table>
+
+            <!-- 🔹 OBSERVATION TABLE -->
+                <div style="margin-top:10px; ">
+					<table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-left:auto; margin-right:auto;">
+						<tbody>
+							<tr>
+								<td style="text-align:center;font-weight:bold;border:1px solid black;">Sr No</td>
+								<td style="text-align:center;font-weight:bold;border:1px solid black;">Shear stress kg/cm²</td>
+								<td style="text-align:center;font-weight:bold;border:1px solid black;">Normal stress kg/cm²</td>
+							</tr>
+
+							<tr>
+								<td style="text-align:center;font-weight:bold;border:1px solid black;">1</td>
+								<td style="text-align:center;border:1px solid black;">
+									<t t-esc="direct.shear_test_final1"/>
+								</td>
+								<td style="text-align:center;border:1px solid black;">
+									<t t-esc="direct.normal_stress"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="text-align:center;font-weight:bold;border:1px solid black;">2</td>
+								<td style="text-align:center;border:1px solid black;">
+									<t t-esc="direct.shear_test_final2"/>
+								</td>
+								<td style="text-align:center;border:1px solid black;">
+									<t t-esc="direct.normal_stress_2"/>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="text-align:center;border:1px solid black;font-weight:bold;">3</td>
+								<td style="text-align:center;border:1px solid black;">
+									<t t-esc="direct.shear_test_final3"/>
+								</td>
+								<td style="text-align:center;border:1px solid black;">
+									<t t-esc="direct.normal_stress_3"/>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+
+            <!-- 🔹 GRAPH -->
+            <t t-if="direct.shear_graph_image_4">
+					<div style="text-align:center; margin-top:10px; width: 100%;">
+						<img t-att-src="'data:image/png;base64,%s' % direct.shear_graph_image_4.decode('utf-8')"
+							style="width: 100%; height: auto; max-height: 900px; object-fit: contain;"/>
+					</div>
+					
+				</t>
+
+            <!-- 🔹 RESULT -->
+            <div style="margin-top:20px; text-align:center; font-weight:bold;">
+				Cohesion (c) = <span t-esc="round(direct.cohesion, 2)"/> kg/cm²
+			</div>
+
+			<div style="margin-top:5px; text-align:center; font-weight:bold;">
+				φ = <span t-esc="int(round(direct.phi))"/> °
+			</div>
+
+			</div>
+
+						</t>
+					</t>
+				</t>
+	</template>
+
+
+
+
+<template id="report_consoilidation_template">
+	<t t-call="web.html_container">
+
+		<t t-foreach="data" t-as="o">
+
+			<t t-foreach="o.consolidation_lines.filtered(lambda c: c.is_checked)" t-as="consolidation">
+				<div style="width:100%;">
+					<table style="width:100%; border-collapse:collapse; border:1px solid #000; font-size:12px;">
+						<tr>
+
+							<!-- <td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
+								<img t-if="logo_base64"
+									t-att-src="'data:image/png;base64,%s' % logo_base64"
+									style="height:50px;"/>
+							</td> -->
+							<!-- <t t-if="data.image">
+								<td style="width:23%; text-align:center; vertical-align:middle; padding: 5px;">
+									<img t-att-src="'data:image/png;base64,%s' % o.image.decode('utf-8')"
+										style="width: 100%; height: auto; max-height: 900px; object-fit: contain;"/>
+								</td>
+							</t> -->
+
+							<td style="width:20%; text-align:center; vertical-align:middle; padding: 5px;">
+								<img t-att-src="'/lerm_civil/static/src/img/genstru_logo.png'"
+								style="height:75px;"/>
+							</td>
+
+							<td style="width:77%; border:1px solid #000; padding:0;">
+								<table style="width:100%; border-collapse:collapse; font-size:12px;">
+
+									<tr>
+										<td colspan="6" style="border:1px solid #000; padding:4px;">
+											<b>GENSTRU CONSULTANTS PVT. LTD</b>
+										</td>
+									</tr>
+
+								
+									<tr>
+										<td style="border:1px solid #000; padding:3px;"><b>Doc. Name</b></td>
+										<td colspan="5" style="padding-left: 10px;">Laboratory test results -<span t-field="o.doc_consolidation_name"/></td>
+
+									</tr>
+
+									<tr>
+										<td style="border:1px solid #000; padding:3px;"><b>Doc. No.</b></td>
+										<td colspan="3" style="border:1px solid #000; padding:3px;">
+											<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')], limit=1).report_format_no"/>
+										</td>
+
+										<td style="border:1px solid #000; padding:3px;"><b>Issue No</b></td>
+										<td style="border:1px solid #000; padding:3px;">
+										<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')], limit=1).issue_no"/>
+										</td>
+									</tr>
+
+									<!-- <tr>
+										<td style="border:1px solid #000; padding:3px;"><b>Rev. No</b></td>
+										<td style="border:1px solid #000; padding:3px;">
+										<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')], limit=1).revision_no"/>
+										
+										</td>
+
+										<td style="border:1px solid #000; padding:3px;"><b>Rev. Dt</b></td>
+										<td style="border:1px solid #000; padding:3px;">
+										
+										<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')], limit=1).issue_date.strftime('%d/%m/%y')"/>
+										</td>
+
+										<td style="border:1px solid #000; padding:3px;"><b>Issue Dt</b></td>
+										<td style="border:1px solid #000; padding:3px;">
+										<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')], limit=1).revision_date.strftime('%d/%m/%y')"/>
+										</td>
+									</tr> -->
+
+									<t t-set="param"
+									t-value="env['lerm.parameter.master']
+									.search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')], limit=1)"/>
+
+									<tr>
+										<td style="border:1px solid #000; padding:3px;"><b>Rev. No</b></td>
+										<td style="border:1px solid #000; padding:3px;">
+											<span t-esc="param.revision_no or ''"/>
+										</td>
+
+										<td style="border:1px solid #000; padding:3px;"><b>Rev. Dt</b></td>
+										<td style="border:1px solid #000; padding:3px;">
+											<span t-esc="param.revision_date.strftime('%d/%m/%y') if param and param.revision_date else ''"/>
+										</td>
+
+										<td style="border:1px solid #000; padding:3px;"><b>Issue Dt</b></td>
+										<td style="border:1px solid #000; padding:3px;">
+											<span t-esc="param.issue_date.strftime('%d/%m/%y') if param and param.issue_date else ''"/>
+										</td>
+									</tr>
+
+								</table>
+							</td>
+
+						</tr>
+					</table>
+				</div>
+
+				<table style="width:100%; border-collapse:collapse; font-size:13px;margin-top:5px;">
+					<tr>
+						<td colspan="6" style="border:1px solid black; padding:6px; text-align:center; font-weight:bold;">
+						DETERMINATION OF CONSOLIDATION PROPERTIES
+						</td>
+
+						
+					</tr>
+
+
+					<tr>
+						<td colspan="2" style="border:1px solid black; padding:4px;">
+							<b>Test Method/Reference Code :</b>
+							<span>
+						
+							<t t-if="not eln.grade_id">
+								<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')],limit=1).test_method.test_method"/>
+							</t>
+
+						
+							<t t-if="eln.grade_id">
+								<t t-set="printed" t-value="False"/>
+
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')],limit=1).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade and parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+										<t t-set="printed" t-value="True"/>
+									</t>
+								</t>
+
+							
+								<t t-if="printed == False">
+									<span t-esc="env['lerm.parameter.master'].search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')],limit=1).test_method.test_method"/>
+								</t>
+							</t>
+						</span>
+						</td>
+						<td colspan="1" style="border:1px solid black; padding:4px;text-align:left;">
+							<b>Annexure- II to ULR</b>
+							
+						</td>
+						<td colspan="1" style="border:1px solid black; padding:4px;">
+							
+							<span style=" padding:2px 6px;">
+								<span t-field="o.sample_id.ulr_no"/>
+							</span>
+						</td>
+					</tr>
+					
+
+					
+
+					<tr>
+						<td colspan="6" style="border:1px solid black; padding:4px;">
+							<b>Project Name :</b>
+							<span t-field="o.srf_id.name_work"/>
+						</td>
+					</tr>
+					
+					
+
+					<tr>
+						<td colspan="6" style="border:1px solid black; padding:4px;">
+							<b>Name &amp; Address of Customer :</b>
+						
+								<!-- <span t-field="o.srf_id.customer.name"/> -->
+								<span t-field="o.srf_id.customer.street"/>
+								<span t-field="o.srf_id.customer.street2"/>
+								<span t-field="o.srf_id.customer.city"/>
+								<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
+								<span t-field="o.srf_id.customer.state_id"/> ,
+								<span t-field="o.srf_id.customer.country_id"/>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="6" style="border:1px solid black; padding:4px;">
+							<b>Report No.:   </b><span t-field="o.sample_id.kes_no"/> </td>
+						
+					</tr>
+					
+
+					<tr>
+					
+						<td style="border:1px solid black; padding:6px; font-weight:bold;">
+							Location /BH ID
+						</td>
+						<td style="border:1px solid black; padding:6px;">
+							<t t-esc="consolidation.bh_id"/>
+						</td>
+						<td style="border:1px solid black; padding:6px; font-weight:bold;">
+							Date Sample Received
+						</td>
+						<td style="border:1px solid black; padding:6px;">
+							<span t-field="o.sample_id.sample_received_date"/>
+						</td>
+					</tr>
+
+					<tr>
+						<td style="border:1px solid black; padding:6px; font-weight:bold;">
+							Sample ID
+						</td>
+						<td style="border:1px solid black; padding:6px;">
+							<span t-esc="consolidation.lab_id"/>
+						</td>
+						
+						<td style="border:1px solid black; padding:6px; font-weight:bold;">
+							Starting Date
+						</td>
+						<td style="border:1px solid black; padding:6px;">
+								<span t-field="consolidation.start_date" />
+						</td>
+					</tr>
+
+					<tr>
+						<td style="border:1px solid black; padding:6px; font-weight:bold;">
+							Depth (m)
+						</td>
+						<td style="border:1px solid black; padding:6px;">
+							<t t-esc="consolidation.depth"/>
+						</td>
+						<td style="border:1px solid black; padding:6px; font-weight:bold;">
+							Completion Date
+						</td>
+						<td style="border:1px solid black; padding:6px;">
+								<span t-field="consolidation.end_date" />
+						</td>
+					</tr>
+
+					<tr>
+						<td style="border:1px solid black; padding:6px; font-weight:bold;">
+							Specific Gravity :
+						</td>
+						<td style="border:1px solid black; padding:6px;">
+							<t t-esc="consolidation.consolidation_specific_gravity"/>
+						</td>
+						<td style="border:1px solid black; padding:6px; font-weight:bold;">
+							Sample Type and Condition:
+						</td>
+						<td style="border:1px solid black; padding:6px;">
+								<span t-field="consolidation.sample_type_consolidation" />
+						</td>
+					</tr>
+
+					
+
+					
+
+				
+
+
+				</table>
+
+				<table style="width:100%; border-collapse:collapse; font-size:13px;margin-top:5px;">
+					<tr>
+						<th colspan="3" style="border:1px solid black;font-weight:bold; ">
+							Property of Sample
+						</th>
+						<th colspan="5" style="border:1px solid black; text-align:center;font-weight:bold;">
+							Before the Test
+						</th>
+					</tr>
+
+					<tr>
+						<td style="border:1px solid black;font-weight:bold;">Water Content, wc</td>
+						<td style="border:1px solid black; text-align:center;font-weight:bold;">(%)</td>
+						<td colspan="6" style="border:1px solid black; text-align:center;">
+							<t t-esc="consolidation.con_water_content" t-options='{"widget": "float", "precision": 2}'/>
+						</td>
+					</tr>
+
+					<tr>
+						<td style="border:1px solid black;font-weight:bold;">Bulk Density of Soil, γb</td>
+						<td style="border:1px solid black; text-align:center;font-weight:bold;">(gm/cc)</td>
+						<td colspan="6" style="border:1px solid black; text-align:center;">
+							<t t-esc="consolidation.con_bulk_density_soil" t-options='{"widget": "float", "precision": 2}'/>
+						</td>
+					</tr>
+
+					<tr>
+						<td style="border:1px solid black;font-weight:bold;">Dry Density of Soil, γd</td>
+						<td style="border:1px solid black; text-align:center;font-weight:bold;">(gm/cc)</td>
+						<td colspan="6" style="border:1px solid black; text-align:center;">
+							<t t-esc="consolidation.con_dry_density_soil" t-options='{"widget": "float", "precision": 2}'/>
+						</td>
+					</tr>
+
+					<tr>
+						<td style="border:1px solid black;font-weight:bold;">Void Ratio, e</td>
+						<td style="border:1px solid black;font-weight:bold; text-align:center;"></td>
+						<td colspan="6" style="border:1px solid black; text-align:center;">
+							<t t-esc="consolidation.con_swell_void_ratio" t-options='{"widget": "float", "precision": 2}'/>
+						</td>
+					</tr>
+
+					<tr>
+						<td style="border:1px solid black;font-weight:bold;">Degree of Saturation, Sr</td>
+						<td style="border:1px solid black; font-weight:bold;text-align:center;">(%)</td>
+						<td colspan="6" style="border:1px solid black; text-align:center;">
+							<t t-esc="consolidation.con_degree_sat" t-options='{"widget": "float", "precision": 2}'/>
+						</td>
+					</tr>
+				</table>
+
+
+						
+			
+
+						
+
+
+						
+
+						
+
+				<t t-foreach="o.consolidation_lines.filtered(lambda c: c.is_checked)" t-as="con">
+
+					<t t-set="loading_lines" t-value="con.consolidation_output_ids.filtered(lambda l: l.cylces == '1st Cycle Loading')"/>
+
+					<t t-if="loading_lines">
+						<t t-set="loading_lines" t-value="sorted(loading_lines, key=lambda l: l.applied_pressure)"/>
+
+						<table style="width:100%; border-collapse:collapse; font-size:13px; margin-top:5px;">
+
+							<tr>
+								<th style="border:1px solid black; text-align:center;">
+									Cycle
+								</th>
+								<th t-att-colspan="len(loading_lines)" style="border:1px solid black; text-align:center; ">
+									1st Cycle Loading
+								</th>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; font-weight:bold;">
+									Applied Pressure, kg/cm²
+								</td>
+								<t t-foreach="loading_lines" t-as="l">
+									<td style="border:1px solid black; text-align:center;">
+										<t t-esc="'%.2f' % (l.applied_pressure or 0.0)"/>
+									</td>
+								</t>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; font-weight:bold;">
+									e = (H/Hs) − 1
+								</td>
+								<t t-foreach="loading_lines" t-as="l">
+									<td style="border:1px solid black; text-align:center;">
+										<t t-esc="'%.3f' % (l.e_void or 0.0)"/>
+									</td>
+								</t>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; font-weight:bold;">
+									aᵥ, cm²/kg
+								</td>
+								<t t-foreach="loading_lines" t-as="l">
+									<td style="border:1px solid black; text-align:center;">
+										<t t-if="l.av">
+											<t t-esc="'%.3f' % l.av"/>
+										</t>
+									</td>
+								</t>
+							</tr>
+
+							<tr>
+								<td style="border:1px solid black; font-weight:bold;">
+								mᵥ, cm²/kg
+								</td>
+								<t t-foreach="loading_lines" t-as="l">
+									<td style="border:1px solid black; text-align:center;">
+										<t t-if="l.mv">
+											<t t-esc="'%.3f' % l.mv"/>
+										</t>
+									</td>
+								</t>
+							</tr>
+
+						</table>
+
+					</t>
+				</t>
+
+				<t t-if="consolidation.consolidation_graph">
+					<div style="text-align:center; width: 100%;">
+						<img t-att-src="'data:image/png;base64,%s' % consolidation.consolidation_graph.decode('utf-8')"
+							style="width: 100%; height: auto; max-height: 450px; object-fit: contain;"/>
+					</div>
+					
+				</t>
+
+				<!-- <div style="margin-top:20px; text-align:center; font-weight:bold;">
+					Preconsolidation Pressure : = <span t-esc="consolidation.pc_y" t-options='{"widget": "float", "precision": 2}'/> 
+				</div> -->
+
+				<div style="margin-top:5px; text-align:center; font-weight:bold;">
+					PC : = <span t-esc="consolidation.pc_y" t-options='{"widget": "float", "precision": 2}'/> <span>   kg/cm2 </span>
+
+				</div>
+
+				<div style="text-align:center; font-weight:bold;">
+					Compression Index (Cc) : = <span t-esc="consolidation.cc_final" t-options='{"widget": "float", "precision": 3}'/>
+				</div>
+
+				<div style="text-align:center; font-weight:bold;">
+					Recompression Index, Cr  : = <span t-esc="consolidation.cr" t-options='{"widget": "float", "precision": 4}'/>
+				</div>
+
+				
+
+				<!-- <div style="margin-top:5px; text-align:center; font-weight:bold;">
+					Depth : = <span t-esc="consolidation.pc_depth"/>
+				</div>
+
+				<div style="margin-top:5px; text-align:center; font-weight:bold;">
+					Overburden : = <span t-esc="consolidation.pc_overburden" t-options='{"widget": "float", "precision": 2}'/> kg/m2
+				</div>
+
+				<div style="margin-top:5px; text-align:center; font-weight:bold;">
+					OCR : = <span t-esc="consolidation.ocr" t-options='{"widget": "float", "precision": 2}'/> Normally Consolidated
+				</div> -->
+
+
+
+			
+			
+				
+
+			</t>
+		</t>
+	</t>
+</template>
+
+
+
+
+
+<record id="action_report_cbr" model="ir.actions.report">
+    <field name="name">CBR Report</field>
+    <field name="model">mechanical.soil1</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">soil1.report_cbr_template</field>
+    <field name="report_file">soil1.report_cbr_template</field>
+</record>
+
+<record id="action_report_gsa" model="ir.actions.report">
+    <field name="name">GSA Report</field>
+    <field name="model">mechanical.soil1</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">soil1.report_gsa_template</field>
+    <field name="report_file">soil1.report_gsa_template</field>
+</record>
+
+
+<record id="action_proctor_gsa" model="ir.actions.report">
+    <field name="name">Proctor Report</field>
+    <field name="model">mechanical.soil1</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">soil1.report_proctor_template</field>
+    <field name="report_file">soil1.report_proctor_template</field>
+</record>
+
+
+<record id="action_traxial_gsa" model="ir.actions.report">
+    <field name="name">Triaxial Report</field>
+    <field name="model">mechanical.soil1</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">soil1.report_triaxial_template</field>
+    <field name="report_file">soil1.report_triaxial_template</field>
+</record>
+
+
+<record id="action_swelling_gsa" model="ir.actions.report">
+    <field name="name">Swelling Report</field>
+    <field name="model">mechanical.soil1</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">soil1.report_swelling_template</field>
+    <field name="report_file">soil1.report_swelling_template</field>
+</record>
+
+
+<record id="action_direct_gsa" model="ir.actions.report">
+    <field name="name">Direct Shear Report</field>
+    <field name="model">mechanical.soil1</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">soil1.report_direct_template</field>
+    <field name="report_file">soil1.report_direct_template</field>
+</record>
+
+<record id="action_consoildation_gsa" model="ir.actions.report">
+    <field name="name">Consolidation Report</field>
+    <field name="model">mechanical.soil1</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">soil1.report_consoilidation_template</field>
+    <field name="report_file">soil1.report_consoilidation_template</field>
+</record>
+
+</odoo>
