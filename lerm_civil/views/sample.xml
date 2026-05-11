@@ -44,7 +44,7 @@
                         <button type="object" name="reallocate_sample" groups="lerm_civil.lerm_job_allocation" string="Reallocate"
                             invisible="state in ('1-allotment_pending')"/>
 
-                        <button type="object" name="cancel_sample" string="Cancel Sample"
+                        <button type="object" name="cancel_sample" groups="lerm_civil.lerm_sample_verification,lerm_civil.lerm_sample_approval" string="Cancel Sample"
                             invisible="state not in ('1-allotment_pending', '2-alloted', '3-pending_verification', '4-in_report', '5-pending_approval')"/>
 
                         <field name="state" readonly="1" widget="statusbar" invisible="context.is_local == True"/>

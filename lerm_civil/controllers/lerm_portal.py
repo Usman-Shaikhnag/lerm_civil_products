@@ -208,6 +208,26 @@ class LermSampleController(http.Controller):
 
         
     
+    # @http.route('/sampleRequests', type='http', auth='user', website=True)
+    # def sampleRequests(self, **kwargs):
+    #     user = request.env.user
+    #     partner_id = user.partner_id
+    #     child_users = request.env['portal.user.master'].sudo().search([('customer','=',partner_id.id)]).child_users
+    #     partner_ids = [partner_id.id]
+    #     for child in child_users:
+    #         partner_ids.append(child.partner_id.id)
+    #     # import wdb; wdb.set_trace()
+        
+    #     projects = request.env['res.partner.project'].sudo().search([('contact_id', 'in', partner_ids)])
+    #     customers = request.env['res.partner'].sudo().search([('id', 'in', partner_ids)])
+        
+        
+    #     return request.render('lerm_civil.sample_requests_form', {
+    #         'available_projects': projects,
+    #         'customers':customers
+    #     })
+
+
     @http.route('/sampleRequests', type='http', auth='user', website=True)
     def sampleRequests(self, **kwargs):
         user = request.env.user
@@ -222,8 +242,9 @@ class LermSampleController(http.Controller):
         customers = request.env['res.partner'].sudo().search([('id', 'in', partner_ids)])
         
         
-        return request.render('lerm_civil.sample_requests_form', {
-            'projects': projects,
+        return request.render('lerm_civil.lerm_sample_requests_form', {
+            'page_name': 'sample_requests_form',
+            'available_projects': projects,
             'customers':customers
         })
     

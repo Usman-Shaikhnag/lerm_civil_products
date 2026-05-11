@@ -216,7 +216,7 @@
                                             <div class="col-md-5">
                                                 <select id="project_select" name="project_id" class="form-control" required="1">
                                                     <option value="">-- Select Project --</option>
-                                                    <t t-foreach="projects" t-as="project">
+                                                    <t t-foreach="available_projects" t-as="project">
                                                         <option t-att-value="project.id" t-esc="project.project_name"/>
                                                     </t>
                                                 </select>
@@ -436,7 +436,707 @@
                                     data.result.projects.forEach(project => {
                                         const option = document.createElement('option');
                                         option.value = project.id;
-                                        option.textContent = project.name;
+                                        option.textContent = project.project_name;
+                                        projectSelect.appendChild(option);
+                                    });
+                                    
+                                    console.log(`Loaded ${data.result.projects.length} projects`);
+                                } else {
+                                    // No projects found
+                                    const option = document.createElement('option');
+                                    option.value = '';
+                                    option.textContent = 'No projects available';
+                                    projectSelect.appendChild(option);
+                                    projectSelect.disabled = true;
+                                    
+                                    console.warn('No projects found in response');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                projectSelect.innerHTML = '<option value="">Error loading projects</option>';
+                            });
+                        }
+
+                    }
+                    function changeDiscipline(element) {
+                        const disciplineId = element.value;
+                        const groupSelect = document.getElementById('group_select');
+                        const productSelect = document.getElementById('product_select');
+                        
+                        // Reset dependent dropdowns
+                        groupSelect.innerHTML = '<option value="">-- Select Group --</option>';
+                        groupSelect.disabled = true;
+                        productSelect.innerHTML = '<option value="">-- Select Product --</option>';
+                        productSelect.disabled = true;
+                        
+                        if (disciplineId) {
+                            // Show loading
+                            groupSelect.innerHTML = '<option value="">Loading...</option>';
+                            // Fetch groups for selected discipline
+                            fetch('/lerm/get_groups', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    
+                                },
+                                body: JSON.stringify({
+                                    discipline_id: disciplineId
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                const groupSelect = document.getElementById('group_select');
+        
+                                // Clear existing options except the first one
+                                groupSelect.innerHTML = '<option value="">-- Select Group --</option>';
+                                
+                                // Check if we have groups in the response
+                                if (data.result && data.result.groups && data.result.groups.length > 0) {
+                                    // Enable the dropdown
+                                    groupSelect.disabled = false;
+                                    
+                                    // Add each group as an option
+                                    data.result.groups.forEach(group => {
+                                        const option = document.createElement('option');
+                                        option.value = group.id;
+                                        option.textContent = group.name;
+                                        groupSelect.appendChild(option);
+                                    });
+                                    
+                                    console.log(`Loaded ${data.result.groups.length} groups`);
+                                } else {
+                                    // No groups found
+                                    const option = document.createElement('option');
+                                    option.value = '';
+                                    option.textContent = 'No groups available';
+                                    groupSelect.appendChild(option);
+                                    groupSelect.disabled = true;
+                                    
+                                    console.warn('No groups found in response');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                groupSelect.innerHTML = '<option value="">Error loading groups</option>';
+                            });
+                        }
+                    }
+                    function changeProduct(element) {
+                        const productId = element.value;
+                        const parameterSelect = document.getElementById('parameter_select');
+
+                        if (productId) {
+                            // Show loading
+                            parameterSelect.innerHTML = '<option value="">Loading...</option>';
+                            // Fetch groups for selected discipline
+                            fetch('/lerm/get_parameters', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    
+                                },
+                                body: JSON.stringify({
+                                    product_id: productId
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                const gradeSelect = document.getElementById('grade_select');
+                                const sizeSelect = document.getElementById('size_select');
+
+                                const parameterSelect = document.getElementById('parameter_select');
+
+                                gradeSelect.innerHTML = '<option value="">-- Select Grade --</option>';
+                                if (data.result && data.result.grades && data.result.grades.length > 0) {
+                                    gradeSelect.disabled = false;
+                                    
+                                    // Add each grades as an option
+                                    data.result.grades.forEach(grade => {
+                                        const option = document.createElement('option');
+                                        option.value = grade.id;
+                                        option.textContent = grade.name;
+                                        gradeSelect.appendChild(option);
+                                    });
+                                    
+                                }
+                                sizeSelect.innerHTML = '<option value="">-- Select Size --</option>';
+                                if (data.result && data.result.sizes && data.result.sizes.length > 0) {
+                                    sizeSelect.disabled = false;
+                                    
+                                    // Add each sizes as an option
+                                    data.result.sizes.forEach(size => {
+                                        const option = document.createElement('option');
+                                        option.value = size.id;
+                                        option.textContent = size.name;
+                                        sizeSelect.appendChild(option);
+                                    });
+                                    
+                                }
+        
+                                // Clear existing options except the first one
+                                parameterSelect.innerHTML = '<option value="">-- Select Parameters --</option>';
+                                
+                                // Check if we have groups in the response
+                                if (data.result && data.result.parameters && data.result.parameters.length > 0) {
+                                    // Enable the dropdown
+                                    parameterSelect.disabled = false;
+                                    
+                                    // Add each parameters as an option
+                                    data.result.parameters.forEach(parameter => {
+                                        const option = document.createElement('option');
+                                        option.value = parameter.id;
+                                        option.textContent = parameter.name;
+                                        parameterSelect.appendChild(option);
+                                    });
+                                    
+                                    console.log(`Loaded ${data.result.parameters.length} parameters`);
+                                } else {
+                                    // No parameters found
+                                    const option = document.createElement('option');
+                                    option.value = '';
+                                    option.textContent = 'No parameters available';
+                                    parameterSelect.appendChild(option);
+                                    parameterSelect.disabled = true;
+                                    
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                parameterSelect.innerHTML = '<option value="">Error loading parameters</option>';
+                            });
+                        }
+
+                    }
+
+                    function changeGroup(element) {
+                        const groupId = element.value;
+                        const productSelect = document.getElementById('product_select');
+                        
+                        // Reset dependent dropdowns
+                        productSelect.innerHTML = '<option value="">-- Select Group --</option>';
+                        productSelect.disabled = true;
+                        productSelect.innerHTML = '<option value="">-- Select Product --</option>';
+                        productSelect.disabled = true;
+                        selected_parameters.innerHTML = '' 
+                        
+                        if (groupId) {
+                            // Show loading
+                            productSelect.innerHTML = '<option value="">Loading...</option>';
+                            // Fetch groups for selected discipline
+                            fetch('/lerm/get_products', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    
+                                },
+                                body: JSON.stringify({
+                                    group_id: groupId
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                const productSelect = document.getElementById('product_select');
+        
+                                // Clear existing options except the first one
+                                productSelect.innerHTML = '<option value="">-- Select Product --</option>';
+                                
+                                // Check if we have groups in the response
+                                if (data.result && data.result.products && data.result.products.length > 0) {
+                                    // Enable the dropdown
+                                    productSelect.disabled = false;
+                                    
+                                    // Add each products as an option
+                                    data.result.products.forEach(product => {
+                                        const option = document.createElement('option');
+                                        option.value = product.id;
+                                        option.textContent = product.name;
+                                        productSelect.appendChild(option);
+                                    });
+                                    
+                                    console.log(`Loaded ${data.result.products.length} products`);
+                                } else {
+                                    // No products found
+                                    const option = document.createElement('option');
+                                    option.value = '';
+                                    option.textContent = 'No products available';
+                                    productSelect.appendChild(option);
+                                    productSelect.disabled = true;
+                                    
+                                    console.warn('No products found in response');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                productSelect.innerHTML = '<option value="">Error loading products</option>';
+                            });
+                        }
+                    }
+
+                    <!-- parameter master  -->
+                    var selectedParameters = [];
+        
+                    // Open parameter modal
+                    function openParameterModal() {
+                        // Load parameters if not already loaded
+                        if ($('#parameterList').children().length === 0) {
+                            loadParameters();
+                        }
+                        $('#parameterModal').modal('show');
+                    }
+                    
+                    // Fetch parameters from server
+                    function loadParameters() {
+                        $('#parameterList').html('<div class="col-md-12 text-center"><i class="fa fa-spinner"/> Loading parameters...</div>');
+                        
+                        fetch('/lerm/get_parameters', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('input[name="csrf_token"]').value
+                            },
+                            body: JSON.stringify({})
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.result && data.result.parameters) {
+                                renderParameters(data.result.parameters);
+                            } else {
+                                <!-- $('#parameterList').html('<div class="col-md-12 text-danger">Error loading parameters</div>'); -->
+                                $('#parameterList').html('<div class="col-md-12 text-danger"></div>');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                    }
+
+
+                    function saveParameters() {
+                        const selectedOptions = Array.from(document.getElementById('parameter_select').selectedOptions);
+                        
+                        selectedParameters = selectedOptions.map(opt => ({
+                            id: opt.value,
+                            name: opt.text
+                        }));
+
+                        // Render selected parameters
+                        const selectedDiv = document.getElementById('selected_parameters');
+                        selectedDiv.innerHTML = '';
+                        selectedParameters.forEach(param => {
+                            const badge = document.createElement('span');
+                            
+                            badge.innerText = param.name;
+                            selectedDiv.appendChild(badge);
+                        });
+
+                        // Store IDs in hidden input
+                        document.getElementById('parameter_ids').value = selectedParameters.map(p => p.id).join(',');
+
+                        // Close modal
+                        $('#parameterModal').modal('hide');
+                    }
+                    
+                    
+                ]]>
+                    function openLineModal() {
+                        $('#lineModal').modal('show');
+                    }
+                    
+                    function addLineItem() {
+                        const productId = product_select.value 
+                        const groupId = group_select.value 
+                        const gradeId = grade_select.value 
+                        const sizeId = size_select.value 
+                        const disciplineId = discipline_select.value 
+                        const groupName = group_select.selectedOptions[0].childNodes[0].textContent 
+                        const gradeName = grade_select.selectedOptions[0].childNodes[0].textContent 
+                        const sizeName = size_select.selectedOptions[0].childNodes[0].textContent 
+                        const productName = product_select.selectedOptions[0].childNodes[0].textContent 
+                        const quantity = parseInt($('#modal_quantity').val());
+                        const description = $('#modal_description').val();
+                        
+                        if (!productId) {
+                            alert('Please select a product');
+                            return;
+                        }
+                        let parameters = ''
+                        for(let i=0;i&lt;=selectedParameters.length-1;i++){
+                            if(i &lt; selectedParameters.length-1){
+                                parameters = parameters + selectedParameters[i].name + ","
+                            }else{
+                                parameters = parameters + selectedParameters[i].name 
+                            }
+                        }
+                        let parameters_ids = [];
+                        for(let i = 0; i &lt; selectedParameters.length; i++) {
+                            parameters_ids.push(selectedParameters[i].id);
+                        }
+                        let rowCount = document.getElementById('samples_table').children[1].children.length
+                        <!-- debugger; -->
+                        for(let i=0;i&lt;quantity;i++){
+                            let discipline_id = 'discipline_id_'+rowCount
+                            let group_id = 'group_id_'+rowCount
+                            let product_name = 'product_name_'+rowCount
+                            let grade_id = 'grade_id_'+rowCount
+                            let size_id = 'size_id_'+rowCount
+                            let quantity_name = 'quantity_'+rowCount
+                            let description_name = 'description_'+rowCount
+                            let parameter_line = 'parameter_line_'+rowCount
+
+
+                        
+                        
+                            const newRow = `
+                                <tr>
+                                    <td>
+                                        <input type="hidden" name="${discipline_id}" value="${disciplineId}"/>
+                                        <input type="hidden" name="${group_id}" value="${groupId}"/>
+                                        ${groupName}
+                                    </td>
+                                    <td>
+
+                                        <input type="hidden" name="${product_name}" value="${productId}"/>
+                                        ${productName}
+                                    </td>
+                                    <td>
+
+                                        <input type="hidden" name="${grade_id}" value="${gradeId}"/>
+                                        ${gradeName}
+                                    </td>
+                                    <td>
+
+                                        <input type="hidden" name="${size_id}" value="${sizeId}"/>
+                                        ${sizeName}
+                                    </td>
+                                    
+                                    <!-- <td>
+                                        <input type="hidden" name="${quantity_name}" value="${quantity}"/>
+                                        ${quantity}
+                                    </td> -->
+                                    <td>
+                                        <input type="hidden" name="${description_name}" value="${description}"/>
+                                        ${description}
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="${parameter_line}" value="${parameters_ids}"/>
+                                        ${parameters}
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="$(this).closest('tr').remove()">
+                                            <i class="fa fa-trash"/>
+                                        </button>
+                                    </td>
+                                </tr>
+                            `;
+                            
+                            $('#line_items').append(newRow);
+                            $('#lineModal').modal('hide');
+                            rowCount = rowCount + 1;
+                        }
+                        // Reset modal fields
+                        <!-- $('#modal_product_id').val(''); -->
+                        product_select.value = ""
+                        group_select.value = ""
+                        discipline_select.value = ""
+                        parameter_select.value = ""
+                        $('#modal_quantity').val('1');
+                        $('#modal_description').val('');
+
+                        product_select.value = ""
+                        grade_select.value = ""
+                        size_select.value = ""
+                        
+                        const selected_parameters = document.getElementById('selected_parameters');
+                        while (selected_parameters.firstChild) {
+                            selected_parameters.removeChild(selected_parameters.firstChild);
+                        }
+                        
+
+                    }
+                </script>
+                <style>
+                    .parameter-card {
+                        cursor: pointer;
+                        transition: all 0.2s;
+                    }
+                    .parameter-card:hover {
+                        box-shadow: 0 0 5px rgba(0,0,0,0.1);
+                    }
+                    .parameter-card.border-primary {
+                        background-color: rgba(0,123,255,0.05);
+                    }
+                    #selected_parameters .badge {
+                        font-size: 0.9rem;
+                        padding: 0.35em 0.65em;
+                    }
+                    #selected_parameters .close {
+                        font-size: 1rem;
+                        line-height: 1;
+                    }
+                </style>
+            </t>
+    </template>
+
+    <template id="lerm_sample_requests_form" name="Sample Request Form">
+        <!-- <t t-call="portal.portal_layout">
+            <div class="container">
+
+            </div>
+        </t> -->
+        <t t-call="portal.portal_layout">
+                <t t-set="title">Sample Request Form</t>
+                <div class="container mt16 mb16">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form method="post" class="oe_form" enctype="multipart/form-data" t-att-action="'/createSampleRequest'">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">New Request</h3>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-group row">
+                                            
+
+                                            <label class="col-md-1 col-form-label">Alias</label>
+                                            <div class="col-md-11">
+                                                <select id="customer_select" name="customer_id" class="form-control" onchange="changeCustomer(this)" required="1">
+                                                    <option value="">-- Select Alias --</option>
+                                                    <t t-foreach="customers" t-as="customer">
+                                                        <option t-att-value="customer.id" t-esc="customer.name"/>
+                                                    </t>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!-- Project Selection -->
+                                        <div class="form-group row">
+                                            <label class="col-md-1 col-form-label">Project</label>
+                                            <div class="col-md-5">
+                                                <select id="project_select" name="project_id" class="form-control" required="1">
+                                                    <option value="">-- Select Project --</option>
+                                                    <t t-foreach="available_projects" t-as="proj">
+                                                        <option t-att-value="proj.id" t-esc="proj.project_name"/>
+                                                    </t>
+                                                </select>
+                                            </div>
+                                            <label class="col-md-1 col-form-label">Attachment</label>
+                                            <div class="col-md-5">
+                                                <input type="file" id="attachment" name="attachment" class="form-control"/>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Date Field -->
+                                        <div class="form-group row">
+                                            <label class="col-md-1 col-form-label">Date</label>
+                                            <div class="col-md-2">
+                                                <input type="date" name="request_date" class="form-control" t-att-value="current_date" required="1"/>
+                                            </div>
+
+                                            <label class="col-md-2 col-form-label">Billing Party</label>
+                                            <div class="col-md-7">
+                                                <select id="billing_customer_select" name="billing_customer_id" class="form-control">
+                                                    <option value="">-- Select Billing Party --</option>
+                                                    <t t-foreach="customers" t-as="billing_customer">
+                                                        <option t-att-value="billing_customer.id" t-esc="billing_customer.name"/>
+                                                    </t>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            
+                                        </div>
+                                        
+                                        <!-- One2Many Table -->
+                                        <div class="form-group row" style="margin-bottom:1rem;">
+                                            <label class="col-md-1 col-form-label">Samples</label>
+                                            <div class="col-md-11">
+                                                <table class="table table-bordered" id="samples_table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Group</th>
+                                                            <th>Product</th>
+                                                            <th>Grade</th>
+                                                            <th>Size</th>
+                                                            <th>Description</th>
+                                                            <th>Parameters</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="line_items">
+                                                        <!-- Lines will be added here via JS -->
+                                                    </tbody>
+                                                </table>
+                                                <button type="button" class="btn btn-primary" onclick="openLineModal()">
+                                                    <i class="fa fa-plus"/> Add Sample
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="text-right">
+                                            <button type="submit" class="btn btn-primary">Submit Request</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Modal for adding lines -->
+                <div class="modal fade" id="lineModal" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Add Sample</h5>
+                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">Close</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label>Discipline</label>
+                                    <select id="discipline_select" class="form-control discipline-select" onchange="changeDiscipline(this)">
+                                        <option value="">-- Select Discipline --</option>
+                                        <t t-foreach="env['lerm_civil.discipline'].sudo().search([])" t-as="discipline">
+                                            <option t-att-value="discipline.id" t-esc="discipline.discipline"/>
+                                        </t>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Group</label>
+                                    <select id="group_select" class="form-control group-select" onchange="changeGroup(this)">
+                                        <option value="">-- Select Group --</option>
+                                        <!-- Groups will be loaded via JS -->
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Product</label>
+                                    <select id="product_select" class="form-control product-select" onchange="changeProduct(this)">
+                                        <option value="">-- Select Product --</option>
+                                        <!-- Products will be loaded via JS -->
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Grade</label>
+                                    <select id="grade_select" class="form-control product-select">
+                                        <option value="">-- Select Grade --</option>
+                                        <!-- Grades will be loaded via JS -->
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Size</label>
+                                    <select id="size_select" class="form-control product-select">
+                                        <option value="">-- Select Size --</option>
+                                        <!-- Sizes will be loaded via JS -->
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Quantity</label>
+                                    <input type="number" id="modal_quantity" class="form-control" value="1" min="1"/>
+                                </div>
+                                <div class="form-group">
+                                    <label>Description</label>
+                                    <textarea id="modal_description" class="form-control"></textarea>
+                                </div>
+                            </div>
+                            <!-- from here -->
+                            
+                            <div class="form-group" style="padding: 1rem;">
+                                <label>Parameters</label>
+                                <div class="parameter-selection">
+                                    <!-- Selected parameters will appear here -->
+                                    <div id="selected_parameters" class="mb-2"></div>
+                                    
+                                    <!-- Button to open parameter selection modal -->
+                                    <button type="button" class="btn btn-secondary" onclick="openParameterModal()">
+                                        <i class="fa fa-plus"/> Select Parameters
+                                    </button>
+                                    
+                                    <!-- Hidden field to store selected parameter IDs -->
+                                    <input type="hidden" name="parameter_ids" id="parameter_ids"/>
+                                </div>
+                            </div>
+                            <!-- Parameter Selection Modal -->
+                            <div class="modal fade" id="parameterModal" tabindex="-1" role="dialog">
+                                <div class="modal-dialog modal-lg" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Select Parameters</h5>
+                                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">close</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <label>Parameters</label>
+                                                <select id="parameter_select" class="form-control parameter-select" multiple="multiple">
+                                                    <!-- Parameters will be loaded via JS -->
+                                                    
+                                                </select>
+                                                <small class="form-text text-muted">Hold Ctrl/Cmd to select multiple parameters</small>
+                                            </div>
+                                            <div class="row" id="parameterList">
+                                                <!-- Parameters will be loaded here via JS -->
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <button type="button" class="btn btn-primary" onclick="saveParameters()">Save Parameters</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- to here  -->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-primary" onclick="addLineItem()">Add</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <script>
+                <![CDATA[
+                    function changeCustomer(element){
+                        const customer_id = element.value
+                        const projectSelect = document.getElementById('project_select');
+                        projectSelect.innerHTML = '<option value="">-- Select Group --</option>';
+                        
+
+                        if (customer_id) {
+                            // Show loading
+                            projectSelect.innerHTML = '<option value="">Loading...</option>';
+                            // Fetch projects for selected discipline
+                            fetch('/lerm/get_projects', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    
+                                },
+                                body: JSON.stringify({
+                                    customer_id: customer_id
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                const projectSelect = document.getElementById('project_select');
+        
+                                // Clear existing options except the first one
+                                projectSelect.innerHTML = '<option value="">-- Select Group --</option>';
+                                
+                                // Check if we have projects in the response
+                                if (data.result && data.result.projects && data.result.projects.length > 0) {
+                                    // Enable the dropdown
+                                    projectSelect.disabled = false;
+                                    
+                                    // Add each project as an option
+                                    data.result.projects.forEach(project => {
+                                        const option = document.createElement('option');
+                                        option.value = project.id;
+                                        option.textContent = project.project_name;
                                         projectSelect.appendChild(option);
                                     });
                                     
