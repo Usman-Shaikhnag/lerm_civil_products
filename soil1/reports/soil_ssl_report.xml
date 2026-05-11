@@ -123,32 +123,13 @@
 							</tr>
 
 							<tr>
-								<td>Brand &amp; Grade :-</td>
-								<td>
-								<t t-if="o.sample_id.grade_id.grade">
-											<span t-field="o.sample_id.grade_id.grade"/>
-										</t>
-									<t t-else="">--</t>
-									</td>
+								
 
 								<td>Date of Test Initiation  :-</td>
 								<td>
 
 									<t t-if="o.start_date">
 											<span t-field="o.start_date"/>
-										</t>
-									<t t-else="">--</t>
-								</td>
-							</tr>
-
-							<tr>
-								
-
-								<td>Size  :-</td>
-								<td>
-
-										<t t-if="o.sample_id.size_id.size">
-											<span t-field="o.sample_id.size_id.size"/>
 										</t>
 									<t t-else="">--</t>
 								</td>
@@ -160,31 +141,18 @@
 										</t>
 									<t t-else="">--</t>
 								</td>
+
 							</tr>
 
 							<tr>
-								
-
-								<td>Week No.  :-</td>
-								<td>
-
-								--
-								</td>
 								<td>Sample ID  :-</td>
-								<td>
+								<td colspan="3">
 
 									<t t-if="o.sample_id.kes_no">
 											<span t-field="o.sample_id.kes_no"/>
 										</t>
 									<t t-else="">--</t>
 								</td>
-							</tr>
-
-							<tr>
-								<td colspan="1">Other Details:</td>
-								<td colspan="3">--</td>
-
-								
 							</tr>
 
 
@@ -207,6 +175,10 @@
 								</tr>
 
 						</table>
+					</div>
+
+					<div style="margin-top:10px;">
+					<h5 style="text-decoration: underline;">Physical Test Result :</h5>
 					</div>
 
 					
@@ -238,17 +210,19 @@
 									<th style="text-align: center;font-weight:bold;"><span t-esc="eln.material.specifications"/></th>
 								</tr>
 							</thead>
-							<tbody>
+							<tbody style="page-break-inside: avoid;">
 
 							<!-- Grain Sieve Analysis -->
 
 							
 								<!-- 🔹 Step 1: Filter valid rows (exclude 'pan') -->
-								<t t-set="valid_sieve_lines" t-value="[r for r in data.sieve_analysis_child_lines if r['sieve_size'] != 'pan']"/>
+								<t t-set="valid_sieve_lines" t-value="[r for r in data.sieve_analysis_child_lines if r['sieve_size'] and r['sieve_size'].lower() != 'pan']"/>
 								
 								<!-- 🔹 Step 2: Dynamic rowspan -->
 								<t t-set="extra_rows" t-value="3"/>
 								 <t t-set="rowspan_count" t-value="1 + len(valid_sieve_lines) + extra_rows"/>
+
+								 <t t-set="rowspan_count1" t-value="len(valid_sieve_lines) + extra_rows"/>
 								
 								<tr t-if="data.sieve_visible ">
 									<t t-set="sieve" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','12014fgr-5c56-475b-9a89-93a59c9ee3a2')])"/>
@@ -263,7 +237,7 @@
 									
 								</tr>
 
-								<tr t-if="data.sieve_visible" t-foreach="valid_sieve_lines" t-as="r">
+								<tr t-if="data.sieve_visible and r['sieve_size'] and r['sieve_size'].lower() != 'pan'" t-foreach="valid_sieve_lines" t-foreach-index="r_index" t-as="r">
 									
 									<td>
 							     		<span t-esc="r['sieve_size']"/>
@@ -276,7 +250,9 @@
 										</span>
 									</td>
 
-									<td style="text-align: center;">
+									<t t-if="r_index == 0">
+
+									<td t-att-rowspan="rowspan_count1" style="text-align: center;vertical-align:middle;">
 										<span>
 											<t t-foreach="sieve.parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -285,6 +261,8 @@
 											</t>
 										</span>
 									</td>
+
+								</t>
 
 									
 									
@@ -317,15 +295,7 @@
 										</span>
 									</td>
 
-									<td style="text-align: center;">
-										<span>
-											<t t-foreach="sieve.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-												</t>
-											</t>
-										</span>
-									</td>
+									
 
 									
 									
@@ -358,15 +328,7 @@
 										</span>
 									</td>
 
-									<td style="text-align: center;">
-										<span>
-											<t t-foreach="sieve.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-												</t>
-											</t>
-										</span>
-									</td>
+									
 
 									
 									
@@ -399,15 +361,7 @@
 										</span>
 									</td>
 
-									<td style="text-align: center;">
-										<span>
-											<t t-foreach="sieve.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-												</t>
-											</t>
-										</span>
-									</td>
+									
 
 									
 									
@@ -486,6 +440,8 @@
 
 					<t t-set="rowspan_count" t-value="1 + int(show_liquid_limit) + int(show_plastic_limit) + int(show_plasticity_index)"/>
 
+					<t t-set="rowspan_count1" t-value="int(show_liquid_limit) + int(show_plastic_limit) + int(show_plasticity_index)"/>
+
 
 					<tr t-if="data.atterberg_visible and (show_liquid_limit or show_plastic_limit or show_plasticity_index)">
 
@@ -515,7 +471,7 @@
 										</span>
 									</td>
 
-									<td style="text-align: center;">
+									<td t-att-rowspan="rowspan_count1"  style="text-align: center;vertical-align:middle;">
 										<span>
 											<t t-foreach="liquid_limit.parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -560,16 +516,7 @@
 										</span>
 									</td>
 
-									<td style="text-align: center;">
-										<span>
-											<t t-foreach="plastic_limit.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-												</t>
-											</t>
-										</span>
-									</td>
-
+									
 									
 									
 									<td style="text-align: center;font-weight:bold;">
@@ -605,15 +552,7 @@
 										</span>
 									</td>
 
-									<td style="text-align: center;">
-										<span>
-											<t t-foreach="plasticity_index.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-												</t>
-											</t>
-										</span>
-									</td>
+									
 
 									
 									
@@ -849,7 +788,7 @@
 						</td>
 
 						<td colspan="5">
-						 <span t-esc="cbr.parameter_name"/>
+						 <span t-esc="cbr.parameter_name"/>   (<span t-field="data.condition_cbr"/>)
 						</td>
 									
 					</tr>
@@ -1017,7 +956,7 @@
 					<t t-set="rowspan_count" t-value="1 + int(show_heavy_omc) + int(show_heavy_mdd)"/>
 
 
-					<tr t-if="data.light_comp_visible and (show_heavy_omc or show_heavy_mdd)">
+					<tr t-if="data.heavy_visible and (show_heavy_omc or show_heavy_mdd)">
 
 						<t t-set="heavy_mdd_omc" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','3210vbf-20fb-4843-aa0e-2ee981be0d7c')])"/>
 
@@ -1032,7 +971,7 @@
 									
 					</tr>
 
-					<tr t-if="data.light_comp_visible and show_heavy_omc">
+					<tr t-if="data.heavy_visible and show_heavy_omc">
 				   	    <t t-set="heavy_omc" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','dc97b59a-3514-4e1b-8754-5ecfc43bd1a5')])"/>
 					 <td>
 					    <span t-esc="heavy_omc.parameter_name"/>
@@ -1064,7 +1003,7 @@
 
                     </tr>
 
-					<tr t-if="data.light_comp_visible and show_heavy_mdd">
+					<tr t-if="data.heavy_visible and show_heavy_mdd">
 				   	    <t t-set="heavy_mdd" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','7fdc8311-213d-4f77-9bc0-9095a7ff265c')])"/>
 					 <td>
 					    <span t-esc="heavy_mdd.parameter_name"/>
@@ -1196,7 +1135,7 @@
 					</div>
 
 					<!-- ✅ Graph visible ONLY if boolean is ON -->
-                 <t t-if="graphSieve">
+                 <!-- <t t-if="graphSieve">
                    <div style="text-align:center; margin-top:20px;">
                    <img t-att-src="'data:image/png;base64,%s' % graphSieve" style="max-width:100%; height:auto;"/>
                   </div>
@@ -1254,7 +1193,7 @@
                  <div style="margin-top:10px;text-align:center;">
                    <strong>*NOTE:</strong> ABOVE PROVIDED GRAPH HAS NO TRACEABILITY
                  </div>
-                </t>
+                </t> -->
 
 
                     <div style="text-align:center;margin-top:5px">
@@ -1381,5 +1320,322 @@
 				</div>
 			</t>
 		</t>
+		<t t-foreach="data" t-as="o">
+            <div class="article page">
+                <t t-call="soil1.soil1_annexure_report">
+                    <t t-set="o" t-value="o"/> 
+                    <t t-set="logo_base64" t-value="logo_base64"/>
+                    <t t-set="eln_obj" t-value="eln.filtered(lambda x: x.sample_id.id == o.sample_id.id)"/>
+                </t>
+            </div>
+        </t>
+	</template>
+
+	<template id="soil1_annexure_report">
+		<t t-call="web.html_container">
+
+		    <div class="header">
+
+              <div style="width:100%; text-align:center;">
+                 <img t-att-src="'/soil1/static/src/img/raipur_header.png'" style="height:150px; width:100%;"/>
+              </div>
+
+	               <div style="width:100%; text-align:center; vertical-align:middle; padding: 6px;">
+					   <h5><strong>Annexure</strong></h5>
+					</div>
+
+
+				    <div style="width:100%;">
+							<table style="width:100%; border-collapse:collapse; border:1px solid #000; font-size:12px;">
+								<tr>
+							   	  <td colspan="6" style="border:1px solid black; padding:4px;">
+								 	<b>Report No.:   </b><span t-field="o.sample_id.kes_no"/> 
+								  </td>
+								  <td colspan="6" style="border:1px solid black; padding:4px;">
+									<b>Report Issue Date :   </b><span t-field="o.sample_id.sample_received_date"/> 
+								  </td>	
+							    </tr>			
+							</table>
+					</div>
+
+            </div>
+
+
+			<div class="page">
+			  <t t-foreach="data" t-as="o">
+			   <div style="margin-top:5px; page-break-before: always;">
+			       
+					<!-- ✅ Graph visible ONLY if boolean is ON -->
+					<t t-if="graphSieve">
+                   <div style="text-align:center; margin-top:20px;">
+                   <img t-att-src="'data:image/png;base64,%s' % graphSieve" style="max-width:100%; height:auto;"/>
+
+				   <div style="margin-top:10px" t-if="data.sieve_visible">
+							<table style="width:100%;">
+									<tr> 
+									<td colspan="6">% Gravels :
+									</td>
+									<td style="font-weight:bold;" colspan="6">
+										<span t-esc="data.gravel" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td colspan="6">D60 (mm) :
+									</td>
+									<td style="font-weight:bold;" colspan="6">
+										<span t-esc="data.d60" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td colspan="6">Cu = D60/D10 :
+									</td>
+									<td style="font-weight:bold;" colspan="6">
+										<span t-esc="data.cu" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+									<tr> 
+									<td colspan="6">% Sand :
+									</td>
+									<td style="font-weight:bold;" colspan="6">
+										<span t-esc="data.sand" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td colspan="6">D30 (mm) :
+									</td>
+									<td style="font-weight:bold;" colspan="6">
+										<span t-esc="data.d30" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td colspan="6">Cc = D30^2/D10* D60 :
+									</td>
+									<td style="font-weight:bold;" colspan="6">
+										<span t-esc="data.cc" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+									<tr> 
+									<td colspan="6">% Silt + Clay :
+									</td>
+									<td style="font-weight:bold;" colspan="6">
+										<span t-esc="data.silt_clay" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td  colspan="6">D10 (mm) :
+									</td>
+									<td style="font-weight:bold;" colspan="18">
+										<span t-esc="data.d10" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+								
+							</table>
+							</div>
+
+                  </div>
+				</t>
+
+				<t t-if="graph_liquid1 ">
+                   <div style="text-align:center; margin-top:20px;">
+                   <img t-att-src="'data:image/png;base64,%s' % graph_liquid1" style="max-width:100%; height:auto;"/>
+                  </div>
+				</t>
+
+				<t t-if="graph_liquid2 ">
+                   <div style="text-align:center; margin-top:20px;">
+                   <img t-att-src="'data:image/png;base64,%s' % graph_liquid2" style="max-width:100%; height:auto;"/>
+                  </div>
+				</t>
+
+				<t t-if="graph_light1">
+                   <div style="text-align:center; margin-top:20px;">
+                   <img t-att-src="'data:image/png;base64,%s' % graph_light1" style="max-width:100%; height:auto;"/>
+                  </div>
+				</t>
+
+				<t t-if="graph_light2">
+                   <div style="text-align:center; margin-top:20px;">
+                   <img t-att-src="'data:image/png;base64,%s' % graph_light2" style="max-width:100%; height:auto;"/>
+                  </div>
+				</t>
+
+				<t t-if="graph_heavy">
+                   <div style="text-align:center; margin-top:20px;">
+                   <img t-att-src="'data:image/png;base64,%s' % graph_heavy" style="max-width:100%; height:auto;"/>
+                  </div>
+				</t>
+
+				<t t-if="graph_cbr">
+                   <div style="text-align:center; margin-top:20px;">
+                   <img t-att-src="'data:image/png;base64,%s' % graph_cbr" style="max-width:100%; height:auto;"/>
+                  </div>
+				</t>
+
+				<t t-if="graph_consolidation">
+                   <div style="text-align:center; margin-top:20px;">
+                   <img t-att-src="'data:image/png;base64,%s' % graph_consolidation" style="max-width:100%; height:auto;"/>
+                  </div>
+				</t>
+
+				<t t-if="graph_direct_shear">
+                   <div style="text-align:center; margin-top:20px;">
+                   <img t-att-src="'data:image/png;base64,%s' % graph_direct_shear" style="max-width:100%; height:auto;"/>
+                  </div>
+				</t>
+
+				<t t-if="graphSieve or graph_liquid1 or graph_liquid2 or graph_light1 or graph_light2 or graph_heavy or graph_cbr or graph_consolidation or graph_direct_shear">
+                 <div style="margin-top:10px;text-align:center;">
+                   <h5><strong>*NOTE:</strong> ABOVE PROVIDED GRAPH HAS NO TRACEABILITY</h5>
+                 </div>
+                </t>
+
+
+                    <div style="text-align:center;margin-top:5px">
+						......End of Report......
+					</div>
+
+					<div class="signatureContainer girdgird">
+						<div>
+							<div>
+								<b>
+									Checked By
+								</b>
+							</div>
+							<div style="height: 50px;">
+									<t t-if="eln.sample_id.checkby_signature_required and eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')"
+											style="max-width: 200px; max-height: 45px; margin-top: 1px; z-index: -10;"/>
+									</t>
+								</div>
+							<div>
+								<b>
+									<!-- <span t-esc="eln.technician.name"/> -->
+									<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+
+						<!-- QR Code -->
+							<!-- <div style="text-align:center; margin-bottom:10px;">
+								<img t-att-src="'data:image/png;base64,%s' % (qrcode_static or '')"
+									style="width:75px; height:70px;"/>
+							</div> -->
+
+						<t t-if="o.sample_id.stamp_attached">
+							<div >
+								<div>
+								<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
+							</div>
+							</div>
+						</t>
+						<div>
+							<div>
+								<b>
+									Approved By 
+								</b>
+								
+							</div>
+							<div style="height: 50px;">
+									<t t-if="eln.sample_id.approveby_signature_required">
+										<div t-if="eln.sample_id.approved_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 45px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.approved_by.name"/>
+								</b>
+							</div>
+						
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.approved_by.job_title"/>)
+								</b>
+							</div>
+							
+							<!-- <div>
+								<b>
+									(Authorized Signatory)
+								</b>
+							</div> -->
+						</div>
+					</div>
+
+			  
+			  </div>
+			  
+			</t>
+			 </div>
+			</t>
+			
+
+			
+
+			<div t-attf-class="footer o_standard_footer">
+
+	        	<t t-if="eln.sample_id.lab_location">
+						<div style="text-align:center; margin:1px 0;">
+                            <span style="background-color:#1f2a7a;color:#ffffff;font-weight:700;font-size:13px;padding:3px 10px;border-top:2px solid #0d1b5e;border-bottom:2px solid #0d1b5e;display:inline-block;border-radius:6px;">
+                             BIS CERTIFIED LABORATORY APPROVED BY GOVT. OF INDIA
+                       </span>
+                      </div>
+				</t>
+
+					   <table style="width:100%; border:1px solid black; border-collapse:separate; border-spacing:0;">
+                           <tr>							
+								 <td style="width:15%; padding:2px; border:none;">
+                                   <t t-if="qrcode_static">
+                                    <img t-att-src="'data:image/png;base64,%s' % qrcode_static"
+                                   style="width:75px; height:70px;"/>
+                                      </t>
+                               </td>
+							   <td style="width:85%; padding:2px; font-size:13px; line-height:1.5; border:none;">
+								<t t-if="notes_list">
+								<span>
+									<b>Conditions:-</b><br/>
+									<t t-foreach="notes_list" t-as="n">
+										(<t t-esc="n.sr_no"/>) 
+										<t t-esc="n.notes"/>
+										&#160;&#160;
+									</t>
+								</span>
+							</t>
+
+								<!-- ELSE -->
+								<t t-else="">
+									<b>Conditions:-</b>
+									&#160;&#160;(1) The results listed refer only to tested samples &amp; applicable parameters. Endorsement of product is neither inferred nor implied.
+									&#160;&#160;(2) The use of report for arbitration, publicity &amp; evidence in legal dispute is forbidden except with prior written consent NBML Lab.
+									&#160;&#160;(3) All disputes are subject to Raipur Jurisdiction. 7 days correction to this report invalidates this report.
+									&#160;&#160;(4) Sample will be destroyed after 30 days from the date of test report unless otherwise specified.
+
+									<t t-if="eln.has_witness">
+										&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
+									</t>
+									<t t-if="eln.remarks">
+										&#160;&#160;<span t-esc="eln.remarks"/>
+									</t>
+								</t>
+
+							</td>
+							
+
+                             </tr>
+                            </table>
+
+                    <div class="text-center" style="padding-top:10px; border-top: 1px solid black">					
+			         	<div class="footerQR" style="">
+				          	<div style="">
+						
+						
+					      </div>
+					    <div>
+					     <span> 
+					      Lab Office Address : 28/31, Urkura, Beside Akashwani Radio Station, Rawabhata Village, Dharsiwa, Bhanpuri, Birgaon, Raipur-493221, Chattisgarh, India Website :- www.nbmtlab.com, Contact: Email: nbmtl2017@gmail.com, Mob. : +91-9285284469, +91-8208537198, Tel. : 07771-2998056
+                        </span>
+					   </div>
+
+				</div>
+            </div>	
+        </div>
+		
+		
 	</template>
 </odoo>

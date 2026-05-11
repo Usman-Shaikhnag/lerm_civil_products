@@ -13,6 +13,9 @@ from scipy.optimize import minimize_scalar
 from matplotlib.ticker import MultipleLocator, StrMethodFormatter
 import io
 from matplotlib.ticker import LogLocator, MultipleLocator
+import base64
+from odoo import models, api
+from odoo.modules.module import get_module_resource
 
 
 class SoilDatasheet(models.AbstractModel):
@@ -179,90 +182,312 @@ class SoilReport(models.AbstractModel):
         }
 
 
+    # # ✅ GRAPH FUNCTION
+
     # ✅ GRAPH FUNCTION
+    
     def generate_line_chart_slive(self, data):
+     from scipy.interpolate import make_interp_spline
+     import numpy as np
 
-        x_value = []
-        y_value = []
-        x_labels = []
+     x_value = []
+     y_value = []
+     x_labels = []
 
-        for line in data.sieve_analysis_child_lines:
-            if line.sieve_size and line.passing_percent is not None:
-                sieve_str = str(line.sieve_size).strip().lower()
-                try:
-                    if 'mm' in sieve_str:
-                        sieve_val = float(sieve_str.replace('mm', '').strip())
-                        label = f"{int(sieve_val)} mm"
+    # -----------------------------------
+    # PREPARE DATA
+    # -----------------------------------
+     for line in data.sieve_analysis_child_lines:
 
-                    elif 'µ' in sieve_str or 'micron' in sieve_str:
-                        sieve_val = float(
-                            sieve_str.replace('µ', '').replace('micron', '').strip()
-                        ) / 1000
-                        label = f"{int(float(line.sieve_size.replace('µ', '').replace('micron', '').strip()))} µm"
+        if line.sieve_size and line.passing_percent is not None:
 
-                    else:
-                        sieve_val = float(sieve_str)
-                        label = f"{sieve_val} mm"
+            sieve_str = str(line.sieve_size).strip().lower()
 
-                    x_value.append(sieve_val)
-                    y_value.append(float(line.passing_percent))
-                    x_labels.append(label)
+            try:
+                # mm
+                if 'mm' in sieve_str:
 
-                except ValueError:
-                    continue
+                    sieve_val = float(
+                        sieve_str.replace('mm', '').strip()
+                    )
 
-        if not x_value or not y_value:
-            return False
+                    label = f"{sieve_val:g} mm"
 
-        # ✅ Sort data
-        sorted_data = sorted(zip(x_value, y_value, x_labels))
-        x_value, y_value, x_labels = zip(*sorted_data)
+                # micron
+                elif 'µ' in sieve_str or 'micron' in sieve_str or 'um' in sieve_str:
 
-        plt.figure(figsize=(12, 5))
-        plt.xscale('log')
+                    micron_val = float(
+                        sieve_str.replace('µ', '')
+                                 .replace('micron', '')
+                                 .replace('um', '')
+                                 .strip()
+                    )
 
-        # ✅ Plot
-        plt.plot(x_value, y_value, color='blue', linewidth=2)
-        plt.scatter(x_value, y_value, color='red', s=50)
+                    sieve_val = micron_val / 1000
 
-        plt.xlabel('Sieve Size')
-        plt.ylabel('Passing %')
-        plt.title('Grain Size Analysis')
+                    label = f"{micron_val:g} µm"
 
-        ax = plt.gca()
-        plt.xticks(ticks=x_value, labels=x_labels, rotation=45)
+                else:
 
-        ax.xaxis.set_minor_locator(
-            LogLocator(base=10.0, subs=np.arange(1.0, 10.0) * 0.1)
+                    sieve_val = float(sieve_str)
+                    label = f"{sieve_val:g} mm"
+
+                x_value.append(sieve_val)
+                y_value.append(float(line.passing_percent))
+                x_labels.append(label)
+
+            except ValueError:
+                continue
+
+    # -----------------------------------
+    # NO DATA
+    # -----------------------------------
+     if not x_value or not y_value:
+        return False
+
+    # -----------------------------------
+    # SORT DATA
+    # -----------------------------------
+     sorted_data = sorted(zip(x_value, y_value, x_labels))
+
+     x_value, y_value, x_labels = zip(*sorted_data)
+
+     x_value = np.array(x_value)
+     y_value = np.array(y_value)
+
+    # -----------------------------------
+    # SMOOTH CURVE
+    # -----------------------------------
+     x_log = np.log10(x_value)
+
+     x_smooth_log = np.linspace(
+        x_log.min(),
+        x_log.max(),
+        300
+    )
+
+     spline = make_interp_spline(
+        x_log,
+        y_value,
+        k=3
+    )
+
+     y_smooth = spline(x_smooth_log)
+
+     x_smooth = 10 ** x_smooth_log
+
+    # -----------------------------------
+    # CREATE GRAPH
+    # -----------------------------------
+     plt.figure(figsize=(10, 5))
+
+     plt.xscale('log')
+
+    # Smooth curve
+     plt.plot(
+        x_smooth,
+        y_smooth,
+        color='blue',
+        linewidth=2.5
+    )
+
+    # Actual points
+     plt.scatter(
+        x_value,
+        y_value,
+        color='red',
+        s=60,
+        edgecolors='black',
+        zorder=5
+    )
+
+     plt.xlabel('Sieve Size')
+     plt.ylabel('Passing %')
+     plt.title('Grain Size Analysis')
+
+     ax = plt.gca()
+
+     plt.xticks(
+        ticks=x_value,
+        labels=x_labels,
+        rotation=45
+    )
+
+     ax.xaxis.set_minor_locator(
+        LogLocator(
+            base=10.0,
+            subs=np.arange(1.0, 10.0) * 0.1
         )
-        ax.yaxis.set_minor_locator(MultipleLocator(2))
+    )
 
-        plt.grid(True, which='both', linestyle='--', linewidth=0.3)
+     ax.yaxis.set_minor_locator(
+        MultipleLocator(2)
+    )
 
-        plt.xlim(left=min(x_value) / 1.5, right=max(x_value) * 1.5)
-        plt.ylim(0, 100)
+     plt.grid(
+        True,
+        which='both',
+        linestyle='--',
+        linewidth=0.3
+    )
 
-        # ✅ D10, D30, D60
-        d_points = [
-            (getattr(data, 'd10', None), 10, 'black'),
-            (getattr(data, 'd30', None), 30, 'yellow'),
-            (getattr(data, 'd60', None), 60, 'orange'),
-        ]
+     plt.xlim(
+        left=min(x_value) / 1.5,
+        right=max(x_value) * 1.5
+    )
 
-        for dx, dy, color in d_points:
-            if dx:
-                plt.scatter(dx, dy, color=color, s=80)
-                plt.plot([dx, dx], [0, dy], color=color)
-                plt.plot([0, dx], [dy, dy], color=color)
+     plt.ylim(0, 100)
 
-        # ✅ Convert to base64
-        buffer = io.BytesIO()
-        plt.tight_layout()
-        plt.savefig(buffer, format='png')
-        plt.close()
-        buffer.seek(0)
+    # -----------------------------------
+    # D10, D30, D60
+    # -----------------------------------
+     d_points = [
+        (getattr(data, 'd10', None), 10, 'black', 'D10'),
+        (getattr(data, 'd30', None), 30, 'black', 'D30'),
+        (getattr(data, 'd60', None), 60, 'black', 'D60'),
+    ]
 
-        return base64.b64encode(buffer.read()).decode('utf-8')
+     for dx, dy, color, label in d_points:
+
+        if dx:
+
+            # Point
+            plt.scatter(
+                dx,
+                dy,
+                color=color,
+                s=90,
+                zorder=10
+            )
+
+            # Vertical line
+            plt.plot(
+                [dx, dx],
+                [0, dy],
+                color=color,
+                linewidth=1.2
+            )
+
+            # Horizontal line
+            plt.plot(
+                [min(x_value), dx],
+                [dy, dy],
+                color=color,
+                linewidth=1.2
+            )
+
+            # Label
+            plt.text(
+                dx,
+                dy + 3,
+                f"{label}={dx:.3f}",
+                fontsize=9,
+                ha='center'
+            )
+
+    # -----------------------------------
+    # SAVE IMAGE
+    # -----------------------------------
+     buffer = io.BytesIO()
+
+     plt.tight_layout()
+
+     plt.savefig(
+        buffer,
+        format='png',
+        dpi=100
+    )
+
+     plt.close()
+
+     buffer.seek(0)
+
+     return base64.b64encode(
+        buffer.read()
+    ).decode('utf-8')
+    # def generate_line_chart_slive(self, data):
+
+    #     x_value = []
+    #     y_value = []
+    #     x_labels = []
+
+    #     for line in data.sieve_analysis_child_lines:
+    #         if line.sieve_size and line.passing_percent is not None:
+    #             sieve_str = str(line.sieve_size).strip().lower()
+    #             try:
+    #                 if 'mm' in sieve_str:
+    #                     sieve_val = float(sieve_str.replace('mm', '').strip())
+    #                     label = f"{int(sieve_val)} mm"
+
+    #                 elif 'µ' in sieve_str or 'micron' in sieve_str:
+    #                     sieve_val = float(
+    #                         sieve_str.replace('µ', '').replace('micron', '').strip()
+    #                     ) / 1000
+    #                     label = f"{int(float(line.sieve_size.replace('µ', '').replace('micron', '').strip()))} µm"
+
+    #                 else:
+    #                     sieve_val = float(sieve_str)
+    #                     label = f"{sieve_val} mm"
+
+    #                 x_value.append(sieve_val)
+    #                 y_value.append(float(line.passing_percent))
+    #                 x_labels.append(label)
+
+    #             except ValueError:
+    #                 continue
+
+    #     if not x_value or not y_value:
+    #         return False
+
+    #     # ✅ Sort data
+    #     sorted_data = sorted(zip(x_value, y_value, x_labels))
+    #     x_value, y_value, x_labels = zip(*sorted_data)
+
+    #     plt.figure(figsize=(12, 5))
+    #     plt.xscale('log')
+
+    #     # ✅ Plot
+    #     plt.plot(x_value, y_value, color='blue', linewidth=2)
+    #     plt.scatter(x_value, y_value, color='red', s=50)
+
+    #     plt.xlabel('Sieve Size')
+    #     plt.ylabel('Passing %')
+    #     plt.title('Grain Size Analysis')
+
+    #     ax = plt.gca()
+    #     plt.xticks(ticks=x_value, labels=x_labels, rotation=45)
+
+    #     ax.xaxis.set_minor_locator(
+    #         LogLocator(base=10.0, subs=np.arange(1.0, 10.0) * 0.1)
+    #     )
+    #     ax.yaxis.set_minor_locator(MultipleLocator(2))
+
+    #     plt.grid(True, which='both', linestyle='--', linewidth=0.3)
+
+    #     plt.xlim(left=min(x_value) / 1.5, right=max(x_value) * 1.5)
+    #     plt.ylim(0, 100)
+
+    #     # ✅ D10, D30, D60
+    #     d_points = [
+    #         (getattr(data, 'd10', None), 10, 'black'),
+    #         (getattr(data, 'd30', None), 30, 'yellow'),
+    #         (getattr(data, 'd60', None), 60, 'orange'),
+    #     ]
+
+    #     for dx, dy, color in d_points:
+    #         if dx:
+    #             plt.scatter(dx, dy, color=color, s=80)
+    #             plt.plot([dx, dx], [0, dy], color=color)
+    #             plt.plot([0, dx], [dy, dy], color=color)
+
+    #     # ✅ Convert to base64
+    #     buffer = io.BytesIO()
+    #     plt.tight_layout()
+    #     plt.savefig(buffer, format='png')
+    #     plt.close()
+    #     buffer.seek(0)
+
+    #     return base64.b64encode(buffer.read()).decode('utf-8')
     
 
 
@@ -918,4 +1143,67 @@ class SoilReport(models.AbstractModel):
       buffer.seek(0)
 
       return base64.b64encode(buffer.read()).decode('utf-8')
-  
+
+
+class SoilReportAnnexure(models.AbstractModel):
+    _name = 'report.soil1.soil1_annexure_report'
+    _description = 'Soil Annexure Report'
+
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        
+        docs = self.env['mechanical.soil1'].browse(docids)
+        
+        
+        eln_records = self.env['lerm.eln'].search([
+            ('sample_id', 'in', docs.ids)
+        ])
+
+        qr_static = qrcode.QRCode(box_size=6, border=2)
+        qr_static.add_data("https://www.lerm.in")
+        qr_static.make(fit=True)
+        buf_static = BytesIO()
+        qr_static.make_image(fill_color="black", back_color="white").save(buf_static, format="PNG")
+        qr_static_b64 = base64.b64encode(buf_static.getvalue()).decode()
+
+        # 🧩 QR Code तयार करा
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+        )
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        report_url = f"{base_url}/download_report/soil/{'nabl' if nabl else 'nonnabl'}/{eln.id}"
+
+        qr.add_data(report_url)
+        qr.make(fit=True)
+        qr_image = qr.make_image()
+        buffered = BytesIO()
+        qr_image.save(buffered, format="PNG")
+        qr_code = base64.b64encode(buffered.getvalue()).decode()
+
+        # Logo Fetching Logic
+        # Module name 'soil1' asne garjeche ahe
+        logo_path = get_module_resource('soil1', 'static', 'src', 'img', 'raipur_header.png')
+        logo_base64 = False
+        if logo_path:
+            with open(logo_path, 'rb') as f:
+                logo_base64 = base64.b64encode(f.read()).decode('utf-8')
+
+      
+
+        
+    
+
+        return {
+           
+            'doc_ids': docids,
+            'doc_model': 'mechanical.soil1',
+            'data': docs,
+            'eln': eln_records,
+            'logo_base64': logo_base64,
+            'qrcode': qr_code,
+            'qrcode_static': qr_static_b64,
+        }
+    

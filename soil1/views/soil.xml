@@ -9,7 +9,7 @@
             <form create="false">
                 <sheet>
                     <h1>
-                        <field name="name" readonly="1" nolabel="1"/>
+                        <field name="name_soil" readonly="1" nolabel="1"/>
                     </h1>
                     <button type="object" class="oe_highlight" name="prefill_data" string="Prefill Data"/>
                     <group>
@@ -86,7 +86,7 @@
                             <field name="wt_retained" class="blue-input" decoration-info="wt_retained != 0"/>
 
                             <field name="percent_retained"/>
-                            <!-- <field name="cumulative_retained"/> -->
+                            <field name="cumulative_retained"/>
                             <field name="passing_percent"/>
                         </tree>
                     </field>
@@ -133,15 +133,15 @@
                         <tbody>
                             <tr>
                                 <td><label for="d60">D60 (mm)</label></td>
-                                <td><field name="d60"/></td>
+                                <td><field name="d60" digits="[16,2]"/></td>
                             </tr>
                             <tr>
                                 <td><label for="d30">D30 (mm)</label></td>
-                                <td><field name="d30"/></td>
+                                <td><field name="d30" digits="[16,2]"/></td>
                             </tr>
                             <tr>
                                 <td><label for="d10">D10 (mm)</label></td>
-                                <td><field name="d10"/></td>
+                                <td><field name="d10" digits="[16,2]"/></td>
                             </tr>
                             
                             
@@ -953,7 +953,18 @@
                             </tbody>
                         </table>
                     </div>
-                    
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not cbr_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="condition_cbr"></label></td>
+                                    <td><field name="condition_cbr"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+                 
                     <div invisible = "cbr_visible == False">
                         <field name="cbr_line_ids" class="custom_table_borders">
                             <tree editable="bottom" >
