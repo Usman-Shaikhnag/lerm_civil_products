@@ -13,6 +13,7 @@ class SteelTmtBarLine(models.Model):
 
     
     Id_no = fields.Char("ID No")
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     name = fields.Char("Name",default="STEEL TMT BAR")
     size = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)

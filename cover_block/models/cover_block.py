@@ -7,6 +7,7 @@ class CoverblockMechanical(models.Model):
     _rec_name = "name"
 
     name = fields.Char(default="Cover Block")
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 
 

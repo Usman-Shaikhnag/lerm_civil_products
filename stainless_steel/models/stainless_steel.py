@@ -9,6 +9,7 @@ class StatinlessSteel(models.Model):
     _rec_name = "name"
 
     name = fields.Char("Name",default="Stainless Steel")
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     
     stainless_steel_visible = fields.Boolean("Stainless Steel Visible",compute="_compute_visible")
