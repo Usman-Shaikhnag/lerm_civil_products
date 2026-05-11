@@ -733,6 +733,7 @@ class MechanicalConcreteCubeLine(models.Model):
     days = fields.Integer(string="No.of Days",compute="_compute_days",store=True)
     dt_of_testing1 = fields.Date(string="Date of Testing",compute="_compute_dt_of_testing",store=True)
 
+
     load = fields.Float(string="Load (kN)")
     compressive_strength = fields.Float(string="Compressive Strength (N/mm2)",compute="_compute_strength",store=True)
 

@@ -217,14 +217,14 @@
                                     <td><field name="water_absorption_4" nolabel="1"/></td>
                                     <td><field name="water_absorption_5" nolabel="1"/></td>
                                 </tr>
-                                <tr>
+                                <!-- <tr>
                                     <td><strong>Observation</strong></td>
                                     <td><field name="visual_observation_1" nolabel="1" class="blue-input"/></td>
                                     <td><field name="visual_observation_2" nolabel="1" class="blue-input"/></td>
                                     <td><field name="visual_observation_3" nolabel="1" class="blue-input"/></td>
                                     <td><field name="visual_observation_4" nolabel="1" class="blue-input"/></td>
                                     <td><field name="visual_observation_5" nolabel="1" class="blue-input"/></td>
-                                </tr>
+                                </tr> -->
                           </tbody>
                       </table>
                     </div>
@@ -259,6 +259,41 @@
                             </tr>
                         </tbody>
                     </table>
+
+
+                        <div invisible="efflorescence_visible == False" style="text-align:center">
+                        <h1>
+                          <field name="efflorescence_name1" readonly="1" nolabel="1"/>
+                          <field name="efflorescence_visible" invisible='1'/>
+                        </h1>
+                    </div>
+
+
+                      <div invisible="efflorescence_visible == False" class="mb-3">
+                      <table class="table custom_table_borders o_form_table">
+                          <thead>
+                              <tr>
+                                  <th></th>
+                                  <th>Sample 1</th>
+                                  <th>Sample 2</th>
+                                  <th>Sample 3</th>
+                                  <th>Sample 4</th>
+                                  <th>Sample 5</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                                
+                                <tr>
+                                    <td><strong>Efflorescence</strong></td>
+                                    <td><field name="visual_observation_1" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="visual_observation_2" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="visual_observation_3" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="visual_observation_4" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="visual_observation_5" nolabel="1" class="blue-input"/></td>
+                                </tr>
+                          </tbody>
+                      </table>
+                    </div>
 
 
                     <!--  -->

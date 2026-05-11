@@ -19,6 +19,7 @@
                         <field name="srf_id" invisible="1"/>
                         <field name="sample_id" readonly="1" />
                         <field name="eln_ref" readonly="1"/>
+                        <field name="size_id"/>
                         <field name="parameter_id" invisible="1"/>
                     </group>
 
@@ -164,7 +165,11 @@
                             <tr>
                                 <td><span class="fw-bold">NABL</span></td>
                                 <td>
-                                    <field  name="clay_lumps_percent_nabl"/>
+                                    <field  name="clay_lumps_percent_nabl"
+                                    decoration-success="clay_lumps_percent_nabl == 'pass'" 
+                                    decoration-danger="clay_lumps_percent_nabl == 'fail'" 
+                                    readonly="1"/>
+                                    
                                 </td>
                             </tr>
                         </tbody>
@@ -222,8 +227,12 @@
                             </tr>
                             <tr>
                                 <td><span class="fw-bold">NABL</span></td>
+                               
                                 <td>
-                                     <field  name="light_weight_percent_nabl"/>
+                                    <field  name="light_weight_percent_nabl"
+                                    decoration-success="light_weight_percent_nabl == 'pass'" 
+                                    decoration-danger="light_weight_percent_nabl == 'fail'" 
+                                    readonly="1"/>
                                 </td>
                             </tr>
                         </tbody>
@@ -315,7 +324,6 @@
                     
 
 
-                      <!-- Soundness Na2So4  -->
                 <div invisible="specific_gravity_visible == False">
                     <h1 class="text-center">
                         <field name="specific_gravity_name" readonly="1" nolabel="1"/>
@@ -386,6 +394,27 @@
                                     <field name="specific_gravity_nabl" readonly="1"
                                         decoration-success="specific_gravity_nabl == 'pass'"
                                         decoration-danger="specific_gravity_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+
+
+
+
+                             <tr>
+                                <td><label for="water_absorption_conformity"></label></td>
+                                <td>
+                                    <field name="water_absorption_conformity"
+                                        decoration-success="water_absorption_conformity == 'pass'"
+                                        decoration-danger="water_absorption_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="water_absorption_nabl"></label></td>
+                                <td>
+                                    <field name="water_absorption_nabl" readonly="1"
+                                        decoration-success="water_absorption_nabl == 'pass'"
+                                        decoration-danger="water_absorption_nabl == 'fail'"/>
                                 </td>
                             </tr>
                         </tbody>
@@ -599,7 +628,10 @@
                             <tr>
                                 <td><span class="fw-bold">NABL</span></td>
                                 <td>
-                                    <field  name="material_finer75_nabl"/>
+                                    <field  name="material_finer75_nabl"
+                                      decoration-success="material_finer75_nabl == 'pass'" 
+                                    decoration-danger="material_finer75_nabl == 'fail'" 
+                                    readonly="1"/>
                                 </td>
                             </tr>
                         </tbody>
@@ -877,7 +909,7 @@
                     </div>
 
 
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not void_loose_density_visible">
                             <tbody>
                                 <tr>
                                 <td><label for="avg_void_loose_density_conformity">Conformity</label></td>
@@ -962,7 +994,7 @@
                     </div>
 
 
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not void_compacted_density_visible">
                             <tbody>
                                 <tr>
                                 <td><label for="avg_void_compacted_density_conformity">Conformity</label></td>
@@ -983,6 +1015,259 @@
                             </tr>
                             </tbody>
                         </table>
+
+
+
+                          <!-- Soundness Mgso4  -->
+                <div invisible="soundness_mgso4_visible == False">
+                        <h1 class="text-center">
+                            <field name="soundness_mgso4_name" readonly="1" nolabel="1"/>
+                            <field name="soundness_mgso4_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+                      
+                      
+                      <div invisible= "soundness_mgso4_visible == False" class="custom_table_borders">
+                        <field name="soundness_mag_line_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name='passing_sieve'/>
+                                    <field name='retained_sieve'/>
+                                    <field name='grading_percent' class="blue-input" decoration-info="grading_percent != 0"/>
+                                    <field name='weight_before' class="blue-input" decoration-info="weight_before != 0"/>
+                                    <field name='weight_after' class="blue-input" decoration-info="weight_after != 0"/>
+                                    <field name='percent_loss'/>
+                                    <field name='weighted_avg'/>
+                                </tree>
+                        </field> 
+                    </div>
+
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not soundness_mgso4_visible" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="mag_total_grading"></label></td>
+                                <td><field name="mag_total_grading"/><span>%</span></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="mag_total_weight_before"></label></td>
+                                <td><field name="mag_total_weight_before"/><span>gm</span></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="mag_total_weight_after"></label></td>
+                                <td><field name="mag_total_weight_after"/><span>gm</span></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="mag_total_percent_loss"></label></td>
+                                <td><field name="mag_total_percent_loss"/><span>%</span></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="mag_total_weighted_avg"></label></td>
+                                <td><field name="mag_total_weighted_avg"/><span>%</span></td>
+                            </tr>
+
+                            
+                        </tbody>
+                    </table>
+
+                    <div invisible= "soundness_mgso4_visible == False" class="custom_table_borders">
+                        <field name="soundness_magtwo_line_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name='passing_sieve'/>
+                                    <field name='retained_sieve'/>
+                                    <field name='grading_percent' class="blue-input" decoration-info="grading_percent != 0"/>
+                                    <field name='weight_before' class="blue-input" decoration-info="weight_before != 0"/>
+                                    <field name='weight_after' class="blue-input" decoration-info="weight_after != 0"/>
+                                    <field name='percent_loss'/>
+                                    <field name='weighted_avg'/>
+                                </tree>
+                        </field> 
+                    </div>
+
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not soundness_mgso4_visible" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="mag_total1_grading"></label></td>
+                                <td><field name="mag_total1_grading"/><span>%</span></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="mag_total1_weight_before"></label></td>
+                                <td><field name="mag_total1_weight_before"/><span>gm</span></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="mag_total1_weight_after"></label></td>
+                                <td><field name="mag_total1_weight_after"/><span>gm</span></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="mag_total1_percent_loss"></label></td>
+                                <td><field name="mag_total1_percent_loss"/><span>%</span></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="mag_total1_weighted_avg"></label></td>
+                                <td><field name="mag_total1_weighted_avg"/><span>%</span></td>
+                            </tr>
+
+                            
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not soundness_na2so4_visible" style="white-space:nowrap;">
+                        <tbody>
+
+                            <tr>
+                                <td><label class="fw-bold" for="mag_total_weighted_avg_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="mag_total_weighted_avg_conformity"
+                                        decoration-success="mag_total_weighted_avg_conformity == 'pass'" 
+                                        decoration-danger="mag_total_weighted_avg_conformity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                               <td><label class="fw-bold" for="mag_total_weighted_avg_nabl">NABL</label></td>
+                                <td>
+                                    <field name="mag_total_weighted_avg_nabl"
+                                        decoration-success="mag_total_weighted_avg_nabl == 'pass'" 
+                                        decoration-danger="mag_total_weighted_avg_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+
+                      <!-- Soundness Na2So4  -->
+                <div invisible="soundness_na2so4_visible == False">
+                        <h1 class="text-center">
+                            <field name="soundness_na2so4_name" readonly="1" nolabel="1"/>
+                            <field name="soundness_na2so4_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+                      
+                      
+                      <div invisible= "soundness_na2so4_visible == False" class="custom_table_borders">
+                        <field name="soundness_sod_line_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name='passing_sieve'/>
+                                    <field name='retained_sieve'/>
+                                    <field name='grading_percent' class="blue-input" decoration-info="grading_percent != 0"/>
+                                    <field name='weight_before' class="blue-input" decoration-info="weight_before != 0"/>
+                                    <field name='weight_after' class="blue-input" decoration-info="weight_after != 0"/>
+                                    <field name='percent_loss'/>
+                                    <field name='weighted_avg'/>
+                                </tree>
+                        </field> 
+                    </div>
+
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not soundness_na2so4_visible" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="total_grading"></label></td>
+                                <td><field name="total_grading"/><span>%</span></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="total_weight_before"></label></td>
+                                <td><field name="total_weight_before"/><span>gm</span></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="total_weight_after"></label></td>
+                                <td><field name="total_weight_after"/><span>gm</span></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="total_percent_loss"></label></td>
+                                <td><field name="total_percent_loss"/><span>%</span></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="total_weighted_avg"></label></td>
+                                <td><field name="total_weighted_avg"/><span>%</span></td>
+                            </tr>
+
+                            
+                        </tbody>
+                    </table>
+                    <group/>
+
+                    <div invisible= "soundness_na2so4_visible == False" class="custom_table_borders">
+                        <field name="soundness_sodtwo_line_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name='passing_sieve'/>
+                                    <field name='retained_sieve'/>
+                                    <field name='grading_percent' class="blue-input" decoration-info="grading_percent != 0"/>
+                                    <field name='weight_before' class="blue-input" decoration-info="weight_before != 0"/>
+                                    <field name='weight_after' class="blue-input" decoration-info="weight_after != 0"/>
+                                    <field name='percent_loss'/>
+                                    <field name='weighted_avg'/>
+                                </tree>
+                        </field> 
+                    </div>
+
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not soundness_na2so4_visible" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="total1_grading"></label></td>
+                                <td><field name="total1_grading"/><span>%</span></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="total1_weight_before"></label></td>
+                                <td><field name="total1_weight_before"/><span>gm</span></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="total1_weight_after"></label></td>
+                                <td><field name="total1_weight_after"/><span>gm</span></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="total1_percent_loss"></label></td>
+                                <td><field name="total1_percent_loss"/><span>%</span></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="total1_weighted_avg"></label></td>
+                                <td><field name="total1_weighted_avg"/><span>%</span></td>
+                            </tr>
+
+                            
+                        </tbody>
+                    </table>
+
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not soundness_na2so4_visible" style="white-space:nowrap;">
+                        <tbody>
+
+                            <tr>
+                                <td><label class="fw-bold" for="total_weighted_avg_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="total_weighted_avg_conformity"
+                                        decoration-success="total_weighted_avg_conformity == 'pass'" 
+                                        decoration-danger="total_weighted_avg_conformity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                               <td><label class="fw-bold" for="total_weighted_avg_nabl">NABL</label></td>
+                                <td>
+                                    <field name="total_weighted_avg_nabl"
+                                        decoration-success="total_weighted_avg_nabl == 'pass'" 
+                                        decoration-danger="total_weighted_avg_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                        <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
+
+
 
 
                 

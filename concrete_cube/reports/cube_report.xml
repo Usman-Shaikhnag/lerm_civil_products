@@ -229,15 +229,16 @@
 						</table>
 					</div> 
 
-					<div style="">
+					<div style="" t-if="data.cube_visible">
 						<table class="custom_table_borders">
 							<thead>
 								<tr>
 									<th style="text-align: center; font-weight: bold; width: 4%;">Sr. No</th>
-									<th style="text-align: center; font-weight: bold; white-space: nowrap;">Sample Identification</th>
-									<th style="text-align: center; font-weight: bold; width: 10%;">Weight of Cube (gms)</th>
 									<th style="text-align: center; font-weight: bold; width: 9%;">Date of casting</th>
 									<th style="text-align: center; font-weight: bold; width: 9%;">Date of Testing</th>
+									<th style="text-align: center; font-weight: bold; white-space: nowrap;">Sample Identification</th>
+									<th style="text-align: center; font-weight: bold; width: 10%;">Weight of Cube (gms)</th>
+									
 									<th style="text-align: center; font-weight: bold; width: 6%;">Load (kN)</th>
 									<th style="text-align: center; font-weight: bold; width: 13%;">Compressive Strength (N/mm²)</th>
 									<th style="text-align: center; font-weight: bold; width: 15%;">Avg. Compressive Strength (N/mm²)</th>
@@ -250,8 +251,6 @@
 								<t t-foreach="lines" t-as="r">
 								<tr>
 									<td style="text-align: center;"><span t-esc="r.sr_no"/></td>
-									<td style="text-align: center; white-space: nowrap;"><span t-esc="r.id_mark"/></td>
-									<td style="text-align: center;"><span t-esc="r.wt_sample"/></td>
 									<t t-if="r.dt_of_casting">
 										<td style="text-align: center;">
 											<span t-esc="r.dt_of_casting.strftime('%d-%m-%y')"/>
@@ -268,6 +267,9 @@
 									<t t-else="">
 										<td style="text-align: center;"><span t-esc="r.dt_of_testing1"/></td>
 									</t>
+									<td style="text-align: center; white-space: nowrap;"><span t-esc="r.id_mark"/></td>
+									<td style="text-align: center;"><span t-esc="r.wt_sample"/></td>
+									
 									<td style="text-align: center;"><span t-esc="r.load"/></td>
 									<td style="text-align: center;">
 										<span t-esc="r.compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
@@ -284,9 +286,11 @@
 							</tbody>
 						</table>
 
+				</div>
+
 						 <!-- 3. Water Absorption -->
 
-						<div  style="margin-top:5px;">
+						<div  style="margin-top:5px;" t-if="data.water_absorption_visible">
                         <div style="text-align:center;font-size:18px">
                               <span t-field="env['lerm.parameter.master'].search([('internal_id','=','30214iu-eba3-4f15-b33d-679b39f73301')]).parameter_name"/>
                             <span>
@@ -378,7 +382,7 @@
 						</table>
 						</div>
 
-						<div  style="margin-top:5px;">
+						<div t-if="data.wpt_visible"   style="margin-top:5px;">
                         <div style="text-align:center;font-size:18px">
                               <span t-field="env['lerm.parameter.master'].search([('internal_id','=','1023457-0268-46ef-ba88-9c0453210lkit1')]).parameter_name"/>
                             <span>
@@ -445,7 +449,7 @@
 								
 							</table>
 							</div>
-					</div> 
+					<!-- </div>  -->
 
 						<div style="text-align:center;margin-top:5px">
 						......End of Report......
