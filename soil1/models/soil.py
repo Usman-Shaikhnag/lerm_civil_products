@@ -13245,33 +13245,10 @@ class SwellingPressureLine(models.Model):
             else:
               line.water_content_1 = 0
 
-    @api.depends('wt_of_ring', 'wt_wet_specimen_af',
-             'swelling_area', 'swelling_output_ids.specimen_height')
-    def _compute_bulk_density_soil_1(self):
-     for line in self:
-        num = (line.wt_wet_specimen_af or 0.0) - (line.wt_of_ring or 0.0)
-
-        # get list of heights from child lines
-        heights = line.swelling_output_ids.mapped('specimen_height') or []
-        # take third-last value if it exists
-        h = heights[-3] if len(heights) >= 3 else 0.0
-
-        deno = (line.swelling_area or 0.0) * h
-
-        if deno:
-            line.bulk_density_soil_1 = num / deno
-        else:
-            line.bulk_density_soil_1 = 0.0
-
-    # @api.depends('wt_wet_specimen_af', 'wt_of_ring', 'swelling_area','wt_dry_specimen_af', 'swelling_output_ids.specimen_height')
-    # def _compute_dry_density_soil_1(self):
+    # @api.depends('wt_of_ring', 'wt_wet_specimen_af',
+    #          'swelling_area', 'swelling_output_ids.specimen_height')
+    # def _compute_bulk_density_soil_1(self):
     #  for line in self:
-    #     line.dry_density_soil_1 = 0  
-        
-    #     if not line.swelling_area or not line.wt_dry_specimen_af or line.wt_dry_specimen_af == line.wt_of_ring:
-    #         continue
-
-    #     # Compute bulk density
     #     num = (line.wt_wet_specimen_af or 0.0) - (line.wt_of_ring or 0.0)
 
     #     # get list of heights from child lines
@@ -13280,175 +13257,231 @@ class SwellingPressureLine(models.Model):
     #     h = heights[-3] if len(heights) >= 3 else 0.0
 
     #     deno = (line.swelling_area or 0.0) * h
-    #     bulk_den =  num / deno
 
-    #     # Compute water content
-    #     water_con = (
-    #         (line.wt_wet_specimen_af - line.wt_dry_specimen_af)
-    #         / (line.wt_dry_specimen_af - line.wt_of_ring)
-    #     ) * 100
+    #     if deno:
+    #         line.bulk_density_soil_1 = num / deno
+    #     else:
+    #         line.bulk_density_soil_1 = 0.0
 
-    #     # Calculate dry density
-    #     line.dry_density_soil_1 = bulk_den / (1 + (water_con / 100))
+    @api.depends(
+    'wt_of_ring',
+    'wt_wet_specimen_af',
+    'swelling_area',
+    'swelling_output_ids.specimen_height',
+    'swelling_output_ids.cylces'
+)
+    def _compute_bulk_density_soil_1(self):
 
-    @api.depends('wt_wet_specimen_af', 'wt_of_ring', 'swelling_area', 'wt_dry_specimen_af','swelling_output_ids.specimen_height')
-    def _compute_dry_density_soil_1(self):
      for line in self:
-        line.dry_density_soil_1 = 0  
-        
-        if not line.swelling_area or not line.wt_dry_specimen_af or line.wt_dry_specimen_af == line.wt_of_ring:
+
+        # -------------------------------------------------
+        # Wet soil mass
+        # γb = (Wet Specimen + Ring) - (Ring Weight)
+        # -------------------------------------------------
+
+        num = (
+            (line.wt_wet_specimen_af or 0.0)
+            - (line.wt_of_ring or 0.0)
+        )
+
+       
+
+        unloading_lines = line.swelling_output_ids.filtered(
+            lambda r: r.cylces and '1st Cycle Unloading' in r.cylces
+        )
+
+        heights = unloading_lines.mapped(
+            'specimen_height'
+        ) or []
+
+        # Excel E28 corresponds to third-last unloading row
+        h = (
+            heights[-3]
+            if len(heights) >= 3
+            else 0.0
+        )
+
+        # -------------------------------------------------
+        # Volume
+        # V = A × H
+        # -------------------------------------------------
+
+        volume = (
+            (line.swelling_area or 0.0) * h
+        )
+
+        # -------------------------------------------------
+        # Bulk Density
+        # γb = W / V
+        # -------------------------------------------------
+
+        if volume:
+
+            line.bulk_density_soil_1 = (
+                num / volume
+            )
+
+        else:
+
+            line.bulk_density_soil_1 = 0.0
+
+
+    @api.depends(
+    'wt_wet_specimen_af',
+    'wt_of_ring',
+    'swelling_area',
+    'wt_dry_specimen_af',
+    'swelling_output_ids.specimen_height'
+)
+    def _compute_dry_density_soil_1(self):
+
+     for line in self:
+
+        line.dry_density_soil_1 = 0.0
+
+        heights = line.swelling_output_ids.mapped(
+            'specimen_height'
+        ) or []
+
+        h = heights[-2] if len(heights) >= 2 else 0.0
+
+        volume = (
+            (line.swelling_area or 0.0) * h
+        )
+
+        if not volume:
             continue
 
-        num = (line.wt_wet_specimen_af or 0.0) - (line.wt_of_ring or 0.0)
+        wet_mass = (
+            (line.wt_wet_specimen_af or 0.0)
+            - (line.wt_of_ring or 0.0)
+        )
 
-        # get list of heights from child lines
-        heights = line.swelling_output_ids.mapped('specimen_height') or []
-        # take third-last value if it exists
-        h = heights[-3] if len(heights) >= 3 else 0.0
+        bulk_density = (
+            wet_mass / volume
+        )
 
-        deno = (line.swelling_area or 0.0) * h
+        dry_mass = (
+            (line.wt_dry_specimen_af or 0.0)
+            - (line.wt_of_ring or 0.0)
+        )
 
-        if deno:
-            bulk_density_soil_1 = num / deno
-        else:
-            bulk_density_soil_1 = 0.0
+        if not dry_mass:
+            continue
 
-        # Compute water content
         water_con = (
-            (line.wt_wet_specimen_af - line.wt_dry_specimen_af)
-            / (line.wt_dry_specimen_af - line.wt_of_ring)
+            (
+                (line.wt_wet_specimen_af or 0.0)
+                - (line.wt_dry_specimen_af or 0.0)
+            ) / dry_mass
         ) * 100
 
-        # Calculate dry density
-        line.dry_density_soil_1 = bulk_density_soil_1 / (1 + (water_con / 100))
-
-#     @api.depends(
-#     'wt_wet_specimen_af',
-#     'wt_of_ring',
-#     'swelling_area',
-#     'wt_dry_specimen_af',
-#     'swelling_output_ids.specimen_height'
-# )
-#     def _compute_dry_density_soil_1(self):
-
-#      for line in self:
-
-#         line.dry_density_soil_1 = 0.0
-
-#         # -----------------------------------
-#         # VALIDATION
-#         # -----------------------------------
-#         if (
-#             not line.swelling_area
-#             or not line.wt_dry_specimen_af
-#             or line.wt_dry_specimen_af == line.wt_of_ring
-#         ):
-#             continue
-
-#         # -----------------------------------
-#         # NUMERATOR
-#         # -----------------------------------
-#         num = (
-#             (line.wt_wet_specimen_af or 0.0)
-#             - (line.wt_of_ring or 0.0)
-#         )
-
-#         # -----------------------------------
-#         # HEIGHTS
-#         # -----------------------------------
-#         heights = (
-#             line.swelling_output_ids.mapped('specimen_height')
-#             or []
-#         )
-
-#         # third-last height
-#         if len(heights) >= 3:
-#             h = heights[-3]
-#         else:
-#             h = 0.0
-
-#         # -----------------------------------
-#         # DENOMINATOR
-#         # -----------------------------------
-#         deno = (
-#             (line.swelling_area or 0.0)
-#             * h
-#         )
-
-#         # IMPORTANT FIX
-#         if deno == 0:
-#             continue
-
-#         # -----------------------------------
-#         # BULK DENSITY
-#         # -----------------------------------
-#         bulk_den = num / deno
-
-#         # -----------------------------------
-#         # WATER CONTENT
-#         # -----------------------------------
-#         water_deno = (
-#             line.wt_dry_specimen_af
-#             - line.wt_of_ring
-#         )
-
-#         if water_deno == 0:
-#             continue
-
-#         water_con = (
-#             (
-#                 line.wt_wet_specimen_af
-#                 - line.wt_dry_specimen_af
-#             )
-#             / water_deno
-#         ) * 100
-
-#         # -----------------------------------
-#         # DRY DENSITY
-#         # -----------------------------------
-#         line.dry_density_soil_1 = (
-#             bulk_den
-#             / (1 + (water_con / 100))
-#         )
-
-   
-
-  
+        line.dry_density_soil_1 = (
+            bulk_density / (1 + (water_con / 100))
+        )
 
 
-    @api.depends('swelling_output_ids.e_void')
+# ---------------------------------------------------------
+# Void Ratio
+# ---------------------------------------------------------
+
+    @api.depends(
+    'swelling_output_ids.e_void',
+    'swelling_output_ids.cylces'
+)
     def _compute_swell_void_ratio_1(self):
-        for line in self:
-            # get list of heights from child lines
-            void = line.swelling_output_ids.mapped('e_void') or []
-            # take third-last value if it exists
-            v = void[-1] if len(void) >= 3 else 0.0
-            line.swell_void_ratio_1 = v
 
-    @api.depends('swelling_output_ids.e_void',
-             'swelling_specific_gravity',
-             'wt_wet_specimen_af',
-             'wt_dry_specimen_af',
-             'wt_of_ring')
-    def _compute_degree_sat_1(self):
      for line in self:
-        # last void ratio from child lines (or 0 if no lines)
-        voids = line.swelling_output_ids.mapped('e_void') or []
+
+        # only unloading rows
+        unloading_lines = line.swelling_output_ids.filtered(
+            lambda r: r.cylces and '1st Cycle Unloading' in r.cylces
+        )
+
+        # get void ratios
+        voids = unloading_lines.mapped(
+            'e_void'
+        ) or []
+
+        # last unloading void ratio
         v = voids[-1] if voids else 0.0
 
-        # water content in %
-        water_con = 0.0
-        denom = (line.wt_dry_specimen_af or 0.0) - (line.wt_of_ring or 0.0)
-        if denom:
-            water_con = ((line.wt_wet_specimen_af or 0.0)
-                         - (line.wt_dry_specimen_af or 0.0)) / denom * 100.0
+        line.swell_void_ratio_1 = v
 
-        # S = (w * Gs) / e   (in % if w is in %)
+
+# ---------------------------------------------------------
+# Degree of Saturation
+# Sr = (w × Gs) / e
+# ---------------------------------------------------------
+
+    @api.depends(
+    'swelling_output_ids.e_void',
+    'swelling_output_ids.cylces',
+    'swelling_specific_gravity',
+    'wt_wet_specimen_af',
+    'wt_dry_specimen_af',
+    'wt_of_ring'
+)
+    def _compute_degree_sat_1(self):
+ 
+     for line in self:
+
+        # ---------------------------------------------
+        # ONLY unloading rows
+        # ---------------------------------------------
+
+        unloading_lines = line.swelling_output_ids.filtered(
+            lambda r: r.cylces and 'Unloading' in r.cylces
+        )
+
+        # void ratios from unloading rows
+        voids = unloading_lines.mapped(
+            'e_void'
+        ) or []
+
+        # LAST unloading void ratio
+        v = voids[-1] if voids else 0.0
+
+        # ---------------------------------------------
+        # Water Content (%)
+        # ---------------------------------------------
+
+        denom = (
+            (line.wt_dry_specimen_af or 0.0)
+            - (line.wt_of_ring or 0.0)
+        )
+
+        water_con = 0.0
+
+        if denom:
+
+            water_con = (
+                (
+                    (line.wt_wet_specimen_af or 0.0)
+                    - (line.wt_dry_specimen_af or 0.0)
+                ) / denom
+            ) * 100
+
+        # ---------------------------------------------
+        # Degree of Saturation
+        # Sr = (G × w) / e
+        # Excel-style calculation
+        # ---------------------------------------------
+
         if v:
-            line.degree_sat_1 = (line.swelling_specific_gravity or 0.0) * water_con / v
+
+            line.degree_sat_1 = (
+                (
+                    water_con
+                    * (line.swelling_specific_gravity or 0.0)
+                ) / v
+            )
+
         else:
+
             line.degree_sat_1 = 0.0
 
+    
 
 
 
