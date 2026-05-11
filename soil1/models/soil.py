@@ -13483,10 +13483,6 @@ class SwellingPressureLine(models.Model):
 
     
 
-
-
-
-
     initial_read = fields.Float(string= "Initial Reading",  digits=(8,2)) 
     set_load_read = fields.Float(string= "Setting load Reading",  digits=(8,2))
 
