@@ -10963,9 +10963,9 @@ class USCNewLine(models.Model):
     lab_id=  fields.Char(string="Lab ID" )
 
     ucs_diameter = fields.Float(string="Diameter (mm): ", digits=(12,0))
-    ucs_area = fields.Float(string="Area (A):mm2", digits=(12,2), compute="_compute_ucs_area", store=True)
+    ucs_area = fields.Float(string="Area (A):mm2", digits=(18,11), compute="_compute_ucs_area", store=True)
     ucs_height = fields.Float(string="Height:  mm", digits=(12,0))
-    ucs_volumn = fields.Float(string="Soil Volume: cm3", digits=(12,2) , compute="_compute_ucs_volumn", store=True )
+    ucs_volumn = fields.Float(string="Soil Volume: cm3", digits=(18,10) , compute="_compute_ucs_volumn", store=True )
 
     @api.depends('ucs_diameter')
     def _compute_ucs_area(self):
@@ -11069,64 +11069,95 @@ class USCNewLine(models.Model):
                 line.temp_diff = 0.0
                 line.force_percent_change = 0.0  
                 
-    w_value = fields.Float(string="w", digits=(16,12),   compute="_compute_soil_parameters", store=True)
+    w_value = fields.Float(string="w", digits=(18,14),   compute="_compute_soil_parameters", store=True)
 
-    gamma_ratio = fields.Float(string="γw / γd", digits=(16,12),compute="_compute_soil_parameters", store=True)
+    gamma_ratio = fields.Float(string="γw / γd", digits=(18,15),compute="_compute_soil_parameters", store=True)
 
-    inv_specific_gravity = fields.Float(string="1 / Gs", digits=(16,12),compute="_compute_soil_parameters", store=True)
+    inv_specific_gravity = fields.Float(string="1 / Gs", digits=(18,15),compute="_compute_soil_parameters", store=True)
 
     degree_saturation = fields.Float(string="S (%)", digits=(12,2),compute="_compute_soil_parameters", store=True) 
 
-    @api.depends('ucs_moisture_con_at','ucs_bulk_density','ucs_dry_density','ucs_specific_gravity')
-    def _compute_soil_parameters(self):
-     for line in self:
-        # w (decimal)
-        if line.ucs_moisture_con_at:
-            w = line.ucs_moisture_con_at / 100
-            line.w_value = w
-        else:
-            w = 0.0
-            line.w_value = 0.0
+    
 
-        # γw / γd
-        if line.ucs_bulk_density and line.ucs_dry_density:
-            line.gamma_ratio = (
-                1.0 / line.ucs_dry_density
-            )
-        else:
-            line.gamma_ratio = 0.0
-
-        # 1 / Gs
-        if line.ucs_specific_gravity:
-            line.inv_specific_gravity = 1 / line.ucs_specific_gravity
-        else:
-            line.inv_specific_gravity = 0.0
-
-        # Degree of saturation S (%)
-        # if (w and line.ucs_specific_gravity
-        #         and line.ucs_bulk_density
-        #         and line.ucs_dry_density
-        #         and line.gamma_ratio != 0):
-
-        #     line.degree_saturation = (line.w_value / (line.gamma_ratio - line.inv_specific_gravity)) * 100
-        # else:
-        #     line.degree_saturation = 0.0
-
-        w_val = round(line.w_value, 2)
-
-        gamma_ratio = round(line.gamma_ratio, 2)
- 
-        inv_gs = round(line.inv_specific_gravity, 2)
-
-        denominator = gamma_ratio - inv_gs
-
-        if denominator != 0:
-
-          line.degree_saturation = round( (w_val / denominator) * 100,2
+    @api.depends(
+        'ucs_moisture_con_at',
+        'ucs_bulk_density',
+        'ucs_dry_density',
+        'ucs_specific_gravity'
     )
+    def _compute_soil_parameters(self):
 
-        else:
-           line.degree_saturation = 0.0
+        for line in self:
+
+            # ---------------------------------
+            # w value
+            # ---------------------------------
+
+            if line.ucs_initial_moist_con:
+
+                # w = (
+                #     line.ucs_initial_moist_con / 100
+                # )
+                w = (line.ucs_initial_moist_con * 0.01)
+
+                line.w_value = w
+
+            else:
+
+                w = 0.0
+                line.w_value = 0.0
+
+
+            # ---------------------------------
+            # gamma_w / gamma_d
+            # ---------------------------------
+
+            if line.ucs_dry_density:
+
+                gamma_ratio = (
+                    1.0 / line.ucs_dry_density)
+
+                line.gamma_ratio = gamma_ratio
+
+            else:
+
+                gamma_ratio = 0.0
+                line.gamma_ratio = 0.0
+
+
+            # ---------------------------------
+            # 1 / Gs
+            # ---------------------------------
+
+            if line.ucs_specific_gravity:
+
+                inv_gs = round(
+                    1.0 / line.ucs_specific_gravity,5
+                )
+
+                line.inv_specific_gravity = inv_gs
+
+            else:
+
+                inv_gs = 0.0
+                line.inv_specific_gravity = 0.0
+
+
+            # ---------------------------------
+            # Degree of Saturation
+            # ---------------------------------
+
+            denominator = gamma_ratio - inv_gs
+
+            if denominator != 0:
+
+                line.degree_saturation = (
+                    (w / denominator) * 100
+                )
+
+            else:
+
+                line.degree_saturation = 0.0
 
     
     m = fields.Float(string=" (m)",default=1.6820, digits=(10,4))
