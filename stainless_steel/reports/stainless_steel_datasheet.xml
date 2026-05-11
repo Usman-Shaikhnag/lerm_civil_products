@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="stainless_steel_datasheet">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			<t t-call="lerm_civil.mechanical_data_sheet_header">
+                <div style="text-align:center;font-size:18px">
+                    Stainless Steel
+                </div>
+				
+                <div class="container_eln" style="margin-top:5px">
+
+				   <table style="margin-top:10px">
+				<tr cols="12">
+					
+					<td colspan="6">Job No :
+                        <![CDATA[&nbsp;]]>
+                         <span t-field="eln.kes_no"></span>
+                    </td>
+					<td colspan="6">Test Start Date: 
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.start_date"></span>
+                    </td>
+				</tr>
+                <tr>
+                  <td colspan="6">Material: <span t-field="eln.material"></span>
+                </td>
+                 <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
+                </td>
+                </tr>
+                <tr style="height:50px" cols="12">
+                    <td colspan="4">Performed By :
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.technician.name"/>
+                    </td>
+                    <td colspan="4">Witness Name :
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.witness_description"/>
+                    </td>
+                    <td colspan="4">Witness Signature :
+                        <![CDATA[&nbsp;]]>
+                        <span style='padding:20px'></span>
+                    </td>
+                </tr>
+			</table>
+			
+
+		
+
+
+
+              <div style="margin-top:20px">
+                       
+                        <table>
+                       
+
+							  <tr cols="12">
+                                <td rowspan="2" style="text-align: center;"><b>Sr No.</b></td>
+                                <td rowspan="2"  style="text-align: center;"><b>Sample  Identity</b></td>
+                                <td  rowspan="2" style="text-align: center;"><b></b></td>
+                                <td  rowspan="2" style="text-align: center;"><b>UTS (MPa)</b></td>
+                                <td colspan="3" style="text-align: center;"><b>Yield Stress (MPa)</b></td>
+                                <td  rowspan="2" style="text-align: center;"><b>% Elongation On 5.65 √Area</b></td>
+                                <td  rowspan="2" style="text-align: center;"><b>Bend Test  180° 2 t</b></td>
+                               
+                            </tr>
+
+							<tr >
+                                <td colspan="1" style="text-align: center;"><b>&lt;20</b></td>
+								<td  colspan="1" style="text-align: center;"><b>20-40</b></td>
+								<td  colspan="1" style="text-align: center;"><b>&gt;40</b></td>
+																
+
+                                
+                            </tr>
+
+                             <tr>
+								<td colspan="2" style="text-align: center;">
+									<b>Specification as per IS 2062-2011 GRADE E250</b>
+								</td>
+
+								<td></td> <!-- blank -->
+								<td style="text-align: center;">
+								<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','10238877-0268-46ef-ba88-9c0453210l69668755')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+											</t>
+										</t>
+										</span>
+								</td> <!-- UTS -->
+
+								<td style="text-align: center;">
+									<t t-esc="data.requirement1 or ''"/>
+								</td>
+								<td style="text-align: center;">
+									<t t-esc="data.requirement2 or ''"/>
+								</td>
+								<td style="text-align: center;">
+									<t t-esc="data.requirement3 or ''"/>
+								</td>
+
+								<td style="text-align: center;">	
+								<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','6987541-0268-46ef-ba88-9c045321055578')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+											</t>
+										</t>
+										</span>
+									</td> <!-- elongation -->
+								<td style="text-align: center;">
+								<span >
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','1023457-788-46ef-ba88-9c0453232147855')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+											</t>
+										</t>
+										</span>
+									</td> <!-- bend -->
+							</tr>
+                            <t t-set="f" t-value="0"/>
+                            <tr t-foreach="data.child_lines" t-as="r">
+                                <td  style="text-align: center;">
+                                    <div>
+                                        <span t-esc="f + 1" />
+                                        <t t-set="f" t-value="f + 1"/>
+                                    </div>
+                                </td>
+                                <td  style="text-align: center;">
+                                    <span t-esc="r['sample_identity']"/>
+                                </td>
+								<td  style="text-align: center;">
+                                    <span t-esc="r['blank']"/>
+                                </td>
+								<td  style="text-align: center;">
+                                    <span t-esc="r['uts']"/>
+                                </td>
+                                <td colspan="3" style="text-align: center;">
+                                    <span t-esc="r['yield_sterss']"/>
+                                </td>
+                                <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['elongation']"/>
+                                </td>
+                                 <td style="text-align: center;">
+									<t t-esc="dict(r._fields['bend'].selection).get(r.bend)"/>
+								</td>
+                               
+                            </tr>
+                        </table>
+                       
+
+					
+
+							<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<!-- <div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div> -->
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<!-- <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div> -->
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+				</div>
+
+				</div>
+
+				
+			</t>
+		</t>
+	</template>
+</odoo>

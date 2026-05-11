@@ -484,6 +484,8 @@
 
 
 
+                   
+
 
                         <!-- 4. Bulking of Sand -->
                     
@@ -861,22 +863,95 @@
 						</div>
 					</div>
 
-     
-               
-                    
-                    <!-- authorizeRowDataSheet -->
-                    
-                   <div class="authorizeRowDataSheet">
-						<div>
-                            <div>
-                                <b>
-                                    Tested By 
-                                </b>
-                                
-                            </div>
-                            <div style="height:40px">
 
-                            </div>
+
+
+
+                    <div t-if="data.finer75_visible" style="margin-top:20px; page-break-before: always;">
+                        <div style="text-align:center;font-size:18px">
+                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','2047739e-9941-4bc0-af9b-839767be6e1c')]).parameter_name"/>
+                            <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','2047739e-9941-4bc0-af9b-839767be6e1c')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+                        </div>
+                   
+                  
+                        <table style="margin-top:20px;">
+
+                            <tbody>
+                                <tr>
+
+                                    <td style="text-align: ">
+                                        <span style="text-align: center;">
+                                         Weight of Sample in gms
+                                        </span>
+                                    </td>
+
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;">
+                                            <span t-field="data.wt_sample_finer75" />
+                                        </span>
+                                    </td>
+
+                                </tr>
+                                <tr>
+
+                                    <td style="text-align: ">
+                                        <span style="text-align: center;">
+                                        Weight of dry sample after retained in 75 microns
+
+                                        </span>
+                                    </td>
+
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;">
+                                            <span t-field="data.wt_dry_sample_finer75" />
+                                        </span>
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+
+                                    <td style="text-align: ">
+                                        <span style="text-align: center;">
+                                        Material finer than 75 micron in %
+                                            
+                                        </span>
+                                    </td>
+
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;">
+                                            <span t-field="data.material_finer75"/>
+                                        </span>
+                                    </td>
+
+
+
+                                </tr>
+                               
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+
+
+                    <div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
                             <div>
                                 <b>
                                 <span t-esc="eln.sample_id.filled_by.name"/>
@@ -887,30 +962,283 @@
                                     (<span t-esc="eln.sample_id.filled_by.job_title"/>)
                                 </b>
                             </div>
-						</div>
-						<div style="margin-left:500px">
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
 							
-							<div>
-								<b>
-									Approved By
-								</b>
-							</div>
-							<div style="height:40px">
-
-							</div>
-							<div>
-								<b>
-								<span t-esc="eln.sample_id.check_by.name"/>
-								</b>
-							</div>
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
 							
-							<div>
-								<b>
-									(<span t-esc="eln.sample_id.check_by.job_title"/>)
-								</b>
-							</div>
 						</div>
 					</div>
+
+
+
+
+                    <div t-if="data.clay_lump_visible" style="margin-top:20px; page-break-before: always;">
+                        <div style="text-align:center;font-size:18px">
+                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','6daf868e-c850-4c80-8cf2-c37941cfc075')]).parameter_name"/>
+                            <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','6daf868e-c850-4c80-8cf2-c37941cfc075')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+                        </div>
+                   
+                  
+                        <table style="margin-top:20px;">
+
+                            <tbody>
+                                <tr>
+
+                                    <td style="text-align: ">
+                                        <span style="text-align: center;">
+                                         Weight of Sample in gms
+                                        </span>
+                                    </td>
+
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;">
+                                            <span t-field="data.wt_sample_clay_lumps" />
+                                        </span>
+                                    </td>
+
+                                </tr>
+                                <tr>
+
+                                    <td style="text-align: ">
+                                        <span style="text-align: center;">
+                                        Weight of dry sample after retained in 75 microns
+
+                                        </span>
+                                    </td>
+
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;">
+                                            <span t-field="data.wt_dry_sample_clay_lumps" />
+                                        </span>
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+
+                                    <td style="text-align: ">
+                                        <span style="text-align: center;">
+                                       Clay Lumps in %
+                                            
+                                        </span>
+                                    </td>
+
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;">
+                                            <span t-field="data.clay_lumps_percent"/>
+                                        </span>
+                                    </td>
+
+
+
+                                </tr>
+                               
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+
+
+                    <div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+
+
+
+                    <div t-if="data.light_weight_visible" style="margin-top:20px; page-break-before: always;">
+                        <div style="text-align:center;font-size:18px">
+                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','6daf868e-c850-4c80-8cf2-c37941888888')]).parameter_name"/>
+                            <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','6daf868e-c850-4c80-8cf2-c37941888888')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+                        </div>
+                   
+                  
+                        <table style="margin-top:20px;">
+
+                            <tbody>
+                                <tr>
+
+                                    <td style="text-align: ">
+                                        <span style="text-align: center;">
+                                        Weight of Sample in gms
+                                        </span>
+                                    </td>
+
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;">
+                                            <span t-field="data.wt_sample_light_weight" />
+                                        </span>
+                                    </td>
+
+                                </tr>
+                                <tr>
+
+                                    <td style="text-align: ">
+                                        <span style="text-align: center;">
+                                       Weight of dry sample after retained in 75 microns
+
+                                        </span>
+                                    </td>
+
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;">
+                                            <span t-field="data.wt_dry_sample_light_weight" />
+                                        </span>
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+
+                                    <td style="text-align: ">
+                                        <span style="text-align: center;">
+                                      Light Weight Particle in %
+                                            
+                                        </span>
+                                    </td>
+
+                                    <td style="text-align: center;">
+                                        <span style="text-align: center;">
+                                            <span t-field="data.light_weight_percent"/>
+                                        </span>
+                                    </td>
+
+
+
+                                </tr>
+                               
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+
+
+                    <div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+
+
+     
                     
                 </div>
 

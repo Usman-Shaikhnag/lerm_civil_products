@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mech_tmt_bar11_view" model="ir.ui.view">
+        <field name="name">mech.tmt.bar.form</field>
+        <field name="model">mech.tmt.bar</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <sheet>
+
+                  <div>
+                    <h1>
+                        <field name="name" readonly="1" nolabel="1"/>
+                    </h1>
+                    </div>
+
+
+                     <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <!-- <field name="grade" readonly="1"/> -->
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+                    <!-- <group style="white-space: nowrap; width:70%;">
+                        <h1>
+                            <field name="name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group> -->
+
+                     <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+
+                     <div invisible="mechanical_test_visible == False" style="text-align:center">
+                        <h1>
+                          
+                          <field name="mechanical_test_visible" invisible='1'/>
+                          <field name="mechanical_test_name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </div>
+
+                
+
+                
+
+                    <div invisible="mechanical_test_visible == False" class="mb-3">
+                    <field name="child_lines"  >
+                            <tree editable="bottom" class="custom_table_borders">
+                             
+                                <field name="serial_no" />
+                                <field name="sample_identity" />
+                                <field name="uts" />
+                                <field name="proof_stress" />
+                                <field name="elongation" />
+                                <field name="total_elongation" />
+                                <field name="ratio_uts_ys" />
+                                <field name="bend" />
+                                <field name="re_bend" />
+                                
+                              
+                            </tree>
+                    </field>
+                  
+
+                    </div>
+
+
+
+                    <div invisible="section_weight_visible == False" style="text-align:center">
+                        <h1>
+                          
+                          <field name="section_weight_visible" invisible='1'/>
+                          <field name="section_weight_name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </div>
+
+                
+
+                
+
+                    <div invisible="section_weight_visible == False" class="mb-3">
+                    <field name="section_weight_lines"  >
+                            <tree editable="bottom" class="custom_table_borders">
+                             
+                                <field name="serial_no" />
+                                <field name="sample_identity" />
+                                <field name="weight" />
+                                <field name="lenght" />
+                                <field name="unit_weight" />
+                                <field name="standard_weight" />
+                                <field name="tolerance" />
+                           
+                                
+                              
+                            </tree>
+                    </field>
+                  
+
+                    </div>
+
+
+
+                    <div invisible="chemical_test_visible == False" style="text-align:center">
+                        <h1>
+                          
+                          <field name="chemical_test_visible" invisible='1'/>
+                          <field name="chemical_test_name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </div>
+
+                
+
+                
+
+                    <div invisible="chemical_test_visible == False" class="mb-3">
+                    <field name="chemical_test_lines"  >
+                            <tree editable="bottom" class="custom_table_borders">
+                             
+                                <field name="serial_no" />
+                                <field name="sample_identity" />
+                                <field name="c" />
+                                <field name="p" />
+                                <field name="s" />
+                                <field name="p_s" />
+                                <field name="si" />
+                                <field name="cr" />
+                                <field name="cu" />
+                                <field name="mo" />
+                                <field name="ni" />
+                                <field name="mn" />
+                           
+                                
+                              
+                            </tree>
+                    </field>
+                  
+
+                    </div>
+
+                  
+
+                    <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
+
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>

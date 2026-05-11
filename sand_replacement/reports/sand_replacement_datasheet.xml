@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="sand_replacement_datasheet">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			<t t-call="lerm_civil.mechanical_data_sheet_header">
+                <div style="text-align:center;font-size:18px">
+                    Sand  Replacement
+                </div>
+				
+                <div class="container_eln" style="margin-top:5px">
+
+				   <table style="margin-top:10px">
+				<tr cols="12">
+					
+					<td colspan="6">Job No :
+                        <![CDATA[&nbsp;]]>
+                         <span t-field="eln.kes_no"></span>
+                    </td>
+					<td colspan="6">Test Start Date: 
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.start_date"></span>
+                    </td>
+				</tr>
+                <tr>
+                  <td colspan="6">Material: <span t-field="eln.material"></span>
+                </td>
+                 <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
+                </td>
+                </tr>
+                <tr style="height:50px" cols="12">
+                    <td colspan="4">Performed By :
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.technician.name"/>
+                    </td>
+                    <td colspan="4">Witness Name :
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.witness_description"/>
+                    </td>
+                    <td colspan="4">Witness Signature :
+                        <![CDATA[&nbsp;]]>
+                        <span style='padding:20px'></span>
+                    </td>
+                </tr>
+			</table>
+			
+
+		
+
+                <!-- Density Relation Using Heavy Compaction  -->
+
+                <div t-if="data.density_relation_visible" >
+					<div style="text-align:center;font-size:18px">
+						Density Relation Using Heavy Compaction
+					</div>
+
+                    <table style="margin-top:10px">
+						<tr cols="12">
+							<td colspan="6">Weight of Mould in gm (A) :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.wt_of_modul"/>
+							</td>
+							
+						</tr>
+                        <tr cols="12">
+							<td colspan="6">Volume of Mould in cc (B) :
+								<![CDATA[&nbsp;]]>
+							</td>
+							<td colspan="6">
+								<span t-field="data.vl_of_modul"/>
+							</td>
+							
+						</tr>
+						
+					</table>
+					
+
+					<table style="margin-top:10px">
+						<tr cols="12">
+							<td colspan="1">Determination No
+							</td>
+							<td colspan="1">Weight of Mould + Compacted sample in gm (C)
+							</td>
+                            <td colspan="1">Weight of compacted sample in gm (D) C-A
+							</td>
+							<td colspan="1">Bulk Density of sample in gm/cc (E) D/B
+							</td>
+							<td colspan="1">Container No
+							</td>
+                            <td colspan="1">Weight of Container in gm (F)
+							</td>
+                            <td colspan="1">Weight of Container + wet sample in gm (G)
+							</td>
+                            <td colspan="1">Weight of Container + dry sample in gm (H)
+							</td>
+							<td colspan="1">Weight of dry sample in  (I)
+							</td>
+							<td colspan="1">Weight of moisture in gm (J) G-H
+							</td>
+                            <td colspan="1">% Moisture (K) J/I*100
+							</td>
+                            <td colspan="1">Dry density in gm/cc (100*E)/(100+K)
+							</td>
+
+							
+							
+						</tr>
+
+						<t t-set="i" t-value="0"/>
+						<tr t-foreach="data.density_relation_table" t-as="r">
+							<td colspan="1">
+								<span t-esc="r['determination_no']"/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['wt_of_modul_compact']"/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['wt_of_compact']"/>
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['bulk_density']"/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['container_no']"/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['wt_of_container']"/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['wt_of_container_wet']"/>
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['wt_of_container_dry']"/>
+							</td>
+                            <td colspan="1">
+								<span t-esc="r['wt_of_dry_sample']"/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['wt_of_moisture']"/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['moisture']"/>
+							</td>
+							<td colspan="1">
+								<span t-esc="r['dry_density']"/>
+							</td>
+							
+						</tr>
+					</table>
+					<div t-if="data.chart_image_density" style="margin-top: 10px;">
+                        <img t-att-src="'data:image/png;base64,' + data.chart_image_density.decode('utf-8')" style="max-width: 80%;"/>
+                    </div>
+
+					<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<!-- <div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div> -->
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<!-- <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div> -->
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+				</div>
+
+
+               <div t-if="data.core_cutter_visible" style="margin-top:20px;page-break-before: always;">
+
+			     <div style="text-align:center;font-size:18px">
+						Core Cutter Test
+					</div>
+				<table>
+							<!-- <tr>
+								<td colspan="6"><b>Core Cutter Test</b></td>
+							</tr> -->
+
+							<tr>
+								<th rowspan="2">Sr.No.</th>
+								<th rowspan="2" style="text-align: center;">
+									   <span t-esc="eln.material.test_parameter"/>
+										<!-- <span>
+											Test Parameter
+										</span> -->
+									</th>
+								<th rowspan="2" style="text-align: center;">
+										<!-- <span>Test Method</span> -->
+										<span t-esc="eln.material.method_reference"/>
+									</th>
+								<th colspan="3" style="text-align: center;">
+
+									<span t-esc="eln.material.result_remark"/>
+										<!-- <span>
+											Test Result
+										</span> -->
+									</th>
+							</tr>
+
+							<tr>
+								<th>Entry Driveway</th>
+								<th>Exist Driveway</th>
+								<th>Forecourt Area</th>
+							</tr>
+
+							<tr>
+
+							<th colspan="3" ></th>
+								<th style="text-align:center;">1</th>
+								<th style="text-align:center;">2</th>
+								<th style="text-align:center;">3</th>
+							</tr>
+
+							<!-- Row 1 -->
+							<tr>
+								<td style="text-align:center;">1</td>
+								<td>Bulk Density - gm/cc</td>
+								<td rowspan="5" style="text-align: center; vertical-align: middle;">
+										<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','321t78874gtre-372f-4775-9bcb-996587rte')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+											</t>
+										</t>
+										</span>
+									</td>
+								<td><span t-field="data.bulk_density_1"/></td>
+								<td><span t-field="data.bulk_density_2"/></td>
+								<td><span t-field="data.bulk_density_3"/></td>
+							</tr>
+
+							<!-- Row 2 -->
+							<tr>
+								<td style="text-align:center;">2</td>
+								<td>Field Moisture Content-%</td>
+								<td><span t-field="data.moisture_content_1"/></td>
+								<td><span t-field="data.moisture_content_2"/></td>
+								<td><span t-field="data.moisture_content_3"/></td>
+							</tr>
+
+							<!-- Row 3 -->
+							<tr>
+								<td style="text-align:center;">3</td>
+								<td>Field Dry Density - gm/cc</td>
+								<td><span t-field="data.dry_density_1"/></td>
+								<td><span t-field="data.dry_density_2"/></td>
+								<td><span t-field="data.dry_density_3"/></td>
+							</tr>
+
+							<!-- Row 4 -->
+							<tr>
+								<td style="text-align:center;">4</td>
+								<td>Compaction Achieved-%</td>
+								<td><span t-field="data.compaction_1" t-options='{"widget": "float", "precision": 2}'/></td>
+								<td><span t-field="data.compaction_2" t-options='{"widget": "float", "precision": 2}'/></td>
+								<td><span t-field="data.compaction_3" t-options='{"widget": "float", "precision": 2}'/></td>
+							</tr>
+
+							<!-- Row 5 -->
+							<tr>
+								<td style="text-align:center;">5</td>
+								<td>Avg. Compaction Achieved-%</td>
+								<td colspan="3" style="text-align:center;">
+									<span t-field="data.avg_compaction" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+						</table>
+
+						<br/>
+						<b>SITE PHOTOGRAPHS:</b>
+						<br/><br/>
+
+						<div style="text-align:center; margin-top:20px;">
+							<img t-if="data.site_image"
+								t-att-src="image_data_uri(data.site_image)"
+								style="width:150px; height:150px;"/>
+						</div>
+
+							<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<!-- <div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div> -->
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<!-- <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div> -->
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+				</div>
+
+				</div>
+
+				
+			</t>
+		</t>
+	</template>
+</odoo>

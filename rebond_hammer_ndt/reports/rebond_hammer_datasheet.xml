@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="rebond_hammer_ndt_datasheet">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			<t t-call="lerm_civil.mechanical_data_sheet_header">
+                <div style="text-align:center;font-size:18px">
+                    Rebond Hammer
+                </div>
+				
+                <div class="container_eln" style="margin-top:5px">
+
+				   <table style="margin-top:10px">
+				<tr cols="12">
+					
+					<td colspan="6">Job No :
+                        <![CDATA[&nbsp;]]>
+                         <span t-field="eln.kes_no"></span>
+                    </td>
+					<td colspan="6">Test Start Date: 
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.start_date"></span>
+                    </td>
+				</tr>
+                <tr>
+                  <td colspan="6">Material: <span t-field="eln.material"></span>
+                </td>
+                 <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
+                </td>
+                </tr>
+                <tr style="height:50px" cols="12">
+                    <td colspan="4">Performed By :
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.technician.name"/>
+                    </td>
+                    <td colspan="4">Witness Name :
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.witness_description"/>
+                    </td>
+                    <td colspan="4">Witness Signature :
+                        <![CDATA[&nbsp;]]>
+                        <span style='padding:20px'></span>
+                    </td>
+                </tr>
+			</table>
+			
+
+		
+
+
+
+               <div t-if="data.rebond_hammer_visible" >
+
+			                             <table>
+                       
+
+							  <tr cols="12">
+                                <td rowspan="2" style="text-align: center;"><b>Sr No.</b></td>
+                                <td rowspan="2"  style="text-align: center;"><b>Member / Element Type</b></td>
+                                <td  rowspan="2" style="text-align: center;"><b>Location Of Member</b></td>
+                                <td  colspan="9" style="text-align: center;"><b>REBOUND NO.</b></td>
+                                <td rowspan="2" style="text-align: center;"><b>AVERAGE REOBUND NO.</b></td>
+                                <td  rowspan="2" style="text-align: center;"><b>COMPRESSIVE  STRENGTH (MPa)</b></td>
+                               
+                            </tr>
+
+							<tr >
+                                <td  colspan="1" style="text-align: center;"><b>1</b></td>
+								<td colspan="1" style="text-align: center;"><b>2</b></td>
+								<td colspan="1" style="text-align: center;"><b>3</b></td>
+								<td colspan="1" style="text-align: center;"><b>4</b></td>
+								<td colspan="1" style="text-align: center;"><b>5</b></td>
+								<td colspan="1"  style="text-align: center;"><b>6</b></td>
+								<td  colspan="1" style="text-align: center;"><b>7</b></td>
+								<td colspan="1" style="text-align: center;"><b>8</b></td>
+								<td colspan="1" style="text-align: center;"><b>9</b></td>
+
+                                
+                            </tr>
+                            <t t-set="f" t-value="0"/>
+                            <tr t-foreach="data.child_lines" t-as="r">
+                                <td  style="text-align: center;">
+                                    <div>
+                                        <span t-esc="f + 1" />
+                                        <t t-set="f" t-value="f + 1"/>
+                                    </div>
+                                </td>
+                                <td  style="text-align: center;">
+                                    <span t-esc="r['element']"/>
+                                </td>
+                                <td  style="text-align: center;">
+                                    <span t-esc="r['location']"/>
+                                </td>
+                                <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['f1']"/>
+                                </td>
+                                 <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['f2']"/>
+                                </td>
+                                <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['f3']"/>
+                                </td>
+                                <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['f4']"/>
+                                </td>
+                                 <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['f5']"/>
+                                </td>
+								 <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['f6']"/>
+                                </td>
+								 <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['f7']"/>
+                                </td>
+								 <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['f8']"/>
+                                </td>
+								 <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['f9']"/>
+                                </td>
+                                 <td  style="text-align: center;">
+                                    <span t-esc="r['avg']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+								  <td  style="text-align: center;">
+                                    <span t-esc="r['mpa']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+
+								  <!-- <td  style="text-align: center;">
+                                    <span t-esc="r['direction']" />
+                                </td> -->
+                            </tr>
+                        </table>
+
+					
+
+							<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<!-- <div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div> -->
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<!-- <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div> -->
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+				</div>
+
+				</div>
+
+				
+			</t>
+		</t>
+	</template>
+</odoo>

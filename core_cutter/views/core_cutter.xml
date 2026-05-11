@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_core_cutter_form" model="ir.ui.view">
+        <field name="name">mechanical.core.cutter.form</field>
+        <field name="model">mechanical.core.cutter</field>
+        <field name="arch" type="xml">
+            <form string="Your form views" create="false">
+
+
+
+
+
+                <sheet>
+                <div>
+                    <h1>
+                        <field name="name" readonly="1" nolabel="1"/>
+                    </h1>
+                    </div>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="grade" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+
+
+
+
+
+                        <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+
+
+
+                    <div class="custom_table_borders" >
+                      <field name="sample_parameters">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </div>
+                    <group/>
+                    
+
+
+
+
+
+
+
+                <!-- Density Relation Heavy Compaction  -->
+                <div invisible="not density_relation_visible">
+                        <h1>
+                            <field name="density_relation_name" readonly="1" nolabel="1"/>
+                            <field name="density_relation_visible" invisible="1"/>
+
+                        </h1>
+                </div>
+                <group/>
+
+                <div style="display:flex;">
+                   <div style="width:50%;">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
+                        <tbody>
+                           <tr>
+                             <td><span>Weight of Mould in gm</span></td>
+                              <td><field name="wt_of_modul" class="blue-input"/>
+                            </td>
+                           </tr>
+                           </tbody>
+                          </table>
+                      </div>
+
+                 <div style="width:50%;">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                        <tbody>
+                           <tr>
+                            <td><span>Volume of Mould in cc</span></td>
+                            <td><field name="vl_of_modul"  class="blue-input"/></td>
+                           </tr>
+                           </tbody>
+                          </table>
+                      </div>
+                      </div>
+                      <group/>
+
+               
+
+
+                <div class="custom_table_borders" invisible="not density_relation_visible">
+                    <field name="density_relation_table" nolabel="1" colspan="2" >
+                            <tree editable="bottom">
+                                <field name='determination_no' class="blue-input" decoration-info="determination_no != 0"/>
+                                <field name='wt_of_modul_compact' class="blue-input" decoration-info="wt_of_modul_compact != 0"/>
+                                <field name='wt_of_compact'/>
+                                <field name='bulk_density'/>
+                                <field name='container_no' class="blue-input" decoration-info="container_no != 0"/>
+                                <field name='wt_of_container' class="blue-input" decoration-info="wt_of_container != 0"/>
+                                <field name='wt_of_container_wet' class="blue-input" decoration-info="wt_of_container_wet != 0"/>
+                                <field name='wt_of_container_dry' class="blue-input" decoration-info="wt_of_container_dry != 0"/>
+                                <field name='wt_of_dry_sample'/>
+                                <field name='wt_of_moisture'/>
+                                <field name='moisture'/>
+                                <field name='dry_density'/>
+                            </tree>
+                    </field> 
+                    <group/>
+                    <!-- <group invisible="not density_relation_visible">
+                    <field name="chart_image_density" widget="image" readonly="1" />
+                    </group> -->
+                </div>
+                <group invisible="not density_relation_visible">
+                    <field name="chart_image_density" widget="image" readonly="1" />
+                    </group>
+
+                <group/>
+
+                <div style="display:flex;">
+                <div style="width: 50%;">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width: 98%;">
+                        <tbody>
+                           <tr>
+                             <td><span>MMD gm/cc</span></td>
+                              <td><field name='mmd'/>
+                            </td>
+                           </tr>
+                           </tbody>
+                          </table>
+                      </div>
+
+                    <div style="width: 50%;">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders" >
+                        <tbody>
+                           <tr>
+                            <td><span>OMC %</span></td>
+                            <td><field name='omc'/></td>
+                           </tr>
+                           </tbody>
+                          </table>
+                      </div>
+                      </div>
+                      <group/>
+
+
+
+                      <!-- core_cutter_visible -->                      
+                    <div invisible="core_cutter_visible == False" style="text-align:center">
+                        <h1>
+                          <field name="core_cutter_name" readonly="1" nolabel="1"/>
+                          <field name="core_cutter_visible" invisible='1'/>
+                        </h1>
+                    </div>
+                                    
+                    <div invisible="core_cutter_visible == False" class="mb-3">
+                      <table class="table custom_table_borders o_form_table">
+                          <thead>
+                              <tr>
+                                  <th></th>
+                                  <th>Entry Driveway</th>
+                                  <th>Exist Driveway</th>
+                                  <th>Forecourt Area</th>
+                                  
+                              </tr>
+                          </thead>
+                          <tbody>
+
+                                <tr>
+                                   <td></td>
+                                    <td><strong>1</strong></td>
+                                    <td><strong>2</strong></td>
+                                    <td><strong>3</strong></td>
+                                    
+                                   
+                                </tr>
+                                <tr>
+                                    <td><strong>Bulk Density - gm/cc</strong></td>
+                                    <td><field name="bulk_density_1" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="bulk_density_2" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="bulk_density_3" nolabel="1" class="blue-input"/></td>
+                                   
+                                </tr>
+                                <tr>
+                                    <td><strong>Field Moisture Content-%</strong></td>
+                                    <td><field name="moisture_content_1" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="moisture_content_2" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="moisture_content_3" nolabel="1" class="blue-input"/></td>
+                                   
+                                </tr>
+                                <tr>
+                                    <td><strong>Field Dry Density - gm/cc</strong></td>
+                                    <td><field name="dry_density_1" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="dry_density_2" nolabel="1" class="blue-input"/></td>
+                                    <td><field name="dry_density_3" nolabel="1" class="blue-input"/></td>
+                                    
+                                </tr>
+
+                                  <tr>
+                                    <td><strong>Compaction Achieved-%c</strong></td>
+                                    <td><field name="compaction_1" nolabel="1"/></td>
+                                    <td><field name="compaction_2" nolabel="1"/></td>
+                                    <td><field name="compaction_3" nolabel="1"/></td>
+                                    
+                                </tr>
+                              
+                          </tbody>
+                      </table>
+                    </div>
+
+
+                    <table class="table o_form_table w-50 mt-2 custom_table_borders" invisible="not core_cutter_visible">
+                        <tbody>
+                            <tr>
+                                <td><strong>Avg. Compaction Achieved</strong></td>
+                                <td>
+                                    <field name="avg_compaction"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong> Conformity</strong></td>
+                                <td>
+                                    <field name="avg_compaction_conformity"
+                                        decoration-success="avg_compaction_conformity == 'pass'"
+                                        decoration-danger="avg_compaction_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong> NABL</strong></td>
+                                <td>
+                                    <field name="avg_compaction_nabl"
+                                        decoration-success="avg_compaction_nabl == 'pass'"
+                                        decoration-danger="avg_compaction_nabl == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                    <group style="text-align: center; margin-top: 20px;">
+                            <field name="site_image"
+                                widget="image"
+                                class="img-fluid"
+                                style="max-width:400px; max-height:400px; object-fit: contain;"/>
+                        </group>
+
+
+                
+                
+
+
+              
+
+
+
+                    <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
+
+
+
+
+
+
+
+                  <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"/>
+
+          </sheet>
+                </form>
+            </field>
+        </record>
+        
+
+      
+
+      
+    </data>
+    
+</odoo>

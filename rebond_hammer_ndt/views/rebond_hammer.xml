@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="rebound_hammer1_view" model="ir.ui.view">
+        <field name="name">rebound.hammer.ndt.form</field>
+        <field name="model">rebound.hammer.ndt</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <sheet>
+                     <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <!-- <field name="grade" readonly="1"/> -->
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+                    <!-- <group style="white-space: nowrap; width:70%;">
+                        <h1>
+                            <field name="name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group> -->
+
+                     <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+
+                     <div invisible="rebond_hammer_visible == False" style="text-align:center">
+                        <h1>
+                          <field name="name" readonly="1" nolabel="1"/>
+                          <field name="rebond_hammer_visible" invisible='1'/>
+                        </h1>
+                    </div>
+
+                     <div style=" margin-top: 20px;">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td style="width:20%;"><label for="abstract"></label></td>
+                                    <td style="width:80%;"><field name="abstract"  widget="html"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style=" margin-top: 20px;">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td style="width:20%;"><label for="keywords"></label></td>
+                                    <td style="width:80%;"><field name="keywords" widget="html"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style=" margin-top: 20px;">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td style="width:20%;"><label for="introduction"></label></td>
+                                    <td style="width:80%;"><field name="introduction" widget="html"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style=" margin-top: 20px;">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td style="width:20%;"><label for="objective"></label></td>
+                                    <td style="width:80%;"><field name="objective" widget="html"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                    </div>
+
+                     <div style=" margin-top: 20px;">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td style="width:20%;"><label for="principle"></label></td>
+                                    <td style="width:80%;"><field name="principle" widget="html"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style=" margin-top: 20px;">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td style="width:20%;"><label for="apparatus"></label></td>
+                                    <td style="width:80%;"><field name="apparatus" widget="html"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                    </div>
+
+                     <group style="text-align: center; margin-top: 20px;">
+                            <field name="site_image"
+                                widget="image"
+                                class="img-fluid"
+                                style="max-width:400px; max-height:400px; object-fit: contain;"/>
+                        </group>
+
+                     <div style=" margin-top: 20px;">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td style="width:20%;"><label for="procedure"></label></td>
+                                    <td style="width:80%;"><field name="procedure" widget="html"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style=" margin-top: 20px;">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td style="width:20%;"><label for="test_procedure"></label></td>
+                                    <td style="width:80%;"><field name="test_procedure" widget="html"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <div style=" margin-top: 20px;">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td style="width:20%;"><label for="Influence_condition"></label></td>
+                                    <td style="width:80%;"><field name="Influence_condition" widget="html"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <div style=" margin-top: 20px;">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td style="width:20%;"><label for="Influence_cement"></label></td>
+                                    <td style="width:80%;"><field name="Influence_cement" widget="html"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <div style=" margin-top: 20px;">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td style="width:20%;"><label for="Influence_aggregate"></label></td>
+                                    <td style="width:80%;"><field name="Influence_aggregate" widget="html"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                     <div style=" margin-top: 20px;">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td style="width:20%;"><label for="Influence_concrete"></label></td>
+                                    <td style="width:80%;"><field name="Influence_concrete" widget="html"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+                    <div style=" margin-top: 20px;">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td style="width:20%;"><label for="Influence_curing_concrete"></label></td>
+                                    <td style="width:80%;"><field name="Influence_curing_concrete" widget="html"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+                    <div style=" margin-top: 20px;">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td style="width:20%;"><label for="Influence_surface"></label></td>
+                                    <td style="width:80%;"><field name="Influence_surface" widget="html"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <div style=" margin-top: 20px;">
+                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td style="width:20%;"><label for="interpretation_result"></label></td>
+                                    <td style="width:80%;"><field name="interpretation_result" widget="html"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                     <group style="text-align: center; margin-top: 20px;">
+                            <field name="site_image1"
+                                widget="image"
+                                class="img-fluid"
+                                style="max-width:400px; max-height:400px; object-fit: contain;"/>
+                        </group>
+
+                    <group style="width:50%" invisible="rebond_hammer_visible == False">
+                        <field name="temperature" string="Temperature °C" identity="extra"/>
+                        <field name="structure" string="Structure Age" identity="extra"/>
+                    </group>
+
+                    <div invisible="rebond_hammer_visible == False" class="mb-3">
+                    <field name="child_lines"  >
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name="element" string="Member / Element Type"/>
+                                <field name="location" string="Location Of Member"/>
+                                <field name="f1" string="1"/>
+                                <field name="f2" string="2"/>
+                                <field name="f3" string="3"/>
+                                <field name="f4" string="4"/>
+                                <field name="f5" string="5"/>
+                                <field name="f6" string="6"/>
+                                <field name="f7" string="7"/>
+                                <field name="f8" string="8"/>
+                                <field name="f9" string="9"/>
+                                <!-- <field name="f10" string="10"/> -->
+                                <field name="avg" string="Average"/>
+                                <field name="mpa" string="Mpa"/>
+                                <field name="direction" string='Direction'/>
+                            </tree>
+                    </field>
+                    <group>
+                    <field name="average_mpa" string="Average Mpa" identity="result"/>
+                    <field name="minimum_mpa" string="Minimum Mpa" identity="result"/>
+                    <field name="maximum_mpa" string="Maximum Mpa" identity="result"/>
+                    </group>
+
+                    </div>
+
+                  
+
+                    <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
+
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>
