@@ -77,7 +77,7 @@ class SandreplacementMechanical(models.Model):
 
         
 
-            if result.parameter.internal_id == '245201457838w-372f-4775-9bcb-e999987hy':
+            if result.parameter.internal_id == '1245201457838w-372f-4775-9bcb-e999987hy':
                 # result.result_char = self.avg_specific_gravity
                 result.calculated = True
 
@@ -247,8 +247,8 @@ class SandreplacementMechanical(models.Model):
             pass 
 
 
-    core_cutter_visible = fields.Boolean("Core Cutter Test",compute="_compute_visible")
-    core_cutter_name = fields.Char("Name",default="Core Cutter Test")
+    core_cutter_visible = fields.Boolean("Sand Replacement Method:",compute="_compute_visible")
+    core_cutter_name = fields.Char("Name",default="Sand Replacement Method")
 
     bulk_density_1 = fields.Float(string="Bulk Density ")
     bulk_density_2 = fields.Float(string="Bulk Density ")
