@@ -194,297 +194,212 @@ class Soil(models.Model):
         
 
 
-    # @api.depends('sieve_analysis_child_lines.passing_percent', 'sieve_analysis_child_lines.sieve_size')
-    # def _compute_clay_fraction(self):
-    #     for record in self:
-    #         total = 0.0
-    #         for line in record.sieve_analysis_child_lines:
-    #             sieve_text = str(line.sieve_size).strip()
-    #             match = re.search(r'([\d\.]+)', sieve_text)
-    #             if not match:
-    #                 continue
-    #             try:
-    #                 size_value = float(match.group(1))
-    #             except ValueError:
-    #                 continue
+    
 
-    #             # µ to mm conversion
-    #             if 'µ' in sieve_text or 'mic' in sieve_text.lower():
-    #                 size_mm = size_value / 1000.0
+    d60 = fields.Float(string="D60 (mm)", compute="_compute_d_values", digits=(18,14))
+    d30 = fields.Float(string="D30 (mm)", compute="_compute_d_values", digits=(16,14))
+    d10 = fields.Float(string="D10 (mm)", compute="_compute_d_values", digits=(18,16))
+
+    cu = fields.Float(string="Cu = D60/D10", compute="_compute_cu", digits=(12,2))
+    cc = fields.Float(string="Cc = D30²/(D10×D60)", compute="_compute_cc_slive", digits=(12,2))
+
+    # @api.depends('sieve_analysis_child_lines.sieve_size',
+    #          'sieve_analysis_child_lines.passing_percent')
+    # def _compute_d_values(self):
+    #  for record in self:
+
+    #     data = []
+
+    #     # -------------------------
+    #     # Prepare (size, passing %)
+    #     # -------------------------
+    #     for line in record.sieve_analysis_child_lines:
+    #         try:
+    #             size_str = str(line.sieve_size).lower().strip()
+
+    #             if 'pan' in size_str:
+    #                 size = 0.0
     #             else:
-    #                 size_mm = size_value
+    #                 size = float(size_str.replace('mm', '').replace('µ', '').replace('um', ''))
 
-    #             # range check for clay fraction (< 0.002 mm)
-    #             # if 0 <= size_mm < 0.002:
-    #             if abs(size_mm - 0.075) < 0.0001:
-                
-    #                 total += line.passing_percent or 0.0
+    #             passing = line.passing_percent or 0.0
 
-    #         record.silt_clay = total  # Use a separate field for clay fraction
+    #             data.append((size, passing))
+    #         except:
+    #             continue
 
+    #     # -------------------------
+    #     # SORT (VERY IMPORTANT)
+    #     # -------------------------
+    #     data = sorted(data, key=lambda x: x[0], reverse=True)
 
-    # @api.depends('sieve_analysis_child_lines.passing_percent', 'sieve_analysis_child_lines.sieve_size')
-    # def _compute_silt(self):
-    #     for record in self:
-    #         total = 0.0
-    #         for line in record.sieve_analysis_child_lines:
-    #             sieve_text = str(line.sieve_size).strip()
-    #             match = re.search(r'([\d\.]+)', sieve_text)
-    #             if not match:
-    #                 continue
-    #             try:
-    #                 size_value = float(match.group(1))
-    #             except ValueError:
-    #                 continue
+    #     # DEBUG (remove later)
+    #     print("DATA:", data)
 
-    #             # µ ते mm convert करा
-    #             if 'µ' in sieve_text or 'mic' in sieve_text.lower():
-    #                 size_mm = size_value / 1000.0
-    #             else:
-    #                 size_mm = size_value
+    #     # -------------------------
+    #     # INTERPOLATION FUNCTION
+    #     # -------------------------
+    #     def get_d(target):
+    #         for i in range(len(data) - 1):
+    #             x1, y1 = data[i]
+    #             x2, y2 = data[i + 1]
 
-    #             # range check (0.002 - 0.075 mm)
-    #             if 0.002 <= size_mm <= 0.075:
-                
-    #                 total += line.passing_percent or 0.0
-
-    #         record.silt = total
-
-    # # ---------- Gravel ----------
-    # @api.depends('sieve_analysis_child_lines.percent_retained', 'sieve_analysis_child_lines.sieve_size')
-    # def _compute_gravel(self):
-    #     for record in self:
-    #         total = 0.0
-    #         for line in record.sieve_analysis_child_lines:
-    #             sieve_text = str(line.sieve_size).strip()
-    #             match = re.search(r'([\d\.]+)', sieve_text)
-    #             if not match:
-    #                 continue
-    #             try:
-    #                 size_value = float(match.group(1))
-    #             except ValueError:
-    #                 continue
-
-    #             # µ ते mm convert करा
-    #             if 'µ' in sieve_text or 'mic' in sieve_text.lower():
-    #                 size_mm = size_value / 1000.0
-    #             else:
-    #                 size_mm = size_value
-
-    #             # range check (4.75 - 80 mm)
-    #             if 4.75 <= size_mm <= 79.99:
-    #                 total += line.percent_retained or 0.0
-
-    #         record.gravel = total
-
-    # @api.depends('sieve_analysis_child_lines.percent_retained')
-    # def _compute_boulder(self):
-    #     for record in self:
-    #         boulder_sum = 0.0
-
-    #         for line in record.sieve_analysis_child_lines:
-    #             size_str = str(line.sieve_size).replace("µ", "e-3").replace("mm", "")
-    #             try:
-    #                 # µm → mm conversion
-    #                 if "e-3" in size_str:
-    #                     size_val = float(size_str) * 0.001
-    #                 else:
-    #                     size_val = float(size_str)
-    #             except ValueError:
-    #                 size_val = 0.0
-
-    #             # Boulder range: sieve size > 79.99 mm
-    #             if size_val > 79.99:
-    #                 boulder_sum += line.percent_retained or 0.0
-
-    #         record.boulder = boulder_sum
-
-    # @api.depends('gravel', 'silt_clay')
-    # def _compute_sand(self):
-    #     for record in self:
-    #         record.sand = 100 - ((record.gravel or 0.0) + (record.silt_clay or 0.0))
-
-    # d60 = fields.Float(string="D60 (mm)",compute="_compute_d60",digits=(12,4))
-    # d30 = fields.Float(string="D30 (mm)",compute="_compute_d30",digits=(12,4))
-    # d10 = fields.Float(string="D10 (mm)",compute="_compute_d10",digits=(12,4))
-    # cu = fields.Float(string="Cu = D60/D10",compute="_compute_cu",digits=(12,4))
-    # cc = fields.Float(string="Cc = D30^2/D10* D60",compute="_compute_cc_slive",digits=(12,4))
-
-
-    # @api.depends('sieve_analysis_child_lines.sieve_size', 'sieve_analysis_child_lines.passing_percent')
-    # def _compute_d60(self):
-    #     for record in self:
-    #         # extract 16mm and 10mm lines
-    #         line_16 = next((l for l in record.sieve_analysis_child_lines if '16' in str(l.sieve_size)), None)
-    #         line_10 = next((l for l in record.sieve_analysis_child_lines if '10' in str(l.sieve_size)), None)
-
-    #         if line_16 and line_10 and line_16.passing_percent is not None and line_10.passing_percent is not None:
-    #             try:
-    #                 x1 = 16.0
-    #                 x2 = 10.0
-    #                 y1 = float(line_16.passing_percent)
-    #                 y2 = float(line_10.passing_percent)
-
-    #                 # Check to avoid division by zero
+    #             if y1 >= target >= y2:
     #                 if y2 != y1:
-    #                     # Linear interpolation to find D60
-    #                     d60_value = x1 + (x2 - x1) * ((60 - y1) / (y2 - y1))
-    #                 else:
-    #                     d60_value = 0.0
+    #                     return x1 + (x2 - x1) * ((target - y1) / (y2 - y1))
+    #         return 0.0
 
-    #                 record.d60 = d60_value
-    #             except Exception:
-    #                 record.d60 = 0.0
-    #         else:
-    #             record.d60 = 0.0
-
-    # @api.depends('sieve_analysis_child_lines.sieve_size', 'sieve_analysis_child_lines.passing_percent')
-    # def _compute_d30(self):
-    #     for record in self:
-    #         # extract 4.75mm and 2.36mm lines
-    #         line_4_75 = next((l for l in record.sieve_analysis_child_lines if '4.75' in str(l.sieve_size)), None)
-    #         line_2_36 = next((l for l in record.sieve_analysis_child_lines if '2.36' in str(l.sieve_size)), None)
-
-    #         if line_4_75 and line_2_36 and line_4_75.passing_percent is not None and line_2_36.passing_percent is not None:
-    #             try:
-    #                 x1 = 4.75
-    #                 x2 = 2.36
-    #                 y1 = float(line_4_75.passing_percent)
-    #                 y2 = float(line_2_36.passing_percent)
-
-    #                 # Linear interpolation for target percent = 10%
-    #                 target_percent = 30.0
-
-    #                 if y2 != y1:
-    #                     d30_value = x1 + (x2 - x1) * ((target_percent - y1) / (y2 - y1))
-    #                 else:
-    #                     d30_value = 0.0
-
-    #                 record.d30 = d30_value
-    #             except Exception:
-    #                 record.d30 = 0.0
-    #         else:
-    #             record.d30 = 0.0
-
-    # @api.depends('sieve_analysis_child_lines.sieve_size', 'sieve_analysis_child_lines.passing_percent')
-    # def _compute_d10(self):
-    #     for record in self:
-    #         # find lines 1.18 mm and 600 µ
-    #         line_1_18 = next((l for l in record.sieve_analysis_child_lines if '1.18' in str(l.sieve_size)), None)
-    #         line_600um = next((l for l in record.sieve_analysis_child_lines if '600' in str(l.sieve_size)), None)
-
-    #         if line_1_18 and line_600um and line_1_18.passing_percent is not None and line_600um.passing_percent is not None:
-    #             try:
-    #                 # Convert sieve sizes to mm
-    #                 x1 = 1.18
-    #                 x2 = 0.6  # 600 µm = 0.6 mm
-    #                 y1 = float(line_1_18.passing_percent)
-    #                 y2 = float(line_600um.passing_percent)
-
-    #                 target_percent = 10.0  # D10 corresponds to 10% passing
-
-    #                 if y2 != y1:
-    #                     d10_value = x1 + (x2 - x1) * ((target_percent - y1) / (y2 - y1))
-    #                 else:
-    #                     d10_value = 0.0
-
-    #                 record.d10 = d10_value
-    #             except Exception:
-    #                 record.d10 = 0.0
-    #         else:
-    #             record.d10 = 0.0
+    #     # -------------------------
+    #     # COMPUTE
+    #     # -------------------------
+    #     record.d10 = get_d(10)
+    #     record.d30 = get_d(30)
+    #     record.d60 = get_d(60)
 
 
-    # # --- Compute Cu ---
+
+
+    
+    @api.depends(
+        'sieve_analysis_child_lines.sieve_size',
+        'sieve_analysis_child_lines.passing_percent'
+    )
+    def _compute_d_values(self):
+
+        for record in self:
+
+            data = []
+
+            # -----------------------------------------
+            # PREPARE DATA
+            # -----------------------------------------
+            for line in record.sieve_analysis_child_lines:
+
+                try:
+                    size_str = str(line.sieve_size).lower().strip()
+
+                    # Ignore PAN
+                    if 'pan' in size_str:
+                        continue
+
+                    size = float(
+                        size_str.replace('mm', '')
+                                .replace('µ', '')
+                                .replace('um', '')
+                                .strip()
+                    )
+
+                    passing = float(line.passing_percent or 0.0)
+
+                    data.append((size, passing))
+
+                except Exception:
+                    continue
+
+            # -----------------------------------------
+            # SORT BY PASSING %
+            # -----------------------------------------
+            data = sorted(data, key=lambda x: x[1], reverse=True)
+
+            print("DATA =", data)
+
+            # -----------------------------------------
+            # EXCEL TREND STYLE INTERPOLATION
+            # -----------------------------------------
+            def get_d(target):
+
+                for i in range(len(data) - 1):
+
+                    d1, p1 = data[i]
+                    d2, p2 = data[i + 1]
+
+                    # exact match
+                    if p1 == target:
+                        return d1
+
+                    if p2 == target:
+                        return d2
+
+                    # interpolation / extrapolation
+                    if p1 >= target >= p2 or p1 <= target <= p2:
+
+                        result = d1 + (
+                            (target - p1)
+                            * (d2 - d1)
+                            / (p2 - p1)
+                        )
+
+                        return result
+
+                # -----------------------------------------
+                # EXTRAPOLATION
+                # (same behavior as Excel TREND)
+                # -----------------------------------------
+                if len(data) >= 2:
+
+                    d1, p1 = data[-2]
+                    d2, p2 = data[-1]
+
+                    result = d1 + (
+                        (target - p1)
+                        * (d2 - d1)
+                        / (p2 - p1)
+                    )
+
+                    return result
+
+                return 0.0
+
+            # -----------------------------------------
+            # COMPUTE D VALUES
+            # -----------------------------------------
+            record.d10 = get_d(10)
+            record.d30 = get_d(30)
+            record.d60 = get_d(60)
+
+            # -----------------------------------------
+            # COMPUTE Cu
+            # -----------------------------------------
+            # if record.d10:
+            #     record.cu = record.d60 / record.d10
+            # else:
+            #     record.cu = 0.0
+
+            # # -----------------------------------------
+            # # COMPUTE Cc
+            # # -----------------------------------------
+            # if record.d10 and record.d60:
+
+            #     record.cc =((record.d30 ** 2) /
+            #         (record.d10 * record.d60))
+
+            # else:
+            #     record.cc = 0.0
+
+
+
     # @api.depends('d60','d10')
     # def _compute_cu(self):
-    #     for record in self:
-    #         if record.d10 and record.d10 != 0:
-    #             record.cu = record.d60 / record.d10
-    #         else:
-    #             record.cu = 0.0
+    #  for record in self:
+    #     record.cu = (record.d60 / record.d10) if record.d10 else 0.0
 
-    # # --- Compute Cc ---
-    # @api.depends('d30','d10','d60')
-    # def _compute_cc_slive(self):
-    #     for record in self:
-    #         if record.d10 and record.d10 != 0 and record.d60 and record.d60 != 0:
-    #             record.cc = (record.d30 ** 2) / (record.d10 * record.d60)
-    #         else:
-    #             record.cc = 0.0
-
-    d60 = fields.Float(string="D60 (mm)", compute="_compute_d_values", digits=(12,4))
-    d30 = fields.Float(string="D30 (mm)", compute="_compute_d_values", digits=(12,4))
-    d10 = fields.Float(string="D10 (mm)", compute="_compute_d_values", digits=(12,4))
-
-    cu = fields.Float(string="Cu = D60/D10", compute="_compute_cu", digits=(12,4))
-    cc = fields.Float(string="Cc = D30²/(D10×D60)", compute="_compute_cc_slive", digits=(12,4))
-
-    @api.depends('sieve_analysis_child_lines.sieve_size',
-             'sieve_analysis_child_lines.passing_percent')
-    def _compute_d_values(self):
-     for record in self:
-
-        data = []
-
-        # -------------------------
-        # Prepare (size, passing %)
-        # -------------------------
-        for line in record.sieve_analysis_child_lines:
-            try:
-                size_str = str(line.sieve_size).lower().strip()
-
-                if 'pan' in size_str:
-                    size = 0.0
-                else:
-                    size = float(size_str.replace('mm', '').replace('µ', '').replace('um', ''))
-
-                passing = line.passing_percent or 0.0
-
-                data.append((size, passing))
-            except:
-                continue
-
-        # -------------------------
-        # SORT (VERY IMPORTANT)
-        # -------------------------
-        data = sorted(data, key=lambda x: x[0], reverse=True)
-
-        # DEBUG (remove later)
-        print("DATA:", data)
-
-        # -------------------------
-        # INTERPOLATION FUNCTION
-        # -------------------------
-        def get_d(target):
-            for i in range(len(data) - 1):
-                x1, y1 = data[i]
-                x2, y2 = data[i + 1]
-
-                if y1 >= target >= y2:
-                    if y2 != y1:
-                        return x1 + (x2 - x1) * ((target - y1) / (y2 - y1))
-            return 0.0
-
-        # -------------------------
-        # COMPUTE
-        # -------------------------
-        record.d10 = get_d(10)
-        record.d30 = get_d(30)
-        record.d60 = get_d(60)
-
-
-    @api.depends('d60','d10')
+    @api.depends('d60', 'd10')
     def _compute_cu(self):
+ 
      for record in self:
-        record.cu = (record.d60 / record.d10) if record.d10 else 0.0
+
+        d60 = round(record.d60 or 0.0, 10)
+        d10 = round(record.d10 or 0.0, 16)
+
+        record.cu = round((d60 / d10), 2) if d10 else 0.0
 
 
     @api.depends('d30','d10','d60')
     def _compute_cc_slive(self):
      for record in self:
         if record.d10 and record.d60:
-            record.cc = (record.d30 ** 2) / (record.d10 * record.d60)
+            r = (record.d60 / record.d10)
+            record.cc = (record.d30 ** 2) / r
         else:
             record.cc = 0.0
     
@@ -608,82 +523,319 @@ class Soil(models.Model):
 
 
 
-    def generate_line_chart_slive(self):
+    # def generate_line_chart_slive(self):
    
-        x_value = []
-        y_value = []
-        x_labels = []
+    #     x_value = []
+    #     y_value = []
+    #     x_labels = []
 
-        for line in self.sieve_analysis_child_lines:
-            if line.sieve_size and line.passing_percent is not None:
-                sieve_str = str(line.sieve_size).strip().lower()
-                try:
-                    if 'mm' in sieve_str:
-                        sieve_val = float(sieve_str.replace('mm', '').strip())
-                        label = f"{int(sieve_val)} mm"
-                    elif 'µ' in sieve_str or 'micron' in sieve_str:
-                        sieve_val = float(sieve_str.replace('µ', '').replace('micron', '').strip()) / 1000
-                        label = f"{int(float(line.sieve_size.replace('µ', '').replace('micron', '').strip()))} µm"
-                    else:
-                        sieve_val = float(sieve_str)
-                        label = f"{sieve_val} mm"
+    #     for line in self.sieve_analysis_child_lines:
+    #         if line.sieve_size and line.passing_percent is not None:
+    #             sieve_str = str(line.sieve_size).strip().lower()
+    #             try:
+    #                 if 'mm' in sieve_str:
+    #                     sieve_val = float(sieve_str.replace('mm', '').strip())
+    #                     label = f"{int(sieve_val)} mm"
+    #                 elif 'µ' in sieve_str or 'micron' in sieve_str:
+    #                     sieve_val = float(sieve_str.replace('µ', '').replace('micron', '').strip()) / 1000
+    #                     label = f"{int(float(line.sieve_size.replace('µ', '').replace('micron', '').strip()))} µm"
+    #                 else:
+    #                     sieve_val = float(sieve_str)
+    #                     label = f"{sieve_val} mm"
 
-                    x_value.append(sieve_val)
-                    y_value.append(float(line.passing_percent))
-                    x_labels.append(label)
-                except ValueError:
-                    continue
+    #                 x_value.append(sieve_val)
+    #                 y_value.append(float(line.passing_percent))
+    #                 x_labels.append(label)
+    #             except ValueError:
+    #                 continue
 
-        if not x_value or not y_value:
-            return False
+    #     if not x_value or not y_value:
+    #         return False
 
-        # Sort ascending
-        sorted_data = sorted(zip(x_value, y_value, x_labels))
-        x_value, y_value, x_labels = zip(*sorted_data)
+    #     # Sort ascending
+    #     sorted_data = sorted(zip(x_value, y_value, x_labels))
+    #     x_value, y_value, x_labels = zip(*sorted_data)
 
-        plt.figure(figsize=(12, 5))
-        plt.xscale('log')
+    #     plt.figure(figsize=(12, 5))
+    #     plt.xscale('log')
 
-        # Main curve
-        plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2)
-        plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5)
+    #     # Main curve
+    #     plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2)
+    #     plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5)
 
-        plt.xlabel('Sieve Size', fontsize=12)
-        plt.ylabel('Passing %', fontsize=12)
-        plt.title('Grain Size Analysis', fontsize=14)
+    #     plt.xlabel('Sieve Size', fontsize=12)
+    #     plt.ylabel('Passing %', fontsize=12)
+    #     plt.title('Grain Size Analysis', fontsize=14)
 
-        ax = plt.gca()
-        plt.xticks(ticks=x_value, labels=x_labels, rotation=45, ha='right')
-        ax.xaxis.set_minor_locator(LogLocator(base=10.0, subs=np.arange(1.0, 10.0)*0.1, numticks=200))
-        ax.yaxis.set_minor_locator(MultipleLocator(2))
-        plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
+    #     ax = plt.gca()
+    #     plt.xticks(ticks=x_value, labels=x_labels, rotation=45, ha='right')
+    #     ax.xaxis.set_minor_locator(LogLocator(base=10.0, subs=np.arange(1.0, 10.0)*0.1, numticks=200))
+    #     ax.yaxis.set_minor_locator(MultipleLocator(2))
+    #     plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
 
-        plt.xlim(left=min(x_value)/1.5, right=max(x_value)*1.5)
-        plt.ylim(bottom=0, top=100)
+    #     plt.xlim(left=min(x_value)/1.5, right=max(x_value)*1.5)
+    #     plt.ylim(bottom=0, top=100)
 
-        # --- D-points: D10, D30, D60 ---
-        d_points = [
-            (getattr(self, 'd10', None), 10, 'black'),
-            (getattr(self, 'd30', None), 30, 'yellow'),
-            (getattr(self, 'd60', None), 60, 'orange')
-        ]
+    #     # --- D-points: D10, D30, D60 ---
+    #     d_points = [
+    #         (getattr(self, 'd10', None), 10, 'black'),
+    #         (getattr(self, 'd30', None), 30, 'yellow'),
+    #         (getattr(self, 'd60', None), 60, 'orange')
+    #     ]
 
-        for dx, dy, color in d_points:
-            if dx:
-                # Solid point
-                plt.scatter(dx, dy, color=color, s=80, zorder=10)
-                # Draw X and Y guide lines only to intersection
-                plt.plot([dx, dx], [0, dy], color=color, linestyle='-', linewidth=1.2)
-                plt.plot([0, dx], [dy, dy], color=color, linestyle='-', linewidth=1.2)
+    #     for dx, dy, color in d_points:
+    #         if dx:
+    #             # Solid point
+    #             plt.scatter(dx, dy, color=color, s=80, zorder=10)
+    #             # Draw X and Y guide lines only to intersection
+    #             plt.plot([dx, dx], [0, dy], color=color, linestyle='-', linewidth=1.2)
+    #             plt.plot([0, dx], [dy, dy], color=color, linestyle='-', linewidth=1.2)
 
-        # Save figure
-        buffer = io.BytesIO()
-        plt.tight_layout()
-        plt.savefig(buffer, format='png')
-        plt.close()
-        buffer.seek(0)
+    #     # Save figure
+    #     buffer = io.BytesIO()
+    #     plt.tight_layout()
+    #     plt.savefig(buffer, format='png')
+    #     plt.close()
+    #     buffer.seek(0)
 
-        return base64.b64encode(buffer.read())
+    #     return base64.b64encode(buffer.read())
+
+    def generate_line_chart_slive(self):
+
+     x_value = []
+     y_value = []
+     x_labels = []
+
+    # -----------------------------------
+    # PREPARE DATA
+    # -----------------------------------
+     for line in self.sieve_analysis_child_lines:
+
+        if line.sieve_size and line.passing_percent is not None:
+
+            sieve_str = str(line.sieve_size).strip().lower()
+
+            try:
+                # mm values
+                if 'mm' in sieve_str:
+
+                    sieve_val = float(
+                        sieve_str.replace('mm', '').strip()
+                    )
+
+                    label = f"{sieve_val:g} mm"
+
+                # micron values
+                elif 'µ' in sieve_str or 'micron' in sieve_str or 'um' in sieve_str:
+
+                    micron_val = float(
+                        sieve_str.replace('µ', '')
+                                 .replace('micron', '')
+                                 .replace('um', '')
+                                 .strip()
+                    )
+
+                    sieve_val = micron_val / 1000
+
+                    label = f"{micron_val:g} µm"
+
+                else:
+
+                    sieve_val = float(sieve_str)
+                    label = f"{sieve_val:g} mm"
+
+                x_value.append(sieve_val)
+                y_value.append(float(line.passing_percent))
+                x_labels.append(label)
+
+            except Exception:
+                continue
+
+    # -----------------------------------
+    # NO DATA
+    # -----------------------------------
+     if not x_value or not y_value:
+        return False
+
+    # -----------------------------------
+    # SORT ASCENDING
+    # -----------------------------------
+     sorted_data = sorted(zip(x_value, y_value, x_labels))
+
+     x_value, y_value, x_labels = zip(*sorted_data)
+
+    # Convert to numpy arrays
+     x_value = np.array(x_value)
+     y_value = np.array(y_value)
+
+    # -----------------------------------
+    # CREATE SMOOTH CURVE
+    # -----------------------------------
+     x_log = np.log10(x_value)
+
+    # Smooth X points
+     x_smooth_log = np.linspace(
+        x_log.min(),
+        x_log.max(),
+        300
+    )
+
+    # Cubic spline interpolation
+     spline = make_interp_spline(
+        x_log,
+        y_value,
+        k=3
+    )
+
+     y_smooth = spline(x_smooth_log)
+
+    # Convert back to actual scale
+     x_smooth = 10 ** x_smooth_log
+
+    # -----------------------------------
+    # CREATE FIGURE
+    # -----------------------------------
+     plt.figure(figsize=(12, 5))
+
+     plt.xscale('log')
+
+    # Smooth curve
+     plt.plot(
+        x_smooth,
+        y_smooth,
+        color='blue',
+        linewidth=2.5,
+        linestyle='-'
+    )
+
+    # Original points
+     plt.scatter(
+        x_value,
+        y_value,
+        color='red',
+        edgecolors='black',
+        s=60,
+        zorder=5
+    )
+
+    # -----------------------------------
+    # LABELS
+    # -----------------------------------
+     plt.xlabel('Sieve Size', fontsize=12)
+     plt.ylabel('Passing %', fontsize=12)
+     plt.title('Grain Size Analysis', fontsize=14)
+
+    # -----------------------------------
+    # GRID & AXIS
+    # -----------------------------------
+     ax = plt.gca()
+
+     plt.xticks(
+        ticks=x_value,
+        labels=x_labels,
+        rotation=45,
+        ha='right'
+    )
+
+     ax.xaxis.set_minor_locator(
+        LogLocator(
+            base=10.0,
+            subs=np.arange(1.0, 10.0) * 0.1,
+            numticks=200
+        )
+    )
+
+     ax.yaxis.set_minor_locator(
+        MultipleLocator(2)
+    )
+
+     plt.grid(
+        True,
+        which='both',
+        axis='both',
+        linestyle='--',
+        linewidth=0.3,
+        color='gray',
+        alpha=0.8
+    )
+
+     plt.xlim(
+        left=min(x_value) / 1.5,
+        right=max(x_value) * 1.5
+    )
+
+     plt.ylim(
+        bottom=0,
+        top=100
+    )
+
+    # -----------------------------------
+    # D-VALUES
+    # -----------------------------------
+     d_points = [
+        (getattr(self, 'd10', None), 10, 'black', 'D10'),
+        (getattr(self, 'd30', None), 30, 'black', 'D30'),
+        (getattr(self, 'd60', None), 60, 'black', 'D60')
+    ]
+
+     for dx, dy, color, label in d_points:
+
+        if dx:
+
+            # D-point
+            plt.scatter(
+                dx,
+                dy,
+                color=color,
+                s=80,
+                zorder=10
+            )
+
+            # Vertical guide line
+            plt.plot(
+                [dx, dx],
+                [0, dy],
+                color=color,
+                linestyle='-',
+                linewidth=1.2
+            )
+
+            # Horizontal guide line
+            plt.plot(
+                [min(x_value), dx],
+                [dy, dy],
+                color=color,
+                linestyle='-',
+                linewidth=1.2
+            )
+
+            # Text label
+            plt.text(
+                dx,
+                dy + 3,
+                f"{label} = {dx:.3f}",
+                fontsize=9,
+                ha='center'
+            )
+
+    # -----------------------------------
+    # SAVE IMAGE
+    # -----------------------------------
+     buffer = io.BytesIO()
+
+     plt.tight_layout()
+
+     plt.savefig(
+        buffer,
+        format='png',
+        dpi=300
+    )
+
+     plt.close()
+
+     buffer.seek(0)
+
+     return base64.b64encode(buffer.read())
 
 
     show_sieve_graph = fields.Boolean(string="Show Sieve Graph in Report")
@@ -3610,7 +3762,7 @@ class SoilSieveAnalysisLine(models.Model):
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
     sieve_size = fields.Char(string="IS Sieve Size")
     particle_size = fields.Char(string="Particle Size  (mm)")
-    wt_retained = fields.Float(string="Wt. Retained in gms")
+    wt_retained = fields.Float(string="Wt. Retained in gms",digits=(10,3))
     percent_retained = fields.Float(string='% Retained', compute="_compute_percent_retained")
     cumulative_retained = fields.Float(string="Cum. Retained %",compute="_compute_cum_retained" , store=True)
     passing_percent = fields.Float(string="Cumulative % ")
