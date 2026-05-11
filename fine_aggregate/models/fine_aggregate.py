@@ -1928,7 +1928,7 @@ class BulkingSandLine(models.Model):
 
 class SiltContentLine(models.Model):
     _name = "fine.silt.content.line"
-    parent_id = fields.Many2one('mechanical.fine.aggregatel',string="Parent Id")
+    parent_id = fields.Many2one('mechanical.fine.aggregate',string="Parent Id")
 
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
     heigh_sand_silt = fields.Float(string="Height of Sand + Silt in the glass Cylinder:- (A)")
