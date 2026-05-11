@@ -84,16 +84,29 @@ class MobileAppController(http.Controller):
             _logger.exception("Error during mobile session validation")
             return {'status': 'error', 'message': str(e)}
 
+    @http.route('/mobile/db_list', type='json', auth='none', methods=['POST'], csrf=False, cors='*')
+    def db_list(self, **kwargs):
+        """
+        Return the list of databases available on this Odoo server.
+        Works even when no database is selected (auth='none').
+        If list_db is disabled in the server config, returns an empty list.
+        """
+        try:
+            from odoo.service.db import list_dbs
+            databases = list_dbs(force=True)
+            return {'success': True, 'databases': databases}
+        except Exception as e:
+            _logger.warning("Could not list databases: %s", e)
+            return {'success': True, 'databases': []}
+
     @http.route('/mobile_login', type='json', auth='none', methods=['POST'], csrf=False, cors='*')
     def mobile_login(self, **kwargs):
         """
         Endpoint to authenticate a user from the mobile app.
         Checks if the provided email and password correspond to a valid user.
+        Accepts an optional 'db' parameter to select the target database.
         """
         try:
-            # Try to get the credentials from the request body
-            # import wdb; wdb.set_trace()
-            # data = json.loads(request.httprequest.data)
             data = request.params
             email = data.get('email')
             password = data.get('password')
@@ -101,8 +114,8 @@ class MobileAppController(http.Controller):
             if not email or not password:
                 return {'success': False, 'error': 'Missing email or password'}
 
-            # Authenticate the user
-            db = request.env.cr.dbname
+            # Use the provided db name, or fall back to the current database
+            db = data.get('db') or request.env.cr.dbname
             uid = request.session.authenticate(db, email, password)
 
             if uid:
@@ -242,24 +255,26 @@ class MobileAppController(http.Controller):
 
             Model = request.env[model_name]
 
-            # Build domain
-            domain = []
+            # Build domain — start with action_domain if provided (from stat buttons / actions)
+            action_domain = data.get('action_domain', [])
+            domain = list(action_domain) if action_domain else []
+            
             if search_query:
                 if search_field and search_field in Model._fields:
                     field_type = Model._fields[search_field].type
                     if field_type in ('integer', 'float', 'monetary'):
                         try:
-                            domain = [(search_field, '=', float(search_query))]
+                            domain.append((search_field, '=', float(search_query)))
                         except ValueError:
-                            domain = [('id', '=', -1)]
+                            domain.append(('id', '=', -1))
                     elif field_type == 'many2one':
-                        domain = [(search_field + '.name', 'ilike', search_query)]
+                        domain.append((search_field + '.name', 'ilike', search_query))
                     else:
-                        domain = [(search_field, 'ilike', search_query)]
+                        domain.append((search_field, 'ilike', search_query))
                 else:
                     # Try to search on 'name' or 'display_name' if they exist
                     name_field = 'name' if 'name' in Model._fields else 'display_name'
-                    domain = [(name_field, 'ilike', search_query)]
+                    domain.append((name_field, 'ilike', search_query))
 
             # Get total count
             total_count = Model.search_count(domain)
@@ -370,52 +385,78 @@ class MobileAppController(http.Controller):
                         '__last_update', 'activity_ids', 'message_ids', 'message_follower_ids']
             seen_fields = set()
             
+            def _get_invisible_expr(node):
+                """
+                Return the invisible expression for a node.
+                Returns None if always visible, True if always hidden,
+                or a string expression for dynamic visibility.
+                """
+                invisible = node.get('invisible')
+                if not invisible:
+                    # Check modifiers for static invisible (Odoo <= 16 style)
+                    modifiers_str = node.get('modifiers', '{}')
+                    try:
+                        modifiers = json.loads(modifiers_str)
+                        mod_invisible = modifiers.get('invisible')
+                        if mod_invisible == True:
+                            return True
+                        if mod_invisible and isinstance(mod_invisible, list):
+                            # Domain-style modifiers — convert to a string repr
+                            return json.dumps(mod_invisible)
+                    except:
+                        pass
+                    return None
+                if invisible in ('1', 'True', 'true'):
+                    return True  # Always hidden
+                # Dynamic expression like "state != 'draft'"
+                return invisible
+
             def _parse_node(node):
                 """ Recursively parse an XML node into a layout structure. """
                 tag = node.tag
                 result = None
                 
-                # Check if node is invisible (skip it)
-                invisible = node.get('invisible')
-                if invisible == '1' or invisible == 'True':
+                # Check if node is always invisible (skip it)
+                inv = _get_invisible_expr(node)
+                if inv is True:
                     return None
-                # Check modifiers for static invisible
-                modifiers_str = node.get('modifiers', '{}')
-                try:
-                    modifiers = json.loads(modifiers_str)
-                    if modifiers.get('invisible') == True:
-                        return None
-                except:
-                    pass
+                # inv is either None (always visible) or a string expression (dynamic)
                 
                 if tag == 'header':
                     buttons = []
                     for child in node:
                         if child.tag == 'button':
-                            btn_invisible = child.get('invisible')
-                            if btn_invisible == '1' or btn_invisible == 'True':
+                            btn_inv = _get_invisible_expr(child)
+                            if btn_inv is True:
                                 continue
                             btn_name = child.get('name', '')
                             btn_string = child.get('string', btn_name)
                             btn_type = child.get('type', 'object')
                             btn_class = child.get('class', '')
-                            buttons.append({
+                            btn_data = {
                                 'type': 'button',
                                 'name': btn_name,
                                 'string': btn_string,
                                 'btn_type': btn_type,
                                 'btn_class': btn_class,
-                            })
+                            }
+                            if btn_inv:
+                                btn_data['invisible'] = btn_inv
+                            buttons.append(btn_data)
                         elif child.tag == 'field':
                             fname = child.get('name')
                             if fname and fname in all_fields and fname not in exclude:
                                 # Status widget field in header (e.g. state)
                                 widget = child.get('widget', '')
-                                buttons.append({
+                                field_data = {
                                     'type': 'status_field',
                                     'name': fname,
                                     'widget': widget,
-                                })
+                                }
+                                field_inv = _get_invisible_expr(child)
+                                if field_inv and field_inv is not True:
+                                    field_data['invisible'] = field_inv
+                                buttons.append(field_data)
                                 seen_fields.add(fname)
                     if buttons:
                         result = {'type': 'header', 'children': buttons}
@@ -437,8 +478,8 @@ class MobileAppController(http.Controller):
                     pages = []
                     for child in node:
                         if child.tag == 'page':
-                            page_invisible = child.get('invisible')
-                            if page_invisible == '1' or page_invisible == 'True':
+                            page_inv = _get_invisible_expr(child)
+                            if page_inv is True:
                                 continue
                             page_children = []
                             for sub in child:
@@ -446,11 +487,14 @@ class MobileAppController(http.Controller):
                                 if parsed:
                                     page_children.append(parsed)
                             if page_children:
-                                pages.append({
+                                page_data = {
                                     'type': 'page',
                                     'string': child.get('string', 'Tab'),
                                     'children': page_children,
-                                })
+                                }
+                                if page_inv:
+                                    page_data['invisible'] = page_inv
+                                pages.append(page_data)
                     if pages:
                         result = {'type': 'notebook', 'pages': pages}
                 
@@ -465,6 +509,23 @@ class MobileAppController(http.Controller):
                     btn_string = node.get('string', btn_name)
                     btn_type = node.get('type', 'object')
                     btn_class = node.get('class', '')
+                    
+                    # Handle stat buttons (oe_stat_button with nested statinfo field)
+                    is_stat = 'oe_stat_button' in btn_class
+                    stat_field = None
+                    if is_stat:
+                        for child in node:
+                            if child.tag == 'field':
+                                child_widget = child.get('widget', '')
+                                child_string = child.get('string', '')
+                                child_name = child.get('name', '')
+                                if child_widget == 'statinfo' and child_string:
+                                    btn_string = child_string
+                                    stat_field = child_name
+                                    if child_name and child_name in all_fields:
+                                        seen_fields.add(child_name)
+                                    break
+                    
                     result = {
                         'type': 'button',
                         'name': btn_name,
@@ -472,6 +533,11 @@ class MobileAppController(http.Controller):
                         'btn_type': btn_type,
                         'btn_class': btn_class,
                     }
+                    if is_stat and stat_field:
+                        result['is_stat_button'] = True
+                        result['stat_field'] = stat_field
+                    if inv:
+                        result['invisible'] = inv
                 
                 elif tag == 'field':
                     fname = node.get('name')
@@ -483,17 +549,34 @@ class MobileAppController(http.Controller):
                             'name': fname,
                             'widget': widget,
                         }
+                        if inv:
+                            result['invisible'] = inv
+                            
+                        statusbar_visible = node.get('statusbar_visible')
+                        if statusbar_visible:
+                            result['statusbar_visible'] = statusbar_visible
+                            
+                        # A field (like one2many) might have an inline <tree> or <form> child
+                        children = []
+                        for child in node:
+                            parsed = _parse_node(child)
+                            if parsed:
+                                children.append(parsed)
+                        if children:
+                            result['children'] = children
                 
-                elif tag in ('sheet', 'form', 'div'):
+                elif tag in ('sheet', 'form', 'div', 'footer', 'tree', 'kanban'):
                     # Container tags — recurse into children
                     children = []
                     for child in node:
                         parsed = _parse_node(child)
                         if parsed:
                             children.append(parsed)
-                    if children:
-                        # For sheet/form/div, just return children inline
-                        if len(children) == 1:
+                    if children or tag in ('tree', 'kanban'):
+                        # Keep tree/kanban nodes identifiable even if they have 1 child or are empty
+                        if tag in ('tree', 'kanban'):
+                            result = {'type': tag, 'children': children}
+                        elif len(children) == 1:
                             result = children[0]
                         else:
                             result = {'type': 'container', 'children': children}
@@ -694,3 +777,48 @@ class MobileAppController(http.Controller):
                 clean_values[key] = val
                 
         return clean_values
+
+    @http.route('/mobile/render_pdf', type='http', auth='user', methods=['GET'], csrf=False, cors='*')
+    def mobile_render_pdf(self, report_name, id, model_name, data=None, **kwargs):
+        """
+        Explicitly generates and downloads a PDF report for the mobile app,
+        bypassing HTML previews.
+        """
+        try:
+            record_id = int(id)
+            context = dict(request.env.context)
+            context.update({
+                'active_id': record_id, 
+                'active_ids': [record_id], 
+                'active_model': model_name
+            })
+            
+            report_data = {}
+            if data:
+                try:
+                    report_data = json.loads(data)
+                except ValueError:
+                    pass
+                    
+            # Inject context into data so _get_report_values can access data['context']
+            if 'context' not in report_data:
+                report_data['context'] = context
+
+            report_sudo = request.env['ir.actions.report'].sudo()._get_report_from_name(reportname=report_name)
+            if not report_sudo:
+                return request.make_response("Report not found", status=404)
+
+            # Render the PDF server-side using wkhtmltopdf
+            pdf_content, ext = report_sudo.with_context(context)._render_qweb_pdf(report_name, [record_id], data=report_data)
+
+            filename = "%s_%s.pdf" % (report_name.replace('.', '_'), record_id)
+            headers = [
+                ('Content-Type', 'application/pdf'),
+                ('Content-Length', str(len(pdf_content))),
+                ('Content-Disposition', 'attachment; filename="%s"' % filename)
+            ]
+            return request.make_response(pdf_content, headers=headers)
+        except Exception as e:
+            _logger.exception("Error rendering mobile PDF for report %s", report_name)
+            # Return a visible text error if rendering fails, rather than silence
+            return request.make_response(f"PDF Rendering Error: {str(e)}", status=500)

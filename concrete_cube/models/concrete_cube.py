@@ -374,6 +374,46 @@ class MechanicalConcreteCube(models.Model):
     quantity = fields.Char("Quantity")
 
 
+
+
+    
+
+# remark
+
+    notes_id = fields.One2many('cube.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(MechanicalConcreteCube, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+
+        res['notes_id'] = default_notes
+        return res
+
+
+
+
+
+
      # 3. Water Absorption
 
     water_absorption_name = fields.Char("Name",default="Water Absorption ")
@@ -484,6 +524,8 @@ class MechanicalConcreteCube(models.Model):
 
         for result in technician_results:
          
+
+
   
             if result.parameter.internal_id == '23545tur-17c1-48ac-8462-9671e4d3d09f':
                 result.calculated = True
@@ -515,6 +557,7 @@ class MechanicalConcreteCube(models.Model):
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+            
 
         return {
                 'view_mode': 'form',
@@ -800,6 +843,7 @@ class WptMechanicalLine(models.Model):
             record.average = average
 
 
+
     # @api.depends('parent_id')
     # def _compute_sample_id(self):
     #     for record in self:
@@ -853,3 +897,13 @@ class WaterLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
+
+
+class CubeNotes(models.Model):
+    _name = "cube.notes"
+
+    parent_id = fields.Many2one('mechanical.concrete.cube',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
+

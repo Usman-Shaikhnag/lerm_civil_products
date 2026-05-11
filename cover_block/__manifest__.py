@@ -8,16 +8,14 @@
     'category': 'Lerm Civil',
     'summary': 'Sales internal machinery',
     'description': """
-This module contains all the common features of Sales Management and eCommerce.
+    This module contains all the common features of Sales Management and eCommerce.
     """,
-    'depends': ['base','sale','lerm_civil'],
+    'depends': ['base','sale','lerm_civil'],  
     'data': [
-                'security/ir.model.access.csv',
-                'views/cover_block.xml',
-                'reports/cover_block_ds_report.xml'
+        'security/ir.model.access.csv', 
+        'views/cover_block.xml',  
+        'reports/cover_block_ds_report.xml',  
     ],
-    
     'installable': True,
     'auto_install': False,
-   
 }

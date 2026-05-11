@@ -16,6 +16,7 @@ class WbmMechanical(models.Model):
 
 
 
+
     name = fields.Char("Name",default="WBM")
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 
@@ -23,6 +24,40 @@ class WbmMechanical(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
 
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
+
+
+
+
+
+    # remark
+
+    notes_id = fields.One2many('wbm.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(WbmMechanical, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
 
     
 
@@ -1301,3 +1336,12 @@ class WbmImpactValueLine(models.Model):
                 rec.impact_value = (rec.wt_of_aggregate_passing / rec.total_wt_aggregate) * 100
             else:
                 rec.impact_value = 0.0
+
+
+
+class wbmNotes(models.Model):
+    _name = "wbm.notes"
+
+    parent_id = fields.Many2one('mechanical.wbm',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")

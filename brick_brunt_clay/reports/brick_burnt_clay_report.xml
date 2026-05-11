@@ -116,7 +116,7 @@
 						<td>
 							<span>
 								<strong>Compressive strength :</strong><![CDATA[&nbsp;]]>
-								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','97928829-9b1f-4091-aa7f-4b76f98eb47f')]).parameter_table" t-as="parameter">
+								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','97928829-9b1f-4091-aa7f-4b76f98eb47f')]).parameter_table" t-as="parameter">
 									<t t-if="parameter.grade.id == eln.grade_id.id">
 										<span t-field="parameter.specification"/>
 									</t>
@@ -186,7 +186,7 @@
 							<tr>
 								<td style="font-weight: bold;">Average Compressive Strength</td>
 								<td style="text-align: center;">
-									<span t-field="brick.avrg_compressive_strength" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','97928829-9b1f-4091-aa7f-4b76f98eb47f')]).unit.name"/>
+									<span t-field="brick.avrg_compressive_strength" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','97928829-9b1f-4091-aa7f-4b76f98eb47f')]).unit.name"/>
 								</td>
 							</tr>
 						</table>
@@ -198,7 +198,7 @@
 						<td>
 							<span>
 								<strong>Efflorescence :</strong><![CDATA[&nbsp;]]>
-								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','9dda88ca-75fa-4e60-bcac-3cf6609386ce')]).parameter_table" t-as="parameter">
+								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','9dda88ca-75fa-4e60-bcac-3cf6609386ce')]).parameter_table" t-as="parameter">
 									<t t-if="parameter.grade.id == eln.grade_id.id">
 										<span t-field="parameter.specification"/>
 									</t>
@@ -295,7 +295,7 @@
 						<td>
 							<span>
 								<strong>Dimension :</strong><![CDATA[&nbsp;]]>
-								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','9f1689be-107d-4e30-9d3d-2aff6292264d')]).parameter_table" t-as="parameter">
+								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','9f1689be-107d-4e30-9d3d-2aff6292264d')]).parameter_table" t-as="parameter">
 									<t t-if="parameter.grade.id == eln.grade_id.id">
 										<span t-field="parameter.specification"/>
 									</t>
@@ -373,7 +373,7 @@
 						<td t-if="brick.water_absorbtion_visible and (brick.water_absorption_nabl == 'pass' and nabl or brick.water_absorption_nabl == 'fail' and not nabl)">
 							<span>
 								<strong>Water Absorption :</strong><![CDATA[&nbsp;]]>
-								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')]).parameter_table" t-as="parameter">
+								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')]).parameter_table" t-as="parameter">
 									<t t-if="parameter.grade.id == eln.grade_id.id">
 										<span t-field="parameter.specification"/>
 									</t>
@@ -443,16 +443,17 @@
 							<tr>
 								<td style="font-weight: bold;">Average Water Absorption, %</td>
 								<td style="text-align: center;">
-									<span t-field="brick.avrg_water_absorption" t-options='{"widget": "float", "precision": 2}'/>   <span t-field="env['lerm.parameter.master'].search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')]).unit.name"/>
+									<span t-field="brick.avrg_water_absorption" t-options='{"widget": "float", "precision": 2}'/>   <span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')]).unit.name"/>
 								</td>
 							</tr>
 						</table>
 					</div>
 
 					<div>
-
 					</div>
-					<div style="margin-top:20px; page-break-inside: avoid;" class="noteContainer">
+
+
+					<!-- <div style="margin-top:20px; page-break-inside: avoid;" class="noteContainer">
 						<div>
 							<b>Remarks: -</b>
 						</div>
@@ -480,7 +481,41 @@
 									</li>
 							</ul>
 						</div>
-					</div>
+					</div> -->
+
+
+
+					 <!-- Remarks Section -->
+
+                    <div style="margin-top:50px" class="noteContainer">
+						<table >
+							<tr>
+							
+								<td style="padding: 5px; font-style: italic; font-size: 15px; line-height: 18px;">
+									<b>Remarks:</b><br/><br/>
+									    * Refer to Annexure-I for environmental and test conditions<br/><br/>
+									    * Refer to Annexure-I (A) to know NABL accredited scope, range and uncertainty of measurement for test parameter<br/><br/>
+
+									<b>Notes:-</b><br/><br/>
+								    	<!-- a. The information marked with an # received from customer<br/><br/>
+							        	b. The results listed refer only to tested parameters and sample as received from customer<br/><br/>
+							        	c. The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.<br/><br/>
+							        	d. This document shall not be reproduced in part or full without the approval of Genstru. -->
+
+										<t t-if="data.notes_id">
+										<t t-foreach="data.notes_id" t-as="n">
+											<span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span><br/><br/>
+										</t>
+									</t>
+								</td>
+							</tr>
+							</table>
+						</div>
+
+
+
+
+
 
 					<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
 						<div>

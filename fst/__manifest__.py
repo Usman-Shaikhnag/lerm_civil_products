@@ -25,7 +25,6 @@
                  'views/plate_load_test_views.xml',
                  'data/sequence.xml',
                  'reports/soil_resistivity_report_docx.xml',
-                 'reports/plate_load_test_template.xml',
                  'security/ir.model.access.csv',
 
     ],

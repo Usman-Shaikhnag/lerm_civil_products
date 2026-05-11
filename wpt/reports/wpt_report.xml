@@ -138,7 +138,7 @@
 					</div>
 
 					<div>
-						<h6> <span t-field="env['lerm.parameter.master'].search([('internal_id','=','32145ght-0268-46ef-ba88-9c0453210lkit1')]).parameter_name"/></h6>
+						<h6> <span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','32145ght-0268-46ef-ba88-9c0453210lkit1')]).parameter_name"/></h6>
 					</div>
 					<t t-if="len(data.child_lines) &lt;= o.sample_id.page_break">
 						<div style="margin-top:10px">
@@ -190,19 +190,19 @@
 									</td>
 										<td style="text-align: center; vertical-align: middle;">
 											<span>
-												<span t-field="env['lerm.parameter.master'].search([('internal_id','=','32145ght-0268-46ef-ba88-9c0453210lkit1')]).unit.name"/>
+												<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','32145ght-0268-46ef-ba88-9c0453210lkit1')]).unit.name"/>
 											</span>
 										</td>
 								
 										<td  style="text-align: center; vertical-align: middle;">
-											<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','32145ght-0268-46ef-ba88-9c0453210lkit1')]).parameter_table" t-as="parameter">
+											<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','32145ght-0268-46ef-ba88-9c0453210lkit1')]).parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
 													<span t-field="parameter.permissable_limit"/>
 												</t>
 											</t>
 										</td>
 											<td  style="text-align: center; vertical-align: middle;">
-										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','32145ght-0268-46ef-ba88-9c0453210lkit1')]).parameter_table" t-as="parameter">
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','32145ght-0268-46ef-ba88-9c0453210lkit1')]).parameter_table" t-as="parameter">
 											<t t-if="parameter.grade.id == eln.grade_id.id">
 												<span t-field="parameter.specification"/>
 											</t>

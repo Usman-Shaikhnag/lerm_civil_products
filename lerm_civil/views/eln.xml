@@ -213,7 +213,8 @@
             <field name="name">lerm.eln.tree</field>
             <field name="model">lerm.eln</field>
             <field name="arch" type="xml">
-                <tree default_order='create_date desc' create="false">
+                <tree default_order='create_date desc' create="false" decoration-bf="unread_eln == True" decoration-info="unread_eln == True" action="action_open_form" type="object">
+                    <field name="unread_eln" column_invisible="1"/>
                     <!-- <field name='eln_id' optional="show"/> -->
                     <field name='eln_id' optional="show"/>
                     <field name='srf_id' optional="show"/>

@@ -125,7 +125,24 @@ class ELN(models.Model):
     quantity_received = fields.Integer(string="Quantiyty Received")
     quantity_consumed = fields.Integer(string="Quantity Consumed")
     quantity_balance = fields.Integer(string="Quantity Balance", compute="compute_quantity_balance", readonly=True)
+    unread_eln = fields.Boolean(string="Unread ELN", default=True)
 
+    def action_open_form(self):
+        """Called when clicking a record in the tree view — marks it as read and opens the form."""
+        self.ensure_one()
+        if self.unread_eln:
+            self.sudo().write({'unread_eln': False})
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'lerm.eln',
+            'view_mode': 'form',
+            'res_id': self.id,
+            'target': 'current',
+        }
+    
+    
+
+    
     @api.depends('quantity_received', 'quantity_consumed')
     def compute_quantity_balance(self):
         for rec in self:
@@ -271,7 +288,12 @@ class ELN(models.Model):
     def open_product_based_form(self):
         for record in self:
             # Sample ला target कर
-            if record.sample_id:
+            
+            if (
+                record.state not in ['2-confirm', '3-approved', '4-rejected']
+                and record.sample_id
+                and record.sample_id.state != '7-calculated'
+            ):
                 record.sample_id.state = '7-calculated'
                 
         model_record = self.material.product_based_calculation.filtered(lambda r: r.grade.id == self.grade_id.id)

@@ -38,7 +38,9 @@ class DriveApp extends Component {
       userRightsModalOpen: false,
       activeFolderForRights: null,
       activeItem: null,
+      isSidebarOpen: false,
     });
+    this.toggleSidebar = this.toggleSidebar.bind(this);
     this.handleFolderClick = this.handleFolderClick.bind(this);
     this.handleViewAllFolders = this.handleViewAllFolders.bind(this);
     this.handleCreateFolder = this.handleCreateFolder.bind(this);
@@ -128,6 +130,11 @@ class DriveApp extends Component {
   handleFolderClick(folderId) {
     this.state.currentFolderId = folderId;
     this.state.viewAllFolders = false;
+    this.state.isSidebarOpen = false; // Close on mobile after selection
+  }
+
+  toggleSidebar() {
+    this.state.isSidebarOpen = !this.state.isSidebarOpen;
   }
 
   handleViewAllFolders() {

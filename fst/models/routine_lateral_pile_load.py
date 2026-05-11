@@ -4,6 +4,7 @@ from odoo.exceptions import UserError, ValidationError
 import base64
 import io
 import math
+import re
 import matplotlib.pyplot as plt
 
 
@@ -21,8 +22,8 @@ class RoutineLateralPileLoadTestParent(models.Model):
 
     # ================= BASIC INFO =================
     work_name = fields.Char("Name of Work")
-    contractor = fields.Char("Contractor")
-    client = fields.Char("Client")
+    client = fields.Char(string="Client")
+    contractor = fields.Char(string="Contractor")
 
     ulr = fields.Char("ULR No", copy=False, readonly=True)
     report_no = fields.Char("Report No", copy=False, readonly=True)
@@ -79,9 +80,9 @@ class RoutineLateralPileLoadTestParent(models.Model):
 
     graph_image = fields.Binary("Load Settlement Graph")
     # ================= SUMMARY =================
-    gross_displacement = fields.Float(compute="_compute_disp", store=True)
+    gross_settlement = fields.Float(compute="_compute_disp", store=True)
     rebound = fields.Float(compute="_compute_disp", store=True)
-    net_displacement = fields.Float(compute="_compute_disp", store=True)
+    net_settlement = fields.Float(compute="_compute_disp", store=True)
     
     rec_date_str = fields.Char(
         "Report Date (Text)",
@@ -110,19 +111,23 @@ class RoutineLateralPileLoadTestParent(models.Model):
                 return
 
             lab = self.env['lerm.lab.master'].search([], limit=1)
-
             if not lab:
                 return
 
             year = fields.Date.today().strftime('%y')
 
-            cert = lab.lab_certificate_no or ''
-            loc = lab.lab_location_line[:1].location_code or ''
+            cert = (lab.lab_certificate_no or '').split('(')[0]
+            loc = (lab.lab_location_line[:1].location_code or '').split('(')[0]
 
-            seq = self.env['ir.sequence'].next_by_code(
+            seq_raw = self.env['ir.sequence'].next_by_code(
                 lab.ulr_sequence.code
             )
 
+            # Extract only the numeric part (with optional suffix like F)
+            match = re.search(r'(\d+F?)$', seq_raw)
+            seq = match.group(1) if match else ''
+
+            # import wdb;wdb.set_trace()
             rec.ulr = f"{cert}{year}{loc}{seq}"
 
     # =========================================================
@@ -151,9 +156,9 @@ class RoutineLateralPileLoadTestParent(models.Model):
             rebound = rebound_lines[-1].mean_mm if rebound_lines else 0.0
             net = gross - rebound
 
-            rec.gross_displacement = round(gross, 2)
+            rec.gross_settlement = round(gross, 2)
             rec.rebound = round(rebound, 2)
-            rec.net_displacement = round(net, 2)
+            rec.net_settlement = round(net, 2)
 
 
     # =========================================================
@@ -379,16 +384,12 @@ class RoutineLateralPileLoadTestParent(models.Model):
         copy=False
     )
 
-    
     @api.depends('loading_reading_ids.reading_datetime')
     def _compute_last_reading_datetime(self):
         for rec in self:
-            if rec.loading_reading_ids:
-                # Get the most recent reading_datetime from all loading readings
-                latest = max(rec.loading_reading_ids.mapped('reading_datetime'), default=False)
-                rec.last_reading_datetime = latest
-            else:
-                rec.last_reading_datetime = False
+            dates = rec.loading_reading_ids.mapped('reading_datetime')
+            dates = [d for d in dates if d]
+            rec.last_reading_datetime = max(dates) if dates else False
 
 class RoutineLateralLoading(models.Model):
     _name = "routine.lateral.pile.load.reading.loading"
