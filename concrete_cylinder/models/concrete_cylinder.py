@@ -15,6 +15,7 @@ class MechanicalConcreteCube(models.Model):
 
 
     name = fields.Char("Name",default="Compressive Strength of Concrete Cube")
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     child_lines = fields.One2many('mechanical.concrete.cylinder.line','parent_id',string="Parameter")
