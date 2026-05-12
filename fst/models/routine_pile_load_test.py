@@ -3,6 +3,7 @@ from datetime import timedelta
 from odoo.exceptions import UserError, ValidationError
 import base64
 import io
+import re
 import math
 import matplotlib.pyplot as plt
 
@@ -24,8 +25,8 @@ class RoutinePileLoadTest(models.Model):
     name = fields.Char("Project Name", required=True)
     rec_date = fields.Date("Report Date")
     work_name = fields.Char("Name of Work")
-    contractor = fields.Char("Contractor")
-    client = fields.Char("Client")
+    client = fields.Char(string="Client")
+    contractor = fields.Char(string="Contractor")
 
     ulr = fields.Char("ULR No", copy=False, readonly=True)
     report_no = fields.Char("Report No", copy=False, readonly=True)
@@ -125,19 +126,23 @@ class RoutinePileLoadTest(models.Model):
                 return
 
             lab = self.env['lerm.lab.master'].search([], limit=1)
-
             if not lab:
                 return
 
             year = fields.Date.today().strftime('%y')
 
-            cert = lab.lab_certificate_no or ''
-            loc = lab.lab_location_line[:1].location_code or ''
+            cert = (lab.lab_certificate_no or '').split('(')[0]
+            loc = (lab.lab_location_line[:1].location_code or '').split('(')[0]
 
-            seq = self.env['ir.sequence'].next_by_code(
+            seq_raw = self.env['ir.sequence'].next_by_code(
                 lab.ulr_sequence.code
             )
 
+            # Extract only the numeric part (with optional suffix like F)
+            match = re.search(r'(\d+F?)$', seq_raw)
+            seq = match.group(1) if match else ''
+
+            # import wdb;wdb.set_trace()
             rec.ulr = f"{cert}{year}{loc}{seq}"
 
     # =========================================================
@@ -344,7 +349,6 @@ class RoutinePileLoadTest(models.Model):
             for line in rec.unloading_reading_ids:
                 line._compute_mean()
                 line._compute_split_dt()
-
             rec._compute_settlement_values()
             rec._compute_max_settlement()
 
@@ -387,14 +391,13 @@ class RoutinePileLoadTest(models.Model):
         store=False,
         copy=False
     )
-    
+
     @api.depends('loading_reading_ids.reading_datetime')
     def _compute_last_reading_datetime(self):
         for rec in self:
             dates = rec.loading_reading_ids.mapped('reading_datetime')
             dates = [d for d in dates if d]
             rec.last_reading_datetime = max(dates) if dates else False
-
 
 
     def action_delete_line(self):

@@ -10,6 +10,7 @@ class CustomerDashboard extends Component {
     this.dashboard_state = useState({
       customer_data: [],
       aging_data: {},
+      overdue_data: {},
       labs: [],
       companies: [],
     });
@@ -81,6 +82,41 @@ class CustomerDashboard extends Component {
         ...b,
         count: bucketData.total,
         states: states,
+        mode: 'upcoming'
+      };
+    });
+  }
+
+  get overdueKpiData() {
+    const buckets = [
+      { key: "0-7", label: "0-7 Days", color: "#10b981", icon: "fa-clock-o" },
+      { key: "8-15", label: "8-15 Days", color: "#f59e0b", icon: "fa-calendar-minus-o" },
+      { key: "16-30", label: "16-30 Days", color: "#ef4444", icon: "fa-calendar-plus-o" },
+      { key: "31-45", label: "31-45 Days", color: "#b91c1c", icon: "fa-hourglass-end" },
+      { key: "46-60", label: "46-60 Days", color: "#7f1d1d", icon: "fa-warning" },
+      { key: "60+", label: "60+ Days", color: "#450a0a", icon: "fa-history" },
+    ];
+
+    const data = this.dashboard_state.overdue_data || {};
+    return buckets.map((b) => {
+      const bucketData = data[b.key] || { total: 0, states: {} };
+      const states = Object.entries(bucketData.states).map(([stateKey, stateData]) => {
+        const style = this.styleMap[stateKey] || { icon: "fa-question-circle", color: "#6c757d", label: stateKey };
+        return {
+          key: stateKey,
+          label: style.label,
+          icon: style.icon,
+          color: style.color,
+          count: stateData.count,
+          breakdown: stateData.breakdown || [],
+        };
+      });
+
+      return {
+        ...b,
+        count: bucketData.total,
+        states: states,
+        mode: 'overdue'
       };
     });
   }
@@ -138,6 +174,7 @@ class CustomerDashboard extends Component {
       // Update state with paginated data and total count from the backend
       this.dashboard_state.customer_data = result.customers || [];
       this.dashboard_state.aging_data = result.aging_data || {};
+      this.dashboard_state.overdue_data = result.overdue_data || {};
       this.filter_state.totalCustomers = Number(result.total_customers) || 0;
     } catch (error) {
       console.error("Failed to fetch customer data:", error);
@@ -208,45 +245,73 @@ class CustomerDashboard extends Component {
     await this.fetchData();
   }
 
-  async onAgingClick(bucketKey, stateKey = null, techId = null) {
+  async onAgingClick(bucketKey, stateKey = null, techId = null, mode = 'upcoming') {
     const today = new Date();
-    let minDays, maxDays;
+    today.setHours(0, 0, 0, 0);
 
-    if (bucketKey === "0-7") { minDays = 0; maxDays = 7; }
-    else if (bucketKey === "8-15") { minDays = 8; maxDays = 15; }
-    else if (bucketKey === "16-30") { minDays = 16; maxDays = 30; }
-    else if (bucketKey === "31-45") { minDays = 31; maxDays = 45; }
-    else if (bucketKey === "46-60") { minDays = 46; maxDays = 60; }
-    else if (bucketKey === "60+") { minDays = 61; maxDays = null; }
+    let minDays, maxDays;
+    if (bucketKey === "60+") {
+      minDays = 61;
+      maxDays = null;
+    } else {
+      [minDays, maxDays] = bucketKey.split("-").map(Number);
+    }
 
     const pad = (n) => n.toString().padStart(2, "0");
     const toDateStr = (d) =>
       `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 
-    const dMax = new Date(today);
-    dMax.setDate(today.getDate() - minDays);
-    const dMaxStr = `${toDateStr(dMax)} 23:59:59`;
-
     let dMinStr = null;
-    if (maxDays !== null) {
+    let dMaxStr = null;
+
+    if (mode === 'upcoming') {
       const dMin = new Date(today);
-      dMin.setDate(today.getDate() - maxDays);
-      dMinStr = `${toDateStr(dMin)} 00:00:00`;
+      dMin.setDate(today.getDate() + minDays);
+      dMinStr = toDateStr(dMin);
+
+      if (maxDays !== null) {
+        const dMax = new Date(today);
+        dMax.setDate(today.getDate() + maxDays);
+        dMaxStr = toDateStr(dMax);
+      }
+    } else {
+      // Overdue mode
+      const effectiveMin = Math.max(1, minDays);
+      const dMax = new Date(today);
+      dMax.setDate(today.getDate() - effectiveMin);
+      dMaxStr = toDateStr(dMax);
+
+      if (maxDays !== null) {
+        const dMin = new Date(today);
+        dMin.setDate(today.getDate() - maxDays);
+        dMinStr = toDateStr(dMin);
+      }
     }
 
     const domain = [
-      ["eln_id", "!=", false],
-      ["eln_id.create_date", "<=", dMaxStr],
+      [
+        "state",
+        "in",
+        [
+          "1-allotment_pending",
+          "2-alloted",
+          "7-calculated",
+          "3-pending_verification",
+          "5-pending_approval",
+        ],
+      ],
+      ["report_due_date", "!=", false],
     ];
 
     if (dMinStr) {
-      domain.push(["eln_id.create_date", ">=", dMinStr]);
+      domain.push(["report_due_date", ">=", dMinStr]);
+    }
+    if (dMaxStr) {
+      domain.push(["report_due_date", "<=", dMaxStr]);
     }
 
     if (stateKey) {
       domain.push(["state", "=", stateKey]);
-    } else {
-      domain.push(["state", "in", ["2-alloted", "7-calculated", "3-pending_verification", "5-pending_approval"]]);
     }
 
     if (techId) {
@@ -257,7 +322,7 @@ class CustomerDashboard extends Component {
         ["technicians", "in", [techId]],
         ["eln_id.technician", "=", techId],
         ["eln_id.technician_ids", "in", [techId]],
-        ["eln_id.parameters_result.technician", "=", techId],
+        ["eln_id.parameters_result.technician", "=", techId]
       );
     }
 
@@ -277,7 +342,7 @@ class CustomerDashboard extends Component {
 
     const action = {
       type: "ir.actions.act_window",
-      name: `Aging Samples (${bucketKey})`,
+      name: `${mode === 'upcoming' ? 'Upcoming Due' : 'Overdue'}: ${bucketKey} Days`,
       res_model: "lerm.srf.sample",
       views: [[false, "list"], [false, "form"]],
       domain: domain,

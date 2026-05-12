@@ -4,6 +4,7 @@ from odoo.exceptions import UserError, ValidationError
 import base64
 import io
 import math
+import re
 import matplotlib.pyplot as plt
 
 GRAPH_MAJOR_GRID_COLOR = '#d28b5c'
@@ -19,8 +20,8 @@ class LateralPileLoadTestParent(models.Model):
     name = fields.Char("Project Name", required=True)
     rec_date = fields.Date("Report Date")
     work_name = fields.Char("Name of Work")
-    contractor = fields.Char("Contractor")
-    client = fields.Char("Client")
+    client = fields.Char(string="Client")
+    contractor = fields.Char(string="Contractor")
 
     ulr = fields.Char("ULR No", copy=False, readonly=True)
     report_no = fields.Char("Report No", copy=False, readonly=True)
@@ -79,18 +80,18 @@ class LateralPileLoadTestParent(models.Model):
     graph_image = fields.Binary("Load Displacement Graph")
 
     # ================= DISPLACEMENT SUMMARY =================
-    gross_displacement = fields.Float(
-        compute="_compute_displacement_values",
+    gross_settlement = fields.Float(
+        compute="_compute_settlement_values",
         store=True
     )
 
-    net_displacement = fields.Float(
-        compute="_compute_displacement_values",
+    net_settlement = fields.Float(
+        compute="_compute_settlement_values",
         store=True
     )
 
     rebound = fields.Float(
-        compute="_compute_displacement_values",
+        compute="_compute_settlement_values",
         store=True
     )
 
@@ -130,19 +131,23 @@ class LateralPileLoadTestParent(models.Model):
                 return
 
             lab = self.env['lerm.lab.master'].search([], limit=1)
-
             if not lab:
                 return
 
             year = fields.Date.today().strftime('%y')
 
-            cert = lab.lab_certificate_no or ''
-            loc = lab.lab_location_line[:1].location_code or ''
+            cert = (lab.lab_certificate_no or '').split('(')[0]
+            loc = (lab.lab_location_line[:1].location_code or '').split('(')[0]
 
-            seq = self.env['ir.sequence'].next_by_code(
+            seq_raw = self.env['ir.sequence'].next_by_code(
                 lab.ulr_sequence.code
             )
 
+            # Extract only the numeric part (with optional suffix like F)
+            match = re.search(r'(\d+F?)$', seq_raw)
+            seq = match.group(1) if match else ''
+
+            # import wdb;wdb.set_trace()
             rec.ulr = f"{cert}{year}{loc}{seq}"
 
     # ================= COMPUTES =================
@@ -156,7 +161,7 @@ class LateralPileLoadTestParent(models.Model):
             rec.max_displacement = max(values) if values else 0.0
 
     @api.depends('loading_reading_ids.mean_mm', 'unloading_reading_ids.mean_mm')
-    def _compute_displacement_values(self):
+    def _compute_settlement_values(self):
         for rec in self:
 
             loading_map = {}
@@ -179,9 +184,9 @@ class LateralPileLoadTestParent(models.Model):
             rebound = rebound_lines[-1].mean_mm if rebound_lines else 0.0
             net = gross - rebound
 
-            rec.gross_displacement = round(gross, 2)
+            rec.gross_settlement = round(gross, 2)
             rec.rebound = round(rebound, 2)
-            rec.net_displacement = round(net, 2)
+            rec.net_settlement = round(net, 2)
 
 
 
@@ -216,7 +221,6 @@ class LateralPileLoadTestParent(models.Model):
                 result.append((prev_load, last_mean))
             # import wdb;wdb.set_trace()
             return result
-
 
         def unloading_points(readings):
             return [
@@ -352,13 +356,14 @@ class LateralPileLoadTestParent(models.Model):
             for line in rec.loading_reading_ids:
                 line._compute_mean()
                 line._compute_split_dt()
+
             # 2️⃣ Recompute mean displacement on UNLOADING readings
             for line in rec.unloading_reading_ids:
                 line._compute_mean()
                 line._compute_split_dt()
 
             # 3️⃣ Force recompute of parent computed fields
-            rec._compute_displacement_values()
+            rec._compute_settlement_values()
             rec._compute_max_displacement()
 
 
@@ -431,14 +436,12 @@ class LateralPileLoadTestParent(models.Model):
         copy=False
     )
 
-    
     @api.depends('loading_reading_ids.reading_datetime')
     def _compute_last_reading_datetime(self):
         for rec in self:
             dates = rec.loading_reading_ids.mapped('reading_datetime')
             dates = [d for d in dates if d]
             rec.last_reading_datetime = max(dates) if dates else False
-
 
 
 # ================= LOADING =================

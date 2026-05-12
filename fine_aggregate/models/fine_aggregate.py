@@ -1535,6 +1535,7 @@ class FineAggregate(models.Model):
         for result in self.eln_ref.parameters_result:
             if result.parameter.internal_id == '45875ght-7188-4086-b132-62b50e63f1245gt':
                 result.result_char = round(self.specific_gravity,2)
+                result.calculated = True
                 if self.specific_gravity_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1542,6 +1543,7 @@ class FineAggregate(models.Model):
                 continue
             if result.parameter.internal_id == '4587tyhloos-3fa3-4b83-ae31-9d281767188c':
                 result.result_char = round(self.loose_bulk_density,2)
+                result.calculated = True
                 if self.loose_bulk_density_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1549,6 +1551,7 @@ class FineAggregate(models.Model):
                 continue
             if result.parameter.internal_id == '45789bhgt25-3fa3-4b83-ae31-9d28176718457':
                 result.result_char = round(self.avg_bulking_of_sand,2)
+                result.calculated = True
                 if self.avg_bulking_of_sand_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1556,6 +1559,7 @@ class FineAggregate(models.Model):
                 continue
             if result.parameter.internal_id == '2547ghty124m-3fa3-4b83-ae31-9d281457nhy14':
                 result.result_char = round(self.avg_bulking_of_sand1,2)
+                result.calculated = True
                 if self.avg_bulking_of_sand1_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1563,6 +1567,7 @@ class FineAggregate(models.Model):
                 continue
             if result.parameter.internal_id == '1457htyu1245-3fa3-4b83-ae31-9d281457457hy':
                 result.result_char = round(self.avg_moisture,2)
+                result.calculated = True
                 if self.avg_moisture_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1572,6 +1577,7 @@ class FineAggregate(models.Model):
             # Compacted density
             if result.parameter.internal_id == '357f579d-a310-4015-bc11-28a85c53ac83':
                 result.result_char = round(self.avg_compacted,2)
+                result.calculated = True
                 if self.avg_compacted_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1583,6 +1589,7 @@ class FineAggregate(models.Model):
             # % void Compacted density
             if result.parameter.internal_id == '04a95dc1-4b45-4817-a9b2-dd722bbe6281':
                 result.result_char = round(self.avg_void_compacted_density,2)
+                result.calculated = True
                 if self.avg_void_compacted_density_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1593,6 +1600,7 @@ class FineAggregate(models.Model):
             # % void Loose density
             if result.parameter.internal_id == '919587f2-5b45-4da1-bb73-10164b861833':
                 result.result_char = round(self.avg_void_loose_density,2)
+                result.calculated = True
                 if self.avg_void_loose_density_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1635,6 +1643,50 @@ class FineAggregate(models.Model):
 
              #  Deleterious Material - Organic Impurities
             if result.parameter.internal_id == '0363075f-a3f2-440a-b634-76f469d220c7':
+                result.calculated = True
+
+
+           
+            if result.parameter.internal_id == '318d72a1-7188-4086-b132-62b50e63f5d1':
+                result.calculated = True
+
+            
+            if result.parameter.internal_id == 'c0340cb7-3f4a-4c15-a453-d63694b71f1d':
+                result.calculated = True
+
+           
+            if result.parameter.internal_id == 'a0e7aaf3-68ff-4e75-830d-91ae04c98f32':
+                result.calculated = True
+
+            
+            if result.parameter.internal_id == '7b921a25-4dc4-4752-a247-d8a223ffbec0':
+                result.calculated = True
+
+            #  Deleterious Material - Organic Impurities
+            if result.parameter.internal_id == '02d32c6b-9881-4152-9e79-9a660e2dda39':
+                result.calculated = True
+
+            #  Deleterious Material - Organic Impurities
+            if result.parameter.internal_id == '237ca3ca-3db7-4782-b863-1dc33be92bc2':
+                result.calculated = True
+
+
+            #  Deleterious Material - Organic Impurities
+            if result.parameter.internal_id == '2047739e-9941-4bc0-af9b-839767be6e1c':
+                result.calculated = True
+
+
+            #  Deleterious Material - Organic Impurities
+            if result.parameter.internal_id == '3cf93161-4452-4aa5-a8e0-b24ffea753b3':
+                result.calculated = True
+
+
+            #  Deleterious Material - Organic Impurities
+            if result.parameter.internal_id == '58e8035f-76e4-4cfb-be47-c18c228fd1b0':
+                result.calculated = True
+
+             #  Deleterious Material - Organic Impurities
+            if result.parameter.internal_id == 'a594196d-d59f-4044-a801-6388ba38a723':
                 result.calculated = True
 
 
@@ -1877,7 +1929,7 @@ class BulkingSandLine(models.Model):
 
 class SiltContentLine(models.Model):
     _name = "fine.silt.content.line"
-    parent_id = fields.Many2one('mechanical.fine.aggregatel',string="Parent Id")
+    parent_id = fields.Many2one('mechanical.fine.aggregate',string="Parent Id")
 
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
     heigh_sand_silt = fields.Float(string="Height of Sand + Silt in the glass Cylinder:- (A)")
