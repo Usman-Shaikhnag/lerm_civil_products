@@ -24,6 +24,7 @@ class StainlessSteel(models.Model):
 
         
     bar_test_line_ids = fields.One2many('stainless.tmt.bar.line','parent_id',string='TMT Bar Test Lines')
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
     def prefill_data(self):
         # import wdb; wdb.set_trace()
