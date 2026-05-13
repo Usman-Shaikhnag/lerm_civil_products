@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Inherit the standard ir.sequence form to add Backdated fields -->
+        <record id="ir_sequence_form_inherit_backdated" model="ir.ui.view">
+            <field name="name">ir.sequence.form.inherit.backdated</field>
+            <field name="model">ir.sequence</field>
+            <field name="inherit_id" ref="base.sequence_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='use_date_range']" position="after">
+                    <separator string="Backdated Sequence Configuration"/>
+                    <field name="is_backdated"/>
+                    <field name="source_model_id" invisible="not is_backdated"/>
+                    <field name="date_field_id" invisible="not is_backdated"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

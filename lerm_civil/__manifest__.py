@@ -9,6 +9,7 @@
     'security/security.xml',
     'data/sequence.xml',
     # 'data/module_category_data.xml',
+    'views/ir_sequence_views.xml',
     'views/enviroment_register.xml',
     'views/sample_register.xml',
     'views/lerm.xml',
