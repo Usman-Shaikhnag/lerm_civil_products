@@ -336,7 +336,7 @@ class TMTBARLine(models.Model):
             ('ok_6', 'OK (6Ø)'),
             ('not_ok', 'NOT OK')
         ],
-        string="Bend Test 180° 2t"
+        string="Re-Bend Test"
     )
 
 

@@ -101,6 +101,33 @@ class StatinlessSteel(models.Model):
                 #     result.nabl_status = 'non-nabl'
                 continue
 
+            if result.parameter.internal_id == '6987541-0268-46ef-ba88-9c045321055578':
+                # result.result_char = round(self.average_mpa,2)
+                result.calculated = True
+                # if self.avg_compaction_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '1023457-788-46ef-ba88-9c0453232147855':
+                # result.result_char = round(self.average_mpa,2)
+                result.calculated = True
+                # if self.avg_compaction_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '10238877-0268-46ef-ba88-9c0453210l69668755':
+                # result.result_char = round(self.average_mpa,2)
+                result.calculated = True
+                # if self.avg_compaction_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
            
 
         return {

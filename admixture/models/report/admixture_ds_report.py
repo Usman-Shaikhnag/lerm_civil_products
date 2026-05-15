@@ -6,7 +6,7 @@ from io import BytesIO
 
 
 class ChemicalAdmixtureChemicalDatasheet(models.AbstractModel):
-    _name = 'report.admixture_chemical.admixture_chemical_datasheet'
+    _name = 'report.admixture.admixture_chemical_datasheet'
     _description = 'Waste Water Chemical Datasheet'
     
     @api.model
@@ -38,7 +38,7 @@ class ChemicalAdmixtureChemicalDatasheet(models.AbstractModel):
 
 
 class AdmixtureChemicalReport(models.AbstractModel):
-    _name = 'report.admixture_chemical.admixture_chemical_report'
+    _name = 'report.admixture.admixture_chemical_report'
     _description = 'Admixture Chemical Report'
     
     @api.model

@@ -2,8 +2,8 @@ from odoo import api, fields, models
 from odoo.exceptions import UserError,ValidationError
 import math
 
-class ChemicalAdmixture(models.Model):
-    _name = "chemical.admixture"
+class MechanicalAdmixture(models.Model):
+    _name = "mechanical.admixture"
     _inherit = "lerm.eln"
     _rec_name = "name1"
 
@@ -13,11 +13,11 @@ class ChemicalAdmixture(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
-    notes_id = fields.One2many('chem.admixture.notes', 'parent_id', string="Notes")
+    notes_id = fields.One2many('mecha.admixture.notes', 'parent_id', string="Notes")
     
     @api.model
     def default_get(self, fields):
-        res = super(ChemicalAdmixture, self).default_get(fields)
+        res = super(MechanicalAdmixture, self).default_get(fields)
 
         default_notes = [
             (0, 0, {
@@ -802,7 +802,7 @@ class ChemicalAdmixture(models.Model):
     @api.model
     def create(self, vals):
         # import wdb;wdb.set_trace()
-        record = super(ChemicalAdmixture, self).create(vals)
+        record = super(MechanicalAdmixture, self).create(vals)
         # record.get_all_fields()
         record.eln_ref.write({'model_id':record.id})
         return record
@@ -810,7 +810,7 @@ class ChemicalAdmixture(models.Model):
 
         
     def get_all_fields(self):
-        record = self.env['chemical.admixture'].browse(self.ids[0])
+        record = self.env['mechanical.admixture'].browse(self.ids[0])
         field_values = {}
         for field_name, field in record._fields.items():
             field_value = record[field_name]
@@ -865,10 +865,10 @@ class ChemicalAdmixture(models.Model):
 
 
 
-class ChemAdmixtureNotes(models.Model):
-    _name = "chem.admixture.notes"
+class MechaAdmixtureNotes(models.Model):
+    _name = "mecha.admixture.notes"
 
-    parent_id = fields.Many2one('chemical.admixture',string="Parent Id")
+    parent_id = fields.Many2one('mechanical.admixture',string="Parent Id")
     sr_no = fields.Char("Sr. No.")
     notes = fields.Char("Notes")
     
