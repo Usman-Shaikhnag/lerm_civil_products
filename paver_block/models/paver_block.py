@@ -16,6 +16,7 @@ class PaverBlock(models.Model):
 
 
     name_paver = fields.Char("Name",default="Paver Block")
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)

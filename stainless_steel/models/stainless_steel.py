@@ -9,6 +9,7 @@ class StatinlessSteel(models.Model):
     _rec_name = "name"
 
     name = fields.Char("Name",default="Stainless Steel")
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     
     stainless_steel_visible = fields.Boolean("Stainless Steel Visible",compute="_compute_visible")
@@ -92,6 +93,33 @@ class StatinlessSteel(models.Model):
             #     result.calculated = True
 
             if result.parameter.internal_id == '214578ty-c893-4991-a463-650b73268879':
+                # result.result_char = round(self.average_mpa,2)
+                result.calculated = True
+                # if self.avg_compaction_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '6987541-0268-46ef-ba88-9c045321055578':
+                # result.result_char = round(self.average_mpa,2)
+                result.calculated = True
+                # if self.avg_compaction_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '1023457-788-46ef-ba88-9c0453232147855':
+                # result.result_char = round(self.average_mpa,2)
+                result.calculated = True
+                # if self.avg_compaction_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '10238877-0268-46ef-ba88-9c0453210l69668755':
                 # result.result_char = round(self.average_mpa,2)
                 result.calculated = True
                 # if self.avg_compaction_nabl == 'pass':

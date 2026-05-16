@@ -15,6 +15,7 @@ class CoreCutterMechanical(models.Model):
 
 
     name = fields.Char("Name",default="Core Cutter")
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 

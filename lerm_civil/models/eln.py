@@ -129,6 +129,8 @@ class ELN(models.Model):
     quantity_consumed = fields.Integer(string="Quantity Consumed")
     quantity_balance = fields.Integer(string="Quantity Balance", compute="compute_quantity_balance", readonly=True)
 
+    test_started = fields.Boolean(string="Test Started", default=False)
+
     @api.depends('quantity_received', 'quantity_consumed')
     def compute_quantity_balance(self):
         for rec in self:
@@ -271,19 +273,67 @@ class ELN(models.Model):
         return line
 
 
+    # def open_product_based_form(self):
+    #     for record in self:
+    #         # Sample ला target कर
+            
+    #         # ✅ First time run → state change
+    #         if (
+    #             record.state not in ['2-confirm', '3-approved', '4-rejected']
+    #             and record.sample_id
+    #             and record.sample_id.state != '7-calculated'
+    #         ):
+    #             record.sample_id.state = '7-calculated'
+            
+                    
+    #     model_record = self.material.product_based_calculation.filtered(lambda r: r.grade.id == self.grade_id.id)
+    #     model = model_record.ir_model.model
+
+    #     # print("material ",self.material.product_based_calculation)
+    #     # print("model ",model)
+
+    #     # import wdb; wdb.set_trace()
+    #     if self.model_id != 0:
+    #         return {
+    #             'view_mode': 'form',
+    #             'res_model': model,
+    #             'type': 'ir.actions.act_window',
+    #             'target': 'current',
+    #             'res_id': self.model_id,
+    #             'domain': [('parameters_result.technician', '=', self.env.uid)],
+    #             'context': {
+    #                 'default_srf_id':self.srf_id.id,
+    #                 'default_sample_id': self.sample_id.id,
+    #                 'default_eln_ref':self.id
+    #              }
+    #         }
+        
+    #     else:
+    #         # import wdb; wdb.set_trace()
+    #         return {
+    #             'view_mode': 'form',
+    #             'res_model': model,
+    #             'type': 'ir.actions.act_window',
+    #             'target': 'current',
+    #             'context': {
+    #                 'default_srf_id':self.srf_id.id,
+    #                 'default_sample_id': self.sample_id.id,
+    #                 'default_eln_ref':self.id
+    #              }
+    #             }
+
+
     def open_product_based_form(self):
         for record in self:
-            # Sample ला target कर
             
-            # ✅ First time run → state change
+            
             if (
                 record.state not in ['2-confirm', '3-approved', '4-rejected']
                 and record.sample_id
                 and record.sample_id.state != '7-calculated'
             ):
                 record.sample_id.state = '7-calculated'
-            
-                    
+                
         model_record = self.material.product_based_calculation.filtered(lambda r: r.grade.id == self.grade_id.id)
         model = model_record.ir_model.model
 
@@ -291,6 +341,10 @@ class ELN(models.Model):
         # print("model ",model)
 
         # import wdb; wdb.set_trace()
+        if not self.test_started or self.state == '5-alloted':
+            self.test_started = True
+            self.state = '1-draft'
+
         if self.model_id != 0:
             return {
                 'view_mode': 'form',
@@ -399,6 +453,10 @@ class ELN(models.Model):
             #             self.write({"parameters_input":[(0,0,{'parameter_result':data.id,'identifier':inputs.identifier,'inputs':inputs.id})]})
 
             #         self.env.cr.commit()
+
+        if not self.test_started or self.state == '5-alloted':
+                self.test_started = True
+                self.state = '1-draft'
 
     def calculate_results(self):
         for record in self.parameters_result:

@@ -9,6 +9,7 @@ class TMTBAR(models.Model):
     _rec_name = "name"
 
     name = fields.Char("Name",default="TMT BAR")
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     
     
@@ -335,7 +336,7 @@ class TMTBARLine(models.Model):
             ('ok_6', 'OK (6Ø)'),
             ('not_ok', 'NOT OK')
         ],
-        string="Bend Test 180° 2t"
+        string="Re-Bend Test"
     )
 
 
