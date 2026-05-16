@@ -166,7 +166,7 @@
 							<tr>
 								
 
-								<td>Week No.  :-</td>
+								<td>Sample Condition   :-</td>
 								<td>
 
 								--
@@ -181,8 +181,19 @@
 								</td>
 							</tr>
 
+                               <tr>
+								<td>Room Temperature   :-</td>
+								<td >
+									<t t-esc="rebond.temperature or ''"/>
+								</td>
+								<td>Humidity  :-</td>
+								<td >
+									<t t-esc="rebond.humidity or ''"/>
+								</td>
+							</tr>
+
 							<tr>
-								<td colspan="1">Other Details:</td>
+								<td colspan="1">Sample Status:</td>
 								<td colspan="3">--</td>
 
 								
@@ -226,7 +237,7 @@
 							  <tr cols="12">
                                 <td rowspan="2" style="text-align: center;"><b>Sr No.</b></td>
                                 <td rowspan="2"  style="text-align: center;"><b>Sample  Identity</b></td>
-                                <td  rowspan="2" style="text-align: center;"><b></b></td>
+                                <td  rowspan="2" style="text-align: center;"><b></b><t t-esc="rebond.blanck_lable or ''"/></td>
                                 <td  rowspan="2" style="text-align: center;"><b>UTS (MPa)</b></td>
                                 <td colspan="3" style="text-align: center;"><b>Yield Stress (MPa)</b></td>
                                 <td  rowspan="2" style="text-align: center;"><b>% Elongation On 5.65 √Area</b></td>
@@ -235,7 +246,7 @@
                             </tr>
 
 							<tr >
-                                <td colspan="1" style="text-align: center;"><b>&lt;20</b></td>
+                                <td colspan="1" style="text-align: center;"><b>>20</b></td>
 								<td  colspan="1" style="text-align: center;"><b>20-40</b></td>
 								<td  colspan="1" style="text-align: center;"><b>&gt;40</b></td>
 																
