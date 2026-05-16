@@ -14,6 +14,7 @@ This module contains all the common features of FLY ASH.
     'data': [
               'security/ir.model.access.csv',
               'views/fly_ash.xml',
+              'reports/fly_datasheet.xml',
               'reports/fly_ds_report.xml'
                
     ],

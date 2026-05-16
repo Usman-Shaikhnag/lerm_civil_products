@@ -50,31 +50,27 @@
                             }
                     </style>
 
-                     <group invisible = "paver_visible == False"  style="white-space: nowrap; width:70%;text-align: center">
+
+
+
+                    <!-- Plan Area -->
+
+                     <div invisible = "paver_visible == False"  style="white-space: nowrap; width:70%;text-align: center">
                         <h1>
                             <field name="paver_name" readonly="1" nolabel="1"/>
                             <field name="paver_visible" invisible="1"/>
                         </h1>
-                    </group>
+                    </div>
 
-                     <group invisible = "paver_visible == False" >
+                     <div invisible = "paver_visible == False" >
                     <field name="thickness_child_lines" mode="tree"  invisible="1">
                             <tree editable="bottom" class="custom_table_borders">
-                              
                                 <field name="thickness1"/>
                                   <field name="Correction_factore"/>
-                               
-                               
                             </tree>
                     </field>
+                    </div>
                    
-                    </group>
-                   
-                   
-                    
-
-
-
                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "paver_visible == False">
                         <tbody>
                           
@@ -85,12 +81,6 @@
                            
                         </tbody>
                     </table>
-
-
-
-                
-
-                   
 
                     
                         <!-- Left Table -->
@@ -176,13 +166,6 @@
                             </table>
                         </div>
 
-
-                    
-
-
-
-                    
-
                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "paver_visible == False">
                         <tbody>
                           
@@ -204,8 +187,87 @@
                     </table>
 
 
-                    <group invisible = "water_absorption_visible == False"  style="white-space: nowrap; width:70%;">
+                    <!-- Compressive Strength -->
+                    <group invisible = "commpressive_visible == False"  style="white-space: nowrap; width:70%;">
                         <h1>
+                            <field name="commpressive_name" readonly="1" nolabel="1"/>
+                            <field name="commpressive_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+
+                    <div invisible = "commpressive_visible == False"   style="width: 100%;">
+                    <field name="commpressive_child_lines"   mode="tree" nolabel="1" >
+                            <tree editable="bottom" class="custom_table_borders" style="width: 100%;">
+                                <field name="serial_no"/>
+                                <field name="sample_identification_com" class="blue-input" decoration-info="sample_identification_com != 0"/>
+                                <field name="wt_block"  class="blue-input" decoration-info="wt_block != 0"/>
+                                <field name="correction_factor" class="blue-input" decoration-info="correction_factor != 0"/>
+                                <field name="load" class="blue-input" decoration-info="load != 0"/>
+                                <field name="compressive_strenght"/>
+                                <field name="thickness" class="blue-input" decoration-info="thickness != 0"/>
+                               
+                            </tree>
+                    </field>
+                   
+                    </div>
+
+                      <div class="d-flex gap-2" invisible = "commpressive_visible == False" >
+                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "commpressive_visible == False">
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="avg_commpressive">Avg. Compressive Strength</label></td>
+                                <td><field name="avg_commpressive"/> <span> N/mm²</span></td>
+                            </tr>
+                             <tr>
+                                <td><label class="fw-bold" for="avg_commpressive_conformity">NABL</label></td>
+                                <td><field name="avg_commpressive_conformity"
+                                            decoration-success="avg_commpressive_conformity == 'pass'"
+                                            decoration-danger="avg_commpressive_conformity == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                             <tr>
+                                <td><label class="fw-bold" for="avg_commpressive_nabl">NABL</label></td>
+                                <td><field name="avg_commpressive_nabl"
+                                            decoration-success="avg_commpressive_nabl == 'pass'"
+                                            decoration-danger="avg_commpressive_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "commpressive_visible == False">
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="avg_thickness">  Avg Thickness</label></td>
+                                <td><field name="avg_thickness"/>   mm</td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_thickness_conformity">NABL</label></td>
+                                <td><field name="avg_thickness_conformity"
+                                            decoration-success="avg_thickness_conformity == 'pass'"
+                                            decoration-danger="avg_thickness_conformity == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                             <tr>
+                                <td><label class="fw-bold" for="avg_thickness_nabl">NABL</label></td>
+                                <td><field name="avg_thickness_nabl"
+                                            decoration-success="avg_thickness_nabl == 'pass'"
+                                            decoration-danger="avg_thickness_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+
+
+
+
+                   <!-- Water Absorption -->
+                    <group invisible = "water_absorption_visible == False"  style="white-space: nowrap; width:70%;">
+                        <h1 >
                             <field name="water_absorption_name" readonly="1" nolabel="1"/>
                             <field name="water_absorption_visible" invisible="1"/>
                         </h1>
@@ -227,14 +289,6 @@
                                 </field>
                             </div>
 
-                     <!-- <group invisible = "water_absorption_visible == False" string="Result" colspan="4"  style="white-space: nowrap; width:70%; margin-top: 10px">
-                     
-                        <field name="avg_water_absorption" readonly="1"/>
-                        
-                  
-                    </group> -->
-
-                    
                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "water_absorption_visible == False">
                         <tbody>
                           
@@ -243,13 +297,6 @@
                                 <td><field name="avg_water_absorption"/> <span> %</span></td>
                             </tr>
                            
-                        </tbody>
-                    </table>
-
-                   
-                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "water_absorption_visible == False">
-                        <tbody>
-                          
                              <tr>
                                 <td><label class="fw-bold" for="avg_water_absorption_conformity">NABL</label></td>
                                 <td><field name="avg_water_absorption_conformity"
@@ -268,100 +315,140 @@
                     </table>
 
 
-                    <group invisible = "commpressive_visible == False"  style="white-space: nowrap; width:70%;">
-                        <h1>
-                            <field name="commpressive_name" readonly="1" nolabel="1"/>
-                            <field name="commpressive_visible" invisible="1"/>
+                     <!-- Dimension -->
+                    <group invisible = "dimension_visible == False"  style="white-space: nowrap; width:70%;">
+                        <h1 >
+                            <field name="dimension_name" readonly="1" nolabel="1"/>
+                            <field name="dimension_visible" invisible="1"/>
                         </h1>
                     </group>
 
+                            <div class="custom_table_borders" style="width: 100%;"  invisible="dimension_visible == False">
+                                <field name="dimension_child_lines" mode="tree" nolabel="1">
+                                    <tree editable="bottom" class="custom_table_borders" style="width: 100%; border-collapse: collapse;">
+                                        <field name="serial_no" />
+                                        <field name="length" class="blue-input" decoration-info="length != 0"/>
+                                        <field name="width" class="blue-input" decoration-info="width != 0"/>
+                                        <field name="height" class="blue-input" decoration-info="height != 0"/>
 
-                    <div invisible = "commpressive_visible == False"   style="width: 100%;">
-                    <field name="commpressive_child_lines"   mode="tree" nolabel="1" >
-                            <tree editable="bottom" class="custom_table_borders" style="width: 100%;">
-                                <field name="serial_no"/>
-                                <field name="sample_identification_com" class="blue-input" decoration-info="sample_identification_com != 0"/>
-                                <field name="wt_block"  class="blue-input" decoration-info="wt_block != 0"/>
-                                <field name="correction_factor"/>
-                                <field name="load" class="blue-input" decoration-info="load != 0"/>
-                                <field name="compressive_strenght"/>
-                                <field name="thickness" class="blue-input" decoration-info="thickness != 0"/>
-                               
-                            </tree>
-                    </field>
-                   
-                    </div>
-                  
-                       
+                                        <field name="area"/>
+                                    </tree>
+                                </field>
+                            </div>
 
-
-
-                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "commpressive_visible == False">
-                        <tbody>
+                      
+                       <div class="d-flex gap-4" invisible = "dimension_visible == False">
+                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "dimension_visible == False">
+                          <tbody>
                           
                              <tr>
-                                <td><label class="fw-bold" for="avg_commpressive">Avg. Compressive Strength</label></td>
-                                <td><field name="avg_commpressive"/> <span> N/mm²</span></td>
+                                <td><label class="fw-bold" for="avg_length">Avg. Length</label></td>
+                                <td><field name="avg_length"/> <span>mm</span></td>
+                            </tr>
+                           
+                             <tr>
+                                <td><label class="fw-bold" for="avg_length_conformity">NABL</label></td>
+                                <td><field name="avg_length_conformity"
+                                            decoration-success="avg_length_conformity == 'pass'"
+                                            decoration-danger="avg_length_conformity == 'fail'"
+                                             readonly="1"/></td>
                             </tr>
                              <tr>
-                                <td><label class="fw-bold" for="avg_thickness">  Avg Thickness</label></td>
-                                <td><field name="avg_thickness"/>   mm</td>
+                                <td><label class="fw-bold" for="avg_length_nabl">NABL</label></td>
+                                <td><field name="avg_length_nabl"
+                                            decoration-success="avg_length_nabl == 'pass'"
+                                            decoration-danger="avg_length_nabl == 'fail'"
+                                             readonly="1"/></td>
                             </tr>
                         </tbody>
                     </table>
 
 
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "dimension_visible == False">
+                          <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="avg_width">Avg. Width</label></td>
+                                <td><field name="avg_width"/> <span>mm</span></td>
+                            </tr>
+                           
+                             <tr>
+                                <td><label class="fw-bold" for="avg_width_conformity">NABL</label></td>
+                                <td><field name="avg_width_conformity"
+                                            decoration-success="avg_width_conformity == 'pass'"
+                                            decoration-danger="avg_width_conformity == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                             <tr>
+                                <td><label class="fw-bold" for="avg_width_nabl">NABL</label></td>
+                                <td><field name="avg_width_nabl"
+                                            decoration-success="avg_width_nabl == 'pass'"
+                                            decoration-danger="avg_width_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "dimension_visible == False">
+                          <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="avg_height">Avg. Height</label></td>
+                                <td><field name="avg_height"/> <span>mm</span></td>
+                            </tr>
+                           
+                             <tr>
+                                <td><label class="fw-bold" for="avg_height_conformity">NABL</label></td>
+                                <td><field name="avg_height_conformity"
+                                            decoration-success="avg_height_conformity == 'pass'"
+                                            decoration-danger="avg_height_conformity == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                             <tr>
+                                <td><label class="fw-bold" for="avg_height_nabl">NABL</label></td>
+                                <td><field name="avg_height_nabl"
+                                            decoration-success="avg_height_nabl == 'pass'"
+                                            decoration-danger="avg_height_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "dimension_visible == False">
+                          <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="avg_area">Avg. Average Cross Sectional Area</label></td>
+                                <td><field name="avg_area"/> <span>mm2</span></td>
+                            </tr>
+                           
+                             <tr>
+                                <td><label class="fw-bold" for="avg_area_conformity">NABL</label></td>
+                                <td><field name="avg_area_conformity"
+                                            decoration-success="avg_area_conformity == 'pass'"
+                                            decoration-danger="avg_area_conformity == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                             <tr>
+                                <td><label class="fw-bold" for="avg_area_nabl">NABL</label></td>
+                                <td><field name="avg_area_nabl"
+                                            decoration-success="avg_area_nabl == 'pass'"
+                                            decoration-danger="avg_area_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+
+
+                    
+
+
+                    
+                    
 
 
                         
 
                       
-
-
-                  
-                   
-
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "commpressive_visible == False">
-                        <tbody>
-                          
-                             <tr>
-                                <td><label class="fw-bold" for="avg_commpressive_conformity">NABL</label></td>
-                                <td><field name="avg_commpressive_conformity"
-                                            decoration-success="avg_commpressive_conformity == 'pass'"
-                                            decoration-danger="avg_commpressive_conformity == 'fail'"
-                                             readonly="1"/></td>
-                            </tr>
-                             <tr>
-                                <td><label class="fw-bold" for="avg_commpressive_nabl">NABL</label></td>
-                                <td><field name="avg_commpressive_nabl"
-                                            decoration-success="avg_commpressive_nabl == 'pass'"
-                                            decoration-danger="avg_commpressive_nabl == 'fail'"
-                                             readonly="1"/></td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    
-
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "commpressive_visible == False">
-                        <tbody>
-                          
-                             <tr>
-                                <td><label class="fw-bold" for="avg_thickness_conformity">NABL</label></td>
-                                <td><field name="avg_thickness_conformity"
-                                            decoration-success="avg_thickness_conformity == 'pass'"
-                                            decoration-danger="avg_thickness_conformity == 'fail'"
-                                             readonly="1"/></td>
-                            </tr>
-                             <tr>
-                                <td><label class="fw-bold" for="avg_thickness_nabl">NABL</label></td>
-                                <td><field name="avg_thickness_nabl"
-                                            decoration-success="avg_thickness_nabl == 'pass'"
-                                            decoration-danger="avg_thickness_nabl == 'fail'"
-                                             readonly="1"/></td>
-                            </tr>
-                        </tbody>
-                    </table>
 
 
 
