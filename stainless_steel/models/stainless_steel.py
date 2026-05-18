@@ -15,9 +15,12 @@ class StatinlessSteel(models.Model):
     stainless_steel_visible = fields.Boolean("Stainless Steel Visible",compute="_compute_visible")
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     temperature = fields.Float("Temperature °C")
+    humidity = fields.Float("Humidity  %")
     child_lines = fields.One2many('stainless.steel.line','parent_id',string="Parameter")
    
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
+
+    blanck_lable = fields.Char("Blank Lable Name")
 
 
     requirement1 = fields.Char("Specification Yield Stress <20")
