@@ -405,7 +405,7 @@
 
 
 							<!-- Bulk Density -->
-                            <t t-set="show_loose_bulk_density" t-value="data.loose_density == 'pass' and nabl or (data.loose_density == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+                            <t t-set="show_loose_bulk_density" t-value="data.loose_density_nabl == 'pass' and nabl or (data.loose_density_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
 
                             <t t-set="show_rodded_bulk_density" t-value="data.compacted_density_nabl == 'pass' and nabl or (data.compacted_density_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
 
