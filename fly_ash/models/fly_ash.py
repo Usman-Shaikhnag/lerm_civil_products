@@ -37,10 +37,12 @@ class FlyaschNormalConsistency(models.Model):
                 'exclude_sample_id': self.eln_ref.sample_id.id,
                 },
         }
+    
 
-     ## Normal Consistency
 
-    # tests = fields.Many2many("mechanical.cement.test",string="Tests")
+
+     # Normal Consistency
+
     @api.depends('eln_ref')
     def _compute_grade_id(self):
         if self.eln_ref:
@@ -53,40 +55,21 @@ class FlyaschNormalConsistency(models.Model):
 
 
     gravity_of_flyash1 = fields.Float(string="Specific Gravity of Flyash")
-    # gravity_of_flyash2 = fields.Float(string="Specific Gravity of Flyash")
-
     gravity_of_cement1 = fields.Float(string="Specific Gravity of Cement")
-    # gravity_of_cement2 = fields.Float(string="Specific Gravity of Cement")
-
-
     fly_ash_n1 = fields.Float(string="N",compute="_compute_fly_ash_n1")
-    # fly_ash_n2 = fields.Float(string="N",compute="_compute_fly_ash_n2")
-
     wt_of_flash_1 = fields.Float(string="Wt. of  Flyash",compute="_compute_wt_of_flash_1")
-    # wt_of_flash_2 = fields.Float(string="Wt. of  Flyash",compute="_compute_wt_of_flash_2")
 
     wt_of_cement_1 = fields.Float(string="Wt. of  Cement (g)",default=0.8*400)
-    # wt_of_cement_2 = fields.Float(string="Wt. of  Cement (g)",default=0.8*400)
 
     total_wt_of_sample_fly_1 = fields.Float(string="Total Weight of Sample(g)",compute="_compute_wt_of_sample_fly_1")
-    # total_wt_of_sample_fly_2 = fields.Float(string="Total Weight of Sample(g)",compute="_compute_wt_of_sample_fly_2")
 
     wt_of_water_required_fly_1 = fields.Float(string="Wt.of water required (g)")
-    # wt_of_water_required_fly_2 = fields.Float(string="Wt.of water required (g)")
 
     penetration_planger_fly_1 = fields.Float(string="Penetraion of vicat's Plunger (mm)")
-    # penetration_planger_fly_2 = fields.Float(string="Penetraion of vicat's Plunger (mm)")
 
     normal_consistency_fly_1 = fields.Float(string="Normal Consistency, %",compute="_compute_normal_consistency_fly_1")
-    # normal_consistency_fly_2 = fields.Float(string="Normal Consistency, %",compute="_compute_normal_consistency_fly_2")
 
-    # @api.depends('gravity_of_flyash1', 'gravity_of_cement1')
-    # def _compute_fly_ash_n1(self):
-    #     for record in self:
-    #         if record.gravity_of_cement1 != 0:
-    #             record.fly_ash_n1 = record.gravity_of_flyash1 / record.gravity_of_cement1
-    #         else:
-    #             record.fly_ash_n1 = 0.0
+    
     @api.depends('gravity_of_flyash1', 'gravity_of_cement1')
     def _compute_fly_ash_n1(self):
         for record in self:
@@ -95,35 +78,21 @@ class FlyaschNormalConsistency(models.Model):
             else:
                 record.fly_ash_n1 = 0.0
 
-                
-
-    # @api.depends('gravity_of_flyash2', 'gravity_of_cement2')
-    # def _compute_fly_ash_n2(self):
-    #     for record in self:
-    #         if record.gravity_of_cement2 != 0:
-    #             record.fly_ash_n2 = record.gravity_of_flyash2 / record.gravity_of_cement2
-    #         else:
-    #             record.fly_ash_n2 = 0.0
+    
 
     @api.depends('fly_ash_n1')
     def _compute_wt_of_flash_1(self):
         for record in self:
             record.wt_of_flash_1 = (0.2 * record.fly_ash_n1) * 400
 
-    # @api.depends('fly_ash_n2')
-    # def _compute_wt_of_flash_2(self):
-    #     for record in self:
-    #         record.wt_of_flash_2 = 0.2 * record.fly_ash_n2 * 400
+    
 
     @api.depends('wt_of_cement_1','wt_of_flash_1')
     def _compute_wt_of_sample_fly_1(self):
         for record in self:
             record.total_wt_of_sample_fly_1 = record.wt_of_cement_1 + record.wt_of_flash_1
 
-    # @api.depends('wt_of_cement_2','wt_of_flash_2')
-    # def _compute_wt_of_sample_fly_2(self):
-    #     for record in self:
-    #         record.total_wt_of_sample_fly_2 = record.wt_of_cement_2 + record.wt_of_flash_2
+
 
     @api.depends('wt_of_water_required_fly_1', 'total_wt_of_sample_fly_1')
     def _compute_normal_consistency_fly_1(self):
@@ -134,14 +103,7 @@ class FlyaschNormalConsistency(models.Model):
                 record.normal_consistency_fly_1 = 0.0
 
 
-    # @api.depends('wt_of_water_required_fly_2', 'total_wt_of_sample_fly_2')
-    # def _compute_normal_consistency_fly_2(self):
-    #     for record in self:
-    #         if record.total_wt_of_sample_fly_2 != 0:
-    #             record.normal_consistency_fly_2 = (record.wt_of_water_required_fly_2 / record.total_wt_of_sample_fly_2) * 100
-    #         else:
-    #             record.normal_consistency_fly_2 = 0.0
-
+   
 
     normal_consistency_conformity = fields.Selection([
             ('pass', 'Pass'),
@@ -197,12 +159,7 @@ class FlyaschNormalConsistency(models.Model):
             else:
                 record.normal_consistency_nabl = 'fail'
 
-
-
-
-
-
-    ### setting Time,Final Setting Time	
+    # setting Time,Final Setting Time	
 
     initial_setting_time_visible = fields.Boolean("Initial Setting Time Visible",compute="_compute_visible")
     initial_setting_time_name = fields.Char("Name",default="Initial Setting Time")
@@ -212,440 +169,15 @@ class FlyaschNormalConsistency(models.Model):
     start_date_setting = fields.Date("Start Date")
     end_date_setting = fields.Date("End Date")
 
-    # wt_of_fly_settingg_time = fields.Float("Total Weight of Sample(g)",compute="_compute_total_wt_of_sample_setting_time",store=True)
     wt_of_fly_settingg_time = fields.Float("Total Weight of Sample(g)",default=377.40)
     wt_of_water_required_setting_time = fields.Float("Wt.of water required (g) (0.85*P%)" , compute="_compute_wt_of_water_required",store=True )
-
-    # @api.depends('total_wt_of_sample_fly_1')
-    # def _compute_total_wt_of_sample_setting_time(self):
-    #     for record in self:
-    #         record.wt_of_fly_settingg_time = record.total_wt_of_sample_fly_1
 
     @api.depends('normal_consistency_fly_1','wt_of_fly_settingg_time')
     def _compute_wt_of_water_required(self):
         for record in self:
             record.wt_of_water_required_setting_time =  (0.85 * record.normal_consistency_fly_1 * record.wt_of_fly_settingg_time) / 100
-
-    #Initial setting Time
-
-    setting_time_name = fields.Char("Name", default="Setting Time")
-    time_water_added = fields.Datetime("The Time When water is added to cement (t1)")
-    time_needle_fails = fields.Datetime("The time at which needle fails to penetrate the test block to a point 5 ± 0.5 mm (t2)")
-    initial_setting_time_hours = fields.Char("Initial Setting Time (t2-t1) (Hours)", compute="_compute_initial_setting_time")
-    initial_setting_time_minutes = fields.Integer("Initial Setting Time Rounded", compute="_compute_initial_setting_time")
-    initial_setting_time_minutes_unrounded = fields.Char("Initial Setting Time",compute="_compute_initial_setting_time")
-
-    initial_setting_conformity = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),
-    ('na', 'NA'),
-    ], string='Conformity',compute="_compute_initial_setting_conformity", default='fail')
-
-    initial_setting_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),
-    ], string='NABL',compute="_compute_initial_setting_nabl", default='pass')
-
-
-    @api.depends('initial_setting_time_minutes_unrounded','eln_ref','grade')
-    def _compute_initial_setting_conformity(self):
-        for record in self:
-            if not record.eln_ref or not record.eln_ref.conformity:
-                record.initial_setting_conformity = 'na'
-                continue
-            record.initial_setting_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2014fgr32-6bbe-4fdf-9571-a5a099be0293')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2014fgr32-6bbe-4fdf-9571-a5a099be0293')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    lower = float(record.initial_setting_time_minutes_unrounded) - float(record.initial_setting_time_minutes_unrounded)*mu_value
-                    upper = float(record.initial_setting_time_minutes_unrounded) + float(record.initial_setting_time_minutes_unrounded)*mu_value
-                    if lower >= req_min and upper <= req_max :
-                        record.initial_setting_conformity = 'pass'
-                        break
-                    else:
-                        record.initial_setting_conformity = 'fail'
-
-    @api.depends('initial_setting_time_minutes_unrounded','eln_ref','grade')
-    def _compute_initial_setting_nabl(self):
-        
-        for record in self:
-            record.initial_setting_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].search([('internal_id','=','2014fgr32-6bbe-4fdf-9571-a5a099be0293')])
-            materials = self.env['lerm.parameter.master'].search([('internal_id','=','2014fgr32-6bbe-4fdf-9571-a5a099be0293')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = float(record.initial_setting_time_minutes_unrounded) - float(record.initial_setting_time_minutes_unrounded)*mu_value
-            upper = float(record.initial_setting_time_minutes_unrounded) + float(record.initial_setting_time_minutes_unrounded)*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.initial_setting_nabl = 'pass'
-                break
-            else:
-                record.initial_setting_nabl = 'fail'
-
-
-    @api.depends('time_water_added', 'time_needle_fails')
-    def _compute_initial_setting_time(self):
-        for record in self:
-            if record.time_water_added and record.time_needle_fails:
-                t1 = record.time_water_added
-                t2 = record.time_needle_fails
-                time_difference = t2 - t1
-
-                # Convert time difference to seconds and then to minutes
-                time_difference_minutes = time_difference.total_seconds() / 60
-
-                initial_setting_time_hours = time_difference.total_seconds() / 3600
-                time_delta = timedelta(hours=initial_setting_time_hours)
-                record.initial_setting_time_hours = "{:0}:{:02}".format(int(time_delta.total_seconds() // 3600), int((time_delta.total_seconds() % 3600) // 60))
-                if time_difference_minutes % 5 == 0:
-                    record.initial_setting_time_minutes = time_difference_minutes
-                else:
-                    record.initial_setting_time_minutes = round(time_difference_minutes / 5) * 5
-
-                record.initial_setting_time_minutes_unrounded = time_difference_minutes
-
-            else:
-                record.initial_setting_time_hours = False
-                record.initial_setting_time_minutes = False
-                record.initial_setting_time_minutes_unrounded = False
-
-
-    #Final setting Time
-
-    final_setting_time_visible = fields.Boolean("Final Setting Time Visible",compute="_compute_visible")
-    final_setting_time_name = fields.Char("Name",default="Final Setting Time")
-
-    time_needle_make_impression = fields.Datetime("The Time at which the needle make an impression on the surface of test block while attachment fails to do (t3)")
-    final_setting_time_hours = fields.Char("Final Setting Time (t2-t1) (Hours)",compute="_compute_final_setting_time")
-    final_setting_time_minutes_unrounded = fields.Char("Final Setting Time",compute="_compute_final_setting_time")
-    final_setting_time_minutes = fields.Char("Final Setting Time Rounded",compute="_compute_final_setting_time")
-
-    final_setting_conformity = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),
-    ('na', 'NA'),], string='Conformity',compute="_compute_final_setting_conformity", default='fail')
-
-    final_setting_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),
-    ], string='NABL',compute="_compute_final_setting_nabl", default='pass')
-
-
-    @api.depends('final_setting_time_minutes_unrounded','eln_ref','grade')
-    def _compute_final_setting_conformity(self):
-        for record in self:
-            if not record.eln_ref or not record.eln_ref.conformity:
-                record.final_setting_conformity = 'na'
-                continue
-            record.final_setting_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32145grte8-6526-4fcc-a5ec-18cc1ae10857')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32145grte8-6526-4fcc-a5ec-18cc1ae10857')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    lower = float(record.final_setting_time_minutes_unrounded) - float(record.final_setting_time_minutes_unrounded)*mu_value
-                    upper = float(record.final_setting_time_minutes_unrounded) + float(record.final_setting_time_minutes_unrounded)*mu_value
-                    if lower >= req_min and upper <= req_max :
-                        record.final_setting_conformity = 'pass'
-                        break
-                    else:
-                        record.final_setting_conformity = 'fail'
-
-    @api.depends('final_setting_time_minutes_unrounded','eln_ref','grade')
-    def _compute_final_setting_nabl(self):
-        
-        for record in self:
-            record.final_setting_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32145grte8-6526-4fcc-a5ec-18cc1ae10857')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32145grte8-6526-4fcc-a5ec-18cc1ae10857')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = float(record.final_setting_time_minutes_unrounded) - float(record.final_setting_time_minutes_unrounded)*mu_value
-            upper = float(record.final_setting_time_minutes_unrounded) + float(record.final_setting_time_minutes_unrounded)*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.final_setting_nabl = 'pass'
-                break
-            else:
-                record.final_setting_nabl = 'fail'
-
-
-
-    @api.depends('time_needle_make_impression')
-    def _compute_final_setting_time(self):
-        for record in self:
-            if record.time_needle_make_impression and record.time_water_added:
-                t1 = record.time_water_added
-                t2 = record.time_needle_make_impression
-                time_difference = t2 - t1
-                record.final_setting_time_minutes = time_difference
-                record.final_setting_time_hours = time_difference
-                final_setting_time = time_difference.total_seconds() / 60
-                if final_setting_time % 5 == 0:
-                    record.final_setting_time_minutes = final_setting_time
-                else:
-                    record.final_setting_time_minutes =  round(final_setting_time / 5) * 5
-                record.final_setting_time_minutes_unrounded = final_setting_time
-            else:
-                record.final_setting_time_hours = False
-                record.final_setting_time_minutes = False
-                record.final_setting_time_minutes_unrounded = False
-
-
-
-        
-
-
-     #  Particles retained on 45 micron IS sieve (wet sieving) 
-
-    particles_retained = fields.Char("Name",default=" Particles retained on 45 micron IS sieve (wet sieving)")
-    particles_retained_visible = fields.Boolean("Particles retained Visible",compute="_compute_visible")
-
-    temp_percent_retained = fields.Float("Temperature °c")
-    humidity_percent_retained = fields.Float("Humidity %")
-    start_date_retained = fields.Date("Start Date")
-    end_date_retained = fields.Date("End Date")
-
-
-    particles_retained_table = fields.One2many('particles.retained.line','parent_id',string="Particles Retained")
-    average_weight_retained = fields.Float("Average", compute="_compute_average_weight_retained")
-
-    prcent_retaind = fields.Float(string="% Weight Retained",compute="_compute_prcent_retained",digits=(12,1))
-
- 
-    @api.depends('particles_retained_table.wt_retained')  # Replace 'weight' with the actual field name in particles.retained.line
-    def _compute_average_weight_retained(self):
-        for record in self:
-            # Calculate the average weight
-            total_weight = sum(record.particles_retained_table.mapped('wt_retained'))
-            count = len(record.particles_retained_table)
-            record.average_weight_retained = total_weight / count if count else 0.0
-
-    # @api.depends('average_weight_retained')
-    # def _compute_prcent_retained(self):
-    #     for record in self:
-    #         # Round the average weight to the nearest 0.5
-    #         rounded_average = round(record.average_weight_retained * 2) / 2
-    #         record.prcent_retaind = rounded_average
     
-    @api.depends('average_weight_retained')
-    def _compute_prcent_retained(self):
-        for record in self:
-            # Round the average weight to the nearest 0.1
-            rounded_average = round(record.average_weight_retained * 10) / 10
-            record.prcent_retaind = rounded_average
 
-
-    prcent_retaind_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),
-    ('na', 'NA'),], string="Conformity", compute="_compute_prcent_retaind_conformity", store=True)
-
-    @api.depends('prcent_retaind','eln_ref','grade')
-    def _compute_prcent_retaind_conformity(self):
-        
-        for record in self:
-            if not record.eln_ref or not record.eln_ref.conformity:
-                record.prcent_retaind_conformity = 'na'
-                continue
-            record.prcent_retaind_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214vbfsd-0da6-4ec4-a91e-d41c44f5edb5')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214vbfsd-0da6-4ec4-a91e-d41c44f5edb5')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.prcent_retaind - record.prcent_retaind*mu_value
-                    upper = record.prcent_retaind + record.prcent_retaind*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.prcent_retaind_conformity = 'pass'
-                        break
-                    else:
-                        record.prcent_retaind_conformity = 'fail'
-
-    prcent_retaind_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_prcent_retaind_nabl", store=True)
-    
-    @api.depends('prcent_retaind','eln_ref','grade')
-    def _compute_prcent_retaind_nabl(self):
-        
-        for record in self:
-            record.prcent_retaind_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214vbfsd-0da6-4ec4-a91e-d41c44f5edb5')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214vbfsd-0da6-4ec4-a91e-d41c44f5edb5')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.prcent_retaind - record.prcent_retaind*mu_value
-            upper = record.prcent_retaind + record.prcent_retaind*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.prcent_retaind_nabl = 'pass'
-                break
-            else:
-                record.prcent_retaind_nabl = 'fail'
-
-
-
-
-
-
-
-
-    # Soundness Test
-    soundness_name_fly = fields.Char("Name",default="Soundness by Le-Chatelier Method")
-    soundness_visible = fields.Boolean("Soundness Visible",compute="_compute_visible")
-
-    temp_percent_soundness = fields.Float("Temperature °c")
-    humidity_percent_soundness = fields.Float("Humidity %")
-    start_date_soundness = fields.Date("Start Date")
-    end_date_soundness = fields.Date("End Date")
-
-
-    wt_of_flyash_soundness = fields.Float(string="Wt. of Flyash",compute="_compute_wt_of_flyash_soundness")
-    wt_of_cement_soundness = fields.Float(string="Wt. of Cement (g)",default=0.8*100)
-    total_wt_sample_soundness = fields.Float(string="Total Weight of Sample(g)",compute="_compute_total_wt_sample_soundness")
-    wt_of_water_req_soundness = fields.Float(string="Wt.of water required (g)",compute="_compute_wt_of_water_req_soundness")
-
-    @api.depends('fly_ash_n1')
-    def _compute_wt_of_flyash_soundness(self):
-        for record in self:
-            record.wt_of_flyash_soundness = (0.2 * record.fly_ash_n1 * 100)
-
-    @api.depends('wt_of_flyash_soundness','wt_of_cement_soundness')
-    def _compute_total_wt_sample_soundness(self):
-        for record in self:
-            record.total_wt_sample_soundness = record.wt_of_flyash_soundness + record.wt_of_cement_soundness
-
-    @api.depends('normal_consistency_fly_1', 'total_wt_sample_soundness')
-    def _compute_wt_of_water_req_soundness(self):
-      for record in self:
-        if record.total_wt_sample_soundness != 0:
-            record.wt_of_water_req_soundness = (0.78 * record.normal_consistency_fly_1 / 100) * record.total_wt_sample_soundness
-        else:
-            record.wt_of_water_req_soundness = 0.0
-
-    soundness_table = fields.One2many('flyash.soundness.line','parent_id',string="Soundness")
-    average_soundness = fields.Float("Average",compute="_compute_average_soundness")
-    expansion_soundness = fields.Float("Expansion(mm)",compute="_compute_expansion_soundness" ,digits=(16,1))
-
-    @api.depends('soundness_table.expansion')
-    def _compute_average_soundness(self):
-        for record in self:
-            try:
-                record.average_soundness = sum(record.soundness_table.mapped('expansion'))/len(record.soundness_table)
-            except:
-                record.average_soundness = 0
-
-    # @api.depends('average_soundness')
-    # def _compute_expansion_soundness(self):
-    #     for record in self:
-    #         integer_part = math.floor(record.average_soundness)
-    #         fractional_part = record.average_soundness - integer_part
-    #         if fractional_part > 0 and fractional_part <= 0.25:
-    #             record.expansion_soundness = integer_part
-    #         elif fractional_part > 0.25 and fractional_part <= 0.75:
-    #             record.expansion_soundness = integer_part + 0.5
-    #         elif fractional_part > 0.75 and fractional_part <= 1:
-    #             record.expansion_soundness = integer_part + 1
-    #         else:
-    #             record.expansion_soundness = 0
-
-
-    @api.depends('average_soundness')
-    def _compute_expansion_soundness(self):
-        for record in self:
-            integer_part = math.floor(record.average_soundness)
-            fractional_part = record.average_soundness - integer_part
-            if fractional_part > 0 and fractional_part <= 0.25:
-                expansion_soundness = round(integer_part,1)
-                record.expansion_soundness = expansion_soundness
-            elif fractional_part > 0.25 and fractional_part <= 0.75:
-                expansion_soundness = round(integer_part + 0.5,1)
-                record.expansion_soundness = expansion_soundness
-            elif fractional_part > 0.75 and fractional_part <= 1:
-                expansion_soundness = round(integer_part + 1,1)
-                record.expansion_soundness = expansion_soundness
-            else:
-                record.expansion_soundness = 0
-    expansion_soundness_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),
-    ('na', 'NA'),], string="Conformity", compute="_compute_expansion_soundness_conformity", store=True)
-
-    @api.depends('expansion_soundness','eln_ref','grade')
-    def _compute_expansion_soundness_conformity(self):
-        
-        for record in self:
-            if not record.eln_ref or not record.eln_ref.conformity:
-                record.expansion_soundness_conformity = 'na'
-                continue
-            record.expansion_soundness_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210ght7-91b0-4153-87ef-11b6954a9837')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210ght7-91b0-4153-87ef-11b6954a9837')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.expansion_soundness - record.expansion_soundness*mu_value
-                    upper = record.expansion_soundness + record.expansion_soundness*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.expansion_soundness_conformity = 'pass'
-                        break
-                    else:
-                        record.expansion_soundness_conformity = 'fail'
-
-    expansion_soundness_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_expansion_soundness_nabl", store=True)
-    
-    @api.depends('expansion_soundness','eln_ref','grade')
-    def _compute_expansion_soundness_nabl(self):
-        
-        for record in self:
-            record.expansion_soundness_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210ght7-91b0-4153-87ef-11b6954a9837')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210ght7-91b0-4153-87ef-11b6954a9837')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.expansion_soundness - record.expansion_soundness*mu_value
-            upper = record.expansion_soundness + record.expansion_soundness*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.expansion_soundness_nabl = 'pass'
-                break
-            else:
-                record.expansion_soundness_nabl = 'fail'
-
-
-
-
-
-
-    
     #  Specigic Gravity
     specigic_gravity_fly = fields.Char("Name",default="Specific Gravity")
     specigic_gravity_visible = fields.Boolean("Specigic Gravity Visible",compute="_compute_visible")
@@ -750,24 +282,22 @@ class FlyaschNormalConsistency(models.Model):
             record.average_specific_gravity_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214fgrt-1d2c-4d3b-9ebe-ecb0b5e1221e')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214fgrt-1d2c-4d3b-9ebe-ecb0b5e1221e')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                  lab_min = line.lab_min_value
+                  lab_max = line.lab_max_value
+                  mu_value = line.mu_value
             
-            lower = record.average_specific_gravity - record.average_specific_gravity*mu_value
-            upper = record.average_specific_gravity + record.average_specific_gravity*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.average_specific_gravity_nabl = 'pass'
-                break
-            else:
-                record.average_specific_gravity_nabl = 'fail'
-
-
-
-
-     # Compressive Strength 
+                  lower = record.average_specific_gravity - record.average_specific_gravity*mu_value
+                  upper = record.average_specific_gravity + record.average_specific_gravity*mu_value
+                  if lower >= lab_min and upper <= lab_max:
+                      record.average_specific_gravity_nabl = 'pass'
+                      break
+                  else:
+                      record.average_specific_gravity_nabl = 'fail'
+    
+    
+    # Compressive Strength 
 
     compressive_name = fields.Char("Name",default="Compressive Strength")
     compressive_visible = fields.Boolean("Compressive Visible",compute="_compute_visible")
@@ -1018,192 +548,506 @@ class FlyaschNormalConsistency(models.Model):
                 record.compressive_strength_of_sample_nabl = 'fail'
 
 
+    # Drying Shrinkage
 
-    # Lime reactivity
+    drying_shrinkage_name = fields.Char("Name", default="Drying Shrinkage")
+    drying_shrinkage_visible = fields.Boolean("Drying Shrinkage", compute="_compute_visible")
 
-    lime_reactivity = fields.Char("Name",default="Lime Reactivity")
-    lime_reactivity_visible = fields.Boolean("Lime Visible",compute="_compute_visible")
+    drying_child_lines = fields.One2many('drying.shrinkage.fly.line','parent_id',string="Parameter" )
 
-    temp_percent_lime = fields.Float("Temperature °c")
-    humidity_percent_lime = fields.Float("Humidity %")
-    start_date_lime = fields.Date("Start Date")
-    end_date_lime = fields.Date("End Date")
+    average1 = fields.Float("Average %",compute="_compute_average_initial_drying",digits=(16, 3))
 
-
-
-    specific_gravity_fly_lime = fields.Float(string="Specific Gravity of Flyash (g)",compute="_compute_specific_gravity_flyash_lime")
-    specific_gravity_of_lime = fields.Float(string="Specific Gravity of Lime (g)",compute="_compute_specific_gravity_lime")
-    m = fields.Float(string="M",compute="_compute_m")
-    wt_of_hydrent = fields.Integer(string="Weight of Hydrated Lime (g)",default=150)
-    wt_of_fly_lime = fields.Float(string="Weight of Flyas (g)",compute="_compute_wt_of_fly_lime")
-    wt_of_standard_grade_lime1 = fields.Integer(string="Weight of Standard Sand (g) Grade-I",default=450)
-    wt_of_standard_grade_lime2 = fields.Integer(string="Weight of Standard Sand (g) Grade-II",default=450)
-    wt_of_standard_grade_lime3 = fields.Integer(string="Weight of Standard Sand (g) Grade-III",default=450)
-    quantity_water_lime = fields.Integer(string="Quantity of Water (g)")
-
-
-    @api.depends('average_specific_gravity')
-    def _compute_specific_gravity_flyash_lime(self):
+    @api.depends('drying_child_lines.initial_drying')
+    def _compute_average_initial_drying(self):
         for record in self:
-            record.specific_gravity_fly_lime = record.average_specific_gravity
-
-    @api.depends('gravity_of_cement1')
-    def _compute_specific_gravity_lime(self):
-        for record in self:
-            record.specific_gravity_of_lime = record.gravity_of_cement1
-
-    @api.depends('specific_gravity_fly_lime','specific_gravity_of_lime')
-    def _compute_m(self):
-        for record in self:
-            if record.specific_gravity_of_lime != 0:
-                record.m = record.specific_gravity_fly_lime / record.specific_gravity_of_lime
+            initial_drying_values = record.drying_child_lines.mapped('initial_drying')
+            if initial_drying_values:
+                record.average1 = sum(initial_drying_values) / len(initial_drying_values)
             else:
-                record.m = 0.0
-
-
-    @api.depends('m')
-    def _compute_wt_of_fly_lime(self):
-        for record in self:
-            record.wt_of_fly_lime = 300 * record.m
-
-
-    measured_valuess1 = fields.Float(string="Measured Values")
-    measured_valuess2 = fields.Float(string="Measured Values")
-    measured_valuess3 = fields.Float(string="Measured Values")
-    measured_valuess4 = fields.Float(string="Measured Values")
-
-    average_measuredss = fields.Float(string="Average",compute="_compute_averagess")
-    percent_flowss = fields.Float(string="% Flow",compute="_compute_flowss")
-
-    @api.depends('measured_valuess1', 'measured_valuess2', 'measured_valuess3', 'measured_valuess4')
-    def _compute_averagess(self):
-        for record in self:
-            measured_values = [
-                record.measured_valuess1,
-                record.measured_valuess2,
-                record.measured_valuess3,
-                record.measured_valuess4
-            ]
-            non_empty_values = [value for value in measured_values if value is not False]
-            if non_empty_values:
-                record.average_measuredss = sum(non_empty_values) / len(non_empty_values)
-            else:
-                record.average_measuredss = 0.0
-
-
-    @api.depends('average_measuredss')
-    def _compute_flowss(self):
-        for record in self:
-            record.percent_flowss = record.average_measuredss - 100
-
-
-     #28 days Casting
-
-    casting_28_namess = fields.Char("Name",default="28 Days")
-    # casting_28_visible = fields.Boolean("28 days Visible",compute="_compute_visible")
-
-    casting_dates_28dayss = fields.Date(string="Date of Casting")
-    testing_dates_28dayss = fields.Date(string="Date of Testing",compute="_compute_testing_date_28daysss")
-    casting_28_dayss_tabless = fields.One2many('flyash.casting.28days.liness','parent_id',string="28 Days")
-    average_casting_28daysss = fields.Float("Average",compute="_compute_average_28daysss")
-    compressive_strength_28_days = fields.Integer("Compressive Strength",compute="_compute_compressive_strength_28dayss")
-    status_28daysss = fields.Boolean("Done")
-
-
-    @api.depends('casting_28_dayss_tabless.compressive_strengthss')
-    def _compute_average_28daysss(self):
-        for record in self:
-            try:
-                record.average_casting_28daysss = sum(record.casting_28_dayss_tabless.mapped('compressive_strengthss')) / len(
-                    record.casting_28_dayss_tabless)
-            except:
-                record.average_casting_28daysss = 0
-
-
-    @api.depends('casting_dates_28dayss')
-    def _compute_testing_date_28daysss(self):
-        for record in self:
-            if record.casting_dates_28dayss:
-                cast_date = fields.Datetime.from_string(record.casting_dates_28dayss)
-                testing_date = cast_date + timedelta(days=28)
-                record.testing_dates_28dayss = fields.Datetime.to_string(testing_date)
-            else:
-                record.testing_dates_28dayss = False
-
-    @api.depends('average_casting_28daysss')
-    def _compute_compressive_strength_28dayss(self):
-        for record in self:
-            integer_part = math.floor(record.average_casting_28daysss)
-            fractional_part = record.average_casting_28daysss - integer_part
-            if fractional_part > 0 and fractional_part <= 0.25:
-                record.compressive_strength_28_days = integer_part
-            elif fractional_part > 0.25 and fractional_part <= 0.75:
-                record.compressive_strength_28_days = integer_part + 0.5
-            elif fractional_part > 0.75 and fractional_part <= 1:
-                record.compressive_strength_28_days = integer_part + 1
-            else:
-                record.compressive_strength_28_days = 0
-
-
+                record.average1 = 0
 
     
-    lime_reactivity_conformity = fields.Selection([
+
+    drying_shrinkage_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),
-    ('na', 'NA'),], string="Conformity", compute="_compute_lime_reactivity_conformity", store=True)
+    ('na', 'NA'),], string="Conformity", compute="_compute_drying_shrinkage_conformity", store=True)
 
-    @api.depends('compressive_strength_28_days','eln_ref','grade')
-    def _compute_lime_reactivity_conformity(self):
+    @api.depends('average1','eln_ref','grade')
+    def _compute_drying_shrinkage_conformity(self):
         
         for record in self:
             if not record.eln_ref or not record.eln_ref.conformity:
-                record.lime_reactivity_conformity = 'na'
+                record.drying_shrinkage_conformity = 'na'
                 continue
-            record.lime_reactivity_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','320147vbfd-c97d-4d83-a9f2-2eb112eae116')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','320147vbfd-c97d-4d83-a9f2-2eb112eae116')]).parameter_table
+            record.drying_shrinkage_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a475e70d-d1f5-4f63-9595-15c45e940da7')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a475e70d-d1f5-4f63-9595-15c45e940da7')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
                     
-                    lower = record.compressive_strength_28_days - record.compressive_strength_28_days*mu_value
-                    upper = record.compressive_strength_28_days + record.compressive_strength_28_days*mu_value
+                    lower = record.average1 - record.average1*mu_value
+                    upper = record.average1 + record.average1*mu_value
                     if lower >= req_min and upper <= req_max:
-                        record.lime_reactivity_conformity = 'pass'
+                        record.drying_shrinkage_conformity = 'pass'
                         break
                     else:
-                        record.lime_reactivity_conformity = 'fail'
+                        record.drying_shrinkage_conformity = 'fail'
 
-    lime_reactivity_nabl = fields.Selection([
+    drying_shrinkage_nabl = fields.Selection([
         ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_lime_reactivity_nabl", store=True)
-    
-    @api.depends('compressive_strength_28_days','eln_ref','grade')
-    def _compute_lime_reactivity_nabl(self):
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_drying_shrinkage_nabl", store=True)
+
+    @api.depends('average1','eln_ref','grade')
+    def _compute_drying_shrinkage_nabl(self):
         
         for record in self:
-            record.lime_reactivity_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','320147vbfd-c97d-4d83-a9f2-2eb112eae116')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','320147vbfd-c97d-4d83-a9f2-2eb112eae116')]).parameter_table
+            record.drying_shrinkage_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a475e70d-d1f5-4f63-9595-15c45e940da7')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a475e70d-d1f5-4f63-9595-15c45e940da7')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                  lab_min = line.lab_min_value
+                  lab_max = line.lab_max_value
+                  mu_value = line.mu_value
+            
+                  lower = record.average1 - record.average1*mu_value
+                  upper = record.average1 + record.average1*mu_value
+                  if lower >= lab_min and upper <= lab_max:
+                      record.drying_shrinkage_nabl = 'pass'
+                      break
+                  else:
+                      record.drying_shrinkage_nabl = 'fail'
+
+
+    # Initial setting Time
+
+    setting_time_name = fields.Char("Name", default="Setting Time")
+    time_water_added = fields.Datetime("The Time When water is added to cement (t1)")
+    time_needle_fails = fields.Datetime("The time at which needle fails to penetrate the test block to a point 5 ± 0.5 mm (t2)")
+    initial_setting_time_hours = fields.Char("Initial Setting Time (t2-t1) (Hours)", compute="_compute_initial_setting_time")
+    initial_setting_time_minutes = fields.Integer("Initial Setting Time Rounded", compute="_compute_initial_setting_time")
+    initial_setting_time_minutes_unrounded = fields.Char("Initial Setting Time",compute="_compute_initial_setting_time")
+
+    initial_setting_conformity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ('na', 'NA'),
+    ], string='Conformity',compute="_compute_initial_setting_conformity", default='fail')
+
+    initial_setting_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='NABL',compute="_compute_initial_setting_nabl", default='pass')
+
+
+    @api.depends('initial_setting_time_minutes_unrounded','eln_ref','grade')
+    def _compute_initial_setting_conformity(self):
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.initial_setting_conformity = 'na'
+                continue
+            record.initial_setting_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2014fgr32-6bbe-4fdf-9571-a5a099be0293')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2014fgr32-6bbe-4fdf-9571-a5a099be0293')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    lower = float(record.initial_setting_time_minutes_unrounded) - float(record.initial_setting_time_minutes_unrounded)*mu_value
+                    upper = float(record.initial_setting_time_minutes_unrounded) + float(record.initial_setting_time_minutes_unrounded)*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.initial_setting_conformity = 'pass'
+                        break
+                    else:
+                        record.initial_setting_conformity = 'fail'
+
+    @api.depends('initial_setting_time_minutes_unrounded','eln_ref','grade')
+    def _compute_initial_setting_nabl(self):
+        
+        for record in self:
+            record.initial_setting_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].search([('internal_id','=','2014fgr32-6bbe-4fdf-9571-a5a099be0293')])
+            materials = self.env['lerm.parameter.master'].search([('internal_id','=','2014fgr32-6bbe-4fdf-9571-a5a099be0293')]).parameter_table
             # for material in materials:
             #     if material.grade.id == record.grade.id:
             lab_min = line.lab_min_value
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.compressive_strength_28_days - record.compressive_strength_28_days*mu_value
-            upper = record.compressive_strength_28_days + record.compressive_strength_28_days*mu_value
+            lower = float(record.initial_setting_time_minutes_unrounded) - float(record.initial_setting_time_minutes_unrounded)*mu_value
+            upper = float(record.initial_setting_time_minutes_unrounded) + float(record.initial_setting_time_minutes_unrounded)*mu_value
             if lower >= lab_min and upper <= lab_max:
-                record.lime_reactivity_nabl = 'pass'
+                record.initial_setting_nabl = 'pass'
                 break
             else:
-                record.lime_reactivity_nabl = 'fail'
+                record.initial_setting_nabl = 'fail'
+
+
+    @api.depends('time_water_added', 'time_needle_fails')
+    def _compute_initial_setting_time(self):
+        for record in self:
+            if record.time_water_added and record.time_needle_fails:
+                t1 = record.time_water_added
+                t2 = record.time_needle_fails
+                time_difference = t2 - t1
+
+                # Convert time difference to seconds and then to minutes
+                time_difference_minutes = time_difference.total_seconds() / 60
+
+                initial_setting_time_hours = time_difference.total_seconds() / 3600
+                time_delta = timedelta(hours=initial_setting_time_hours)
+                record.initial_setting_time_hours = "{:0}:{:02}".format(int(time_delta.total_seconds() // 3600), int((time_delta.total_seconds() % 3600) // 60))
+                if time_difference_minutes % 5 == 0:
+                    record.initial_setting_time_minutes = time_difference_minutes
+                else:
+                    record.initial_setting_time_minutes = round(time_difference_minutes / 5) * 5
+
+                record.initial_setting_time_minutes_unrounded = time_difference_minutes
+
+            else:
+                record.initial_setting_time_hours = False
+                record.initial_setting_time_minutes = False
+                record.initial_setting_time_minutes_unrounded = False
+
+
+    # Final setting Time
+
+    final_setting_time_visible = fields.Boolean("Final Setting Time Visible",compute="_compute_visible")
+    final_setting_time_name = fields.Char("Name",default="Final Setting Time")
+
+    time_needle_make_impression = fields.Datetime("The Time at which the needle make an impression on the surface of test block while attachment fails to do (t3)")
+    final_setting_time_hours = fields.Char("Final Setting Time (t2-t1) (Hours)",compute="_compute_final_setting_time")
+    final_setting_time_minutes_unrounded = fields.Char("Final Setting Time",compute="_compute_final_setting_time")
+    final_setting_time_minutes = fields.Char("Final Setting Time Rounded",compute="_compute_final_setting_time")
+
+    final_setting_conformity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ('na', 'NA'),], string='Conformity',compute="_compute_final_setting_conformity", default='fail')
+
+    final_setting_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='NABL',compute="_compute_final_setting_nabl", default='pass')
+
+
+    @api.depends('final_setting_time_minutes_unrounded','eln_ref','grade')
+    def _compute_final_setting_conformity(self):
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.final_setting_conformity = 'na'
+                continue
+            record.final_setting_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32145grte8-6526-4fcc-a5ec-18cc1ae10857')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32145grte8-6526-4fcc-a5ec-18cc1ae10857')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    lower = float(record.final_setting_time_minutes_unrounded) - float(record.final_setting_time_minutes_unrounded)*mu_value
+                    upper = float(record.final_setting_time_minutes_unrounded) + float(record.final_setting_time_minutes_unrounded)*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.final_setting_conformity = 'pass'
+                        break
+                    else:
+                        record.final_setting_conformity = 'fail'
+
+    @api.depends('final_setting_time_minutes_unrounded','eln_ref','grade')
+    def _compute_final_setting_nabl(self):
+        
+        for record in self:
+            record.final_setting_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32145grte8-6526-4fcc-a5ec-18cc1ae10857')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32145grte8-6526-4fcc-a5ec-18cc1ae10857')]).parameter_table
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = float(record.final_setting_time_minutes_unrounded) - float(record.final_setting_time_minutes_unrounded)*mu_value
+            upper = float(record.final_setting_time_minutes_unrounded) + float(record.final_setting_time_minutes_unrounded)*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.final_setting_nabl = 'pass'
+                break
+            else:
+                record.final_setting_nabl = 'fail'
 
 
 
-     # Fineness Air Permeability Method
+    @api.depends('time_needle_make_impression')
+    def _compute_final_setting_time(self):
+        for record in self:
+            if record.time_needle_make_impression and record.time_water_added:
+                t1 = record.time_water_added
+                t2 = record.time_needle_make_impression
+                time_difference = t2 - t1
+                record.final_setting_time_minutes = time_difference
+                record.final_setting_time_hours = time_difference
+                final_setting_time = time_difference.total_seconds() / 60
+                if final_setting_time % 5 == 0:
+                    record.final_setting_time_minutes = final_setting_time
+                else:
+                    record.final_setting_time_minutes =  round(final_setting_time / 5) * 5
+                record.final_setting_time_minutes_unrounded = final_setting_time
+            else:
+                record.final_setting_time_hours = False
+                record.final_setting_time_minutes = False
+                record.final_setting_time_minutes_unrounded = False
+
+    # Soundness By Le-Chatelier Test
+    soundness_name_fly = fields.Char("Name",default="Soundness by Le-Chatelier Method")
+    soundness_visible = fields.Boolean("Soundness Visible",compute="_compute_visible")
+ 
+
+    soundness_child_lines = fields.One2many('soundness.le.chatelier.line','parent_id',string="Soundness By Le-Chatelier Test")
+
+    avg_expansion = fields.Float('Average Expansion (mm)',compute="_compute_avg_expansion")
+
+
+    @api.depends('soundness_child_lines.expansion')
+    def _compute_avg_expansion(self):
+        for record in self:
+            if record.soundness_child_lines:
+              record.avg_expansion = round(sum(record.soundness_child_lines.mapped('expansion'))/ len(record.soundness_child_lines),1)
+            else:
+                record.avg_expansion = 0.0
+
+
+    avg_expansion_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_avg_expansion_conformity", store=True)
+
+    @api.depends('avg_expansion','eln_ref','grade')
+    def _compute_avg_expansion_conformity(self):
+        
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_expansion_conformity = 'na'
+                continue
+            record.avg_expansion_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210ght7-91b0-4153-87ef-11b6954a9837')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210ght7-91b0-4153-87ef-11b6954a9837')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_expansion - record.avg_expansion*mu_value
+                    upper = record.avg_expansion + record.avg_expansion*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.avg_expansion_conformity = 'pass'
+                        break
+                    else:
+                        record.avg_expansion_conformity = 'fail'
+
+    avg_expansion_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_avg_expansion_nabl", store=True)
+
+    @api.depends('avg_expansion','eln_ref','grade')
+    def _compute_avg_expansion_nabl(self):
+        
+        for record in self:
+            record.avg_expansion_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210ght7-91b0-4153-87ef-11b6954a9837')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210ght7-91b0-4153-87ef-11b6954a9837')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_expansion - record.avg_expansion*mu_value
+                    upper = record.avg_expansion + record.avg_expansion*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.avg_expansion_nabl = 'pass'
+                        break
+                    else:
+                        record.avg_expansion_nabl = 'fail'
+
+
+    # Soundness By AutoClave Test
+
+    sound_auto_visible = fields.Boolean("Soundness By AutoClave Test",compute="_compute_visible")
+    sound_auto_name = fields.Char("Name",default="Soundness By AutoClave Test")
+
+    sound_auto_child_lines = fields.One2many('soundness.autoclave.line','parent_id',string="AutoClave Test")
+
+    avg_autoclave_expansion = fields.Float('Average Expansion (%)',compute="_compute_avg_autoclave_expansion")
+
+
+    @api.depends('sound_auto_child_lines.autoclave_expansion')
+    def _compute_avg_autoclave_expansion(self):
+        for record in self:
+            if record.sound_auto_child_lines:
+              record.avg_autoclave_expansion = sum(record.sound_auto_child_lines.mapped('autoclave_expansion'))/ len(record.sound_auto_child_lines)
+            else:
+                record.avg_autoclave_expansion = 0.0
+
+
+    avg_autoclave_expansion_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),
+        ('na', 'NA'),
+        ], string="Conformity", compute="_compute_avg_autoclave_expansion_conformity", store=True)
+
+    @api.depends('avg_autoclave_expansion','eln_ref','grade')
+    def _compute_avg_autoclave_expansion_conformity(self):
+        
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_autoclave_expansion_conformity = 'na'
+                continue
+            record.avg_autoclave_expansion_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b0e2437d-514b-4875-9f3a-203d5fad1d83')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b0e2437d-514b-4875-9f3a-203d5fad1d83')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_autoclave_expansion - record.avg_autoclave_expansion*mu_value
+                    upper = record.avg_autoclave_expansion + record.avg_autoclave_expansion*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.avg_autoclave_expansion_conformity = 'pass'
+                        break
+                    else:
+                        record.avg_autoclave_expansion_conformity = 'fail'
+
+    avg_autoclave_expansion_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_avg_autoclave_expansion_nabl", store=True)
+
+    @api.depends('avg_autoclave_expansion','eln_ref','grade')
+    def _compute_avg_autoclave_expansion_nabl(self):
+        
+        for record in self:
+            record.avg_autoclave_expansion_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b0e2437d-514b-4875-9f3a-203d5fad1d83')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b0e2437d-514b-4875-9f3a-203d5fad1d83')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_autoclave_expansion - record.avg_autoclave_expansion*mu_value
+                    upper = record.avg_autoclave_expansion + record.avg_autoclave_expansion*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.avg_autoclave_expansion_nabl = 'pass'
+                        break
+                    else:
+                        record.avg_autoclave_expansion_nabl = 'fail'
+
+
+
+
+
+
+     #  Particles retained on 45 micron IS sieve (wet sieving) 
+
+    particles_retained = fields.Char("Name",default="Fineness By Wet Sieving (Sieve Size in mm-0.045mm)")
+    particles_retained_visible = fields.Boolean("Particles retained Visible",compute="_compute_visible")
+
+    temp_percent_retained = fields.Float("Temperature °c")
+    humidity_percent_retained = fields.Float("Humidity %")
+    start_date_retained = fields.Date("Start Date")
+    end_date_retained = fields.Date("End Date")
+
+
+    particles_retained_table = fields.One2many('particles.retained.line','parent_id',string="Particles Retained")
+    average_weight_retained = fields.Float("Average", compute="_compute_average_weight_retained")
+
+    prcent_retaind = fields.Float(string="% Weight Retained",compute="_compute_prcent_retained",digits=(12,1))
+
+ 
+    @api.depends('particles_retained_table.wt_retained')  # Replace 'weight' with the actual field name in particles.retained.line
+    def _compute_average_weight_retained(self):
+        for record in self:
+            # Calculate the average weight
+            total_weight = sum(record.particles_retained_table.mapped('wt_retained'))
+            count = len(record.particles_retained_table)
+            record.average_weight_retained = total_weight / count if count else 0.0
+
+    # @api.depends('average_weight_retained')
+    # def _compute_prcent_retained(self):
+    #     for record in self:
+    #         # Round the average weight to the nearest 0.5
+    #         rounded_average = round(record.average_weight_retained * 2) / 2
+    #         record.prcent_retaind = rounded_average
+    
+    @api.depends('average_weight_retained')
+    def _compute_prcent_retained(self):
+        for record in self:
+            # Round the average weight to the nearest 0.1
+            rounded_average = round(record.average_weight_retained * 10) / 10
+            record.prcent_retaind = rounded_average
+
+
+    prcent_retaind_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Conformity", compute="_compute_prcent_retaind_conformity", store=True)
+
+    @api.depends('prcent_retaind','eln_ref','grade')
+    def _compute_prcent_retaind_conformity(self):
+        
+        for record in self:
+            record.prcent_retaind_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214vbfsd-0da6-4ec4-a91e-d41c44f5edb5')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214vbfsd-0da6-4ec4-a91e-d41c44f5edb5')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.prcent_retaind - record.prcent_retaind*mu_value
+                    upper = record.prcent_retaind + record.prcent_retaind*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.prcent_retaind_conformity = 'pass'
+                        break
+                    else:
+                        record.prcent_retaind_conformity = 'fail'
+
+    prcent_retaind_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_prcent_retaind_nabl", store=True)
+    
+    @api.depends('prcent_retaind','eln_ref','grade')
+    def _compute_prcent_retaind_nabl(self):
+        
+        for record in self:
+            record.prcent_retaind_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214vbfsd-0da6-4ec4-a91e-d41c44f5edb5')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3214vbfsd-0da6-4ec4-a91e-d41c44f5edb5')]).parameter_table
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.prcent_retaind - record.prcent_retaind*mu_value
+            upper = record.prcent_retaind + record.prcent_retaind*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.prcent_retaind_nabl = 'pass'
+                break
+            else:
+                record.prcent_retaind_nabl = 'fail'
+
+    
+    # Fineness Air Permeability Method
 
     fineness_blaine_name = fields.Char("Name",default="Fineness By Blaine Air Permeability Method")
     fineness_blaine_visible = fields.Boolean("Fineness Blaine Visible",compute="_compute_visible")
@@ -1250,6 +1094,8 @@ class FlyaschNormalConsistency(models.Model):
     ts = fields.Float(string="√Ƭₛ is the Mean of three measured times of Standard Sample",compute="_compute_ts")
     t = fields.Float(string="√Ƭ is the Mean of three measured times of Test sample",compute="_compute_t")
     specific_surface = fields.Float("S is the Specific surface of Test sample (m²/kg)",compute="_compute_specific_surface")
+
+
     fineness_air_permeability = fields.Integer("Fineness By Blaine Air Permeability Method (m2/kg)",compute="_compute_fineness_air_permeability")
 
 
@@ -1340,50 +1186,6 @@ class FlyaschNormalConsistency(models.Model):
                 record.t = 0.0
 
 
-    # @api.depends('ss', 'ps', 'p', 't', 'ts')
-    # def _compute_specific_surface(self):
-    #     for record in self:
-    #         if record.ss and record.ps and record.p and record.t and record.ts:
-    #             specific_surface_value = (record.ss * record.ps * record.t) / (record.p * record.ts)
-    #             record.specific_surface = round(specific_surface_value, 2)
-    #         else:
-    #             record.specific_surface = 0.0
-
-    # @api.depends('ss', 'ps', 'p', 't', 'ts')
-    # def _compute_specific_surface(self):
-    #     for record in self:
-    #         if record.ss and record.ps and record.p and record.t and record.ts:
-    #             specific_surface_value = (record.ss * record.ps * record.t) / (record.p * record.ts)
-    #             # Round the specific_surface_value to 2 decimal places
-    #             rounded_value = round(specific_surface_value, 2)
-    #             # Manually set specific_surface to 359.70
-    #             record.specific_surface = 359.70 if rounded_value != 359.70 else rounded_value
-    #         else:
-    #             record.specific_surface = 0.0
-                
-    # @api.depends('ss', 'ps', 'p', 't', 'ts')
-    # def _compute_specific_surface(self):
-    #     for record in self:
-    #         if record.ss and record.ps and record.p and record.t and record.ts:
-    #             specific_surface_value = (record.ss * record.ps * record.t) / (record.p * record.ts)
-    #             record.specific_surface = round(specific_surface_value, 2)
-    #         else:
-    #             record.specific_surface = 0.0
-
-    # @api.depends('ss', 'ps', 'p', 't', 'ts')
-    # def _compute_specific_surface(self):
-    #     for record in self:
-    #         if record.ss and record.ps and record.p and record.t and record.ts:
-    #             specific_surface_value = (record.ss * record.ps * record.t) / (record.p * record.ts)
-    #             rounded_value = round(specific_surface_value, 2)
-    #             # Check if the absolute difference between the calculated value and 359.70 is within tolerance
-    #             if abs(rounded_value - 359.70) <= 0.05:  # Adjust tolerance as needed
-    #                 record.specific_surface = 359.70
-    #             else:
-    #                 record.specific_surface = rounded_value
-    #         else:
-    #             record.specific_surface = 0.0
-
     @api.depends('ss', 'ps', 'p', 't', 'ts')
     def _compute_specific_surface(self):
         for record in self:
@@ -1460,34 +1262,81 @@ class FlyaschNormalConsistency(models.Model):
                 record.fineness_blaine_nabl = 'fail'
 
 
+    specific_surface_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Conformity", compute="_compute_specific_surface_conformity", store=True)
+
+    @api.depends('specific_surface','eln_ref','grade')
+    def _compute_specific_surface_conformity(self):
+        
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.specific_surface_conformity = 'na'
+                continue
+            record.specific_surface_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f7404f69-4779-434e-ba9f-99e470700da9')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f7404f69-4779-434e-ba9f-99e470700da9')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.specific_surface - record.specific_surface*mu_value
+                    upper = record.specific_surface + record.specific_surface*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.specific_surface_conformity = 'pass'
+                        break
+                    else:
+                        record.specific_surface_conformity = 'fail'
+
+    specific_surface_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_specific_surface_nabl", store=True)
+    
+    @api.depends('specific_surface','eln_ref','grade')
+    def _compute_specific_surface_nabl(self):
+        
+        for record in self:
+            record.specific_surface_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f7404f69-4779-434e-ba9f-99e470700da9')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f7404f69-4779-434e-ba9f-99e470700da9')]).parameter_table
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.specific_surface - record.specific_surface*mu_value
+            upper = record.specific_surface + record.specific_surface*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.specific_surface_nabl = 'pass'
+                break
+            else:
+                record.specific_surface_nabl = 'fail'
+
+
+    
+
+
 
 
     ### Compute Visible
     @api.depends('sample_parameters')
     def _compute_visible(self):
-        # normal_consistency_test = self.env['mechanical.cement.test'].search([('name', '=', 'Normal Consistency')])
-        # setting_time_test = self.env['mechanical.cement.test'].search([('name', '=', 'Setting Time')])
-        # particles_retained_test = self.env['mechanical.cement.test'].search([('name', '=', 'Particles retained on 45 micron IS sieve (wet sieving)')])
-        # soundness_test = self.env['mechanical.cement.test'].search([('name', '=', 'Soundness')])
-        # specific_gravity_test = self.env['mechanical.cement.test'].search([('name', '=', 'Specific Gravity')])
-        # compressive_test = self.env['mechanical.cement.test'].search([('name', '=', 'Compressive Strength')])
-        # lime_reactivity_test = self.env['mechanical.cement.test'].search([('name', '=', 'Lime Reactivity')])
-        # # # casting_3days_test = self.env['mechanical.cement.test'].search([('name', '=', '3 Days')])
-        # # # casting_7days_test = self.env['mechanical.cement.test'].search([('name', '=', '7 Days')])
-        # # # casting_28days_test = self.env['mechanical.cement.test'].search([('name', '=', '28 Days')])
-        # fineness_blaine = self.env['mechanical.cement.test'].search([('name', '=', 'Fineness (Blaine)')])
+        
  
         for record in self:
             record.normal_consistency_visible = False
-            # record.setting_time_visible  = False 
-            record.final_setting_time_visible  = False  
-            record.initial_setting_time_visible  = False 
-
-            record.particles_retained_visible = False
-            record.soundness_visible = False
             record.specigic_gravity_visible = False
             record.compressive_visible = False
-            record.lime_reactivity_visible = False
+            record.drying_shrinkage_visible = False
+            record.final_setting_time_visible  = False  
+            record.initial_setting_time_visible  = False 
+            record.soundness_visible = False
+            record.sound_auto_visible = False
+            record.particles_retained_visible = False
             record.fineness_blaine_visible = False
 
            
@@ -1500,35 +1349,41 @@ class FlyaschNormalConsistency(models.Model):
                 # Normal consistency
                 if sample.internal_id == '124fgrt3-1b3c-43ae-9c20-5421b6d6edf9':
                     record.normal_consistency_visible = True
-                #Initial setting time
-                if sample.internal_id == '2014fgr32-6bbe-4fdf-9571-a5a099be0293':
-                    record.normal_consistency_visible = True
-                    record.initial_setting_time_visible  = True  
-                    # record.final_setting_time_visible  = True
-                #Final setting time
-                if sample.internal_id == '32145grte8-6526-4fcc-a5ec-18cc1ae10857':
-                    record.normal_consistency_visible = True
-                    record.initial_setting_time_visible  = True  
-                    record.final_setting_time_visible  = True
-                # particles retained
-                if sample.internal_id == '3214vbfsd-0da6-4ec4-a91e-d41c44f5edb5':
-                    record.particles_retained_visible = True
-                # soundness
-                if sample.internal_id == '3210ght7-91b0-4153-87ef-11b6954a9837':
-                    record.normal_consistency_visible = True
-                    record.soundness_visible = True
+                
+                
                 # specific gravity
                 if sample.internal_id == '3214fgrt-1d2c-4d3b-9ebe-ecb0b5e1221e':
                     record.specigic_gravity_visible = True
-                # compressive strength
+                
+                # Compressive Strength
                 if sample.internal_id == '3201vfg-98f0-419e-94cd-1844af4393f5':
                     record.specigic_gravity_visible = True
-                    record.normal_consistency_visible = True
                     record.compressive_visible = True
-                # lime reactivity
-                if sample.internal_id == '320147vbfd-c97d-4d83-a9f2-2eb112eae116':
-                    record.normal_consistency_visible = True
-                    record.lime_reactivity_visible = True
+
+                # Drying Shrinkage
+                if sample.internal_id == 'a475e70d-d1f5-4f63-9595-15c45e940da7':
+                    record.drying_shrinkage_visible = True
+
+                # Initial setting time
+                if sample.internal_id == '2014fgr32-6bbe-4fdf-9571-a5a099be0293':
+                    record.initial_setting_time_visible  = True  
+                   
+                # Final setting time
+                if sample.internal_id == '32145grte8-6526-4fcc-a5ec-18cc1ae10857':  
+                    record.final_setting_time_visible  = True
+
+                # Soundness By Le-Chatelier Test
+                if sample.internal_id == '3210ght7-91b0-4153-87ef-11b6954a9837':
+                    record.soundness_visible = True
+
+                # Soundness By AutoClave Test
+                if sample.internal_id == 'b0e2437d-514b-4875-9f3a-203d5fad1d83':
+                    record.sound_auto_visible = True
+
+                 # particles retained
+                if sample.internal_id == '3214vbfsd-0da6-4ec4-a91e-d41c44f5edb5':
+                    record.particles_retained_visible = True
+
                 # fineness
                 if sample.internal_id == '2104fvdr-6047-4781-9885-0b8b29050fda':
                     record.fineness_blaine_visible = True
@@ -1574,23 +1429,11 @@ class FlyaschNormalConsistency(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
 
-            if result.parameter.internal_id == '3214vbfsd-0da6-4ec4-a91e-d41c44f5edb5':
-                result.result_char = round(self.prcent_retaind,2)
-                result.calculated = True
-                if self.prcent_retaind_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
+           
 
             if result.parameter.internal_id == '3210ght7-91b0-4153-87ef-11b6954a9837':
-                result.result_char = round(self.expansion_soundness,2)
                 result.calculated = True
-                if self.expansion_soundness_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
+                
 
             if result.parameter.internal_id == '3214fgrt-1d2c-4d3b-9ebe-ecb0b5e1221e':
                 result.result_char = round(self.average_specific_gravity,2)
@@ -1611,13 +1454,7 @@ class FlyaschNormalConsistency(models.Model):
                 continue
 
             if result.parameter.internal_id == '320147vbfd-c97d-4d83-a9f2-2eb112eae116':
-                result.result_char = round(self.compressive_strength_28_days,2)
                 result.calculated = True
-                if self.lime_reactivity_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
 
             if result.parameter.internal_id == '2104fvdr-6047-4781-9885-0b8b29050fda':
                 result.result_char = round(self.fineness_air_permeability,2)
@@ -1629,15 +1466,22 @@ class FlyaschNormalConsistency(models.Model):
                 continue
 
             if result.parameter.internal_id == '03c1a445-e599-4ba9-ac67-f186a7c6dd61':
-                # result.result_char = round(self.fineness_air_permeability,2)
+                result.calculated = True
+
+            # Specific Surface 
+            if result.parameter.internal_id == 'f7404f69-4779-434e-ba9f-99e470700da9':
                 result.calculated = True
 
             if result.parameter.internal_id == 'b0e2437d-514b-4875-9f3a-203d5fad1d83':
-                # result.result_char = round(self.fineness_air_permeability,2)
                 result.calculated = True
 
             if result.parameter.internal_id == '4c16fe35-cd02-4d12-ba13-aa95bf000d73':
-                # result.result_char = round(self.fineness_air_permeability,2)
+                result.calculated = True
+
+            if result.parameter.internal_id == 'a475e70d-d1f5-4f63-9595-15c45e940da7':
+                result.calculated = True
+
+            if result.parameter.internal_id == '3214vbfsd-0da6-4ec4-a91e-d41c44f5edb5':
                 result.calculated = True
 
         
@@ -1756,19 +1600,23 @@ class ParticlesRetainedLine(models.Model):
         for index, record in enumerate(records):
             record.sr_no = index + 1
 
-class SoundnessflyashLine(models.Model):
-    _name= "flyash.soundness.line"
+class SoundnessLeChatelierflyLine(models.Model):	
+    _name= "soundness.le.chatelier.line"
+    parent_id = fields.Many2one('mechanical.flyasch.normalconsistency',string="Parent Id")
 
-    parent_id = fields.Many2one('mechanical.flyasch.normalconsistency')
-    sr_no = fields.Integer(string="Sr.No.", readonly=True, copy=False, default=1)
-    initial_distance = fields.Float("Intial distance separating the indicator points (L1).mm")
-    final_distance = fields.Float("Final distance separating the indicator points (L2).mm")
-    expansion = fields.Float("Expansion",compute="_compute_expansion")
+    sr_no = fields.Integer(string="Sr.NO", readonly=True, copy=False, default=1)
 
-    @api.depends('initial_distance','final_distance')
+    mould_no = fields.Char("Mould No.")
+    initial_read = fields.Float("Initial Reading of Indicator Point Before Boiling (A) in mm")
+    final_read = fields.Float("Final Reading of Indicator Point After 3 Hrs. Boiling (B) in mm")
+    expansion = fields.Float(string="Expansion (B – A) mm",compute="_compute_expansion")
+
+
+    @api.depends('initial_read','final_read')
     def _compute_expansion(self):
         for record in self:
-            record.expansion = record.final_distance - record.initial_distance
+            record.expansion = (record.final_read - record.initial_read)
+
 
 
     @api.model
@@ -1780,13 +1628,70 @@ class SoundnessflyashLine(models.Model):
                 max_serial_no = max(existing_records.mapped('sr_no'))
                 vals['sr_no'] = max_serial_no + 1
 
-        return super(SoundnessflyashLine, self).create(vals)
+        return super(SoundnessLeChatelierflyLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.sr_no = index + 1
+
+
+
+
+
+class SoundnessAutoclaveLine(models.Model):	
+    _name= "soundness.autoclave.line"
+    parent_id = fields.Many2one('mechanical.flyasch.normalconsistency',string="Parent Id")
+
+    sr_no = fields.Integer(string="Mould No.", readonly=True, copy=False, default=1)
+    initial_reference_read = fields.Float("Reference Bar Reading (R1) (mm)")
+    initial_read = fields.Float("Initial Reading (Ri) (mm)")
+    initial_read_a = fields.Float("A (Ri – R1) (mm)",compute="_compute_initial_read_a",store=True)
+
+    final_reference_read = fields.Float("Reference Bar Reading (R2) (mm)")
+    final_read = fields.Float("Final Reading (Rf) (mm)")
+    final_read_b = fields.Float("B (Rf – R2) (mm)",compute="_compute_final_read_b",store=True)
+
+    autoclave_expansion = fields.Float(string="Autoclave Expansion (B-A)/250 x 100 (%)",compute="_compute_autoclave_expansion",store=True)
+
+    @api.depends('initial_read','initial_reference_read')
+    def _compute_initial_read_a(self):
+        for record in self:
+            record.initial_read_a = (record.initial_read - record.initial_reference_read)
+
+    @api.depends('final_read','final_reference_read')
+    def _compute_final_read_b(self):
+        for record in self:
+            record.final_read_b = (record.final_read - record.final_reference_read)
+
+
+    @api.depends('initial_read_a','final_read_b')
+    def _compute_autoclave_expansion(self):
+        for record in self:
+            record.autoclave_expansion = ((record.final_read_b - record.initial_read_a)/250 ) * 100
+
+    
+
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sr_no'))
+                vals['sr_no'] = max_serial_no + 1
+
+        return super(SoundnessAutoclaveLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.sr_no = index + 1
+
 
 
 class Casting28DaysLine(models.Model):
@@ -1864,6 +1769,43 @@ class Casting28DaysLiness(models.Model):
                 record.compressive_strengthss = (record.crushing_loadss / record.crosssectional_areass) * 1000
             else:
                 record.compressive_strengthss = 0
+
+
+class MechanicalDryingShrinkageFlyLine(models.Model):
+    _name = "drying.shrinkage.fly.line"
+    parent_id = fields.Many2one('mechanical.flyasch.normalconsistency',string="Parent Id")
+   
+    sr_no = fields.Integer(string="Sample No.",readonly=True, copy=False, default=1)
+    original_length = fields.Float("original length measurment W1",digits=(16, 3))
+    dry_mesurment = fields.Float("Dry measurement ,W2",digits=(16, 3))
+    dry_length = fields.Float("Dry length , W3",digits=(16, 3))
+    initial_drying = fields.Float("Initial drying shrinkage",compute="_compute_initial_drying",digits=(16, 3))
+
+    @api.depends('original_length', 'dry_mesurment', 'dry_length')
+    def _compute_initial_drying(self):
+        for record in self:
+            if record.dry_length != 0:
+                record.initial_drying = ((record.original_length - record.dry_mesurment) / record.dry_length) * 100
+            else:
+                record.initial_drying = 0
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sr_no'))
+                vals['sr_no'] = max_serial_no + 1
+
+        return super(MechanicalDryingShrinkageFlyLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.sr_no = index + 1
 
 
 
