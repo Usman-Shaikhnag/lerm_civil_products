@@ -237,7 +237,9 @@
 							  <tr cols="12">
                                 <td rowspan="2" style="text-align: center;"><b>Sr No.</b></td>
                                 <td rowspan="2"  style="text-align: center;"><b>Sample  Identity</b></td>
-                                <td  rowspan="2" style="text-align: center;"><b></b><t t-esc="rebond.blanck_lable or ''"/></td>
+                                <td rowspan="2" t-if="rebond.has_blank_column" style="text-align: center;">
+									<b><t t-esc="rebond.blanck_lable or ''"/></b>
+								</td>
                                 <td  rowspan="2" style="text-align: center;"><b>UTS (MPa)</b></td>
                                 <td colspan="3" style="text-align: center;"><b>Yield Stress (MPa)</b></td>
                                 <td  rowspan="2" style="text-align: center;"><b>% Elongation On 5.65 √Area</b></td>
@@ -310,9 +312,12 @@
                                 <td  style="text-align: center;">
                                     <span t-esc="r['sample_identity']"/>
                                 </td>
-								<td  style="text-align: center;">
+								<!-- <td  style="text-align: center;">
                                     <span t-esc="r['blank']"/>
-                                </td>
+                                </td> -->
+								<td t-if="r.blank" style="text-align: center;">
+								<span t-esc="r.blank"/>
+							</td>
 								<td  style="text-align: center;">
                                     <span t-esc="r['uts']"/>
                                 </td>

@@ -14,10 +14,25 @@ class TMTBAR(models.Model):
     
     
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
+    
     temperature = fields.Float("Temperature °C")
+    humidity = fields.Float("Humidity  %")
     
    
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
+
+    grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
+    size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
+
+    @api.depends('eln_ref')
+    def _compute_size_id(self):
+        if self.eln_ref:
+            self.size_id = self.eln_ref.size_id.id
+
+    @api.depends('eln_ref')
+    def _compute_grade_id(self):
+        if self.eln_ref:
+            self.grade = self.eln_ref.grade_id.id
 
 
     mechanical_test_visible = fields.Boolean("Stainless Steel Visible",compute="_compute_visible")

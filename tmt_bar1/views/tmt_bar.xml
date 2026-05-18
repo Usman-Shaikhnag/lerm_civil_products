@@ -23,6 +23,8 @@
                         <!-- <field name="grade" readonly="1"/> -->
                         <field name="parameter_id" invisible="1"/>
                         <field name="eln_state" />
+                        <field name="grade"/>
+                        <field name="size_id"/>
                     </group>
                     <!-- <group style="white-space: nowrap; width:70%;">
                         <h1>
@@ -47,6 +49,28 @@
                              border-color: #3b82f6 !important;
                             }
                     </style>
+
+                     <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="temperature"></label></td>
+                                    <td style="width:50%;"><field name="temperature"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="humidity"></label></td>
+                                    <td style="width:50%;"><field name="humidity"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                        </div>
 
 
                      <div invisible="mechanical_test_visible == False" style="text-align:center">
