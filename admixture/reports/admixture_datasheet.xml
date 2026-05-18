@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="admixture_mech_datasheet">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			<t t-call="lerm_civil.data_sheet_header_generaltemplate">
+                <div style="text-align:center;font-size:18px">
+                    Admixture
+                </div>
+                <div class="container_eln" style="margin-top:5px">
+
+                <div style="margin-top:20px">
+
+
+                    <table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Room Temp :
+									<![CDATA[&nbsp;]]>
+								</td>
+                                <td colspan="6">
+									<span t-field="data.room_temp"/>
+								</td>
+								
+							</tr>
+                            <tr cols="12">
+								<td colspan="6">Room RH :
+									<![CDATA[&nbsp;]]>
+								</td>
+                                <td colspan="6">
+									<span t-field="data.room_rh"/>
+								</td>
+								
+							</tr>
+                            
+						</table>
+
+						
+
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="1" style="border-bottom:none">
+								</td>
+								<td colspan="2" style="border-bottom:none">
+								</td>
+								<td colspan="1">Control
+								</td>
+								<td colspan="1">Admixture
+								</td>
+                                <td colspan="8">Requirement as per 
+                                    <span t-field="eln.material.specifications"></span>
+								</td>
+								
+							</tr>
+                            <tr cols="12">
+								<td colspan="1" style="border-top:none;border-bottom:none">Sr no 
+								</td>
+								<td colspan="2" style="border-top:none;border-bottom:none">Test Parameter 
+								</td>
+								<td colspan="1" style="border-bottom:none">Mix
+								</td>
+								<td colspan="1" style="border-bottom:none">Mix
+								</td>
+                                <td colspan="1" style="border-bottom:none">Accelerating admixture
+								</td>
+                                <td colspan="1" style="border-bottom:none">Retarding Admixture
+								</td>
+                                <td colspan="1" style="border-bottom:none">Water Reducing admixture
+								</td>
+                                <td colspan="1" style="border-bottom:none">Air Entering Admixture
+								</td>
+                                <td colspan="3">Superplasticizing Admixture (for water reduced concrete mix)
+								</td>	
+							</tr>
+
+                            <tr cols="12">
+								<td colspan="1" style="border-top:none">
+								</td>
+								<td colspan="2" style="border-top:none">
+								</td>
+								<td colspan="1" style="border-top:none">
+								</td>
+								<td colspan="1" style="border-top:none">
+								</td>
+                                <td colspan="1" style="border-top:none">
+								</td>
+                                <td colspan="1" style="border-top:none">
+								</td>
+                                <td colspan="1" style="border-top:none">
+								</td>
+                                <td colspan="1" style="border-top:none">
+								</td>
+                                <td colspan="1">Normal
+								</td>
+                                <td colspan="2">Retarding Type
+								</td>	
+							</tr>
+
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.child_lines" t-as="r">
+								<td colspan="1">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+                  				</td>
+								<td colspan="2">
+									<span t-esc="r['water_content_max1']"/>
+								</td>
+								<td colspan="1">
+									<span t-esc="r['water_content_max2']"/>
+								</td>
+								<td colspan="1">
+									<span t-esc="r['water_content_max3']"/>
+								</td>
+                                <td colspan="1">
+									<span t-esc="r['water_content_max4']"/>
+								</td>
+								<td colspan="1">
+									<span t-esc="r['water_content_max5']"/>
+								</td>
+								<td colspan="1">
+									<span t-esc="r['water_content_max6']"/>
+								</td>
+                                <td colspan="1">
+									<span t-esc="r['water_content_max7']"/>
+								</td>
+								<td colspan="1">
+									<span t-esc="r['water_content_max8']"/>
+								</td>
+								<td colspan="2">
+									<span t-esc="r['water_content_max9']"/>
+								</td>
+								
+							</tr>
+						</table>
+						
+				</div>
+
+               
+				
+				</div>
+
+				<div class="authorizeRowDataSheet">
+					<div>
+						<div>
+							<b>
+								Tested By
+							</b>
+						</div>
+						 <div style="height: 40px;">
+						<!-- <t t-if="eln.sample_id.testedby_signature_required"> -->
+								<t t-if="eln.tested_by_signature_datasheet">
+
+									<div t-if="eln.sample_id.filled_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+						<div>
+							<b>
+								(<span t-esc="eln.sample_id.filled_by.job_title"/>)
+							</b>
+						</div>
+					</div>
+					<div style="margin-left:500px">
+						<div>
+							<b>
+								Checked By
+							</b>
+						</div>
+						<div style="height: 40px;">
+						<t t-if="eln.sample_id.checked_by_signature_datasheet">
+							<div t-if="eln.sample_id.check_by.employee_id.signature">
+								<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+							</div>
+							
+						</t>
+					</div>
+						<div>
+							<b>
+								(<span t-esc="eln.sample_id.check_by.job_title"/>)
+							</b>
+						</div>
+					</div>
+				</div>
+			</t>
+		</t>
+	</template>
+</odoo>

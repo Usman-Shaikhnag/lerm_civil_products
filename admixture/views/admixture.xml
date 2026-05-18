@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_admixture_view" model="ir.ui.view">
+        <field name="name">mechanical.admixture.form</field>
+        <field name="model">mechanical.admixture</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group >
+                        <h1>
+                            <field name="name_admixture" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+                    
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+                    <!-- <group>
+                    <group>
+                     <field name="room_temp"/>
+                    </group>
+                    <group>
+                     <field name="room_rh"/>
+                    </group>
+                    </group> -->
+
+                    <div class="custom_table_borders">
+                      <field name="sample_parameters" nolabel="1">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </div>
+                    <group/>
+
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+                    <!-- Admixture -->
+                    <div invisible=" not admixture_visible">
+                        <h1 class="text-center">
+                            <field name="admixture_name" readonly="1" nolabel="1"/>
+                            <field name="admixture_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="custom_table_borders">
+                    <field name="child_lines" nolabel="1" >
+                            <tree editable="bottom">
+                                <field name="water_content_max1" />
+                                <field name="water_content_max2" class="blue-input" decoration-info="water_content_max2 != 0"/>
+                                <field name="water_content_max3" class="blue-input" decoration-info="water_content_max3 != 0"/>
+                                <field name="water_content_max4" class="blue-input" decoration-info="water_content_max4 != 0"/>
+                                
+                                <field name="water_content_max5" class="blue-input" decoration-info="water_content_max5 != 0"/>
+                                <field name="water_content_max6" class="blue-input" decoration-info="water_content_max6 != 0"/>
+                                <field name="water_content_max7" class="blue-input" decoration-info="water_content_max7 != 0"/>
+                                <field name="water_content_max8" class="blue-input" decoration-info="water_content_max8 != 0"/>
+
+                                <field name="water_content_max9" class="blue-input" decoration-info="water_content_max9 != 0"/>
+                                <!-- <field name="water_content_max1"/>
+                                <field name="water_content_max1"/> -->
+
+                                <!-- <field name="bleeding"/>
+                                <field name="air_content"/> -->
+                            </tree>
+                    </field>
+                    </div>
+                    
+                    <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+
+                 
+                        
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>
