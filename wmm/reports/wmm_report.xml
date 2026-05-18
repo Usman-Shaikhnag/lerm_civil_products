@@ -316,78 +316,7 @@
 									</span>
 							   	</th> 
 							</tr>
-							<!-- <div t-if="data.dry_gradation_visible" style="margin-top:20px">
-								
-								<tr cols="12">
-									<td colspan="1">
-									</td>
-									<td colspan="2">IS Sieve Size (% Passing through)
-									</td>
-									<td colspan="2">
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','32145ghty-6741-4817-95f4-5e53a0676c5f')]).parameter_table" t-as="parameter">
-											<t t-if="parameter.grade.id == eln.grade_id.id">
-												<span t-field="parameter.specification"/>
-											</t>
-										</t>
-									</td>
-									<td colspan="2">			
-									</td>
-									<td colspan="2">
-									
-									</td>
-
-								</tr>
-								<t t-set="i" t-value="0"/>
-								<t t-set="k" t-value="0"/>
-								<tr t-foreach="data.dry_gradation_table" t-as="r" t-if="'pan' not in r['sieve_size']">
-									<td colspan="1">
-										<div>
-											<span t-esc="i + 1" t-if="i == 0"/>
-											<t t-set="i" t-value="i+1" t-if="i == 0"/>
-										</div>
-									</td>
-									<td colspan="2" >
-										<t t-set="k" t-value="k+1"/>
-										<span t-esc="r['sieve_size']"/>
-									</td>
-									
-									<td colspan="2" >
-										<span>
-											
-										</span>
-									</td>
-									<td colspan="2" >
-										<span t-esc="r['passing_percent']"/>
-									</td>
-									<td colspan="2" t-if="k == 1">
-										<span>100%</span>
-									</td>
-									<td colspan="2" t-if="k == 2">
-										<span>95% - 100%</span>
-									</td>
-									<td colspan="2" t-if="k == 3">
-										<span>60% - 80%</span>
-									</td>
-									<td colspan="2" t-if="k == 4">
-										<span>40% - 60%</span>
-									</td>
-									<td colspan="2" t-if="k == 5">
-										<span>25% - 40%</span>
-									</td>
-									<td colspan="2" t-if="k == 6">
-										<span>15% - 30%</span>
-									</td>
-									<td colspan="2" t-if="k == 7">
-										<span>8% - 22%</span>
-									</td>
-									<td colspan="2" t-if="k == 8">
-										<span>0% - 5%</span>
-									</td>
-									<td colspan="2" t-if="k == 9">
-										<span>0% - 5%</span>
-									</td>
-								</tr>
-							</div> -->
+							
 							<tr t-if="data.liquid_limit_visible and (data.liquid_limit_nabl == 'pass' and nabl or (data.liquid_limit_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln)">
 								<td colspan="1" style="text-align: center;">
 									<div>

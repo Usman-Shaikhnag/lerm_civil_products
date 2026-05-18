@@ -36,7 +36,24 @@ class WmmMechanical(models.Model):
         }
 
     def open_eln_page(self):
-        # import wdb; wdb.set_trace()
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+
+            if result.parameter.internal_id == 'f1a27ee1-3e7e-4fff-b912-f7b046f5099c':
+                result.calculated = True
+
+            if result.parameter.internal_id == 'b8390baa-2d4b-47f4-b9ee-7a4a5b176b97':
+                result.calculated = True
+
+            if result.parameter.internal_id == 'aaea4989-7446-446e-a018-8a5f9dcfd549':
+                result.calculated = True
+
 
         return {
                 'view_mode': 'form',
@@ -140,6 +157,8 @@ class WmmMechanical(models.Model):
                     record.density_relation_visible = True
                 if sample.internal_id == '214bnhgty-12d3-45ea-bc23-5b35ec6ffd24':
                     record.cbr_visible = True
+
+    
                 
 
     # Dry Gradation

@@ -1779,166 +1779,7 @@
 
 							</table>
 					</div>
-				      <!-- <div t-if="data.usc_visible" style="margin-top:20px;">
-						<p><strong>Protocol</strong> : IS : 9143-1979<![CDATA[&nbsp;]]></p>
-					</div> -->
-
-				<!-- <table t-if="data.usc_visible" style="margin-top:30px;">
-							<thead>
-								<tr style="font-weight: bold;">
-									<th>Parameter</th>
-									
-									<t t-foreach="range(len(data.child_lines1))" t-as="i">
-										<th>Observation-<t t-esc="i + 1"/></th>
-									</t>
-								</tr>
-							</thead>
-							<tbody>
-							   		
-									<tr>
-									<td>Location</td>
-									<t t-foreach="data.child_lines1" t-as="r">
-									<td><span t-esc="r.location" /></td>
-									</t>
-								</tr>
-								<tr>
-									<td>Sample NO</td>
-									<t t-foreach="data.child_lines1" t-as="r">
-									<td><span t-esc="r.sr_no" /></td>
-								</t>
-								</tr>
-								<tr>
-									<td>Depth in (mtr)</td>
-									<t t-foreach="data.child_lines1" t-as="r">
-									<td><span t-esc="r.depth" /></td>
-								</t>
-								</tr>
-								<tr>
-									<td>Dia. in mm</td>
-									<t t-foreach="data.child_lines1" t-as="r">
-									<td><span t-esc="r.diameter" /></td>
-								</t>
-								</tr>
-								<tr>
-									<td>Length in mm</td>
-									<t t-foreach="data.child_lines1" t-as="r">
-									<td><span t-esc="r.length" /></td>
-								</t>
-								</tr>
-								<tr>
-									<td>L/D ratio</td>
-									<t t-foreach="data.child_lines1" t-as="r">
-									<td><span t-esc="r.ld_ratio" t-options='{"widget": "float", "precision": 2}'/></td>
-								</t>
-								</tr>
-								<tr>
-									<td>Area in mm2</td>
-									<t t-foreach="data.child_lines1" t-as="r">
-									<td><span t-esc="r.area" t-options='{"widget": "float", "precision": 2}'/></td>
-								</t>
-								</tr>
-								<tr>
-									<td>Load in KN</td>
-									<t t-foreach="data.child_lines1" t-as="r">
-									<td><span t-esc="r.load" t-options='{"widget": "float", "precision": 2}'/></td>
-								</t>
-								</tr>
-								<tr>
-									<td>UCS in N/mm2</td>
-									<t t-foreach="data.child_lines1" t-as="r">
-									<td><span t-esc="r.usc" t-options='{"widget": "float", "precision": 2}'/></td>
-								</t>
-								</tr>
-							
-							</tbody>
-							
-
-							</table> -->
-
-
-
-					<!-- <div  t-if="data.porosity_visible or data.specific_gravity_visible or data.dry_density_visible or data.water_absorption_visible" style="margin-top:20px;">
-						<p><strong>Protocol</strong> : IS : 13030-1991<![CDATA[&nbsp;]]></p>
-					</div>
-
-				<table  t-if="data.porosity_visible or data.specific_gravity_visible or data.dry_density_visible or data.water_absorption_visible" style="margin-top:30px;">
-							<thead>
-								<tr style="font-weight: bold;">
-									<th>Parameter</th>
-									
-									<t t-foreach="range(len(data.child_lines))" t-as="i">
-										<th>Observation-<t t-esc="i + 1"/></th>
-									</t>
-								</tr>
-							</thead>
-							<tbody>
-							   		
-									<tr>
-									<td>Location</td>
-									<t t-foreach="data.child_lines" t-as="r">
-									<td><span t-esc="r.location" /></td>
-									</t>
-								</tr>
-								<tr>
-									<td>Sample NO</td>
-									<t t-foreach="data.child_lines" t-as="r">
-									<td><span t-esc="r.sample_no" /></td>
-								</t>
-								</tr>
-								<tr>
-									<td>Depth in (mtr)</td>
-									<t t-foreach="data.child_lines" t-as="r">
-									<td><span t-esc="r.depth" /></td>
-								</t>
-								</tr>
-								<tr>
-									<td>SSD weight of sample in kg, Msat</td>
-									<t t-foreach="data.child_lines" t-as="r">
-									<td><span t-esc="r.ssd_weight" /></td>
-								</t>
-								</tr>
-								<tr>
-									<td>Weight of sample in water in kg, Msub</td>
-									<t t-foreach="data.child_lines" t-as="r">
-									<td><span t-esc="r.wt_sample_water" /></td>
-								</t>
-								</tr>
-								<tr>
-									<td>Oven dry weight of sample in kg, Ms</td>
-									<t t-foreach="data.child_lines" t-as="r">
-									<td><span t-esc="r.oven_dry_wt" t-options='{"widget": "float", "precision": 3}'/></td>
-								</t>
-								</tr>
-								<tr>
-									<td>Porosity = (Msat-Ms)/(Msat-Msub)*100 in %</td>
-									<t t-foreach="data.child_lines" t-as="r">
-									<td><span t-esc="r.porosity" t-options='{"widget": "float", "precision": 2}'/></td>
-								</t>
-								</tr>
-								<tr>
-									<td>Water Absorption = (Msat-Ms)/Ms*100 in %</td>
-									<t t-foreach="data.child_lines" t-as="r">
-									<td><span t-esc="r.water_absorption" t-options='{"widget": "float", "precision": 2}'/></td>
-								</t>
-								</tr>
-								<tr>
-									<td>Dry Density = Ms/(Msat-Msub) gm/cc</td>
-									<t t-foreach="data.child_lines" t-as="r">
-									<td><span t-esc="r.dry_density" t-options='{"widget": "float", "precision": 2}'/></td>
-								</t>
-								</tr>
-
-								<tr>
-									<td>Saturated Specific Gravity = Ms/(Msat-Msub)</td>
-									<t t-foreach="data.child_lines" t-as="r">
-									<td><span t-esc="r.saturated_spc_gravity" t-options='{"widget": "float", "precision": 2}'/></td>
-								</t>
-								</tr>
-							
-							</tbody>
-							
-
-							</table> -->
+				      
 					 <div style="padding-top:5px">
 						<span t-esc="o.material.test_parameter "/> 
 
@@ -1948,39 +1789,36 @@
 					<t t-set="i" t-value="0"/>
 						<thead>
 							<tr>
-								<th style="text-align: center; width: 5%;">
-									<span style="font-weight: bold;">
-										Sr. No
-									</span>
-								</th>
-								<th style="text-align: center; width: 25%;">
-									<span style="font-weight: bold;">
-										Particulars
-									</span>
-								</th>
-								<th style="text-align: center; width: 5%;">
-									<span style="font-weight: bold;">
-										Unit
-									</span>
-								</th>
+								<th style="text-align: center;">
+										<span>
+											Sr. No
+										</span>
+									</th>
+									<th style="text-align: center;">
+									   <span t-esc="eln.material.test_parameter"/>
+									</th>
 
-								<th style="text-align: center; width: 10%;">
-									<span style="font-weight: bold;">
-										Result
-									</span>
-								</th>
-							
-								<th style="text-align: center; width: 25%;">
-									<span style="font-weight: bold;">
+									<th style="text-align: center;">
+									<span t-esc="eln.material.result_remark"/>
+									</th>
+
+									<th style="text-align: center;">
+									  <span t-esc="eln.material.unit"/>
+									</th>
+									
+									<th rowspan="1" style="text-align: center;"> 
+										<span t-field="eln.material.specifications"></span>
+									</th>
+
+									<th style="text-align: center;">
 										<span t-esc="eln.material.method_reference"/>
-
-									</span>
-								</th>
-
-								<td rowspan="1" t-if="eln.conformity">Conformity</td>
-								
-
-								
+									</th>
+									
+									<th t-if="eln.conformity" style="text-align: center;">
+										<span>
+											Conformity
+										</span>
+									</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -1992,16 +1830,26 @@
 							<td >
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','a4eb1d5e-9d64-48cd-8277-ad734e0edd84')]).parameter_name"/>
 							</td>
+							
+							<td style="text-align: center;">
+								<span t-esc="data.avg_porosity" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
 							<td style="text-align: center; vertical-align: middle;">
 								<span>
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','a4eb1d5e-9d64-48cd-8277-ad734e0edd84')]).unit.name"/>
 								</span>
 							</td>
+
 							<td style="text-align: center;">
-								<span t-esc="data.avg_porosity" t-options='{"widget": "float", "precision": 2}'/>
-							</td>
-
-
+									<span>
+									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','a4eb1d5e-9d64-48cd-8277-ad734e0edd84')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.permissable_limit"/>
+                                        </t>
+									</t>
+									</span>
+								</td>
 							
 							<td style="text-align: center;">
 									<span>
@@ -2022,14 +1870,26 @@
 							<td >
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','71e24ae1-b9a9-41cb-86a5-89d87312f3d6')]).parameter_name"/>
 							</td>
+
+							<td style="text-align: center;">
+								<span t-esc="data.avg_water_absorption" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
 							<td style="text-align: center; vertical-align: middle;">
 								<span>
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','71e24ae1-b9a9-41cb-86a5-89d87312f3d6')]).unit.name"/>
 								</span>
 							</td>
+							
+
 							<td style="text-align: center;">
-								<span t-esc="data.avg_water_absorption" t-options='{"widget": "float", "precision": 2}'/>
-							</td>
+									<span>
+									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','71e24ae1-b9a9-41cb-86a5-89d87312f3d6')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.permissable_limit"/>
+                                        </t>
+									</t>
+									</span>
+								</td>
 
 
 							<td style="text-align: center; vertical-align: middle;">
@@ -2050,14 +1910,26 @@
 							<td  >
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','87ec776a-11eb-45ef-addf-e183edabd6dd')]).parameter_name"/>
 							</td>
+
+							<td style="text-align: center;">
+								<span t-esc="data.avg_dry_density" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
 							<td style="text-align: center; vertical-align: middle;">
 								<span>
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','87ec776a-11eb-45ef-addf-e183edabd6dd')]).unit.name"/>
 								</span>
 							</td>
+							
+
 							<td style="text-align: center;">
-								<span t-esc="data.avg_dry_density" t-options='{"widget": "float", "precision": 2}'/>
-							</td>
+									<span>
+									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','87ec776a-11eb-45ef-addf-e183edabd6dd')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.permissable_limit"/>
+                                        </t>
+									</t>
+									</span>
+								</td>
 
 
 							<td style="text-align: center; vertical-align: middle;">
@@ -2068,6 +1940,9 @@
 							
 							
 						</tr>
+						
+						
+						<!--  -->
 						<tr t-if="data.specific_gravity_visible">
 							<td style="text-align: center;">
 								<span t-esc="i + 1" />
@@ -2076,14 +1951,28 @@
 							<td  >
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','bf5d3d97-9a52-4242-9a36-2e40e5fc8247')]).parameter_name"/>
 							</td>
+
+							<td style="text-align: center;">
+								<span t-esc="data.avg_saturated_spc_gravity" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
+
 							<td style="text-align: center; vertical-align: middle;">
 								<span>
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','bf5d3d97-9a52-4242-9a36-2e40e5fc8247')]).unit.name"/>
 								</span>
 							</td>
+							
+
 							<td style="text-align: center;">
-								<span t-esc="data.avg_saturated_spc_gravity" t-options='{"widget": "float", "precision": 2}'/>
-							</td>
+									<span>
+									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','bf5d3d97-9a52-4242-9a36-2e40e5fc8247')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.permissable_limit"/>
+                                        </t>
+									</t>
+									</span>
+								</td>
 
 
 							<td style="text-align: center; vertical-align: middle;">
@@ -2094,6 +1983,8 @@
 							
 							
 						</tr>
+
+						<!--  -->
 						<tr t-if="data.usc_visible and (data.avg_usc_nabl == 'pass' and nabl or (data.avg_usc_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 							<td style="text-align: center;">
 								<span t-esc="i + 1" />
@@ -2102,14 +1993,26 @@
 							<td  >
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','a1f9c5d0-0bc7-41a6-a2bb-0fe9d898008d')]).parameter_name"/>
 							</td>
+
+							<td style="text-align: center;">
+								<span t-esc="data.avg_usc" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
 							<td style="text-align: center; vertical-align: middle;">
 								<span>
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','a1f9c5d0-0bc7-41a6-a2bb-0fe9d898008d')]).unit.name"/>
 								</span>
 							</td>
+
 							<td style="text-align: center;">
-								<span t-esc="data.avg_usc" t-options='{"widget": "float", "precision": 2}'/>
-							</td>
+									<span>
+									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','a1f9c5d0-0bc7-41a6-a2bb-0fe9d898008d')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.permissable_limit"/>
+                                        </t>
+									</t>
+									</span>
+								</td>
+							
 
 
 							<td style="text-align: center; vertical-align: middle;">
@@ -2127,8 +2030,6 @@
 						</tr>
 
 
-
-
 						<tr t-if="data.cerchar_abrsivity_visible and (data.cai_nabl == 'pass' and nabl or (data.cai_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 							<td style="text-align: center;">
 								<span t-esc="i + 1" />
@@ -2137,14 +2038,26 @@
 							<td  >
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','71e24ae1-b9a9-41cb-86a5-89d87355786tt')]).parameter_name"/>
 							</td>
+
+							<td style="text-align: center;">
+								<span t-esc="data.cai" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
 							<td style="text-align: center; vertical-align: middle;">
 								<span>
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','71e24ae1-b9a9-41cb-86a5-89d87355786tt')]).unit.name"/>
 								</span>
 							</td>
+
 							<td style="text-align: center;">
-								<span t-esc="data.cai" t-options='{"widget": "float", "precision": 2}'/>
-							</td>
+									<span>
+									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','71e24ae1-b9a9-41cb-86a5-89d87355786tt')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.permissable_limit"/>
+                                        </t>
+									</t>
+									</span>
+								</td>
 
 
 							<td style="text-align: center; vertical-align: middle;">
@@ -2161,6 +2074,7 @@
 						</tr>
 
 
+						<!--  -->
 						<tr t-if="data.modulus_of_elasticity_visible and (data.modulus_e_nabl == 'pass' and nabl or (data.modulus_e_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 							<td style="text-align: center;">
 								<span t-esc="i + 1" />
@@ -2169,14 +2083,26 @@
 							<td  >
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','71e24ae1-b9a9-41cb-86a5-9654tyu145er2')]).parameter_name"/>
 							</td>
+							<td style="text-align: center;">
+								<span t-esc="data.modulus_e" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
 							<td style="text-align: center; vertical-align: middle;">
 								<span>
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','71e24ae1-b9a9-41cb-86a5-9654tyu145er2')]).unit.name"/>
 								</span>
 							</td>
+							
 							<td style="text-align: center;">
-								<span t-esc="data.modulus_e" t-options='{"widget": "float", "precision": 2}'/>
-							</td>
+									<span>
+									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','71e24ae1-b9a9-41cb-86a5-9654tyu145er2')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.permissable_limit"/>
+                                        </t>
+									</t>
+									</span>
+								</td>
+
 
 
 							<td style="text-align: center; vertical-align: middle;">
@@ -2193,6 +2119,7 @@
 						</tr>
 
 
+						<!--  -->
 						<tr t-if="data.ponit_load_visible and (data.avg_is50_nabl == 'pass' and nabl or (data.avg_is50_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 							<td style="text-align: center;">
 								<span t-esc="i + 1" />
@@ -2201,14 +2128,27 @@
 							<td  >
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','6tr24ae1-b9a9-41cb-86a5-9654578gtr32e')]).parameter_name"/>
 							</td>
+
+							<td style="text-align: center;">
+								<span t-esc="data.avg_is50" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
 							<td style="text-align: center; vertical-align: middle;">
 								<span>
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','6tr24ae1-b9a9-41cb-86a5-9654578gtr32e')]).unit.name"/>
 								</span>
 							</td>
+
 							<td style="text-align: center;">
-								<span t-esc="data.avg_is50" t-options='{"widget": "float", "precision": 2}'/>
-							</td>
+									<span>
+									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','6tr24ae1-b9a9-41cb-86a5-9654578gtr32e')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.permissable_limit"/>
+                                        </t>
+									</t>
+									</span>
+								</td>
+							
 
 
 							<td style="text-align: center; vertical-align: middle;">
@@ -2225,6 +2165,7 @@
 						</tr>
 
 
+						<!--  -->
 						<tr t-if="data.poison_ratio_visible and (data.avg_nu_nabl == 'pass' and nabl or (data.avg_nu_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 							<td style="text-align: center;">
 								<span t-esc="i + 1" />
@@ -2233,14 +2174,26 @@
 							<td  >
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','3tr74ae1-b9a9-41cb-86a5-965457878tyrw')]).parameter_name"/>
 							</td>
+							
+							<td style="text-align: center;">
+								<span t-esc="data.avg_nu" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
 							<td style="text-align: center; vertical-align: middle;">
 								<span>
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','3tr74ae1-b9a9-41cb-86a5-965457878tyrw')]).unit.name"/>
 								</span>
 							</td>
+
 							<td style="text-align: center;">
-								<span t-esc="data.avg_nu" t-options='{"widget": "float", "precision": 2}'/>
-							</td>
+									<span>
+									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','12457800-372f-4775-9bcb-e9dd70e6e6df')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.permissable_limit"/>
+                                        </t>
+									</t>
+									</span>
+								</td>
 
 
 							<td style="text-align: center; vertical-align: middle;">
@@ -2257,22 +2210,34 @@
 						</tr>
 
 
+						<!--  -->
 						<tr t-if="data.slake_index_visible and (data.avg_index_nabl == 'pass' and nabl or (data.avg_index_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 							<td style="text-align: center;">
 								<span t-esc="i + 1" />
 								<t t-set="i" t-value="i+1"/>
 							</td>
-							<td  >
+							<td>
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','78er74ae1-b9a9-41cb-86a5-96578rtew214q')]).parameter_name"/>
+							</td>
+
+							<td style="text-align: center;">
+								<span t-esc="data.avg_index" t-options='{"widget": "float", "precision": 2}'/>
 							</td>
 							<td style="text-align: center; vertical-align: middle;">
 								<span>
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','78er74ae1-b9a9-41cb-86a5-96578rtew214q')]).unit.name"/>
 								</span>
 							</td>
+
 							<td style="text-align: center;">
-								<span t-esc="data.avg_index" t-options='{"widget": "float", "precision": 2}'/>
-							</td>
+									<span>
+									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','78er74ae1-b9a9-41cb-86a5-96578rtew214q')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.permissable_limit"/>
+                                        </t>
+									</t>
+									</span>
+								</td>
 
 
 							<td style="text-align: center; vertical-align: middle;">
@@ -2289,6 +2254,7 @@
 						</tr>
 
 
+						<!--  -->
 						<tr t-if="data.tensile_strength_visible and (data.avg_tensile_strength_nabl == 'pass' and nabl or (data.avg_tensile_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 							<td style="text-align: center;">
 								<span t-esc="i + 1" />
@@ -2297,15 +2263,24 @@
 							<td  >
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','88er74ae1-b9a9-41cb-86a5-9657878rte214w')]).parameter_name"/>
 							</td>
+
+							<td style="text-align: center;">
+								<span t-esc="data.avg_tensile_strength" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
 							<td style="text-align: center; vertical-align: middle;">
 								<span>
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','88er74ae1-b9a9-41cb-86a5-9657878rte214w')]).unit.name"/>
 								</span>
 							</td>
 							<td style="text-align: center;">
-								<span t-esc="data.avg_tensile_strength" t-options='{"widget": "float", "precision": 2}'/>
-							</td>
-
+									<span>
+									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','88er74ae1-b9a9-41cb-86a5-9657878rte214w')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.permissable_limit"/>
+                                        </t>
+									</t>
+									</span>
+								</td>
 
 							<td style="text-align: center; vertical-align: middle;">
 								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','88er74ae1-b9a9-41cb-86a5-9657878rte214w')]).parameter_table" t-as="parameter">
@@ -2329,14 +2304,27 @@
 							<td  >
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','9rtr74ae1-b9a9-41cb-86a5-96578723147gtre')]).parameter_name"/>
 							</td>
+
+							<td style="text-align: center;">
+								<span t-esc="data.phi_deg_uu_triaxial_angle" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
+
 							<td style="text-align: center; vertical-align: middle;">
 								<span>
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','9rtr74ae1-b9a9-41cb-86a5-96578723147gtre')]).unit.name"/>
 								</span>
 							</td>
+
 							<td style="text-align: center;">
-								<span t-esc="data.phi_deg_uu_triaxial_angle" t-options='{"widget": "float", "precision": 2}'/>
-							</td>
+									<span>
+									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','9rtr74ae1-b9a9-41cb-86a5-96578723147gtre')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.permissable_limit"/>
+                                        </t>
+									</t>
+									</span>
+								</td>
+							
 
 
 							<td style="text-align: center; vertical-align: middle;">
@@ -2352,6 +2340,7 @@
 							
 						</tr>
 
+						<!--  -->
 						<tr t-if="data.uu_triaxial_cohesion_visible and (data.cohesion_uu_triaxial_cohesion_nabl == 'pass' and nabl or (data.cohesion_uu_triaxial_cohesion_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 							<td style="text-align: center;">
 								<span t-esc="i + 1" />
@@ -2360,16 +2349,26 @@
 							<td  >
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','0rte74ae1-b9a9-41cb-86a5-96578721254789rt')]).parameter_name"/>
 							</td>
+
+							<td style="text-align: center;">
+								<span t-esc="data.cohesion_uu_triaxial_cohesion" t-options='{"widget": "float", "precision": 2}'/>
+							</td>
 							<td style="text-align: center; vertical-align: middle;">
 								<span>
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','0rte74ae1-b9a9-41cb-86a5-96578721254789rt')]).unit.name"/>
 								</span>
 							</td>
+
 							<td style="text-align: center;">
-								<span t-esc="data.cohesion_uu_triaxial_cohesion" t-options='{"widget": "float", "precision": 2}'/>
-							</td>
-
-
+									<span>
+									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','0rte74ae1-b9a9-41cb-86a5-96578721254789rt')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.permissable_limit"/>
+                                        </t>
+									</t>
+									</span>
+								</td>
+							
 							<td style="text-align: center; vertical-align: middle;">
 								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','0rte74ae1-b9a9-41cb-86a5-96578721254789rt')]).parameter_table" t-as="parameter">
 										<span t-field="parameter.specification"/>

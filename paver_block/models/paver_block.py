@@ -433,6 +433,15 @@ class PaverBlock(models.Model):
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+            if result.parameter.internal_id == '4609c439-2ee4-4e3e-b40c-334e95b2bbda':
+                result.calculated = True
+
+            if result.parameter.internal_id == 'f079957b-608f-40c0-aebd-0db011ab0f2c':
+                result.calculated = True
+
+            if result.parameter.internal_id == '549532ef-08e1-46f7-9565-bf034ce334f4':
+                result.calculated = True
             
 
         return {

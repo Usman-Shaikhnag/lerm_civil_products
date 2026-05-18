@@ -16,6 +16,7 @@ class PavingBlock(models.Model):
     _rec_name = "name_paving"
 
 
+
     name_paving = fields.Char("Name",default="Concrete Paving Block")
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 
@@ -66,15 +67,18 @@ class PavingBlock(models.Model):
     area_paver_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),
-    ('na', 'NA'),], string="Conformity", compute="_compute_area_paver_conformity", store=True)
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_area_paver_conformity", store=True)
 
     @api.depends('area_paver','eln_ref','grade')
     def _compute_area_paver_conformity(self):
         
         for record in self:
+
             if not record.eln_ref or not record.eln_ref.conformity:
                 record.area_paver_conformity = 'na'
                 continue
+
             record.area_paver_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f391245b-100a-4b84-ba27-af9918baea99')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f391245b-100a-4b84-ba27-af9918baea99')]).parameter_table
@@ -148,6 +152,42 @@ class PavingBlock(models.Model):
                 rec.area_paver = 0.0
 
 
+
+    # remark
+
+    notes_id = fields.One2many('paver.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(PavingBlock, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+    
+
+
+
+
+
        # 3. Water Absorption
 
     water_absorption_name = fields.Char("Name",default="Water Absorption ")
@@ -173,15 +213,18 @@ class PavingBlock(models.Model):
     avg_water_absorption_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),
-    ('na', 'NA'),], string="Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
 
     @api.depends('avg_water_absorption','eln_ref','grade')
     def _compute_avg_water_absorption_conformity(self):
         
         for record in self:
+
             if not record.eln_ref or not record.eln_ref.conformity:
                 record.avg_water_absorption_conformity = 'na'
                 continue
+
             record.avg_water_absorption_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5bd8b6a3-4097-4125-befe-36c633ce7ae8')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5bd8b6a3-4097-4125-befe-36c633ce7ae8')]).parameter_table
@@ -236,15 +279,18 @@ class PavingBlock(models.Model):
     avg_commpressive_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),
-    ('na', 'NA'),], string="Compressive Strength Conformity", compute="_compute_avg_commpressive_conformity", store=True)
+            ('na', 'NA'),
+            ], string="Compressive Strength Conformity", compute="_compute_avg_commpressive_conformity", store=True)
 
     @api.depends('avg_commpressive','eln_ref','grade')
     def _compute_avg_commpressive_conformity(self):
         
         for record in self:
+
             if not record.eln_ref or not record.eln_ref.conformity:
                 record.avg_commpressive_conformity = 'na'
                 continue
+
             record.avg_commpressive_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d73e8ec7-63d5-40ff-ae41-db88b4f53cf0')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d73e8ec7-63d5-40ff-ae41-db88b4f53cf0')]).parameter_table
@@ -313,15 +359,18 @@ class PavingBlock(models.Model):
     avg_thickness_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),
-    ('na', 'NA'),], string="Thickness Conformity", compute="_compute_avg_thickness_conformity", store=True)
+            ('na', 'NA'),
+            ], string="Thickness Conformity", compute="_compute_avg_thickness_conformity", store=True)
 
     @api.depends('avg_thickness','eln_ref','grade')
     def _compute_avg_thickness_conformity(self):
         
         for record in self:
+
             if not record.eln_ref or not record.eln_ref.conformity:
                 record.avg_thickness_conformity = 'na'
                 continue
+
             record.avg_thickness_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2acf6ad3-ae04-46e4-a2f8-18bd39a20e18')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2acf6ad3-ae04-46e4-a2f8-18bd39a20e18')]).parameter_table
@@ -511,6 +560,9 @@ class PavingBlock(models.Model):
                 parameter_ids = user_param_results.mapped('parameter').ids
 
             record.sample_parameters = [(6, 0, parameter_ids)]
+
+
+
     def get_all_fields(self):
         record = self.env['mechanical.concrete.paving.block'].browse(self.ids[0])
         field_values = {}
@@ -524,20 +576,6 @@ class PavingBlock(models.Model):
     def _compute_grade_id(self):
         if self.eln_ref:
             self.grade = self.eln_ref.grade_id.id
-
-
-    notes_id = fields.One2many('mechanical.concrete.paving.block.notes', 'parent_id', string="Notes", default=lambda self: self._default_notes_lines())
-
-    @api.model
-    def _default_notes_lines(self):
-        return [
-            (0, 0, {'sr_no': 'i', 'notes': 'The results stated in this report apply only to the tested sample(s) and are based on the conditions and parameters at the time of testing.'}),
-            (0, 0, {'sr_no': 'ii', 'notes': 'This report is invalid without the official paper seal of Make Infracon.'}),
-            (0, 0, {'sr_no': 'iii', 'notes': 'All test results are confidential and will not be disclosed to any third party without written consent of the client, except where required by law.'}),
-            (0, 0, {'sr_no': 'iv', 'notes': 'Any discrepancies or complaints regarding this report must be communicated in writing within 7 days from the date of issue.'}),
-            (0, 0, {'sr_no': 'v', 'notes': 'This report shall not be reproduced, except in full, without the prior written approval of Make Infracon.'}),
-            (0, 0, {'sr_no': 'vi', 'notes': 'The laboratory assumes no responsibility for the purpose for which the test results are used or for any subsequent actions taken based on these results.'}),
-        ]
 
 
 
@@ -718,9 +756,13 @@ class ThicknesscorrectionLine(models.Model):
     #         record.serial_no = index + 1
 
 
-class PavingBlockNotes(models.Model):
-    _name = "mechanical.concrete.paving.block.notes"
 
-    parent_id = fields.Many2one('mechanical.concrete.paving.block', string="Parent Id")
+
+    
+class paverNotes(models.Model):
+    _name = "paver.notes"
+
+    parent_id = fields.Many2one('mechanical.concrete.paving.block',string="Parent Id")
     sr_no = fields.Char("Sr. No.")
     notes = fields.Char("Notes")
+
