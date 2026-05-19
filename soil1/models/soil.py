@@ -15441,14 +15441,14 @@ class CbrLine(models.Model):
 
     condition_specimen = fields.Selection([
     ('soaked', 'Soaked'),
-    ('unsoaked', 'Unsoaked'),], string="Condition of specimen at test", default='Soaked')
+    ('unsoaked', 'Unsoaked'),], string="Condition of specimen at test")
 
     # sample_type = fields.Char(string="Sample Type",default="Remolded")
 
 
     sample_type = fields.Selection([
     ('undisturbed', 'Undisturbed'),
-    ('remoulded', 'Remoulded'),], string="Sample Type", default='Remoulded')
+    ('remoulded', 'Remoulded'),], string="Sample Type")
 
     # type_compact = fields.Char(string="Type of compaction")
 
