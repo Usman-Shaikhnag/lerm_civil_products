@@ -11,6 +11,7 @@ class CementPSC(models.Model):
     _rec_name = "name"
 
     name = fields.Char("Name",default="Cement")
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
@@ -353,36 +354,55 @@ class CementPSC(models.Model):
 
 
 
-      ## Soundness of Cement
 
-    soundness_cement_name = fields.Char("Name",default="Soundness of Cement")
-    soundness_cement_visible = fields.Boolean("Soundness of Cement Visible",compute="_compute_visible")
 
-    soundness_cement_lines = fields.One2many('soundness.cement.psc.line','parent_id',string="Soundness")
 
-    avg_soundness_cement = fields.Float(string="Soundness of Cement, m2/kg ",compute="_compute_avg_soundness_cement")
 
-    avg_soundness_cement_conformity = fields.Selection([
+    ## Soundness by Autoclave Test
+
+    soundness_autoclave_name = fields.Char("Name",default="Soundness by Autoclave Test")
+    soundness_autoclave_visible = fields.Boolean("Soundness by Autoclave Test Visible",compute="_compute_visible")
+
+   
+
+    opc_autoclave_ids = fields.One2many("mechanical.psc.autoclave.line", "parent_id", string="Test Readings")
+    avg_expantion = fields.Float("Average Expansion % (mm)",compute="_compute_avg_expansion",store=True,digits=(12,4))
+
+    @api.depends('opc_autoclave_ids.autoclave')
+    def _compute_avg_expansion(self):
+        for rec in self:
+            if rec.opc_autoclave_ids:
+                total = sum(line.autoclave for line in rec.opc_autoclave_ids)
+                count = len(rec.opc_autoclave_ids)
+                rec.avg_expantion = total / count if count else 0
+            else:
+                rec.avg_expantion = 0
+
+
+
+
+    avg_expantion_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
         ('na', 'NA'),
-    ], string='Conformity', compute="_compute_avg_soundness_cement_conformity")
+        
+    ], string='Conformity', compute="_compute_avg_expantion_conformity")
 
-    avg_soundness_cement_nabl = fields.Selection([
+    avg_expantion_nabl = fields.Selection([
         ('pass', 'NABL'),
         ('fail', 'Non-NABL'),
-    ], string='NABL', default='fail',compute="_compute_avg_soundness_cement_nabl")
+    ], string='NABL', default='fail',compute="_compute_avg_expantion_nabl")
 
 
-    @api.depends('avg_soundness_cement','eln_ref','grade')
-    def _compute_avg_soundness_cement_conformity(self):
+    @api.depends('avg_expantion','eln_ref','grade')
+    def _compute_avg_expantion_conformity(self):
+        
         for record in self:
-
             if not record.eln_ref or not record.eln_ref.conformity:
-                record.avg_soundness_cement_conformity = 'na'
+                record.avg_expantion_conformity = 'na'
                 continue
 
-            record.avg_soundness_cement_conformity = 'fail'
+            record.avg_expantion_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457896f-372f-4775-9bcb-e9dd723547htui')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457896f-372f-4775-9bcb-e9dd723547htui')]).parameter_table
             mu_value = line.mu_value
@@ -391,19 +411,19 @@ class CementPSC(models.Model):
                     req_min = material.req_min
                     req_max = material.req_max
                     # mu_value = line.mu_value
-                    lower = record.avg_soundness_cement - record.avg_soundness_cement*mu_value
-                    upper = record.avg_soundness_cement + record.avg_soundness_cement*mu_value
+                    lower = record.avg_expantion - record.avg_expantion*mu_value
+                    upper = record.avg_expantion + record.avg_expantion*mu_value
                     if lower >= req_min and upper <= req_max :
-                        record.avg_soundness_cement_conformity = 'pass'
+                        record.avg_expantion_conformity = 'pass'
                         break
                     else:
-                        record.avg_soundness_cement_conformity = 'fail'
+                        record.avg_expantion_conformity = 'fail'
 
-    @api.depends('avg_soundness_cement','eln_ref','grade')
-    def _compute_avg_soundness_cement_nabl(self):
+    @api.depends('avg_expantion','eln_ref','grade')
+    def _compute_avg_expantion_nabl(self):
         
         for record in self:
-            record.avg_soundness_cement_nabl = 'fail'
+            record.avg_expantion_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457896f-372f-4775-9bcb-e9dd723547htui')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457896f-372f-4775-9bcb-e9dd723547htui')]).parameter_table
             
@@ -411,19 +431,109 @@ class CementPSC(models.Model):
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.avg_soundness_cement - record.avg_soundness_cement*mu_value
-            upper = record.avg_soundness_cement + record.avg_soundness_cement*mu_value
+            lower = record.avg_expantion - record.avg_expantion*mu_value
+            upper = record.avg_expantion + record.avg_expantion*mu_value
             if lower >= lab_min and upper <= lab_max:
-                record.avg_soundness_cement_nabl = 'pass'
+                record.avg_expantion_nabl = 'pass'
                 break
             else:
-                record.avg_soundness_cement_nabl = 'fail'
+                record.avg_expantion_nabl = 'fail'
 
-    @api.depends('soundness_cement_lines.difference')
-    def _compute_avg_soundness_cement(self):
+
+    #  Soundness of Cement By Le-Chattelier Method
+    soundness_le_method_name = fields.Char("Name",default="Soundness of Cement By Le-Chattelier Method")
+    soundness_le_method_visible = fields.Boolean("Soundness of Cement By Le-Chattelier Method Visible",compute="_compute_visible")
+
+   
+    opc_le_method_ids = fields.One2many("mechanical.psc.lemethod.line", "parent_id", string="Test Readings")
+
+    avg_expantion1 = fields.Float("Average Expansion %",compute="_compute_avg_expansion1",store=True,digits=(12,4))
+
+    @api.depends('opc_le_method_ids.avg_expansion')
+    def _compute_avg_expansion1(self):
         for rec in self:
-            values = [line.difference for line in rec.soundness_cement_lines if line.difference is not None]
-            rec.avg_soundness_cement = sum(values) / len(values) if values else 0.0
+            if rec.opc_le_method_ids:
+                total = sum(line.avg_expansion for line in rec.opc_le_method_ids)
+                count = len(rec.opc_le_method_ids)
+                rec.avg_expantion1 = total / count if count else 0
+            else:
+                rec.avg_expantion1 = 0
+
+    def action_calculate_avg_expansion(self):
+        for rec in self:
+            lines = rec.opc_le_method_ids.sorted(key=lambda l: l.serial_no)  # serial_no ने sort करायचं
+            group_size = 2
+
+            for i in range(0, len(lines), group_size):
+                group = lines[i:i + group_size]
+                strength = [l.expansion for l in group if l.expansion > 0]
+                avg = sum(strength) / len(strength) if strength else 0.0
+
+                if group:
+                    group[0].avg_expansion = avg
+
+            for line in lines:
+                if line not in [lines[i] for i in range(0, len(lines), group_size)]:
+                    line.avg_expansion = 0.0
+
+            rec.soundness_le_method_generated = True
+
+    avg_expantion1_conformity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+    ], string='Conformity',compute="_compute_avg_expantion1_conformity")
+
+    avg_expantion1_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL'),
+    ], string='NABL', default='fail',compute="_compute_avg_expantion1_nabl")
+
+
+    @api.depends('avg_expantion1','eln_ref','grade')
+    def _compute_avg_expantion1_conformity(self):
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_expantion1_conformity = 'na'
+                continue
+            record.avg_expantion1_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','55588996637-372f-477pp-9bcb-e9dd723001478h')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','55588996637-372f-477pp-9bcb-e9dd723001478h')]).parameter_table
+            mu_value = line.mu_value
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    # mu_value = line.mu_value
+                    lower = record.avg_expantion1 - record.avg_expantion1*mu_value
+                    upper = record.avg_expantion1 + record.avg_expantion1*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.avg_expantion1_conformity = 'pass'
+                        break
+                    else:
+                        record.avg_expantion1_conformity = 'fail'
+
+    @api.depends('avg_expantion1','eln_ref','grade')
+    def _compute_avg_expantion1_nabl(self):
+        
+        for record in self:
+            
+            record.avg_expantion1_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','55588996637-372f-477pp-9bcb-e9dd723001478h')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','55588996637-372f-477pp-9bcb-e9dd723001478h')]).parameter_table
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.avg_expantion1 - record.avg_expantion1*mu_value
+            upper = record.avg_expantion1 + record.avg_expantion1*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.avg_expantion1_nabl = 'pass'
+                break
+            else:
+                record.avg_expantion1_nabl = 'fail'
+
 
 
         ## Consistency of cement
@@ -1185,7 +1295,8 @@ class CementPSC(models.Model):
             record.fineness_cement_visible = False
             record.density_cement_visible = False
             record.fineness_blaine_visible = False
-            record.soundness_cement_visible = False
+            record.soundness_autoclave_visible = False
+            record.soundness_le_method_visible = False
             record.consistency_cement_visible = False
             record.final_setting_time_visible = False
             record.compressive_visible = False
@@ -1207,7 +1318,10 @@ class CementPSC(models.Model):
                     record.fineness_blaine_visible = True
 
                 if sample.internal_id == '21457896f-372f-4775-9bcb-e9dd723547htui':
-                    record.soundness_cement_visible = True
+                    record.soundness_autoclave_visible = True
+
+                if sample.internal_id == '55588996637-372f-477pp-9bcb-e9dd723001478h':
+                    record.soundness_le_method_visible = True
 
                 if sample.internal_id == '01247gggty-372f-4775-9bcb-e9dd723547htui':
                     record.consistency_cement_visible = True
@@ -1268,9 +1382,18 @@ class CementPSC(models.Model):
 
 
             if result.parameter.internal_id == '21457896f-372f-4775-9bcb-e9dd723547htui':
-                result.result_char = round(self.avg_soundness_cement,2)
+                result.result_char = round(self.avg_expantion,2)
                 result.calculated = True
-                if self.avg_soundness_cement_nabl == 'pass':
+                if self.avg_expantion_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '55588996637-372f-477pp-9bcb-e9dd723001478h':
+                result.result_char = round(self.avg_expantion1,2)
+                result.calculated = True
+                if self.avg_expantion1_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -1550,42 +1673,42 @@ class FinenessBlaineLine(models.Model):
 
 
 
-class soundnessCementLine(models.Model):
-    _name = "soundness.cement.psc.line"
-    parent_id = fields.Many2one('cement.psc',string="Parent Id")
+# class soundnessCementLine(models.Model):
+#     _name = "soundness.cement.psc.line"
+#     parent_id = fields.Many2one('cement.psc',string="Parent Id")
 
-    serial_no = fields.Integer(string="Sr No.", readonly=True, copy=False, default=1)
-
-   
-    initial_distance = fields.Float(string="Initial Distance in mm")
-    final_distance = fields.Float(string="Final distance in mm")
-    difference = fields.Float(string="Difference in mm",compute="_compute_difference")
-
-
-    @api.depends('initial_distance', 'final_distance')
-    def _compute_difference(self):
-        for rec in self:
-            rec.difference = rec.final_distance - rec.initial_distance
+#     serial_no = fields.Integer(string="Sr No.", readonly=True, copy=False, default=1)
 
    
+#     initial_distance = fields.Float(string="Initial Distance in mm")
+#     final_distance = fields.Float(string="Final distance in mm")
+#     difference = fields.Float(string="Difference in mm",compute="_compute_difference")
 
 
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
+#     @api.depends('initial_distance', 'final_distance')
+#     def _compute_difference(self):
+#         for rec in self:
+#             rec.difference = rec.final_distance - rec.initial_distance
 
-        return super(soundnessCementLine, self).create(vals)
+   
 
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
+
+#     @api.model
+#     def create(self, vals):
+#         # Set the serial_no based on the existing records for the same parent
+#         if vals.get('parent_id'):
+#             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+#             if existing_records:
+#                 max_serial_no = max(existing_records.mapped('serial_no'))
+#                 vals['serial_no'] = max_serial_no + 1
+
+#         return super(soundnessCementLine, self).create(vals)
+
+#     def _reorder_serial_numbers(self):
+#         # Reorder the serial numbers based on the positions of the records in child_lines
+#         records = self.sorted('id')
+#         for index, record in enumerate(records):
+#             record.serial_no = index + 1
 
 
 
@@ -1798,6 +1921,100 @@ class FinalTimeLine(models.Model):
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+
+
+class CementSoundnessLeMethodLine(models.Model):
+    _name = "mechanical.psc.lemethod.line"
+
+    parent_id = fields.Many2one('cement.psc')
+
+    serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
+
+
+    lab_id = fields.Char("Lab ID No.")
+    mould_no = fields.Char("Mould No")
+    intial_ref = fields.Float("Initial Reading of Indicator Point Before Boiling (A) in mm)",digits=(12,3))
+    final_reading = fields.Float("Final Reading of Indicator Point After 3 Hrs. Boiling (B) in mm",digits=(12,3))
+    expansion = fields.Float(string="Expansion (B – A) mm" ,compute="_compute_values",store=True,digits=(12,3))
+
+    avg_expansion = fields.Float(string="Average Expansion mm" ,digits=(12,2))
+
+    @api.depends('intial_ref', 'final_reading')
+    def _compute_values(self):
+        for rec in self:
+            rec.expansion = (rec.final_reading or 0) - (rec.intial_ref or 0)
+
+
+   
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(CementSoundnessLeMethodLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in opc_compressive_ids
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+
+class CementSoundnessAutocalveLine(models.Model):
+    _name = "mechanical.psc.autoclave.line"
+
+    parent_id = fields.Many2one('cement.psc')
+
+    serial_no = fields.Integer(string="Mould No",readonly=True, copy=False, default=1)
+
+
+    # mould_no = fields.Integer("Mould No")
+    intial_ref = fields.Float("Reference Bar Reading (R1)",digits=(12,3))
+    initial_reading = fields.Float("Reading (Ri)",digits=(12,3))
+    intial_a = fields.Float(string="A (Ri – R1)" ,compute="_compute_values",store=True,digits=(12,3))
+    final_ref = fields.Float("Reference Bar Reading (R2)",digits=(12,3))
+    final_reading = fields.Float("Reading (Rf)",digits=(12,3))
+
+    final_b = fields.Float("B (Rf – R2)",compute="_compute_values",store=True,digits=(12,3))
+    
+    autoclave = fields.Float("Autoclave Expansion (B-A)/250 x 100 %",compute="_compute_values",store=True,digits=(12,4))
+
+    @api.depends('intial_ref', 'initial_reading', 'final_ref', 'final_reading')
+    def _compute_values(self):
+        for rec in self:
+            rec.intial_a = (rec.initial_reading or 0) - (rec.intial_ref or 0)
+            rec.final_b = (rec.final_reading or 0) - (rec.final_ref or 0)
+            rec.autoclave = ((rec.final_b - rec.intial_a) / 250) * 100 if rec.final_b and rec.intial_a else 0
+  
+   
+   
+
+    
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(CementSoundnessAutocalveLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in opc_compressive_ids
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1

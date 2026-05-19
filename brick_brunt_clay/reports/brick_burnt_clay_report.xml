@@ -117,7 +117,6 @@
 					</div>
 
 
-					<!-- 1 Compressive strength  -->
 
 					<div t-if="data.compressive_strength_visible and (data.comp_strength_nabl == 'pass' and nabl or (data.comp_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)" style="margin-top:20px;">
 						<td>
@@ -199,7 +198,6 @@
 						</table>
 					</div>
 
-					<!-- Efflorence -->
 					<div t-if="data.efflorescence_visible" style="margin-top:50px;page-break-inside: avoid;">
 
 						<td>
@@ -297,7 +295,6 @@
 						</table>
 					</div>
 
-					<!-- Dimension -->
 					<div t-if="data.dimension_visible" style="margin-top:20px; page-break-inside: avoid;">
 						<td>
 							<span>
@@ -334,11 +331,7 @@
 											Height in mm
 										</span>
 									</th>
-									<!-- <th style="text-align: center;">
-										<span style="font-weight: bold;">
-											Specification
-										</span>
-									</th> -->
+								
 								
 								</tr>
 							</thead>
@@ -374,7 +367,6 @@
 						</table>
 					</div>
 
-					<!-- Water Absorption -->
 					<div t-if="data.water_absorbtion_visible and (data.water_absorption_nabl == 'pass' and nabl or data.water_absorption_nabl == 'fail' and not nabl)" style="margin-top:20px; page-break-inside: avoid;">
 
 						<td t-if="data.water_absorbtion_visible and (data.water_absorption_nabl == 'pass' and nabl or data.water_absorption_nabl == 'fail' and not nabl)">

@@ -1,0 +1,518 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_admixture_form" model="ir.ui.view">
+        <field name="name">mechanical.admixture.form</field>
+        <field name="model">mechanical.admixture</field>
+        <field name="arch" type="xml">
+            <form string="Your Form View" create="false">
+                <sheet>
+                <div>
+                    <h1>
+                        <field name="name1" readonly="1" nolabel="1"/>
+                    </h1>
+                </div>
+                <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                </group>
+                    <div class="custom_table_borders">
+                      <field name="sample_parameters" nolabel="1">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </div>
+
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+
+
+                    <!-- ph at 1% -->
+                    <div invisible="not density_visible">
+
+                        <h1 class="text-center">
+                            <field name="density_name" readonly="1" nolabel="1"/>
+                            <field name="density_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <!-- pH -->
+
+                    <div nvisible="not density_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Relative Density by hydrometer</td>
+                             <td>Relative Density by hydrometer 1</td>
+                             <td>Relative Density by hydrometer 2</td>
+                             <td>Relative Density by hydrometer 3</td>
+                             <td>Relative Density by hydrometer 4</td>
+                             <td>Relative Density by hydrometer 5</td>
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="density_a"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="density_b"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="density_c"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="density_d"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="density_e"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+
+                    <div nvisible="not density_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average</span></td>
+                          <td style="padding: 8px;"><field name="density_average"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='density_average_conformity'
+                               decoration-success="density_average_conformity == 'pass'" 
+                               decoration-danger="density_average_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='density_average_nabl'
+                               decoration-success="density_average_nabl == 'pass'" 
+                               decoration-danger="density_average_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+
+                       <!-- Dry Material Content-->
+                <div invisible="dry_content_visible == False">
+                    <h1 class="text-center">
+                        <field name="dry_content_name" readonly="1" nolabel="1"/>
+                        <field name="dry_content_visible" invisible="1"/>
+
+                    </h1>
+                </div>
+
+
+                <div invisible="not dry_content_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Dry Material Content</td>
+                             <td>Weight of bottle and sand (W1)</td>
+                             <td>Weight of bottle, sand and sample (W2)</td>
+                             <td>Weight of sample (W2-W1)</td>
+                             <td>Weight of bottle, sand and dried residue (W3)</td>
+                             <td>Weight of dried residue( W3-W1)</td>
+                             <td>Residue on drying</td>
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="dry_content_bottlew1_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="dry_content_bottlew2_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="dry_content_wt_w2_w1_1"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="dry_content_driedw3_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="dry_content_dried_w3_w1_1"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="dry_content_residue1"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="dry_content_bottlew1_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="dry_content_bottlew2_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="dry_content_wt_w2_w1_2"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="dry_content_driedw3_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="dry_content_dried_w3_w1_2"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="dry_content_residue2"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                            <tr>
+                             <td></td>
+                             <td><field  name="dry_content_bottlew1_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="dry_content_bottlew2_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="dry_content_wt_w2_w1_3"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="dry_content_driedw3_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="dry_content_dried_w3_w1_3"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="dry_content_residue3"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="dry_content_bottlew1_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="dry_content_bottlew2_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="dry_content_wt_w2_w1_4"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="dry_content_driedw3_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="dry_content_dried_w3_w1_4"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="dry_content_residue4"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="dry_content_bottlew1_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="dry_content_bottlew2_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="dry_content_wt_w2_w1_5"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="dry_content_driedw3_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="dry_content_dried_w3_w1_5"  colspan="1"  nolabel="1" /></td>
+                             <td><field  name="dry_content_residue5"  colspan="1"  nolabel="1" /></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+               
+
+
+                <div invisible="not dry_content_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average Dry Material Content (%)</span></td>
+                          <td style="padding: 8px;"><field name="avg_dry_content"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='avg_dry_content_conformity'
+                               decoration-success="avg_dry_content_conformity == 'pass'" 
+                               decoration-danger="avg_dry_content_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='avg_dry_content_nabl'
+                               decoration-success="avg_dry_content_nabl == 'pass'" 
+                               decoration-danger="avg_dry_content_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+
+                     <!-- Ash Content-->
+                <div invisible="ash_content_visible == False">
+                    <h1 class="text-center">
+                        <field name="ash_content_name" readonly="1" nolabel="1"/>
+                        <field name="ash_content_visible" invisible="1"/>
+
+                    </h1>
+                </div>
+
+
+                <div invisible="not ash_content_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Ash Content</td>
+                             <td>Weight of crucible (W1)</td>
+                             <td>Weight of crucible and sample (W2)</td>
+                             <td>Weight of crucible and Ash (W3)</td>
+                             <td>Ash Content  (%)</td>
+                             
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="ash_content_crucible1_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ash_content_cruciblew2_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ash_content_cruciblew3_1"  colspan="1"  nolabel="1"  class="blue-input"/></td>
+                             <td><field  name="ash_content_1"  colspan="1"  nolabel="1" /></td>
+                             
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="ash_content_crucible1_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ash_content_cruciblew2_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ash_content_cruciblew3_2"  colspan="1"  nolabel="1"  class="blue-input"/></td>
+                             <td><field  name="ash_content_2"  colspan="1"  nolabel="1" /></td>
+                             
+                           </tr>
+
+                            <tr>
+                             <td></td>
+                             <td><field  name="ash_content_crucible1_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ash_content_cruciblew2_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ash_content_cruciblew3_3"  colspan="1"  nolabel="1" class="blue-input" /></td>
+                             <td><field  name="ash_content_3"  colspan="1"  nolabel="1" /></td>
+                             
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="ash_content_crucible1_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ash_content_cruciblew2_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ash_content_cruciblew3_4"  colspan="1"  nolabel="1" class="blue-input" /></td>
+                             <td><field  name="ash_content_4"  colspan="1"  nolabel="1" /></td>
+                             
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="ash_content_crucible1_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ash_content_cruciblew2_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ash_content_cruciblew3_5"  colspan="1"  nolabel="1"  class="blue-input"/></td>
+                             <td><field  name="ash_content_5"  colspan="1"  nolabel="1" /></td>
+                             
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+               
+
+
+                <div invisible="not ash_content_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average Ash Content (%)</span></td>
+                          <td style="padding: 8px;"><field name="avg_ash_content"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='avg_ash_content_conformity'
+                               decoration-success="avg_ash_content_conformity == 'pass'" 
+                               decoration-danger="avg_ash_content_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='avg_ash_content_nabl'
+                               decoration-success="avg_ash_content_nabl == 'pass'" 
+                               decoration-danger="avg_ash_content_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+                    <!-- Chloride-->
+                <div invisible="chloride_visible == False">
+                    <h1 class="text-center">
+                        <field name="chloride_name" readonly="1" nolabel="1"/>
+                        <field name="chloride_visible" invisible="1"/>
+
+                    </h1>
+                </div>
+
+
+                <div invisible="not chloride_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>Chloride</td>
+                             <td>Weight of sample taken in gm (W)</td>
+                             <td>Added of Silver Nitrate 0.1N(W1) ml</td>
+                             <td>Titer value of ammonium thiocyanate 0.1N (W2)</td>
+                             <td>Chloride  (%)</td>
+                             
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="chloride_samplew_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chloride_nitratew1_1"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chloride_ammoniumw2_1"  colspan="1"  nolabel="1"  class="blue-input"/></td>
+                             <td><field  name="chloride_1"  colspan="1"  nolabel="1" /></td>
+                             
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="chloride_samplew_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chloride_nitratew1_2"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chloride_ammoniumw2_2"  colspan="1"  nolabel="1"  class="blue-input"/></td>
+                             <td><field  name="chloride_2"  colspan="1"  nolabel="1" /></td>
+                             
+                           </tr>
+
+                            <tr>
+                             <td></td>
+                             <td><field  name="chloride_samplew_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chloride_nitratew1_3"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chloride_ammoniumw2_3"  colspan="1"  nolabel="1" class="blue-input" /></td>
+                             <td><field  name="chloride_3"  colspan="1"  nolabel="1" /></td>
+                             
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="chloride_samplew_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chloride_nitratew1_4"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chloride_ammoniumw2_4"  colspan="1"  nolabel="1" class="blue-input" /></td>
+                             <td><field  name="chloride_4"  colspan="1"  nolabel="1" /></td>
+                             
+                           </tr>
+
+                           <tr>
+                             <td></td>
+                             <td><field  name="chloride_samplew_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chloride_nitratew1_5"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="chloride_ammoniumw2_5"  colspan="1"  nolabel="1"  class="blue-input"/></td>
+                             <td><field  name="chloride_5"  colspan="1"  nolabel="1" /></td>
+                             
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+               
+
+
+                <div invisible="not chloride_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average Chloride (%)</span></td>
+                          <td style="padding: 8px;"><field name="avg_chloride"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='avg_chloride_conformity'
+                               decoration-success="avg_chloride_conformity == 'pass'" 
+                               decoration-danger="avg_chloride_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='avg_chloride_nabl'
+                               decoration-success="avg_chloride_nabl == 'pass'" 
+                               decoration-danger="avg_chloride_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+
+
+                      <!-- ph at 1% -->
+                    <div invisible="not ph_visible">
+
+                        <h1 class="text-center">
+                            <field name="ph_name" readonly="1" nolabel="1"/>
+                            <field name="ph_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <!-- pH -->
+
+                    <div nvisible="not ph_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                         <tbody>
+                           <tr>
+                           <td>pH</td>
+                             <td>pH 1</td>
+                             <td>pH 2</td>
+                             <td>pH 3</td>
+                             <td>pH 4</td>
+                             <td>pH 5</td>
+                           </tr>
+                           <tr>
+                             <td></td>
+                             <td><field  name="ph_a"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ph_b"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ph_c"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ph_d"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                             <td><field  name="ph_e"  colspan="1"  nolabel="1" class="blue-input"/></td>
+                           </tr>
+                         </tbody>
+                      </table>
+                    </div>
+
+                    <div nvisible="not ph_visible">
+                      <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <tbody>
+                      <tr>
+                          <td ><span>Average</span></td>
+                          <td style="padding: 8px;"><field name="ph_average"/></td>
+                         </tr>
+                        <tr>
+                          <td><span>Conformity</span></td>
+                          <td><field name='ph_average_conformity'
+                               decoration-success="ph_average_conformity == 'pass'" 
+                               decoration-danger="ph_average_conformity == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                         <tr>
+                         <td><span>NABL</span></td>
+                         <td><field name='ph_average_nabl'
+                               decoration-success="ph_average_nabl == 'pass'" 
+                               decoration-danger="ph_average_nabl == 'fail'" 
+                               readonly="1"/></td>
+                         </tr>
+                     </tbody>
+                      </table>
+                    </div>
+
+
+
+                     
+
+
+
+
+                    
+                     <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+
+
+                        </page>
+
+                    </notebook>
+
+
+
+
+                   
+                 <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                    
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+    </data>
+</odoo>

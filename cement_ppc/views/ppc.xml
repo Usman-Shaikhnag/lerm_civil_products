@@ -24,6 +24,7 @@
                         <field name="size_id"/>
                         <field name="start_date" invisible="1"/>
                         <field name="parameter_id" invisible="1"/>
+                        <field name="eln_state" />
                     </group>
 
 
@@ -257,7 +258,7 @@
 
                     <!-- Soundness of Cement -->
                     
-                    <div invisible = "soundness_cement_visible == False">
+                    <!-- <div invisible = "soundness_cement_visible == False">
                         <h1 class="text-center">
                             <field name="soundness_cement_name" readonly="1" nolabel="1"/>
                             <field name="soundness_cement_visible" invisible="1"/>
@@ -299,6 +300,161 @@
                                     <field name="avg_soundness_cement_nabl"
                                         decoration-success="avg_soundness_cement_nabl == 'pass'"
                                         decoration-danger="avg_soundness_cement_nabl == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table> -->
+
+
+                     <div invisible = "soundness_autoclave_visible == False" >
+                        <h1 class="text-center">
+                            <field name="soundness_autoclave_name" readonly="1" nolabel="1"/>
+                            <field name="soundness_autoclave_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                   
+
+               
+
+                        <div class="d-flex custom_table_borders" style="display:flex; margin-left:120px; margin-bottom:1px;">
+                        <table style="width:41%; border-collapse:collapse; text-align:center; margin:0; padding:0;">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center;">Initial Length Before Autoclaving in mm</th>
+                                </tr>
+                            </thead>
+                        </table>
+
+                        <table style="width:41%; border-collapse:collapse; text-align:center; margin:0; padding:0;">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center;">Final Length After 3 Hrs. Autoclaving in mm</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+
+
+             
+
+                    <div class="custom_table_borders" invisible = "soundness_autoclave_visible == False">
+                     
+                      <field name="opc_autoclave_ids" nolabel="1" colspan="2">
+                        <tree editable="bottom">
+                          <field name="serial_no"/>
+                          <!-- <field name="mould_no" /> -->
+                          <field name="intial_ref" class="blue-input" decoration-info="intial_ref != 0"/>
+                          <field name="initial_reading" class="blue-input" decoration-info="initial_reading != 0"/>
+                           <field name="intial_a"/>
+                          <field name="final_ref" class="blue-input" decoration-info="final_ref != 0"/>
+                          <field name="final_reading" class="blue-input" decoration-info="final_reading != 0"/>
+                           <field name="final_b"/>
+                          <field name="autoclave"/>
+                          
+                        </tree>
+                      </field>
+                    </div>
+
+
+
+                     <table invisible="soundness_autoclave_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                        <thead>
+                           
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_expantion"></label></td>
+                                <td>
+                                    <field name="avg_expantion" nolabel="1"/> 
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_expantion_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="avg_expantion_conformity"
+                                        decoration-success="avg_expantion_conformity == 'pass'"
+                                        decoration-danger="avg_expantion_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_expantion_nabl">NABL</label></td>
+                                <td>
+                                    <field name="avg_expantion_nabl"
+                                        decoration-success="avg_expantion_nabl == 'pass'"
+                                        decoration-danger="avg_expantion_nabl == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+
+
+                     <div invisible = "soundness_le_method_visible == False" >
+                        <h1 class="text-center">
+                            <field name="soundness_le_method_name" readonly="1" nolabel="1"/>
+                            <field name="soundness_le_method_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                     
+
+                   
+
+                    <div class="custom_table_borders" invisible = "soundness_le_method_visible == False">
+                      <field name="opc_le_method_ids" nolabel="1" colspan="2">
+                        <tree editable="bottom">
+                          <field name="serial_no"/>
+                          <field name="lab_id" width="100" class="blue-input" decoration-info="lab_id != 0"/>
+                          <field name="mould_no"  width="100" class="blue-input" decoration-info="mould_no != 0"/>
+                          <field name="intial_ref" class="blue-input" decoration-info="intial_ref != 0"/>
+                           <field name="final_reading" class="blue-input" decoration-info="final_reading != 0"/>
+                          <field name="expansion" />
+                          <field name="avg_expansion" />
+
+
+                        </tree>
+                      </field>
+                    </div>
+
+                    <div invisible = "soundness_le_method_visible == False">
+                     <button type="object" name="action_calculate_avg_expansion" class="btn btn-primary mb-2">
+                        <i class="fa fa-calculator mr-1"/> Calculate Average
+                    </button>
+                  </div>
+
+
+
+                     <table invisible="soundness_le_method_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                        <thead>
+                           
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_expantion"></label></td>
+                                <td>
+                                    <field name="avg_expantion1" nolabel="1"/> 
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_expantion1_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="avg_expantion1_conformity"
+                                        decoration-success="avg_expantion1_conformity == 'pass'"
+                                        decoration-danger="avg_expantion1_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_expantion1_nabl">NABL</label></td>
+                                <td>
+                                    <field name="avg_expantion1_nabl"
+                                        decoration-success="avg_expantion1_nabl == 'pass'"
+                                        decoration-danger="avg_expantion1_nabl == 'fail'"
                                         readonly="1"/>
                                 </td>
                             </tr>

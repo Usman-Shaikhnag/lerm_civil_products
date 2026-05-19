@@ -12,6 +12,7 @@ class IsatMechanical(models.Model):
 
 
     name = fields.Char(default="ISAT",readonly=True)
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
 

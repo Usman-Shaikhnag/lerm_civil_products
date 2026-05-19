@@ -10,6 +10,7 @@ class MechanicalBricks(models.Model):
     _rec_name = "name"
 
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     name = fields.Char("Name",default="Fly Ash Bricks")
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
@@ -308,6 +309,7 @@ class MechanicalBricks(models.Model):
 
         #-2----------Efflorescence Visual Observation 
     efflorescence_visible = fields.Boolean("Efflorescence Visible",compute="_compute_visible")
+    efflorescence_name1 = fields.Char("Name",default="Efflorescence")
     visual_observation_name_efflorescence = fields.Char("Name",default="Efflorescence")
     visual_observation_1 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
     visual_observation_2 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
@@ -542,6 +544,19 @@ class MechanicalBricks(models.Model):
             if result.parameter.internal_id == 'bd2bda15-78fa-400d-8643-d9d2b9551bcf':
                 # result.result_char = round(self.avrg_water_absorption,2)
                 result.calculated = True
+
+            if result.parameter.internal_id == '2225778bvf3-8d5d-4f45-8afb-b911f9c55578':
+                # result.result_char = round(self.avrg_water_absorption,2)
+                result.calculated = True
+
+            if result.parameter.internal_id == '3332147bvf3-8d5d-4f45-8afb-b911f95554447':
+                # result.result_char = round(self.avrg_water_absorption,2)
+                result.calculated = True
+
+            if result.parameter.internal_id == '1254rrtygv-8d5d-4f45-8afb-b9666888777gggf':
+                # result.result_char = round(self.avrg_water_absorption,2)
+                result.calculated = True
+
 
         return {
                 'view_mode': 'form',

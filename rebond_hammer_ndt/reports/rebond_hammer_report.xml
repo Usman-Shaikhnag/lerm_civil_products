@@ -1,0 +1,586 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	
+	   <template id="rebond_hammer_ndt_report">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			<t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
+				<!-- <div style="text-align:center;margin-top:10px">
+					<p style="font-size:15px"><b>Test Report</b></p>
+				</div> -->
+
+
+				<div class="container_eln" style="padding-top:5px;">
+					<div class="" t-foreach="eln" t-as="o">
+						 <table style="width:100%; border-collapse: collapse;" border="1">
+
+						   <tr>
+								<td colspan="1">Customer Party Name :</td>
+								  <td colspan="2" style="font-weight:bold;">
+									<![CDATA[&nbsp;]]>
+									<t t-if="o.srf_id.customer.name">
+									  <span t-field="o.srf_id.customer.name"/>
+									 </t>
+        							<t t-else="">--</t>
+		                            <br/>
+									<span t-field="o.srf_id.customer.street"/>
+									<span t-field="o.srf_id.customer.street2"/>
+									<span t-field="o.srf_id.customer.city"/>
+									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
+									<span t-field="o.srf_id.customer.state_id"/>
+											,
+									<span t-field="o.srf_id.customer.country_id"/>
+									</td>
+
+									<td colspan="1" style="text-align: center;">
+									<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 75px; height: 70px;"/>
+									</td>
+								
+							</tr>
+							<tr t-if="o.srf_id.name_work">
+								<td colspan="1" >Project Name:</td>
+								  <td colspan="3" style="font-weight:bold;">
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.name_work"/>
+									</td>
+							</tr>
+
+							<tr t-if="o.srf_id.client">
+								<td colspan="1" >Name of Agency:</td>
+								  <td colspan="3" style="font-weight:bold;">
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client"/>
+									</td>
+							</tr>
+							
+							<tr>
+								<td style="width:25%;">Samples Description :-</td>
+								<td style="width:25%;">
+								      <t t-if="o.material and o.material.lab_name">
+											<span t-field="o.material.lab_name"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+
+								<td style="width:20%;">Customer's Ref. No :-</td>
+								<td style="width:20%;">
+
+								  <t t-if="o.srf_id.client_refrence">
+											<span t-field="o.srf_id.client_refrence"/>
+										</t>
+									<t t-else="">--</t>
+								
+								</td>
+							</tr>
+
+							<tr>
+								<!-- <td>Quantity of Samples :-</td>
+								<td>Litre</td> -->
+								<td>No. of Samples :-</td>
+								<td>
+
+								<t t-if="o.sample_id.sample_qty">
+											<span t-field="o.sample_id.sample_qty"/>
+										</t>
+									<t t-else="">--</t>
+
+								<t t-if="o.sample_id.uom_id">
+											<span t-field="o.sample_id.uom_id"/>
+										</t>
+									<t t-else="">--</t>
+								
+								</td>
+
+								<td>Letter Date :-</td>
+								<td>
+									
+
+									<t t-if="o.srf_id.letter_date">
+											<span t-field="o.srf_id.letter_date"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+							</tr>
+
+							<tr>
+								<td>Date of Samples Received :-</td>
+								<td>
+
+									<t t-if="o.sample_id.sample_received_date">
+											<span t-field="o.sample_id.sample_received_date"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+
+									<td>SRF No. :-</td>
+										<td >
+
+											<t t-if="o.srf_id">
+											<span t-field="o.srf_id"/>
+										</t>
+									<t t-else="">--</t>
+										</td>
+								
+							</tr>
+
+							<tr>
+								<td>Brand &amp; Grade :-</td>
+								<td>
+								<t t-if="o.sample_id.grade_id.grade">
+											<span t-field="o.sample_id.grade_id.grade"/>
+										</t>
+									<t t-else="">--</t>
+									</td>
+
+								<td>Date of Test Initiation  :-</td>
+								<td>
+
+									<t t-if="o.start_date">
+											<span t-field="o.start_date"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+							</tr>
+
+							<tr>
+								
+
+								<td>Size  :-</td>
+								<td>
+
+										<t t-if="o.sample_id.size_id.size">
+											<span t-field="o.sample_id.size_id.size"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+								<td>Date of Test Completion  :-</td>
+								<td>
+
+									<t t-if="o.end_date">
+											<span t-field="o.end_date"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+							</tr>
+
+							<tr>
+								
+
+								<td>Week No.  :-</td>
+								<td>
+
+								--
+								</td>
+								<td>Sample ID  :-</td>
+								<td>
+
+									<t t-if="o.sample_id.kes_no">
+											<span t-field="o.sample_id.kes_no"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="1">Other Details:</td>
+								<td colspan="3">--</td>
+
+								
+							</tr>
+
+
+							<tr t-if="o.material.test_method_adopted" >
+								
+
+									<td >Test method adopted:</td>
+									<td colspan="3"><span t-field="o.material.test_method_adopted"/></td>
+
+							
+							</tr>
+							<tr t-if="o.material.source_sample">
+									<td style="font-weight: bold;">Source of Sample</td>
+									<td colspan="3"><span t-field="o.material.source_sample"/></td>
+								</tr>
+
+								<tr t-if="o.material.specifications">
+									<td style="font-weight: bold;">Specifications</td>
+									<td colspan="3"><span t-field="o.material.specifications"/></td>
+								</tr>
+
+						</table>
+					</div>
+
+                   
+					
+				   
+
+						 <div style="margin-top:20px">
+						  <b>Abstract :  <br></br></b> 
+						 
+								<t t-if="rebond.abstract">
+										<t t-raw="rebond.abstract.replace('\n', '&lt;br/&gt;')"/>
+									</t>
+									<t t-else="">
+										No influences result rebond available.
+									</t>
+						</div>
+
+						<div style="margin-top:20px">
+						  <b>Keywords :  <br></br></b> 
+						 
+								<t t-if="rebond.keywords">
+										<t t-raw="rebond.keywords.replace('\n', '&lt;br/&gt;')"/>
+									</t>
+									<t t-else="">
+										No influences result rebond available.
+									</t>
+						</div>
+
+						<div style="margin-top:20px">
+						  <b>Introduction :  <br></br></b> 
+						 
+								<t t-if="rebond.introduction">
+										<t t-raw="rebond.introduction.replace('\n', '&lt;br/&gt;')"/>
+									</t>
+									<t t-else="">
+										No influences result rebond available.
+									</t>
+						</div>
+
+						<div style="margin-top:20px">
+						  <b>Objective :  <br></br></b> 
+						 
+								<t t-if="rebond.objective">
+										<t t-raw="rebond.objective.replace('\n', '&lt;br/&gt;')"/>
+									</t>
+									<t t-else="">
+										No influences result rebond available.
+									</t>
+						</div>
+
+						<div style="margin-top:20px">
+						  <b>Principle :  <br></br></b> 
+						 
+								<t t-if="rebond.principle">
+										<t t-raw="rebond.principle.replace('\n', '&lt;br/&gt;')"/>
+									</t>
+									<t t-else="">
+										No influences result rebond available.
+									</t>
+						</div>
+
+
+						<div style="margin-top:20px">
+						  <b>Apparatus Required :  <br></br></b> 
+						 
+								<t t-if="rebond.apparatus">
+										<t t-raw="rebond.apparatus.replace('\n', '&lt;br/&gt;')"/>
+									</t>
+									<t t-else="">
+										No influences result rebond available.
+									</t>
+						</div>
+
+
+						
+
+
+						<br/>
+						<b>SITE PHOTOGRAPHS:</b>
+						<br/><br/>
+
+						<div style="text-align:center; margin-top:20px;">
+							<img t-if="rebond.site_image"
+								t-att-src="image_data_uri(rebond.site_image)"
+								style="width:150px; height:150px;"/>
+						</div>
+
+				     <div style="margin-top:20px">
+						  <b>Procedure :  <br></br></b> 
+						 
+								<t t-if="rebond.procedure">
+										<t t-raw="rebond.procedure.replace('\n', '&lt;br/&gt;')"/>
+									</t>
+									<t t-else="">
+										No influences result rebond available.
+									</t>
+						</div>
+
+
+						<div style="margin-top:20px">
+						  <b>Test Procedure :  <br></br></b> 
+						 
+								<t t-if="rebond.test_procedure">
+										<t t-raw="rebond.test_procedure.replace('\n', '&lt;br/&gt;')"/>
+									</t>
+									<t t-else="">
+										No influences result rebond available.
+									</t>
+						</div>
+
+
+						<div style="margin-top:20px">
+						  <b>Influence of Test Conditions :  <br></br></b> 
+						 
+								<t t-if="rebond.Influence_condition">
+										<t t-raw="rebond.Influence_condition.replace('\n', '&lt;br/&gt;')"/>
+									</t>
+									<t t-else="">
+										No influences result rebond available.
+									</t>
+						</div>
+
+
+						<div style="margin-top:20px">
+						  <b>Influence of Type of Cement :  <br></br></b> 
+						 
+								<t t-if="rebond.Influence_cement">
+										<t t-raw="rebond.Influence_cement.replace('\n', '&lt;br/&gt;')"/>
+									</t>
+									<t t-else="">
+										No influences result rebond available.
+									</t>
+						</div>
+
+
+						<div style="margin-top:20px">
+						  <b>Influence of Type of Aggregate :  <br></br></b> 
+						 
+								<t t-if="rebond.Influence_aggregate">
+										<t t-raw="rebond.Influence_aggregate.replace('\n', '&lt;br/&gt;')"/>
+									</t>
+									<t t-else="">
+										No influences result rebond available.
+									</t>
+						</div>
+
+
+						<div style="margin-top:20px">
+						  <b>Influence of Surface Condition and Moisture Content of Concrete :  <br></br></b> 
+						 
+								<t t-if="rebond.Influence_concrete">
+										<t t-raw="rebond.Influence_concrete.replace('\n', '&lt;br/&gt;')"/>
+									</t>
+									<t t-else="">
+										No influences result rebond available.
+									</t>
+						</div>
+
+
+						<div style="margin-top:20px">
+						  <b>Influence of Curing and Age of Concrete :  <br></br></b> 
+						 
+								<t t-if="rebond.Influence_curing_concrete">
+										<t t-raw="rebond.Influence_curing_concrete.replace('\n', '&lt;br/&gt;')"/>
+									</t>
+									<t t-else="">
+										No influences result rebond available.
+									</t>
+						</div>
+
+
+						<div style="margin-top:20px">
+						  <b>Influence of Carbonation of Concrete Surface :  <br></br></b> 
+						 
+								<t t-if="rebond.Influence_surface">
+										<t t-raw="rebond.Influence_surface.replace('\n', '&lt;br/&gt;')"/>
+									</t>
+									<t t-else="">
+										No influences result rebond available.
+									</t>
+						</div>
+
+
+						<div style="margin-top:20px">
+						  <b>Interpretation of Results :  <br></br></b> 
+						 
+								<t t-if="rebond.interpretation_result">
+										<t t-raw="rebond.interpretation_result.replace('\n', '&lt;br/&gt;')"/>
+									</t>
+									<t t-else="">
+										No influences result rebond available.
+									</t>
+						</div>
+
+							<br/>
+						<b>SITE PHOTOGRAPHS:</b>
+						<br/><br/>
+
+						<div style="text-align:center; margin-top:20px;">
+							<img t-if="rebond.site_image1"
+								t-att-src="image_data_uri(rebond.site_image1)"
+								style="width:150px; height:150px;"/>
+						</div>
+
+
+
+						 <div style="margin-top:20px">
+                       
+                        <table>
+                       
+
+							  <tr cols="12">
+                                <td rowspan="2" style="text-align: center;"><b>Sr No.</b></td>
+                                <td rowspan="2"  style="text-align: center;"><b>Member / Element Type</b></td>
+                                <td  rowspan="2" style="text-align: center;"><b>Location Of Member</b></td>
+                                <td  colspan="9" style="text-align: center;"><b>REBOUND NO.</b></td>
+                                <td rowspan="2" style="text-align: center;"><b>AVERAGE REOBUND NO.</b></td>
+                                <td  rowspan="2" style="text-align: center;"><b>COMPRESSIVE  STRENGTH (MPa)</b></td>
+                               
+                            </tr>
+
+							<tr >
+                                <td  colspan="1" style="text-align: center;"><b>1</b></td>
+								<td colspan="1" style="text-align: center;"><b>2</b></td>
+								<td colspan="1" style="text-align: center;"><b>3</b></td>
+								<td colspan="1" style="text-align: center;"><b>4</b></td>
+								<td colspan="1" style="text-align: center;"><b>5</b></td>
+								<td colspan="1"  style="text-align: center;"><b>6</b></td>
+								<td  colspan="1" style="text-align: center;"><b>7</b></td>
+								<td colspan="1" style="text-align: center;"><b>8</b></td>
+								<td colspan="1" style="text-align: center;"><b>9</b></td>
+
+                                
+                            </tr>
+                            <t t-set="f" t-value="0"/>
+                            <tr t-foreach="rebond.child_lines" t-as="r">
+                                <td  style="text-align: center;">
+                                    <div>
+                                        <span t-esc="f + 1" />
+                                        <t t-set="f" t-value="f + 1"/>
+                                    </div>
+                                </td>
+                                <td  style="text-align: center;">
+                                    <span t-esc="r['element']"/>
+                                </td>
+                                <td  style="text-align: center;">
+                                    <span t-esc="r['location']"/>
+                                </td>
+                                <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['f1']"/>
+                                </td>
+                                 <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['f2']"/>
+                                </td>
+                                <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['f3']"/>
+                                </td>
+                                <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['f4']"/>
+                                </td>
+                                 <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['f5']"/>
+                                </td>
+								 <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['f6']"/>
+                                </td>
+								 <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['f7']"/>
+                                </td>
+								 <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['f8']"/>
+                                </td>
+								 <td colspan="1" style="text-align: center;">
+                                    <span t-esc="r['f9']"/>
+                                </td>
+                                 <td  style="text-align: center;">
+                                    <span t-esc="r['avg']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+								  <td  style="text-align: center;">
+                                    <span t-esc="r['mpa']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+
+								  <!-- <td  style="text-align: center;">
+                                    <span t-esc="r['direction']" />
+                                </td> -->
+                            </tr>
+                        </table>
+                       
+                    </div>
+
+				
+					<div style="text-align:center;margin-top:2px">
+						......End of Report......
+					</div>
+							
+
+
+					
+
+
+						<div style="margin-top:0;padding:0;" class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Checked By
+									</b>
+								</div>
+								<div style="height: 30px;">
+									<t t-if="eln.sample_id.checkby_signature_required">
+										<div t-if="eln.sample_id.check_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 30px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+								<div>
+									<b>
+										<!-- <span t-esc="eln.technician.name"/> -->
+										<span t-esc="eln.sample_id.check_by.name"/>
+									</b>
+								</div>
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.check_by.job_title"/>)
+									</b>
+								</div>
+							</div>
+
+								<!-- QR Code -->
+							<!-- <div style="text-align:center; margin-bottom:10px;">
+								<img t-att-src="'data:image/png;base64,%s' % (qrcode_static or '')"
+									style="width:75px; height:70px;"/>
+							</div> -->
+
+							<t t-if="o.sample_id.stamp_attached">
+							<div >
+								<div>
+								<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
+							</div>
+							</div>
+						</t>
+
+
+							<div>
+								<div>
+									<b>
+										Approved By 
+									</b>
+								</div>
+								<div style="height: 30px;">
+									<t t-if="eln.sample_id.approveby_signature_required">
+										<div t-if="eln.sample_id.approved_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,' + eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 30px;margin-top:1px;margin-bottom:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+							</div>
+						</div>
+						
+					</div>
+				<!-- </div> -->
+			</t>
+		</t>
+	</template>
+</odoo>

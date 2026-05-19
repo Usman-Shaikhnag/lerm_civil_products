@@ -17,15 +17,80 @@ class CarbonationTest(models.Model):
     max_depth = fields.Float(string="Max mm",compute="_compute_min_max")
     structure = fields.Char("Structure")
 
-    notes = fields.One2many('ndt.carbonation.test.notes','parent_id',string="Notes")
+    notes_id = fields.One2many('ndt.carbonation.test.notes','parent_id',string="Notes")
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
 
+
+    @api.model
+    def default_get(self, fields):
+        res = super(CarbonationTest, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The report shall not be reproduced in fullor partially without written approval of the laboratory HOD/CEO/Maganement.',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'ampling is not done by us unless mentioned otherwide.',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'without a QR Code and hologram this report is considered invalid.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'The Result listed refer only to tested samples & applicable parameter Endorsement of product is neither interred nor inplied.',
+            }),
+
+            (0, 0, {
+                'sr_no': 'e',
+                'notes': 'The use or report for arbitration, publicity & evidence in legal dispute is forbidden except with prior written consent NBML Lab.',
+            }),
+             (0, 0, {
+                'sr_no': 'f',
+                'notes': 'Alldisputed are subject to Raipur jurisdiction 7 days correction to this report invalidates this report.',
+            }),
+
+             (0, 0, {
+                'sr_no': 'g',
+                'notes': 'Sample willbe destroyed after 30-days from the date of test report unless otherwise Specified.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
+   
+
     def open_eln_page(self):
-    # import wdb; wdb.set_trace()
-        for result in self.eln_ref.parameters_result:
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+
+          
+
             if result.parameter.internal_id == '889d7c7a-1d9e-42c9-a3db-e3d29551cb26':
                 result.result_char = round(self.average,2)
+                result.calculated = True
+               
                 continue
+
+           
+
+        return {
+                'view_mode': 'form',
+                'res_model': "lerm.eln",
+                'type': 'ir.actions.act_window',
+                'target': 'current',
+                'res_id': self.eln_ref.id,
+                
+            }
 
 
 
@@ -73,4 +138,5 @@ class CarbonationTestNotes(models.Model):
     _name = "ndt.carbonation.test.notes"
 
     parent_id = fields.Many2one('ndt.carbonation.test',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
     notes = fields.Char("Notes")

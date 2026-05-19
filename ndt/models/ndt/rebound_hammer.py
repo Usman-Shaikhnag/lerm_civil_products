@@ -20,17 +20,7 @@ class ReboundHammer(models.Model):
     notes = fields.One2many('ndt.rebound.hammer.notes','parent_id',string="Notes")
 
 
-    # @api.depends('child_lines.avg')
-    # def _compute_average(self):
-    #     for record in self:
-    #         total_value = sum(record.child_lines.mapped('avg'))
-    #         self.average = float(round(total_value / len(record.child_lines),2)) if record.child_lines else 0.0
-
-    # @api.depends('child_lines.mpa')
-    # def _compute_average(self):
-    #     for record in self:
-    #         mpa_values = record.child_lines.mapped('mpa')
-    #         record.average_mpa = sum(mpa_values) / len(mpa_values) if len(mpa_values) > 0 else 0.0
+   
 
     @api.depends('child_lines.mpa')
     def _compute_average(self):
@@ -52,13 +42,49 @@ class ReboundHammer(models.Model):
     #         self.minimum = round(float(min(values)),2) if values else 0.0
     #         self.maximum = round(float(max(values)),2) if values else 0.0
 
+    # def open_eln_page(self):
+    # # import wdb; wdb.set_trace()
+    #     for result in self.eln_ref.parameters_result:
+    #         if result.parameter.internal_id == 'fe02d1e0-c893-4991-a463-650b73264c1a':
+    #             result.result_char = round(self.average_mpa,2)
+    #             continue
+          
+
+    #     return {
+    #             'view_mode': 'form',
+    #             'res_model': "lerm.eln",
+    #             'type': 'ir.actions.act_window',
+    #             'target': 'current',
+    #             'res_id': self.eln_ref.id,
+                
+    #         }
+
     def open_eln_page(self):
-    # import wdb; wdb.set_trace()
-        for result in self.eln_ref.parameters_result:
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+
+        
+
+            # if result.parameter.internal_id == '124578874gtre-372f-4775-9bcb-e999987hy':
+            #     # result.result_char = self.avg_specific_gravity
+            #     result.calculated = True
+
             if result.parameter.internal_id == 'fe02d1e0-c893-4991-a463-650b73264c1a':
                 result.result_char = round(self.average_mpa,2)
+                result.calculated = True
+                # if self.avg_compaction_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
                 continue
-          
+
+           
 
         return {
                 'view_mode': 'form',
@@ -68,6 +94,7 @@ class ReboundHammer(models.Model):
                 'res_id': self.eln_ref.id,
                 
             }
+
 
 
     @api.model

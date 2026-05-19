@@ -1296,22 +1296,22 @@
 
 
         <record id="admixture_chemical_datasheet_action" model="ir.actions.report">
-            <field name="name">Admixture Chemical Datasheet</field>
+            <field name="name">Admixture Datasheet</field>
             <field name="model">lerm.eln</field>
             <field name="report_type">qweb-pdf</field>
-            <field name="report_name">admixture_chemical.admixture_chemical_datasheet</field>
-            <field name="report_file">admixture_chemical.admixture_chemical_datasheet</field>
+            <field name="report_name">admixture.admixture_chemical_datasheet</field>
+            <field name="report_file">admixture.admixture_chemical_datasheet</field>
             <!--  <field name="binding_model_id" ref="model_lerm_eln"/>  -->
             <field name="binding_model_id" eval="False"/>
             <field name="binding_type">report</field>
         </record>
 
         <record id="admixture_chemical_report_action" model="ir.actions.report">
-            <field name="name">Admixture Chemical Report</field>
+            <field name="name">Admixture  Report</field>
             <field name="model">lerm.eln</field>
             <field name="report_type">qweb-pdf</field>
-            <field name="report_name">admixture_chemical.admixture_chemical_report</field>
-            <field name="report_file">admixture_chemical.admixture_chemical_report</field>
+            <field name="report_name">admixture.admixture_chemical_report</field>
+            <field name="report_file">admixture.admixture_chemical_report</field>
             <!--  <field name="binding_model_id" ref="model_lerm_eln"/>  -->
             <field name="binding_model_id" eval="False"/>
             <field name="binding_type">report</field>
@@ -1362,6 +1362,114 @@
             <field name="binding_model_id" eval="False"/>
             <field name="binding_type">report</field>
         </record>
+
+
+        <record id="lerm_core_cutter_report_action" model="ir.actions.report">
+        <field name="name">Core Cutter Report</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">core_cutter.core_cutter_report</field>
+        <field name="report_file">core_cutter.core_cutter_report</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="lerm_core_cutter_datasheet_action" model="ir.actions.report">
+        <field name="name">Core Cutter Datasheet</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">core_cutter.core_cutter_datasheet</field>
+        <field name="report_file">core_cutter.core_cutter_datasheet</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+
+    <record id="lerm_sand_replacement_report_action" model="ir.actions.report">
+        <field name="name">Sand Replacement Report</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sand_replacement.sand_replacement_report</field>
+        <field name="report_file">sand_replacement.sand_replacement_report</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="lerm_sand_replacement_datasheet_action" model="ir.actions.report">
+        <field name="name">Sand Replacement Datasheet</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sand_replacement.sand_replacement_datasheet</field>
+        <field name="report_file">sand_replacement.sand_replacement_datasheet</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+
+     <record id="lerm_rebond_hammer_ndt_report_action" model="ir.actions.report">
+        <field name="name">Rebond Hammer Report</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">rebond_hammer_ndt.rebond_hammer_ndt_report</field>
+        <field name="report_file">rebond_hammer_ndt.rebond_hammer_ndt_report</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+
+      <record id="rebond_hammer_ndt_datasheet_action" model="ir.actions.report">
+        <field name="name">Rebond Hammer Datasheet</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">rebond_hammer_ndt.rebond_hammer_ndt_datasheet</field>
+        <field name="report_file">rebond_hammer_ndt.rebond_hammer_ndt_datasheet</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+
+     <record id="lerm_stainless_steel_report_action" model="ir.actions.report">
+        <field name="name">Stainless Steel Report</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">stainless_steel.stainless_steel_report</field>
+        <field name="report_file">stainless_steel.stainless_steel_report</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="lerm_stainless_steel_datasheet_action" model="ir.actions.report">
+        <field name="name">Stainless Steel Datasheet</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">stainless_steel.stainless_steel_datasheet</field>
+        <field name="report_file">stainless_steel.stainless_steel_datasheet</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+
+
+    <record id="lerm_tmt_bar1_report_action" model="ir.actions.report">
+        <field name="name">Tmt Bar Report New</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">tmt_bar1.tmt_bar1_report</field>
+        <field name="report_file">tmt_bar1.tmt_bar1_report</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="lerm_tmt_bar1_datasheet_action" model="ir.actions.report">
+        <field name="name">Tmt Bar Datasheet New</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">tmt_bar1.tmt_bar1_datasheet</field>
+        <field name="report_file">tmt_bar1.tmt_bar1_datasheet</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
 
 
 

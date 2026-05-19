@@ -14,6 +14,7 @@ class MechanicalConcreteCube(models.Model):
     _rec_name = "name"
 
     name = fields.Char("Name",default="Compressive Strength of Concrete Cube")
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     child_lines = fields.One2many('mechanical.concrete.cube.line','parent_id',string="Parameter")
@@ -732,6 +733,7 @@ class MechanicalConcreteCubeLine(models.Model):
     dt_of_casting = fields.Date(string="Date of casting",compute="_compute_dt_of_casting",store=True)
     days = fields.Integer(string="No.of Days",compute="_compute_days",store=True)
     dt_of_testing1 = fields.Date(string="Date of Testing",compute="_compute_dt_of_testing",store=True)
+
 
     load = fields.Float(string="Load (kN)")
     compressive_strength = fields.Float(string="Compressive Strength (N/mm2)",compute="_compute_strength",store=True)

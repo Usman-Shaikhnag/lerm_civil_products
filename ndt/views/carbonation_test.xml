@@ -13,7 +13,7 @@
                         <field name="sample_id"  readonly="1"/>
                         <field name="parameter_id"/>
                     </group>
-                    <group>
+                    <group style="white-space: nowrap; width:70%;">
                         <h1>
                             <field name="name" readonly="1" nolabel="1"/>
                         </h1>
@@ -36,13 +36,21 @@
                         <field name="max_depth" string="Max mm" identity="result"/>
 
                     </group>
-                    <field name="notes" nolabel="1" >
-                            <tree editable="bottom">
-                                <field name="notes" />
-                               
-                            </tree>
-                    </field>
+                    <notebook>
 
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
                       <button
                             type="object"
                             class="oe_highlight" 
