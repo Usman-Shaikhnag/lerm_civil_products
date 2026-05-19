@@ -17,10 +17,32 @@ class StatinlessSteel(models.Model):
     temperature = fields.Float("Temperature °C")
     humidity = fields.Float("Humidity  %")
     child_lines = fields.One2many('stainless.steel.line','parent_id',string="Parameter")
+    grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
+    size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
+
+    @api.depends('eln_ref')
+    def _compute_size_id(self):
+        if self.eln_ref:
+            self.size_id = self.eln_ref.size_id.id
+
+    @api.depends('eln_ref')
+    def _compute_grade_id(self):
+        if self.eln_ref:
+            self.grade = self.eln_ref.grade_id.id
    
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
 
     blanck_lable = fields.Char("Blank Lable Name")
+
+    has_blank_column = fields.Boolean(
+        string="Has Blank Column",
+        compute="_compute_has_blank_column"
+    )
+
+    @api.depends('child_lines.blank')
+    def _compute_has_blank_column(self):
+        for rec in self:
+            rec.has_blank_column = any(line.blank for line in rec.child_lines)
 
 
     requirement1 = fields.Char("Specification Yield Stress <20")
