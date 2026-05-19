@@ -21,21 +21,27 @@ class RoutinePileLoadTest(models.Model):
 
 
     # ================= SAME FIELDS =================
-    name = fields.Char("Project Name", required=True)
-    rec_date = fields.Date("Report Date")
     work_name = fields.Char("Name of Work")
     contractor = fields.Char("Contractor")
     client = fields.Char("Client")
+    cover_image = fields.Binary("Cover Image")
 
     ulr = fields.Char("ULR No", copy=False, readonly=True)
     report_no = fields.Char("Report No", copy=False, readonly=True)
     pile_no = fields.Char("Pile No")
+    name = fields.Char("Project Name", required=True)
+    rec_date = fields.Date("Report Date")
     site_location = fields.Char("Site Location")
     test_standard = fields.Char("Test Standard")
     test_equipment = fields.Text("Testing Equipment")
     introduction = fields.Text("Introduction")
     objective = fields.Text("Objective")
     test_procedure = fields.Text("Test Procedure")
+    issued_to = fields.Char("Issued To")
+    letter_no = fields.Char("Letter No")
+    letter_date = fields.Date("Letter Date")
+    srf_no = fields.Char("SRF No")
+    executed_by = fields.Char("Executed By")
 
     allowable_capacity = fields.Float("Allowable Capacity")
     interpretation = fields.Text("Interpretation")
@@ -44,7 +50,178 @@ class RoutinePileLoadTest(models.Model):
     signatory_name = fields.Char("Authorized Signatory")
     signatory_designation = fields.Char("Designation")
 
+    purpose = fields.Text("Purpose")
+    scope = fields.Text("Scope")
+    selection_of_piles = fields.Text("Selection of Piles")
+    procedure_adopted = fields.Text("Procedure Adopted")
+    analysis_safe_load = fields.Text("Analysis of Safe Load")
 
+    pile_diameter = fields.Float("Pile Diameter (mm)")
+    pile_type = fields.Char("Pile Type")
+    pile_coordinates = fields.Char("Pile Coordinates")
+    concrete_grade = fields.Char("Concrete Grade")
+    pile_depth = fields.Float("Pile Depth (m)")
+    design_load = fields.Float("Design Load (MT)")
+    test_load = fields.Float("Test Load (MT)",compute="_compute_test_load",store=True)
+    kentledge_load = fields.Float("Kentledge Load (MT)",compute="_compute_kentledge_load",store=True)
+    date_of_casting = fields.Date("Date of Casting")
+    date_of_testing = fields.Date("Date of Testing")
+
+    date_of_casting_str = fields.Char(
+        "Date of Casting (Formatted)",
+        compute="_compute_formatted_dates",
+        store=True)
+
+    date_of_testing_str = fields.Char(
+        "Date of Testing (Formatted)",
+        compute="_compute_formatted_dates",
+        store=True)
+
+    incremental_load = fields.Float("Incremental Load",compute="_compute_incremental_load",store=True)
+    jack_capacity = fields.Float("Jack Capacity")
+    jack_ram_dia = fields.Float("Jack Ram Diameter")
+    jack_ram_area = fields.Float("Jack Ram Area")
+    jack_efficiency = fields.Float("Jack Efficiency")
+    pressure_gauge_range = fields.Float("Pressure Gauge Range")
+    pressure_gauge_least_count = fields.Float("Pressure Gauge Least Count")
+    load_per_division = fields.Float("Load Per Division",compute="_compute_load_per_division",store=True)
+    division_per_stage = fields.Float("Division Per Stage",compute="_compute_division_per_stage",store=True,digits=(6,3))
+    actual_stage_load = fields.Float("Actual Stage Load",compute="_compute_actual_stage_load",store=True)
+    test_equipment = fields.Text()
+
+    @api.depends('date_of_casting', 'date_of_testing')
+    def _compute_formatted_dates(self):
+        for rec in self:
+            rec.date_of_casting_str = (
+                rec.date_of_casting.strftime('%d.%m.%Y')
+                if rec.date_of_casting else False
+            )
+
+            rec.date_of_testing_str = (
+                rec.date_of_testing.strftime('%d.%m.%Y')
+                if rec.date_of_testing else False
+            )
+
+    @api.depends('design_load')
+    def _compute_test_load(self):
+        for rec in self:
+            if rec.design_load > 0:
+                rec.test_load = rec.design_load * 1.5
+            else:
+                rec.test_load = 0
+
+    @api.depends('test_load')
+    def _compute_kentledge_load(self):
+        for rec in self:
+            if rec.test_load > 0:
+                rec.kentledge_load = round(rec.test_load * 1.25,1)
+            else:
+                rec.kentledge_load = 0
+
+    @api.depends('design_load')
+    def _compute_incremental_load(self):
+        for rec in self:
+            if rec.design_load > 0:
+                rec.incremental_load = rec.design_load * 0.20
+            else:
+                rec.incremental_load = 0
+
+    @api.depends('jack_ram_area', 'jack_efficiency', 'pressure_gauge_least_count')
+    def _compute_load_per_division(self):
+        for rec in self:
+            if (
+                rec.jack_ram_area > 0
+                and rec.jack_efficiency > 0
+                and rec.pressure_gauge_least_count > 0
+            ):
+                rec.load_per_division = round(
+                    (
+                        rec.pressure_gauge_least_count
+                        * rec.jack_ram_area
+                        * (rec.jack_efficiency / 100)
+                    ) / 1000,
+                    2
+                )
+            else:
+                rec.load_per_division = 0
+
+    @api.depends('load_per_division','incremental_load')
+    def _compute_division_per_stage(self):
+        for rec in self:
+            if rec.load_per_division > 0 and rec.incremental_load > 0:
+                rec.division_per_stage = round((rec.incremental_load / rec.load_per_division),3)
+
+    @api.depends('load_per_division', 'division_per_stage')
+    def _compute_actual_stage_load(self):
+        for rec in self:
+            if rec.load_per_division > 0 and rec.division_per_stage > 0:
+                rounded_division = round(rec.division_per_stage)
+                rec.actual_stage_load = round(
+                    rounded_division * rec.load_per_division,
+                    2
+                )
+            else:
+                rec.actual_stage_load = 0
+
+    @api.onchange('design_load')
+    def _onchange_design_load(self):
+        for rec in self:
+
+            # Test Load
+            rec.test_load = round(rec.design_load * 1.5 if rec.design_load > 0 else 0)
+
+            # Kentledge Load
+            rec.kentledge_load = round(rec.test_load * 1.25 if rec.test_load > 0 else 0,1)
+
+            # Incremental Load
+            rec.incremental_load = rec.design_load * 0.20 if rec.design_load > 0 else 0
+
+            # Division Per Stage
+            if rec.load_per_division > 0 and rec.incremental_load > 0:
+                rec.division_per_stage = round((rec.incremental_load / rec.load_per_division),3)
+            else:
+                rec.division_per_stage = 0
+
+            # Actual Stage Load
+            if rec.load_per_division > 0 and rec.division_per_stage > 0:
+                rounded_division = round(rec.division_per_stage)
+                rec.actual_stage_load = round(rounded_division * rec.load_per_division,2)
+            else:
+                rec.actual_stage_load = 0
+
+
+    @api.onchange('jack_ram_area','jack_efficiency','pressure_gauge_least_count')
+    def _onchange_load_calculations(self):
+        for rec in self:
+
+            # Load Per Division
+            if (rec.jack_ram_area > 0 and rec.jack_efficiency > 0 and rec.pressure_gauge_least_count > 0):
+                rec.load_per_division = round((
+                    rec.pressure_gauge_least_count
+                    * rec.jack_ram_area
+                    * (rec.jack_efficiency / 100)
+                    ) / 1000,2)
+            else:
+                rec.load_per_division = 0
+
+            # Division Per Stage
+            if rec.load_per_division > 0 and rec.incremental_load > 0:
+                rec.division_per_stage = round((rec.incremental_load / rec.load_per_division),3)
+            else:
+                rec.division_per_stage = 0
+
+            # Actual Stage Load
+            if rec.load_per_division > 0 and rec.division_per_stage > 0:
+                rounded_division = round(rec.division_per_stage)
+                rec.actual_stage_load = round(rounded_division * rec.load_per_division,2)
+            else:
+                rec.actual_stage_load = 0
+
+    equipment_ids = fields.One2many(
+        "routine.pile.load.equipment",
+        "parent_id",
+        string="Equipments"
+    )
     # ================= SAME RELATIONS =================
     loading_reading_ids = fields.One2many(
         "routine.pile.reading.loading",
@@ -89,11 +266,33 @@ class RoutinePileLoadTest(models.Model):
     net_settlement = fields.Float(compute="_compute_settlement_values", store=True)
     rebound = fields.Float(compute="_compute_settlement_values", store=True)
 
+    # Settlement Summary
+    ed = fields.Float(
+        "Elastic Deformation (ED)",
+        compute="_compute_settlement_values",
+        store=True,
+        digits=(16,3)
+    )
+
+    rd = fields.Float(
+        "Residual Deformation (RD)",
+        compute="_compute_settlement_values",
+        store=True,
+        digits=(16,3)
+    )
+
+    elastic_rebound = fields.Float(
+        "Elastic Rebound",
+        compute="_compute_settlement_values",
+        store=True
+    )
+
     max_settlement = fields.Float(
         "Maximum Settlement",
         compute="_compute_max_settlement",
         store=True,
-        readonly=True
+        readonly=True,
+        digits=(16,3)
     )
 
     analysis_text = fields.Text("Analysis of Test Results")
@@ -150,8 +349,13 @@ class RoutinePileLoadTest(models.Model):
                 rec.loading_reading_ids.mapped('mean_mm') +
                 rec.unloading_reading_ids.mapped('mean_mm')
             )
-            rec.max_settlement = max(values) if values else 0.0
+            load_values = (
+                rec.loading_reading_ids.mapped('load_tonne') +
+                rec.unloading_reading_ids.mapped('load_tonne')
+            )
 
+            rec.max_settlement = max(values) if values else 0.0
+            rec.elastic_rebound = max(load_values) if load_values else 0.0
 
     @api.depends('loading_reading_ids.mean_mm', 'unloading_reading_ids.mean_mm')
     def _compute_settlement_values(self):
@@ -159,31 +363,39 @@ class RoutinePileLoadTest(models.Model):
 
             loading_map = {}
 
-            # ❌ removed .sorted('id')
             for r in rec.loading_reading_ids:
                 loading_map[r.load_tonne] = r.mean_mm
 
             if loading_map:
-                gross = max(loading_map.values())
-                first_load = min(loading_map.keys())
+
+                # maximum applied load
+                gross = max(loading_map.keys())
+
+                # maximum settlement
+                total_settlement = max(loading_map.values())
+
             else:
                 gross = 0.0
-                first_load = 0.0
+                total_settlement = 0.0
 
+            # RD = settlement when load returns to 0 after unloading
             rebound_lines = rec.unloading_reading_ids.filtered(
-                lambda r: r.load_tonne == first_load
-            )
+                lambda r: r.load_tonne == 0
+            ).sorted('reading_datetime')
 
-            rebound = rebound_lines[-1].mean_mm if rebound_lines else 0.0
-            net = gross - rebound
+            # residual settlement after unloading
+            rd = rebound_lines[-1].mean_mm if rebound_lines else 0.0
 
-            rec.gross_settlement = round(gross, 2)
-            rec.rebound = round(rebound, 2)
-            rec.net_settlement = round(net, 2)
+            # elastic rebound
+            ed = total_settlement - rd
 
+            rec.ed = round(ed, 3)
+            rec.rd = round(rd, 3)
+            # rec.elastic_rebound = round(gross, 2)
 
+            # optional if you have field for max load
+            # rec.max_load = round(gross, 2)
 
-    # ================= SAME GRAPH =================
     def action_generate_graph(self):
         """Generate Load-Settlement graph exactly like PDF"""
         self.ensure_one()
@@ -212,8 +424,9 @@ class RoutinePileLoadTest(models.Model):
 
             if prev_load is not None:
                 result.append((prev_load, last_mean))
-            # import wdb;wdb.set_trace()
+
             return result
+
 
         def unloading_points(readings):
             return [
@@ -225,22 +438,24 @@ class RoutinePileLoadTest(models.Model):
 
         loading = loading_points(self.loading_reading_ids)
         unloading = unloading_points(self.unloading_reading_ids)
-
         # import wdb;wdb.set_trace()
         if not loading and not unloading:
-            self.graph_image = False
-            return
+            raise UserError("No reading data found to generate the graph. Please add loading/unloading readings first.")
 
         fig, ax = plt.subplots(figsize=(7.5, 5.5))
 
-        # ================= LOADING =================
+        # =====================================================
+        # LOADING CURVE
+        # =====================================================
+
         if loading:
+
             load_vals = [0] + [l for l, m in loading]
             settle_vals = [0] + [m for l, m in loading]
 
             ax.plot(
-                settle_vals,
                 load_vals,
+                settle_vals,
                 marker='o',
                 markersize=6,
                 markeredgewidth=1.2,
@@ -250,15 +465,18 @@ class RoutinePileLoadTest(models.Model):
                 clip_on=False
             )
 
+        # =====================================================
+        # UNLOADING CURVE
+        # =====================================================
 
-        # ================= UNLOADING =================
         if unloading:
-            load_vals = [l for l,m in unloading]
-            settle_vals = [m for l,m in unloading]
+
+            load_vals = [l for l, m in unloading]
+            settle_vals = [m for l, m in unloading]
 
             ax.plot(
-                settle_vals,
                 load_vals,
+                settle_vals,
                 marker='o',
                 markersize=6,
                 markeredgewidth=1.2,
@@ -269,70 +487,210 @@ class RoutinePileLoadTest(models.Model):
                 clip_on=False
             )
 
+        # =====================================================
+        # LABELS
+        # =====================================================
 
-        # ================= AXES & STYLE =================
-        ax.set_xlabel("DISPLACEMENT (MM)", fontsize=10, fontweight='bold')
-        ax.set_ylabel("LOAD (TONNE)", fontsize=10, fontweight='bold')
-        ax.set_title("LOAD - SETTLEMENT GRAPH", fontsize=12, fontweight='bold', pad=12)
+        ax.set_ylabel(
+            "SETTLEMENT (MM)",
+            fontsize=10,
+            fontweight='bold',
+            labelpad=8
+        )
+        ax.xaxis.set_label_position('top')
+        ax.tick_params(axis='x', which='both', top=True, bottom=False, labeltop=True, labelbottom=False)
 
-        def load_major_step(max_load):
-            if max_load < 20:
+        ax.set_xlabel(
+            "LOAD (TONNE)",
+            fontsize=10,
+            fontweight='bold'
+        )
+
+        ax.set_title(
+            "LOAD - SETTLEMENT GRAPH",
+            fontsize=12,
+            fontweight='bold',
+            pad=12
+        )
+
+        # =====================================================
+        # Y AXIS STEP CALCULATION
+        # =====================================================
+
+        def load_major_step(x_max):
+
+            if x_max < 20:
                 return 2
-            elif max_load <= 25:
+
+            elif x_max <= 25:
                 return 5
-            elif max_load <= 80:
+
+            elif x_max <= 80:
                 return 10
-            elif max_load <= 150:
+
+            elif x_max <= 150:
                 return 20
-            elif max_load <= 400:
+
+            elif x_max <= 400:
                 return 50
-            elif max_load <= 1000:
+
+            elif x_max <= 1000:
                 return 100
+
             else:
                 return 200
 
-        all_loads = [l for l, m in (loading + unloading)]
-        y_max = max(all_loads) if all_loads else 20
+        all_loads = [l for l, m in (loading + unloading) if l > 0]
+        all_means = [m for l, m in (loading + unloading) if m > 0]
 
-        major = load_major_step(y_max)
-        if major < 5:
-            minor = major / 2
+        x_max = max(all_loads) if all_loads else 20
+        y_max = max(all_means) if all_means else 1
+
+        x_major = load_major_step(x_max)
+
+        if x_major < 5:
+            x_minor = x_major / 2
         else:
-            minor = major / 5
+            x_minor = x_major / 5
 
-        ax.set_ylim(0, math.ceil(y_max / major) * major)
-        ax.yaxis.set_major_locator(plt.MultipleLocator(major))
-        ax.yaxis.set_minor_locator(plt.MultipleLocator(minor))
+        # =====================================================
+        # X AXIS STEP CALCULATION
+        # =====================================================
 
-        def settlement_major_step(x_max):
-            if x_max <= 2:
+        def settlement_major_step(y_max):
+
+            if y_max <= 2:
                 return 0.2
-            elif x_max <= 15:
+
+            elif y_max <= 5:
+                return 0.5
+
+            elif y_max <= 15:
                 return 1
-            elif x_max <= 30:
+
+            elif y_max <= 30:
                 return 2
+
             else:
                 return 5
 
         all_means = [m for l, m in (loading + unloading)]
-        x_max = max(all_means) if all_means else 1
 
-        major = settlement_major_step(x_max)
-        minor = major / 5
+        # y_max = max(all_means) if all_means else 1
 
-        ax.set_xlim(0, math.ceil(x_max / major) * major)
-        ax.xaxis.set_major_locator(plt.MultipleLocator(major))
-        ax.xaxis.set_minor_locator(plt.MultipleLocator(minor))
+        y_major = settlement_major_step(y_max)
+        y_minor = y_major / 5
 
-        ax.grid(which='major', linestyle='-', linewidth=0.8, color='#d28b5c')
-        ax.grid(which='minor', linestyle='-', linewidth=0.4, color='#f0c7a0')
-        ax.legend(loc='lower right', frameon=False)
+        # =====================================================
+        # AXIS LIMITS
+        # =====================================================
+
+        # X: tight to data, rounded up to next major tick
+        x_limit = math.ceil(x_max / x_major) * x_major
+        ax.set_xlim(0, x_limit)
+
+        # Y: tight to data, rounded up to next major tick  
+        y_limit = math.ceil(y_max / y_major) * y_major
+        ax.set_ylim(0, y_limit)
+        ax.invert_yaxis()
+        # =====================================================
+        # REMOVE EXTRA PADDING
+        # =====================================================
+
+        ax.margins(x=0, y=0)
+
+        ax.set_xmargin(0)
+        ax.set_ymargin(0)
+
+        # =====================================================
+        # TICKS
+        # =====================================================
+
+        ax.xaxis.set_major_locator(
+            plt.MultipleLocator(x_major)
+        )
+
+        ax.xaxis.set_minor_locator(
+            plt.MultipleLocator(x_minor)
+        )
+
+        ax.yaxis.set_major_locator(
+            plt.MultipleLocator(y_major)
+        )
+
+        ax.yaxis.set_minor_locator(
+            plt.MultipleLocator(y_minor)
+        )
+
+        # =====================================================
+        # GRID
+        # =====================================================
+
+        ax.grid(
+            which='major',
+            linestyle='-',
+            linewidth=0.8,
+            color='#d28b5c'
+        )
+
+        ax.grid(
+            which='minor',
+            linestyle='-',
+            linewidth=0.4,
+            color='#f0c7a0'
+        )
+
+        # =====================================================
+        # ENGINEERING STYLE AXES
+        # =====================================================
+
+        ax.tick_params(
+            axis='both',
+            which='major',
+            direction='inout',
+            length=6
+        )
+
+        ax.tick_params(
+            axis='both',
+            which='minor',
+            direction='inout',
+            length=3
+        )
+
+        # =====================================================
+        # LEGEND
+        # =====================================================
+
+        # ax.legend(
+        #     loc='lower right',
+        #     frameon=False
+        # )
+
+        # =====================================================
+        # SAVE IMAGE
+        # =====================================================
+
+        fig.subplots_adjust(
+            left=0.08,
+            right=0.98,
+            bottom=0.08,
+            top=0.92
+        )
 
         buffer = io.BytesIO()
-        fig.tight_layout()
-        fig.savefig(buffer, format='png', dpi=150)
+
+        fig.savefig(
+            buffer,
+            format='png',
+            dpi=150,
+            bbox_inches='tight',
+            pad_inches=0
+        )
+
         plt.close(fig)
 
+        # self.graph_image = base64.b64encode(buffer.getvalue())
         self.graph_image = base64.b64encode(buffer.getvalue())
 
     # ================= SAME RECOMPUTE =================
@@ -434,7 +792,13 @@ class RoutinePileReadingLoading(models.Model):
     dial_c = fields.Float()
     dial_d = fields.Float()
 
-    mean_mm = fields.Float(compute="_compute_mean", store=True)
+    mean_mm = fields.Float(
+        string="Mean (mm)",
+        compute="_compute_mean",
+        store=True,
+        readonly=True,
+        digits=(16,3)
+    )
     @api.model
     def default_get(self, fields_list):
         """Minimal default - just set current time as fallback"""
@@ -518,7 +882,7 @@ class RoutinePileReadingLoading(models.Model):
         for rec in self:
             values = [rec.dial_a, rec.dial_b, rec.dial_c, rec.dial_d]
             valid = [v for v in values if v is not False]
-            rec.mean_mm = round(sum(valid) / len(valid), 2) if valid else 0.0
+            rec.mean_mm = round(sum(valid) / len(valid), 3) if valid else 0.0
 
 
 class RoutinePileReadingUnloading(models.Model):
@@ -557,9 +921,11 @@ class RoutinePileReadingUnloading(models.Model):
     dial_d = fields.Float("Dial D (mm)")
 
     mean_mm = fields.Float(
+        string="Mean (mm)",
         compute="_compute_mean",
         store=True,
-        readonly=True
+        readonly=True,
+        digits=(16,3)
     )
     
     @api.onchange('parent_id')
@@ -628,7 +994,7 @@ class RoutinePileReadingUnloading(models.Model):
         for rec in self:
             values = [rec.dial_a, rec.dial_b, rec.dial_c, rec.dial_d]
             valid = [v for v in values if v is not False]
-            rec.mean_mm = round(sum(valid) / len(valid), 2) if valid else 0.0
+            rec.mean_mm = round(sum(valid) / len(valid), 3) if valid else 0.0
 
 
 
@@ -655,3 +1021,11 @@ class RoutinePileImage(models.Model):
     sequence = fields.Integer(default=1)
     image = fields.Binary(required=True)
     caption = fields.Char()
+
+
+class RoutinePileLoadEquipment(models.Model):
+    _name = "routine.pile.load.equipment"
+    parent_id = fields.Many2one("routine.pile.load.test")
+    equipment_name = fields.Char("Equipment")
+    quantity = fields.Char("Quantity")
+    details = fields.Text("Details")
