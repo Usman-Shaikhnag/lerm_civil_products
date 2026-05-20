@@ -921,15 +921,15 @@
 									<th>Poissons Ratio, μ</th>
 								</tr>
 
-								<tr t-foreach="elasticity.elasticity_child_lines" t-as="line">
+								<tr >
 									<td style="text-align:center;">
-										<span t-field="line.stress_range"/>
+										<span t-field="elasticity.stress_range"/>
 									</td>
 									<td style="text-align:center;">
-										<span t-field="line.modulus_e"/>
+										<span t-field="elasticity.modulus_e"/>
 									</td>
 									<td style="text-align:center;">
-										<span t-field="line.poissons_ratio"/>
+										<span t-field="elasticity.poissons_ratio"/>
 									</td>
 								</tr>
 							</table>

@@ -2323,20 +2323,7 @@ class MechanicalElasticityLine(models.Model):
     stress = fields.Float(string="Stress (MPa)",digits=(16, 2))
     strain = fields.Float(string="Strain",digits=(16, 6))
 
-    stress_range = fields.Float(
-    string="Stress Range (MPa)",
-    digits=(16, 2)
-)
-
-    modulus_e = fields.Float(
-    string="Modulus, E (GPa)",
-    digits=(16, 2)
-)
-
-    poissons_ratio = fields.Float(
-    string="Poissons Ratio, μ",
-    digits=(16, 2)
-)
+    
     
 
 
@@ -2622,6 +2609,21 @@ class ElasticityLine(models.Model):
         string="Mode of failure",
         store=True
     )
+
+    stress_range = fields.Float(
+    string="Stress Range (MPa)",
+    digits=(16, 2)
+)
+
+    modulus_e = fields.Float(
+    string="Modulus, E (GPa)",
+    digits=(16, 2)
+)
+
+    poissons_ratio = fields.Float(
+    string="Poissons Ratio, μ",
+    digits=(16, 2)
+)
 
     machine_used = fields.Char(string="Type of Sample & Condition")
 
