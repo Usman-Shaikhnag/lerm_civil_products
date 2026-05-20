@@ -500,9 +500,9 @@
                                 <td class =""><field name="before_wt_water" /></td>
                                 <td class =""><field name="before_wt_can" colspan="1"  nolabel="1" class="blue-input"/></td>
                                 <td class =""><field name="before_wt_dry_soil"/></td>
-                                <td class =""><field name="before_mc"/></td>
+                                <td class =""><field name="before_mc" digits="[16,2]"/></td>
                                
-                               <td style="background:#eee;"><field name="before_avg_mc"/></td>
+                               <td style="background:#eee;"><field name="before_avg_mc" digits="[16,2]"/></td>
                             </tr>
 
                             <!-- TOP -->
@@ -514,9 +514,9 @@
                                 <td ><field name="top_wt_water" /></td>
                                 <td ><field name="top_wt_can"  colspan="1"  nolabel="1" class="blue-input"/></td>
                                 <td><field name="top_wt_dry_soil"/></td>
-                                <td><field name="top_mc"/></td>
+                                <td><field name="top_mc" digits="[16,2]"/></td>
                                 <td rowspan="3" style="background:#eee;">
-                                    <field name="avg_mc"/>
+                                    <field name="avg_mc" digits="[16,2]"/>
                                 </td>
                             </tr>
 
@@ -529,7 +529,7 @@
                                 <td><field name="centre_wt_water" /></td>
                                 <td ><field name="centre_wt_can"  colspan="1"  nolabel="1" class="blue-input"/></td>
                                 <td><field name="centre_wt_dry_soil"/></td>
-                                <td><field name="centre_mc"/></td>
+                                <td><field name="centre_mc" digits="[16,2]"/></td>
                             </tr>
 
                             <!-- BOTTOM -->
@@ -541,7 +541,7 @@
                                 <td ><field name="bottom_wt_water"/></td>
                                 <td ><field name="bottom_wt_can"  colspan="1"  nolabel="1" class="blue-input"/></td>
                                 <td><field name="bottom_wt_dry_soil"/></td>
-                                <td><field name="bottom_mc"/></td>
+                                <td><field name="bottom_mc" digits="[16,2]"/></td>
                             </tr>
                         </table>
 
@@ -567,8 +567,8 @@
                                 <td ><field name="before_soil"/></td>
                                 <td ><field name="volume_specimen1"  colspan="1"  nolabel="1" class="blue-input"/></td>
                                 
-                                <td><field name="before_bulk_density"/></td>
-                                <td><field name="before_dry_density"/></td>
+                                <td><field name="before_bulk_density" digits="[16,2]"/></td>
+                                <td><field name="before_dry_density" digits="[16,2]"/></td>
                             </tr>
 
                             <!-- AFTER -->
@@ -578,8 +578,8 @@
                                 <td ><field name="after_mould"  colspan="1"  nolabel="1" class="blue-input"/></td>
                                 <td><field name="after_soil"/></td>
                                 <td ><field name="volume_specimen2"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                                <td><field name="after_bulk_density"/></td>
-                                <td><field name="after_dry_density"/></td>
+                                <td><field name="after_bulk_density" digits="[16,2]"/></td>
+                                <td><field name="after_dry_density" digits="[16,2]"/></td>
                             </tr>
                         </table>
 
@@ -719,6 +719,9 @@
                                 <tr>
                                     <td><label for="cbr_5_mm"></label></td>
                                     <td><field name="cbr_5_mm" /></td>
+                               
+                                    <td><label for="final_cbr" invisible="1"></label></td>
+                                    <td><field name="final_cbr" invisible="1"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -2729,7 +2732,7 @@
                                 
                                 <tr>
                                     <td><label for="pc_y"></label></td>
-                                    <td ><field name="pc_y" /></td>
+                                    <td ><field name="pc_y" digits="[16,2]" /></td>
                                 </tr>
                                 <tr>
                                     <td><label for="cc_final"></label></td>
@@ -4417,7 +4420,7 @@
                                 </tr>
                                 <tr>
                                     <td><label for="ucs_area">Area (A):mm2</label></td>
-                                    <td ><field name="ucs_area"/></td>
+                                    <td ><field name="ucs_area" digits="[16,2]"/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -4430,7 +4433,7 @@
                                 </tr>
                                 <tr>
                                     <td><label for="ucs_volumn">Soil Volume: cm3</label></td>
-                                    <td ><field name="ucs_volumn"/></td>
+                                    <td ><field name="ucs_volumn" digits="[16,2]"/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -4451,7 +4454,7 @@
                             <tbody>
                                 <tr>
                                     <td><label for="initial_mass_bt">Initial mass of soil (before testing) (g): </label></td>
-                                    <td ><field name="initial_mass_bt" class="blue-input"/></td>
+                                    <td ><field name="initial_mass_bt"  class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="initial_mass_at">Initial mass of soil (after testing) (g):  </label></td>
@@ -4472,19 +4475,19 @@
                             <tbody>
                                 <tr>
                                     <td><label for="ucs_moisture_con_at">mositure content after test (%):</label></td>
-                                    <td ><field name="ucs_moisture_con_at"/></td>
+                                    <td ><field digits="[16,2]" name="ucs_moisture_con_at"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="ucs_bulk_density">Bulk Density of soil (g/cc)  </label></td>
-                                    <td ><field name="ucs_bulk_density"/></td>
+                                    <td ><field digits="[16,2]" name="ucs_bulk_density"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="ucs_dry_density">Dry density of soil (g/cc)  </label></td>
-                                    <td ><field name="ucs_dry_density"/></td>
+                                    <td ><field digits="[16,2]" name="ucs_dry_density"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="ucs_initial_moist_con">Initial Moisture content  </label></td>
-                                    <td ><field name="ucs_initial_moist_con"/></td>
+                                    <td ><field  digits="[16,2]" name="ucs_initial_moist_con"/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -4494,11 +4497,11 @@
                             <tbody>
                                 <tr>
                                     <td><label for="w_value">w </label></td>
-                                    <td ><field name="w_value" class="blue-input"/></td>
+                                    <td ><field name="w_value" digits="[16,2]" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="gamma_ratio">γw / γd</label></td>
-                                    <td ><field name="gamma_ratio"/></td>
+                                    <td ><field name="gamma_ratio" digits="[16,2]"/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -4507,11 +4510,11 @@
                             <tbody>
                                 <tr>
                                     <td><label for="inv_specific_gravity">1 / Gs</label></td>
-                                    <td ><field name="inv_specific_gravity" class="blue-input"/></td>
+                                    <td ><field name="inv_specific_gravity" digits="[16,2]" class="blue-input"/></td>
                                 </tr>
                                 <tr>
                                     <td><label for="degree_saturation">S (%)</label></td>
-                                    <td ><field name="degree_saturation"/></td>
+                                    <td ><field name="degree_saturation" digits="[16,2]"/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -5391,27 +5394,27 @@
                             <tbody>
                                 <tr>
                                     <td style="text-align:center;font-weight:bold;"><span>MASS OF SOIL</span></td>
-                                    <td style="text-align:center;"><field name="mass_of_soil_finals1" /></td>
+                                    <!-- <td style="text-align:center;"><field name="mass_of_soil_finals1" /></td> -->
                                     <td style="text-align:center;"><field name="mass_of_soil_finals" readonly="1"/></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align:center;font-weight:bold;"><span>DRY WT SOIL</span></td>
-                                    <td style="text-align:center;"><field name="dry_wt_soil_final1" /></td>
+                                    <!-- <td style="text-align:center;"><field name="dry_wt_soil_final1" /></td> -->
                                     <td style="text-align:center;"><field name="dry_wt_soil_final" readonly="1"/></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align:center;font-weight:bold;"><span>NMC</span></td>
-                                    <td style="text-align:center;"><field name="initial_mc_final1" /></td>
+                                    <!-- <td style="text-align:center;"><field name="initial_mc_final1" /></td> -->
                                     <td style="text-align:center;"><field name="initial_mc_final" readonly="1"/></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align:center;font-weight:bold;"><span>DRY DENSITY</span></td>
-                                    <td style="text-align:center;"><field name="dry_density_final1" /></td>
+                                    <!-- <td style="text-align:center;"><field name="dry_density_final1" /></td> -->
                                     <td style="text-align:center;"><field name="dry_density_final" readonly="1"/></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align:center;font-weight:bold;"><span>BULK DENSITY</span></td>
-                                    <td style="text-align:center;"><field name="bulk_density_final1" /></td>
+                                    <!-- <td style="text-align:center;"><field name="bulk_density_final1" /></td> -->
                                     <td style="text-align:center;"><field name="bulk_density_final" readonly="1"/></td>
                                 </tr>
                                 
@@ -5423,11 +5426,11 @@
                             <tbody>
                                 <tr>
                                     <td style="text-align:center;font-weight:bold;"><span>phi</span></td>
-                                    <td style="text-align:center;"><field name="phi" /></td>
+                                    <td style="text-align:center;"><field name="phi" digits="[16,2]"/></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align:center;font-weight:bold;"><span>cohesion</span></td>
-                                    <td style="text-align:center;"><field name="cohesion" /></td>
+                                    <td style="text-align:center;"><field name="cohesion" digits="[16,2]"/></td>
                                 </tr>
                                 
                                 

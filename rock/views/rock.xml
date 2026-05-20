@@ -127,12 +127,12 @@
                                 <field name='dia_rock1' class="blue-input" decoration-info="dia_rock1 != 0"/>
                                 <field name='dia_rock2'  class="blue-input" decoration-info="dia_rock2 != 0"/>
                                 <field name='dia_rock3' class="blue-input" decoration-info="dia_rock3 != 0"/>
-                                <field name='avg_dia' />
+                                <field name='avg_dia'  digits="[16,2]"/>
                                 <field name='height_rock1' class="blue-input" decoration-info="height_rock1 != 0"/>
                                 <field name='height_rock2' class="blue-input" decoration-info="height_rock2 != 0"/>
                                 <field name='height_rock3'  class="blue-input" decoration-info="height_rock3 != 0"/>
-                                <field name='avg_height' />
-                                <field name='hd'/>
+                                <field name='avg_height' digits="[16,2]"/>
+                                <field name='hd' digits="[16,2]"/>
                                 <field name='volume_of_sample'/>
                                 <field name='volume_of_sample1' class="blue-input" decoration-info="volume_of_sample1 != 0"/>
                                 <field name='initial_wt' class="blue-input" decoration-info="initial_wt != 0"/>
@@ -148,9 +148,9 @@
                                 <field name='water_absorption'/>
                                 <field name='porosity'/>
                                 <field name='load_ucs'   class="blue-input" decoration-info="load_ucs != 0"/>
-                                <field name='load'/>
-                                <field name='comp_strength1'/>
-                                <field name='comp_strength2'/>
+                                <field name='load' digits="[16,2]"/>
+                                <field name='comp_strength1' digits="[16,2]"/>
+                                <field name='comp_strength2' digits="[16,2]"/>
 
 
                                 <field name='point_load_type' class="blue-input" decoration-info="point_load_type != 0"/>
@@ -340,7 +340,7 @@
                             <tbody>
                             <tr>
                                 <td><label for="avg_pin_result"></label></td>
-                                <td><field name='avg_pin_result' col="1" /></td>
+                                <td><field name='avg_pin_result' col="1" digits="[16,2]"/></td>
                             </tr>
                             
                             
@@ -352,7 +352,7 @@
                             <tbody>
                             <tr>
                                 <td><label for="avg_pin2_result"></label></td>
-                                <td><field name='avg_pin2_result' col="1" /></td>
+                                <td><field name='avg_pin2_result' col="1" digits="[16,2]"/></td>
                             </tr>
                            
                             </tbody>
@@ -362,7 +362,7 @@
                             <tbody>
                             <tr>
                                 <td><label for="avg_pin3_result"></label></td>
-                                <td><field name='avg_pin3_result' col="1" /></td>
+                                <td><field name='avg_pin3_result' col="1" digits="[16,2]"/></td>
                             </tr>
                            
                             </tbody>
@@ -372,7 +372,7 @@
                             <tbody>
                             <tr>
                                 <td><label for="avg_pin4_result"></label></td>
-                                <td><field name='avg_pin4_result' col="1" /></td>
+                                <td><field name='avg_pin4_result' col="1" digits="[16,2]" /></td>
                             </tr>
                            
                             </tbody>
@@ -382,7 +382,7 @@
                             <tbody>
                             <tr>
                                 <td><label for="avg_pin5_result"></label></td>
-                                <td><field name='avg_pin5_result' col="1" /></td>
+                                <td><field name='avg_pin5_result' col="1" digits="[16,2]"/></td>
                             </tr>
                            
                             </tbody>
@@ -454,7 +454,7 @@
                             <tbody>
                             <tr>
                                 <td><label for="overall_avg_pin_result"></label></td>
-                                <td><field name='overall_avg_pin_result' col="1" /></td>
+                                <td><field name='overall_avg_pin_result' digits="[16,3]" col="1" /></td>
                             </tr>
                             <tr>
                                 <td><label for="avg_hrc"></label></td>
@@ -463,7 +463,7 @@
 
                             <tr>
                                 <td><label for="cai"></label></td>
-                                <td><field name='cai' col="1" /></td>
+                                <td><field name='cai' col="1" digits="[16,1]"/></td>
                             </tr>
                             
                             <tr>
@@ -806,8 +806,8 @@
                                 <field name='duration_test' width="120" class="blue-input" decoration-info="duration_test != 0"/>
                                 <field name='height' width="120" class="blue-input" decoration-info="height != 0"/>
                                 <field name='area' width="120" class="blue-input" decoration-info="area != 0"/>
-                                <field name='axial'  width="120" class="blue-input" decoration-info="axial != 0"/>
-                                <field name='stress' width="120" class="blue-input" decoration-info="stress != 0"/>
+                                <field name='axial'  width="120" />
+                                <field name='stress' width="120" />
                                 
                             </tree>
                         </field>
@@ -1048,8 +1048,8 @@
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                                     <tbody>
                                         <tr>
-                                            <td><label for="lithologic_dic"></label></td>
-                                            <td><field name="lithologic_dic" class="blue-input" /></td>
+                                            <td><label for="lithological"></label></td>
+                                            <td><field name="lithological" class="blue-input" /></td>
                                         </tr>
                                         
                                     </tbody>
@@ -1059,7 +1059,7 @@
                                     <tbody>
                                         <tr>
                                             <td><label for="machine_used"></label></td>
-                                            <td><field name="machine_used"  /></td>
+                                            <td><field name="machine_used"  class="blue-input"/></td>
                                         </tr>
                                         
                                     </tbody>
@@ -1071,7 +1071,7 @@
                                     <tbody>
                                         <tr>
                                             <td><label for="avg_dia"></label></td>
-                                            <td><field name="avg_dia" class="blue-input" /></td>
+                                            <td><field name="avg_dia" class="blue-input" digits="[16,2]"/></td>
                                         </tr>
                                         
                                     </tbody>
@@ -1081,7 +1081,7 @@
                                     <tbody>
                                         <tr>
                                             <td><label for="avg_height"></label></td>
-                                            <td><field name="avg_height"  /></td>
+                                            <td><field name="avg_height"  digits="[16,2]"/></td>
                                         </tr>
                                         
                                     </tbody>
@@ -1094,7 +1094,7 @@
                                     <tbody>
                                         <tr>
                                             <td><label for="hd"></label></td>
-                                            <td><field name="hd" class="blue-input" /></td>
+                                            <td><field name="hd" class="blue-input" digits="[16,2]"/></td>
                                         </tr>
                                         
                                     </tbody>
@@ -1104,7 +1104,7 @@
                                     <tbody>
                                         <tr>
                                             <td><label for="bulk_density"></label></td>
-                                            <td><field name="bulk_density" /></td>
+                                            <td><field name="bulk_density" digits="[16,2]"/></td>
                                         </tr>
                                         
                                     </tbody>
@@ -1116,7 +1116,7 @@
                                     <tbody>
                                         <tr>
                                             <td><label for="sat_density"></label></td>
-                                            <td><field name="sat_density" class="blue-input" /></td>
+                                            <td><field name="sat_density" class="blue-input" digits="[16,2]"/></td>
                                         </tr>
                                         
                                     </tbody>
@@ -1126,7 +1126,7 @@
                                     <tbody>
                                         <tr>
                                             <td><label for="dry_density"></label></td>
-                                            <td><field name="dry_density" class="blue-input" /></td>
+                                            <td><field name="dry_density" class="blue-input" digits="[16,2]"/></td>
                                         </tr>
                                         
                                     </tbody>
@@ -1141,7 +1141,7 @@
                                     <tbody>
                                         <tr>
                                             <td><label for="water_absorption"></label></td>
-                                            <td><field name="water_absorption" class="blue-input" /></td>
+                                            <td><field name="water_absorption" class="blue-input" digits="[16,2]"/></td>
                                         </tr>
                                         
                                     </tbody>
@@ -1151,7 +1151,7 @@
                                     <tbody>
                                         <tr>
                                             <td><label for="sp_gravity"></label></td>
-                                            <td><field name="sp_gravity" class="blue-input" /></td>
+                                            <td><field name="sp_gravity" class="blue-input" digits="[16,2]"/></td>
                                         </tr>
                                         
                                     </tbody>
@@ -1165,7 +1165,7 @@
                                     <tbody>
                                         <tr>
                                             <td><label for="porosity"></label></td>
-                                            <td><field name="porosity" class="blue-input" /></td>
+                                            <td><field name="porosity" class="blue-input" digits="[16,2]"/></td>
                                         </tr>
                                         
                                     </tbody>
@@ -1174,8 +1174,8 @@
                                 <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                                     <tbody>
                                         <tr>
-                                            <td><label for="water_content"></label></td>
-                                            <td><field name="water_content" class="blue-input" /></td>
+                                            <td><label for="moisture_content"></label></td>
+                                            <td><field name="moisture_content" class="blue-input" digits="[16,2]"/></td>
                                         </tr>
                                         
                                     </tbody>
@@ -1214,7 +1214,7 @@
                                     <tbody>
                                         <tr>
                                             <td><label for="comp_strength1"></label></td>
-                                            <td><field name="comp_strength1" class="blue-input" /></td>
+                                            <td><field name="comp_strength1" class="blue-input" digits="[16,2]"/></td>
                                         </tr>
                                         
                                     </tbody>
@@ -1224,7 +1224,7 @@
                                     <tbody>
                                         <tr>
                                             <td><label for="comp_strength2"></label></td>
-                                            <td><field name="comp_strength2" class="blue-input" /></td>
+                                            <td><field name="comp_strength2" class="blue-input" digits="[16,2]"/></td>
                                         </tr>
                                         
                                     </tbody>

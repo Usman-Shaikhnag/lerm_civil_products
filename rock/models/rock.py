@@ -774,31 +774,31 @@ class MechanicalRockLine(models.Model):
     # blue_input = fields.Boolean(default=True,invisible=True)
    
     sr_no = fields.Integer(string="Specimen NO.", readonly=True, copy=False, default=1)
-    date_received = fields.Date(string="Date of Received")
-    date_testing = fields.Date(string="Date of Testing")
+    date_received = fields.Date(string="Date of Test Started")
+    date_testing = fields.Date(string="Date of Completion")
     lab_id = fields.Char(string="Lab ID") 
     # bh_no = fields.Char(string="BH No./Location",digits=(16, 3))
     # depth = fields.Char(string="Depth")
     piece_no = fields.Char(string="Piece No")
     lithological = fields.Char(string="Lithological Description of rock")
     room_temp = fields.Float(string="Room Temperature")
-    relative_humidity = fields.Float(string="Relative humidity",digits=(16, 2))
+    relative_humidity = fields.Float(string="Relative humidity %",digits=(16, 2))
     water_temperature = fields.Float(string="Water temperature",digits=(16, 2))
     dia_rock1 = fields.Float(string="Diameter of Rock Sample 1",digits=(16, 2))
     dia_rock2 = fields.Float(string="Diameter of Rock Sample 2",digits=(16, 2))
     dia_rock3 = fields.Float(string="Diameter of Rock Sample 3",digits=(16, 2))
-    avg_dia = fields.Float(string="Average Diameter (D)",digits=(16, 2),store=True,compute="_compute_avg_dia")
+    avg_dia = fields.Float(string="Average Diameter (D)",digits=(16, 13),store=True,compute="_compute_avg_dia")
     height_rock1 = fields.Float(string="Height of Rock Sample 1",digits=(16, 2))
     height_rock2 = fields.Float(string="Height of Rock Sample 2",digits=(16, 2))
     height_rock3 = fields.Float(string="Height of Rock Sample 3",digits=(16, 2))
-    avg_height = fields.Float(string="Average Height (H)",digits=(16, 2),store=True,compute="_compute_avg_height")
-    hd = fields.Float(string="H/D",digits=(16, 2),store=True,compute="_compute_hd")
+    avg_height = fields.Float(string="Average Height (H)",digits=(16, 10),store=True,compute="_compute_avg_height")
+    hd = fields.Float(string="H/D",digits=(16, 10),store=True,compute="_compute_hd")
     volume_of_sample = fields.Float(string="Volume of Sample(Wsat-Wsub)",digits=(16, 2),store=True,compute="_compute_volume_of_sample")
     volume_of_sample1 = fields.Float(string="Volume of Sample",digits=(16, 2))
     initial_wt = fields.Float(string="Initial Wt of sample",digits=(16, 2))
     dry_wet = fields.Float(string="Dry Wt of sample",digits=(16, 2))
     saturated_wet = fields.Float(string="Saturated Wt of sample",digits=(16, 2))
-    volume_of_void = fields.Float(string="Volume of Voids",digits=(16, 2),store=True,compute="_compute_volume_of_void")
+    volume_of_void = fields.Float(string="Volume of Voids (cm³)",digits=(16, 2),store=True,compute="_compute_volume_of_void")
     wt_of_sample = fields.Float(string="Wt of sample in Water",digits=(16, 2))
     sp_gravity = fields.Float(string="Sp. Gravity",digits=(16, 2),store=True,compute="_compute_sp_gravity")
     bulk_density = fields.Float(string="Bulk Density",digits=(16, 2),store=True,compute="_compute_bulk_density")
@@ -807,9 +807,9 @@ class MechanicalRockLine(models.Model):
     water_absorption = fields.Float(string="Water Absorption",digits=(16, 2),store=True,compute="_compute_water_absorption")
     porosity = fields.Float(string="Porosity",digits=(16, 2),store=True,compute="_compute_porosity")
     load_ucs = fields.Float(string="Load (UCS)",digits=(16, 2))
-    load = fields.Float(string="Load",digits=(16, 2),store=True,compute="_compute_load")
-    comp_strength1 = fields.Float(string="Compressive Strength qc ",digits=(16, 2),store=True,compute="_compute_comp_strength1")
-    comp_strength2 = fields.Float(string="Compressive Strength  qc at H/D=2",digits=(16, 2),store=True,compute="_compute_comp_strength2")
+    load = fields.Float(string="Load",digits=(16, 10),store=True,compute="_compute_load")
+    comp_strength1 = fields.Float(string="Compressive Strength qc ",digits=(16, 10),store=True,compute="_compute_comp_strength1")
+    comp_strength2 = fields.Float(string="Compressive Strength  qc at H/D=2",digits=(16, 10),store=True,compute="_compute_comp_strength2")
     point_load = fields.Float(string="Point Load",digits=(16, 2))
     point_load_strength = fields.Float(string="Point load strength index-Core",digits=(16, 3),store=True,compute="_compute_point_load_strength")
     point_load_index = fields.Float(string="Point load strength index-Lump",digits=(16, 3),store=True,compute="_compute_point_load_index")
@@ -876,6 +876,8 @@ class MechanicalRockLine(models.Model):
                 rec.hd = rec.avg_height / rec.avg_dia
             else:
                 rec.hd = 0.0
+
+ 
 
     # ---- Compute method ----
     @api.depends('saturated_wet', 'wt_of_sample')
@@ -969,6 +971,7 @@ class MechanicalRockLine(models.Model):
             else:
                 rec.comp_strength2 = 0.0
 
+    
 
     @api.depends('point_load', 'avg_dia')
     def _compute_point_load_strength(self):
@@ -1301,7 +1304,7 @@ class AercharAbrasivityLine(models.Model):
 
     avg_pin_result = fields.Float(
         string="Average Pin 1 Result",
-        digits=(16, 2),
+        digits=(16, 4),
         compute="_compute_avg_pin_result",
         store=True
     )
@@ -1319,7 +1322,7 @@ class AercharAbrasivityLine(models.Model):
 
     avg_pin2_result = fields.Float(
         string="Average Pin 2 Result",
-        digits=(16, 2),
+        digits=(16, 4),
         compute="_compute_avg_pin2_result",
         store=True
     )
@@ -1337,7 +1340,7 @@ class AercharAbrasivityLine(models.Model):
 
     avg_pin3_result = fields.Float(
         string="Average Pin 3 Result",
-        digits=(16, 2),
+        digits=(16, 4),
         compute="_compute_avg_pin3_result",
         store=True
     )
@@ -1355,7 +1358,7 @@ class AercharAbrasivityLine(models.Model):
 
     avg_pin4_result = fields.Float(
         string="Average Pin 4 Result",
-        digits=(16, 2),
+        digits=(16, 4),
         compute="_compute_avg_pin4_result",
         store=True
     )
@@ -1373,7 +1376,7 @@ class AercharAbrasivityLine(models.Model):
 
     avg_pin5_result = fields.Float(
         string="Average Pin 5 Result",
-        digits=(16, 2),
+        digits=(16, 4),
         compute="_compute_avg_pin5_result",
         store=True
     )
@@ -1391,7 +1394,7 @@ class AercharAbrasivityLine(models.Model):
 
     overall_avg_pin_result = fields.Float(
     string="Mean Pin wear (mm)",
-    digits=(16, 2),
+    digits=(16, 10),
     compute="_compute_overall_avg_pin_result",
     store=True
    )
@@ -1752,18 +1755,37 @@ class MechanicalTriaxialLine(models.Model):
     duration_test = fields.Float(string=" Duration of test  sec",digits=(16, 2))
     height = fields.Float(string="Height of Sample mm",digits=(16, 2),)
     area = fields.Float(string=" Area mm2",digits=(16, 1),compute="_compute_area",store=True)
-    axial = fields.Float(string=" Axial Strength MPa",digits=(16, 1), compute="_compute_axial_strength",store=True)
+    axial = fields.Float(string=" Axial Strength MPa",digits=(16, 2), compute="_compute_axial_strength",store=True)
     stress = fields.Float(string=" Stress rate MPa/sec",digits=(16, 1),compute="_compute_stress_rate",store=True )
 
     # 🔹 Compute Area = π/4 × d²
+    # @api.depends('parent_id_triaxial.dia_spe')
+    # def _compute_area(self):
+    #     for rec in self:
+    #         dia = rec.parent_id_triaxial.dia_spe
+    #         if dia and dia > 0:
+    #             rec.area = (math.pi / 4.0) * (dia ** 2)
+    #         else:
+    #             rec.area = 0.0
+
     @api.depends('parent_id_triaxial.dia_spe')
     def _compute_area(self):
-        for rec in self:
-            dia = rec.parent_id_triaxial.dia_spe
-            if dia and dia > 0:
-                rec.area = (math.pi / 4.0) * (dia ** 2)
-            else:
-                rec.area = 0.0
+ 
+     for rec in self:
+
+        rec.area = 0.0
+
+        dia = rec.parent_id_triaxial.dia_spe or 0.0
+
+        if dia > 0:
+
+            PI = 3.14
+
+            rec.area = (
+                PI
+                * 0.25
+                * (dia ** 2)
+            )
 
     @api.depends('failure_load', 'area')
     def _compute_axial_strength(self):
@@ -1984,15 +2006,119 @@ class TriaxialLine(models.Model):
 
 
 
+#     def action_generate_triaxial_graph(self):
+#      import numpy as np
+#      import matplotlib
+#      matplotlib.use('Agg')
+#      import matplotlib.pyplot as plt
+#      import base64
+#      import io
+
+#      for rec in self:
+#         lines = rec.triaxial_child_lines.filtered(
+#             lambda l: l.con_pressure and l.axial
+#         )
+
+#         if not lines:
+#             rec.triaxial_graph = False
+#             continue
+
+#         # -----------------------------
+#         # Data
+#         # -----------------------------
+#         x = np.array([l.con_pressure for l in lines], float)
+#         y = np.array([l.axial for l in lines], float)
+
+#         # -----------------------------
+#         # Linear regression
+#         # -----------------------------
+#         m, c = np.polyfit(x, y, 1)
+
+#         # Use real X values so line passes through points
+#         # Line THROUGH actual points
+#         order = np.argsort(x)
+#         x_line = x[order]
+#         y_line = y[order]
+
+#         # -----------------------------
+#         # Figure
+#         # -----------------------------
+#         fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
+
+#         excel_blue = '#4472C4'
+
+#         # Scatter points
+#         ax.scatter(x, y, color=excel_blue, s=60, zorder=3)
+
+#         # Dotted regression line (Excel style)
+#         ax.plot(
+#             x_line,
+#             y_line,
+#             linestyle=(0, (1, 2)),
+#             linewidth=3.5,
+#             color=excel_blue,
+#             solid_capstyle='round'
+#         )
+
+#         # Labels
+#         ax.set_xlabel("Confining Pressure (MPa)")
+#         ax.set_ylabel("Axial Strength (MPa)")
+
+#         # -----------------------------
+#         # Auto Y scaling (tight)
+#         # -----------------------------
+#         y_pad = (max(y) - min(y)) * 0.15 if max(y) != min(y) else 1
+#         ax.set_ylim(min(y) - y_pad, max(y) + y_pad)
+
+#         # -----------------------------
+#         # Grid
+#         # -----------------------------
+#         ax.grid(True, linewidth=0.8, alpha=0.7)
+
+#         # Dark borders
+#         for spine in ax.spines.values():
+#             spine.set_linewidth(1.2)
+
+#         # -----------------------------
+#         # Equation ON the line
+#         # -----------------------------
+#         x_eq = np.mean(x)
+#         y_eq = m * x_eq + c
+
+#         eq = f"y = {m:.3f}x + {c:.3f}"
+
+#         ax.text(
+#     x_eq,
+#     y_eq + y_pad * 0.9,   # small vertical lift
+#     eq,
+#     fontsize=10,
+#     ha='center',
+#     va='bottom'
+# )
+
+#         # -----------------------------
+#         # Export
+#         # -----------------------------
+#         buf = io.BytesIO()
+#         fig.tight_layout()
+#         fig.savefig(buf, format='png')
+#         plt.close(fig)
+
+#         rec.triaxial_graph = base64.b64encode(buf.getvalue())
+
+
     def action_generate_triaxial_graph(self):
+
      import numpy as np
      import matplotlib
      matplotlib.use('Agg')
+
      import matplotlib.pyplot as plt
      import base64
      import io
 
      for rec in self:
+
         lines = rec.triaxial_child_lines.filtered(
             lambda l: l.con_pressure and l.axial
         )
@@ -2001,88 +2127,165 @@ class TriaxialLine(models.Model):
             rec.triaxial_graph = False
             continue
 
-        # -----------------------------
-        # Data
-        # -----------------------------
-        x = np.array([l.con_pressure for l in lines], float)
-        y = np.array([l.axial for l in lines], float)
+        # --------------------------------
+        # DATA
+        # --------------------------------
+        x = np.array(
+            [float(l.con_pressure) for l in lines],
+            dtype=float
+        )
 
-        # -----------------------------
-        # Linear regression
-        # -----------------------------
-        m, c = np.polyfit(x, y, 1)
+        y = np.array(
+            [float(l.axial) for l in lines],
+            dtype=float
+        )
 
-        # Use real X values so line passes through points
-        # Line THROUGH actual points
+        # --------------------------------
+        # SORT
+        # --------------------------------
         order = np.argsort(x)
-        x_line = x[order]
-        y_line = y[order]
 
-        # -----------------------------
-        # Figure
-        # -----------------------------
-        fig, ax = plt.subplots(figsize=(10, 5), dpi=100)
+        x = x[order]
+        y = y[order]
+
+        # --------------------------------
+        # REGRESSION USING 10 DECIMALS
+        # --------------------------------
+        x_reg = np.array(
+            [round(v, 10) for v in x],
+            dtype=float
+        )
+
+        y_reg = np.array(
+            [round(v, 10) for v in y],
+            dtype=float
+        )
+
+        m, c = np.polyfit(
+            x_reg,
+            y_reg,
+            1
+        )
+
+        # --------------------------------
+        # CONNECT ONLY FIRST & LAST POINT
+        # --------------------------------
+        x_line = np.array([
+            x[0],
+            x[-1]
+        ])
+
+        y_line = np.array([
+            y[0],
+            y[-1]
+        ])
+
+        # --------------------------------
+        # FIGURE
+        # --------------------------------
+        fig, ax = plt.subplots(
+            figsize=(10, 5),
+            dpi=100
+        )
 
         excel_blue = '#4472C4'
 
-        # Scatter points
-        ax.scatter(x, y, color=excel_blue, s=60, zorder=3)
-
-        # Dotted regression line (Excel style)
+        # --------------------------------
+        # LINE
+        # --------------------------------
         ax.plot(
             x_line,
             y_line,
-            linestyle=(0, (1, 2)),
-            linewidth=3.5,
-            color=excel_blue,
-            solid_capstyle='round'
+            linestyle=':',
+            linewidth=3,
+            color=excel_blue
         )
 
-        # Labels
-        ax.set_xlabel("Confining Pressure (MPa)")
-        ax.set_ylabel("Axial Strength (MPa)")
+        # --------------------------------
+        # POINTS
+        # --------------------------------
+        ax.scatter(
+            x,
+            y,
+            color=excel_blue,
+            s=70,
+            zorder=3
+        )
 
-        # -----------------------------
-        # Auto Y scaling (tight)
-        # -----------------------------
-        y_pad = (max(y) - min(y)) * 0.15 if max(y) != min(y) else 1
-        ax.set_ylim(min(y) - y_pad, max(y) + y_pad)
+        # --------------------------------
+        # LABELS
+        # --------------------------------
+        ax.set_xlabel(
+            "Confining Pressure (MPa)",
+            fontsize=12
+        )
 
-        # -----------------------------
-        # Grid
-        # -----------------------------
-        ax.grid(True, linewidth=0.8, alpha=0.7)
+        ax.set_ylabel(
+            "Axial Strength (MPa)",
+            fontsize=12
+        )
 
-        # Dark borders
+        # --------------------------------
+        # AXIS LIMITS
+        # --------------------------------
+        ax.set_xlim(0, 4.5)
+        ax.set_ylim(0, 100)
+
+        # --------------------------------
+        # GRID
+        # --------------------------------
+        ax.grid(
+            True,
+            linewidth=0.8,
+            alpha=0.7
+        )
+
+        # --------------------------------
+        # BORDERS
+        # --------------------------------
         for spine in ax.spines.values():
+
             spine.set_linewidth(1.2)
 
-        # -----------------------------
-        # Equation ON the line
-        # -----------------------------
-        x_eq = np.mean(x)
-        y_eq = m * x_eq + c
-
-        eq = f"y = {m:.3f}x + {c:.3f}"
+        # --------------------------------
+        # EQUATION
+        # --------------------------------
+        eq = (
+            f"y = {m:.4f}x + {c:.3f}"
+        )
 
         ax.text(
-    x_eq,
-    y_eq + y_pad * 0.9,   # small vertical lift
-    eq,
-    fontsize=10,
-    ha='center',
-    va='bottom'
-)
+            2.8,
+            48,
+            eq,
+            fontsize=10,
+            fontweight='bold',
+            bbox=dict(
+                facecolor='white',
+                edgecolor='none',
+                alpha=0.8
+            )
+        )
 
-        # -----------------------------
-        # Export
-        # -----------------------------
+        # --------------------------------
+        # EXPORT
+        # --------------------------------
         buf = io.BytesIO()
+
         fig.tight_layout()
-        fig.savefig(buf, format='png')
+
+        fig.savefig(
+            buf,
+            format='png',
+            bbox_inches='tight',
+            facecolor='white'
+        )
+
         plt.close(fig)
 
-        rec.triaxial_graph = base64.b64encode(buf.getvalue())
+        rec.triaxial_graph = base64.b64encode(
+            buf.getvalue()
+        )
 
 
            
@@ -2117,7 +2320,7 @@ class MechanicalElasticityLine(models.Model):
     
    
 
-    stress = fields.Float(string="Stress (mPa)",digits=(16, 2))
+    stress = fields.Float(string="Stress (MPa)",digits=(16, 2))
     strain = fields.Float(string="Strain",digits=(16, 6))
 
     stress_range = fields.Float(
@@ -2133,7 +2336,7 @@ class MechanicalElasticityLine(models.Model):
     poissons_ratio = fields.Float(
     string="Poissons Ratio, μ",
     digits=(16, 2)
-    )
+)
     
 
 
@@ -2218,6 +2421,29 @@ class ElasticityLine(models.Model):
                 line.bh_id = review_line.source        # BH ID / Location
                 line.depth = review_line.depth         # Depth (m)
 
+    rock_line_id = fields.Many2one(
+    'mechanical.rock.line',
+    compute="_compute_rock_line",
+    store=True
+)
+
+    @api.depends('lab_id')
+    def _compute_rock_line(self):
+
+     for rec in self:
+
+        rec.rock_line_id = False
+
+        if rec.lab_id:
+
+            rock_line = self.env[
+                'mechanical.rock.line'
+            ].search([
+                ('lab_id', '=', rec.lab_id)
+            ], limit=1)
+
+            rec.rock_line_id = rock_line.id 
+    
     elasticity_child_lines = fields.One2many('mechanical.elasticity.line','parent_id_elasticity',string="Parameter")
 
     elasticity_graph = fields.Binary("Stress-Strain Graph")
@@ -2288,6 +2514,116 @@ class ElasticityLine(models.Model):
 
             # 👉 Store in Binary Field
             record.elasticity_graph = base64.b64encode(buffer.getvalue())
+
+    room_temp_elasticity = fields.Float(
+        related="rock_line_id.room_temp",
+        string="Room Temperature",
+        store=True
+    )
+
+    relative_humidity_elasticity = fields.Float(
+        related="rock_line_id.relative_humidity",
+        string="Relative humidity",
+        store=True
+    )
+
+    lithological = fields.Char(
+        related="rock_line_id.lithological",
+        string="Lithologic description of rock",
+        store=True
+    )
+
+    avg_dia = fields.Float(
+        related="rock_line_id.avg_dia",
+        string="Average Diameter (D)",
+        store=True
+    )
+
+    avg_height = fields.Float(
+        related="rock_line_id.avg_height",
+        string="Average Height (H)",
+        store=True
+    )
+
+    hd = fields.Float(
+        related="rock_line_id.hd",
+        string="H/D",
+        store=True
+    )
+
+    bulk_density = fields.Float(
+        related="rock_line_id.bulk_density",
+        string="Bulk Density",
+        store=True
+    )
+
+    sat_density = fields.Float(
+        related="rock_line_id.sat_density",
+        string="Sat Density",
+        store=True
+    )
+
+    dry_density = fields.Float(
+        related="rock_line_id.dry_density",
+        string="Dry Density",
+        store=True
+    )
+
+    water_absorption = fields.Float(
+        related="rock_line_id.water_absorption",
+        string="Water Absorption",
+        store=True
+    )
+
+    sp_gravity = fields.Float(
+        related="rock_line_id.sp_gravity",
+        string="Sp. Gravity",
+        store=True
+    )
+
+    porosity = fields.Float(
+        related="rock_line_id.porosity",
+        string="Porosity",
+        store=True
+    )
+
+    moisture_content = fields.Float(
+        related="rock_line_id.moisture_content",
+        string="Water Content",
+        store=True
+    )
+
+    duration_of_test = fields.Float(
+        related="rock_line_id.duration_of_test",
+        string="Duration of test",
+        store=True
+    )
+
+    stress_rate = fields.Float(
+        related="rock_line_id.stress_rate",
+        string="Stress Rate",
+        store=True
+    )
+
+    comp_strength1 = fields.Float(
+        related="rock_line_id.comp_strength1",
+        string="Compressive Strength qc",
+        store=True
+    )
+
+    comp_strength2 = fields.Float(
+        related="rock_line_id.comp_strength2",
+        string="Compressive Strength qc at H/D=2",
+        store=True
+    )
+
+    mode_of_failure = fields.Char(
+        related="rock_line_id.mode_of_failure",
+        string="Mode of failure",
+        store=True
+    )
+
+    machine_used = fields.Char(string="Type of Sample & Condition")
 
     lithologic_dic = fields.Char(string="Lithologic description of rock")
 

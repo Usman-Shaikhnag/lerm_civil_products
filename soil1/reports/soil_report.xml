@@ -174,13 +174,13 @@
 			<t t-set="swelling_vals" t-value="[g.swelling_pressure for g in (data.swelling_pressure_ids or []) if g.swelling_pressure]"/>
 			<t t-set="swelling_index" t-value="0"/>
 
-			<t t-set="consolidationcr_vals" t-value="[g.cr for g in (data.consolidation_lines or []) if g.cr]"/>
+			<t t-set="consolidationcr_vals" t-value="[g.cc_final for g in (data.consolidation_lines or []) if g.cc_final]"/>
 			<t t-set="consolidationcr_index" t-value="0"/>
 
-			<t t-set="cbr_vals" t-value="[g.cbr_2_5_mm for g in (data.cbr_ids or []) if g.cbr_2_5_mm]"/>
+			<t t-set="cbr_vals" t-value="[g.final_cbr for g in (data.cbr_ids or []) if g.final_cbr]"/>
 			<t t-set="cbr_index" t-value="0"/>
 
-			<t t-set="consolidation_vals" t-value="[g.ce for g in (data.consolidation_lines or []) if g.ce]"/>
+			<t t-set="consolidation_vals" t-value="[g.pc_y for g in (data.consolidation_lines or []) if g.pc_y]"/>
 			<t t-set="consolidation_index" t-value="0"/>
 
 			<t t-set="diarect_vals" t-value="[g.cohesion for g in (data.direct_shear_line or []) if g.cohesion]"/>
@@ -777,7 +777,7 @@
             </thead>
             <tbody>
               <t t-foreach="range(row_count)" t-as="line">
-                <tr>
+                <tr style="height:30px;">
                   <!-- <td><t t-esc="line.lab_no"/></td> -->
 				 <!-- <td style="min-width: 100px; width: 100px;">
 						<t t-set="ni" t-value="n_index if n_index is not None else 0"/> -->
@@ -838,18 +838,6 @@
 					</td>
 
 					<td style="text-align:center;">
-					<t t-set="i" t-value="silt_index"/>
-					<t t-if="silt_vals and i &lt; len(silt_vals)">
-					    
-
-						<t t-esc="int(round(silt_vals[i]))"/>
-						<!-- <t t-esc="silt_vals[i]"/> -->
-						<t t-set="silt_index" t-value="i + 1"/>
-					</t>
-					<t t-else="">--</t>
-					</td>
-
-					<td style="text-align:center;">
 					<t t-set="i" t-value="sand_index"/>
 					<t t-if="sand_vals and i &lt; len(sand_vals)">
 					  
@@ -861,6 +849,20 @@
 					<t t-else="">--</t>
 					</td>
 
+
+					<td style="text-align:center;">
+					<t t-set="i" t-value="silt_index"/>
+					<t t-if="silt_vals and i &lt; len(silt_vals)">
+					    
+
+						<t t-esc="int(round(silt_vals[i]))"/>
+						<!-- <t t-esc="silt_vals[i]"/> -->
+						<t t-set="silt_index" t-value="i + 1"/>
+					</t>
+					<t t-else="">--</t>
+					</td>
+
+					
 					<td style="text-align:center;">
 					<t t-set="i" t-value="silt_clay_index"/>
 					<t t-if="silt_clay_vals and i &lt; len(silt_clay_vals)">

@@ -678,7 +678,7 @@
 										<span t-esc="r['d_mm']" />
 									</td>
 									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['room_temp']" />
+										<span t-esc="r['room_temp1']" />
 									</td>
 									<td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
 										<span t-esc="r['pin1_intial']" t-options='{"widget": "float", "precision": 3}'/>
@@ -1222,7 +1222,7 @@
 						<t t-set="triaxialp_index" t-value="0"/>
 
 
-						<t t-set="slackfirst_vals" t-value="[g.slake_first for g in (data.slake_durability_child_lines or []) if g.slake_first]"/>
+						<t t-set="slackfirst_vals" t-value="[g.slake_second for g in (data.slake_durability_child_lines or []) if g.slake_second]"/>
 			             <t t-set="slackfirst_index" t-value="0"/>
 
 
@@ -2080,7 +2080,8 @@
 								<t t-set="di" t-value="triaxialp_index if triaxialp_index is not None else 0"/>
 
 								<t t-if="triaxialp_vals and di &lt; len(triaxialp_vals)">
-									<t t-esc="'%.3f' % triaxialp_vals[di]"/>
+									<!-- <t t-esc="'%.3f' % triaxialp_vals[di]"/> -->
+									<t t-esc="round(triaxialp_vals[di])"/>
 									<t t-set="triaxialp_index" t-value="di + 1"/>
 								</t>
 								<t t-else="">--</t>
@@ -2090,7 +2091,7 @@
 								<t t-set="di" t-value="triaxialc_index if triaxialc_index is not None else 0"/>
 
 								<t t-if="triaxialc_vals and di &lt; len(triaxialc_vals)">
-									<t t-esc="'%.3f' % triaxialc_vals[di]"/>
+									<t t-esc="'%.1f' % triaxialc_vals[di]"/>
 									<t t-set="triaxialc_index" t-value="di + 1"/>
 								</t>
 								<t t-else="">--</t>
@@ -2100,7 +2101,7 @@
 								<t t-set="di" t-value="slackfirst_index if slackfirst_index is not None else 0"/>
 
 								<t t-if="slackfirst_vals and di &lt; len(slackfirst_vals)">
-									<t t-esc="'%.3f' % slackfirst_vals[di]"/>
+									<t t-esc="'%.2f' % slackfirst_vals[di]"/>
 									<t t-set="slackfirst_index" t-value="di + 1"/>
 								</t>
 								<t t-else="">--</t>
@@ -2769,8 +2770,8 @@
 							</td>
 
 							<td style="border:1px solid black; padding:6px; font-weight:bold;">
-								<!-- <t t-esc="triaxial.phi or '0'" t-options='{"precision": 2}' /> -->
-								<t t-esc="('%.2f' % (triaxial.phi or 0.0))"/>
+								<!-- <t t-esc="triaxial.phi or '0'"/> -->
+							    <t t-esc="round(triaxial.phi or 0)"/>
 							</td>
 
 							<td style="border:1px solid black;">Degree</td>
@@ -2796,8 +2797,8 @@
 							</td>
 
 							<td style="border:1px solid black; padding:6px; font-weight:bold;">
-								<!-- <t t-esc="triaxial.cohesion or '0'" t-options='{"precision": 2}'/> -->
-								<t t-esc="('%.2f' % (triaxial.cohesion or 0.0))"/>
+								<!-- <t t-esc="triaxial.cohesion or '0'"/> -->
+								<t t-esc="'%.1f' % (triaxial.cohesion or 0)"/>
 							</td>
 
 							<td style="border:1px solid black;">MPa</td>
@@ -3035,7 +3036,7 @@
 								
 								<td style="border:1px solid black; padding:4px; font-weight:bold;">Bulk Density</td>
 								<td style="border:1px solid black; padding:4px; text-align:center;">g/cc</td>
-								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.bulk_density"/></td>
+								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.bulk_density" t-options='{"widget": "float", "precision": 2}'/></td>
 
 								<td style="border:1px solid black; padding:4px; font-weight:bold;">Duration Of Test</td>
 								<td style="border:1px solid black; padding:4px; text-align:center;">sec</td>
@@ -3049,11 +3050,11 @@
 								
 								<td style="border:1px solid black; padding:4px; font-weight:bold;">Sat Density</td>
 								<td style="border:1px solid black; padding:4px; text-align:center;">g/cc</td>
-								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.sat_density"/></td>
+								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.sat_density" t-options='{"widget": "float", "precision": 2}'/></td>
 
 								<td style="border:1px solid black; padding:4px; font-weight:bold;">Stress Rate</td>
 								<td style="border:1px solid black; padding:4px; text-align:center;">MPa/sec</td>
-								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.stress_rate"/></td>
+								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.stress_rate" t-options='{"widget": "float", "precision": 2}'/></td>
 							</tr>
 
 							<tr>
@@ -3063,7 +3064,7 @@
 								
 								<td style="border:1px solid black; padding:4px; font-weight:bold;">Dry Density</td>
 								<td style="border:1px solid black; padding:4px; text-align:center;">g/cc</td>
-								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.dry_density"/></td>
+								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.dry_density" t-options='{"widget": "float", "precision": 2}'/></td>
 
 								<td style="border:1px solid black; padding:4px; font-weight:bold;">Mode of failure</td>
 								<td style="border:1px solid black; padding:4px; text-align:center;">g/cc</td>
@@ -3073,25 +3074,25 @@
 							<tr>
 								<td style="border:1px solid black; padding:4px; font-weight:bold;">Lithological description</td>
 								<td style="border:1px solid black; padding:4px; text-align:center;">--</td>
-								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.lithologic_dic"/></td>
+								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.lithological"/></td>
 								
 								<td style="border:1px solid black; padding:4px; font-weight:bold;">Water Absorption</td>
 								<td style="border:1px solid black; padding:4px; text-align:center;">%</td>
-								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.water_absorption"/></td>
+								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.water_absorption" t-options='{"widget": "float", "precision": 2}'/></td>
 
 								<td style="border:1px solid black; padding:4px; font-weight:bold;">Compressive Strength qc</td>
 								<td style="border:1px solid black; padding:4px; text-align:center;">MPa</td>
-								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.comp_strength1"/></td>
+								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.comp_strength1" t-options='{"widget": "float", "precision": 2}'/></td>
 							</tr>
 
 							<tr>
 								<td style="border:1px solid black; padding:4px; font-weight:bold;">Average Diameter (D)</td>
 								<td style="border:1px solid black; padding:4px; text-align:center;">mm</td>
-								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.avg_dia"/></td>
+								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.avg_dia" t-options='{"widget": "float", "precision": 2}'/></td>
 								
 								<td style="border:1px solid black; padding:4px; font-weight:bold;">Porosity</td>
 								<td style="border:1px solid black; padding:4px; text-align:center;">%</td>
-								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.porosity"/></td>
+								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.porosity" t-options='{"widget": "float", "precision": 2}'/></td>
 
 								<td style="border:1px solid black; padding:4px; font-weight:bold;">Compressive Strength  qc at H/D=2</td>
 								<td style="border:1px solid black; padding:4px; text-align:center;">MPa</td>
@@ -3101,11 +3102,11 @@
 							<tr>
 								<td style="border:1px solid black; padding:4px; font-weight:bold;">Average Height (H)</td>
 								<td style="border:1px solid black; padding:4px; text-align:center;">mm</td>
-								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.avg_height"/></td>
+								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.avg_height" t-options='{"widget": "float", "precision": 2}'/></td>
 								
 								<td style="border:1px solid black; padding:4px; font-weight:bold;">Sp. Gravity</td>
 								<td style="border:1px solid black; padding:4px; text-align:center;">..</td>
-								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.sp_gravity"/></td>
+								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.sp_gravity" t-options='{"widget": "float", "precision": 2}'/></td>
 
 								<td style="border:1px solid black; padding:4px; font-weight:bold;">Room Temperature</td>
 								<td style="border:1px solid black; padding:4px; text-align:center;">deg</td>
@@ -3119,11 +3120,11 @@
 								
 								<td style="border:1px solid black; padding:4px; font-weight:bold;">Water content</td>
 								<td style="border:1px solid black; padding:4px; text-align:center;">%</td>
-								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.water_content"/></td>
+								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.water_content" t-options='{"widget": "float", "precision": 2}'/></td>
 
 								<td style="border:1px solid black; padding:4px; font-weight:bold;">Relative humidity</td>
 								<td style="border:1px solid black; padding:4px; text-align:center;">%</td>
-								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.relative_humidity_elasticity"/></td>
+								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.relative_humidity_elasticity" t-options='{"widget": "float", "precision": 2}'/></td>
 							</tr>
 
 						</table>
@@ -3209,8 +3210,8 @@
     <field name="name">Triaxial Report</field>
     <field name="model">mechanical.rock</field>
     <field name="report_type">qweb-pdf</field>
-    <field name="report_name">soil1.report_triaxial_template</field>
-    <field name="report_file">soil1.report_triaxial_template</field>
+    <field name="report_name">rock.report_triaxial_template</field>
+    <field name="report_file">rock.report_triaxial_template</field>
 </record>
 
 
@@ -3218,8 +3219,8 @@
     <field name="name">Elasticity Report</field>
     <field name="model">mechanical.rock</field>
     <field name="report_type">qweb-pdf</field>
-    <field name="report_name">soil1.report_elasticity_template</field>
-    <field name="report_file">soil1.report_elasticity_template</field>
+    <field name="report_name">rock.report_elasticity_template</field>
+    <field name="report_file">rock.report_elasticity_template</field>
 </record>
 
 
