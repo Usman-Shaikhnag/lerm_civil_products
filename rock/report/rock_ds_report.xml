@@ -1606,7 +1606,7 @@
 							<t t-if="data.triaxial_visible">
 							<td  colspan="1" style="text-align: center;">
 							<span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','214jht3mhh2277j-0bc7-41a6-a2bb-0fe9211321ytrbe')]).unit.name"/>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','6315f914-f6f5-4b5b-bfc2-34792cf1a237')]).unit.name"/>
 								</span>
 							</td>
 							</t>
@@ -1620,16 +1620,16 @@
 
 							<t t-if="data.slake_durability_visible">
 							<td  colspan="1" style="text-align: center;">
-							<span>
+							<!-- <span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3258tyumhh2277j-0bc7-41a6-a2bb-0fe92112457hyte')]).unit.name"/>
-								</span>
+								</span> -->
 							</td>
 							</t>
 							<t t-if="data.slake_durability_visible">
 							<td  colspan="1" style="text-align: center;">
-							<span>
+							<!-- <span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3258tyumhh2277j-0bc7-41a6-a2bb-0fe92112457hyte')]).unit.name"/>
-								</span>
+								</span> -->
 							</td>
 							</t>
 
@@ -1701,7 +1701,7 @@
 								<!-- <t t-set="show_point_load_strength" t-value="any(line.point_load_strength for line in data.rock_child_lines)"/> -->
 								<!-- <td t-if="show_point_load" colspan="3" style="text-align: center; "><b>IS 8764</b></td> -->
 								<t t-if="data.bulk_density_visible">
-								<td  colspan="1" style="text-align: center; ">
+								<td  colspan="6" style="text-align: center; ">
 								<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','210478bbb-0bc7-41a6-a2bb-0fe9211478521r4')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -1712,9 +1712,8 @@
 								</td>
 								</t>
 
-                              <!-- <t t-set="show_duration_of_test" t-value="any(line.duration_of_test for line in data.rock_child_lines)"/> -->
-								<!-- <td t-if="show_duration_of_test" colspan="3" style="text-align: center; "></td> -->
-								<t t-if="data.sat_density_visible">
+                            
+								<!-- <t t-if="data.sat_density_visible">
 								<td  colspan="1" style="text-align: center; ">
 								<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','20123rtyng-0bc7-41a6-a2bb-0fe921147814524')]).parameter_table" t-as="parameter">
@@ -1726,8 +1725,7 @@
 								</td>
 								</t>
 
-								<!-- <t t-set="show_stress_rate" t-value="any(line.stress_rate for line in data.rock_child_lines)"/> -->
-								<!-- <td t-if="show_stress_rate" colspan="3" style="text-align: center; "></td> -->
+							
 								<t t-if="data.dry_density_visible">
 								<td  colspan="1" style="text-align: center; ">
 								<span>
@@ -1740,8 +1738,7 @@
 								</td>
 								</t>
 
-								<!-- <t t-set="show_mode_of_failure" t-value="any(line.mode_of_failure for line in data.rock_child_lines)"/> -->
-							<!-- <td t-if="show_mode_of_failure" colspan="3" style="text-align: center; "></td> -->
+							
 							<t t-if="data.water_absorption_visible">
 								<td  colspan="1" style="text-align: center; ">
 								<span>
@@ -1754,8 +1751,7 @@
 								</td>
 							</t>
 
-							<!-- <t t-set="show_sp_gravity" t-value="any(line.sp_gravity for line in data.rock_child_lines)"/> -->
-							<!-- <td t-if="show_sp_gravity" colspan="3" style="text-align: center;"><b>-</b></td>  -->
+						
 							<t t-if="data.porosity_visible">
 							<td  colspan="1" style="text-align: center;">
 							<span>
@@ -1777,9 +1773,9 @@
 									</t>
 								</span>
 							</td> 
-							</t>
+							</t> -->
 							<t t-if="data.compressive_strength_visible">
-							<td  colspan="1" style="text-align: center;">
+							<td  colspan="2" style="text-align: center;">
 							<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','88rrty222vv33-0bc7-41a6-a2bb-0fe92114rr445t')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -1789,7 +1785,7 @@
 								</span>
 							</td> 
 							</t>
-							<t t-if="data.compressive_strength_visible1">
+							<!-- <t t-if="data.compressive_strength_visible1">
 							<td  colspan="1" style="text-align: center;">
 							<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','5578gghty214-0bc7-41a6-a2bb-0fe92114rr445t')]).parameter_table" t-as="parameter">
@@ -1799,9 +1795,9 @@
 									</t>
 								</span>
 							</td> 
-							</t>
+							</t> -->
 							<t t-if="data.point_load_visible">
-							<td  colspan="1" style="text-align: center;">
+							<td  colspan="3" style="text-align: center;">
 							<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','785587rttgg11-0bc7-41a6-a2bb-0fe92114rr445t')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -1811,7 +1807,7 @@
 								</span>
 							</td> 
 							</t>
-							<t t-if="data.point_load_visible1">
+							<!-- <t t-if="data.point_load_visible1">
 							<td  colspan="1" style="text-align: center;">
 							<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','87522869rtyhn-0bc7-41a6-a2bb-0fe92114rr445t')]).parameter_table" t-as="parameter">
@@ -1831,8 +1827,8 @@
                                         </t>
 									</t>
 								</span>
-							</td> 
-							</t>
+							</td>  -->
+							<!-- </t> -->
 							<t t-if="data.stress_rate_visible">
 							<td  colspan="1" style="text-align: center;">
 							<span>
@@ -2080,7 +2076,7 @@
                                     <span t-esc="r['load_ucs']" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>      -->
 
-								<td colspan="1" style="min-width: 20px; width: 20px;">
+								<td colspan="1" style="text-align: center;">
 								<t t-set="di" t-value="triaxialp_index if triaxialp_index is not None else 0"/>
 
 								<t t-if="triaxialp_vals and di &lt; len(triaxialp_vals)">
@@ -2090,7 +2086,7 @@
 								<t t-else="">--</t>
 							</td>
 
-								<td colspan="1" style="min-width: 20px; width: 20px;">
+								<td colspan="1" style="text-align: center;">
 								<t t-set="di" t-value="triaxialc_index if triaxialc_index is not None else 0"/>
 
 								<t t-if="triaxialc_vals and di &lt; len(triaxialc_vals)">
@@ -2100,7 +2096,7 @@
 								<t t-else="">--</t>
 							</td>
 
-							<td colspan="1" style="min-width: 20px; width: 20px;">
+							<td colspan="1" style="text-align: center;">
 								<t t-set="di" t-value="slackfirst_index if slackfirst_index is not None else 0"/>
 
 								<t t-if="slackfirst_vals and di &lt; len(slackfirst_vals)">
@@ -2110,7 +2106,7 @@
 								<t t-else="">--</t>
 							</td>
 
-								<td colspan="1" style="min-width: 20px; width: 20px;">
+								<td colspan="1" style="text-align: center;">
 								 <t t-if="slackclass_vals and slackclass_index &lt; len(slackclass_vals)">
 									<t t-set="val" t-value="slackclass_vals[slackclass_index]"/>
 
@@ -2124,7 +2120,7 @@
 							</td>
 
 
-							<td colspan="1" style="min-width: 20px; width: 20px;">
+							<td colspan="1" style="text-align: center;">
 								<t t-set="di" t-value="abrasivity_index if abrasivity_index is not None else 0"/>
 
 								<t t-if="abrasivity_vals and di &lt; len(abrasivity_vals)">
@@ -2134,7 +2130,7 @@
 								<t t-else="">--</t>
 							</td>
 
-								<td colspan="1" style="min-width: 20px; width: 20px;">
+								<td colspan="1" style="text-align: center;">
 								 <t t-if="abrasivityclass_vals and abrasivityclass_index &lt; len(abrasivityclass_vals)">
 									<t t-set="val" t-value="abrasivityclass_vals[abrasivityclass_index]"/>
 
@@ -2762,7 +2758,8 @@
 							</td>
 
 							<td style="border:1px solid black; padding:6px; font-weight:bold;">
-								<t t-esc="triaxial.tangent_staright or '0'"/>
+								<!-- <t t-esc="triaxial.tangent_staright or '0'" t-options='{"precision": 2}'/> -->
+								<t t-esc="('%.2f' % (triaxial.tangent_staright or 0.0))"/>
 							</td>
 
 							<td style="border:1px solid black;">--</td>
@@ -2772,7 +2769,8 @@
 							</td>
 
 							<td style="border:1px solid black; padding:6px; font-weight:bold;">
-								<t t-esc="triaxial.phi or '0'"/>
+								<!-- <t t-esc="triaxial.phi or '0'" t-options='{"precision": 2}' /> -->
+								<t t-esc="('%.2f' % (triaxial.phi or 0.0))"/>
 							</td>
 
 							<td style="border:1px solid black;">Degree</td>
@@ -2787,7 +2785,8 @@
 							</td>
 
 							<td style="border:1px solid black; padding:6px; font-weight:bold;">
-								<t t-esc="triaxial.intercept_staright or '0'"/>
+								<!-- <t t-esc="triaxial.intercept_staright or '0'" t-options='{"precision": 2}'/> -->
+								<t t-esc="('%.2f' % (triaxial.intercept_staright or 0.0))"/>
 							</td>
 
 							<td style="border:1px solid black;">MPa</td>
@@ -2797,7 +2796,8 @@
 							</td>
 
 							<td style="border:1px solid black; padding:6px; font-weight:bold;">
-								<t t-esc="triaxial.cohesion or '0'"/>
+								<!-- <t t-esc="triaxial.cohesion or '0'" t-options='{"precision": 2}'/> -->
+								<t t-esc="('%.2f' % (triaxial.cohesion or 0.0))"/>
 							</td>
 
 							<td style="border:1px solid black;">MPa</td>
@@ -2807,6 +2807,16 @@
 					</tbody>
 
 				</table>
+
+				<table style="width:100%; margin-top:10px;">
+						<tr>
+							<td style="width:15%;"><strong>Remark:</strong></td>
+							<td style="width:85%;">
+								Test has been Conducted in soaked Condition.
+								The Imformation marked With an # received from customer
+							</td>
+						</tr>
+					</table>
 
 
 
@@ -3084,7 +3094,7 @@
 								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.porosity"/></td>
 
 								<td style="border:1px solid black; padding:4px; font-weight:bold;">Compressive Strength  qc at H/D=2</td>
-								<td style="border:1px solid black; padding:4px; text-align:center;">MPA</td>
+								<td style="border:1px solid black; padding:4px; text-align:center;">MPa</td>
 								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.comp_strength2"/></td>
 							</tr>
 
@@ -3126,7 +3136,7 @@
 
 									<table style="width:100%; border-collapse:collapse; font-size:12px;">
 										<tr>
-											<th style="border:1px solid black; padding:4px;">Stress <br/>(mPa)</th>
+											<th style="border:1px solid black; padding:4px;">Stress <br/>(MPa)</th>
 											<th style="border:1px solid black; padding:4px;">Strain<br/></th>
 										</tr>
 
@@ -3142,6 +3152,28 @@
 											</tr>
 										</t>
 									</table>
+
+
+							<table style="width:100%; border-collapse:collapse; font-size:13px; margin-top:20px;">
+								<tr style="background-color:#e6e6e6;">
+									<th>Stress Range (MPa)</th>
+									<th>Modulus, E (GPa)</th>
+									<th>Poissons Ratio, μ</th>
+								</tr>
+
+								<tr t-foreach="elasticity.elasticity_child_lines" t-as="line">
+									<td style="text-align:center;">
+										<span t-field="line.stress_range"/>
+									</td>
+									<td style="text-align:center;">
+										<span t-field="line.modulus_e"/>
+									</td>
+									<td style="text-align:center;">
+										<span t-field="line.poissons_ratio"/>
+									</td>
+								</tr>
+							</table>
+
 
 								</td>
 
@@ -3161,6 +3193,8 @@
 							</tr>
 						</table>
 
+
+						
 							</div>
 
                

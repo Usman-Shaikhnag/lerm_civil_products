@@ -2119,6 +2119,21 @@ class MechanicalElasticityLine(models.Model):
 
     stress = fields.Float(string="Stress (mPa)",digits=(16, 2))
     strain = fields.Float(string="Strain",digits=(16, 6))
+
+    stress_range = fields.Float(
+    string="Stress Range (MPa)",
+    digits=(16, 2)
+)
+
+    modulus_e = fields.Float(
+    string="Modulus, E (GPa)",
+    digits=(16, 2)
+)
+
+    poissons_ratio = fields.Float(
+    string="Poissons Ratio, μ",
+    digits=(16, 2)
+    )
     
 
 
@@ -2207,31 +2222,71 @@ class ElasticityLine(models.Model):
 
     elasticity_graph = fields.Binary("Stress-Strain Graph")
 
+    # def action_generate_graph(self):
+    #     for record in self:
+
+    #         x_vals = []
+    #         y_vals = []
+
+    #         for line in record.elasticity_child_lines:
+    #             if line.strain and line.stress:
+    #                 x_vals.append(line.strain)
+    #                 y_vals.append(line.stress)
+
+    #         if not x_vals:
+    #             return
+
+    #         plt.figure()
+    #         plt.plot(x_vals, y_vals, marker='o')
+    #         plt.xlabel("Strain")
+    #         plt.ylabel("Stress (mPa)")
+    #         plt.title("Stress vs Strain")
+    #         plt.grid(True)
+
+    #         buffer = BytesIO()
+    #         plt.savefig(buffer, format='png')
+    #         plt.close()
+
+    #         record.elasticity_graph = base64.b64encode(buffer.getvalue())
+
     def action_generate_graph(self):
         for record in self:
 
             x_vals = []
             y_vals = []
 
+            # 👉 Collect Data
             for line in record.elasticity_child_lines:
-                if line.strain and line.stress:
+                if line.strain is not None and line.stress is not None:
                     x_vals.append(line.strain)
                     y_vals.append(line.stress)
 
-            if not x_vals:
-                return
+            # 👉 If no data, skip
+            if not x_vals or not y_vals:
+                record.elasticity_graph = False
+                continue
 
+            # 👉 Create Plot
             plt.figure()
-            plt.plot(x_vals, y_vals, marker='o')
+
+            plt.plot(x_vals, y_vals, marker='o', linestyle='-')
+
             plt.xlabel("Strain")
             plt.ylabel("Stress (mPa)")
             plt.title("Stress vs Strain")
+
+            # 👉 FORCE START FROM ZERO
+            plt.xlim(0, max(x_vals) * 1.1)
+            plt.ylim(0, max(y_vals) * 1.1)
+
             plt.grid(True)
 
+            # 👉 Save Image
             buffer = BytesIO()
-            plt.savefig(buffer, format='png')
+            plt.savefig(buffer, format='png', bbox_inches='tight')
             plt.close()
 
+            # 👉 Store in Binary Field
             record.elasticity_graph = base64.b64encode(buffer.getvalue())
 
     lithologic_dic = fields.Char(string="Lithologic description of rock")
