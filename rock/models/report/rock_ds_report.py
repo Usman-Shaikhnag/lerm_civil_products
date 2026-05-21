@@ -97,6 +97,24 @@ class RockReport(models.AbstractModel):
         }
 
 
+class RockReportFirst(models.AbstractModel):
+    _name = 'report.rock.rock_report_first'
+    _description = 'Rock Report First Parser'
+
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        return self.env['report.rock.rock_report']._get_report_values(docids, data)
+
+
+class RockReportRest(models.AbstractModel):
+    _name = 'report.rock.rock_report_rest'
+    _description = 'Rock Report Rest Parser'
+
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        return self.env['report.rock.rock_report']._get_report_values(docids, data)
+
+
 class SoilReportTriaxial(models.AbstractModel):
     _name = 'report.rock.report_triaxial_template'
     _description = 'CBR Report Parser'

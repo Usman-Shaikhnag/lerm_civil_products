@@ -6195,6 +6195,7 @@ class ConsolidationBothCycleLine(models.Model):
     parent_id_con_out = fields.Many2one('consolidation.line',string="Parent Id")
 
     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
+    sequence = fields.Integer(default=10)  # 🔥 MUST
 
     cylces=  fields.Char(string="Cycles" )
 
@@ -6771,6 +6772,8 @@ class SwellingPressureUnloadingLine(models.Model):
 class SwellingPressureBothCycleLine(models.Model):
     _name = "swelling.pressure.both.cycle.line"
     parent_id_output = fields.Many2one('swelling.pressure.line',string="Parent Id")
+
+   
 
     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
 

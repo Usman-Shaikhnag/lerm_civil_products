@@ -1010,25 +1010,7 @@
             <field name="binding_type">report</field>
         </record>
 
-        <record id="rock_datasheet_action" model="ir.actions.report">
-        <field name="name">ROCK DataSheet </field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">rock.rock_datasheet</field>
-        <field name="report_file">rock.rock_datasheet</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
-
-    <record id="rock_report_action" model="ir.actions.report">
-        <field name="name">ROCK Report </field>
-        <field name="model">lerm.eln</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">rock.rock_report</field>
-        <field name="report_file">rock.rock_report</field>
-        <field name="binding_model_id" ref="model_lerm_eln"/>
-        <field name="binding_type">report</field>
-    </record>
+      
 
     <record id="stones_report_action" model="ir.actions.report">
     <field name="name">Stones Report</field>
@@ -1115,6 +1097,73 @@
     <field name="binding_type">report</field>
     <field name="paperformat_id" ref="paperformat_portrait"/>
 </record>   
+
+
+  <record id="rock_datasheet_action" model="ir.actions.report">
+        <field name="name">ROCK DataSheet </field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">rock.rock_datasheet</field>
+        <field name="report_file">rock.rock_datasheet</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="rock_report_action" model="ir.actions.report">
+        <field name="name">ROCK Report </field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">rock.rock_report</field>
+        <field name="report_file">rock.rock_report</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="paperformat_landscape_rock" model="report.paperformat">
+    <field name="name">Landscape A4</field>
+    <field name="default" eval="True"/>
+    <field name="format">A4</field>
+    <field name="orientation">Landscape</field>
+    <field name="margin_top">40</field>
+    <field name="margin_bottom">25</field>
+    <field name="margin_left">5</field>
+    <field name="margin_right">5</field>
+    <field name="header_line" eval="False"/>
+    <field name="header_spacing">25</field>
+    <field name="dpi">150</field>
+</record>
+
+<record id="rock_report_first_action" model="ir.actions.report">
+    <field name="name">Rock Report First</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">rock.rock_report_first</field>
+    <field name="report_file">rock.rock_report_first</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+    <field name="paperformat_id" ref="paperformat_landscape_rock"/>
+</record>
+
+<record id="paperformat_portrait_rock" model="report.paperformat">
+    <field name="name">Portrait A4</field>
+    <field name="default" eval="True"/>
+    <field name="format">A4</field>
+    <field name="orientation">Portrait</field>
+    <!-- <field name="margin_top">10</field> -->
+    <field name="dpi">110</field>
+</record>
+
+<record id="rock_report_rest_action" model="ir.actions.report">
+    <field name="name">Rock Report Rest</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">rock.rock_report_rest</field>
+    <field name="report_file">rock.rock_report_rest</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+    <field name="paperformat_id" ref="paperformat_portrait_rock"/>
+</record>   
+
 
 
 

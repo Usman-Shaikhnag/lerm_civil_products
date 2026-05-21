@@ -15,7 +15,9 @@ This module contains all the common features of ROCK.
                  
                  'security/ir.model.access.csv',
                  'views/rock.xml',
-                 'report/rock_ds_report.xml'
+                 'report/rock_ds_report.xml',
+                 'report/rock_report_first.xml',
+                 'report/rock_report_rest.xml'
     ],
   
     'installable': True,

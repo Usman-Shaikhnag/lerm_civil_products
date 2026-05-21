@@ -20,6 +20,12 @@ This module contains all the common features of Sales Management and eCommerce.
                'reports/soil_report_rest.xml',
     ],
 
+    'assets': {
+    'web.assets_backend': [
+        'soil1/static/src/js/arrow_move.js',
+    ],
+},
+
   
     'installable': True,
     'auto_install': False,

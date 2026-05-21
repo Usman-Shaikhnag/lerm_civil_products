@@ -2323,20 +2323,7 @@ class MechanicalElasticityLine(models.Model):
     stress = fields.Float(string="Stress (MPa)",digits=(16, 2))
     strain = fields.Float(string="Strain",digits=(16, 6))
 
-    stress_range = fields.Float(
-    string="Stress Range (MPa)",
-    digits=(16, 2)
-)
-
-    modulus_e = fields.Float(
-    string="Modulus, E (GPa)",
-    digits=(16, 2)
-)
-
-    poissons_ratio = fields.Float(
-    string="Poissons Ratio, μ",
-    digits=(16, 2)
-)
+    
     
 
 
@@ -2448,31 +2435,71 @@ class ElasticityLine(models.Model):
 
     elasticity_graph = fields.Binary("Stress-Strain Graph")
 
+    # def action_generate_graph(self):
+    #     for record in self:
+
+    #         x_vals = []
+    #         y_vals = []
+
+    #         for line in record.elasticity_child_lines:
+    #             if line.strain and line.stress:
+    #                 x_vals.append(line.strain)
+    #                 y_vals.append(line.stress)
+
+    #         if not x_vals:
+    #             return
+
+    #         plt.figure()
+    #         plt.plot(x_vals, y_vals, marker='o')
+    #         plt.xlabel("Strain")
+    #         plt.ylabel("Stress (mPa)")
+    #         plt.title("Stress vs Strain")
+    #         plt.grid(True)
+
+    #         buffer = BytesIO()
+    #         plt.savefig(buffer, format='png')
+    #         plt.close()
+
+    #         record.elasticity_graph = base64.b64encode(buffer.getvalue())
+
     def action_generate_graph(self):
         for record in self:
 
             x_vals = []
             y_vals = []
 
+            # 👉 Collect Data
             for line in record.elasticity_child_lines:
-                if line.strain and line.stress:
+                if line.strain is not None and line.stress is not None:
                     x_vals.append(line.strain)
                     y_vals.append(line.stress)
 
-            if not x_vals:
-                return
+            # 👉 If no data, skip
+            if not x_vals or not y_vals:
+                record.elasticity_graph = False
+                continue
 
+            # 👉 Create Plot
             plt.figure()
-            plt.plot(x_vals, y_vals, marker='o')
+
+            plt.plot(x_vals, y_vals, marker='o', linestyle='-')
+
             plt.xlabel("Strain")
             plt.ylabel("Stress (mPa)")
             plt.title("Stress vs Strain")
+
+            # 👉 FORCE START FROM ZERO
+            plt.xlim(0, max(x_vals) * 1.1)
+            plt.ylim(0, max(y_vals) * 1.1)
+
             plt.grid(True)
 
+            # 👉 Save Image
             buffer = BytesIO()
-            plt.savefig(buffer, format='png')
+            plt.savefig(buffer, format='png', bbox_inches='tight')
             plt.close()
 
+            # 👉 Store in Binary Field
             record.elasticity_graph = base64.b64encode(buffer.getvalue())
 
     room_temp_elasticity = fields.Float(
@@ -2583,37 +2610,52 @@ class ElasticityLine(models.Model):
         store=True
     )
 
+    stress_range = fields.Float(
+    string="Stress Range (MPa)",
+    digits=(16, 2)
+)
+
+    modulus_e = fields.Float(
+    string="Modulus, E (GPa)",
+    digits=(16, 2)
+)
+
+    poissons_ratio = fields.Float(
+    string="Poissons Ratio, μ",
+    digits=(16, 2)
+)
+
     machine_used = fields.Char(string="Type of Sample & Condition")
 
-    # lithologic_dic = fields.Char(string="Lithologic description of rock")
+    lithologic_dic = fields.Char(string="Lithologic description of rock")
 
-    # avg_dia = fields.Float(string="Average Diameter (D) mm",)
-    # avg_height = fields.Float(string="Average Height (H) mm",)
-    # hd = fields.Float(string="H/D",digits=(16, 2),store=True)
+    avg_dia = fields.Float(string="Average Diameter (D) mm",)
+    avg_height = fields.Float(string="Average Height (H) mm",)
+    hd = fields.Float(string="H/D",digits=(16, 2),store=True)
 
-    # bulk_density = fields.Float(string="Bulk Density g/cc",digits=(16, 2),store=True)
-    # sat_density = fields.Float(string="Sat Density g/cc",digits=(16, 2),store=True)
-    # dry_density = fields.Float(string="Dry Density g/cc",digits=(16, 2),store=True,)
-    # water_absorption = fields.Float(string="Water Absorption %",digits=(16, 2))
+    bulk_density = fields.Float(string="Bulk Density g/cc",digits=(16, 2),store=True)
+    sat_density = fields.Float(string="Sat Density g/cc",digits=(16, 2),store=True)
+    dry_density = fields.Float(string="Dry Density g/cc",digits=(16, 2),store=True,)
+    water_absorption = fields.Float(string="Water Absorption %",digits=(16, 2))
 
-    # room_temp_elasticity = fields.Float(string="Room Temperature")
-    # relative_humidity_elasticity = fields.Float(string="Relative humidity",digits=(16, 2))
+    room_temp_elasticity = fields.Float(string="Room Temperature")
+    relative_humidity_elasticity = fields.Float(string="Relative humidity",digits=(16, 2))
     
-    # machine_used = fields.Char(string="Type of Sample & Condition")
+    machine_used = fields.Char(string="Type of Sample & Condition")
 
 
-    # sp_gravity = fields.Float(string="Sp. Gravity",digits=(16, 2),store=True)
+    sp_gravity = fields.Float(string="Sp. Gravity",digits=(16, 2),store=True)
     
-    # porosity = fields.Float(string="Porosity",digits=(16, 2),store=True)
-    # water_content = fields.Float(string="Water Content",digits=(16, 2))
+    porosity = fields.Float(string="Porosity",digits=(16, 2),store=True)
+    water_content = fields.Float(string="Water Content",digits=(16, 2))
 
-    # duration_of_test = fields.Float(string="Duration of the test (Sec)",digits=(16, 2))
-    # stress_rate = fields.Float(string="Stress Rate",digits=(16, 2),store=True)
-    # mode_of_failure = fields.Char(string="Mode of failure",digits=(16, 2))
+    duration_of_test = fields.Float(string="Duration of the test (Sec)",digits=(16, 2))
+    stress_rate = fields.Float(string="Stress Rate",digits=(16, 2),store=True)
+    mode_of_failure = fields.Char(string="Mode of failure",digits=(16, 2))
 
 
-    # comp_strength1 = fields.Float(string="Compressive Strength qc ",digits=(16, 2),store=True)
-    # comp_strength2 = fields.Float(string="Compressive Strength  qc at H/D=2",digits=(16, 2),store=True)
+    comp_strength1 = fields.Float(string="Compressive Strength qc ",digits=(16, 2),store=True)
+    comp_strength2 = fields.Float(string="Compressive Strength  qc at H/D=2",digits=(16, 2),store=True)
     
 
     
