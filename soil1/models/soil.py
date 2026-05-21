@@ -290,6 +290,8 @@ class Soil(models.Model):
 
             record.silt_clay = total  # Use a separate field for clay fraction
 
+    
+
 
     @api.depends('sieve_analysis_child_lines.passing_percent', 'sieve_analysis_child_lines.sieve_size')
     def _compute_silt(self):
@@ -5553,6 +5555,8 @@ class SoilGSALINE(models.Model):
                 print("Updated Passing Percent:", passing_percent)
 
                 previous_cumulative = cumulative_retained
+
+    
 
     
 
@@ -14577,7 +14581,133 @@ class ConsolidationLine(models.Model):
     
 
     ce = fields.Float(string="Ce", digits=(8, 3), compute="_compute_ce_cr", store=True)
-    cr = fields.Float(string="Recompression Index, Cr", digits=(8, 3),compute="_compute_ce_cr")
+    cr = fields.Float(string="Recompression Index, Cr", digits=(8, 3),compute="_compute_cr")
+
+
+    @api.depends(
+        'con_swell_void_ratio',
+        'pressure_y',
+        'preconsolidation_pressure_x',
+        'consolidation_output_ids.applied_pressure'
+    )
+    def _compute_cr(self):
+        for record in self:
+
+            record.cr = 0.0
+
+            # Sort by pressure like Excel rows
+            lines = record.consolidation_output_ids.sorted(
+                key=lambda l: l.applied_pressure
+            )
+
+            # Excel is using first pressure value
+            # Example: 0.10
+            first_pressure = (
+                lines[0].applied_pressure
+                if lines else 0.0
+            )
+
+            if (
+                first_pressure > 0
+                and record.preconsolidation_pressure_x > 0
+                and record.preconsolidation_pressure_x != first_pressure
+            ):
+
+                numerator = (
+                    record.con_swell_void_ratio
+                    - record.pressure_y
+                )
+
+                denominator = math.log10(
+                    record.preconsolidation_pressure_x
+                    / first_pressure
+                )
+
+                if denominator != 0:
+
+                    record.cr = (
+                        numerator / denominator
+                    )
+
+
+    
+    @api.depends(
+    'consolidation_output_ids.e_void',
+    'consolidation_output_ids.applied_pressure',
+)
+    def _compute_ce_cr(self):
+     for rec in self:
+
+        rec.ce = 0.0
+        rec.cr = 0.0
+
+        lines = rec.consolidation_output_ids.filtered(
+            lambda l: l.applied_pressure is not None and l.e_void is not None
+        )
+
+        if not lines:
+            continue
+
+        # =========================
+        # SORT SAFELY (NO NewId ISSUE)
+        # =========================
+        lines = lines.sorted(key=lambda l: l._origin.id or 0)
+
+        # =========================
+        # SPLIT BASED ON PRESSURE TREND
+        # =========================
+        loading = []
+        unloading = []
+
+        prev = None
+        is_unloading = False
+
+        for l in lines:
+            p = l.applied_pressure
+
+            if prev is not None and p < prev:
+                is_unloading = True
+
+            if is_unloading:
+                unloading.append(l)
+            else:
+                loading.append(l)
+
+            prev = p
+
+        # =========================
+        # HELPER: FIND EXACT PRESSURE
+        # =========================
+        def find(records, value):
+            for r in records:
+                if round(r.applied_pressure or 0.0, 2) == value:
+                    return r
+            return False
+
+        # =========================
+        # Ce → 0.50 → 4.00
+        # =========================
+        l1 = find(loading, 0.50)
+        l2 = find(loading, 4.00)
+
+        if l1 and l2:
+            rec.ce = (l1.e_void - l2.e_void) / (
+                log10(l2.applied_pressure) - log10(l1.applied_pressure)
+            )
+
+        # =========================
+        # Cr → 0.50 → 0.10
+        # =========================
+        # u1 = find(unloading, 0.50)
+        # u2 = find(unloading, 0.10)
+
+        # if u1 and u2:
+        #     rec.cr = (u1.e_void - u2.e_void) / (
+        #         log10(u2.applied_pressure) - log10(u1.applied_pressure)
+        #     )
+            
+
+
 
     slop = fields.Float(string="Slop m", digits=(8, 3),compute="_compute_slop")
 
@@ -14592,7 +14722,7 @@ class ConsolidationLine(models.Model):
             except Exception:
                 rec.slop = 0.0
 
-    slop1 = fields.Float(string="Slop 1", digits=(8, 3))
+    slop1 = fields.Float(string="Slop 1",compute="_compute_slop1" ,digits=(8, 3))
     slop2 = fields.Float(string="Slop 2", digits=(8, 3),compute="_compute_slop2")
 
     slop3 = fields.Float(string="Slop 3", digits=(8, 3),compute="_compute_slop3")
@@ -14661,6 +14791,16 @@ class ConsolidationLine(models.Model):
             for line in rec.consolidation_output_ids:
                 if float(line.applied_pressure) == 4.0:
                     rec.slop2 = line.applied_pressure
+                    break
+
+    @api.depends('consolidation_output_ids.applied_pressure')
+    def _compute_slop1(self):
+        for rec in self:
+            rec.slop1 = 0.0
+
+            for line in rec.consolidation_output_ids:
+                if float(line.applied_pressure) == 2.00:
+                    rec.slop1 = line.applied_pressure
                     break
 
     bisector1 = fields.Float(string="Bisector 1", digits=(8, 3),compute="_compute_bisector1")
@@ -14734,126 +14874,9 @@ class ConsolidationLine(models.Model):
                 rec.bisector = 0.0
 
 
-    # @api.depends(
-    #     'consolidation_output_ids.e_void',
-    #     'consolidation_output_ids.applied_pressure',
-    #     'consolidation_output_ids.cylces',
-    # )
-    # def _compute_ce_cr(self):
-    #     for rec in self:
-    #         rec.ce = 0.0
-    #         rec.cr = 0.0
-
-    #         lines = rec.consolidation_output_ids
-
-    #         # --------- Ce from loading segment (choose same points as Excel) ---------
-    #         # example: use loading rows at 0.50 and 4.00 kg/cm²
-    #         l1 = lines.filtered(
-    #             lambda l: l.cylces == '1st Cycle Loading' and l.applied_pressure == 0.50
-    #         )[:1]
-    #         l2 = lines.filtered(
-    #             lambda l: l.cylces == '1st Cycle Loading' and l.applied_pressure == 4.00
-    #         )[:1]
-
-    #         if l1 and l2:
-    #             e1, p1 = l1.e_void or 0.0, l1.applied_pressure or 0.0
-    #             e2, p2 = l2.e_void or 0.0, l2.applied_pressure or 0.0
-    #             if p1 and p2 and p2 != p1:
-    #                 rec.ce = (e1 - e2) / log10(p2 / p1)
-
-    #         # --------- Cr from unloading segment (same as Excel) ---------
-    #         # example: use unloading rows at 0.50 and 0.10 kg/cm²
-    #         u1 = lines.filtered(
-    #             lambda l: l.cylces == '1st Cycle Unloading' and l.applied_pressure == 0.50
-    #         )[:1]
-    #         u2 = lines.filtered(
-    #             lambda l: l.cylces == '1st Cycle Unloading' and l.applied_pressure == 0.10
-    #         )[:1]
-
-    #         if u1 and u2:
-    #             e1, p1 = u1.e_void or 0.0, u1.applied_pressure or 0.0
-    #             e2, p2 = u2.e_void or 0.0, u2.applied_pressure or 0.0
-    #             if p1 and p2 and p2 != p1:
-    #                 rec.cr = (e1 - e2) / log10(p2 / p1)
 
 
-    from math import log10
 
-    @api.depends(
-    'consolidation_output_ids.e_void',
-    'consolidation_output_ids.applied_pressure',
-)
-    def _compute_ce_cr(self):
-     for rec in self:
-
-        rec.ce = 0.0
-        rec.cr = 0.0
-
-        lines = rec.consolidation_output_ids.filtered(
-            lambda l: l.applied_pressure is not None and l.e_void is not None
-        )
-
-        if not lines:
-            continue
-
-        # =========================
-        # SORT SAFELY (NO NewId ISSUE)
-        # =========================
-        lines = lines.sorted(key=lambda l: l._origin.id or 0)
-
-        # =========================
-        # SPLIT BASED ON PRESSURE TREND
-        # =========================
-        loading = []
-        unloading = []
-
-        prev = None
-        is_unloading = False
-
-        for l in lines:
-            p = l.applied_pressure
-
-            if prev is not None and p < prev:
-                is_unloading = True
-
-            if is_unloading:
-                unloading.append(l)
-            else:
-                loading.append(l)
-
-            prev = p
-
-        # =========================
-        # HELPER: FIND EXACT PRESSURE
-        # =========================
-        def find(records, value):
-            for r in records:
-                if round(r.applied_pressure or 0.0, 2) == value:
-                    return r
-            return False
-
-        # =========================
-        # Ce → 0.50 → 4.00
-        # =========================
-        l1 = find(loading, 0.50)
-        l2 = find(loading, 4.00)
-
-        if l1 and l2:
-            rec.ce = (l1.e_void - l2.e_void) / (
-                log10(l2.applied_pressure) - log10(l1.applied_pressure)
-            )
-
-        # =========================
-        # Cr → 0.50 → 0.10
-        # =========================
-        u1 = find(unloading, 0.50)
-        u2 = find(unloading, 0.10)
-
-        if u1 and u2:
-            rec.cr = (u1.e_void - u2.e_void) / (
-                log10(u2.applied_pressure) - log10(u1.applied_pressure)
-            )
-            
 
             
 
@@ -14998,92 +15021,28 @@ class ConsolidationLine(models.Model):
             else:
                 rec.pc_y = 0.0
 
-    preconsolidation_pressure_x = fields.Float(string="Preconsolidation Pressure X", digits=(8, 5),compute="_compute_preconsolidation_pressure_x")
+    pressure_y = fields.Float(
+    string="Pressure Y",
+    digits=(16, 7),
+    compute="_compute_pressure_y"
+)
+    
 
-    from math import log10
+    @api.depends('bisector', 'bisector5', 'preconsolidation_pressure_x')
+    def _compute_pressure_y(self):
+     for record in self:
+        if record.preconsolidation_pressure_x > 0:
+            record.pressure_y = (
+                record.bisector *
+                math.log10(record.preconsolidation_pressure_x)
+            ) + record.bisector5
+        else:
+            record.pressure_y = 0.0
 
-#     @api.depends(
-#     'consolidation_output_ids.e_void',
-#     'consolidation_output_ids.applied_pressure',
-#     'consolidation_output_ids.cylces',
-# )
-#     def _compute_pc_casagrande(self):
-#      for rec in self:
-#         rec.pc_casagrande = 0.0
-#         rec.pc_x = 0.0
-#         rec.pc_y = 0.0
+    preconsolidation_pressure_x = fields.Float(string="Preconsolidation Pressure X", digits=(16, 7),compute="_compute_preconsolidation_pressure_x")
 
-#         # --- LOADING CURVE ONLY ---
-#         pts = [
-#             (log10(l.applied_pressure), l.e_void)
-#             for l in rec.consolidation_output_ids
-#             if l.cylces == '1st Cycle Loading'
-#             and l.applied_pressure
-#             and l.e_void
-#             and l.applied_pressure > 0
-#         ]
 
-#         if len(pts) < 4:
-#             continue
 
-#         # sort by pressure
-#         pts.sort(key=lambda x: x[0])
-
-#         # --- STEP 1: MAX CURVATURE POINT (numerical) ---
-#         max_k = 0
-#         idx = None
-
-#         for i in range(1, len(pts) - 1):
-#             x1, y1 = pts[i - 1]
-#             x2, y2 = pts[i]
-#             x3, y3 = pts[i + 1]
-
-#             k = abs(
-#                 (x2 - x1) * (y3 - y1) -
-#                 (y2 - y1) * (x3 - x1)
-#             )
-
-#             if k > max_k:
-#                 max_k = k
-#                 idx = i
-
-#         if idx is None:
-#             continue
-
-#         xm, ym = pts[idx]
-
-#         # --- STEP 2: TANGENT AT MAX CURVATURE ---
-#         x1, y1 = pts[idx - 1]
-#         x3, y3 = pts[idx + 1]
-
-#         m_t = (y3 - y1) / (x3 - x1)
-#         c_t = ym - m_t * xm
-
-#         # --- STEP 3: HORIZONTAL LINE ---
-#         m_h = 0
-#         c_h = ym
-
-#         # --- STEP 4: BISECTOR ---
-#         m_b = (m_t + m_h) / 2
-#         c_b = ym - m_b * xm
-
-#         # --- STEP 5: NORMAL CONSOLIDATION LINE (last two points) ---
-#         x_nc1, y_nc1 = pts[-2]
-#         x_nc2, y_nc2 = pts[-1]
-
-#         m_nc = (y_nc2 - y_nc1) / (x_nc2 - x_nc1)
-#         c_nc = y_nc2 - m_nc * x_nc2
-
-#         # --- STEP 6: INTERSECTION (BISECTOR × NC LINE) ---
-#         if m_b == m_nc:
-#             continue
-
-#         x_pc = (c_nc - c_b) / (m_b - m_nc)
-#         y_pc = m_b * x_pc + c_b
-
-#         rec.pc_x = 10 ** x_pc
-#         rec.pc_y = y_pc
-#         rec.pc_casagrande = rec.pc_x
 
     @api.depends(
         'consolidation_output_ids.e_void',
