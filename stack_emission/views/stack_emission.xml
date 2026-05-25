@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="stack_emission_view" model="ir.ui.view">
+        <field name="name">stack.emission.form</field>
+        <field name="model">stack.emission</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <sheet>
+                     <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <!-- <field name="grade" readonly="1"/> -->
+                        <field name="parameter_id" invisible="1"/>
+                        <field name="eln_state" />
+                        <field name="grade"/>
+                        <field name="size_id"/>
+                    </group>
+                    <group style="white-space: nowrap; width:70%;">
+                        <h1>
+                            <field name="name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+
+                     <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+
+                     <div invisible="stack_details_visible == False" style="text-align:center">
+                        <h1>
+                          <field name="stack_details_name" readonly="1" nolabel="1"/>
+                          <field name="stack_details_visible" invisible='1'/>
+                        </h1>
+                    </div>
+
+         
+
+                        <div class="d-flex gap-2"  invisible="stack_details_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="stack_id"></label></td>
+                                    <td style="width:50%;"><field name="stack_id"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+
+                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="thimble_no"></label></td>
+                                    <td style="width:50%;"><field name="thimble_no"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                        </div>
+
+                       
+
+
+                    <div class="d-flex gap-2"  invisible="stack_details_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="stack_attached_to"></label></td>
+                                    <td style="width:50%;"><field name="stack_attached_to"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="initial_weight"></label></td>
+                                    <td style="width:50%;"><field name="initial_weight"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                        </div>
+
+
+                        <div class="d-flex gap-2"  invisible="stack_details_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="stack_height"></label></td>
+                                    <td style="width:50%;"><field name="stack_height"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="final_weight"></label></td>
+                                    <td style="width:50%;"><field name="final_weight"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                        </div>
+
+
+                          <div class="d-flex gap-2"  invisible="stack_details_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="stack_duct"></label></td>
+                                    <td style="width:50%;"><field name="stack_duct"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="diff_weight"></label></td>
+                                    <td style="width:50%;"><field name="diff_weight"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                        </div>
+
+                     <div class="d-flex gap-2"  invisible="stack_details_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="fuel_type"></label></td>
+                                    <td style="width:50%;"><field name="fuel_type"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="cross_area"></label></td>
+                                    <td style="width:50%;"><field name="cross_area"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                        </div>
+
+                         <div class="d-flex gap-2"  invisible="stack_details_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="nozzle"></label></td>
+                                    <td style="width:50%;"><field name="nozzle"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+
+                       
+                        </div>
+
+
+                    <div invisible="parameter_details_visible == False" style="text-align:center">
+                        <h1>
+                          <field name="parameter_details_name" readonly="1" nolabel="1"/>
+                          <field name="parameter_details_visible" invisible='1'/>
+                        </h1>
+                    </div>
+
+
+                        <table class="table table-sm table-bordered w-100 mt-2 custom_table_borders"
+                            invisible="parameter_details_visible == False">
+
+                            <!-- ================= THEAD ================= -->
+                            <thead>
+                                <tr>
+                                    <th>Parameters</th>
+                                    <th>Details</th>
+                                    <th>Parameters</th>
+                                    <th>Details</th>
+                                </tr>
+                            </thead>
+
+                            <!-- ================= TBODY ================= -->
+                            <tbody>
+
+                                <tr>
+                                    <td><label for="ambient_temp"/> :</td>
+                                    <td><field name="ambient_temp"/></td>
+
+                                    <td><label for="avg_velocity"/></td>
+                                    <td><field name="avg_velocity"/></td>
+                                </tr>
+
+                                <tr>
+                                    <td><label for="ambient_temp_k"/></td>
+                                    <td><field name="ambient_temp_k"/></td>
+
+                                    <td><label for="flow_rate"/></td>
+                                    <td><field name="flow_rate"/></td>
+                                </tr>
+
+                                <tr>
+                                    <td><label for="stack_temp"/></td>
+                                    <td><field name="stack_temp"/></td>
+
+                                    <td><label for="flow_rate_ts"/></td>
+                                    <td><field name="flow_rate_ts"/></td>
+                                </tr>
+
+                                <tr>
+                                    <td><label for="stack_temp_k"/></td>
+                                    <td><field name="stack_temp_k"/></td>
+
+                                    <td><label for="sampling_time"/></td>
+                                    <td><field name="sampling_time"/></td>
+                                </tr>
+
+                                <tr>
+                                    <td><label for="barometric_pressure"/></td>
+                                    <td><field name="barometric_pressure"/></td>
+
+                                    <td><label for="total_gas"/></td>
+                                    <td><field name="total_gas"/></td>
+                                </tr>
+
+                                <tr>
+                                    <td><label for="diff_pressure"/></td>
+                                    <td><field name="diff_pressure"/></td>
+
+                                    <td><label for="actual_flow"/></td>
+                                    <td><field name="actual_flow"/></td>
+                                </tr>
+
+                                <tr>
+                                    <td><label for="stack_pressure"/></td>
+                                    <td><field name="stack_pressure"/></td>
+
+                                    <td><label for="corrected_flow"/></td>
+                                    <td><field name="corrected_flow"/></td>
+                                </tr>
+
+                                <tr>
+                                    <td><label for="absolute_pressure"/></td>
+                                    <td><field name="absolute_pressure"/></td>
+
+                                    <td><label for="tpm"/></td>
+                                    <td><field name="tpm"/></td>
+                                </tr>
+
+                                <tr>
+                                    <td><label for="coefficient_k"/></td>
+                                    <td><field name="coefficient_k"/></td>
+
+                                    <td><label for="total_gas_quantity"/></td>
+                                    <td><field name="total_gas_quantity"/></td>
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+
+                        <table class="table table-sm table-bordered w-100 mt-2 custom_table_borders"
+                            invisible="parameter_details_visible == False">
+
+                        <thead>
+                            <tr>
+                                <th>Number of Traverse Points :</th>
+                                <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th>
+                                <th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th>
+                                <th>Avg.</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <!-- Differential Pressure -->
+                            <tr>
+                                <td>Differential Pressure (ΔH)</td>
+
+                                <td><field name="dp1"/></td>
+                                <td><field name="dp2"/></td>
+                                <td><field name="dp3"/></td>
+                                <td><field name="dp4"/></td>
+                                <td><field name="dp5"/></td>
+                                <td><field name="dp6"/></td>
+                                <td><field name="dp7"/></td>
+                                <td><field name="dp8"/></td>
+                                <td><field name="dp9"/></td>
+                                <td><field name="dp10"/></td>
+                                <td><field name="dp11"/></td>
+                                <td><field name="dp12"/></td>
+
+                                <td><field name="dp_avg" readonly="1"/></td>
+                            </tr>
+
+                            <!-- Static Pressure -->
+                            <tr>
+                                <td>Static Pressure</td>
+
+                                <td><field name="sp1"/></td>
+                                <td><field name="sp2"/></td>
+                                <td><field name="sp3"/></td>
+                                <td><field name="sp4"/></td>
+                                <td><field name="sp5"/></td>
+                                <td><field name="sp6"/></td>
+                                <td><field name="sp7"/></td>
+                                <td><field name="sp8"/></td>
+                                <td><field name="sp9"/></td>
+                                <td><field name="sp10"/></td>
+                                <td><field name="sp11"/></td>
+                                <td><field name="sp12"/></td>
+
+                                <td><field name="sp_avg" readonly="1"/></td>
+                            </tr>
+
+                            <!-- Velocity -->
+                            <tr>
+                                <td>Velocity (m/sec)</td>
+
+                                <td><field name="v1"/></td>
+                                <td><field name="v2"/></td>
+                                <td><field name="v3"/></td>
+                                <td><field name="v4"/></td>
+                                <td><field name="v5"/></td>
+                                <td><field name="v6"/></td>
+                                <td><field name="v7"/></td>
+                                <td><field name="v8"/></td>
+                                <td><field name="v9"/></td>
+                                <td><field name="v10"/></td>
+                                <td><field name="v11"/></td>
+                                <td><field name="v12"/></td>
+
+                                <td><field name="v_avg" readonly="1"/></td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;"  invisible="parameter_details_visible == False">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="avgg_velocity"></label></td>
+                                    <td style="width:50%;"><field name="avgg_velocity"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                                        
+
+
+                    <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
+
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>

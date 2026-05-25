@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="stack_emission_datasheet">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			<t t-call="lerm_civil.mechanical_data_sheet_header">
+                <div style="text-align:center;font-size:18px">
+                 Stack Emission
+                </div>
+				
+                <div class="container_eln" style="margin-top:5px">
+
+				   <table style="margin-top:10px">
+				<tr cols="12">
+					
+					<td colspan="6">Job No :
+                        <![CDATA[&nbsp;]]>
+                         <span t-field="eln.kes_no"></span>
+                    </td>
+					<td colspan="6">Test Start Date: 
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.start_date"></span>
+                    </td>
+				</tr>
+                <tr>
+                  <td colspan="6">Material: <span t-field="eln.material"></span>
+                </td>
+                 <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
+                </td>
+                </tr>
+                <tr style="height:50px" cols="12">
+                    <td colspan="4">Performed By :
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.technician.name"/>
+                    </td>
+                    <td colspan="4">Witness Name :
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.witness_description"/>
+                    </td>
+                    <td colspan="4">Witness Signature :
+                        <![CDATA[&nbsp;]]>
+                        <span style='padding:20px'></span>
+                    </td>
+                </tr>
+			</table>
+			
+
+		
+
+
+
+                 <div style="margin-top:20px"  t-if="data.stack_details_visible">
+                       
+                       <table >
+
+                            <!-- Title -->
+                            <tr>
+                                <th colspan="4" style="text-align:center; font-size:18px;">
+                                    Stack Details
+                                </th>
+                            </tr>
+
+                            <!-- Row 1 -->
+                            <tr>
+                                <td><b>Stack ID :</b></td>
+                                <td><span t-field="data.stack_id"/></td>
+
+                                <td><b>Thimble No :</b></td>
+                                <td><span t-field="data.thimble_no"/></td>
+                            </tr>
+
+                            <!-- Row 2 -->
+                            <tr>
+                                <td><b>Stack attached to :</b></td>
+                                <td><span t-field="data.stack_attached_to"/></td>
+
+                                <td><b>Initial Weight of Thimble (gm) W₁ :</b></td>
+                                <td><span t-field="data.initial_weight"/></td>
+                            </tr>
+
+                            <!-- Row 3 -->
+                            <tr>
+                                <td><b>Stack Height :</b></td>
+                                <td><span t-field="data.stack_height"/></td>
+
+                                <td><b>Final Weight of Thimble (gm) W₂ :</b></td>
+                                <td><span t-field="data.final_weight"/></td>
+                            </tr>
+
+                            <!-- Row 4 -->
+                            <tr>
+                                <td><b>Stack/Duct Dia :</b></td>
+                                <td><span t-field="data.stack_duct"/></td>
+
+                                <td><b>Difference Weight (gm) ΔW :</b></td>
+                                <td><span t-field="data.diff_weight"/></td>
+                            </tr>
+
+                            <!-- Row 5 -->
+                            <tr>
+                                <td><b>Type of Fuel Use :</b></td>
+                                <td><span t-field="data.fuel_type"/></td>
+
+                                <td><b>Cross Sectional Area (m²) :</b></td>
+                                <td><span t-field="data.cross_area"/></td>
+                            </tr>
+
+                            <!-- Row 6 -->
+                            <tr>
+                                <td><b>Nozzle Dia and Type :</b></td>
+                                <td><span t-field="data.nozzle"/></td>
+
+                                <td></td>
+                                <td></td>
+                            </tr>
+
+                        </table>
+
+                        <div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div>
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+				</div>
+                </div>
+
+
+        <div t-if="data.parameter_details_visible" style="margin-top:20px; page-break-before: always;">
+                <table style="width:100%; border-collapse:collapse;" border="1">
+
+                    <!-- ================= TITLE ================= -->
+                    <tr>
+                        <th colspan="4" style="text-align:center; font-size:18px;">
+                            Parameter Details
+                        </th>
+                    </tr>
+
+                    <!-- ================= PARAMETERS ================= -->
+
+                    <tr>
+                        <td><b>Ambient Temp. °C :</b></td>
+                        <td><span t-field="data.ambient_temp"/></td>
+
+                        <td><b>Avg. Velocity m/s =  coefficient factor x √stack Temp. x diff. pressure :</b></td>
+                        <td><span t-field="data.avg_velocity"/></td>
+                    </tr>
+
+                    <tr>
+                        <td><b>Ambient Temp. °K : (°C+273) :</b></td>
+                        <td><span t-field="data.ambient_temp_k"/></td>
+
+                        <td><b>Flow rate, Qs (LPM) = Velocity x Nosel dia x 60 x 1000 :</b></td>
+                        <td><span t-field="data.flow_rate"/></td>
+                    </tr>
+
+                    <tr>
+                        <td><b>Stack Temp °C : :</b></td>
+                        <td><span t-field="data.stack_temp"/></td>
+
+                        <td><b>Flow rate Normalization, Q's (LPM) = Qs x TStd. / Ts :</b></td>
+                        <td><span t-field="data.flow_rate_ts"/></td>
+                    </tr>
+
+                    <tr>
+                        <td><b>Stack Temp °K  : (°C+273) :</b></td>
+                        <td><span t-field="data.stack_temp_k"/></td>
+
+                        <td><b>Sampling time, Minute = 1000/sampling flow rate  :</b></td>
+                        <td><span t-field="data.sampling_time"/></td>
+                    </tr>
+
+                    <tr>
+                        <td><b>Barometric Pressure (mmHg)  (hpa/1.3332) : :</b></td>
+                        <td><span t-field="data.barometric_pressure"/></td>
+
+                        <td><b>Total Gas Pass (L)=   Q's x Sampling Time  :</b></td>
+                        <td><span t-field="data.total_gas"/></td>
+                    </tr>
+
+                    <tr>
+                        <td><b>Deferential Pressure ΔH mmH2O (Avg.) :</b></td>
+                        <td><span t-field="data.diff_pressure"/></td>
+
+                        <td><b>Actual Flow rate Qm , (LPM)= Ps/760 x Qs x (298/Ta) : :</b></td>
+                        <td><span t-field="data.actual_flow"/></td>
+                    </tr>
+
+                    <tr>
+                        <td><b>Stack Pressure, (mmHg) (Avg.) : (mmH2O/13.6) :</b></td>
+                        <td><span t-field="data.stack_pressure"/></td>
+
+                        <td><b>Corrected flow = (Qm X Q's X 298)/Pstd×Ts   :</b></td>
+                        <td><span t-field="data.corrected_flow"/></td>
+                    </tr>
+
+                    <tr>
+                        <td><b>Absolute Static Pressure Ps, mmHg : (BP -SP) :</b></td>
+                        <td><span t-field="data.absolute_pressure"/></td>
+
+                        <td><b>TPM= (Diff. Weight x 106) / (Q's x sampling time) :</b></td>
+                        <td><span t-field="data.tpm"/></td>
+                    </tr>
+
+                    <tr>
+                        <td><b>Coefficient  K =  (33.5 X 0.85)/√Abs Stack Presure x 30  :</b></td>
+                        <td><span t-field="data.coefficient_k"/></td>
+
+                        <td><b>Total Gas Quantity(Nm3/hr) = Cross Sectional Area (m2) x Velocity x 3600 x 298 / Ts :</b></td>
+                        <td><span t-field="data.total_gas_quantity"/></td>
+                    </tr>
+
+                </table>
+
+                <br/>
+
+                <!-- ================= TRAVERSE TABLE ================= -->
+
+                <table style="width:100%; border-collapse:collapse;" border="1">
+
+                    <!-- Header -->
+                    <thead>
+                        <tr>
+                            <th>Number of Traverse Points :</th>
+                            <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th>
+                            <th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th>
+                            <th>Avg.</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <!-- DP -->
+                        <tr>
+                            <td>Diiferential/Dynamic Pressure of Stack at each Traverse Point (mmH2O) (ΔH)</td>
+
+                            <td><span t-field="data.dp1"/></td>
+                            <td><span t-field="data.dp2"/></td>
+                            <td><span t-field="data.dp3"/></td>
+                            <td><span t-field="data.dp4"/></td>
+                            <td><span t-field="data.dp5"/></td>
+                            <td><span t-field="data.dp6"/></td>
+                            <td><span t-field="data.dp7"/></td>
+                            <td><span t-field="data.dp8"/></td>
+                            <td><span t-field="data.dp9"/></td>
+                            <td><span t-field="data.dp10"/></td>
+                            <td><span t-field="data.dp11"/></td>
+                            <td><span t-field="data.dp12"/></td>
+
+                            <td><span t-field="data.dp_avg"/></td>
+                        </tr>
+
+                        <!-- SP -->
+                        <tr>
+                            <td>Static Pressure at each Traverse Point</td>
+
+                            <td><span t-field="data.sp1"/></td>
+                            <td><span t-field="data.sp2"/></td>
+                            <td><span t-field="data.sp3"/></td>
+                            <td><span t-field="data.sp4"/></td>
+                            <td><span t-field="data.sp5"/></td>
+                            <td><span t-field="data.sp6"/></td>
+                            <td><span t-field="data.sp7"/></td>
+                            <td><span t-field="data.sp8"/></td>
+                            <td><span t-field="data.sp9"/></td>
+                            <td><span t-field="data.sp10"/></td>
+                            <td><span t-field="data.sp11"/></td>
+                            <td><span t-field="data.sp12"/></td>
+
+                            <td><span t-field="data.sp_avg"/></td>
+                        </tr>
+
+                        <!-- Velocity -->
+                        <tr>
+                            <td>Velocity at each Traverse Point  {V} (m/sec)</td>
+
+                            <td><span t-field="data.v1"/></td>
+                            <td><span t-field="data.v2"/></td>
+                            <td><span t-field="data.v3"/></td>
+                            <td><span t-field="data.v4"/></td>
+                            <td><span t-field="data.v5"/></td>
+                            <td><span t-field="data.v6"/></td>
+                            <td><span t-field="data.v7"/></td>
+                            <td><span t-field="data.v8"/></td>
+                            <td><span t-field="data.v9"/></td>
+                            <td><span t-field="data.v10"/></td>
+                            <td><span t-field="data.v11"/></td>
+                            <td><span t-field="data.v12"/></td>
+
+                            <td><span t-field="data.v_avg"/></td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+                <br/>
+
+                <!-- ================= FINAL AVG ================= -->
+
+                <table style="width:50%; border-collapse:collapse;" border="1">
+                    <tr>
+                        <td><b>Avg Velocity :</b></td>
+                        <td><span t-field="data.avgg_velocity"/></td>
+                    </tr>
+                </table>
+
+
+                <div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div>
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+				</div>
+                <!-- </div> -->
+
+
+
+
+				
+			</t>
+		</t>
+	</template>
+</odoo>
