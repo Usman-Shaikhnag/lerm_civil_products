@@ -3,23 +3,31 @@
 
 
 {
-    'name': 'ROCK',
+    'name': 'Stones',
     'version': '1.2',
-    'category': 'Sales/Sales',
+    'category': 'Lerm Civil',
     'summary': 'Sales internal machinery',
     'description': """
-This module contains all the common features of ROCK.
+This module contains all the common features of Stones.
     """,
     'depends': ['base','sale','lerm_civil'],
     'data': [
-                 
                  'security/ir.model.access.csv',
-                 'views/rock.xml',
-                 'report/rock_datasheet.xml',
-                 'report/rock_report.xml'
+                 'views/stones.xml',
+                 'report/stone_datasheet.xml',
+                 'report/stone_report.xml'
     ],
-  
+   
+   
     'installable': True,
     'auto_install': False,
    
 }
+
+
+
+
+
+
+
+
