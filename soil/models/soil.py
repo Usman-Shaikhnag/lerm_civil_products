@@ -2515,12 +2515,12 @@ class Soil(models.Model):
             # Sieve Analysis
             if result.parameter.internal_id == '12014fgr-5c56-475b-9a89-93a59c9ee3a2':
                 result.calculated = True
-                result.result_char = round(self.liquid_limit,2)
-                if self.liquid_limit_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
+                # result.result_char = round(self.liquid_limit,2)
+                # if self.liquid_limit_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                # continue
             
             
             # Liquid Limit
@@ -2752,8 +2752,9 @@ class Soil(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
 
-            if result.parameter.internal_id == 'tyer4fgr-5c56-475b-9arty156878965uut':
-                result.calculated = True
+            # this is comment for sieve
+            # if result.parameter.internal_id == 'tyer4fgr-5c56-475b-9arty156878965uut':
+            #     result.calculated = True
 
             if result.parameter.internal_id == '7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9':
                 result.calculated = True

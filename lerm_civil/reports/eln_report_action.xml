@@ -527,6 +527,28 @@
     <field name="binding_type">report</field>
 </record>
 
+
+<record id="admixture_mech_datasheet_action" model="ir.actions.report">
+    <field name="name">Admixture DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">admixture.admixture_mech_datasheet</field>
+    <field name="report_file">admixture.admixture_mech_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="admixture_mech_report_action" model="ir.actions.report">
+    <field name="name">Admixture Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">admixture.admixture_mech_report</field>
+    <field name="report_file">admixture.admixture_mech_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="paperformat_id" ref="paperformat_makeinfra_report"/>
+    <field name="binding_type">report</field>
+</record>
+
 <record id="compresive_concrete_cube_datasheet_action" model="ir.actions.report">
     <field name="name">Compresive strength Cube DataSheet</field>
     <field name="model">lerm.eln</field>
