@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<template id="nbml_nonnabl_report">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			
+			<t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
+				
+				<!-- <div style="text-align:center;margin-top:10px">
+					<p style="font-size:15px"><b>Test Report</b></p>
+				</div> -->
+				
+				<div class="container_eln" style="padding-top:20px;">
+					<div class="" t-foreach="eln" t-as="o">
+				      <table style="width:100%; border:1px solid black; border-collapse:collapse;">
+                    <tr>
+                        <td colspan="1"><b>Customer Party Name :</b></td>
+                        <td colspan="3"><t t-esc="nbml.customer_name"/></td>
+                        
+                    </tr>
+
+                    <tr>
+                        <td><b>Samples Description :</b></td>
+                        <td><t t-esc="nbml.sample_description"/></td>
+
+						  <td><b>Project Name :</b></td>
+                        <td><t t-esc="nbml.project_name"/></td>
+                    </tr>
+
+                    <!-- <tr>
+                        <td><b>No. of Samples :</b></td>
+                        <td><t t-esc="nbml.no_of_samples"/></td>
+                    </tr> -->
+
+                    <tr>
+                        <td><b>Date of Samples Received :</b></td>
+                        <td><t t-esc="nbml.date_received"/></td>
+
+                        <td><b>SRF No. :-</b></td>
+                        <td >
+
+                            <t t-if="o.srf_id">
+                            <span t-field="o.srf_id"/>
+                        </t>
+                    <t t-else="">--</t>
+                    </td>
+                    </tr>
+
+                    <tr>
+                        <td><b>Brand &amp; Grade :</b></td>
+                        <td><t t-esc="nbml.brand_grade"/></td>
+                        <td><b>Date of Test Initiation :</b></td>
+						<td><t t-esc="nbml.test_init_date"/></td>
+                    </tr>
+
+                    <tr>
+                        <td><b>Size :</b></td>
+                        <td><t t-esc="nbml.size"/></td>
+                        <td><b>Date of Test Completion :</b></td>
+						<td><t t-esc="nbml.test_comp_date"/></td>
+                    </tr>
+
+                    <tr>
+                        <td><b>Week No :</b></td>
+                        <td><t t-esc="nbml.week_no"/></td>
+                        <td><b>Sample ID :</b> </td>
+
+						 <td><t t-esc="nbml.sample"/></td>
+                    </tr>
+
+                    <tr>
+                        <td><b>Test method adopted :</b></td>
+                        <td ><t t-esc="nbml.test_method"/></td>
+						 <td><b>No. of Samples :</b></td>
+                        <td><t t-esc="nbml.no_of_samples"/></td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="1"><b>Source of Sample :</b></td>
+                        <td colspan="3"><t t-esc="nbml.source_sample"/></td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="1"><b>Specifications :</b></td>
+                        <td colspan="3"><t t-esc="nbml.specification"/></td>
+                    </tr>
+
+                </table>
+
+                <br/>
+
+                <!-- Test Table -->
+                <table style="width:100%; border:1px solid black; border-collapse:collapse;">
+                    <thead>
+                        <tr>
+                            <th>Sr.No</th>
+                            <th>Test</th>
+                            <th>Unit</th>
+                            <th>Test Method</th>
+							<th>Result</th>
+                            <th>Specification</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr t-foreach="nbml.line_ids" t-as="line">
+                            <td><t t-esc="line.sr_no"/></td>
+                            <td><t t-esc="line.test_name"/></td>
+                            <td><t t-esc="line.unit"/></td>
+                            <td><t t-esc="line.result"/></td>
+                            <td><t t-esc="line.specification"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+					</div>
+
+					
+
+					<div style="text-align:center;margin-top:2px">
+						......End of Report......
+					</div>
+							
+
+
+					<!-- <div style="margin-top:5px; page-break-inside: avoid;" class="signatureContainer girdgird">
+						<table class="table table-bordered">
+						<tr>
+							<td style="padding: 5px; font-style: italic; font-size: 12px;">
+								
+							
+								<t t-if="cement.notes_id">
+									<b>Conditions:-</b>
+
+									<t t-foreach="cement.notes_id" t-as="n">
+										<span>
+											(<t t-esc="n.sr_no"/>) 
+											<t t-esc="n.notes"/>
+											&#160;&#160;
+										</span>
+									</t>
+								</t>
+							
+								<t t-if="eln.has_witness">
+									&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
+								</t>
+								<t t-if="eln.remarks">
+									&#160;&#160;<span t-esc="eln.remarks"/>
+								</t>
+							
+							</td>
+						</tr>
+					</table>
+					</div> -->
+
+
+					
+						 <!-- Remarks Section -->
+
+                    
+
+
+
+
+
+
+					<div class="signatureContainer girdgird">
+						<div>
+							<div>
+								<b>
+									Checked By
+								</b>
+							</div>
+							<div style="height: 50px;">
+									<t t-if="eln.sample_id.checkby_signature_required and eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')"
+											style="max-width: 200px; max-height: 45px; margin-top: 1px; z-index: -10;"/>
+									</t>
+								</div>
+							<div>
+								<b>
+									<!-- <span t-esc="eln.technician.name"/> -->
+									<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+
+						<!-- QR Code -->
+							<!-- <div style="text-align:center; margin-bottom:10px;">
+								<img t-att-src="'data:image/png;base64,%s' % (qrcode_static or '')"
+									style="width:75px; height:70px;"/>
+							</div> -->
+
+						<t t-if="o.sample_id.stamp_attached">
+							<div >
+								<div>
+								<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
+							</div>
+							</div>
+						</t>
+						<div>
+							<div>
+								<b>
+									Approved By 
+								</b>
+								
+							</div>
+							<div style="height: 50px;">
+									<t t-if="eln.sample_id.approveby_signature_required">
+										<div t-if="eln.sample_id.approved_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 45px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.approved_by.name"/>
+								</b>
+							</div>
+						
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.approved_by.job_title"/>)
+								</b>
+							</div>
+							
+							<!-- <div>
+								<b>
+									(Authorized Signatory)
+								</b>
+							</div> -->
+						</div>
+					</div>
+					
+				</div>
+			</t>
+		</t>
+	</template>
+</odoo>

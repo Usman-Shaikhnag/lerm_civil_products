@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mech_nonnabl_form" model="ir.ui.view">
+        <field name="name">nbml.nonnabl.form</field>
+        <field name="model">nbml.nonnabl</field>
+        <field name="arch" type="xml">
+            <form string="Your Form View" create="false">
+                <sheet>
+                <div>
+                    <h1>
+                        <field name="name" readonly="1" nolabel="1"/>
+                    </h1>
+                </div>
+                <group>
+                        <field name="srf_id"  invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                        <field name="eln_state" />
+                </group>
+                    <div class="custom_table_borders">
+                      <field name="sample_parameters" nolabel="1">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </div>
+
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+
+
+                    <!-- ph at 1% -->
+                    <div invisible="not nan_nabl_visible">
+
+                        <h1 class="text-center">
+                            <!-- <field name="ph_name" readonly="1" nolabel="1"/> -->
+                            <field name="nan_nabl_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="customer_name"></label></td>
+                                    <td style="width:50%;"><field name="customer_name"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="sample_description"></label></td>
+                                    <td style="width:50%;"><field name="sample_description"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                        </div>
+
+
+                        <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="no_of_samples"></label></td>
+                                    <td style="width:50%;"><field name="no_of_samples"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="date_received"></label></td>
+                                    <td style="width:50%;"><field name="date_received"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                        </div>
+
+
+                         <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="brand_grade"></label></td>
+                                    <td style="width:50%;"><field name="brand_grade"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="size"></label></td>
+                                    <td style="width:50%;"><field name="size"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                        </div>
+
+
+                         <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="week_no"></label></td>
+                                    <td style="width:50%;"><field name="week_no"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="test_method"></label></td>
+                                    <td style="width:50%;"><field name="test_method"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                        </div>
+
+
+
+                        <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="source_sample"></label></td>
+                                    <td style="width:50%;"><field name="source_sample"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="specification"></label></td>
+                                    <td style="width:50%;"><field name="specification"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                        </div>
+
+
+                         <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="customer_ref"></label></td>
+                                    <td style="width:50%;"><field name="customer_ref"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="letter_date"></label></td>
+                                    <td style="width:50%;"><field name="letter_date"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                        </div>
+
+
+
+                         <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="test_init_date"></label></td>
+                                    <td style="width:50%;"><field name="test_init_date"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="test_comp_date"></label></td>
+                                    <td style="width:50%;"><field name="test_comp_date"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                        </div>
+
+
+                          <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="sample"></label></td>
+                                    <td style="width:50%;"><field name="sample"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="project_name"></label></td>
+                                    <td style="width:50%;"><field name="project_name"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                        </div>
+
+
+                         <field name="line_ids" colspan="2" nolabel="1">
+                        <tree editable="bottom" class="custom_table_borders">
+                            <field name="sr_no" />
+                            <field name="test_name" />
+                            <field name="unit" />
+                            <field name="test_method" />
+                            <field name="result" />
+                            <field name="specification" />
+                        </tree>
+                        </field>
+
+
+             
+
+
+
+
+
+                    
+                     <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+
+
+                        </page>
+
+                    </notebook>
+
+
+
+
+                   
+                 <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                    
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+    </data>
+</odoo>
