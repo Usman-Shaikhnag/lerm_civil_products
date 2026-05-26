@@ -246,9 +246,7 @@
 
                         <span style="font-size:10px;">Scan &amp; Pay</span><br/>
 
-                        <img t-if="o.company_id.qr_code"
-                            t-att-src="'data:image/png;base64,' + o.company_id.qr_code.decode('utf-8')"
-                            style="width:100px; height:100px;"/>
+                        <img t-attf-src="/lerm_civil_inv/static/src/img/scanner.png" class="company_logo" alt="Image"/>
 
                     </td>
 
@@ -346,9 +344,7 @@
 
         <!-- CENTER -->
         <td style="width:34%; text-align:center; vertical-align:middle;">
-            <!-- <img t-if="o.company_id.stamp_image"
-                 t-att-src="'data:image/png;base64,' + o.company_id.stamp_image.decode('utf-8')"
-                 style="width:120px; height:120px;"/> -->
+          <img t-attf-src="/lerm_civil_inv/static/src/img/stamp.png" class="company_logo" alt="Image"/>
         </td>
 
         <!-- RIGHT -->
