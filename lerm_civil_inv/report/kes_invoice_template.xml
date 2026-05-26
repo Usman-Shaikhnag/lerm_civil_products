@@ -30,15 +30,350 @@
         </div>
     </div>
 </template>
+
 <template id="kes_custom_invoice">
+    <t t-call="web.html_container">
+
+            <t t-call="lerm_civil_inv.custom_layout_header_footer">
+
+                  <div t-foreach="data" t-as="o" class="container_kes">
+
+                    <!-- ================= TAX INVOICE TITLE ================= -->
+                    <table style="width:100%; border-collapse:collapse; margin-top:5px;">
+                        <tr>
+                            <td style="text-align:center; font-size:16px; font-weight:bold; border:1px solid black;">
+                                TAX INVOICE
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- ================= CUSTOMER + INVOICE ================= -->
+                    <table style="width:100%; border-collapse:collapse; font-size:13px;">
+
+    <tr>
+
+        <!-- LEFT SIDE -->
+        <td style="width:60%; border:1px solid black; padding:0px; vertical-align:top;">
+
+            <!-- BILL TO HEADER (ONLY LEFT SIDE) -->
+            <div style="background:#0a8f3c; color:white; text-align:center; font-weight:bold; border-bottom:1px solid black; padding:5px;">
+                BILL TO
+            </div>
+
+            <!-- CONTENT -->
+            <div style="padding:5px;">
+
+                <b><i>Bill To,</i></b><br/>
+
+                <b><span t-field="o.partner_id.name"/></b><br/>
+
+                <span t-field="o.partner_id.street"/><br/>
+                <span t-field="o.partner_id.city"/> ,
+                <span t-field="o.partner_id.state_id.name"/> ,
+                <span t-field="o.partner_id.zip"/><br/>
+
+                GSTIN/UIN : <span t-field="o.partner_id.vat"/><br/>
+
+                Email id : <span t-field="o.partner_id.email"/><br/>
+
+                Contact Person :
+                <span t-field="o.contact_person.name"/><br/>
+
+                Contact No. :
+                <span t-field="o.contact_person.mobile"/><br/>
+
+                State :
+                <span t-field="o.partner_id.state_id.name"/> ,
+                Code :
+                <span t-field="o.partner_id.state_id.l10n_in_tin"/>
+
+            </div>
+
+        </td>
+
+        <!-- RIGHT SIDE -->
+        <td style="width:40%; border:1px solid black; padding:0px; vertical-align:top;">
+
+            <table style="width:100%; border-collapse:collapse;">
+
+                <tr>
+                    <td style="border:1px solid black; padding:5px;"><b>INVOICE NO.</b></td>
+                    <td style="border:1px solid black; padding:5px; text-align:right;">
+                        <span t-field="o.name"/>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="border:1px solid black; padding:5px;"><b>INVOICE DATE</b></td>
+                    <td style="border:1px solid black; padding:5px; text-align:right;">
+                        <span t-field="o.invoice_date"/>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="border:1px solid black; padding:5px;"><b>Customer P.O./Letter No.</b></td>
+                    <td style="border:1px solid black; padding:5px; text-align:right;">
+                        <span t-field="o.customer_reference"/>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="border:1px solid black; padding:5px;"><b>PO/Letter Dated</b></td>
+                    <td style="border:1px solid black; padding:5px; text-align:right;">
+                        <span t-field="o.invoice_date"/>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="border:1px solid black; padding:5px;"><b>Lab Ref No.</b></td>
+                    <td style="border:1px solid black; padding:5px; text-align:right;">
+                        <span t-field="o.name"/>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="border:1px solid black; padding:5px;"><b>Lab Ref Date</b></td>
+                    <td style="border:1px solid black; padding:5px; text-align:right;">
+                        <span t-field="o.invoice_date"/>
+                    </td>
+                </tr>
+
+            </table>
+
+        </td>
+
+    </tr>
+
+</table>
+
+                    <!-- ================= TABLE ================= -->
+                    <table style="width:100%; border-collapse:collapse; font-size:12px;">
+                        <tr style="background:#e6e6e6;">
+                            <th style="border:1px solid black;">Sr</th>
+                            <th style="border:1px solid black;">Description</th>
+                            <th style="border:1px solid black;">SAC</th>
+                            <th style="border:1px solid black;">Unit</th>
+                            <th style="border:1px solid black;">Qty</th>
+                            <th style="border:1px solid black;">Unit Rate</th>
+                            <th style="border:1px solid black;">Amount</th>
+                        </tr>
+
+                        <t t-set="i" t-value="1"/>
+                        <t t-foreach="o.invoice_line_ids" t-as="line">
+
+                            <tr>
+                                <td style="border:1px solid black; text-align:center;">
+                                    <t t-esc="i"/>
+                                </td>
+
+                                <td style="border:1px solid black;">
+                                    <span t-field="line.name"/>
+                                </td>
+
+                                <td style="border:1px solid black; text-align:center;">
+                                    <span t-field="line.partner_id.sac_code"/>
+                                </td>
+
+                                <td style="border:1px solid black; text-align:center;">
+                                    <span t-field="line.product_uom_id.name"/>
+                                </td>
+
+                                <td style="border:1px solid black; text-align:center;">
+                                    <span t-field="line.quantity"/>
+                                </td>
+
+                                <td style="border:1px solid black; text-align:right;">
+                                    <span t-field="line.price_unit"/>
+                                </td>
+
+                                <td style="border:1px solid black; text-align:right;">
+                                    <span t-field="line.price_subtotal"/>
+                                </td>
+                            </tr>
+
+                            <t t-set="i" t-value="i+1"/>
+                        </t>
+                    </table>
+
+                 <table style="width:100%; border-collapse:collapse; font-size:13px; margin-top:5px;">
+
+                <tr>
+
+                    <!-- ================= LEFT: BANK DETAILS ================= -->
+                    <td style="width:55%; border:1px solid black; padding:0px; vertical-align:top;">
+
+                        <!-- HEADER -->
+                        <div style="background:#0a8f3c; color:white; font-weight:bold; padding:5px;">
+                            Company's Bank Details
+                        </div>
+
+                        <!-- CONTENT -->
+                        <!-- <div style="padding:5px;">
+
+                            <b>NBML BUILDING MATERIALS TESTING LAB LLP</b><br/>
+
+                            Bank Name : <b>Canara Bank</b><br/>
+
+                            Account No. : <b>120034700096</b><br/>
+
+                            Branch &amp; IFSC Code : <b>Raipur T P Nagar &amp; CNRB0005306</b>
+
+                        </div> -->
+
+                        <div style="padding:5px;">
+
+                          <b><span t-field="o.company_id.name"/></b><br/>
+
+                          <b> Bank Name : -  </b> <b><span t-field="o.partner_id.bank_name"/></b><br/>
+
+                           <b>Account No. : -  </b> <b><span t-field="o.partner_id.ac_no"/></b><br/>
+
+                           <b>Branch &amp; IFSC Code : -  </b>
+                          <b>
+                              <span t-field="o.partner_id.branch_name"/>
+                              &amp;
+                              <span t-field="o.partner_id.ifsc_code"/>
+                          </b>
+
+                      </div>
+
+                    </td>
+
+                    <!-- ================= CENTER: QR CODE ================= -->
+                    <td style="width:15%; border:1px solid black; text-align:center; vertical-align:top; padding:5px;">
+
+                        <b>SCAN &amp; PAY</b><br/>
+
+                        <span style="font-size:10px;">Scan &amp; Pay</span><br/>
+
+                        <img t-if="o.company_id.qr_code"
+                            t-att-src="'data:image/png;base64,' + o.company_id.qr_code.decode('utf-8')"
+                            style="width:100px; height:100px;"/>
+
+                    </td>
+
+                    <!-- ================= RIGHT: TAX SUMMARY ================= -->
+                    <td style="width:30%; border:1px solid black; padding:0px;">
+
+                        <table style="width:100%; border-collapse:collapse;">
+
+                            <tr>
+                                <td style="border:1px solid black; padding:5px;"><b>Taxable Amt.</b></td>
+                                <td style="border:1px solid black; padding:5px; text-align:right;">
+                                    ₹ <span t-field="o.amount_untaxed"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="border:1px solid black; padding:5px; color:#0070c0;"><b>CGST @9%</b></td>
+                                <td style="border:1px solid black; padding:5px; text-align:right;">
+                                    ₹ <span t-esc="o.amount_tax/2"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="border:1px solid black; padding:5px; color:#0070c0;"><b>SGST @9%</b></td>
+                                <td style="border:1px solid black; padding:5px; text-align:right;">
+                                    ₹ <span t-esc="o.amount_tax/2"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="border:1px solid black; padding:5px;"><b>Round off.</b></td>
+                                <td style="border:1px solid black; padding:5px; text-align:right;">
+                                    ₹ <span t-esc="round(o.amount_total - (o.amount_untaxed + o.amount_tax), 2)"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="border:1px solid black; padding:5px; font-weight:bold; background:#d9d9d9;">
+                                    TOTAL
+                                </td>
+                                <td style="border:1px solid black; padding:5px; text-align:right; font-weight:bold; background:#d9d9d9;">
+                                    ₹ <span t-field="o.amount_total"/>
+                                </td>
+                            </tr>
+
+                        </table>
+
+                       
+
+                    </td>
+
+                    
+
+                </tr>
+
+                
+
+            </table>
+
+          <!-- ================= AMOUNT IN WORDS ================= -->
+          <table style="width:100%; border-collapse:collapse; margin-top:2px;">
+
+              <tr>
+                  <td style="border:1px solid black; padding:6px; font-size:13px; text-align:right; font-weight:bold;">
+
+                      <span t-esc="o.currency_id.name"/> : - Rupees
+                      <![CDATA[ ]]>
+
+                      <span t-esc="o.currency_id.amount_to_text(o.amount_total)"/>
+                      Only
+
+                  </td>
+              </tr>
+
+          </table>
+
+
+        <!-- ================= SIGNATURE SECTION (TABLE ONLY) ================= -->
+<table style="width:100%; border-collapse:collapse; margin-top:2px; font-size:13px;">
+
+    <!-- TOP CENTER -->
+    <tr>
+        <td colspan="3" style="text-align:center; font-weight:bold; padding-bottom:10px;">
+            for, <span t-field="o.company_id.name"/>
+        </td>
+    </tr>
+
+    <!-- BOTTOM 3 PART -->
+    <tr>
+
+        <!-- LEFT -->
+        <td style="width:33%; text-align:left; vertical-align:bottom; height:100px;">
+            <b>(Receiver Signature)</b>
+        </td>
+
+        <!-- CENTER -->
+        <td style="width:34%; text-align:center; vertical-align:middle;">
+            <!-- <img t-if="o.company_id.stamp_image"
+                 t-att-src="'data:image/png;base64,' + o.company_id.stamp_image.decode('utf-8')"
+                 style="width:120px; height:120px;"/> -->
+        </td>
+
+        <!-- RIGHT -->
+        <td style="width:33%; text-align:right; vertical-align:bottom;">
+            <b>Authorized Signatory</b>
+        </td>
+
+    </tr>
+
+</table>
+
+                    
+
+                </div>
+
+        </t>
+
+    </t>
+</template>
+<!-- <template id="kes_custom_invoice">
   <t t-call="web.html_container">
-    <!-- <t t-call="web.basic_layout"> -->
 
       <t t-call="lerm_civil_inv.custom_layout_header_footer">
         <div t-foreach="data" t-as="o" class="container_kes">
-        <!-- <div class="imageContainer">
-              <img t-attf-src="/lerm_civil_inv/static/src/img/letterHead.jpg" class="company_logo" alt="Image"/>
-          </div> -->
+      
         <table style="margin-top:25px">
           <tr>
             <td rowspan="1" colspan="12">
@@ -115,33 +450,6 @@
           </tr>
           <tr>
 
-            <!-- <td rowspan="1" colspan="6">
-                <div>Customer                                                                                                                                                 <![CDATA[&nbsp;]]>:                                                                                                                                                <![CDATA[&nbsp;]]>
-<span t-field="o.partner_id.name"/>
-</div>
-<div>
-<span t-if="o.partner_id.street">
-<span t-field="o.partner_id.street"/>
-                  ,
-                                    </span>
-<span t-if="o.partner_id.street2">
-<span t-field="o.partner_id.street2"/>
-                  ,
-                                    </span>
-<span t-if="o.partner_id.city">
-<span t-field="o.partner_id.city"/>
-                  ,
-                                    </span>
-<span t-if="o.partner_id.zip">
-<span t-field="o.partner_id.zip"/>
-</span>
-</div>
-<div>
-<span t-field="o.partner_id.state_id"/>
-                  , 
-                                    <span t-field="o.partner_id.country_id"/>
-</div>
-</td> -->
             <td rowspan="1" colspan="6">
               <div>PO No
                                   <![CDATA[&nbsp;]]> :
@@ -244,9 +552,7 @@
                 <th>
                   <div>Rate (<span t-esc="data.currency_id.name"/>)</div>
                 </th>
-                <!-- <th>
-                    <div>Taxes</div>
-                  </th> -->
+            
                 <th>
                   <div>Amount (<span t-esc="data.currency_id.name"/>)</div>
                 </th>
@@ -264,23 +570,7 @@
                     <span t-field="productline.product_id"/>
                   </div>
                 </td>
-                <!-- <td>
-                  
-                  <t t-if="productline.report_no">
-                    <t t-set="split_data" t-value="productline.report_no.split(',')"/>
-                    <t t-set="data_length" t-value="len(split_data or [])"/>
-                    <t t-foreach="range(0, data_length, 3)" t-as="index">
-                      <t t-set="end_index" t-value="index + 3 if index + 3 &lt; data_length else data_length"/>
-                      <t t-foreach="split_data[index:end_index]" t-as="value">
-                        <span t-esc="value"/>
-                        <t t-if="value != split_data[end_index-1]">
-                              ,
-                        </t>
-                      </t>
-                      <br/>
-                    </t>
-                  </t>
-                </td> -->
+            
                 <td t-if="productline.report_no">
                       <t t-set="split_data" t-value="productline.report_no.split(',')"/>
                       <t t-set="data_length" t-value="len(split_data or [])"/>
@@ -313,11 +603,7 @@
                     <span t-field="productline.price_unit"/>
                   </div>
                 </td>
-                <!-- <td >
-                    <div>
-                      <span t-field="productline.tax_ids"/>
-                    </div>
-                  </td> -->
+         
                 <td >
                   <div>
                     <span t-field="productline.price_subtotal"/>
@@ -333,8 +619,7 @@
               <div class="amountWords">Amount :
                                   <![CDATA[&nbsp;]]>
                 <b>
-                  <!-- <span t-esc="report_data['tax_totals']['formatted_amount_untaxed']"/> -->
-                  <!-- <span t-esc="total_amount_line"/> -->
+                
                   <span t-esc= "round(total_amount_line , 2)"/>
 
                 </b>
@@ -347,14 +632,7 @@
                     <span t-esc="report_data['tax_totals']['groups_by_subtotal']['Untaxed Amount'][0]['formatted_tax_group_amount']"/>
                   </b>
                 </div>
-              <!-- <div class="amountWords">
-                <span t-esc="report_data['tax_totals']['groups_by_subtotal']['Untaxed Amount'][1]['tax_group_name']"/>
-                      :
-                                  <![CDATA[&nbsp;]]>
-                <b>
-                  <span t-esc="report_data['tax_totals']['groups_by_subtotal']['Untaxed Amount'][1]['formatted_tax_group_amount']"/>
-                </b>
-              </div> -->
+           
               <t t-if="report_data['tax_totals']['groups_by_subtotal'] and len(report_data['tax_totals']['groups_by_subtotal']['Untaxed Amount']) > 1">
                 <div class="amountWords">
                   <span t-esc="report_data['tax_totals']['groups_by_subtotal']['Untaxed Amount'][1]['tax_group_name']"/>
@@ -367,7 +645,6 @@
               </t>
               <t t-foreach="o.invoice_line_ids" t-as="product">
                 <t t-if="product.product_id">
-                  <!-- Code for rows where product_id is present -->
                 </t>
                 <t t-else="">
                   <div class="amountWords">
@@ -400,8 +677,7 @@
               </div>
             </td>
           </tr>
-          <!-- </table> -->
-          <!-- <table> -->
+        
           <tr>
             <td rowspan="1" colspan="12">
               <div class="decleration">
@@ -539,13 +815,7 @@
                 </div>
               </div>
             </td>
-            <!-- <td style="vertical-align: middle">
-                  <div class="centerText">
-                    <b> MSME REG NO. :                                                                                                                         <![CDATA[&nbsp;]]>
-<span t-field="c.msme_reg_no"/>
-</b>
-</div>
-</td> -->
+        
             <td colspan="6" style="position: relative;min-width: 330px;height:250px">
               <div style="min-height:172px">
                 <b> Signature </b>
@@ -568,7 +838,7 @@
     </div>
       </t>
   </t>
-</template>
+</template> -->
 
 <template id="external_layout_header" inherit_id="web.external_layout_standard">
   <!-- <xpath expr="//div[contains(@class, 'row')]" position="replace">

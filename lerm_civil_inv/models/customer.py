@@ -119,12 +119,64 @@ class AccountMoveInherited(models.Model):
         for record in self:
             record.gstr_no = record.partner_id.vat
 
-    def action_register_payment(self):
-        ''' Open the account.payment.register wizard to pay the selected journal entries.
-        :return: An action opening the account.payment.register wizard.
-        '''
+    # def action_register_payment(self):
+    #     ''' Open the account.payment.register wizard to pay the selected journal entries.
+    #     :return: An action opening the account.payment.register wizard.
+    #     '''
 
         
+    #     return {
+    #         'name': 'Register Payment',
+    #         'res_model': 'account.payment.register',
+    #         'view_mode': 'form',
+    #         'context': {
+    #             'active_model': 'account.move',
+    #             'active_ids': self.ids,
+    #             'default_total_amount_signed': self.amount_total_signed
+    #         },
+    #         'target': 'new',
+    #         'type': 'ir.actions.act_window',
+    #     }
+
+    # @api.model_create_multi
+    # def create(self, vals_list):
+
+       
+    #     try:
+    #         _logger.info(datetime.today())
+    #         last_invoice_date = self.env["account.move"].search([])[-1].invoice_date
+    #         invoice_date = vals_list[0]["invoice_date"]
+    #         invoice_date = datetime.strptime(invoice_date, '%Y-%m-%d').date()
+    #         last_invoice_date = datetime.strptime(str(last_invoice_date), '%Y-%m-%d').date()
+    #         # _logger.info("Value List" + str(invoice_date))
+
+    #         if invoice_date <= last_invoice_date:
+    #             if self.env.user.has_group('lerm_civil_inv.kes_invocing_creation_backdate_group') :
+    #                 pass
+    #             else:
+    #                 raise UserError('You are Not allowed to create Invoice in Backdate')
+    #     except:
+    #         pass
+
+
+    #     # OVERRIDE
+    #     if any('state' in vals and vals.get('state') == 'posted' for vals in vals_list):
+    #         raise UserError('You cannot create a move already in the posted state. Please create a draft move and post it after.')
+    #     # vals_list = self._move_autocomplete_invoice_lines_create(vals_list)
+    #     for vals in vals_list:
+    #         for command in vals.get("invoice_line_ids", []):
+    #             if command[0] in (0, 1):  # create or update
+    #                 line_vals = command[2]
+    #                 if not line_vals.get("account_id"):
+    #                     line_vals["account_id"] = self.env["account.account"].search(
+    #                         [('user_type_id.name', '=', 'Revenue')], limit=1
+    #                     ).id
+    #     return super(AccountMoveInherited, self).create(vals_list)
+
+     # -------------------------
+    # ACTION
+    # -------------------------
+    def action_register_payment(self):
         return {
             'name': 'Register Payment',
             'res_model': 'account.payment.register',
@@ -138,39 +190,65 @@ class AccountMoveInherited(models.Model):
             'type': 'ir.actions.act_window',
         }
 
+    # -------------------------
+    # CREATE OVERRIDE
+    # -------------------------
     @api.model_create_multi
     def create(self, vals_list):
 
-       
+        # ✅ Date validation (safe)
         try:
-            _logger.info(datetime.today())
-            last_invoice_date = self.env["account.move"].search([])[-1].invoice_date
-            invoice_date = vals_list[0]["invoice_date"]
-            invoice_date = datetime.strptime(invoice_date, '%Y-%m-%d').date()
-            last_invoice_date = datetime.strptime(str(last_invoice_date), '%Y-%m-%d').date()
-            # _logger.info("Value List" + str(invoice_date))
+            last_invoice = self.env["account.move"].search([], order="id desc", limit=1)
+            last_invoice_date = last_invoice.invoice_date if last_invoice else False
 
-            if invoice_date <= last_invoice_date:
-                if self.env.user.has_group('lerm_civil_inv.kes_invocing_creation_backdate_group') :
-                    pass
-                else:
-                    raise UserError('You are Not allowed to create Invoice in Backdate')
-        except:
-            pass
+            invoice_date = vals_list[0].get("invoice_date")
 
+            if invoice_date and last_invoice_date:
+                invoice_date = datetime.strptime(invoice_date, '%Y-%m-%d').date()
 
-        # OVERRIDE
-        if any('state' in vals and vals.get('state') == 'posted' for vals in vals_list):
-            raise UserError('You cannot create a move already in the posted state. Please create a draft move and post it after.')
-        # vals_list = self._move_autocomplete_invoice_lines_create(vals_list)
+                if invoice_date <= last_invoice_date:
+                    if not self.env.user.has_group('lerm_civil_inv.kes_invocing_creation_backdate_group'):
+                        raise UserError('You are Not allowed to create Invoice in Backdate')
+
+        except Exception as e:
+            _logger.error("Date validation error: %s", e)
+
+        # ✅ Prevent posted creation
+        if any(vals.get('state') == 'posted' for vals in vals_list):
+            raise UserError('You cannot create a move already in the posted state.')
+
+        # ✅ Fix account assignment (Odoo 17 compliant)
         for vals in vals_list:
             for command in vals.get("invoice_line_ids", []):
-                if command[0] in (0, 1):  # create or update
+
+                if command[0] in (0, 1):  # create/update
                     line_vals = command[2]
+
                     if not line_vals.get("account_id"):
-                        line_vals["account_id"] = self.env["account.account"].search(
-                            [('user_type_id.name', '=', 'Revenue')], limit=1
-                        ).id
+
+                        account = False
+                        product_id = line_vals.get("product_id")
+
+                        # 🔹 Product आधारित account
+                        if product_id:
+                            product = self.env['product.product'].browse(product_id)
+                            account = (
+                                product.property_account_income_id
+                                or product.categ_id.property_account_income_categ_id
+                            )
+
+                        # 🔹 Fallback
+                        if not account:
+                            account = self.env["account.account"].search(
+                                [('account_type', '=', 'income')],
+                                limit=1
+                            )
+
+                        if not account:
+                            raise UserError("No Income Account found. Please configure Chart of Accounts.")
+
+                        line_vals["account_id"] = account.id
+
         return super(AccountMoveInherited, self).create(vals_list)
     
 
