@@ -2,6 +2,28 @@
 <odoo>
     <data>
 
+        <record id="product_pricelist_inherited_items_lerm" model="ir.ui.view">
+            <field name="name">product.pricelist.item.inherited.lerm</field>
+            <field name="model">product.pricelist.item</field>
+            <field name="inherit_id" ref="product.product_pricelist_item_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='min_quantity']" position="after">
+                    <field name="parameter_id" options="{'no_create': True}"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="product_pricelist_inherited_comment_lerm" model="ir.ui.view">
+            <field name="name">product.pricelist.inherited.lerm</field>
+            <field name="model">product.pricelist</field>
+            <field name="inherit_id" ref="product.product_pricelist_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='price']" position="after">
+                    <field name="parameter_id" optional="show"/>
+                </xpath>
+            </field>
+        </record>
+
         <record model="ir.ui.view" id="res_company_lab_view_form">
             <field name="name">res.company.lab.inherited</field>
             <field name="model">res.company</field>
@@ -40,10 +62,13 @@
             <field name="inherit_id" ref="account.view_move_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='product_id']" position="after">
+                    <field name="product_tmpl_id" column_invisible="True"/>
+                    <field name="parameters" widget="many2many_tags" options="{'no_create': True}" domain="[('material', '=', product_tmpl_id)]"/>
                     <field name="pricelist_id" invisible="1"/>
                     <field name="report_no1"   widget="many2many_tags" options="{'no_create': True}" />
                 </xpath>
                 <xpath expr="//field[@name='line_ids']/tree/field[@name='account_id']" position="after">
+                    <!-- <field name="parameters" widget="many2many_tags" options="{'no_create': True}" /> -->
                     <field name="report_no1"  widget="many2many_tags" options="{'no_create': True}" />
                 </xpath>
             </field>

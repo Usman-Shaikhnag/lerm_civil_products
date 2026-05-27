@@ -419,6 +419,9 @@ class ELN(models.Model):
             #             self.write({"parameters_input":[(0,0,{'parameter_result':data.id,'identifier':inputs.identifier,'inputs':inputs.id})]})
 
             #         self.env.cr.commit()
+        if not self.test_started or self.state == '5-alloted':
+            self.test_started = True
+            self.state = '1-draft'
 
     def calculate_results(self):
         for record in self.parameters_result:
