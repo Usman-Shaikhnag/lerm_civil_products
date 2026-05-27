@@ -6369,7 +6369,7 @@ class SoilGSALINE1(models.Model):
 # specific gravity
 
 
-
+ 
 
 class SpecificGravity(models.Model):
     _name = "specific.gravity"
