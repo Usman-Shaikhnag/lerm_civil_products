@@ -222,9 +222,8 @@ class LermSampleController(http.Controller):
         customers = request.env['res.partner'].sudo().search([('id', 'in', partner_ids)])
         
         
-        return request.render('lerm_civil.lerm_sample_requests_form', {
-            'page_name': 'sample_requests_form',
-            'available_projects': projects,
+        return request.render('lerm_civil.sample_requests_form', {
+            'projects': projects,
             'customers':customers
         })
     
