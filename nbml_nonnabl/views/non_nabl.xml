@@ -7,6 +7,8 @@
         <field name="model">nbml.nonnabl</field>
         <field name="arch" type="xml">
             <form string="Your Form View" create="false">
+
+             
                 <sheet>
                 <div>
                     <h1>
@@ -285,17 +287,39 @@
 
 
                    
-                 <button
-                            type="object"
-                            class="oe_highlight" 
-                            name="open_eln_page"
-                            string="Submit"
+                    <div style="display:flex; gap:10px;">
+                            
+                            <button
+                                type="object"
+                                class="oe_highlight"
+                                name="open_eln_page"
+                                string="Submit"
                             />
+
+                            <button
+                                name="action_print_nonnabl_report"
+                                type="object"
+                                string="Print Report"
+                                class="btn-primary"
+                            />
+
+                        </div>
                     
 
                 </sheet>
             </form>
         </field>
         </record>
+
+
+
+        <record id="action_nbml_nonnabl_report" model="ir.actions.report">
+    <field name="name">NON NABL Report</field>
+    <field name="model">nbml.nonnabl</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">nbml_nonnabl.nbml_nonnabl_report</field>
+    <field name="report_file">nbml_nonnabl.nbml_nonnabl_report</field>
+    <field name="print_report_name">'NON-NABL - %s' % (object.name)</field>
+</record>
     </data>
 </odoo>

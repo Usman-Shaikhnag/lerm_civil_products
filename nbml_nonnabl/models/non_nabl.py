@@ -13,7 +13,14 @@ class NONNABL(models.Model):
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
+    sample_id = fields.Many2one('lerm.srf.sample', string="Sample")
 
+    def action_print_nonnabl_report(self):
+        self.ensure_one()
+        return self.env.ref('nbml_nonnabl.action_nbml_nonnabl_report').report_action(
+            self.ids,   # ✅ VERY IMPORTANT
+            data={'nabl': False}
+        )
     notes_id = fields.One2many('nbml.nonnabl.notes', 'parent_id', string="Notes")
     
     @api.model
