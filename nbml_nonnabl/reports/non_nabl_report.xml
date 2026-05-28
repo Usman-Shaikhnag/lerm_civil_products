@@ -13,7 +13,27 @@
 				
 				<div class="container_eln" style="padding-top:20px;">
 					<div class="" t-foreach="eln" t-as="o">
+
+                 <!-- <table style="width:100%; border:1px solid black; border-collapse:collapse; margin-bottom:10px;">
+					 <tr>
+						<td><strong>Test Report no :</strong></td>
+						<td>
+							<span t-esc="o.sample_id.kes_no if o.sample_id else ''"/>
+						</td>
+
+						<td><strong>Report Issue Date :</strong></td>
+						<td>
+							<span t-esc="srf_sample.sample_received_date.strftime('%d/%m/%Y') if srf_sample and srf_sample.sample_received_date else ''"/>
+						</td>
+
+						<td><strong>ULR No :</strong></td>
+						<td>
+							<span t-esc="srf_sample.ulr_no or ''"/>
+						</td>
+					</tr>
+					</table> -->
 				      <table style="width:100%; border:1px solid black; border-collapse:collapse;">
+					 
                     <tr>
                         <td colspan="1"><b>Customer Party Name :</b></td>
                         <td colspan="3"><t t-esc="nbml.customer_name"/></td>
@@ -108,7 +128,7 @@
                             <td><t t-esc="line.sr_no"/></td>
                             <td><t t-esc="line.test_name"/></td>
                             <td><t t-esc="line.unit"/></td>
-							<td><t t-esc="line.test_method"/></td>
+							 <td><t t-esc="line.test_method"/></td>
                             <td><t t-esc="line.result"/></td>
                             <td><t t-esc="line.specification"/></td>
                         </tr>
