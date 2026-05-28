@@ -62,11 +62,11 @@ class CoarseAggregatePrefillWizard(models.TransientModel):
         one2many_fields = [
             'crushing_value_child_lines',
             'impact_value_child_lines',
-            'soundness_na2so4_child_lines',
-            'soundness_mgso4_child_lines',
+            'soundness_sod_line_ids',
+            'soundness_mag_line_ids',
             'elongation_table',
             'sieve_analysis_child_lines',
-            'aggregate_grading_child_lines'
+            # 'aggregate_grading_child_lines'
         ]
 
         update_vals = {}
@@ -87,10 +87,10 @@ class CoarseAggregatePrefillWizard(models.TransientModel):
             update_vals.pop('impact_value_child_lines', None)
 
         if not current_product.soundness_na2so4_visible:
-            update_vals.pop('soundness_na2so4_child_lines', None)
+            update_vals.pop('soundness_sod_line_ids', None)
 
         if not current_product.soundness_mgso4_visible:
-            update_vals.pop('soundness_mgso4_child_lines', None)
+            update_vals.pop('soundness_mag_line_ids', None)
 
         if not current_product.elongation_visible:
             update_vals.pop('elongation_table', None)
@@ -98,8 +98,8 @@ class CoarseAggregatePrefillWizard(models.TransientModel):
         if not current_product.sieve_visible:
             update_vals.pop('sieve_analysis_child_lines', None)
 
-        if not current_product.aggregate_grading_visible:
-            update_vals.pop('aggregate_grading_child_lines', None)
+        # if not current_product.aggregate_grading_visible:
+        #     update_vals.pop('aggregate_grading_child_lines', None)
 
 
         if update_vals:

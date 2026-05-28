@@ -35,7 +35,14 @@ class FineAggregatePrefillWizard(models.TransientModel):
             'volume_of_cylender',
             'volume_of_cylender1',
             'weight_empty_cylender1',
-            'wt_of_compact1'            
+            'wt_of_compact1' ,
+            'wt_sample_clay_lumps' ,
+            'wt_dry_sample_clay_lumps' ,
+            'clay_lumps_percent', 
+            'wt_sample_light_weight', 
+            'wt_dry_sample_light_weight', 
+            'light_weight_percent', 
+            'sample_color',       
         ]
 
         one2many_fields = [
@@ -43,7 +50,11 @@ class FineAggregatePrefillWizard(models.TransientModel):
             'specific_gravity_child_lines',
             'bulking_sand_child_lines',
             'site_content_child_lines',
-            'moisture_content_child_lines'
+            'moisture_content_child_lines',
+            'soundness_mag_line_ids',
+            'soundness_magtwo_line_ids',
+            'soundness_sod_line_ids',
+            'soundness_sodtwo_line_ids'
         ]
 
         update_vals = {}
@@ -71,6 +82,18 @@ class FineAggregatePrefillWizard(models.TransientModel):
 
         if not current_product.moisture_content_visible:
             update_vals.pop('moisture_content_child_lines', None)
+        
+        if not current_product.soundness_mgso4_visible:
+            update_vals.pop('soundness_mag_line_ids', None)
+
+        if not current_product.soundness_mgso4_visible:
+            update_vals.pop('soundness_magtwo_line_ids', None)
+
+        if not current_product.soundness_na2so4_visible:
+            update_vals.pop('soundness_sod_line_ids', None)
+        
+        if not current_product.soundness_na2so4_visible:
+            update_vals.pop('soundness_sodtwo_line_ids', None)
 
 
         if update_vals:
