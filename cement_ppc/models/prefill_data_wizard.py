@@ -40,11 +40,12 @@ class PpcCementPrefillWizard(models.TransientModel):
             'fneness_cement_lines',
             'density_cement_lines',
             'fineness_blaine_lines',
-            'soundness_cement_lines',
+            'opc_autoclave_ids',
             'consistency_cement_lines',
             'intial_time_lines',
             'final_time_lines',
             'compressive_lines',
+            'opc_le_method_ids',
         ]
 
         update_vals = {}
@@ -76,11 +77,14 @@ class PpcCementPrefillWizard(models.TransientModel):
         if not current_product.fineness_blaine_visible:
             update_vals.pop('fineness_blaine_lines', None)
 
-        if not current_product.soundness_cement_visible:
-            update_vals.pop('soundness_cement_lines', None)
+        if not current_product.soundness_autoclave_visible:
+            update_vals.pop('opc_autoclave_ids', None)
 
         if not current_product.consistency_cement_visible:
             update_vals.pop('consistency_cement_lines', None)
+
+        if not current_product.soundness_le_method_visible:
+            update_vals.pop('opc_le_method_ids', None)
 
         if update_vals:
             current_product.sudo().write(update_vals)
