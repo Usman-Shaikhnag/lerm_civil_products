@@ -49,419 +49,290 @@
                              border-color: #3b82f6 !important;
                             }
                     </style>
-                    
-                    <!-- Dimension -->
 
-                    <group invisible="not dimension_visible">
-                        <h1>
-                            <field name="dimension_name" readonly="1" nolabel="1"/>
-                            <field name="dimension_visible" invisible="1"/>
+                    <div class="d-flex gap-2"> 
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="aac_temp"></label>
+                                    </td>
+                                    <td>
+                                        <field name="aac_temp" class="blue-input"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="aac_humidity" ></label>
+                                    </td>
+                                    <td>
+                                        <field name="aac_humidity" class="blue-input"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <!-- Dimension Length -->
+
+                    <div invisible="not length_dimen_visible">
+                        <h1 class="text-center">
+                            <field name="length_dimen_name" readonly="1" nolabel="1"/>
+                            <field name="length_dimen_visible" invisible="1"/>
                         </h1>
-                    </group>
-                    <div class="custom_table_borders" invisible="not dimension_visible">
-                        <field name="dimension_table" nolabel="1" >
+                    </div>
+                    <div class="custom_table_borders" invisible="not length_dimen_visible">
+                        <field name="length_dimen_line_ids" nolabel="1" >
                         <tree editable="bottom">
-                          <field name="length" class="blue-input" decoration-info="length != 0"/>
-                          <field name="width" class="blue-input" decoration-info="width != 0"/>
-                          <field name="height" class="blue-input" decoration-info="height != 0"/>
+                        <field name="sample_no" width="200"/>
+                          <field name="nominal_length" class="blue-input" decoration-info="nominal_length != 0" width="200"/>
+                          <field name="measured_length" class="blue-input" decoration-info="measured_length != 0" width="200"/>
+                          <field name="deviation" width="200"/>
+                          <field name="result" width="200"/>
+                          <field name="remark" class="blue-input" decoration-info="remark != 0" width="200"/>
                         </tree>
                         </field>
                     </div>
 
-                    
-                    <div style="display:flex;">
-                    <div style="width:33%;">
-                        <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not length_dimen_visible">
                             <tbody>
                                 <tr>
-                                    <td><label class="text-bold" for="average_length">Average Length</label></td>
-                                    <td><field name="average_length"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div style="width:33%;">
-                      <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:98%;">
-                            <tbody>
-                                <tr>
-                                    <td><label class="text-bold" for="average_width">Average Width</label></td>
-                                    <td><field name="average_width"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div style="width:34%;">
-                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                    <td><label class="text-bold" for="average_height">Average Height</label></td>
-                                    <td><field name="average_height"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    </div>
-
-
-                    <!-- <group invisible="not dimension_visible">
-                        <group style="width:33%;display:flex;">
-                            <field name="average_length"/>
-                        
-                            <field name="average_width"/>
-                        
-                            <field name="average_height"/>
-                        </group>
-                    </group> -->
-
-                    <div style="display:flex;">
-                    <div style="width:50%;">
-                        <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
-                            <tbody>
-                                <tr>
-                                    <td><label class="text-bold" for="length_grade1">Length pecification Grade - 1</label></td>
-                                    <td><field name="length_grade1" class="blue-input"/></td>
+                                    <td><label class="text-bold" for="avg_measured_length">Average Measured Length</label></td>
+                                    <td><field name="avg_measured_length"/></td>
                                 </tr>
                                 <tr>
-                                    <td><label class="text-bold" for="width_grade1">Width Specification Grade - 1</label></td>
-                                    <td><field name="width_grade1" class="blue-input"/></td>
-                                </tr>
-                                <tr>
-                                    <td><label class="text-bold" for="height_grade1">Height Specification Grade - 1</label></td>
-                                    <td><field name="height_grade1" class="blue-input"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div style="width:50%;">
-                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                    <td><label class="text-bold" for="length_grade2">Length Specification Grade - 2</label></td>
-                                    <td><field name="length_grade2" class="blue-input"/></td>
-                                </tr>
-                                <tr>
-                                    <td><label class="text-bold" for="width_grade2">Width Specification Grade - 2</label></td>
-                                    <td><field name="width_grade2" class="blue-input"/></td>
-                                </tr>
-                                <tr>
-                                    <td><label class="text-bold" for="height_grade2">Height Specification Grade - 2</label></td>
-                                    <td><field name="height_grade2" class="blue-input"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    </div>
-                    <group/>
-
-
-                  
-                    
-                    
-
-                    <!-- Moisture Content  -->
-
-                    <div invisible="not moisture_visible">
-                        <h1>
-                            <field name="moisture_name" readonly="1" nolabel="1"/>
-                            <field name="moisture_visible" invisible="1"/>
-                        </h1>
-                    </div>
-
-                    <div class="custom_table_borders" invisible="not moisture_visible">
-                        <field name="moisture_content_table" nolabel="1" >
-                        <tree editable="bottom">
-                          <field name="wt_sample" class="blue-input" decoration-info="wt_sample != 0"/>
-                          <field name="oven_wt" class="blue-input" decoration-info="oven_wt != 0"/>
-                          <field name="moisture_content"/>
-                        </tree>
-                        </field>
-                    </div>
-                    
-                    <div style="width:60%">
-                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders" >
-                         <tbody>
-                         <tr>
-                           <td><label for="average_moisture_content" class="text-bold">Average Moisture Content %</label></td>
-                           <td><field name="average_moisture_content"/></td>
-                          </tr>
-                           <tr>
-                            <td><label for="moisture_confirmity" class="text-bold">Conformity</label></td>
-                             <td><field name="moisture_confirmity"
-                                        decoration-success="moisture_confirmity == 'pass'" 
-                                        decoration-danger="moisture_confirmity == 'fail'" 
+                            <td><label for="avg_measured_length_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="avg_measured_length_confirmity"
+                                        decoration-success="avg_measured_length_confirmity == 'pass'" 
+                                        decoration-danger="avg_measured_length_confirmity == 'fail'" 
                                         readonly="1"/></td>
                            </tr>
                            <tr>
-                           <td><label for="moisture_nabl" class="text-bold">NABL</label></td>
-                           <td><field name="moisture_nabl"
-                                        decoration-success="moisture_nabl == 'pass'" 
-                                        decoration-danger="moisture_nabl == 'fail'" 
+                           <td><label for="avg_measured_length_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="avg_measured_length_nabl"
+                                        decoration-success="avg_measured_length_nabl == 'pass'" 
+                                        decoration-danger="avg_measured_length_nabl == 'fail'" 
                                         readonly="1"/></td>
                           </tr>
-                          </tbody>
-                          </table>
-                        </div>
-
-                    <!-- <group invisible="not moisture_visible">
-                        <group style="width:33%">
-                            <field name="average_moisture_content"/>
-                        
-                            <field name="moisture_confirmity"/>
-                        
-                            <field name="moisture_nabl"/>
-                        </group>
-                    </group> -->
-
-                    <div style="display:flex;">                        
-                       <div style="width:50%">
-                        <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
-                         <tbody>
-                           <tr>
-                           <td><label for="moisture_grade1" class="text-bold">Specification Grade - 1</label></td>
-                           <td><field name="moisture_grade1" class="blue-input"/></td>
-                          </tr>
-                          </tbody>
-                          </table>
-                        </div>
-
-                        <div style="width:50%">
-                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                         <tbody>
-                           <tr>
-                           <td><label for="moisture_grade2" class="text-bold">Specification Grade - 2</label></td>
-                           <td><field name="moisture_grade2" class="blue-input"/></td>
-                          </tr>
-                          </tbody>
-                          </table>
-                        </div>
-                      </div>
-                      <group/>
-
-                    <!-- <group invisible="not moisture_visible">
-                        <group style="white-space: nowrap; width:70%;">
-                            <field name="moisture_grade1"/>
-                             <field name="moisture_grade2"/>
-                        </group>
-                    </group> -->
-
-                     
-
-                    <!-- Block Density  -->
-                    <group invisible="not density_visible">
-                        <h1>
-                            <field name="density_name" readonly="1" nolabel="1"/>
-                            <field name="density_visible" invisible="1"/>
-                        </h1>
-                    </group>
-
-                    <div style="width:60%">
-                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders" >
-                         <tbody>
-                         <tr>
-                           <td><label for="density_unit" class="text-bold">Unit</label></td>
-                           <td><field name="density_unit"/></td>
-                          </tr>
-                          </tbody>
-                          </table>
-                        </div>
-
-                    <!-- <group invisible="not density_visible">
-                        <field name="density_unit"/>
-                    </group> -->
-                    
-                    <div class="custom_table_borders" invisible="not density_visible">
-                        <field name="density_table"  nolabel="1" colspan="2">
-                        <tree>
-                          <field name="length" widget="textarea"  class="blue-input"/>
-                          <field name="width" style="white-space:nowrap;" class="blue-input"/>
-                          <field name="height" style="white-space:nowrap;" class="blue-input"/>
-                          <field name="volume" style="white-space:nowrap;" />
-                          <field name="wt_sample" style="white-space:nowrap;" class="blue-input"/>
-                          <field name="density" style="white-space:nowrap;"/>
-                        </tree>
-                        </field>
-                    </div>
-
-                    <div style="width:60%">
-                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders" >
-                         <tbody>
-                         <tr>
-                           <td><label for="average_density" class="text-bold">Average Density</label></td>
-                           <td><field name="average_density"/></td>
-                          </tr>
-                           <tr>
-                            <td><label for="density_confirmity" class="text-bold">Conformity</label></td>
-                             <td><field name="density_confirmity"
-                                        decoration-success="density_confirmity == 'pass'" 
-                                        decoration-danger="density_confirmity == 'fail'" 
-                                        readonly="1"/></td>
-                           </tr>
-                           <tr>
-                           <td><label for="density_nabl" class="text-bold">NABL</label></td>
-                           <td><field name="density_nabl"
-                                        decoration-success="density_nabl == 'pass'" 
-                                        decoration-danger="density_nabl == 'fail'" 
-                                        readonly="1"/></td>
-                          </tr>
-                          </tbody>
-                          </table>
-                        </div>
-
-                        <div style="display:flex;">                        
-                       <div style="width:50%">
-                        <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
-                         <tbody>
-                           <tr>
-                           <td><label for="density_grade1" class="text-bold">Specification Grade - 1</label></td>
-                           <td><field name="density_grade1" class="blue-input"/></td>
-                          </tr>
-                          </tbody>
-                          </table>
-                        </div>
-
-                        <div style="width:50%">
-                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                         <tbody>
-                           <tr>
-                           <td><label for="density_grade2" class="text-bold">Specification Grade - 2</label></td>
-                           <td><field name="density_grade2" class="blue-input"/></td>
-                          </tr>
-                          </tbody>
-                          </table>
-                        </div>
-                      </div>
+                            </tbody>
+                        </table>
 
 
-                    <!-- <group invisible="not density_visible">
-                        <group style="width:33%">
-                            <field name="average_density"/>
-                            <field name="density_confirmity"/>
-                            <field name="density_nabl"/>
-                        </group>
-                    </group> -->
-                    <!-- <group invisible="not moisture_visible">
-                        <group style="white-space: nowrap; width:70%;">
-                            <field name="density_grade1"/>
-                             <field name="density_grade2"/>
-                        </group>
-                    </group> -->
-                    <group/>
+                        <!-- Dimension Height -->
 
-                    <!-- Drying Shrinkage  -->
-                    <div invisible="not drying_shrinkage_visible">
-                        <h1>
-                            <field name="drying_shrinkage_name" readonly="1" nolabel="1"/>
-                            <field name="drying_shrinkage_visible" invisible="1"/>
+                    <div invisible="not height_dimen_visible">
+                        <h1 class="text-center">
+                            <field name="height_dimen_name" readonly="1" nolabel="1"/>
+                            <field name="height_dimen_visible" invisible="1"/>
                         </h1>
                     </div>
-
-                    <div class="custom_table_borders" invisible="not drying_shrinkage_visible">
-                        <field name="drying_shrinkage_table" nolabel="1">
+                    <div class="custom_table_borders" invisible="not height_dimen_visible">
+                        <field name="height_dimen_line_ids" nolabel="1" >
                         <tree editable="bottom">
-                          <field name="length" class="blue-input" decoration-info="length != 0"/>
-                          <field name="initial_length" class="blue-input" decoration-info="initial_length != 0"/>
-                          <field name="final_length" class="blue-input" decoration-info="final_length != 0"/>
-                          <field name="change_length"/>
-                          <field name="drying_shrinkage"/>
+                        <field name="sample_no" width="200"/>
+                          <field name="nominal_height" class="blue-input" decoration-info="nominal_height != 0" width="200"/>
+                          <field name="measured_height" class="blue-input" decoration-info="measured_height != 0" width="200"/>
+                          <field name="deviation" width="200"/>
+                          <field name="result" width="200"/>
+                          <field name="remark" class="blue-input" decoration-info="remark != 0" width="200"/>
                         </tree>
                         </field>
                     </div>
 
-                    <div style="width:60%">
-                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders" >
-                         <tbody>
-                         <tr>
-                           <td><label for="average_drying_shrinkage" class="text-bold">Average Drying Shrinkage</label></td>
-                           <td><field name="average_drying_shrinkage"/></td>
-                          </tr>
-                           <tr>
-                            <td><label for="drying_shrinkage_confirmity" class="text-bold">Conformity</label></td>
-                             <td><field name="drying_shrinkage_confirmity"
-                                        decoration-success="drying_shrinkage_confirmity == 'pass'" 
-                                        decoration-danger="drying_shrinkage_confirmity == 'fail'" 
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not height_dimen_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="avg_measured_height">Average Measured Height</label></td>
+                                    <td><field name="avg_measured_height"/></td>
+                                </tr>
+                                <tr>
+                            <td><label for="avg_measured_height_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="avg_measured_height_confirmity"
+                                        decoration-success="avg_measured_height_confirmity == 'pass'" 
+                                        decoration-danger="avg_measured_height_confirmity == 'fail'" 
                                         readonly="1"/></td>
                            </tr>
                            <tr>
-                           <td><label for="drying_shrinkage_aac_nabl" class="text-bold">NABL</label></td>
-                           <td><field name="drying_shrinkage_aac_nabl"
-                                        decoration-success="drying_shrinkage_aac_nabl == 'pass'" 
-                                        decoration-danger="drying_shrinkage_aac_nabl == 'fail'" 
+                           <td><label for="avg_measured_height_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="avg_measured_height_nabl"
+                                        decoration-success="avg_measured_height_nabl == 'pass'" 
+                                        decoration-danger="avg_measured_height_nabl == 'fail'" 
                                         readonly="1"/></td>
                           </tr>
-                          </tbody>
-                          </table>
-                        </div>
+                            </tbody>
+                        </table>
 
-                        <div style="display:flex;">                        
-                       <div style="width:50%">
-                        <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
-                         <tbody>
+
+
+                 <!-- Dimension Thickness -->
+
+                    <div invisible="not thickness_dimen_visible">
+                        <h1 class="text-center">
+                            <field name="thickness_dimen_name" readonly="1" nolabel="1"/>
+                            <field name="thickness_dimen_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <div class="custom_table_borders" invisible="not thickness_dimen_visible">
+                        <field name="thickness_dimen_line_ids" nolabel="1" >
+                        <tree editable="bottom">
+                        <field name="sample_no" width="200"/>
+                          <field name="nominal_thickness" class="blue-input" decoration-info="nominal_thickness != 0" width="200"/>
+                          <field name="measured_thickness" class="blue-input" decoration-info="measured_thickness != 0" width="200"/>
+                          <field name="deviation" width="200"/>
+                          <field name="result" width="200"/>
+                          <field name="remark" class="blue-input" decoration-info="remark != 0" width="200"/>
+                        </tree>
+                        </field>
+                    </div>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not thickness_dimen_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="avg_measured_thickness">Average Measured Thickness</label></td>
+                                    <td><field name="avg_measured_thickness"/></td>
+                                </tr>
+                                <tr>
+                            <td><label for="avg_measured_thickness_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="avg_measured_thickness_confirmity"
+                                        decoration-success="avg_measured_thickness_confirmity == 'pass'" 
+                                        decoration-danger="avg_measured_thickness_confirmity == 'fail'" 
+                                        readonly="1"/></td>
+                           </tr>
                            <tr>
-                           <td><label for="drying_grade1" class="text-bold">Specification Grade - 1</label></td>
-                           <td><field name="drying_grade1" class="blue-input"/></td>
+                           <td><label for="avg_measured_thickness_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="avg_measured_thickness_nabl"
+                                        decoration-success="avg_measured_thickness_nabl == 'pass'" 
+                                        decoration-danger="avg_measured_thickness_nabl == 'fail'" 
+                                        readonly="1"/></td>
                           </tr>
-                          </tbody>
-                          </table>
-                        </div>
+                            </tbody>
+                        </table>
 
-                        <div style="width:50%">
-                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                         <tbody>
+
+                <!-- Bulk Density -->
+
+                    <div invisible="not bulk_density_visible">
+                        <h1 class="text-center">
+                            <field name="bulk_density_name" readonly="1" nolabel="1"/>
+                            <field name="bulk_density_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <div class="custom_table_borders" invisible="not bulk_density_visible">
+                        <field name="bulk_density_ids" nolabel="1" >
+                        <tree editable="bottom">
+                        <field name="sample_no" width="200"/>
+                          <field name="dry_weight" class="blue-input" decoration-info="dry_weight != 0" width="200"/>
+                          <field name="volume" class="blue-input" decoration-info="volume != 0" width="200"/>
+                          <field name="bulk_density" width="200"/>
+                        </tree>
+                        </field>
+                    </div>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not bulk_density_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="mean_bulk_density">Mean Bulk Density</label></td>
+                                    <td><field name="mean_bulk_density"/>
+                                    <span>  g/cm³</span></td>
+                                </tr>
+                                <tr>
+                            <td><label for="mean_bulk_density_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="mean_bulk_density_confirmity"
+                                        decoration-success="mean_bulk_density_confirmity == 'pass'" 
+                                        decoration-danger="mean_bulk_density_confirmity == 'fail'" 
+                                        readonly="1"/></td>
+                           </tr>
                            <tr>
-                           <td><label for="drying_grade2" class="text-bold">Specification Grade - 2</label></td>
-                           <td><field name="drying_grade2" class="blue-input"/></td>
+                           <td><label for="mean_bulk_density_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="mean_bulk_density_nabl"
+                                        decoration-success="mean_bulk_density_nabl == 'pass'" 
+                                        decoration-danger="mean_bulk_density_nabl == 'fail'" 
+                                        readonly="1"/></td>
                           </tr>
-                          </tbody>
-                          </table>
-                        </div>
-                      </div>
-                      <group/>
+                            </tbody>
+                        </table>
 
-                    <!-- <group invisible="not drying_shrinkage_visible">
-                        <group style="width:33%">
-                            <field name="average_drying_shrinkage"/>
-                            <field name="drying_shrinkage_confirmity"/>                            <field name="drying_shrinkage_aac_nabl"/>
-                        </group>
 
-                    </group>
 
-                     <group invisible="not drying_shrinkage_visible">
-                        <group style="white-space: nowrap; width:70%;">
-                            <field name="drying_grade1"/>
-                             <field name="drying_grade2"/>
-                    
-                        </group>
-                    </group> -->
-                    
+                    <!-- Moisture Content -->
 
-                <!-- Compressive Strength -->
+                    <div invisible="not moisture_content_visible">
+                        <h1 class="text-center">
+                            <field name="moisture_content_name" readonly="1" nolabel="1"/>
+                            <field name="moisture_content_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <div class="custom_table_borders" invisible="not moisture_content_visible">
+                        <field name="moisture_content_line_ids" nolabel="1" >
+                        <tree editable="bottom">
+                        <field name="sample_no" width="200"/>
+                          <field name="w1" class="blue-input" decoration-info="w1 != 0" width="200"/>
+                          <field name="volume" class="blue-input" decoration-info="volume != 0" width="200"/>
+                          <field name="w" class="blue-input" decoration-info="w != 0" width="200"/>
+                          <field name="moisture_content" width="200"/>
+                        </tree>
+                        </field>
+                    </div>
 
-                <div invisible="not compressive_strength_visible">
-                        <h1>
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not moisture_content_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="mean_moisture_content">Mean Moisture Content (%)</label></td>
+                                    <td><field name="mean_moisture_content"/></td>
+                                </tr>
+                                <tr>
+                            <td><label for="mean_moisture_content_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="mean_moisture_content_confirmity"
+                                        decoration-success="mean_moisture_content_confirmity == 'pass'" 
+                                        decoration-danger="mean_moisture_content_confirmity == 'fail'" 
+                                        readonly="1"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="mean_moisture_content_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="mean_moisture_content_nabl"
+                                        decoration-success="mean_moisture_content_nabl == 'pass'" 
+                                        decoration-danger="mean_moisture_content_nabl == 'fail'" 
+                                        readonly="1"/></td>
+                          </tr>
+                            </tbody>
+                        </table>
+
+
+                        <!-- Compressive Strength -->
+
+                    <div invisible="not compressive_strength_visible">
+                        <h1 class="text-center">
                             <field name="compressive_strength_name" readonly="1" nolabel="1"/>
                             <field name="compressive_strength_visible" invisible="1"/>
                         </h1>
                     </div>
-
                     <div class="custom_table_borders" invisible="not compressive_strength_visible">
-                        <field name="compressive_strength_table" nolabel="1" >
+                        <field name="compressive_strength_line_ids" nolabel="1" >
                         <tree editable="bottom">
-                          <field name="crosssectional_area" class="blue-input" decoration-info="crosssectional_area != 0"/>
-                          <field name="aac_load" class="blue-input" decoration-info="aac_load != 0"/>
-                          <field name="compressive_strength"/>
+                        <field name="sample_no" width="200"/>
+                          <field name="length" class="blue-input" decoration-info="length" width="200"/>
+                          <field name="breadth" class="blue-input" decoration-info="breadth != 0" width="200"/>
+                          <field name="area_pressure_face" width="200"/>
+                          <field name="weight_before_test" class="blue-input" decoration-info="weight_before_test != 0" width="200"/>
+                          <field name="max_load_failure" class="blue-input" decoration-info="max_load_failure != 0" width="200"/>
+                          <field name="compressive_strength" width="200"/>
                         </tree>
                         </field>
                     </div>
 
-                    <div style="width:60%">
-                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders" >
-                         <tbody>
-                         <tr>
-                           <td><label for="average_compressive_strength" class="text-bold">Average Compressive Strength</label></td>
-                           <td><field name="average_compressive_strength"/></td>
-                          </tr>
-                           <tr>
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not compressive_strength_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="average_compressive_strength">Average Compressive Strength (MPa)</label></td>
+                                    <td><field name="average_compressive_strength"/></td>
+                                </tr>
+                                <tr>
                             <td><label for="compressive_strength_confirmity" class="text-bold">Conformity</label></td>
                              <td><field name="compressive_strength_confirmity"
                                         decoration-success="compressive_strength_confirmity == 'pass'" 
@@ -475,53 +346,60 @@
                                         decoration-danger="compressive_strength_nabl == 'fail'" 
                                         readonly="1"/></td>
                           </tr>
-                          </tbody>
-                          </table>
-                        </div>
-
-                        <div style="display:flex;">                        
-                       <div style="width:50%">
-                        <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
-                         <tbody>
-                           <tr>
-                           <td><label for="compressive_grade1" class="text-bold">Specification Grade - 1</label></td>
-                           <td><field name="compressive_grade1" class="blue-input"/></td>
-                          </tr>
-                          </tbody>
-                          </table>
-                        </div>
-
-                        <div style="width:50%">
-                        <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                         <tbody>
-                           <tr>
-                           <td><label for="compressive_grade2" class="text-bold">Specification Grade - 2</label></td>
-                           <td><field name="compressive_grade2" class="blue-input"/></td>
-                          </tr>
-                          </tbody>
-                          </table>
-                        </div>
-                      </div>
-
-
-                    <!-- <group invisible="not compressive_strength_visible">
-                        <group style="width:33%">
-                            <field name="average_compressive_strength"/>
-                        
-                            <field name="compressive_strength_confirmity"/>
-                       
-                            <field name="compressive_strength_nabl"/>
-                           
-                        </group>
-                 
-                    </group>
-                    <group invisible="not drying_shrinkage_visible">
-                        <group style="white-space: nowrap; width:70%;">
-                            <field name="compressive_grade1"/>
-                             <field name="compressive_grade2"/>
+                            </tbody>
+                        </table>
                     
-                        </group>
-                    </group> -->
+            
+
+                     
+
+                    
+
+                    <!-- Drying Shrinkage  -->
+                    <div invisible="not drying_shrinkage_visible">
+                        <h1>
+                            <field name="drying_shrinkage_name" readonly="1" nolabel="1"/>
+                            <field name="drying_shrinkage_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="custom_table_borders" invisible="not drying_shrinkage_visible">
+                        <field name="drying_shrinkage_line_ids" nolabel="1">
+                        <tree editable="bottom">
+                          <field name="sample_no"/>
+                          <field name="initial_length" class="blue-input" decoration-info="initial_length != 0"/>
+                          <field name="final_length" class="blue-input" decoration-info="final_length != 0"/>
+                          <field name="drying_shrinkage"/>
+                        </tree>
+                        </field>
+                    </div>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not drying_shrinkage_visible">
+                         <tbody>
+                         <tr>
+                           <td><label for="mean_drying_shrinkage" class="text-bold">Average Drying Shrinkage (%)</label></td>
+                           <td><field name="mean_drying_shrinkage"/></td>
+                          </tr>
+                           <tr>
+                            <td><label for="mean_drying_shrinkage_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="mean_drying_shrinkage_confirmity"
+                                        decoration-success="mean_drying_shrinkage_confirmity == 'pass'" 
+                                        decoration-danger="mean_drying_shrinkage_confirmity == 'fail'" 
+                                        readonly="1"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="mean_drying_shrinkage_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="mean_drying_shrinkage_nabl"
+                                        decoration-success="mean_drying_shrinkage_nabl == 'pass'" 
+                                        decoration-danger="mean_drying_shrinkage_nabl == 'fail'" 
+                                        readonly="1"/></td>
+                          </tr>
+                          </tbody>
+                          </table>
+                        
+
+
+                
 
                     <notebook>
                         <page string="Notes">
