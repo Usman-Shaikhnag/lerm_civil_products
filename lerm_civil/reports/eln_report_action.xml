@@ -148,6 +148,28 @@
     <field name="binding_type">report</field>
 </record>
 
+
+<record id="ballast_datasheet_action" model="ir.actions.report">
+    <field name="name">Ballast DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">ballast.ballast_datasheet</field>
+    <field name="report_file">ballast.ballast_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="lerm_ballast_report_action" model="ir.actions.report">
+    <field name="name">Ballast Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">ballast.lerm_ballast_report</field>
+    <field name="report_file">ballast.lerm_ballast_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="paperformat_id" ref="paperformat_makeinfra_report"/>
+    <field name="binding_type">report</field>
+</record>
+
 <record id="crusher_run_mac_datasheet_action" model="ir.actions.report">
     <field name="name">Crusher Run Macadam DataSheet</field>
     <field name="model">lerm.eln</field>
