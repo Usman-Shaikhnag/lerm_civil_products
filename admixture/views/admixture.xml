@@ -57,36 +57,547 @@
                             }
                     </style>
 
-                    <!-- Admixture -->
-                    <div invisible=" not admixture_visible">
+                    <div class="d-flex gap-2"> 
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="admixture_temp"></label>
+                                    </td>
+                                    <td>
+                                        <field name="admixture_temp" class="blue-input"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="admixture_humidity" ></label>
+                                    </td>
+                                    <td>
+                                        <field name="admixture_humidity" class="blue-input"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Bleeding Test -->
+                    <div invisible=" not bleeding_visible">
                         <h1 class="text-center">
-                            <field name="admixture_name" readonly="1" nolabel="1"/>
-                            <field name="admixture_visible" invisible="1"/>
+                            <field name="bleeding_name" readonly="1" nolabel="1"/>
+                            <field name="bleeding_visible" invisible="1"/>
                         </h1>
                     </div>
 
-                    <div class="custom_table_borders">
-                    <field name="child_lines" nolabel="1" >
-                            <tree editable="bottom">
-                                <field name="water_content_max1" />
-                                <field name="water_content_max2" class="blue-input" decoration-info="water_content_max2 != 0"/>
-                                <field name="water_content_max3" class="blue-input" decoration-info="water_content_max3 != 0"/>
-                                <field name="water_content_max4" class="blue-input" decoration-info="water_content_max4 != 0"/>
-                                
-                                <field name="water_content_max5" class="blue-input" decoration-info="water_content_max5 != 0"/>
-                                <field name="water_content_max6" class="blue-input" decoration-info="water_content_max6 != 0"/>
-                                <field name="water_content_max7" class="blue-input" decoration-info="water_content_max7 != 0"/>
-                                <field name="water_content_max8" class="blue-input" decoration-info="water_content_max8 != 0"/>
+                    <div class="custom_table_borders" invisible="not bleeding_visible">
+                        <field name="bleeding_lines_ids" nolabel="1" >
+                        <tree editable="bottom">
+                        <field name="sample_no" width="200"/>
 
-                                <field name="water_content_max9" class="blue-input" decoration-info="water_content_max9 != 0"/>
-                                <!-- <field name="water_content_max1"/>
-                                <field name="water_content_max1"/> -->
+                          <field name="w1" class="blue-input" decoration-info="w1 != 0" width="200"/>
 
-                                <!-- <field name="bleeding"/>
-                                <field name="air_content"/> -->
-                            </tree>
-                    </field>
+                          <field name="w2" class="blue-input" decoration-info="w2 != 0" width="200"/>
+
+                          <field name="net_weight" width="200"/>
+
+                          <field name="volume" class="blue-input" decoration-info="volume != 0" width="200"/>
+
+                          <field name="mixing_water" class="blue-input" decoration-info="mixing_water != 0" width="200"/>
+
+                          <field name="bleed_water_ml" class="blue-input" decoration-info="bleed_water_ml != 0" width="200"/>
+
+                          <field name="bleed_water_kg"  width="200"/>
+
+                          <field name="bleeding_percent"  width="200"/>
+                        </tree>
+                        </field>
                     </div>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not bleeding_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="avg_bleeding_percent">Average Bleeding (%)</label></td>
+                                    <td><field name="avg_bleeding_percent"/></td>
+                                </tr>
+                                <tr>
+                            <td><label for="avg_bleeding_percent_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="avg_bleeding_percent_confirmity"
+                                        decoration-success="avg_bleeding_percent_confirmity == 'pass'" 
+                                        decoration-danger="avg_bleeding_percent_confirmity == 'fail'" 
+                                        readonly="1"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="avg_bleeding_percent_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="avg_bleeding_percent_nabl"
+                                        decoration-success="avg_bleeding_percent_nabl == 'pass'" 
+                                        decoration-danger="avg_bleeding_percent_nabl == 'fail'" 
+                                        readonly="1"/></td>
+                          </tr>
+                            </tbody>
+                        </table>
+
+
+                    <!-- Slump Test -->
+                    <div invisible=" not slump_test_visible">
+                        <h1 class="text-center">
+                            <field name="slump_test_name" readonly="1" nolabel="1"/>
+                            <field name="slump_test_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="custom_table_borders" invisible="not slump_test_visible">
+                        <field name="slump_test_line_ids" nolabel="1" >
+                        <tree editable="bottom">
+                        <field name="sample_no" width="200"/>
+
+                          <field name="h1" class="blue-input" decoration-info="h1 != 0" width="200"/>
+
+                          <field name="h2" class="blue-input" decoration-info="h2 != 0" width="200"/>
+
+                          <field name="slump_value" width="200"/>
+
+                          <field name="slump_type" class="blue-input" decoration-info="slump_type != 0" width="200"/>
+
+                          <field name="test_time" class="blue-input" decoration-info="test_time != 0" width="200"/>
+                        </tree>
+                        </field>
+                    </div>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not slump_test_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="avg_slump">Average Slump (mm)</label></td>
+                                    <td><field name="avg_slump"/></td>
+                                </tr>
+                                <tr>
+                            <td><label for="avg_slump_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="avg_slump_confirmity"
+                                        decoration-success="avg_slump_confirmity == 'pass'" 
+                                        decoration-danger="avg_slump_confirmity == 'fail'" 
+                                        readonly="1"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="avg_slump_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="avg_slump_nabl"
+                                        decoration-success="avg_slump_nabl == 'pass'" 
+                                        decoration-danger="avg_slump_nabl == 'fail'" 
+                                        readonly="1"/></td>
+                          </tr>
+                            </tbody>
+                        </table>
+
+
+                <!-- Compressive Strength -->
+                    <div invisible=" not compressive_strength_visible">
+                        <h1 class="text-center">
+                            <field name="compressive_strength_name" readonly="1" nolabel="1"/>
+                            <field name="compressive_strength_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="custom_table_borders" invisible="not compressive_strength_visible">
+                        <field name="compressive_strength_line_ids" nolabel="1" >
+                        <tree editable="bottom">
+                        <field name="age" width="200" readonly="id"/>
+
+                          <field name="cube_no" class="blue-input" decoration-info="cube_no != 0" width="200"/>
+
+                          <field name="date_casting" width="200"/>
+                          <field name="date_testing" width="200"/>
+
+                          <field name="weight" class="blue-input" decoration-info="weight != 0" width="200"/>
+
+                          <field name="volume" class="blue-input" decoration-info="volume != 0" width="200"/>
+
+                          <field name="density" width="200"/>
+
+                          <field name="load_kn" class="blue-input" decoration-info="load_kn != 0" width="200"/>
+
+                          <field name="compressive_strength" width="200"/>
+                        </tree>
+                        </field>
+                    </div>
+
+                    <div class="d-flex gap-4">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not compressive_strength_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="avg_3_days">Average 3 Days Compressive Strength</label></td>
+                                    <td><field name="avg_3_days"/><span>  N/mm²</span></td>
+                                </tr>
+                                <tr>
+                            <td><label for="avg_3_days_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="avg_3_days_confirmity"
+                                        decoration-success="avg_3_days_confirmity == 'pass'" 
+                                        decoration-danger="avg_3_days_confirmity == 'fail'" 
+                                        readonly="1"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="avg_3_days_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="avg_3_days_nabl"
+                                        decoration-success="avg_3_days_nabl == 'pass'" 
+                                        decoration-danger="avg_3_days_nabl == 'fail'" 
+                                        readonly="1"/></td>
+                          </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not compressive_strength_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="avg_7_days">Average 7 Days Compressive Strength</label></td>
+                                    <td><field name="avg_7_days"/><span>  N/mm²</span></td>
+                                </tr>
+                                <tr>
+                            <td><label for="avg_7_days_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="avg_7_days_confirmity"
+                                        decoration-success="avg_7_days_confirmity == 'pass'" 
+                                        decoration-danger="avg_7_days_confirmity == 'fail'" 
+                                        readonly="1"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="avg_7_days_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="avg_7_days_nabl"
+                                        decoration-success="avg_7_days_nabl == 'pass'" 
+                                        decoration-danger="avg_7_days_nabl == 'fail'" 
+                                        readonly="1"/></td>
+                          </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not compressive_strength_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="avg_14_days">Average 14 Days Compressive Strength</label></td>
+                                    <td><field name="avg_14_days"/><span>  N/mm²</span></td>
+                                </tr>
+                                <tr>
+                            <td><label for="avg_14_days_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="avg_14_days_confirmity"
+                                        decoration-success="avg_14_days_confirmity == 'pass'" 
+                                        decoration-danger="avg_14_days_confirmity == 'fail'" 
+                                        readonly="1"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="avg_14_days_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="avg_14_days_nabl"
+                                        decoration-success="avg_14_days_nabl == 'pass'" 
+                                        decoration-danger="avg_14_days_nabl == 'fail'" 
+                                        readonly="1"/></td>
+                          </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not compressive_strength_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="avg_28_days">Average 28 Days Compressive Strength</label></td>
+                                    <td><field name="avg_28_days"/><span>  N/mm²</span></td>
+                                </tr>
+                                <tr>
+                            <td><label for="avg_28_days_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="avg_28_days_confirmity"
+                                        decoration-success="avg_28_days_confirmity == 'pass'" 
+                                        decoration-danger="avg_28_days_confirmity == 'fail'" 
+                                        readonly="1"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="avg_28_days_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="avg_28_days_nabl"
+                                        decoration-success="avg_28_days_nabl == 'pass'" 
+                                        decoration-danger="avg_28_days_nabl == 'fail'" 
+                                        readonly="1"/></td>
+                          </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <!-- Flexural Strength -->
+                    <div invisible=" not flexural_strength_visible">
+                        <h1 class="text-center">
+                            <field name="flexural_strength_name" readonly="1" nolabel="1"/>
+                            <field name="flexural_strength_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not flexural_strength_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="span_length">Span Length</label></td>
+                                    <td><field name="span_length" class="blue-input"/><span>  mm</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not flexural_strength_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="beam_width">Width of Specimen</label></td>
+                                    <td><field name="beam_width" class="blue-input"/><span>  mm</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not flexural_strength_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="beam_depth">Depth of Specimen</label></td>
+                                    <td><field name="beam_depth" class="blue-input"/><span>  mm</span></td>
+                                </tr>
+                            </tbody>
+                        </table> -->
+                    </div>
+
+                    <div class="custom_table_borders" invisible="not flexural_strength_visible">
+                        <field name="flexural_strength_line_ids" nolabel="1" >
+                        <tree editable="bottom">
+                        <field name="age" width="200" readonly="id"/>
+
+                          <field name="weight" class="blue-input" decoration-info="weight != 0" width="200"/>
+
+                          <field name="volume" class="blue-input" decoration-info="volume != 0" width="200"/>
+
+                          <field name="density" width="200"/>
+                          <field name="test_area" width="200"/>
+
+                          <field name="load_kn" class="blue-input" decoration-info="load_kn != 0" width="200"/>
+
+                          <field name="flexural_strength" width="200"/>
+                        </tree>
+                        </field>
+                    </div>
+
+                    <div class="d-flex gap-4">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not flexural_strength_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="avg_3_days_flexural">Average 3 Days Flexural Strength</label></td>
+                                    <td><field name="avg_3_days_flexural"/><span>  N/mm²</span></td>
+                                </tr>
+                                <tr>
+                            <td><label for="avg_3_days_flexural_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="avg_3_days_flexural_confirmity"
+                                        decoration-success="avg_3_days_flexural_confirmity == 'pass'" 
+                                        decoration-danger="avg_3_days_flexural_confirmity == 'fail'" 
+                                        readonly="1"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="avg_3_days_flexural_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="avg_3_days_flexural_nabl"
+                                        decoration-success="avg_3_days_flexural_nabl == 'pass'" 
+                                        decoration-danger="avg_3_days_flexural_nabl == 'fail'" 
+                                        readonly="1"/></td>
+                          </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not flexural_strength_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="avg_7_days_flexural">Average 7 Days Flexural Strength</label></td>
+                                    <td><field name="avg_7_days_flexural"/><span>  N/mm²</span></td>
+                                </tr>
+                                <tr>
+                            <td><label for="avg_7_days_flexural_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="avg_7_days_flexural_confirmity"
+                                        decoration-success="avg_7_days_flexural_confirmity == 'pass'" 
+                                        decoration-danger="avg_7_days_flexural_confirmity == 'fail'" 
+                                        readonly="1"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="avg_7_days_flexural_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="avg_7_days_flexural_nabl"
+                                        decoration-success="avg_7_days_flexural_nabl == 'pass'" 
+                                        decoration-danger="avg_7_days_flexural_nabl == 'fail'" 
+                                        readonly="1"/></td>
+                          </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not flexural_strength_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="avg_14_days_flexural">Average 14 Days Flexural Strength</label></td>
+                                    <td><field name="avg_14_days_flexural"/><span>  N/mm²</span></td>
+                                </tr>
+                                <tr>
+                            <td><label for="avg_14_days_flexural_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="avg_14_days_flexural_confirmity"
+                                        decoration-success="avg_14_days_flexural_confirmity == 'pass'" 
+                                        decoration-danger="avg_14_days_flexural_confirmity == 'fail'" 
+                                        readonly="1"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="avg_14_days_flexural_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="avg_14_days_flexural_nabl"
+                                        decoration-success="avg_14_days_flexural_nabl == 'pass'" 
+                                        decoration-danger="avg_14_days_flexural_nabl == 'fail'" 
+                                        readonly="1"/></td>
+                          </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not flexural_strength_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="avg_28_days_flexural">Average 28 Days Flexural Strength</label></td>
+                                    <td><field name="avg_28_days_flexural"/><span>  N/mm²</span></td>
+                                </tr>
+                                <tr>
+                            <td><label for="avg_28_days_flexural_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="avg_28_days_flexural_confirmity"
+                                        decoration-success="avg_28_days_flexural_confirmity == 'pass'" 
+                                        decoration-danger="avg_28_days_flexural_confirmity == 'fail'" 
+                                        readonly="1"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="avg_28_days_flexural_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="avg_28_days_flexural_nabl"
+                                        decoration-success="avg_28_days_flexural_nabl == 'pass'" 
+                                        decoration-danger="avg_28_days_flexural_nabl == 'fail'" 
+                                        readonly="1"/></td>
+                          </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <!-- Loss Of Workability -->
+                    <div invisible=" not loss_work_visible">
+                        <h1 class="text-center">
+                            <field name="loss_work_name" readonly="1" nolabel="1"/>
+                            <field name="loss_work_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="custom_table_borders" invisible="not loss_work_visible">
+                        <field name="loss_work_line_ids" nolabel="1" >
+                        <tree editable="bottom">
+                        <field name="sample_no" width="200"/>
+
+                          <field name="slump_0" class="blue-input" decoration-info="slump_0 != 0" width="200"/>
+
+                          <field name="slump_30" class="blue-input" decoration-info="slump_30 != 0" width="200"/>
+
+                          <field name="slump_60" class="blue-input" decoration-info="slump_60 != 0" width="200"/>
+
+                          <field name="slump_90" class="blue-input" decoration-info="slump_90 != 0" width="200"/>
+
+                          <field name="slump_120" class="blue-input" decoration-info="slump_120 != 0" width="200"/>
+
+                          <field name="loss_workability" width="200"/>
+                          <field name="percentage_loss" width="200"/>
+
+                          
+                        </tree>
+                        </field>
+                    </div>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not loss_work_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="avg_percentage_loss">Average % Loss of Workability</label></td>
+                                    <td><field name="avg_percentage_loss"/></td>
+                                </tr>
+                                <tr>
+                            <td><label for="avg_percentage_loss_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="avg_percentage_loss_confirmity"
+                                        decoration-success="avg_percentage_loss_confirmity == 'pass'" 
+                                        decoration-danger="avg_percentage_loss_confirmity == 'fail'" 
+                                        readonly="1"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="avg_percentage_loss_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="avg_percentage_loss_nabl"
+                                        decoration-success="avg_percentage_loss_nabl == 'pass'" 
+                                        decoration-danger="avg_percentage_loss_nabl == 'fail'" 
+                                        readonly="1"/></td>
+                          </tr>
+                            </tbody>
+                        </table>
+
+
+                        <!-- Flow of Concrete of High Workability -->
+                    <div invisible=" not flowhigh_work_visible">
+                        <h1 class="text-center">
+                            <field name="flowhigh_work_name" readonly="1" nolabel="1"/>
+                            <field name="flowhigh_work_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="custom_table_borders" invisible="not flowhigh_work_visible">
+                        <field name="flowhigh_work_line_ids" nolabel="1" >
+                        <tree editable="bottom">
+                        <field name="sample_no" width="200"/>
+
+                          <field name="flow_0" class="blue-input" decoration-info="flow_0 != 0" width="200"/>
+
+                          <field name="flow_30" class="blue-input" decoration-info="flow_30 != 0" width="200"/>
+
+                          <field name="flow_60" class="blue-input" decoration-info="flow_60 != 0" width="200"/>
+
+                          <field name="flow_90" class="blue-input" decoration-info="flow_90 != 0" width="200"/>
+
+                          <field name="flow_120" class="blue-input" decoration-info="flow_120 != 0" width="200"/>
+
+                          <field name="average_flow"  width="200"/>
+
+
+                          
+                        </tree>
+                        </field>
+                    </div>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not flowhigh_work_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="avg_flow_diameter">Average Flow Diameter (mm)</label></td>
+                                    <td><field name="avg_flow_diameter"/></td>
+                                </tr>
+                                <tr>
+                            <td><label for="avg_flow_diameter_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="avg_flow_diameter_confirmity"
+                                        decoration-success="avg_flow_diameter_confirmity == 'pass'" 
+                                        decoration-danger="avg_flow_diameter_confirmity == 'fail'" 
+                                        readonly="1"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="avg_flow_diameter_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="avg_flow_diameter_nabl"
+                                        decoration-success="avg_flow_diameter_nabl == 'pass'" 
+                                        decoration-danger="avg_flow_diameter_nabl == 'fail'" 
+                                        readonly="1"/></td>
+                          </tr>
+                            </tbody>
+                        </table>
+
+
+
+
+                        <notebook>
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes" />
+                                    </tree>
+                                </field>
+                            </div>
+                        </page>
+                    </notebook>
+
+
+
+
+                        
+
                     
                     <button
                             type="object"
