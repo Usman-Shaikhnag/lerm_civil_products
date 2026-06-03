@@ -14,7 +14,8 @@ This module contains all the common features of Sales Management and eCommerce.
     'data': [
                 'security/ir.model.access.csv',
                 'views/crusher_run_mac.xml',
-                'reports/crusher_run_mac_ds_report.xml'
+                'reports/crusher_run_mac_datasheet.xml',
+                'reports/crusher_run_mac_report.xml'
     ],
     
     'installable': True,
