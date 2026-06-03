@@ -33,6 +33,7 @@ class Upv(models.Model):
         for result in self.eln_ref.parameters_result:
             if result.parameter.internal_id == '92b95c11-ccef-4779-8d15-584b82994976':
                 result.result_char = round(self.average,2)
+                result.calculated = True
                 continue
           
 

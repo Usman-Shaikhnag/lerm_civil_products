@@ -558,7 +558,7 @@ class SrfForm(models.Model):
 
 
 
-
+    # ir sequence approach
     def confirm_srf(self):
         import re
         import paramiko
@@ -566,51 +566,73 @@ class SrfForm(models.Model):
 
         for rec in self:
 
-            # -----------------------
-            # SRF SEQUENCE (DATE RANGE BASED)
-            # -----------------------
-            srf_seq = self.env['ir.sequence'].search([
-                ('code', '=', 'lerm.srf.main.seq')
-            ], limit=1)
+            # Context for backdated sequence resolution (still useful for other generic things if any)
+            seq_ctx = {'backdated_record_id': rec.id}
+            SeqWithCtx = self.env['ir.sequence'].with_context(**seq_ctx)
 
-            srf_first = self.env['ir.sequence'].next_by_code('lerm.srf.main.seq')
-
-            srf_parts = srf_first.split('/')
-
-            base_prefix = srf_parts[0]
-            full_part = srf_parts[1]
-
-            date_part = full_part[:6]
-            first_number = int(full_part[-3:])
+            # Get Sequences
+            srf_seq = self.env['ir.sequence'].search([('code', '=', 'lerm.srf.main.seq')], limit=1)
+            kes_seq = self.env['ir.sequence'].search([('code', '=', 'lerm.kes.main.seq')], limit=1)
 
             total_samples = sum(rec.sample_range_table.mapped('sample_qty'))
-            last_number = first_number + total_samples - 1
+            is_backdated = srf_seq and srf_seq.is_backdated
 
-            # -----------------------
-            # UPDATE DATE RANGE (SRF)
-            # -----------------------
-            if srf_seq and srf_seq.use_date_range:
+            last_kes_no = False
 
-                today = fields.Date.today()
+            if is_backdated:
+                # -----------------------
+                # BACKDATED MANUAL COUNT
+                # -----------------------
+                count = self.env['lerm.srf.sample'].search_count([
+                    ('srf_id.srf_date', '=', rec.srf_date), 
+                    ('kes_no', '!=', 'New'), 
+                    ('status', '=', '2-confirmed')
+                ])
+                
+                year = str(rec.srf_date.year)[-2:]
+                month = str(rec.srf_date.month).zfill(2)
+                day = str(rec.srf_date.day).zfill(2)
 
-                date_range = self.env['ir.sequence.date_range'].search([
-                    ('sequence_id', '=', srf_seq.id),
-                    ('date_from', '<=', today),
-                    ('date_to', '>=', today)
-                ], limit=1)
+                first_number = count + 1
+                last_number = count + total_samples
+                
+                # SRF format assumption: SRF/YYMMDD001-YYMMDD005
+                modified_srf_id = f"SRF/{year}{month}{day}{str(first_number).zfill(3)}-{year}{month}{day}{str(last_number).zfill(3)}"
+                kes_counter = count
 
-                if date_range:
-                    date_range.sudo().write({
-                        'number_next_actual': last_number + 1
-                    })
+            else:
+                # -----------------------
+                # ODOO SEQUENCE (NOT BACKDATED)
+                # -----------------------
+                srf_first = SeqWithCtx.next_by_code('lerm.srf.main.seq')
 
-            modified_srf_id = "%s/%s%s-%s%s" % (
-                base_prefix,
-                date_part,
-                str(first_number).zfill(3),
-                date_part,
-                str(last_number).zfill(3)
-            )
+                srf_parts = srf_first.split('/')
+                base_prefix = srf_parts[0]
+                full_part = srf_parts[1]
+
+                date_part = full_part[:6]
+                first_number = int(full_part[-3:])
+                last_number = first_number + total_samples - 1
+
+                # Update the Date Range
+                if srf_seq and srf_seq.use_date_range:
+                    effective_date = fields.Date.today()
+                    date_range = self.env['ir.sequence.date_range'].search([
+                        ('sequence_id', '=', srf_seq.id),
+                        ('date_from', '<=', effective_date),
+                        ('date_to', '>=', effective_date)
+                    ], limit=1)
+
+                    if date_range:
+                        date_range.sudo().write({'number_next_actual': last_number + 1})
+
+                modified_srf_id = "%s/%s%s-%s%s" % (
+                    base_prefix,
+                    date_part,
+                    str(first_number).zfill(3),
+                    date_part,
+                    str(last_number).zfill(3)
+                )
 
             # -----------------------
             # SAMPLE PROCESS
@@ -644,14 +666,17 @@ class SrfForm(models.Model):
                     ('sample_range_id', '=', range_line.id)
                 ])
 
-                last_kes_no = False
-
                 for sample in samples:
 
-                    sample_no = self.env['ir.sequence'].next_by_code('lerm.srf.sample') or 'New'
+                    sample_no = SeqWithCtx.next_by_code('lerm.srf.sample') or 'New'
 
-                    # KES (already date_range based)
-                    kes_no = self.env['ir.sequence'].next_by_code('lerm.kes.main.seq')
+                    # KES
+                    if is_backdated:
+                        kes_counter += 1
+                        kes_no = "LERM/TR/" + year + month + day + str(kes_counter).zfill(3)
+                    else:
+                        kes_no = SeqWithCtx.next_by_code('lerm.kes.main.seq')
+                    
                     last_kes_no = kes_no
 
                     # ULR
@@ -1804,10 +1829,7 @@ class CreateSampleWizard(models.TransientModel):
                     eln = ELN.create(eln_vals)
 
                 # Update sample state and link eln if not already linked
-                # if new_state == '2-alloted':
-                #     eln.write({'state': '2-confirm'})
-                # else:
-                #     eln.write({'state': '1-draft'})
+                eln.write({'state': '5-alloted'})
                 sample_vals = {'state': new_state, 'eln_id': eln.id}
                 sample.write(sample_vals)
 

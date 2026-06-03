@@ -19,12 +19,37 @@ class CrackWidth(models.Model):
     notes = fields.One2many('ndt.crack.width.notes','parent_id',string="Notes")
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
 
+  
+
+
     def open_eln_page(self):
-    # import wdb; wdb.set_trace()
-        for result in self.eln_ref.parameters_result:
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+
+          
+
             if result.parameter.internal_id == '76474ec4-4d05-4614-9aac-d0fed62199a3':
                 result.result_char = round(self.average,2)
+                result.calculated = True
+               
                 continue
+
+           
+
+        return {
+                'view_mode': 'form',
+                'res_model': "lerm.eln",
+                'type': 'ir.actions.act_window',
+                'target': 'current',
+                'res_id': self.eln_ref.id,
+                
+            }
 
 
 

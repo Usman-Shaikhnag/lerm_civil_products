@@ -9,6 +9,7 @@
     'security/security.xml',
     'data/sequence.xml',
     # 'data/module_category_data.xml',
+    'views/ir_sequence_views.xml',
     'views/enviroment_register.xml',
     'views/sample_register.xml',
     'views/lerm.xml',
@@ -59,7 +60,9 @@
     'assets': {
         'web.assets_backend': [
             'lerm_civil/static/src/css/custom_styles.css',
+            'lerm_civil/static/src/css/eln_readonly.css',
             'lerm_civil/static/src/js/disable_right_click.js',
+            'lerm_civil/static/src/js/eln_readonly_form.js',
         ],
         'web.assets_frontend': [
             'lerm_civil/static/src/js/disable_right_click.js',

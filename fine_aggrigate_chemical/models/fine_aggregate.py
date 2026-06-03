@@ -21,6 +21,8 @@ class ChemicalFineAggregate(models.Model):
     ph_1_percent_b = fields.Float("pH of 1 % Solution in water")
     ph_1_percent_c = fields.Float("pH of 1 % Solution in water")
     ph_average = fields.Float("Average",compute="_compute_ph_average")
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
+
 
     @api.depends("ph_1_percent_a",'ph_1_percent_b','ph_1_percent_c')
     def _compute_ph_average(self):

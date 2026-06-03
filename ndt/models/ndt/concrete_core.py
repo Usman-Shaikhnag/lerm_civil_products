@@ -18,7 +18,24 @@ class ConcreteCore(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
 
     def open_eln_page(self):
-        # import wdb; wdb.set_trace()
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+
+          
+
+            if result.parameter.internal_id == 'fe657810-c893-4991-a463-650b73278589':
+                result.result_char = round(self.average,2)
+                result.calculated = True
+               
+                continue
+
+           
 
         return {
                 'view_mode': 'form',

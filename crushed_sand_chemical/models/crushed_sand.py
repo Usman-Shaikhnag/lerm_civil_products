@@ -8,10 +8,41 @@ class ChemicalCrushedSand(models.Model):
     _rec_name = "name"
 
     name = fields.Char("Name",default="CRUSHED SAND/NATURAL SAND/MANUFACTURED SAND")
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
+
+
+    notes_id = fields.One2many('crushed.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(ChemicalCrushedSand, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
 
 
     ph_name = fields.Char("Name",default="pH of 1 % Solution in water")
@@ -899,11 +930,45 @@ class ChemicalCrushedSand(models.Model):
 
     def open_eln_page(self):
         # import wdb; wdb.set_trace()
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
         for result in self.eln_ref.parameters_result:
             # ph 
             if result.parameter.internal_id == '481fb826-5804-40f1-b7a1-54d435149afb':
                 result.result_char = round(self.ph_average,2)
+                result.calculated = True
                 if self.ph_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '3380972d-6290-4e34-aa61-6a707a4d788a':
+                    result.result_char = round(self.na2O,2)
+                    result.calculated = True
+                    if self.na2O_nabl == 'pass':
+                        result.nabl_status = 'nabl'
+                    else:
+                        result.nabl_status = 'non-nabl'
+                    continue
+
+            if result.parameter.internal_id == '338565ad-67d6-4795-880b-def72791b2c3':
+                    result.result_char = round(self.total_alkali_content,2)
+                    result.calculated = True
+                    if self.total_alkali_content_nabl == 'pass':
+                        result.nabl_status = 'nabl'
+                    else:
+                        result.nabl_status = 'non-nabl'
+                    continue
+
+            if result.parameter.internal_id == 'ec3bb101-9088-4156-8af5-608a64fe4b7b':
+                result.result_char = round(self.k2O,2)
+                result.calculated = True
+                if self.k2O_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -912,6 +977,7 @@ class ChemicalCrushedSand(models.Model):
             # Chloride
             if result.parameter.internal_id == '83c6e99e-d967-4162-8124-93fc8240ae24':
                 result.result_char = round(self.chloride_percent,2)
+                result.calculated = True
                 if self.chloride_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -920,6 +986,7 @@ class ChemicalCrushedSand(models.Model):
             # Sulphate 
             if result.parameter.internal_id == '8765b291-5596-4d10-9702-0e221e9379cd':
                 result.result_char = round(self.sulphate_percent,2)
+                result.calculated = True
                 if self.avrg_avrg_sulphate_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -928,6 +995,7 @@ class ChemicalCrushedSand(models.Model):
             # Alkali Aggregate
             if result.parameter.internal_id == '98067b4a-3581-4712-b691-3df067e49a2c':
                 result.result_char = round(self.average_reduction_alkalinity,2)
+                result.calculated = True
                 if self.reduction_alkalinity_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -936,6 +1004,7 @@ class ChemicalCrushedSand(models.Model):
             # Alkali Dissolved
             if result.parameter.internal_id == '3a228b5d-5c83-4bb7-b6c7-2e7767b6181b':
                 result.result_char = round(self.average_dissolved_silica,2)
+                result.calculated = True
                 if self.dissolved_silica_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -988,4 +1057,12 @@ class ChemicalCrushedSand(models.Model):
     def _compute_grade_id(self):
         if self.eln_ref:
             self.grade = self.eln_ref.grade_id.id
+
+
+class CrushedNotes(models.Model):
+    _name = "crushed.notes"
+
+    parent_id = fields.Many2one('chemical.crushed.sand',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
     

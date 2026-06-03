@@ -8,6 +8,7 @@ class ChemicalHasdenedConcrete(models.Model):
     _rec_name = "name"
 
     name = fields.Char("Name",default="HARDENED CONCRETE/MORTAR")
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
@@ -16,6 +17,37 @@ class ChemicalHasdenedConcrete(models.Model):
         ('1-draft', 'In-Test'),
         ('2-confirm', 'In-Check'),
     ], string='State',default='1-draft')
+
+
+
+    notes_id = fields.One2many('hardend.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(ChemicalHasdenedConcrete, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
 
 
     ph_name = fields.Char("Name",default="pH of 1 % Solution in water")
@@ -1088,7 +1120,17 @@ class ChemicalHasdenedConcrete(models.Model):
             # ph 
             if result.parameter.internal_id == 'e9f2301d-bba0-42a2-bca8-ecbc5882a2b7':
                 result.result_char = round(self.ph_average,2)
+                result.calculated = True
                 if self.ph_average_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '9fa390be-1b85-4a6e-908d-cf3068e5ced4':
+                result.result_char = round(self.cement_content_aggregate_ratio,2)
+                result.calculated = True
+                if self.cement_aggregate_ratio_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -1096,6 +1138,7 @@ class ChemicalHasdenedConcrete(models.Model):
             # Dissolved Silica 
             if result.parameter.internal_id == 'e714e0ff-0fec-4367-86a6-1e89d42810e9':
                 result.result_char = round(self.average_dissolved_silica,2)
+                result.calculated = True
                 if self.average_dissolved_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1104,6 +1147,7 @@ class ChemicalHasdenedConcrete(models.Model):
             # Chloride
             if result.parameter.internal_id == '034d2729-961c-40ae-a642-a26f03a2db5a':
                 result.result_char = round(self.chloride_percent,2)
+                result.calculated = True
                 if self.chloride_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1112,6 +1156,7 @@ class ChemicalHasdenedConcrete(models.Model):
             # Sulphate 
             if result.parameter.internal_id == '7dfdb9dd-0d82-4c89-bab8-3853a78dbab3':
                 result.result_char = round(self.sulphate_percent,2)
+                result.calculated = True
                 if self.sulphate_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1120,6 +1165,7 @@ class ChemicalHasdenedConcrete(models.Model):
             # Alkali Aggregate
             if result.parameter.internal_id == '5ddb48f6-5260-4db7-a3a5-94f341db6d97':
                 result.result_char = round(self.average_reduction_alkalinity,2)
+                result.calculated = True
                 if self.average_reduction_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1128,6 +1174,7 @@ class ChemicalHasdenedConcrete(models.Model):
             # Chloride 1 
             if result.parameter.internal_id == 'f324e2d6-649f-4223-887e-aec3d85dffa9':
                 result.result_char = round(self.chloride_acide,2)
+                result.calculated = True
                 if self.chloride_nabl1 == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1136,6 +1183,7 @@ class ChemicalHasdenedConcrete(models.Model):
             # Chloride 2
             if result.parameter.internal_id == '98d321ee-f77f-434c-8bae-3711912c80f5':
                 result.result_char = round(self.chloride_percent2,2)
+                result.calculated = True
                 if self.chloride_nabl2 == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1144,6 +1192,7 @@ class ChemicalHasdenedConcrete(models.Model):
             # Cement Content
             if result.parameter.internal_id == 'd8bbd906-0f24-4c77-abc6-b2a8a00d91e6':
                 result.result_char = round(self.cement_content,2)
+                result.calculated = True
                 if self.cement_content_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1152,6 +1201,7 @@ class ChemicalHasdenedConcrete(models.Model):
             # Cement Content 1
             if result.parameter.internal_id == '97527435-edbc-4d33-817f-9596b56b4cd0':
                 result.result_char = round(self.cement_content_1,2)
+                result.calculated = True
                 if self.cement_content_1_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1160,6 +1210,7 @@ class ChemicalHasdenedConcrete(models.Model):
             # Lime
             if result.parameter.internal_id == 'ad567820-1a05-4d8b-bc7e-f58b42f78076':
                 result.result_char = round(self.lime_br_n_dilution,2)
+                result.calculated = True
                 if self.lime_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1200,4 +1251,14 @@ class ChemicalHasdenedConcrete(models.Model):
     def _compute_grade_id(self):
         if self.eln_ref:
             self.grade = self.eln_ref.grade_id.id
+
+
+
+
+class HardendNotes(models.Model):
+    _name = "hardend.notes"
+
+    parent_id = fields.Many2one('chemical.hardened.concrete',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
     

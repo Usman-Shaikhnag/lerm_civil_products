@@ -57,6 +57,7 @@ class ReboundHammer(models.Model):
         for result in self.eln_ref.parameters_result:
             if result.parameter.internal_id == 'fe02d1e0-c893-4991-a463-650b73264c1a':
                 result.result_char = round(self.average_mpa,2)
+                result.calculated = True
                 continue
           
 

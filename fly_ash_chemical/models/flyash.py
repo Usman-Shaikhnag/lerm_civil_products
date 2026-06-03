@@ -10,10 +10,42 @@ class ChemicalFlyAsh(models.Model):
     _rec_name = "name"
 
     name = fields.Char("Name",default="Fly Ash")
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
+
+
+    notes_id = fields.One2many('fly.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(ChemicalFlyAsh, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The information marked with an # received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
+
 
 
     # % Silica
@@ -1268,6 +1300,162 @@ class ChemicalFlyAsh(models.Model):
                     record.chloride_visible = True
                 if sample.internal_id == 'fca3ebf1-b4fd-4597-81e1-37bf499c5a35':
                     record.combined_percentage_visible = True
+
+    def open_eln_page(self):
+        # import wdb; wdb.set_trace()
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in self.eln_ref.parameters_result:
+            # ph 
+            if result.parameter.internal_id == '6b064931-b820-44dd-a096-99c2666bd191':
+                result.result_char = round(self.Silica,2)
+                result.calculated = True
+                if self.Silica_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '789c0940-27b3-42a0-aacf-4d2a8d2e9a19':
+                result.result_char = round(self.so3,2)
+                result.calculated = True
+                if self.so3_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'e09ddd61-2d20-4d5a-b922-bea8bbdeea72':
+                result.result_char = round(self.loi,2)
+                result.calculated = True
+                if self.loi_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '3ccd6049-2b3d-42a0-a78f-b83e49eeff6a':
+                result.result_char = round(self.na2o_round,2)
+                result.calculated = True
+                if self.na2o_round_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'b6fb80a6-b992-477e-9048-c40b58e28a6c':
+                result.result_char = round(self.k2o_round,2)
+                result.calculated = True
+                if self.k2o_round_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '5ab486ca-fb44-437b-adeb-8b6928ac43b0':
+                result.result_char = round(self.available_alkalis,2)
+                result.calculated = True
+                if self.available_alkalis_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'ab368a42-36c6-44f2-81af-7b81a6ea81e7':
+                result.result_char = round(self.chloride,2)
+                result.calculated = True
+                if self.chloride_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'fca3ebf1-b4fd-4597-81e1-37bf499c5a35':
+                result.result_char = round(self.combined_percentage,2)
+                result.calculated = True
+                if self.combined_percentage_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'de00fb1d-bf64-4c65-b098-b22066eed595':
+                    result.result_char = round(self.r2o3,2)
+                    result.calculated = True
+                    if self.r2o3_nabl == 'pass':
+                        result.nabl_status = 'nabl'
+                    else:
+                        result.nabl_status = 'non-nabl'
+                    continue
+
+            if result.parameter.internal_id == 'f41a3a24-c81f-480d-88b1-5f0711870d3d':
+                    result.result_char = round(self.ferric_oxide,2)
+                    result.calculated = True
+                    if self.ferric_oxide_nabl == 'pass':
+                        result.nabl_status = 'nabl'
+                    else:
+                        result.nabl_status = 'non-nabl'
+                    continue
+
+            if result.parameter.internal_id == '399adf9d-d71d-486b-b40b-676b09173d18':
+                result.result_char = round(self.alumina,2)
+                result.calculated = True
+                if self.alumina_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            
+            # Chloride
+            if result.parameter.internal_id == 'cad7aa77-fad0-44bf-a374-48c100f86bfe':
+                result.result_char = round(self.cao,2)
+                result.calculated = True
+                if self.cao_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            # Sulphate 
+            if result.parameter.internal_id == 'a50a3026-4c50-4314-83b2-8c66b259756a':
+                result.result_char = round(self.mgo,2)
+                result.calculated = True
+                if self.mgo_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            # Alkali Aggregate
+            if result.parameter.internal_id == '4ddec5e4-d9eb-480b-8965-78c1d92f7349':
+                result.result_char = round(self.calicum_oxide,2)
+                result.calculated = True
+                if self.calicum_oxide_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            # Alkali Dissolved
+            if result.parameter.internal_id == 'bff1cbf6-c067-430d-9391-616a077daa73':
+                result.result_char = round(self.magnesium_oxide,2)
+                result.calculated = True
+                if self.magnesium_oxide_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            
+
+        return {
+                'view_mode': 'form',
+                'res_model': "lerm.eln",
+                'type': 'ir.actions.act_window',
+                'target': 'current',
+                'res_id': self.eln_ref.id,
+                
+            }
                
 
     
@@ -1305,4 +1493,16 @@ class ChemicalFlyAsh(models.Model):
     def _compute_grade_id(self):
         if self.eln_ref:
             self.grade = self.eln_ref.grade_id.id
+
+
+
+
+
+class FlydNotes(models.Model):
+    _name = "fly.notes"
+
+    parent_id = fields.Many2one('chemical.flyash',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
+    
     

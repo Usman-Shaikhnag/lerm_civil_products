@@ -21,7 +21,7 @@ class MechanicalConcreteCube(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="ELN")
-    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=False)
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
     sample_id = fields.Many2one('lerm.srf.sample',string='Sample')
 
@@ -651,6 +651,19 @@ class MechanicalConcreteCube(models.Model):
         # record.get_all_fields()
         record.eln_ref.write({'model_id':record.id})
         return record
+
+    def write(self, vals):
+        for record in self:
+            if record.eln_ref and record.eln_ref.state != '1-draft':
+                if not self.env.user.has_group('lerm_civil.kes_admin_access_group'):
+                    non_computed_fields = {}
+                    for field_name in vals:
+                        field = self._fields.get(field_name)
+                        if field and not (field.compute or field.related):
+                            non_computed_fields[field_name] = vals[field_name]
+                    if non_computed_fields:
+                        raise ValidationError("This record cannot be edited because the ELN is not in 'In-Test' state.")
+        return super(MechanicalConcreteCube, self).write(vals)
     
 
     @api.depends('eln_ref')

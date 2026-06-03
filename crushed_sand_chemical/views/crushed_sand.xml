@@ -20,6 +20,7 @@
                         <field name="sample_id" readonly="1"/>
                         <field name="eln_ref" readonly="1"/>
                         <field name="parameter_id" invisible="1"/>
+                        <field name="eln_state" />
                     </group>
                     <div class="custom_table_borders">
                       <field name="sample_parameters" nolabel="1">
@@ -989,6 +990,26 @@
                           </table>
                       </div> 
                     <group/>
+
+                      <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
+
+
+
+                    <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
 
                 </sheet>
             </form>

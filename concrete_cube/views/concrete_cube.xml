@@ -8,7 +8,7 @@
             <field name="arch" type="xml">
                 <form>
                     <sheet>
-                        <field name="eln_state" invisible="1"/>
+                        <field name="eln_state"/>
                         <button type="object" class="oe_highlight" name="prefill_data" string="Prefill Data"/>
                         <group>
                             <field name="srf_id" invisible="1"/>
@@ -81,7 +81,7 @@
                         </div>
                     </group>
 
-                    <field name="grade_child_lines" nolabel="1" class="custom_table_borders" invisible="1">
+                    <field name="grade_child_lines" nolabel="1" class="custom_table_borders" invisible="1" >
                         <tree editable="bottom">
                             <field name='sr_no' string="Sr. NO"/>
                             <field name='grade1' />
@@ -311,7 +311,7 @@
                     <!-- <group/> -->
                     <group>
                       
-                        <field name="wpt_child_lines" colspan="2" nolabel="1">
+                        <field name="wpt_child_lines" colspan="2" nolabel="1" >
                         <tree editable="bottom" class="custom_table_borders">
                             <field name="sample" string="Sample"/>
                             <field name="depth1" string="1"/>
@@ -367,7 +367,7 @@
 
 
                             <div class="custom_table_borders" style="width: 100%;"  invisible="water_absorption_visible == False">
-                                <field name="water_absorption_child_lines" mode="tree" nolabel="1">
+                                <field name="water_absorption_child_lines" mode="tree" nolabel="1" >
                                     <tree editable="bottom" class="custom_table_borders" style="width: 100%; border-collapse: collapse;">
                                         <field name="serial_no" />
                                         <field name="sample_identification" class="blue-input" decoration-info="sample_identification != 0"/>
@@ -427,7 +427,7 @@
 
                         <page string="Notes">
                             <div class="custom_table_borders" style="margin-top: 15px;">
-                                <field name="notes_id" nolabel="1">
+                                <field name="notes_id" nolabel="1" >
                                     <tree editable="bottom">
                                         <field name="sr_no" width="100"/>
                                         <field name="notes"  />
