@@ -1,0 +1,556 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+    <record id="mechanical_bitumen_form" model="ir.ui.view">
+        <field name="name">mechanical.bitumen.form</field>
+        <field name="model">mechanical.bitumen</field>
+        <field name="arch" type="xml">
+            <form create="false"> 
+                <sheet>
+                    <h1>
+                        <field name="name" readonly="1" nolabel="1"/>
+                    </h1>
+                    <button type="object" class="oe_highlight" name="prefill_data" string="Prefill Data"/>
+                    <group>
+                       <field name="grade"/>
+                    </group>
+
+
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1" />
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="size_id"/>
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+                    <!-- <group class="custom_table_borders"> -->
+                    <div class="custom_table_borders" style="margin-top: 15px;">
+                        <field name="sample_parameters" nolabel="1">
+                            <tree>
+                                <field name="parameter_name"/>
+                                <field name="test_method"/>
+                            </tree>
+                        </field>
+                    </div>
+
+                     <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                        <tbody>
+                            <tr>
+                                <td><label for="temperature">Temperature</label></td>
+                                <td>
+                                    <field name="temperature" class="blue-input" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Penetration Value Of Bitumen  -->
+
+                    <div class="text-center" invisible="penetration_value_visible == False">
+                        <h1>
+                            <field name="penetration_value_name" readonly="1" nolabel="1"/>
+                            <field name="penetration_value_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+
+                    <div invisible= "penetration_value_visible == False" class="custom_table_borders">
+                        <field name="penetration_value_line_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name='sample_no' width="200"/>
+                                    <field name='test_temp' class="blue-input" decoration-info="test_temp != 0" width="200"/>
+                                    <field name='dial_initial' class="blue-input" decoration-info="dial_initial != 0" width="200"/>
+                                    <field name='dial_final' class="blue-input" decoration-info="dial_final != 0" width="200"/>
+                                    <field name='penetration' width="150"/>
+                                     <field name='remarks' width="150" class="blue-input" decoration-info="remarks != 0"/>
+                                </tree>
+                        </field> 
+                    </div>
+
+                   
+
+                    <div invisible="penetration_value_visible == False"> 
+                         <table class="table table-sm table-bordered w-50 custom_table_borders" >
+                          <tbody>
+                              <tr>
+                                 <td><label class="fw-bold" for="average_penetration">Average Penetration Value Of Bitumen </label></td>
+                                 <td><field name="average_penetration"/></td>
+                              </tr>
+                              <tr>
+                                 <td><label class="fw-bold" for="average_penetration_conformity">Conformity</label></td>
+                                 <td>
+                                     <field name="average_penetration_conformity"
+                                        decoration-success="average_penetration_conformity == 'pass'" 
+                                        decoration-danger="average_penetration_conformity == 'fail'" 
+                                        readonly="1"/>
+                                 </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="fw-bold" for="average_penetration_nabl">NABL</label>
+                                </td>
+                                <td>
+                                    <field name="average_penetration_nabl"
+                                        decoration-success="average_penetration_nabl == 'pass'" 
+                                        decoration-danger="average_penetration_nabl == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                     
+                    </div>
+
+
+
+        
+                 <!-- Specific Gravity -->
+
+                    <div class="text-center" invisible="specific_gravity_visible == False">
+                        <h1>
+                            <field name="specific_gravity_name" readonly="1" nolabel="1"/>
+                            <field name="specific_gravity_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+
+                    <div invisible= "specific_gravity_visible == False" class="custom_table_borders">
+                        <field name="specific_water_line_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name='sample_no'/>
+                                    <field name='w1' class="blue-input" decoration-info="w1 != 0"/>
+                                    <field name='w2' class="blue-input" decoration-info="w2 != 0"/>
+                                    <field name='w3' class="blue-input" decoration-info="w3 != 0"/>
+                                    <field name='w4' class="blue-input" decoration-info="w4 != 0"/>
+                                    <field name='sample_weight'/>
+                                    <field name='specific_gravity'/>
+                                </tree>
+                        </field> 
+                    </div>
+
+                    <div invisible="specific_gravity_visible == False"> 
+                         <table class="table table-sm table-bordered w-50 custom_table_borders" >
+                          <tbody>
+                              <tr>
+                                 <td><label class="fw-bold" for="avg_specific_gravity">Average Specific Gravity </label></td>
+                                 <td><field name="avg_specific_gravity"/></td>
+                              </tr>
+                              <tr>
+                                 <td><label class="fw-bold" for="avg_specific_gravity_conformity">Conformity</label></td>
+                                 <td>
+                                     <field name="avg_specific_gravity_conformity"
+                                        decoration-success="avg_specific_gravity_conformity == 'pass'" 
+                                        decoration-danger="avg_specific_gravity_conformity == 'fail'" 
+                                        readonly="1"/>
+                                 </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="fw-bold" for="avg_specific_gravity_nabl">NABL</label>
+                                </td>
+                                <td>
+                                    <field name="avg_specific_gravity_nabl"
+                                        decoration-success="avg_specific_gravity_nabl == 'pass'" 
+                                        decoration-danger="avg_specific_gravity_nabl == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                     
+                    </div>
+
+
+                    <!-- Determination Of Softening Point -->
+
+                    <div class="text-center" invisible="soft_point_visible == False">
+                        <h1>
+                            <field name="soft_point_name" readonly="1" nolabel="1"/>
+                            <field name="soft_point_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+
+                    <div class="d-flex gap-2" invisible="soft_point_visible == False"> 
+                         <table class="table table-sm table-bordered w-50 custom_table_borders" >
+                          <tbody>
+                              <tr>
+                                 <td><label class="fw-bold" for="rate_of_heating">Rate Of Heating</label></td>
+                                 <td><field name="rate_of_heating" class="blue-input"/></td>
+                            </tr>
+                            </tbody>
+                            </table>
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" >
+                          <tbody>
+                            <tr>
+                                <td>
+                                    <label class="fw-bold" for="soft_cool_temp">Period of Cooling at Room Tepmerature (min) :</label>
+                                </td>
+                                <td><field name="soft_cool_temp" class="blue-input"/><span> °C</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                     
+                    </div>
+
+                    <div invisible= "soft_point_visible == False" class="custom_table_borders">
+                        <field name="soft_point_line_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name='sample_no'/>
+                                    <field name='time_min' class="blue-input" decoration-info="time_min != 0"/>
+                                    <field name='temperature' class="blue-input" decoration-info="temperature != 0"/>
+                                </tree>
+                        </field> 
+                    </div>
+
+
+                    <div invisible="soft_point_visible == False"> 
+                         <table class="table table-sm table-bordered w-100 custom_table_borders" >
+                          <tbody>
+                              <tr>
+                                <td style="text-align:center;font-weight:bold;">Description</td>
+                                <td style="text-align:center;font-weight:bold;">Bill No.1 (°C)</td>
+                                <td style="text-align:center;font-weight:bold;">Bill No.2 (°C)</td>
+                                <td style="text-align:center;font-weight:bold;">Mean Value Of Softening Point</td>
+                              </tr>
+                              <tr>
+                                 <td style="text-align:center;font-weight:bold;">Temperature at which sample touches the bottom plate °C</td>
+                                 <td style="text-align:center;"><field name="bill_no_1" class="blue-input"/></td>
+                                 <td style="text-align:center;" class="blue-input"><field name="bill_no_2"/></td>
+                                 <td style="text-align:center;"><field name="soft_mean_value"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                     
+                    </div>
+
+                    <div invisible="soft_point_visible == False"> 
+                         <table class="table table-sm table-bordered w-50 custom_table_borders" >
+                          <tbody>
+                              <tr>
+                                 <td><label class="fw-bold" for="soft_mean_value_conformity">Conformity</label></td>
+                                 <td>
+                                     <field name="soft_mean_value_conformity"
+                                        decoration-success="soft_mean_value_conformity == 'pass'" 
+                                        decoration-danger="soft_mean_value_conformity == 'fail'" 
+                                        readonly="1"/>
+                                 </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="fw-bold" for="soft_mean_value_nabl">NABL</label>
+                                </td>
+                                <td>
+                                    <field name="soft_mean_value_nabl"
+                                        decoration-success="soft_mean_value_nabl == 'pass'" 
+                                        decoration-danger="soft_mean_value_nabl == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                     
+                    </div>
+
+                    <!-- Ductility Test -->
+
+                    <div class="text-center" invisible="ductility_visible == False">
+                        <h1>
+                            <field name="ductility_name" readonly="1" nolabel="1"/>
+                            <field name="ductility_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+
+                    <div invisible="ductility_visible == False"> 
+                         <table class="table table-sm table-bordered w-50 custom_table_borders" >
+                          <tbody>
+                              <tr>
+                                 <td><label class="fw-bold" for="room_temperature">Room Temperature (°C)</label></td>
+                                 <td><field name="room_temperature" class="blue-input"/></td>
+                                 <td></td>
+                            </tr>
+                            <tr>
+                                 <td><label class="fw-bold" for="pouring_temperature">Pouring Temperature (°C)</label></td>
+                                 <td><field name="pouring_temperature" class="blue-input"/></td>
+                                 <td></td>
+                            </tr>
+                            <tr>
+                                 <td><label class="fw-bold" for="cooling_atmosphere">Cooling In Atmosphere (min)</label></td>
+                                 <td><field name="cooling_atmosphere" class="blue-input"/></td>
+                                 <td><span>(Spc: 30min to 40min)</span></td>
+                            </tr>
+                            <tr>
+                                 <td><label class="fw-bold" for="cooling_before_trim">Period of cooling in water bath before trimming (min)</label></td>
+                                 <td><field name="cooling_before_trim" class="blue-input"/></td>
+                                 <td><span>(Spc: minimum 30min)</span></td>
+                            </tr>
+                            <tr>
+                                 <td><label class="fw-bold" for="cooling_after_trim">Period of cooling in water bath after trimming (min)</label></td>
+                                 <td><field name="cooling_after_trim" class="blue-input"/></td>
+                                 <td><span>(Spc: 85min to 95min)</span></td>
+                            </tr>
+                            <tr>
+                                 <td><label class="fw-bold" for="actual_test_temperature">Actual Test Temperature (°C)</label></td>
+                                 <td><field name="actual_test_temperature" class="blue-input"/></td>
+                                 <td><span>(Spc: 25± 0.5°C)</span></td>
+                            </tr>
+                            <tr>
+                                 <td><label class="fw-bold" for="rate_of_pull">Rate Of Pull (mm/min)</label></td>
+                                 <td><field name="rate_of_pull" class="blue-input"/></td>
+                                 <td><span>(Spc: 50± 2.5 mm/min)</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+
+
+                    <div invisible= "ductility_visible == False" class="custom_table_borders">
+                        <field name="ductility_line_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name='sample_no'/>
+                                    <field name='initial_reading' class="blue-input" decoration-info="initial_reading != 0"/>
+                                    <field name='final_reading' class="blue-input" decoration-info="final_reading != 0"/>
+                                    <field name='ductility' />
+                                </tree>
+                        </field> 
+                    </div>
+
+
+                    <div invisible="ductility_visible == False"> 
+                         <table class="table table-sm table-bordered w-50 custom_table_borders" >
+                          <tbody>
+                              <tr>
+                                 <td><label class="fw-bold" for="average_ductility">Average Ductility</label></td>
+                                 <td><field name="average_ductility"/></td>
+                              </tr>
+                              <tr>
+                                 <td><label class="fw-bold" for="average_ductility_conformity">Conformity</label></td>
+                                 <td>
+                                     <field name="average_ductility_conformity"
+                                        decoration-success="average_ductility_conformity == 'pass'" 
+                                        decoration-danger="average_ductility_conformity == 'fail'" 
+                                        readonly="1"/>
+                                 </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="fw-bold" for="average_ductility_nabl">NABL</label>
+                                </td>
+                                <td>
+                                    <field name="average_ductility_nabl"
+                                        decoration-success="average_ductility_nabl == 'pass'" 
+                                        decoration-danger="average_ductility_nabl == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                     
+                    </div>
+
+
+                    <!-- Absolute Viscosity -->
+
+                    <div class="text-center" invisible="absolute_vis_visible == False">
+                        <h1>
+                            <field name="absolute_vis_name" readonly="1" nolabel="1"/>
+                            <field name="absolute_vis_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+
+                    <div invisible= "absolute_vis_visible == False" class="custom_table_borders">
+                        <field name="absolute_line_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name='sample_no'/>
+                                    <field name='cooling_period' class="blue-input" decoration-info="cooling_period != 0" width="200"/>
+                                    <field name='actual_temperature' class="blue-input" decoration-info="actual_temperature != 0"/>
+                                    <field name='bulb_b_time' class="blue-input" decoration-info="bulb_b_time != 0"/>
+                                    <field name='bulb_b_constant' class="blue-input" decoration-info="bulb_b_constant != 0"/>
+                                    <field name='bulb_c_time' class="blue-input" decoration-info="bulb_c_time != 0"/>
+                                    <field name='bulb_c_constant' class="blue-input" decoration-info="bulb_c_constant != 0"/>
+                                    <field name='viscosity_60' />
+                                </tree>
+                        </field> 
+                    </div>
+
+
+                    <div invisible="absolute_vis_visible == False"> 
+                         <table class="table table-sm table-bordered w-50 custom_table_borders" >
+                          <tbody>
+                              <tr>
+                                 <td><label class="fw-bold" for="avg_absolute_viscosity">Average Absolute Viscosity</label></td>
+                                 <td><field name="avg_absolute_viscosity"/></td>
+                              </tr>
+                              <tr>
+                                 <td><label class="fw-bold" for="avg_absolute_viscosity_conformity">Conformity</label></td>
+                                 <td>
+                                     <field name="avg_absolute_viscosity_conformity"
+                                        decoration-success="avg_absolute_viscosity_conformity == 'pass'" 
+                                        decoration-danger="avg_absolute_viscosity_conformity == 'fail'" 
+                                        readonly="1"/>
+                                 </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="fw-bold" for="avg_absolute_viscosity_nabl">NABL</label>
+                                </td>
+                                <td>
+                                    <field name="avg_absolute_viscosity_nabl"
+                                        decoration-success="avg_absolute_viscosity_nabl == 'pass'" 
+                                        decoration-danger="avg_absolute_viscosity_nabl == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                     
+                    </div>
+
+
+                    <!-- Kinematic Viscosity -->
+
+                    <div class="text-center" invisible="kinematic_vis_visible == False">
+                        <h1>
+                            <field name="kinematic_vis_name" readonly="1" nolabel="1"/>
+                            <field name="kinematic_vis_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+
+                    <div invisible= "kinematic_vis_visible == False" class="custom_table_borders">
+                        <field name="kinematic_line_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name='sample_no'/>
+                                    <field name='cooling_period' class="blue-input" decoration-info="cooling_period != 0" width="200"/>
+                                    <field name='actual_temperature' class="blue-input" decoration-info="actual_temperature != 0"/>
+                                    <field name='flow_time' class="blue-input" decoration-info="flow_time != 0"/>
+                                    <field name='tube_constant' class="blue-input" decoration-info="tube_constant != 0"/>
+                                    <field name='viscosity_135' />
+                                </tree>
+                        </field> 
+                    </div>
+
+
+                    <div invisible="kinematic_vis_visible == False"> 
+                         <table class="table table-sm table-bordered w-50 custom_table_borders" >
+                          <tbody>
+                              <tr>
+                                 <td><label class="fw-bold" for="avg_kinematic_viscosity">Average Absolute Viscosity</label></td>
+                                 <td><field name="avg_kinematic_viscosity"/></td>
+                              </tr>
+                              <tr>
+                                 <td><label class="fw-bold" for="avg_kinematic_viscosity_conformity">Conformity</label></td>
+                                 <td>
+                                     <field name="avg_kinematic_viscosity_conformity"
+                                        decoration-success="avg_kinematic_viscosity_conformity == 'pass'" 
+                                        decoration-danger="avg_kinematic_viscosity_conformity == 'fail'" 
+                                        readonly="1"/>
+                                 </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="fw-bold" for="avg_kinematic_viscosity_nabl">NABL</label>
+                                </td>
+                                <td>
+                                    <field name="avg_kinematic_viscosity_nabl"
+                                        decoration-success="avg_kinematic_viscosity_nabl == 'pass'" 
+                                        decoration-danger="avg_kinematic_viscosity_nabl == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                     
+                    </div>
+
+
+
+
+                   
+                  
+                   
+                   <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
+
+             
+
+
+
+
+
+
+
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+
+                </sheet>
+            </form>
+        </field>
+     </record>
+
+     <record id="view_bitumen_prefill_data_form" model="ir.ui.view">
+            <field name="name">bitumen.prefill.data.form</field>
+            <field name="model">bitumen.prefill.data</field>
+            <field name="arch" type="xml">
+                <form string="Prefill Data">
+                    <group>
+                        <field name="product_id" readonly="1"/>
+                        <field name="sample_id"/>
+
+                    </group>
+                    <footer>
+                        <button name="prefill_data" string="Prefill Data" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_bitumen_prefill_data_wizard" model="ir.actions.act_window">
+            <field name="name">Prefill Data</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">bitumen.prefill.data</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_bitumen_prefill_data_form"/>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>
