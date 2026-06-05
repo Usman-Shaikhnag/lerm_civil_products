@@ -21,7 +21,7 @@ class AacBlockMechanical(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
     aac_temp = fields.Char("Temperature",store=True)
-    aac_humidity = fields.Char("Humidity",store="True")
+    aac_humidity = fields.Char("Humidity",store=True)
 
     @api.depends("eln_ref")
     def _compute_size_id(self):
@@ -583,6 +583,7 @@ class AacBlockMechanical(models.Model):
 
             for sample in record.sample_parameters:
                 print("Samples internal id",sample.internal_id)
+                
                 if sample.internal_id == '42ea2fdb-c7be-4d19-8912-63f72c07574f':
                     record.length_dimen_visible = True
 

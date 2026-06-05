@@ -15,7 +15,7 @@ class LermSampleForm(models.Model):
     _description = "Sample"
     _rec_name = 'kes_no'
 
-    client_reference1 = fields.Char(string="Client Reference",compute="_compute_client_reference", store=True)
+    client_reference1 = fields.Char(string="Client Reference",compute="_compute_client_reference")
     srf_id = fields.Many2one('lerm.civil.srf',ondelete="cascade", string="SRF ID" ,tracking=True)
     sample_range_id = fields.Many2one('sample.range.line',string="Sample Range")
     eln_id = fields.Many2one('lerm.eln',string="ELN",ondelete="set null")
@@ -27,7 +27,7 @@ class LermSampleForm(models.Model):
     # department_id = fields.Many2one('hr.department', string='Department')
     department_id = fields.Char(string='Department')
     material_id = fields.Many2one('product.template',string="Material")
-    material_id_lab_name = fields.Char(string="Material",compute="compute_material_id_lab_name",store=True)
+    material_id_lab_name = fields.Char(string="Material",compute="compute_material_id_lab_name")
     ulr_no = fields.Char(string="ULR No." ,readonly=True, default=lambda self: 'New')
     brand = fields.Char(string="Brand")
     size_id = fields.Many2one('lerm.size.line',string="Size")
@@ -92,15 +92,14 @@ class LermSampleForm(models.Model):
         string="Invoice Number",  
         help="Select the invoice number",  
         domain="[('move_type', '=', 'out_invoice')]",  
-       
-        store=True
+
     )
 
     invoice_status = fields.Selection([
         ('1-uninvoiced', 'Uninvoiced'),
         ('2-invoiced', 'Invoiced'),
         ('3-closed', 'Closed'),
-    ], string='Invoice Status',  store=True, default='1-uninvoiced')
+    ], string='Invoice Status', default='1-uninvoiced')
 
     print_button_visible = fields.Boolean("Print Nabl visible",compute="_compute_print_nabl_visible")
    
@@ -315,30 +314,53 @@ class LermSampleForm(models.Model):
 
 
     def open_form(self):
+        self.ensure_one()
 
-        eln = self.env['lerm.eln'].sudo().search([('sample_id','=',self.id)])
+        if self.state in (
+            '1-allotment_pending',
+            '7-partially-alloted',
+            '2-alloted',
+            '7-calculated',
+        ):
+            raise UserError(
+                "The technician has not yet submitted the form."
+            )
+
+        eln = self.env['lerm.eln'].sudo().search(
+            [('sample_id', '=', self.id)],
+            limit=1
+        )
+
         if self.product_or_form_based:
             if eln.is_product_based_calculation:
-                model_record = self.env['lerm.product.based.calculation'].sudo().search([('product_id','=',eln.material.id),('grade','=',eln.grade_id.id)])
+                model_record = self.env['lerm.product.based.calculation'].sudo().search([
+                    ('product_id', '=', eln.material.id),
+                    ('grade', '=', eln.grade_id.id)
+                ], limit=1)
+
                 model = model_record.ir_model.model
+
                 return {
-                        'view_mode': 'form',
-                        'res_model': model,
-                        'type': 'ir.actions.act_window',
-                        'target': 'current',
-                        'res_id': eln.model_id,
-                        }
-            else:
-                if eln.parameters_result[0].calculation_type == 'form_based':
-                    model = eln.parameters_result[0].parameter.ir_model.model
-                    print(model)
-                    return {
-                        'view_mode': 'form',
-                        'res_model': model,
-                        'type': 'ir.actions.act_window',
-                        'target': 'current',
-                        'res_id': eln.parameters_result[0].model_id,
-                        }
+                    'view_mode': 'form',
+                    'res_model': model,
+                    'type': 'ir.actions.act_window',
+                    'target': 'current',
+                    'res_id': eln.model_id,
+                }
+
+            elif (
+                eln.parameters_result
+                and eln.parameters_result[0].calculation_type == 'form_based'
+            ):
+                model = eln.parameters_result[0].parameter.ir_model.model
+
+                return {
+                    'view_mode': 'form',
+                    'res_model': model,
+                    'type': 'ir.actions.act_window',
+                    'target': 'current',
+                    'res_id': eln.parameters_result[0].model_id,
+                }
                     
 
 

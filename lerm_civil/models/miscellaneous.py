@@ -14,7 +14,7 @@ class MiscellaneousProduct(models.Model):
     name_miscellaneous = fields.Char("Name",default="Mescellaneous")
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 
-    sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
+    sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters")
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
 
 

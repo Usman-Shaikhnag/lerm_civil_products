@@ -26,7 +26,7 @@ class ELN(models.Model):
 
     srf_id = fields.Many2one('lerm.civil.srf',string="SRF ID")
     technician = fields.Many2one('res.users',string="Technicians",tracking=5)
-    technician_ids = fields.Many2many('res.users',string='Technicians',tracking=5,store=True,)
+    technician_ids = fields.Many2many('res.users',string='Technicians',tracking=5)
     sample_id = fields.Many2one('lerm.srf.sample',string='UID',tracking=True,ondelete="cascade")
     srf_date = fields.Date(string='SRF Date',tracking=True)
     kes_no = fields.Char(string="UID",tracking=True)
@@ -70,7 +70,7 @@ class ELN(models.Model):
         ('3-approved','Approved'),
         ('4-rejected','Rejected'),
         ('5-cancelled','Cancelled')
-    ], string='State',default='1-draft')
+    ], string='State',default='5-alloted')
     start_date = fields.Date(string="Start Date")
     end_date = fields.Date(string="End Date")
     remarks = fields.Text("Remarks")
@@ -125,6 +125,8 @@ class ELN(models.Model):
     quantity_received = fields.Integer(string="Quantiyty Received")
     quantity_consumed = fields.Integer(string="Quantity Consumed")
     quantity_balance = fields.Integer(string="Quantity Balance", compute="compute_quantity_balance", readonly=True)
+    test_started = fields.Boolean(string="Test Started", default=False)
+
 
     @api.depends('quantity_received', 'quantity_consumed')
     def compute_quantity_balance(self):
@@ -285,6 +287,11 @@ class ELN(models.Model):
         # print("model ",model)
 
         # import wdb; wdb.set_trace()
+        if not self.test_started or self.state == '5-alloted':
+            self.test_started = True
+            self.state = '1-draft'
+
+
         if self.model_id != 0:
             return {
                 'view_mode': 'form',
@@ -353,14 +360,6 @@ class ELN(models.Model):
             "invisible_fetch_inputs": True
         })
 
-        # parameter = self.env['lerm.parameter.master'].browse(7)  # Replace 'parameter_id' with the actual ID of the parameter
-        # dependent_parameters = parameter.fetch_dependent_parameters_recursive(depth=80)  # Fetch up to 3 levels of dependent parameters
-        # # import wdb ; wdb.set_trace() 
-        # for dependent_parameter in dependent_parameters:
-        #     import wdb ; wdb.set_trace() 
-        #     print(dependent_parameter.parameter_name)
-        # parameters = []
-
         for record in self.parameters_result:
             parameter = self.env['lerm.parameter.master'].browse(record.parameter.id)
             # import wdb ; wdb.set_trace() 
@@ -377,22 +376,11 @@ class ELN(models.Model):
                     # import wdb ; wdb.set_trace() 
                     self.write({"parameters_input":[(0,0,{'parameter_result':data.id,"is_parameter_dependent":inputs.is_parameter_dependent,'identifier':inputs.identifier,'inputs':inputs.id,'value':inputs.default})]})
 
+        if not self.test_started or self.state == '5-alloted':
+            self.test_started = True
+            self.state = '1-draft'
 
-
-            # dependent_parameters = parameter.fetch_dependent_parameters_recursive(depth=80)
-
-            # for inputs in record.parameter.dependent_inputs:
-                
-            #     self.write({"parameters_input":[(0,0,{'parameter_result':record.id,'identifier':inputs.identifier,'inputs':inputs.id})]})
-            #     if inputs.is_parameter_dependent:
-
-            #         # data = self.write({"parameters_result":[(0,0,{'parameter':inputs.parameter.id})]})
-            #         data = self.env["eln.parameters.result"].create({"eln_id":self.id,'parameter':inputs.parameter.id})
-            #         import wdb ; wdb.set_trace()
-            #         for inputs in data.parameter.dependent_inputs: 
-            #             self.write({"parameters_input":[(0,0,{'parameter_result':data.id,'identifier':inputs.identifier,'inputs':inputs.id})]})
-
-            #         self.env.cr.commit()
+            
 
     def calculate_results(self):
         for record in self.parameters_result:

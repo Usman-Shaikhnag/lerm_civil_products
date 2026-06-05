@@ -34,7 +34,7 @@
 								<tr>
 									<td><strong># Nature of work</strong></td>
 									<td colspan="2"><span t-field="o.srf_id.client_refrence"/></td>
-									<td colspan="2"><strong># Date of Cast</strong></td>
+									<td colspan="2"><strong># Date of Casting</strong></td>
 									<td><span t-field="data.date_of_casting"/></td>
 								</tr>
 								<tr>
@@ -91,12 +91,12 @@
 									<th style="text-align: center; font-weight: bold; width: 4%;">Sr. No</th>
 									<th style="text-align: center; font-weight: bold; white-space: nowrap;">Identification Mark</th>
 									<th style="text-align: center; font-weight: bold;">Dimension of Specimen (mm)</th>
-									<th style="text-align: center; font-weight: bold; width: 10%;">Weight of  Specimen (Kg)</th>
+									<th style="text-align: center; font-weight: bold; width: 10%;">Weight of  Specimen (gms)</th>
 									<th style="text-align: center; font-weight: bold; width: 9%;">Density (Kg/m³)</th>
 									<th style="text-align: center; font-weight: bold; width: 9%;">Maximum Load(KN)</th>
 									<!-- <th style="text-align: center; font-weight: bold; width: 9%;">Date of casting</th>
 									<th style="text-align: center; font-weight: bold; width: 9%;">Date of Testing</th> -->
-									<th style="text-align: center; font-weight: bold; width: 6%;">Load (kN)</th>
+									<!-- <th style="text-align: center; font-weight: bold; width: 6%;">Load (kN)</th> -->
 									<th style="text-align: center; font-weight: bold; width: 13%;">Comp. Strength (N/mm2)</th>
 									<th style="text-align: center; font-weight: bold; width: 15%;">Avg. Comp. Strength (N/mm2)</th>
 								</tr>
@@ -112,7 +112,7 @@
 									<td style="text-align: center;"><span t-esc="r.dimension"/></td>
 									<td style="text-align: center;"><span t-esc="r.wt_sample"/></td>
 									<td style="text-align: center;"><span t-esc="r.density"/></td>
-									<td style="text-align: center;"><span t-esc="r.wt_sample"/></td>
+									<!-- <td style="text-align: center;"><span t-esc="r.wt_sample"/></td> -->
 									<!-- <t t-if="r.dt_of_casting">
 										<td style="text-align: center;">
 											<span t-esc="r.dt_of_casting.strftime('%d-%m-%y')"/>

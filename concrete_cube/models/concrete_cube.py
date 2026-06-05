@@ -759,7 +759,7 @@ class MechanicalConcreteCubeLine(models.Model):
     def _compute_density(self):
         for rec in self:
             if rec.wt_sample and rec.volume:
-                rec.density = round((rec.wt_sample * 1000) / rec.volume,3)
+                rec.density = round((rec.wt_sample) / rec.volume,3)
             else:
                 rec.density = 0.0
 
