@@ -34,4 +34,17 @@
         <field name="header_spacing">15</field>
         <field name="dpi">90</field>
     </record>
+
+
+    <record id="action_report_nbml_quotation" model="ir.actions.report">
+    <field name="name">NBML Quotation</field>
+    <field name="model">sale.order</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">lerm_civil_inv.report_nbml_quotation</field>
+    <field name="report_file">lerm_civil_inv.report_nbml_quotation</field>
+
+    <field name="binding_model_id" ref="sale.model_sale_order"/>
+    <field name="binding_type">report</field>
+</record>
+
 </odoo>
