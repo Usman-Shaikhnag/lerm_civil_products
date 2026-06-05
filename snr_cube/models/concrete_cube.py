@@ -7,17 +7,17 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
-class MechanicalConcreteCube(models.Model):
-    _name = "mechanical.concrete.cube"
+class MechanicalSNRCube(models.Model):
+    _name = "snr.cube"
     _inherit = "lerm.eln"
-    _description = 'mechanical.concrete.cube'
+    _description = 'snr.cube'
     _rec_name = "name"
 
     name = fields.Char("Name",default="Compressive Strength of Concrete Cube")
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
-    child_lines = fields.One2many('mechanical.concrete.cube.line','parent_id',string="Parameter")
+    child_lines = fields.One2many('snr.cube.line','parent_id',string="Parameter")
     
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
@@ -155,7 +155,7 @@ class MechanicalConcreteCube(models.Model):
             rec.grade2 = rec.grade.grade if rec.grade and rec.grade.grade else ''
 
 
-    grade_child_lines = fields.One2many('mechanical.concrete.cube.grade.line','parent_id',string="Parameter",default=lambda self: self._default_grade_child_lines())
+    grade_child_lines = fields.One2many('snr.cube.grade.line','parent_id',string="Parameter",default=lambda self: self._default_grade_child_lines())
 
     # @api.model
     # def _default_grade_child_lines(self):
@@ -304,7 +304,7 @@ class MechanicalConcreteCube(models.Model):
     wpt_name = fields.Char("Name",default=" Water Permeability Test")
     wpt_visible = fields.Boolean("WPT Visible",compute="_compute_visible") 
 
-    wpt_child_lines = fields.One2many('mechanical.cube.wpt.line','parent_id',string="Parameter")
+    wpt_child_lines = fields.One2many('snr.cube.wpt.line','parent_id',string="Parameter")
 
     average_of_wpt = fields.Float(string="Average of WPT", compute="_compute_average_of_averages")
 
@@ -333,8 +333,8 @@ class MechanicalConcreteCube(models.Model):
                 continue
 
             record.wpt_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].search([('internal_id','=','1023457-0268-46ef-ba88-9c0453210lkit1')])
-            materials = self.env['lerm.parameter.master'].search([('internal_id','=','1023457-0268-46ef-ba88-9c0453210lkit1')]).parameter_table
+            line = self.env['lerm.parameter.master'].search([('internal_id','=','6632147-0268-46ef-ba88-9c045333012457')])
+            materials = self.env['lerm.parameter.master'].search([('internal_id','=','6632147-0268-46ef-ba88-9c045333012457')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
@@ -359,8 +359,8 @@ class MechanicalConcreteCube(models.Model):
         
         for record in self:
             record.wpt_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].search([('internal_id','=','1023457-0268-46ef-ba88-9c0453210lkit1')])
-            materials = self.env['lerm.parameter.master'].search([('internal_id','=','1023457-0268-46ef-ba88-9c0453210lkit1')]).parameter_table
+            line = self.env['lerm.parameter.master'].search([('internal_id','=','6632147-0268-46ef-ba88-9c045333012457')])
+            materials = self.env['lerm.parameter.master'].search([('internal_id','=','6632147-0268-46ef-ba88-9c045333012457')]).parameter_table
             # for material in materials:
             #     if material.grade.id == record.grade.id:
             lab_min = line.lab_min_value
@@ -388,7 +388,7 @@ class MechanicalConcreteCube(models.Model):
 
 # remark
 
-    notes_id = fields.One2many('cube.notes', 'parent_id', string="Notes",default=lambda self: self._default_notes_lines())
+    notes_id = fields.One2many('snr.cube.notes', 'parent_id', string="Notes",default=lambda self: self._default_notes_lines())
     
     @api.model
     def _default_notes_lines(self):
@@ -435,7 +435,7 @@ class MechanicalConcreteCube(models.Model):
     water_absorption_name = fields.Char("Name",default="Water Absorption ")
     water_absorption_visible = fields.Boolean("Water Absorption Visible",compute="_compute_visible")
 
-    water_absorption_child_lines = fields.One2many('cube.water.absorption.line','parent_id',string="Water Line")
+    water_absorption_child_lines = fields.One2many('snr.cube.water.absorption.line','parent_id',string="Water Line")
 
     avg_water_absorption = fields.Float(
         string="Avg. Water Absorption (%)",
@@ -468,8 +468,8 @@ class MechanicalConcreteCube(models.Model):
                 continue
 
             record.avg_water_absorption_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','30214iu-eba3-4f15-b33d-679b39f73301')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','30214iu-eba3-4f15-b33d-679b39f73301')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','66547fr-eba3-4f15-b33d-6793321ggf47')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','66547fr-eba3-4f15-b33d-6793321ggf47')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
@@ -493,8 +493,8 @@ class MechanicalConcreteCube(models.Model):
         
         for record in self:
             record.avg_water_absorption_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','30214iu-eba3-4f15-b33d-679b39f73301')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','30214iu-eba3-4f15-b33d-679b39f73301')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','66547fr-eba3-4f15-b33d-6793321ggf47')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','66547fr-eba3-4f15-b33d-6793321ggf47')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -525,13 +525,13 @@ class MechanicalConcreteCube(models.Model):
 
                
                
-                if sample.internal_id == "23545tur-17c1-48ac-8462-9671e4d3d09f":
+                if sample.internal_id == "23596521-17c1-48ac-8462-9671e3521478":
                     record.cube_visible = True
 
-                if sample.internal_id == "1023457-0268-46ef-ba88-9c0453210lkit1":
+                if sample.internal_id == "6632147-0268-46ef-ba88-9c045333012457":
                     record.wpt_visible = True
 
-                if sample.internal_id == "30214iu-eba3-4f15-b33d-679b39f73301":
+                if sample.internal_id == "66547fr-eba3-4f15-b33d-6793321ggf47":
                     record.water_absorption_visible = True
 
 
@@ -550,7 +550,7 @@ class MechanicalConcreteCube(models.Model):
 
 
   
-            if result.parameter.internal_id == '23545tur-17c1-48ac-8462-9671e4d3d09f':
+            if result.parameter.internal_id == '23596521-17c1-48ac-8462-9671e3521478':
                 result.calculated = True
                 result.result_char = round(self.average_strength,2)
                 if self.nabl == 'pass':
@@ -560,7 +560,7 @@ class MechanicalConcreteCube(models.Model):
                 continue
 
         for result in self.eln_ref.parameters_result:
-            if result.parameter.internal_id == '30214iu-eba3-4f15-b33d-679b39f73301':
+            if result.parameter.internal_id == '66547fr-eba3-4f15-b33d-6793321ggf47':
                 result.calculated = True
                 result.result_char = round(self.avg_water_absorption,2)
                 if self.nabl == 'pass':
@@ -572,7 +572,7 @@ class MechanicalConcreteCube(models.Model):
 
 
         for result in self.eln_ref.parameters_result:
-            if result.parameter.internal_id == '1023457-0268-46ef-ba88-9c0453210lkit1':
+            if result.parameter.internal_id == '6632147-0268-46ef-ba88-9c045333012457':
                 result.calculated = True
                 result.result_char = round(self.average_of_wpt,2)
                 if self.nabl == 'pass':
@@ -604,8 +604,8 @@ class MechanicalConcreteCube(models.Model):
         
         for record in self:
             record.nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23545tur-17c1-48ac-8462-9671e4d3d09f')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23545tur-17c1-48ac-8462-9671e4d3d09f')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23596521-17c1-48ac-8462-9671e3521478')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23596521-17c1-48ac-8462-9671e3521478')]).parameter_table
             # for material in materials:
             #     if material.grade.id == record.grade.id:
             lab_min = line.lab_min_value
@@ -625,8 +625,8 @@ class MechanicalConcreteCube(models.Model):
     def _compute_confirmity(self):
         for record in self:
             record.confirmity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23545tur-17c1-48ac-8462-9671e4d3d09f')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23545tur-17c1-48ac-8462-9671e4d3d09f')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23596521-17c1-48ac-8462-9671e3521478')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23596521-17c1-48ac-8462-9671e3521478')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
@@ -668,7 +668,7 @@ class MechanicalConcreteCube(models.Model):
     @api.model
     def create(self, vals):
         # import wdb;wdb.set_trace()
-        record = super(MechanicalConcreteCube, self).create(vals)
+        record = super(MechanicalSNRCube, self).create(vals)
         # record.get_all_fields()
         record.eln_ref.write({'model_id':record.id})
         return record
@@ -711,7 +711,7 @@ class MechanicalConcreteCube(models.Model):
             record.sample_parameters = [(6, 0, parameter_ids)]
 
     def get_all_fields(self):
-        record = self.env['mechanical.concrete.cube'].browse(self.ids[0])
+        record = self.env['snr.cube'].browse(self.ids[0])
         field_values = {}
         for field_name, field in record._fields.items():
             field_value = record[field_name]
@@ -721,9 +721,9 @@ class MechanicalConcreteCube(models.Model):
 
 
 
-class MechanicalConcreteCubeLine(models.Model):
-    _name = "mechanical.concrete.cube.line"
-    parent_id = fields.Many2one('mechanical.concrete.cube',string="Parent Id")
+class MechanicalSNRCubeLine(models.Model):
+    _name = "snr.cube.line"
+    parent_id = fields.Many2one('snr.cube',string="Parent Id")
 
     sr_no = fields.Integer(string="Sr.No.",readonly=True, copy=False, default=1)
   
@@ -836,7 +836,7 @@ class MechanicalConcreteCubeLine(models.Model):
                 max_serial_no = max(existing_records.mapped('sr_no'))
                 vals['sr_no'] = max_serial_no + 1
 
-        return super(MechanicalConcreteCubeLine, self).create(vals)
+        return super(MechanicalSNRCubeLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines
@@ -847,9 +847,9 @@ class MechanicalConcreteCubeLine(models.Model):
 
 
 
-class MechanicalConcreteCubeGradeLine(models.Model):
-    _name = "mechanical.concrete.cube.grade.line"
-    parent_id = fields.Many2one('mechanical.concrete.cube',string="Parent Id")
+class MechanicalSNRCubeGradeLine(models.Model):
+    _name = "snr.cube.grade.line"
+    parent_id = fields.Many2one('snr.cube',string="Parent Id")
 
     sr_no = fields.Integer(string="Sr.No.",readonly=True, copy=False, default=1)
   
@@ -866,7 +866,7 @@ class MechanicalConcreteCubeGradeLine(models.Model):
                 max_serial_no = max(existing_records.mapped('sr_no'))
                 vals['sr_no'] = max_serial_no + 1
 
-        return super(MechanicalConcreteCubeGradeLine, self).create(vals)
+        return super(MechanicalSNRCubeGradeLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines
@@ -876,8 +876,8 @@ class MechanicalConcreteCubeGradeLine(models.Model):
 
 
 class WptMechanicalLine(models.Model):
-    _name = "mechanical.cube.wpt.line"
-    parent_id = fields.Many2one('mechanical.concrete.cube',string="Parent Id")
+    _name = "snr.cube.wpt.line"
+    parent_id = fields.Many2one('snr.cube',string="Parent Id")
 
     sample = fields.Char(string="Sample")
     depth1 = fields.Float(string="Specimen 1")
@@ -910,8 +910,8 @@ class WptMechanicalLine(models.Model):
 
 
 class WaterLine(models.Model):
-    _name = "cube.water.absorption.line"
-    parent_id = fields.Many2one('mechanical.concrete.cube',string="Parent Id")
+    _name = "snr.cube.water.absorption.line"
+    parent_id = fields.Many2one('snr.cube',string="Parent Id")
 
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
     sample_identification = fields.Float(string="Sample Identification")
@@ -949,9 +949,9 @@ class WaterLine(models.Model):
 
 
 class CubeNotes(models.Model):
-    _name = "cube.notes"
+    _name = "snr.cube.notes"
 
-    parent_id = fields.Many2one('mechanical.concrete.cube',string="Parent Id")
+    parent_id = fields.Many2one('snr.cube',string="Parent Id")
     sr_no = fields.Char("Sr. No.")
     notes = fields.Char("Notes")
 

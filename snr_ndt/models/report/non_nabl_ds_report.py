@@ -14,8 +14,8 @@ from scipy.optimize import minimize_scalar
 
 
 
-class NBMLNONNABLReport(models.AbstractModel):
-    _name = 'report.nbml_nonnabl.nbml_nonnabl_report'
+class SNRNDTReport(models.AbstractModel):
+    _name = 'report.snr_ndt.snr_ndt_report'
     _description = 'Opc Cement Report'
     
     @api.model
