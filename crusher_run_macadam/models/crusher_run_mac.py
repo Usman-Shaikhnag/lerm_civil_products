@@ -363,7 +363,7 @@ class CrusherRunMacadamMechanical(models.Model):
     abrasion_value_name = fields.Char("Name",default="Los Angeles Abrasion Value")
     abrasion_visible = fields.Boolean("Abrasion Visible",compute="_compute_visible")
 
-    abrasion_value_line_ids = fields.One2many('la.abrasion.line', 'parent_id', string="Observations")
+    abrasion_value_line_ids = fields.One2many('crusher.la.abrasion.line', 'parent_id', string="Observations")
 
     avg_abrasion_value = fields.Float(
         "Average Value of L.A. Abrasion Value (%)",
