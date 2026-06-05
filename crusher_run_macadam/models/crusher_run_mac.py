@@ -440,7 +440,7 @@ class CrusherRunMacadamMechanical(models.Model):
     specific_gravity_name = fields.Char("Name",default="Specific Gravity & Water Absorption")
     specific_gravity_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
 
-    specific_water_line_ids = fields.One2many('crusher.specific.gravity.water.absorption.line', 'parent_id', string="Observations")
+    specific_water_line_ids = fields.One2many('crusher.water.absorption.line', 'parent_id', string="Observations")
 
     avg_specific_gravity = fields.Float("Average Specific Gravity", compute="_compute_avg_specific_water", store=True)
     avg_water_absorption = fields.Float("Average Water Absorption (%)", compute="_compute_avg_specific_water", store=True)
@@ -1108,11 +1108,11 @@ class CrusherLAAbrasionLine(models.Model):
             record.sample_no = index + 1
 
 
-class CrusherSpecificGravityWaterAbsorptionLine(models.Model):
-    _name = "crusher.specific.gravity.water.absorption.line"
+class CrusherWaterAbsorptionLine(models.Model):
+    _name = "crusher.water.absorption.line"
     _description = "Specific Gravity And Water Absorption Test"
 
-    parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
+    parent_id = fields.Many2one('mechanical.crusher.run.macadam',string="Parent Id")
 
     sample_no = fields.Integer(string="Sample", readonly=True, copy=False, default=1)
 
@@ -1158,7 +1158,7 @@ class CrusherSpecificGravityWaterAbsorptionLine(models.Model):
                 max_serial_no = max(existing_records.mapped('sample_no'))
                 vals['sample_no'] = max_serial_no + 1
 
-        return super(CrusherSpecificGravityWaterAbsorptionLine, self).create(vals)
+        return super(CrusherWaterAbsorptionLine, self).create(vals)
 
 
     def _reorder_serial_numbers(self):
