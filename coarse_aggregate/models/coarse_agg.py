@@ -18,6 +18,8 @@ class CoarseAggregateMechanical(models.Model):
     avg_compacted_unit  = fields.Char("Compacted Density", compute="_compute_units", store=False)
     temperature = fields.Char("Temperature",store=True)
 
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
+
 
     notes_id = fields.One2many('coarse.notes', 'parent_id',string="Notes",
     default=lambda self: self._default_notes_lines()
@@ -562,10 +564,10 @@ class CoarseAggregateMechanical(models.Model):
 
    
 
-    total_total_weight = fields.Float("Total (Total Weight)", compute="_compute_totals", store=True)
-    total_wt_passing_flakiness = fields.Float("Total (Passing Flakiness)", compute="_compute_totals", store=True)
-    total_wt_retained_flakiness = fields.Float("Total (Retained Flakiness)", compute="_compute_totals", store=True)
-    total_wt_retained_elongation = fields.Float("Total (Retained Elongation)", compute="_compute_totals", store=True)
+    total_total_weight = fields.Float("Total (Total Wt of Aggregate Retained (gm)) (A)", compute="_compute_totals", store=True)
+    total_wt_passing_flakiness = fields.Float("Total (Wt Passing Flakiness Gauge (gm)) (B)", compute="_compute_totals", store=True)
+    total_wt_retained_flakiness = fields.Float("Total (Wt Retained Flakiness Gauge (gm)) (C)", compute="_compute_totals", store=True)
+    total_wt_retained_elongation = fields.Float("Total (Wt Retained Elongation Gauge (gm)) (D)", compute="_compute_totals", store=True)
 
     @api.depends(
         'elongation_fl_table.total_weight',
@@ -581,19 +583,19 @@ class CoarseAggregateMechanical(models.Model):
             rec.total_wt_retained_elongation = sum(rec.elongation_fl_table.mapped('wt_retained_elongation'))
 
     flakiness_index = fields.Float(
-        string="Flakiness Index (%)",
+        string="Flakiness Index (FI=(B/A)*100) (%)",
         compute="_compute_indexes",
         store=True
     )
 
     elongation_index = fields.Float(
-        string="Elongation Index (%)",
+        string="Elongation Index (FI=(D/C)*100) (%)",
         compute="_compute_indexes",
         store=True
     )
 
     combined_index = fields.Float(
-        string="Combined FI + EI (%)",
+        string="Combined Flakiness  & Elongation Index (%)",
         compute="_compute_indexes",
         store=True
     )
