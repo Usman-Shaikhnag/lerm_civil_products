@@ -2464,234 +2464,269 @@ class Soil(models.Model):
 
     gsa_lines_generated = fields.Boolean(string="GSA Lines Generated",default=False)
 
-   # --- BUTTON ACTION ---
-    # def action_calc_d_values(self):
-    #     """Button to Calculate and Fetch Values"""
-    #     self._calculate_all_d_values()
-    #     return True
-
-    # def _calculate_all_d_values(self):
-    #     for record in self:
-    #         record.gsa_particle_child_lines.unlink()
-            
-    #         lines_list = []
-
-    #         for gsa in record.gsa_child_lines:
-    #             # --- CALCULATION LOGIC START ---
-    #             val_d10 = 0.0
-    #             val_d30 = 0.0
-    #             val_d60 = 0.0
-    #             val_cu = 0.0
-    #             val_cc = 0.0
-                
-    #             if gsa.sieve_analysis_child_lines_gsa:
-    #                 clean_data = []
-    #                 for line in gsa.sieve_analysis_child_lines_gsa:
-    #                     try:
-    #                         sz_str = re.sub(r"[^0-9.]", "", str(line.sieve_size))
-    #                         size_val = float(sz_str) if sz_str else 0.0
-    #                         pass_val = line.passing_percent
-    #                         clean_data.append({'size': size_val, 'passing': pass_val})
-    #                     except:
-    #                         continue
-
-    #                 clean_data.sort(key=lambda x: x['passing'], reverse=True)
-    #                 val_d10 = self._get_interpolated_value(clean_data, 10)
-    #                 val_d30 = self._get_interpolated_value(clean_data, 30)
-    #                 val_d60 = self._get_interpolated_value(clean_data, 60)
-
-    #                 if val_d10 > 0:
-    #                     val_cu = val_d60 / val_d10
-    #                     if val_d60 > 0:
-    #                         val_cc = (val_d30 ** 2) / (val_d60 * val_d10)
-    #             # --- CALCULATION LOGIC END ---
-
-              
-                
-    #             fetched_meniscus = getattr(gsa, 'meniscus_corre', 0.5)   # Default 0.5 if not found
-    #             fetched_dispersion = getattr(gsa, 'dispersion', 1.575)   # Default 1.575 if not found
-    #             fetched_temp_corre = getattr(gsa, 'temp_corre', 0.0)     
-
-    #             lines_list.append({
-    #                 'parent_id': record.id,
-    #                 'bh_id': gsa.bh_id,
-    #                 'sample_depth': gsa.sample_depth,
-                    
-    #                 # Calculated Values
-    #                 'd_10': val_d10,
-    #                 'd_30': val_d30,
-    #                 'd_60': val_d60,
-    #                 'c_u': round(val_cu, 2),
-    #                 'c_c': round(val_cc, 2),
-                    
-    #                 # Fetched Values (Same Name Fields)
-    #                 'meniscus_corre': fetched_meniscus,
-    #                 'dispersion': fetched_dispersion,
-    #                 'temp_corre': fetched_temp_corre,
-    #             })
-
-    #         if lines_list:
-    #             self.env['mechanical.gsa.particle.line'].create(lines_list)
-
-    # Helper Function
-    # def _get_interpolated_value(self, data_list, target_percent):
-    #     upper = None
-    #     lower = None
-    #     for i in range(len(data_list) - 1):
-    #         curr = data_list[i]
-    #         next_one = data_list[i+1]
-    #         if curr['passing'] >= target_percent and next_one['passing'] < target_percent:
-    #             upper = curr
-    #             lower = next_one
-    #             break
-        
-    #     if upper and lower:
-    #         size2 = upper['size']
-    #         size1 = lower['size']
-    #         pass2 = upper['passing']
-    #         pass1 = lower['passing']
-    #         if (pass2 - pass1) != 0:
-    #             result = size2 - ((pass2 - target_percent) * (size2 - size1) / (pass2 - pass1))
-    #             return round(result, 4)
-    #     return 0.0
-
-
 
 
     import re
 
 
+#     def action_calc_d_values(self):
+#        """Button to Calculate and Fetch Values"""
+#        self._calculate_all_d_values()
+#        return True
+
+
+#     def _calculate_all_d_values(self):
+#      for record in self:
+
+#         # Remove old values
+#         record.gsa_particle_child_lines.unlink()
+
+#         lines_list = []
+
+#         for gsa in record.gsa_child_lines:
+
+#             val_d10 = 0.0
+#             val_d30 = 0.0
+#             val_d60 = 0.0
+#             val_cu = 0.0
+#             val_cc = 0.0
+
+#             if gsa.sieve_analysis_child_lines_gsa:
+
+#                 clean_data = []
+
+#                 for line in gsa.sieve_analysis_child_lines_gsa:
+#                     try:
+#                         sz_str = re.sub(
+#                             r"[^0-9.]",
+#                             "",
+#                             str(line.sieve_size or "")
+#                         )
+
+#                         size_val = float(sz_str) if sz_str else 0.0
+#                         pass_val = float(line.passing_percent or 0.0)
+
+#                         clean_data.append({
+#                             'size': size_val,
+#                             'passing': pass_val,
+#                         })
+
+#                     except Exception:
+#                         continue
+
+#                 # Sort by Passing %
+#                 clean_data.sort(
+#                     key=lambda x: x['passing'],
+#                     reverse=True
+#                 )
+
+#                 # D-values
+#                 val_d10 = self._get_interpolated_value(
+#                     clean_data, 10
+#                 )
+
+#                 val_d30 = self._get_interpolated_value(
+#                     clean_data, 30
+#                 )
+
+#                 val_d60 = self._get_interpolated_value(
+#                     clean_data, 60
+#                 )
+
+#                 # Cu & Cc
+#                 if val_d10 > 0 and val_d60 > 0:
+
+#                     val_cu = val_d60 / val_d10
+
+#                     val_cc = (
+#                         (val_d30 ** 2)
+#                         / (val_d60 * val_d10)
+#                     )
+
+#             fetched_meniscus = getattr(
+#                 gsa,
+#                 'meniscus_corre',
+#                 0.5
+#             )
+
+#             fetched_dispersion = getattr(
+#                 gsa,
+#                 'dispersion',
+#                 1.575
+#             )
+
+#             fetched_temp_corre = getattr(
+#                 gsa,
+#                 'temp_corre',
+#                 0.0
+#             )
+
+#             lines_list.append({
+
+#                 'parent_id': record.id,
+#                 'bh_id': gsa.bh_id,
+#                 'sample_depth': gsa.sample_depth,
+
+#                 'd_10': round(val_d10, 4),
+#                 'd_30': round(val_d30, 4),
+#                 'd_60': round(val_d60, 4),
+
+#                 'c_u': round(val_cu, 2),
+#                 'c_c': round(val_cc, 2),
+
+#                 'meniscus_corre': fetched_meniscus,
+#                 'dispersion': fetched_dispersion,
+#                 'temp_corre': fetched_temp_corre,
+#             })
+
+#         if lines_list:
+#             self.env[
+#                 'mechanical.gsa.particle.line'
+#             ].create(lines_list)
+
+
+#     def _get_interpolated_value(
+#     self,
+#     data_list,
+#     target_percent
+# ):
+#       """
+#       Logarithmic interpolation for grain size analysis.
+#       """
+
+#       upper = None
+#       lower = None
+
+#       for i in range(len(data_list) - 1):
+
+#         curr = data_list[i]
+#         nxt = data_list[i + 1]
+
+#         if (
+#             curr['passing'] >= target_percent
+#             and nxt['passing'] <= target_percent
+#         ):
+#             upper = curr
+#             lower = nxt
+#             break
+
+#       if not upper or not lower:
+#         return 0.0
+
+#       size2 = upper['size']
+#       size1 = lower['size']
+
+#       pass2 = upper['passing']
+#       pass1 = lower['passing']
+
+#       if (
+#         size1 <= 0
+#         or size2 <= 0
+#         or (pass2 - pass1) == 0
+#     ):
+#         return 0.0
+
+#     # Log interpolation
+#       log_size1 = math.log10(size1)
+#       log_size2 = math.log10(size2)
+
+#       log_result = (
+#         log_size2
+#         - (
+#             (pass2 - target_percent)
+#             * (log_size2 - log_size1)
+#             / (pass2 - pass1)
+#         )
+#     )
+
+#       return 10 ** log_result
+
+
     def action_calc_d_values(self):
-     """Button Action"""
-
-     self._calculate_all_d_values()
-
-     return True
+      """Button to Calculate and Fetch Values"""
+      self._calculate_all_d_values()
+      return True
 
 
     def _calculate_all_d_values(self):
 
      for record in self:
 
-        # DELETE OLD RECORDS
+        # Remove old values
         record.gsa_particle_child_lines.unlink()
 
         lines_list = []
 
         for gsa in record.gsa_child_lines:
 
-            # ==========================================
-            # DEFAULT VALUES
-            # ==========================================
             val_d10 = 0.0
             val_d30 = 0.0
             val_d60 = 0.0
-
             val_cu = 0.0
             val_cc = 0.0
 
-            # ==========================================
-            # TAKE HYDROMETER DATA
-            # ==========================================
-            clean_data = []
+            if gsa.sieve_analysis_child_lines_gsa:
 
-            for line in gsa.hydrometer_analysis_lines_gsa:
+                clean_data = []
 
-                try:
+                for line in gsa.sieve_analysis_child_lines_gsa:
 
-                    # DIAMETER OF SOIL
-                    size_val = float(
-                        line.diameter_soil or 0.0
-                    )
+                    try:
+                        size_match = re.search(
+                            r'(\d+\.?\d*)',
+                            str(line.sieve_size or '')
+                        )
 
-                    # N % CORRECTED
-                    pass_val = float(
-                        line.n_corrected or 0.0
-                    )
+                        size_val = (
+                            float(size_match.group(1))
+                            if size_match
+                            else 0.0
+                        )
 
-                    if (
-                        size_val > 0
-                        and pass_val > 0
-                    ):
+                        pass_val = float(
+                            line.passing_percent or 0.0
+                        )
 
                         clean_data.append({
-
                             'size': size_val,
-
-                            'passing': pass_val
+                            'passing': pass_val,
                         })
 
-                except:
-                    continue
+                    except Exception:
+                        continue
 
-            # ==========================================
-            # SORT BY PASSING %
-            # ==========================================
-            clean_data.sort(
-                key=lambda x: x['passing'],
-                reverse=True
-            )
-
-            # ==========================================
-            # D VALUES
-            # ==========================================
-            val_d10 = self._get_interpolated_value(
-                clean_data,
-                10
-            )
-
-            val_d30 = self._get_interpolated_value(
-                clean_data,
-                30
-            )
-
-            val_d60 = self._get_interpolated_value(
-                clean_data,
-                60
-            )
-
-            # ==========================================
-            # MATCH EXCEL GRAPH CURVE
-            # ==========================================
-
-            # D10
-            if val_d10 > 0:
-                val_d10 = val_d10 * 0.635
-
-            # D30
-            if val_d30 > 0:
-                val_d30 = val_d30 * 0.792
-
-            # D60
-            if val_d60 > 0:
-                val_d60 = val_d60 *  0.608
-
-            # ==========================================
-            # Cu
-            # ==========================================
-            if val_d10 > 0:
-
-                val_cu = (
-                    val_d60 / val_d10
+                # Sort by passing percentage descending
+                clean_data.sort(
+                    key=lambda x: x['passing'],
+                    reverse=True
                 )
 
-            # ==========================================
-            # Cc
-            # ==========================================
-            if (
-                val_d10 > 0
-                and val_d60 > 0
-            ):
-
-                val_cc = (
-                    (val_d30 ** 2)
-                    /
-                    (val_d60 * val_d10)
+                # Calculate D-values
+                val_d10 = self._get_interpolated_value(
+                    clean_data,
+                    10
                 )
 
-            # ==========================================
-            # FETCH OTHER VALUES
-            # ==========================================
+                val_d30 = self._get_interpolated_value(
+                    clean_data,
+                    30
+                )
+
+                val_d60 = self._get_interpolated_value(
+                    clean_data,
+                    60
+                )
+
+                # Calculate Cu and Cc
+                if val_d10 > 0 and val_d60 > 0:
+
+                    val_cu = val_d60 / val_d10
+
+                    val_cc = (
+                        (val_d30 ** 2)
+                        / (val_d60 * val_d10)
+                    )
+
             fetched_meniscus = getattr(
                 gsa,
                 'meniscus_corre',
@@ -2710,111 +2745,360 @@ class Soil(models.Model):
                 0.0
             )
 
-            # ==========================================
-            # APPEND VALUES
-            # ==========================================
             lines_list.append({
 
                 'parent_id': record.id,
-
                 'bh_id': gsa.bh_id,
-
                 'sample_depth': gsa.sample_depth,
 
-                # DISPLAY VALUES
-                'd_10': round(val_d10, 3),
-
-                'd_30': round(val_d30, 3),
-
-                'd_60': round(val_d60, 3),
+                'd_10': round(val_d10, 4),
+                'd_30': round(val_d30, 4),
+                'd_60': round(val_d60, 4),
 
                 'c_u': round(val_cu, 2),
-
                 'c_c': round(val_cc, 2),
 
                 'meniscus_corre': fetched_meniscus,
-
                 'dispersion': fetched_dispersion,
-
                 'temp_corre': fetched_temp_corre,
             })
 
-        # ==========================================
-        # CREATE RECORDS
-        # ==========================================
         if lines_list:
-
             self.env[
                 'mechanical.gsa.particle.line'
             ].create(lines_list)
 
-
-# =====================================================
-# EXACT EXCEL INTERPOLATION
-# =====================================================
 
     def _get_interpolated_value(
     self,
     data_list,
     target_percent
 ):
+      """
+      Logarithmic interpolation for
+      D10, D30 and D60.
+      """
 
-     if not data_list:
+      if not data_list:
         return 0.0
 
-     upper = None
-     lower = None
+      upper = None
+      lower = None
 
-    # ==========================================
-    # FIND SURROUNDING ROWS
-    # ==========================================
-     for i in range(len(data_list) - 1):
+      for i in range(len(data_list) - 1):
 
-        curr = data_list[i]
-
-        next_one = data_list[i + 1]
+        current = data_list[i]
+        next_row = data_list[i + 1]
 
         if (
-            curr['passing'] >= target_percent
-            and next_one['passing'] <= target_percent
+            current['passing'] >= target_percent >=
+            next_row['passing']
         ):
-
-            upper = curr
-            lower = next_one
-
+            upper = current
+            lower = next_row
             break
 
-     if not upper or not lower:
+      if not upper or not lower:
         return 0.0
 
-    # PASSING %
-     P1 = upper['passing']
-     P2 = lower['passing']
+      d1 = upper['size']
+      d2 = lower['size']
 
-    # DIAMETER
-     D1 = upper['size']
-     D2 = lower['size']
+      p1 = upper['passing']
+      p2 = lower['passing']
 
-    # SAFETY
-     if (P1 - P2) == 0:
+      if d1 <= 0 or d2 <= 0 or p1 == p2:
         return 0.0
 
-    # EXACT EXCEL FORMULA
-     result = D1 - (
-        (
-            P1 - target_percent
-        )
-        *
-        (
-            D1 - D2
-        )
-        /
-        (
-            P1 - P2
-        )
+      log_d1 = math.log10(d1)
+      log_d2 = math.log10(d2)
+
+    # Standard logarithmic interpolation
+      log_d = log_d1 + (
+        (target_percent - p1)
+        * (log_d2 - log_d1)
+        / (p2 - p1)
     )
 
-     return result
+      return 10 ** log_d
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+
+
+#     def action_calc_d_values(self):
+#      """Button Action"""
+
+#      self._calculate_all_d_values()
+
+#      return True
+
+
+#     def _calculate_all_d_values(self):
+
+#      for record in self:
+
+#         # DELETE OLD RECORDS
+#         record.gsa_particle_child_lines.unlink()
+
+#         lines_list = []
+
+#         for gsa in record.gsa_child_lines:
+
+#             # ==========================================
+#             # DEFAULT VALUES
+#             # ==========================================
+#             val_d10 = 0.0
+#             val_d30 = 0.0
+#             val_d60 = 0.0
+
+#             val_cu = 0.0
+#             val_cc = 0.0
+
+#             # ==========================================
+#             # TAKE HYDROMETER DATA
+#             # ==========================================
+#             clean_data = []
+
+#             for line in gsa.hydrometer_analysis_lines_gsa:
+
+#                 try:
+
+#                     # DIAMETER OF SOIL
+#                     size_val = float(
+#                         line.diameter_soil or 0.0
+#                     )
+
+#                     # N % CORRECTED
+#                     pass_val = float(
+#                         line.n_corrected or 0.0
+#                     )
+
+#                     if (
+#                         size_val > 0
+#                         and pass_val > 0
+#                     ):
+
+#                         clean_data.append({
+
+#                             'size': size_val,
+
+#                             'passing': pass_val
+#                         })
+
+#                 except:
+#                     continue
+
+#             # ==========================================
+#             # SORT BY PASSING %
+#             # ==========================================
+#             clean_data.sort(
+#                 key=lambda x: x['passing'],
+#                 reverse=True
+#             )
+
+#             # ==========================================
+#             # D VALUES
+#             # ==========================================
+#             val_d10 = self._get_interpolated_value(
+#                 clean_data,
+#                 10
+#             )
+
+#             val_d30 = self._get_interpolated_value(
+#                 clean_data,
+#                 30
+#             )
+
+#             val_d60 = self._get_interpolated_value(
+#                 clean_data,
+#                 60
+#             )
+
+#             # ==========================================
+#             # MATCH EXCEL GRAPH CURVE
+#             # ==========================================
+
+#             # D10
+#             if val_d10 > 0:
+#                 val_d10 = val_d10 * 0.635
+
+#             # D30
+#             if val_d30 > 0:
+#                 val_d30 = val_d30 * 0.792
+
+#             # D60
+#             if val_d60 > 0:
+#                 val_d60 = val_d60 *  0.608
+
+#             # ==========================================
+#             # Cu
+#             # ==========================================
+#             if val_d10 > 0:
+
+#                 val_cu = (
+#                     val_d60 / val_d10
+#                 )
+
+#             # ==========================================
+#             # Cc
+#             # ==========================================
+#             if (
+#                 val_d10 > 0
+#                 and val_d60 > 0
+#             ):
+
+#                 val_cc = (
+#                     (val_d30 ** 2)
+#                     /
+#                     (val_d60 * val_d10)
+#                 )
+
+#             # ==========================================
+#             # FETCH OTHER VALUES
+#             # ==========================================
+#             fetched_meniscus = getattr(
+#                 gsa,
+#                 'meniscus_corre',
+#                 0.5
+#             )
+
+#             fetched_dispersion = getattr(
+#                 gsa,
+#                 'dispersion',
+#                 1.575
+#             )
+
+#             fetched_temp_corre = getattr(
+#                 gsa,
+#                 'temp_corre',
+#                 0.0
+#             )
+
+#             # ==========================================
+#             # APPEND VALUES
+#             # ==========================================
+#             lines_list.append({
+
+#                 'parent_id': record.id,
+
+#                 'bh_id': gsa.bh_id,
+
+#                 'sample_depth': gsa.sample_depth,
+
+#                 # DISPLAY VALUES
+#                 'd_10': round(val_d10, 3),
+
+#                 'd_30': round(val_d30, 3),
+
+#                 'd_60': round(val_d60, 3),
+
+#                 'c_u': round(val_cu, 2),
+
+#                 'c_c': round(val_cc, 2),
+
+#                 'meniscus_corre': fetched_meniscus,
+
+#                 'dispersion': fetched_dispersion,
+
+#                 'temp_corre': fetched_temp_corre,
+#             })
+
+#         # ==========================================
+#         # CREATE RECORDS
+#         # ==========================================
+#         if lines_list:
+
+#             self.env[
+#                 'mechanical.gsa.particle.line'
+#             ].create(lines_list)
+
+
+# # =====================================================
+# # EXACT EXCEL INTERPOLATION
+# # =====================================================
+
+#     def _get_interpolated_value(
+#     self,
+#     data_list,
+#     target_percent
+# ):
+
+#      if not data_list:
+#         return 0.0
+
+#      upper = None
+#      lower = None
+
+#     # ==========================================
+#     # FIND SURROUNDING ROWS
+#     # ==========================================
+#      for i in range(len(data_list) - 1):
+
+#         curr = data_list[i]
+
+#         next_one = data_list[i + 1]
+
+#         if (
+#             curr['passing'] >= target_percent
+#             and next_one['passing'] <= target_percent
+#         ):
+
+#             upper = curr
+#             lower = next_one
+
+#             break
+
+#      if not upper or not lower:
+#         return 0.0
+
+#     # PASSING %
+#      P1 = upper['passing']
+#      P2 = lower['passing']
+
+#     # DIAMETER
+#      D1 = upper['size']
+#      D2 = lower['size']
+
+#     # SAFETY
+#      if (P1 - P2) == 0:
+#         return 0.0
+
+#     # EXACT EXCEL FORMULA
+#      result = D1 - (
+#         (
+#             P1 - target_percent
+#         )
+#         *
+#         (
+#             D1 - D2
+#         )
+#         /
+#         (
+#             P1 - P2
+#         )
+#     )
+
+#      return result
     
     
     
@@ -2860,246 +3144,8 @@ class Soil(models.Model):
 
 
     
-
-
-
-
-
-
-   
-    # def action_generate_gsa_graph(self):
-    #     for record in self:
-    #         # 1. Initialize Plot
-    #         fig, ax = plt.subplots(figsize=(12, 6), dpi=100)
-            
-    #         # 2. Configure Axes limits
-    #         ax.set_xscale('log')
-    #         ax.set_xlim(0.001, 100)  
-    #         ax.set_ylim(0, 110)      
-
-    #         # 3. Labels
-    #         ax.set_xlabel("Particle Diameter (mm)", fontsize=10, fontweight='bold')
-    #         ax.set_ylabel("Percentage Finer (%)", fontsize=10, fontweight='bold')
-
-    #         # 4. Grid
-    #         ax.grid(True, which='major', axis='both', linestyle='-', linewidth=0.8, color='#404040', alpha=0.6)
-    #         ax.grid(True, which='minor', axis='both', linestyle='-', linewidth=0.5, color='#a0a0a0', alpha=0.4)
-
-    #         # 5. Format X-Axis Ticks
-    #         locmaj = ticker.LogLocator(base=10.0, subs=(1.0,), numticks=100)
-    #         ax.xaxis.set_major_locator(locmaj)
-            
-    #         def nice_log_formatter(x, pos):
-    #             if x in [0.001, 0.01, 0.1, 1, 10, 100]:
-    #                 return f"{x:g}" 
-    #             return ""
-    #         ax.xaxis.set_major_formatter(ticker.FuncFormatter(nice_log_formatter))
-    #         ax.yaxis.set_major_locator(ticker.MultipleLocator(10))
-
-    #         # --- MARKER LIST ---
-    #         # He symbols sequence ne vaparle jatil
-    #         marker_cycle = itertools.cycle(['^', '*', 'D', 'x', 'o', 's', 'v', '+'])
-         
-    #         # 6. Plot Data
-    #         data_plotted = False
-            
-    #         if record.gsa_child_lines:
-    #             for sample in record.gsa_child_lines:
-    #                 data_pairs = []
-
-    #                 # 1. New Marker Select kara
-    #                 current_marker = next(marker_cycle)
-
-    #                 # --- CHANGE HERE: Save Symbol to Odoo Field ---
-    #                 # Jo marker graph sathi niwdla ahe, to 'symbol' field madhe save kara
-    #                 sample.symbol = current_marker
-    #                 # ----------------------------------------------
-
-    #                 for line in sample.sieve_analysis_child_lines_gsa:
-    #                     if line.sieve_size and line.passing_percent is not None:
-    #                         try:
-    #                             # String clean kara
-    #                             size_str = str(line.sieve_size).lower().replace('mm', '').strip()
-    #                             if 'pan' in size_str:
-    #                                 continue 
-
-    #                             # 5 digit rounding
-    #                             size_val = round(float(size_str), 5)
-    #                             pass_val = line.passing_percent
-
-    #                             if 0.001 <= size_val <= 100:
-    #                                 data_pairs.append((size_val, pass_val))
-    #                         except ValueError:
-    #                             continue
-                    
-    #                 # Sort: Smallest -> Largest
-    #                 data_pairs.sort(key=lambda x: x[0]) 
-
-    #                 if data_pairs:
-    #                     sizes = [x[0] for x in data_pairs]
-    #                     passing = [x[1] for x in data_pairs]
-
-    #                     # Plotting with the selected marker
-    #                     ax.plot(sizes, passing, marker=current_marker, markersize=6, linewidth=2, label=sample.lab_no or "Sample")
-    #                     data_plotted = True
-
-    #         # Legend
-    #         if data_plotted:
-    #             ax.legend(loc='lower right', fontsize=9)
-
-    #         # 7. Save Image
-    #         buffer = io.BytesIO()
-    #         plt.savefig(buffer, format='png', bbox_inches='tight') 
-    #         plt.close(fig)
-    #         buffer.seek(0)
-            
-    #         record.gsa_graph_image = base64.b64encode(buffer.read())
-    #         buffer.close()
-
     import matplotlib.pyplot as plt
     import itertools
-
-
-
-
-#     def action_generate_gsa_graph(self):
-
-#      import matplotlib.pyplot as plt
-#      import matplotlib.ticker as ticker
-#      import io
-#      import base64
-
-#      for record in self:
-
-#         fig, ax = plt.subplots(figsize=(12, 6), dpi=100)
-
-#         ax.set_xscale('log')
-#         ax.set_xlim(0.001, 100)
-#         ax.set_ylim(0, 110)
-
-#         ax.set_xlabel("Particle Diameter (mm)", fontsize=10, fontweight='bold')
-#         ax.set_ylabel("Percentage Finer (%)", fontsize=10, fontweight='bold')
-
-#         ax.grid(True, which='major', linestyle='-', linewidth=0.8, color='#404040', alpha=0.6)
-#         ax.grid(True, which='minor', linestyle='-', linewidth=0.5, color='#a0a0a0', alpha=0.4)
-
-#         locmaj = ticker.LogLocator(base=10.0, subs=(1.0,), numticks=100)
-#         ax.xaxis.set_major_locator(locmaj)
-
-#         def nice_log_formatter(x, pos):
-#             if x in [0.001, 0.01, 0.1, 1, 10, 100]:
-#                 return f"{x:g}"
-#             return ""
-
-#         ax.xaxis.set_major_formatter(ticker.FuncFormatter(nice_log_formatter))
-#         ax.yaxis.set_major_locator(ticker.MultipleLocator(10))
-
-#         markers = ['^','*','D','x','o','s','v','+','p','h','1','2','3','4','8','H','X','d','|','_']
-
-#         colors = [
-#             "#1f77b4","#2ca02c","#ff7f0e","#d62728","#9467bd",
-#             "#8c564b","#e377c2","#7f7f7f","#bcbd22","#17becf",
-#             "#393b79","#637939","#8c6d31","#843c39","#7b4173"
-#         ]
-
-#         marker_unicode = {
-#     '^': '▲',
-#     '*': '★',
-#     'D': '◆',
-#     'x': '✕',
-#     'o': '●',
-#     's': '■',
-#     'v': '▼',
-#     '+': '+'
-# }
-
-
-#         plot_index = 0
-#         data_plotted = False
-
-#         if record.gsa_child_lines:
-
-#             for sample in record.gsa_child_lines:
-
-#                 data_pairs = []
-
-#                 for line in sample.sieve_analysis_child_lines_gsa:
-
-#                     if line.sieve_size and line.passing_percent is not None:
-
-#                         try:
-
-#                             size_str = str(line.sieve_size).lower().replace('mm', '').strip()
-
-#                             if 'pan' in size_str:
-#                                 continue
-
-#                             size_val = round(float(size_str), 5)
-#                             pass_val = line.passing_percent
-
-#                             if 0.001 <= size_val <= 100:
-#                                 data_pairs.append((size_val, pass_val))
-
-#                         except ValueError:
-#                             continue
-
-#                 data_pairs.sort(key=lambda x: x[0])
-
-#                 if data_pairs:
-
-#                     marker = markers[plot_index % len(markers)]
-#                     color = colors[plot_index % len(colors)]
-
-#                     sizes = [x[0] for x in data_pairs]
-#                     passing = [x[1] for x in data_pairs]
-
-#                     ax.plot(
-#                         sizes,
-#                         passing,
-#                         marker=marker,
-#                         color=color,
-#                         markersize=6,
-#                         linewidth=2,
-#                         label=sample.lab_no or "Sample"
-#                     )
-
-#                     # symbol = marker
-#                     symbol = marker_unicode.get(marker, marker)
-
-#                     sample.symbol_html = f"""
-# <svg width="60" height="22">
-
-#     <!-- thin line -->
-#     <line x1="0" y1="11" x2="60" y2="11"
-#           stroke="{color}"
-#           stroke-width="3"
-#           stroke-linecap="round"/>
-
-#     <!-- marker -->
-#     <text x="30" y="15"
-#           text-anchor="middle"
-#           font-size="16"
-#           fill="{color}"
-#           font-weight="bold">
-#         {symbol}
-#     </text>
-
-# </svg>
-# """
-
-#                     plot_index += 1
-#                     data_plotted = True
-
-#             if data_plotted:
-#                 ax.legend(loc='lower right', fontsize=9)
-
-#             buffer = io.BytesIO()
-#             plt.savefig(buffer, format='png', bbox_inches='tight')
-#             plt.close(fig)
-
-#             buffer.seek(0)
-#             record.gsa_graph_image = base64.b64encode(buffer.read())
-#             buffer.close()
 
 
     def action_generate_gsa_graph(self):
@@ -3271,7 +3317,8 @@ class Soil(models.Model):
 
        
 
-    
+
+   
 
          # DETERMINATION OF CONSOLIDATION PROPERTIES		
     consolidation_name = fields.Char("Name",default="DETERMINATION OF CONSOLIDATION PROPERTIES")
@@ -5597,123 +5644,123 @@ class SoilGSALINE(models.Model):
         digits=(12, 0) # Round 0 digits
     )
 
-    # @api.depends('sieve_analysis_child_lines_gsa.passing_percent', 'sieve_analysis_child_lines_gsa.sieve_size')
-    # def _compute_silt_clay(self):
-    #     for rec in self:
-    #         clay_val = 0.0
-            
-    #         # 1. Collect valid data points (Size, Passing)
-    #         data_points = []
-    #         if rec.sieve_analysis_child_lines_gsa:
-    #             for line in rec.sieve_analysis_child_lines_gsa:
-    #                 try:
-    #                     txt = str(line.sieve_size).lower().replace('mm', '').strip()
-    #                     if not txt: continue
-    #                     size = float(txt)
-    #                     passing = line.passing_percent
-    #                     data_points.append({'size': size, 'passing': passing})
-    #                 except ValueError:
-    #                     continue
-            
-    #         # 2. Sort by Size Descending (Largest -> Smallest)
-    #         # List: [4.75, ..., 0.005, 0.001]
-    #         # Last = 0.001 (Smallest), Second Last = 0.005
-    #         data_points.sort(key=lambda k: k['size'], reverse=True)
-
-    #         # 3. Apply Formula if at least 2 points exist
-    #         if len(data_points) >= 2:
-    #             last = data_points[-1]        # x1, y1 (Last Value)
-    #             second_last = data_points[-2] # x2, y2 (Second Last Value)
-
-    #             x1 = last['size']
-    #             y1 = last['passing']
-                
-    #             x2 = second_last['size']
-    #             y2 = second_last['passing']
-
-    #             # Formula:
-    #             # ((y2 - y1) / (x2 - x1)) * (0.002 - x1) + y1
-    #             if (x2 - x1) != 0:
-    #                 clay_val = ((y2 - y1) / (x2 - x1)) * (0.002 - x1) + y1
-            
-    #         # 4. Round to 0 decimals (Integer)
-    #         rec.silt_clay = round(clay_val)
-
-
-
-    @api.depends(
-    'sieve_analysis_child_lines_gsa.passing_percent',
-    'sieve_analysis_child_lines_gsa.sieve_size'
-)
+    @api.depends('sieve_analysis_child_lines_gsa.passing_percent', 'sieve_analysis_child_lines_gsa.sieve_size')
     def _compute_silt_clay(self):
+        for rec in self:
+            clay_val = 0.0
+            
+            # 1. Collect valid data points (Size, Passing)
+            data_points = []
+            if rec.sieve_analysis_child_lines_gsa:
+                for line in rec.sieve_analysis_child_lines_gsa:
+                    try:
+                        txt = str(line.sieve_size).lower().replace('mm', '').strip()
+                        if not txt: continue
+                        size = float(txt)
+                        passing = line.passing_percent
+                        data_points.append({'size': size, 'passing': passing})
+                    except ValueError:
+                        continue
+            
+            # 2. Sort by Size Descending (Largest -> Smallest)
+            # List: [4.75, ..., 0.005, 0.001]
+            # Last = 0.001 (Smallest), Second Last = 0.005
+            data_points.sort(key=lambda k: k['size'], reverse=True)
 
-     for rec in self:
+            # 3. Apply Formula if at least 2 points exist
+            if len(data_points) >= 2:
+                last = data_points[-1]        # x1, y1 (Last Value)
+                second_last = data_points[-2] # x2, y2 (Second Last Value)
 
-        clay_val = 0.0
+                x1 = last['size']
+                y1 = last['passing']
+                
+                x2 = second_last['size']
+                y2 = second_last['passing']
 
-        data_points = []
+                # Formula:
+                # ((y2 - y1) / (x2 - x1)) * (0.002 - x1) + y1
+                if (x2 - x1) != 0:
+                    clay_val = ((y2 - y1) / (x2 - x1)) * (0.002 - x1) + y1
+            
+            # 4. Round to 0 decimals (Integer)
+            rec.silt_clay = round(clay_val)
 
-        for line in rec.sieve_analysis_child_lines_gsa:
 
-            try:
 
-                size = float(str(line.sieve_size).strip())
+#     @api.depends(
+#     'sieve_analysis_child_lines_gsa.passing_percent',
+#     'sieve_analysis_child_lines_gsa.sieve_size'
+# )
+#     def _compute_silt_clay(self):
 
-                passing = line.passing_percent
+#      for rec in self:
 
-                data_points.append({
-                    'size': size,
-                    'passing': passing
-                })
+#         clay_val = 0.0
 
-            except:
-                continue
+#         data_points = []
 
-        # SORT DESC
-        data_points.sort(
-            key=lambda x: x['size'],
-            reverse=True
-        )
+#         for line in rec.sieve_analysis_child_lines_gsa:
 
-        upper = None
-        lower = None
+#             try:
 
-        # FIND POINTS AROUND 0.002
-        for i in range(len(data_points) - 1):
+#                 size = float(str(line.sieve_size).strip())
 
-            p1 = data_points[i]
-            p2 = data_points[i + 1]
+#                 passing = line.passing_percent
 
-            if p1['size'] >= 0.002 >= p2['size']:
+#                 data_points.append({
+#                     'size': size,
+#                     'passing': passing
+#                 })
 
-                upper = p1
-                lower = p2
+#             except:
+#                 continue
 
-                break
+#         # SORT DESC
+#         data_points.sort(
+#             key=lambda x: x['size'],
+#             reverse=True
+#         )
 
-        if upper and lower:
+#         upper = None
+#         lower = None
 
-            x1 = upper['size']
-            y1 = upper['passing']
+#         # FIND POINTS AROUND 0.002
+#         for i in range(len(data_points) - 1):
 
-            x2 = lower['size']
-            y2 = lower['passing']
+#             p1 = data_points[i]
+#             p2 = data_points[i + 1]
 
-            # LOG INTERPOLATION
-            if x1 > 0 and x2 > 0:
+#             if p1['size'] >= 0.002 >= p2['size']:
 
-                clay_val = y1 + (
-                    (y2 - y1)
-                    *
-                    (
-                        (math.log10(0.002) - math.log10(x1))
-                        /
-                        (math.log10(x2) - math.log10(x1))
-                    )
-                )
+#                 upper = p1
+#                 lower = p2
 
-        # rec.silt_clay = round(clay_val)
-        rec.silt_clay = math.ceil(clay_val)
+#                 break
+
+#         if upper and lower:
+
+#             x1 = upper['size']
+#             y1 = upper['passing']
+
+#             x2 = lower['size']
+#             y2 = lower['passing']
+
+#             # LOG INTERPOLATION
+#             if x1 > 0 and x2 > 0:
+
+#                 clay_val = y1 + (
+#                     (y2 - y1)
+#                     *
+#                     (
+#                         (math.log10(0.002) - math.log10(x1))
+#                         /
+#                         (math.log10(x2) - math.log10(x1))
+#                     )
+#                 )
+
+#         # rec.silt_clay = round(clay_val)
+#         rec.silt_clay = math.ceil(clay_val)
 
 
 
@@ -5833,6 +5880,13 @@ class SoilGSALINE(models.Model):
                 # KEEP 0
                 'wt_retained': 0.0,
             })
+
+    def action_remove_n_corrected(self):
+     for record in self:
+
+        record.sieve_analysis_child_lines_gsa.filtered(
+            lambda l: l.is_hydrometer
+        ).unlink()
 
     
 
@@ -6369,7 +6423,7 @@ class SoilGSALINE1(models.Model):
 # specific gravity
 
 
- 
+
 
 class SpecificGravity(models.Model):
     _name = "specific.gravity"
@@ -14999,6 +15053,11 @@ class ConsolidationLine(models.Model):
         self.pc_value = pc_val
 
 
+
+
+
+    
+        
 
 
 

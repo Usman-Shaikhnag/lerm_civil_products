@@ -511,8 +511,8 @@ class CementNormalConsistency(models.Model):
     initial_setting_time_name = fields.Char("Name",default="Setting Time")
 
   
-    temp_time = fields.Char("Initial Time Temp.°C" )
-    humidity_time= fields.Char("Initial Time Humidity %" )
+    temp_time = fields.Char("Initial Time Temp.°C" ,)
+    humidity_time= fields.Char("Initial Time Humidity %" ,)
     avg_initial_time = fields.Float("Average Intial Time",compute="_compute_avg_initial_time",store=True,digits=(12,4))
 
     @api.depends('intial_time_lines.initial')
@@ -829,7 +829,7 @@ class CementNormalConsistency(models.Model):
 
     avg_3_days = fields.Float(string="Avg Strength (3 Days) N/mm²", compute="_compute_avg_strengths", store=True)
 
-    # temp_3_days = fields.Char("Temp.°C" )
+    temp_3_days = fields.Char("Temp.°C" )
     humidity_3_days= fields.Char("Humidity %" )
 
 

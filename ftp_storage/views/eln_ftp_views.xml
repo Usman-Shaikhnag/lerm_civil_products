@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="eln_ftp_form" model="ir.ui.view">
+        <field name="name">lerm.eln.ftp.form</field>
+        <field name="model">lerm.eln</field>
+        <field name="inherit_id" ref="lerm_civil.lerm_eln_forms"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='end_date']" position="after">
+                <field name="witness_path" readonly="1" />
+                <button name="open_witness_photo_upload" type="object" string="Upload" class="btn-primary"/>
+                <button name="download_witness_photo"
+                        type="object"
+                        string="Download"
+                        class="btn-primary"/>
+                
+                <field name='attachment_path' readonly="1" />
+                <button name="open_attachment_path_upload" type="object" string="Upload" class="btn-primary" />
+                <button name="download_attachment" type="object" string="Download" class="btn-primary"/>
+
+            </xpath>
+        </field>
+    </record>z
+</odoo>

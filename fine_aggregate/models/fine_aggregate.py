@@ -84,7 +84,7 @@ class FineAggregate(models.Model):
                      record.lab_fine_ids = [(5, 0, 0), (0, 0, {'lab': record.lab_id})]
 
 
-    calc_mode = fields.Boolean(default=True)     
+    calc_mode= fields.Boolean(default=True)     
     submit_mode = fields.Boolean(default=False)
 
     @api.model

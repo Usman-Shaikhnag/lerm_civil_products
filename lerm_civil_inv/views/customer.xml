@@ -16,7 +16,7 @@
                     <attribute name="string">GST</attribute>
                 </xpath>
                 <xpath expr="//page[@name='internal_notes']" position="after">
-                    <page string="Projects">
+                    <page string="Projects" groups="lerm_civil_inv.lerm_project_master,lerm_civil_inv.lerm_project_read">
                         <field name="projects" nolabel="1" >
                             <tree editable="bottom">
                                 <field name="project_name" />
@@ -31,7 +31,7 @@
                     <field name="msme_reg_no"/>
                 </xpath>
                 <xpath expr="//page[@name='internal_notes']" position="after">
-                    <page string="PO Number">
+                    <page string="PO Number" groups="lerm_civil_inv.lerm_project_master,lerm_civil_inv.lerm_project_read">
                         <field name="po_numbers" nolabel="1" >
                             <tree editable="bottom">
                                 <field name="po_number" />

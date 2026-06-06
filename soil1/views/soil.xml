@@ -1578,15 +1578,30 @@
                                     </tree>
                                 </field>
 
-                            </sheet>
-
-                            <div style="margin-left: 10px;"> <button string="Calculate" 
+                                <div class="d-flex gap-2" style="margin-left: 10px;"> 
+                             
+                             <button string="Calculate" 
                                         type="object" 
                                         name="action_add_n_corrected" 
                                         class="oe_highlight">
                                     <i class="fa fa-calculator"/> Add N Corrected Value
                                 </button>
+
+                            <button string="Calculate" 
+                                        type="object" 
+                                        name="action_remove_n_corrected" 
+                                        class="oe_highlight">
+                                    <i class="fa fa-calculator"/> Remove N Corrected Value
+                                </button>
                             </div>
+
+                            </sheet>
+
+                            
+
+
+
+
                             <footer>
                     <button name="action_submit"
                             string="Submit"
@@ -1671,7 +1686,7 @@
 
             <div invisible="freeswell_visible == False" >
                 <h1 class="text-center">
-                    <field name="freeswell_name" readonly="1" nolabel="1"/>
+                    <field name="freeswell_name" readonly="1" nolabel="1" string="Free Swell Index"/>
                     <field name="freeswell_visible" invisible="1"/>
                 </h1>
             </div>
@@ -2595,7 +2610,7 @@
 
                  </notebook>
 
-                 <div class="d-flex gap-2" >
+                 <div class="d-flex gap-2"  invisible="1">
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 
@@ -2627,7 +2642,7 @@
                         </table>
                     </div>
 
-                    <div class="d-flex gap-2" >
+                    <div class="d-flex gap-2" invisible="1" >
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 
@@ -2660,7 +2675,7 @@
                     </div>
 
 
-                    <div class="d-flex gap-2" >
+                    <div class="d-flex gap-2" invisible="1">
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 
@@ -2695,7 +2710,7 @@
 
 
 
-                    <div class="d-flex gap-2" >
+                    <div class="d-flex gap-2" invisible="1">
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                                 

@@ -2771,7 +2771,7 @@
 
 							<td style="border:1px solid black; padding:6px; font-weight:bold;">
 								<!-- <t t-esc="triaxial.phi or '0'"/> -->
-							    <t t-esc="round(triaxial.phi or 0)"/>
+							    <t t-esc="round(triaxial.phi or 0)" t-options='{"widget": "float", "precision": 2}'/>
 							</td>
 
 							<td style="border:1px solid black;">Degree</td>
@@ -2798,7 +2798,7 @@
 
 							<td style="border:1px solid black; padding:6px; font-weight:bold;">
 								<!-- <t t-esc="triaxial.cohesion or '0'"/> -->
-								<t t-esc="'%.1f' % (triaxial.cohesion or 0)"/>
+								<t t-esc="'%.1f' % (triaxial.cohesion or 0)" t-options='{"widget": "float", "precision": 2}'/>
 							</td>
 
 							<td style="border:1px solid black;">MPa</td>
@@ -2808,6 +2808,7 @@
 					</tbody>
 
 				</table>
+				
 
 				<table style="width:100%; margin-top:10px;">
 						<tr>

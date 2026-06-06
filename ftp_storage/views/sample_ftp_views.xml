@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="sample_ftp_form" model="ir.ui.view">
+        <field name="name">lerm.srf.sample.form</field>
+        <field name="model">lerm.srf.sample</field>
+        <field name="inherit_id" ref="lerm_civil.lerm_civil_sample_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='invoice_number']" position="after">
+                <field name="datasheet_path"  readonly="1"/>
+                <button name="open_file_upload_datasheet" type="object" string="Upload" class="btn-primary" />
+                <button name="download_attachment_datasheet" type="object" string="Download" class="btn-primary" />
+
+                <field name="report_path"  readonly="1"/>
+                <button name="open_file_upload_report" type="object" string="Upload" class="btn-primary" />
+                <button name="download_attachment_report" type="object" string="Download" class="btn-primary" />
+            </xpath>
+        </field>
+    </record>
+    
+</odoo>

@@ -95,7 +95,7 @@
                             
                             <field name="client" readonly="state == '2-confirm'" string="End Customer, if any: "/>
                             <field name="contractor" domain="[('id', 'in', contractor_ids)]"/>
-                            <field name="report_issued" />
+                            <field name="report_issued" string="Report to be issued in the name of:" />
                             <field name="contractor_ids" invisible='1'/>
                             <field name="contact_other_ids" invisible='1'/>
                             <field name="billing_customer" readonly="state == '2-confirm'" string="Name of Billing Customer"/>
@@ -461,7 +461,7 @@
                 string="RR Report"
                 type="action"
                 class="btn-primary"
-                icon="fa-print"/>
+                />
 
             <button string="Save"
                 class="btn-primary"
