@@ -841,13 +841,13 @@
 
 								<td style="border:1px solid black; padding:4px; font-weight:bold;">Compressive Strength qc</td>
 								<td style="border:1px solid black; padding:4px; text-align:center;">MPa</td>
-								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.comp_strength1"/></td>
+								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.comp_strength1" t-options='{"widget": "float", "precision": 2}'/></td>
 							</tr>
 
 							<tr>
 								<td style="border:1px solid black; padding:4px; font-weight:bold;">Average Diameter (D)</td>
 								<td style="border:1px solid black; padding:4px; text-align:center;">mm</td>
-								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.avg_dia"/></td>
+								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.avg_dia" t-options='{"widget": "float", "precision": 2}'/></td>
 								
 								<td style="border:1px solid black; padding:4px; font-weight:bold;">Porosity</td>
 								<td style="border:1px solid black; padding:4px; text-align:center;">%</td>
@@ -855,13 +855,13 @@
 
 								<td style="border:1px solid black; padding:4px; font-weight:bold;">Compressive Strength  qc at H/D=2</td>
 								<td style="border:1px solid black; padding:4px; text-align:center;">MPa</td>
-								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.comp_strength2"/></td>
+								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.comp_strength2" t-options='{"widget": "float", "precision": 2}'/></td>
 							</tr>
 
 							<tr>
 								<td style="border:1px solid black; padding:4px; font-weight:bold;">Average Height (H)</td>
 								<td style="border:1px solid black; padding:4px; text-align:center;">mm</td>
-								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.avg_height"/></td>
+								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.avg_height" t-options='{"widget": "float", "precision": 2}'/></td>
 								
 								<td style="border:1px solid black; padding:4px; font-weight:bold;">Sp. Gravity</td>
 								<td style="border:1px solid black; padding:4px; text-align:center;">..</td>
@@ -875,7 +875,7 @@
 							<tr>
 								<td style="border:1px solid black; padding:4px; font-weight:bold;">H/D</td>
 								<td style="border:1px solid black; padding:4px; text-align:center;"></td>
-								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.hd"/></td>
+								<td style="border:1px solid black; padding:4px; text-align:center;"><span t-esc="elasticity.hd" t-options='{"widget": "float", "precision": 2}'/></td>
 								
 								<td style="border:1px solid black; padding:4px; font-weight:bold;">Water content</td>
 								<td style="border:1px solid black; padding:4px; text-align:center;">%</td>
@@ -896,8 +896,8 @@
 
 									<table style="width:100%; border-collapse:collapse; font-size:12px;">
 										<tr>
-											<th style="border:1px solid black; padding:4px;">Stress <br/>(MPa)</th>
-											<th style="border:1px solid black; padding:4px;">Strain<br/></th>
+											<th style="border:1px solid black; padding:4px;text-align: center;" >Stress <br/>(MPa)</th>
+											<th style="border:1px solid black; padding:4px;text-align: center;" >Strain<br/></th>
 										</tr>
 
 										<t t-foreach="elasticity.elasticity_child_lines" t-as="line">
@@ -916,9 +916,9 @@
 
 							<table style="width:100%; border-collapse:collapse; font-size:13px; margin-top:20px;">
 								<tr style="background-color:#e6e6e6;">
-									<th>Stress Range (MPa)</th>
-									<th>Modulus, E (GPa)</th>
-									<th>Poissons Ratio, μ</th>
+									<th style="text-align: center;">Stress Range (MPa)</th>
+									<th style="text-align: center;">Modulus, E (GPa)</th>
+									<th style="text-align: center;">Poissons Ratio, μ</th>
 								</tr>
 
 								<tr >
