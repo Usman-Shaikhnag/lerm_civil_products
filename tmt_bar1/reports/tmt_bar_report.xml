@@ -10,7 +10,7 @@
 				</div> -->
 
 
-				<div class="container_eln" style="padding-top:5px;">
+				<div class="container_eln" style="padding-top:2px;">
 					<div class="" t-foreach="eln" t-as="o">
 						 <table style="width:100%; border-collapse: collapse;" border="1">
 
@@ -246,10 +246,12 @@
 
 						 
 
+                   <div style="text-align: center; font-weight: bold; margin-top: 2px; font-size: 16px;">
+						TEST RESULT
+					</div>
 
 
-
-					<div style="margin-top:20px"  invisible="mechanical_test_visible == False">
+					<div style="margin-top:2px"  invisible="mechanical_test_visible == False">
                        
                         <table>
                        
@@ -277,7 +279,7 @@
 
                              <tr>
 								<td colspan="2" style="text-align: center;">
-									<b>Specification as per IS 2062-2011 GRADE E250</b>
+									<b>Specification as per IS 2062-2011<span t-field="tmt.grade"/></b>
 								</td>
 
 							
@@ -359,7 +361,7 @@
                                 <td  style="text-align: center;">
                                     <span t-esc="r['sample_identity']"/>
                                 </td>
-								<td  style="text-align: center;">
+								<!-- <td  style="text-align: center;">
                                     <span t-esc="r['uts']"/>
                                 </td>
 								<td  style="text-align: center;">
@@ -379,6 +381,34 @@
 								</td>
                                  <td style="text-align: center;">
 									<t t-esc="dict(r._fields['re_bend'].selection).get(r.bend)"/>
+								</td> -->
+
+								<td style="text-align: center;">
+									<span t-esc="r['uts'] if r['uts'] not in (None, 0, 0.0) else '--'"/>
+								</td>
+
+								<td style="text-align: center;">
+									<span t-esc="r['proof_stress'] if r['proof_stress'] not in (None, 0, 0.0) else '--'"/>
+								</td>
+
+								<td style="text-align: center;">
+									<span t-esc="r['elongation'] if r['elongation'] not in (None, 0, 0.0) else '--'"/>
+								</td>
+
+								<td style="text-align: center;">
+									<span t-esc="r['total_elongation'] if r['total_elongation'] not in (None, 0, 0.0) else '--'"/>
+								</td>
+
+								<td style="text-align: center;">
+									<span t-esc="r['ratio_uts_ys'] if r['ratio_uts_ys'] not in (None, 0, 0.0) else '--'"/>
+								</td>
+
+								<td style="text-align: center;">
+									<t t-esc="dict(r._fields['bend'].selection).get(r.bend) if r.bend else '--'"/>
+								</td>
+
+								<td style="text-align: center;">
+									<t t-esc="dict(r._fields['re_bend'].selection).get(r.re_bend) if r.re_bend else '--'"/>
 								</td>
                                
                             </tr>
@@ -431,19 +461,24 @@
                                     <span t-esc="r['sample_identity']"/>
                                 </td>
 								<td  style="text-align: center;">
-                                    <span t-esc="r['weight']"/>
+                                    <!-- <span t-esc="r['weight']"/> -->
+									 <span t-esc="r.weight or '--'"/>
                                 </td>
 								<td  style="text-align: center;">
-                                    <span t-esc="r['lenght']"/>
+                                    <!-- <span t-esc="r['lenght']"/> -->
+									 <span t-esc="r.lenght or '--'"/>
                                 </td>
                                 <td  style="text-align: center;">
-                                    <span t-esc="r['unit_weight']"/>
+                                    <!-- <span t-esc="r['unit_weight']"/> -->
+									 <span t-esc="r.unit_weight or '--'"/>
                                 </td>
                                 <td  style="text-align: center;">
-                                    <span t-esc="r['standard_weight']"/>
+                                    <!-- <span t-esc="r['standard_weight']"/> -->
+									 <span t-esc="r.standard_weight or '--'"/>
                                 </td>
                                   <td  style="text-align: center;">
-                                    <span t-esc="r['tolerance']"/>
+                                    <!-- <span t-esc="r['tolerance']"/> -->
+									 <span t-esc="r.tolerance or '--'"/>
                                 </td>
                                 
                                
@@ -490,7 +525,7 @@
 
                              <tr>
 								<td colspan="2" style="text-align: center;">
-									<b>Specification as per IS 2062-2011 GRADE E250</b>
+									<b>Specification as per IS 2062-2011 2011<span t-field="tmt.grade"/></b>
 								</td>
 
 							
@@ -605,47 +640,53 @@
                                         <t t-set="f" t-value="f + 1"/>
                                     </div>
                                 </td>
-                                <td  style="text-align: center;">
+                                
+								
+								<td  style="text-align: center;">
                                     <span t-esc="r['sample_identity']"/>
                                 </td>
-								<td  style="text-align: center;">
-                                    <span t-esc="r['c']"/>
-                                </td>
-								<td  style="text-align: center;">
-                                    <span t-esc="r['p']"/>
-                                </td>
-                                <td  style="text-align: center;">
-                                    <span t-esc="r['s']"/>
-                                </td>
+									
+								
+								 <td style="text-align: center;">
+									<span t-esc="'%.3f' % r.c if r.c not in (None, 0, 0.0) else '--'"/>
+								</td>
 
-								  <td  style="text-align: center;">
-                                    <span t-esc="r['p_s']"/>
-                                </td>  
-                                <td  style="text-align: center;">
-                                    <span t-esc="r['si']"/>
-                                </td>
-                                  <td  style="text-align: center;">
-                                    <span t-esc="r['cr']"/>
-                                </td>
+								<td style="text-align: center;">
+									<span t-esc="'%.3f' % r.p if r.p not in (None, 0, 0.0) else '--'"/>
+								</td>
 
+								<td style="text-align: center;">
+									<span t-esc="'%.3f' % r.s if r.s not in (None, 0, 0.0) else '--'"/>
+								</td>
 
-								 <td  style="text-align: center;">
-                                    <span t-esc="r['cu']"/>
-                                </td>
+								<td style="text-align: center;">
+									<span t-esc="'%.3f' % r.p_s if r.p_s not in (None, 0, 0.0) else '--'"/>
+								</td>
 
-								 <td  style="text-align: center;">
-                                    <span t-esc="r['mo']"/>
-                                </td>
+								<td style="text-align: center;">
+									<span t-esc="'%.3f' % r.si if r.si not in (None, 0, 0.0) else '--'"/>
+								</td>
 
-								 <td  style="text-align: center;">
-                                    <span t-esc="r['ni']"/>
-                                </td>
+								<td style="text-align: center;">
+									<span t-esc="'%.3f' % r.cr if r.cr not in (None, 0, 0.0) else '--'"/>
+								</td>
 
+								<td style="text-align: center;">
+									<span t-esc="'%.3f' % r.cu if r.cu not in (None, 0, 0.0) else '--'"/>
+								</td>
 
-								<td  style="text-align: center;">
-                                    <span t-esc="r['mn']"/>
-                                </td>
-                               
+								<td style="text-align: center;">
+									<span t-esc="'%.3f' % r.mo if r.mo not in (None, 0, 0.0) else '--'"/>
+								</td>
+
+								<td style="text-align: center;">
+									<span t-esc="'%.3f' % r.ni if r.ni not in (None, 0, 0.0) else '--'"/>
+								</td>
+
+								<td style="text-align: center;">
+									<span t-esc="'%.3f' % r.mn if r.mn not in (None, 0, 0.0) else '--'"/>
+								</td>
+														
                                
                             </tr>
 

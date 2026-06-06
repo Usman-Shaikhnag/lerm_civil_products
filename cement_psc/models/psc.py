@@ -476,7 +476,7 @@ class CementPSC(models.Model):
                 if line not in [lines[i] for i in range(0, len(lines), group_size)]:
                     line.avg_expansion = 0.0
 
-            rec.soundness_le_method_generated = True
+            # rec.soundness_le_method_generated = True
 
     avg_expantion1_conformity = fields.Selection([
         ('pass', 'Pass'),
