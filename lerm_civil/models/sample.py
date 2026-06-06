@@ -15,7 +15,7 @@ class LermSampleForm(models.Model):
     _description = "Sample"
     _rec_name = 'kes_no'
 
-    client_reference1 = fields.Char(string="Client Reference",compute="_compute_client_reference")
+    client_reference1 = fields.Char(string="Client Reference",compute="_compute_client_reference",store=True)
     srf_id = fields.Many2one('lerm.civil.srf',ondelete="cascade", string="SRF ID" ,tracking=True)
     sample_range_id = fields.Many2one('sample.range.line',string="Sample Range")
     eln_id = fields.Many2one('lerm.eln',string="ELN",ondelete="set null")
@@ -27,7 +27,7 @@ class LermSampleForm(models.Model):
     # department_id = fields.Many2one('hr.department', string='Department')
     department_id = fields.Char(string='Department')
     material_id = fields.Many2one('product.template',string="Material")
-    material_id_lab_name = fields.Char(string="Material",compute="compute_material_id_lab_name")
+    material_id_lab_name = fields.Char(string="Material",compute="compute_material_id_lab_name",store=True)
     ulr_no = fields.Char(string="ULR No." ,readonly=True, default=lambda self: 'New')
     brand = fields.Char(string="Brand")
     size_id = fields.Many2one('lerm.size.line',string="Size")
@@ -92,6 +92,7 @@ class LermSampleForm(models.Model):
         string="Invoice Number",  
         help="Select the invoice number",  
         domain="[('move_type', '=', 'out_invoice')]",  
+        store=True
 
     )
 
@@ -99,7 +100,7 @@ class LermSampleForm(models.Model):
         ('1-uninvoiced', 'Uninvoiced'),
         ('2-invoiced', 'Invoiced'),
         ('3-closed', 'Closed'),
-    ], string='Invoice Status', default='1-uninvoiced')
+    ], string='Invoice Status',store=True, default='1-uninvoiced')
 
     print_button_visible = fields.Boolean("Print Nabl visible",compute="_compute_print_nabl_visible")
    
