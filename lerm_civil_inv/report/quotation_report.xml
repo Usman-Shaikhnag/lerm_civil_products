@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="report_nbml_quotation">
+   <t t-call="web.html_container">
+      <t t-call="lerm_civil_inv.custom_layout_header_footer">
+        <t t-foreach="docs" t-as="o">
+         
+
+             <table style="width:100%; border-collapse:collapse; margin-top:5px;">
+                        <tr>
+                            <td style="text-align:center; font-size:18px; font-weight:bold; border:1px solid black;">
+                              QUOTATION
+                            </td>
+                        </tr>
+                    </table>
+
+            <table  style="width:100%; border-collapse:collapse; font-size:12px;">
+                <thead>
+                    <tr style="background:#e6e6e6;">
+                        <th style="border:1px solid black;">S.No.</th>
+                        <th style="border:1px solid black;">Description</th>
+                        <th style="border:1px solid black;">Unit</th>
+                        <th style="border:1px solid black;">Qty</th>
+                        <th style="border:1px solid black;">Rate</th>
+                        <th style="border:1px solid black;">Amount</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <t t-set="i" t-value="1"/>
+                    <t t-foreach="o.order_line" t-as="line">
+                        <tr>
+                            <td style="border:1px solid black;">
+                                <t t-esc="i"/>
+                            </td>
+                            <td style="border:1px solid black;">
+                                <t t-esc="line.name"/>
+                            </td>
+                            <td style="border:1px solid black;">No</td>
+                            <td style="border:1px solid black;">
+                                <t t-esc="line.product_uom_qty"/>
+                            </td>
+                            <td style="border:1px solid black;">
+                                <t t-esc="line.price_unit"/>
+                            </td>
+                            <td style="border:1px solid black;">
+                                <t t-esc="line.price_subtotal"/>
+                            </td>
+                        </tr>
+                        <t t-set="i" t-value="i + 1"/>
+                    </t>
+                </tbody>
+            </table>
+
+
+            <!-- <table style="width:100%; border:1px solid black;">
+                <tr>
+                    <td><b>Taxable Value</b></td>
+                    <td style="text-align:right;">
+                        <t t-esc="o.amount_untaxed"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td><b>GST 18%</b></td>
+                    <td style="text-align:right;">
+                        <t t-esc="o.amount_tax"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td><b>Total Amount</b></td>
+                    <td style="text-align:right;">
+                        <t t-esc="o.amount_total"/>
+                    </td>
+                </tr>
+            </table> -->
+
+            <table style="width:100%; border-collapse:collapse; font-size:13px; margin-top:5px;">
+
+                <tr>
+
+                    <!-- ================= LEFT: BANK DETAILS ================= -->
+                    <td style="width:55%; border:1px solid black; padding:0px; vertical-align:top;">
+
+                        <!-- HEADER -->
+                     
+
+                    
+
+                        <div style="padding:5px;">
+
+                     
+                      </div>
+
+                    </td>
+
+                    <!-- ================= CENTER: QR CODE ================= -->
+                
+
+                    <!-- ================= RIGHT: TAX SUMMARY ================= -->
+                    <td style="width:30%; border:1px solid black; padding:0px;">
+
+                        <table style="width:100%; border-collapse:collapse;">
+
+                            <tr>
+                                <td><b>Taxable Value</b></td>
+                                <td style="text-align:right;">
+                                    <t t-esc="o.amount_untaxed"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>GST 18%</b></td>
+                                <td style="text-align:right;">
+                                    <t t-esc="o.amount_tax"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>Total Amount</b></td>
+                                <td style="text-align:right;">
+                                    <t t-esc="o.amount_total"/>
+                                </td>
+                            </tr>
+
+                        </table>
+
+                       
+
+                    </td>
+
+                    
+
+                </tr>
+
+                
+
+            </table>
+
+            
+
+           <div style="margin-top: 5px;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                    <tr>
+                        <td colspan="2" style="border: 1px solid black; font-weight: bold; padding: 6px;font-size: 15px;">
+                           <u> Service, Terms and Conditions :</u>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="width: 40px; border: 1px solid black; padding: 4px;">1.0</td>
+                        <td style="border: 1px solid black; padding: 4px;">
+                            <b>GST @18% Extra.</b>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="border: 1px solid black; padding: 4px;">2.0</td>
+                        <td style="border: 1px solid black; padding: 4px;">
+                             Payment terms : (a) 100% advance.<br/>
+                            <b>Bank Name :</b> <b><span t-field="o.partner_id.bank_name"/></b>,
+                            <b>Account Number :</b> <b><span t-field="o.partner_id.ac_no"/></b>,
+                            <b>IFSC :</b>  <b><span t-field="o.partner_id.ifsc_code"/></b>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="border: 1px solid black; padding: 4px;">3.0</td>
+                        <td style="border: 1px solid black; padding: 4px;">
+                            Work shall start within 1 days from the date of sample received.
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="border: 1px solid black; padding: 4px;">4.0</td>
+                        <td style="border: 1px solid black; padding: 4px;">
+                            Final bill shall be prepared as per actual quantities executed.
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="border: 1px solid black; padding: 4px;">5.0</td>
+                        <td style="border: 1px solid black; padding: 4px;">
+                            Report shall be delivered within 10-12 days from the date of sample receive.
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="border: 1px solid black; padding: 4px;">6.0</td>
+                        <td style="border: 1px solid black; padding: 4px;">
+                            For any dispute the matter will be settled at Jurisdiction Raipur only.
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+                <!-- ================= SIGNATURE SECTION (TABLE ONLY) ================= -->
+            <table style="width:100%; border-collapse:collapse; margin-top:2px; font-size:13px;">
+
+                <!-- TOP CENTER -->
+                <tr>
+                    <td colspan="3" style="text-align:center; font-weight:bold; padding-bottom:10px;">
+                        for, <span t-field="o.company_id.name"/>
+                    </td>
+                </tr>
+
+                <!-- BOTTOM 3 PART -->
+                <tr>
+
+                    <!-- LEFT -->
+                    <td style="width:33%; text-align:left; vertical-align:bottom; height:100px;">
+                        <b>(Receiver Signature)</b>
+                    </td>
+
+                    <!-- CENTER -->
+                    <!-- <td style="width:34%; text-align:center; vertical-align:middle;">
+                    <img t-attf-src="/lerm_civil_inv/static/src/img/stamp.png" class="company_logo" alt="Image"/>
+                    </td> -->
+
+                    <!-- RIGHT -->
+                    <td style="width:33%; text-align:right; vertical-align:bottom;">
+                        <b>Authorized Signatory</b>
+                    </td>
+
+                </tr>
+
+            </table>
+        </t>
+    </t>
+     </t>
+</template>
+</odoo> 

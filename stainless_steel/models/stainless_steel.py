@@ -66,7 +66,7 @@ class StatinlessSteel(models.Model):
             }),
             (0, 0, {
                 'sr_no': 'b',
-                'notes': 'ampling is not done by us unless mentioned otherwide.',
+                'notes': 'Sampling is not done by us unless mentioned otherwide.',
             }),
             (0, 0, {
                 'sr_no': 'c',
@@ -83,7 +83,7 @@ class StatinlessSteel(models.Model):
             }),
              (0, 0, {
                 'sr_no': 'f',
-                'notes': 'Alldisputed are subject to Raipur jurisdiction 7 days correction to this report invalidates this report.',
+                'notes': 'All disputed are subject to Raipur jurisdiction 7 days correction to this report invalidates this report.',
             }),
 
              (0, 0, {
