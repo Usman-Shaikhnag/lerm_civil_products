@@ -1864,7 +1864,7 @@
 							</t>
 
 							<t t-if="data.triaxial_visible">
-							<td  colspan="1" style="text-align: center;">
+							<td  colspan="2" style="text-align: center;">
 							<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','214jht3mhh2277j-0bc7-41a6-a2bb-0fe9211321ytrbe')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -1875,7 +1875,7 @@
 							</td> 
 							</t>
 
-							<t t-if="data.triaxial_visible">
+							<!-- <t t-if="data.triaxial_visible">
 							<td  colspan="1" style="text-align: center;">
 							<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','214jht3mhh2277j-0bc7-41a6-a2bb-0fe9211321ytrbe')]).parameter_table" t-as="parameter">
@@ -1885,10 +1885,10 @@
 									</t>
 								</span>
 							</td> 
-							</t>
+							</t> -->
 
-							<t t-if="data.triaxial_visible">
-							<td  colspan="1" style="text-align: center;">
+							<t t-if="data.slake_durability_visible">
+							<td  colspan="2" style="text-align: center;">
 							<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3258tyumhh2277j-0bc7-41a6-a2bb-0fe92112457hyte')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -1898,7 +1898,7 @@
 								</span>
 							</td> 
 							</t>
-							<t t-if="data.triaxial_visible">
+							<!-- <t t-if="data.slake_durability_visible">
 							<td  colspan="1" style="text-align: center;">
 							<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3258tyumhh2277j-0bc7-41a6-a2bb-0fe92112457hyte')]).parameter_table" t-as="parameter">
@@ -1908,10 +1908,10 @@
 									</t>
 								</span>
 							</td> 
-							</t>
+							</t> -->
 
 							<t t-if="data.cerchar_abrasivity_visible">
-							<td  colspan="1" style="text-align: center;">
+							<td  colspan="2" style="text-align: center;">
 							<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','210324nrhh2277j-0bc7-41a6-a2bb-0fe92111234poy')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -1922,7 +1922,7 @@
 							</td> 
 							</t>
 
-							<t t-if="data.cerchar_abrasivity_visible">
+							<!-- <t t-if="data.cerchar_abrasivity_visible">
 							<td  colspan="1" style="text-align: center;">
 							<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','210324nrhh2277j-0bc7-41a6-a2bb-0fe92111234poy')]).parameter_table" t-as="parameter">
@@ -1932,7 +1932,7 @@
 									</t>
 								</span>
 							</td> 
-							</t>
+							</t> -->
 
 							</tr>
                             <t t-set="f" t-value="0"/>
@@ -3141,8 +3141,8 @@
 
 									<table style="width:100%; border-collapse:collapse; font-size:12px;">
 										<tr>
-											<th style="border:1px solid black; padding:4px;">Stress <br/>(MPa)</th>
-											<th style="border:1px solid black; padding:4px;">Strain<br/></th>
+											<th style="border:1px solid black; padding:4px; text-align: center;" >Stress <br/>(MPa)</th>
+											<th style="border:1px solid black; padding:4px;text-align: center;">Strain<br/></th>
 										</tr>
 
 										<t t-foreach="elasticity.elasticity_child_lines" t-as="line">
@@ -3161,9 +3161,9 @@
 
 							<table style="width:100%; border-collapse:collapse; font-size:13px; margin-top:20px;">
 								<tr style="background-color:#e6e6e6;">
-									<th>Stress Range (MPa)</th>
-									<th>Modulus, E (GPa)</th>
-									<th>Poissons Ratio, μ</th>
+									<th style="text-align: center;">Stress Range (MPa)</th>
+									<th style="text-align: center;">Modulus, E (GPa)</th>
+									<th style="text-align: center;">Poissons Ratio, μ</th>
 								</tr>
 
 								<tr >
