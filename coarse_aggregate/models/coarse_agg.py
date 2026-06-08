@@ -586,7 +586,7 @@ class CoarseAggregateMechanical(models.Model):
         string="Flakiness Index (FI=(B/A)*100) (%)",
         compute="_compute_indexes",
         store=True
-    )
+    ) 
 
     elongation_index = fields.Float(
         string="Elongation Index (FI=(D/C)*100) (%)",
