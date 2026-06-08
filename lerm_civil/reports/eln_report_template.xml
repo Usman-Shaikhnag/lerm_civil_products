@@ -151,7 +151,7 @@
 		
 		<div t-attf-class="footer o_standard_footer">
 
-		<t t-if="eln.sample_id.lab_location">
+		<!-- <t t-if="eln.sample_id.lab_location" >
 					<div t-if="(eln.sample_id.scope == 'nabl' and nabl) or fromEln" class="col-12 imageContainer" >
 						<div style="text-align:center; margin:1px 0;">
              <span style="background-color:#1f2a7a;color:#ffffff;font-weight:700;font-size:13px;padding:3px 10px;border-top:2px solid #0d1b5e;border-bottom:2px solid #0d1b5e;display:inline-block;border-radius:6px;">
@@ -184,36 +184,15 @@
                  </span>
                       </div>
 					</div>
-				</t>
+				</t> -->
 
 		             
 
-		
+<!-- 		
 					   <table style="width:100%; border:1px solid black; border-collapse:separate; border-spacing:0;">
                            <tr>
 
-                          <!-- QR -->
-                           <!-- <td style="width:15%; padding:2px; border:none;">
-                                   <t t-if="qrcode_static">
-                                    <img t-att-src="'data:image/png;base64,%s' % qrcode_static"
-                                   style="width:75px; height:70px;"/>
-                                      </t>
-                               </td> -->
-
-                              <!-- CONDITIONS -->
-                              <!-- <td style="width:85%; padding:2px; font-size:13px; line-height:1.5; border:none;">
-                                 <span>
-                                     <b>Conditions:-</b><br/>
-                                    <t t-foreach="data.notes_id" t-as="n">
-                                (<t t-esc="n.sr_no"/>) 
-                                 <t t-esc="n.notes"/>
-                                  &#160;&#160;
-                                    </t>
-                                  </span>
-                                </td> -->
-
-								
-
+                         
 							
 								 <td style="width:15%; padding:2px; border:none;">
                                    <t t-if="qrcode_static">
@@ -233,7 +212,6 @@
 								</span>
 							</t>
 
-								<!-- ELSE -->
 								<t t-else="">
 									<b>Conditions:-</b>
 									&#160;&#160;(1) The results listed refer only to tested samples &amp; applicable parameters. Endorsement of product is neither inferred nor implied.
@@ -253,7 +231,51 @@
 							
 
                              </tr>
-                            </table>
+                            </table> -->
+
+							<table style="width:100%; border:1px solid black; border-collapse:separate; border-spacing:0;">
+				<tr>
+					<!-- QR -->
+					<td style="width:12%; padding:2px; border:none; text-align:center; vertical-align:middle;">
+						<t t-if="qrcode_static">
+							<img t-att-src="'data:image/png;base64,%s' % qrcode_static"
+								style="width:65px; height:60px; display:block; margin:auto;"/>
+						</t>
+					</td>
+
+					<!-- CONDITIONS -->
+					<td style="width:88%; padding:2px 4px; font-size:13px; line-height:1.4; border:none; vertical-align:middle;">
+						
+						<t t-if="notes_list">
+							<span>
+								<b>Conditions:-</b><br/>
+								<t t-foreach="notes_list" t-as="n">
+									(<t t-esc="n.sr_no"/>) 
+									<t t-esc="n.notes"/>
+									&#160;&#160;
+								</t>
+							</span>
+						</t>
+
+						<!-- ELSE -->
+						<t t-else="">
+							<b>Conditions:-</b>
+							&#160;(1) The results listed refer only to tested samples &amp; applicable parameters.
+							&#160;(2) The use of report for arbitration, publicity &amp; evidence in legal dispute is forbidden.
+							&#160;(3) All disputes are subject to Raipur Jurisdiction.
+							&#160;(4) Sample will be destroyed after 30 days.
+
+							<t t-if="eln.has_witness">
+								&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
+							</t>
+							<t t-if="eln.remarks">
+								&#160;<span t-esc="eln.remarks"/>
+							</t>
+						</t>
+
+					</td>
+				</tr>
+			</table>
 
             <div class="text-center" style="padding-top:10px; border-top: 1px solid black">					
 				<div class="footerQR" style="">
@@ -374,7 +396,7 @@
 			 <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
 
 			 	
-				<div class="container_eln" style="padding-top:70px;">
+				<div class="container_eln" style="padding-top:20px;">
 
 					<div t-foreach="eln" t-as="o">
 					
@@ -542,7 +564,11 @@
 
 								<td>Size  :-</td>
 								<td>
-									<span t-field="o.sample_id.size_id.size"/>
+									<!-- <span t-field="o.sample_id.size_id.size"/> -->
+										<t t-if="o.sample_id.size_id.size">
+											<span t-field="o.sample_id.size_id.size"/>
+										</t>
+									<t t-else="">--</t>
 								</td>
 								<td>Date of Test Completion  :-</td>
 								<td>
@@ -555,6 +581,7 @@
 
 								<td>Week No.  :-</td>
 								<td>
+								--
 								</td>
 								<td>Sample ID  :-</td>
 								<td>
@@ -1372,6 +1399,7 @@
 								<img t-att-src="'data:image/png;base64,%s' % (qrcode_static or '')"
 									style="width:75px; height:70px;"/>
 							</div> -->
+							<t t-if="o.sample_id.stamp_attached">
 							<div>
 								<div >
 									<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
@@ -1381,6 +1409,7 @@
 									Format No. <span t-esc="eln.material.test_format_no"/>
 								</div> -->
 							</div>
+							</t>
 							<div>
 								<div>
 									<b>

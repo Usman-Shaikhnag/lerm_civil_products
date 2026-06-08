@@ -46,7 +46,7 @@ class TMTBAR(models.Model):
 
 
     chemical_test_visible = fields.Boolean("Stainless Steel Visible",compute="_compute_visible")
-    chemical_test_name = fields.Char("Name",default="Section Weight")
+    chemical_test_name1 = fields.Char("Name",default="Chemical Test")
 
     chemical_test_lines = fields.One2many('chemical.test.line','parent_id',string="Parameter")
 
@@ -421,19 +421,19 @@ class ChemicalLine(models.Model):
     sample_identity = fields.Char(string="Sample  Identity")
    
     # f10 = fields.Integer(string="10")
-    c = fields.Float(string="C%")
+    c = fields.Float(string="C%",digits=(12,3))
 
-    p = fields.Float(string="P%")
-    s = fields.Float(string="S%")
-    si = fields.Float(string="Si%")
-    cr = fields.Float(string="Cr%")
-    cu = fields.Float(string="Cu%")
-    mo = fields.Float(string="Mo%")
-    ni = fields.Float(string="Ni%")
-    mn = fields.Float(string="Mn%")
+    p = fields.Float(string="P%",digits=(12,3))
+    s = fields.Float(string="S%",digits=(12,3))
+    si = fields.Float(string="Si%",digits=(12,3))
+    cr = fields.Float(string="Cr%",digits=(12,3))
+    cu = fields.Float(string="Cu%",digits=(12,3))
+    mo = fields.Float(string="Mo%",digits=(12,3))
+    ni = fields.Float(string="Ni%",digits=(12,3))
+    mn = fields.Float(string="Mn%",digits=(12,3))
 
 
-    p_s = fields.Float(string="P + S", compute="_compute_p_s", store=True)
+    p_s = fields.Float(string="P + S", compute="_compute_p_s", store=True,digits=(12,3))
 
     @api.depends('p', 's')
     def _compute_p_s(self):
