@@ -16,6 +16,8 @@ class MechanicalBricksBurntClay(models.Model):
     brick_temperature = fields.Char("Temperature",store=True)
     brick_humidity = fields.Char("Humidity",store="True")
 
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
+
     compressive_strength_unit = fields.Char(
     compute="_compute_units", store=False
     )

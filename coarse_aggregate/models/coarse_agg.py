@@ -22,8 +22,7 @@ class CoarseAggregateMechanical(models.Model):
 
 
     notes_id = fields.One2many('coarse.notes', 'parent_id',string="Notes",
-    default=lambda self: self._default_notes_lines()
-)
+    default=lambda self: self._default_notes_lines())
     
     @api.model
     def _default_notes_lines(self):

@@ -17,6 +17,10 @@ class MechanicalBricks(models.Model):
     brick_temperature = fields.Char("Temperature",store=True)
     brick_humidity = fields.Char("Humidity",store="True")
 
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
+
+    
+
     def prefill_data(self):
         # import wdb; wdb.set_trace()
         return {

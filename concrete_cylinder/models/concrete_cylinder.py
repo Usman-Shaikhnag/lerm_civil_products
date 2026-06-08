@@ -23,6 +23,8 @@ class MechanicalConcreteCube(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="ELN")
     sample_id = fields.Many2one('lerm.srf.sample',string='Sample')
 
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
+
 
     cube_name = fields.Char("Name",default=" Concrete Cylinder")
     cube_visible = fields.Boolean("Chequered Visible",compute="_compute_visible")   

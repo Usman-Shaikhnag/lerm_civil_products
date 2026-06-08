@@ -29,6 +29,8 @@ class ConcreteDesign(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     size_id = fields.Many2one('lerm.size.line',compute="_compute_size_id")
 
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
+
 
     def open_eln_page(self):
         # parameter_based_assignment

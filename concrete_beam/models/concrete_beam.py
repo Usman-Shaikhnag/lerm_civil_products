@@ -15,6 +15,8 @@ class FlexuralStrengthConcreteBeam(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="ELN")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
+
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     
     average_flexural_strength = fields.Float(string="Average Flexural Strength in N/mm2",compute="_compute_average_flexural_strength")
     sample_id = fields.Many2one('lerm.srf.sample',string='Sample')

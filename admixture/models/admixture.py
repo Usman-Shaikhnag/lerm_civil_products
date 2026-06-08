@@ -20,6 +20,8 @@ class MechanicalAdmixture(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
 
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
+
     admixture_temp = fields.Char("Temperature °C",store=True)
     admixture_humidity = fields.Char("Humidity °C",store=True)
 

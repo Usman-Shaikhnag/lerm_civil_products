@@ -18,6 +18,8 @@ class BallastMechanical(models.Model):
     avg_compacted_unit  = fields.Char("Compacted Density", compute="_compute_units", store=False)
     temperature = fields.Char("Temperature",store=True)
 
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
+
 
     notes_id = fields.One2many('ballast.notes', 'parent_id',string="Notes",
     default=lambda self: self._default_notes_lines()
@@ -999,6 +1001,7 @@ class BallastSieveAnalysisLine(models.Model):
     cumulative_retained = fields.Float(string="% of Cumulative Wt. Retained ", store=True,digits=(16,2))
     passing_percent = fields.Float(string="% of wt passing",digits=(16,2))
     specific_limits = fields.Char(string="Specified Limits",store=True)
+    
 
 
 

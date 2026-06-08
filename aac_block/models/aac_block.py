@@ -20,6 +20,8 @@ class AacBlockMechanical(models.Model):
     tests = fields.Many2many("mechanical.gypsum.test",string="Tests")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
+
     aac_temp = fields.Char("Temperature",store=True)
     aac_humidity = fields.Char("Humidity",store=True)
 

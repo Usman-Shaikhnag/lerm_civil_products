@@ -9,6 +9,8 @@ class SteelTmtBarLine(models.Model):
     _name = "steel.tmt.bar"
     _inherit = "lerm.eln"
     _rec_name = "name"
+
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
    
 
     

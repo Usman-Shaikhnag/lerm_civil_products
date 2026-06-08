@@ -19,6 +19,8 @@ class StainlessSteel(models.Model):
     _name = "mechanical.stainless.steel.tmt.bar"
     _inherit = "lerm.eln"
     _description = 'mechanical.stainless.steel.tmt.bar'
+
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
    
 
 

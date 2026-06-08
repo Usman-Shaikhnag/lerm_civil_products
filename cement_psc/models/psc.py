@@ -18,6 +18,8 @@ class CementPSC(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     start_date = fields.Date(string="Start Date", compute="_compute_start_date", store=True)
 
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
+
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
 
     def prefill_data(self):

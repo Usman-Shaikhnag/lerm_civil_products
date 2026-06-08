@@ -17,6 +17,7 @@ class BitumenMechanical(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     avg_compacted_unit  = fields.Char("Compacted Density", compute="_compute_units", store=False)
     temperature = fields.Char("Temperature",store=True)
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
 
     notes_id = fields.One2many('bitumen.notes', 'parent_id',string="Notes",

@@ -22,6 +22,8 @@ class GsbMechanical(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
+
     def prefill_data(self):
         # import wdb; wdb.set_trace()
         return {

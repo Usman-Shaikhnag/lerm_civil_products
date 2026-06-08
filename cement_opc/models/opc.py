@@ -19,6 +19,8 @@ class CementNormalConsistency(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
     notes_id = fields.One2many('cement.opc.notes', 'parent_id', string="Notes")
+
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     
     @api.model
     def default_get(self, fields):

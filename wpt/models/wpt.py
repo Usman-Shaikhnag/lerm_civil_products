@@ -15,7 +15,12 @@ class WptMechanical(models.Model):
     name = fields.Char("Name",default="Water Permeability Test")
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
+
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
+
+    
     child_lines = fields.One2many('mechanical.wpt.line','parent_id',string="Parameter")
+
 
 
     average_of_wpt = fields.Float(string="Average of WPT", compute="_compute_average_of_averages")

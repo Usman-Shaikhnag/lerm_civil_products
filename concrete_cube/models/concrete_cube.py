@@ -22,6 +22,10 @@ class MechanicalConcreteCube(models.Model):
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="ELN")
 
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
+
+    
+
     sample_id = fields.Many2one('lerm.srf.sample',string='Sample')
 
 
