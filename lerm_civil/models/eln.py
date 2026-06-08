@@ -26,7 +26,7 @@ class ELN(models.Model):
 
     srf_id = fields.Many2one('lerm.civil.srf',string="SRF ID")
     technician = fields.Many2one('res.users',string="Technicians",tracking=5)
-    technician_ids = fields.Many2many('res.users',string='Technicians',tracking=5)
+    technician_ids = fields.Many2many('res.users',string='Technicians',tracking=5,store=True)
     sample_id = fields.Many2one('lerm.srf.sample',string='UID',tracking=True,ondelete="cascade")
     srf_date = fields.Date(string='SRF Date',tracking=True)
     kes_no = fields.Char(string="UID",tracking=True)

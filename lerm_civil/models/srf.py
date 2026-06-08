@@ -986,8 +986,8 @@ class CreateSampleWizard(models.TransientModel):
     volume = fields.Char(string="Volume")
     product_name = fields.Many2one('product.template',string="Product Name")
     pricelist = fields.Many2one('product.pricelist',string='Pricelist')
-    main_name = fields.Char(string="Product Name",compute='compute_main_name')
-    price = fields.Float(string="Price",compute='compute_price')
+    main_name = fields.Char(string="Product Name",compute='compute_main_name',store=True)
+    price = fields.Float(string="Price",compute='compute_price',store=True)
 
     sample = fields.Many2one('lerm.srf.sample',string="Sample")
     is_update = fields.Boolean('Is Update')
@@ -1518,8 +1518,13 @@ class CreateSampleWizard(models.TransientModel):
         technicians = fields.Many2one("res.users", string="Technician")
 
         # used in Parameter mode (final technician set to be stored in ELN)
-        technician_ids = fields.Many2many('res.users',string='Technicians')
+        technician_ids = fields.Many2many('res.users',string='Technicians',store=True)
 
+        allowed_technician_domain_ids = fields.Many2many(
+            'res.users',
+            compute='_compute_allowed_technician_domain_ids',
+            store=False
+        )
 
         allowed_technician_domain_ids = fields.Many2many(
             'res.users',
