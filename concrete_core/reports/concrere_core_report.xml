@@ -6,9 +6,9 @@
 				
 				<div class="container_eln" style="padding-top:20px;">
 					<div class="" t-foreach="eln" t-as="o">
-						 <table style="width:100%; border-collapse: collapse;" border="1">
+						 			<table style="width:100%; border-collapse: collapse;" border="1">
 
-						   <tr>
+						   <tr style="height:10px;">
 								<td colspan="1">Customer Party Name :</td>
 								  <td colspan="2" style="font-weight:bold;">
 									<![CDATA[&nbsp;]]>
@@ -27,7 +27,7 @@
 									</td>
 
 									<td colspan="1" style="text-align: center;">
-									<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 75px; height: 70px;"/>
+									<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 75px; height: 60px;"/>
 									</td>
 								
 							</tr>

@@ -73,7 +73,7 @@ class ELN(models.Model):
         ('3-approved','Approved'),
         ('4-rejected','Rejected'),
         ('5-cancelled','Cancelled')
-    ], string='State',default='1-draft')
+    ], string='State',default='5-alloted')
     start_date = fields.Date(string="Start Date")
     end_date = fields.Date(string="End Date")
     remarks = fields.Text("Remarks")

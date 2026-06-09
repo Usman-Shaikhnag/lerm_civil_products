@@ -30,7 +30,7 @@ class SNRNONNABL(models.Model):
         default_notes = [
             (0, 0, {
                 'sr_no': 'a',
-                'notes': 'The report shall not be reproduced in fullor partially without written approval of the laboratory HOD/CEO/Maganement.',
+                'notes': 'The report shall not be reproduced in full or partially without written approval of the laboratory HOD/CEO/Maganement.',
             }),
             (0, 0, {
                 'sr_no': 'b',
@@ -56,7 +56,7 @@ class SNRNONNABL(models.Model):
 
              (0, 0, {
                 'sr_no': 'g',
-                'notes': 'Sample willbe destroyed after 30-days from the date of test report unless otherwise Specified.',
+                'notes': 'Sample will be destroyed after 30-days from the date of test report unless otherwise Specified.',
             }),
         ]
 
