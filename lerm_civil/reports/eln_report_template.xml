@@ -3,7 +3,7 @@
 
 	<template id="custom_layout_header_footer_lerm_eln">
         <div t-attf-class="header article" t-att-style="report_header_style">
-			<div class="row" style="margin-top:5px;">
+			<div class="row" style="margin-top:20px;">
 				<t t-if="eln.sample_id.lab_location">
 					<div t-if="(eln.sample_id.scope == 'nabl' and nabl) or fromEln" class="col-12 imageContainer" >
 						<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.header_image.decode('utf-8')"/>
@@ -111,7 +111,7 @@
         </div>
 		
 		<div t-attf-class="footer o_standard_footer">
-            <div class="text-center" style="padding-top:45px; border-top: 1px solid black">					
+            <div class="text-center" style="padding-top:40px; border-top: 1px solid black">					
 				<div class="footerQR" style="">
 					<div style="">
 						<img t-if="qrcode" t-att-src="'data:image/png;base64,'+str(qrcode)" style="width: 75px; height: 70px;"/>
