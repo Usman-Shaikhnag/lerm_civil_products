@@ -65,11 +65,11 @@ class CementPSC(models.Model):
         default_notes = [
             (0, 0, {
                 'sr_no': 'a',
-                'notes': 'The report shall not be reproduced in fullor partially without written approval of the laboratory HOD/CEO/Maganement.',
+                'notes': 'The report shall not be reproduced in full or partially without written approval of the laboratory HOD/CEO/Maganement.',
             }),
             (0, 0, {
                 'sr_no': 'b',
-                'notes': 'ampling is not done by us unless mentioned otherwide.',
+                'notes': 'Sampling is not done by us unless mentioned otherwide.',
             }),
             (0, 0, {
                 'sr_no': 'c',
@@ -86,12 +86,12 @@ class CementPSC(models.Model):
             }),
              (0, 0, {
                 'sr_no': 'f',
-                'notes': 'Alldisputed are subject to Raipur jurisdiction 7 days correction to this report invalidates this report.',
+                'notes': 'All disputed are subject to Raipur jurisdiction 7 days correction to this report invalidates this report.',
             }),
 
              (0, 0, {
                 'sr_no': 'g',
-                'notes': 'Sample willbe destroyed after 30-days from the date of test report unless otherwise Specified.',
+                'notes': 'Sample will be destroyed after 30-days from the date of test report unless otherwise Specified.',
             }),
         ]
 

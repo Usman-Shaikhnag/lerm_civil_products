@@ -102,6 +102,7 @@ class BitumenConcreteReport(models.AbstractModel):
         return {
             'eln': eln,
             'data' : general_data,
+            'notes_list': general_data.notes_id if hasattr(general_data, 'notes_id') and general_data.notes_id else [],
             'qrcode': qr_code,
             'nabl' : nabl,
             'qrcode_static': qr_static_b64,
