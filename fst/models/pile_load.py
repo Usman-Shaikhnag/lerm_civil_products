@@ -6,6 +6,8 @@ import io
 import math
 import re
 import matplotlib.pyplot as plt
+import xlsxwriter
+from openpyxl import load_workbook
 
 # Constants for graph styling
 GRAPH_MAJOR_GRID_COLOR = '#d28b5c'
@@ -442,6 +444,100 @@ class PileLoadTestParent(models.Model):
             dates = rec.loading_reading_ids.mapped('reading_datetime')
             dates = [d for d in dates if d]
             rec.last_reading_datetime = max(dates) if dates else False
+
+
+    def action_open_import_wizard(self):
+
+        self.ensure_one()
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Import Excel',
+            'res_model': 'pile.load.import.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_parent_id': self.id,
+            }
+        }
+
+    def action_download_excel_template(self):
+        self.ensure_one()
+
+        output = io.BytesIO()
+
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+
+        header_format = workbook.add_format({
+            'bold': True,
+            'align': 'center',
+            'valign': 'vcenter',
+            'border': 1,
+        })
+
+        datetime_format = workbook.add_format({
+            'num_format': 'dd/mm/yyyy hh:mm',
+            'border': 1,
+        })
+
+        normal_format = workbook.add_format({
+            'border': 1,
+        })
+
+        headers = [
+            'Date Time',
+            'Load',
+            'Dial A',
+            'Dial B',
+            'Dial C',
+            'Dial D',
+        ]
+
+        for sheet_name in ['Loading', 'Unloading']:
+
+            sheet = workbook.add_worksheet(sheet_name)
+
+            # Column widths
+            sheet.set_column(0, 0, 22)
+            sheet.set_column(1, 5, 15)
+
+            # Headers
+            for col, header in enumerate(headers):
+                sheet.write(0, col, header, header_format)
+
+            # Sample datetime row
+            sheet.write_datetime(
+                1,
+                0,
+                fields.Datetime.now(),
+                datetime_format
+            )
+
+            # Empty sample numeric cells
+            for col in range(1, 6):
+                sheet.write(1, col, '', normal_format)
+
+        workbook.close()
+
+        output.seek(0)
+
+        file_data = base64.b64encode(output.read())
+
+        attachment = self.env['ir.attachment'].create({
+            'name': 'Pile_Load_Template.xlsx',
+            'type': 'binary',
+            'datas': file_data,
+            'mimetype': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        })
+
+        return {
+            'type': 'ir.actions.act_url',
+            'url': f'/web/content/{attachment.id}?download=true',
+            'target': 'self',
+        }
+
+
+
 
 # NEW: Separate Loading Model
 class PileLoadReadingLoading(models.Model):
