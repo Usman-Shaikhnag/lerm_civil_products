@@ -3,6 +3,11 @@ from odoo.exceptions import UserError,ValidationError
 import math
 import re
 
+import base64
+import io
+import matplotlib.pyplot as plt
+import re
+
 class CoarseAggregateMechanical(models.Model):
     _name = "mechanical.coarse.aggregate"
     _inherit = "lerm.eln"
@@ -101,45 +106,50 @@ class CoarseAggregateMechanical(models.Model):
 
     notes_id = fields.One2many('coarse.notes1', 'parent_id', string="Notes")
     
-    @api.model
-    def default_get(self, fields):
-        res = super(CoarseAggregateMechanical, self).default_get(fields)
+    # @api.model
+    # def default_get(self, fields):
+    #     res = super(CoarseAggregateMechanical, self).default_get(fields)
 
-        default_notes = [
-            (0, 0, {
-                'sr_no': 'a',
-                'notes': 'The report shall not be reproduced in fullor partially without written approval of the laboratory HOD/CEO/Maganement.',
-            }),
-            (0, 0, {
-                'sr_no': 'b',
-                'notes': 'ampling is not done by us unless mentioned otherwide.',
-            }),
-            (0, 0, {
-                'sr_no': 'c',
-                'notes': 'without a QR Code and hologram this report is considered invalid.',
-            }),
-            (0, 0, {
-                'sr_no': 'd',
-                'notes': 'The Result listed refer only to tested samples & applicable parameter Endorsement of product is neither interred nor inplied.',
-            }),
+    #     default_notes = [
+    #         (0, 0, {
+    #             'sr_no': 'a',
+    #             'notes': 'The report shall not be reproduced in fullor partially without written approval of the laboratory HOD/CEO/Maganement.',
+    #         }),
+    #         (0, 0, {
+    #             'sr_no': 'b',
+    #             'notes': 'ampling is not done by us unless mentioned otherwide.',
+    #         }),
+    #         (0, 0, {
+    #             'sr_no': 'c',
+    #             'notes': 'without a QR Code and hologram this report is considered invalid.',
+    #         }),
+    #         (0, 0, {
+    #             'sr_no': 'd',
+    #             'notes': 'The Result listed refer only to tested samples & applicable parameter Endorsement of product is neither interred nor inplied.',
+    #         }),
 
-            (0, 0, {
-                'sr_no': 'e',
-                'notes': 'The use or report for arbitration, publicity & evidence in legal dispute is forbidden except with prior written consent NBML Lab.',
-            }),
-             (0, 0, {
-                'sr_no': 'f',
-                'notes': 'Alldisputed are subject to Raipur jurisdiction 7 days correction to this report invalidates this report.',
-            }),
+    #         (0, 0, {
+    #             'sr_no': 'e',
+    #             'notes': 'The use or report for arbitration, publicity & evidence in legal dispute is forbidden except with prior written consent NBML Lab.',
+    #         }),
+    #          (0, 0, {
+    #             'sr_no': 'f',
+    #             'notes': 'Alldisputed are subject to Raipur jurisdiction 7 days correction to this report invalidates this report.',
+    #         }),
 
-             (0, 0, {
-                'sr_no': 'g',
-                'notes': 'Sample willbe destroyed after 30-days from the date of test report unless otherwise Specified.',
-            }),
-        ]
+    #          (0, 0, {
+    #             'sr_no': 'g',
+    #             'notes': 'Sample willbe destroyed after 30-days from the date of test report unless otherwise Specified.',
+    #         }),
+    #     ]
 
-        res['notes_id'] = default_notes
-        return res
+    #     res['notes_id'] = default_notes
+    #     return res
+
+
+    
+
+
     
 
 
@@ -152,80 +162,163 @@ class CoarseAggregateMechanical(models.Model):
     total_sieve_analysis = fields.Float(string="Total",compute="_compute_total_sieve")
 
 
+    # def default_get(self, fields):
+    #     print("From Default Value")
+    #     res = super(CoarseAggregateMechanical, self).default_get(fields)
+    #     default_sieve_sizes = []
+        
+    #     # Safely get eln_ref with default None if not exists
+    #     eln_ref = res.get('eln_ref') 
+        
+    #     if eln_ref:
+    #         eln = self.env['lerm.eln'].sudo().browse(eln_ref)
+    #         if not eln.exists():
+    #             return res
+                
+    #         size_str = eln.size_id.size or ''
+    #         grade_str = (eln.grade_id.grade or '').lower()
+            
+    #         # Define mappings
+    #         if grade_str == 'single sized aggregate':
+    #             sieve_mapping = {
+    #                 63: ['80 mm', '63 mm', '40 mm', '20 mm', '10 mm', 'pan'],
+    #                 40: ['63 mm', '40 mm', '20 mm', '10 mm', 'pan'],
+    #                 20: ['40 mm', '20 mm', '10 mm', '4.75 mm', 'pan'],
+    #                 16: ['20 mm', '16 mm', '10 mm', '4.75 mm', 'pan'],
+    #                 12: ['16 mm', '12.5 mm', '10 mm', '4.75 mm', 'pan'],
+    #                 10: ['12.5 mm', '10 mm', '4.75 mm', '2.36 mm', 'pan'],
+    #             }
+    #             specific_limits_mapping = {
+    #                 63: ['100', '85 - 100', '0 - 30', '0 - 5', '0 - 5', '0'],
+    #                 40: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+    #                 20: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+    #                 16: ['100', '85 - 100', '0 - 30', '0 - 5', '0'],
+    #                 12: ['100', '85 - 100', '0 - 45', '0 - 10', '0'],
+    #                 10: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+    #             }
+    #         elif grade_str == 'graded aggregate':
+    #             sieve_mapping = {
+    #                 40: ['80 mm', '40 mm', '20 mm', '10 mm','4.75 mm','pan'],
+    #                 20: ['40 mm', '20 mm', '10 mm', '4.75 mm','pan'],
+    #                 16: ['20 mm', '16 mm', '10 mm', '4.75 mm', 'pan'],
+    #                 12: ['16 mm', '12.5 mm', '10 mm', '4.75 mm', 'pan'],
+    #             }
+    #             specific_limits_mapping = {
+    #                 40: ['100', '95 - 100', '30 - 70', '10 - 35','0 - 5', '0'],
+    #                 20: ['100', '95 - 100', '25 - 55', '0 - 10', '0'],
+    #                 16: ['100', '90 - 100', '30 - 70', '0 - 10', '0'],
+    #                 12: ['100', '90 - 100', '40 - 85', '0 - 10', '0'],
+    #             }
+    #         else:
+    #             return res
+
+    #         # Extract numeric part
+    #         match = re.search(r'\d+', size_str)
+    #         if match:
+    #             number = int(match.group())
+    #             sieve_list = sieve_mapping.get(number, [])
+    #             specific_limits = specific_limits_mapping.get(number, [])
+                
+    #             # Check if lists have same length
+    #             # if len(sieve_list) != len(specific_limits):
+    #             #     _logger.warning(f"Mismatch in sieve sizes and limits for size {number}")
+    #             #     return res
+                    
+    #             # Create sieve analysis lines
+    #             for sieve_size, specific_limit in zip(sieve_list, specific_limits):
+    #                 size = {
+    #                     'sieve_size': sieve_size,
+    #                     'specific_limits': specific_limit,
+    #                 }
+    #                 default_sieve_sizes.append((0, 0, size))
+                
+    #             res['sieve_analysis_child_lines'] = default_sieve_sizes
+
+    #     return res
+
+
+    @api.model
     def default_get(self, fields):
         print("From Default Value")
-        res = super(CoarseAggregateMechanical, self).default_get(fields)
-        default_sieve_sizes = []
-        
-        # Safely get eln_ref with default None if not exists
-        eln_ref = res.get('eln_ref') 
-        
-        if eln_ref:
-            eln = self.env['lerm.eln'].sudo().browse(eln_ref)
-            if not eln.exists():
-                return res
-                
-            size_str = eln.size_id.size or ''
-            grade_str = (eln.grade_id.grade or '').lower()
-            
-            # Define mappings
-            if grade_str == 'single sized aggregate':
-                sieve_mapping = {
-                    63: ['80 mm', '63 mm', '40 mm', '20 mm', '10 mm', 'pan'],
-                    40: ['63 mm', '40 mm', '20 mm', '10 mm', 'pan'],
-                    20: ['40 mm', '20 mm', '10 mm', '4.75 mm', 'pan'],
-                    16: ['20 mm', '16 mm', '10 mm', '4.75 mm', 'pan'],
-                    12: ['16 mm', '12.5 mm', '10 mm', '4.75 mm', 'pan'],
-                    10: ['12.5 mm', '10 mm', '4.75 mm', '2.36 mm', 'pan'],
-                }
-                specific_limits_mapping = {
-                    63: ['100', '85 - 100', '0 - 30', '0 - 5', '0 - 5', '0'],
-                    40: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
-                    20: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
-                    16: ['100', '85 - 100', '0 - 30', '0 - 5', '0'],
-                    12: ['100', '85 - 100', '0 - 45', '0 - 10', '0'],
-                    10: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
-                }
-            elif grade_str == 'graded aggregate':
-                sieve_mapping = {
-                    40: ['80 mm', '40 mm', '20 mm', '10 mm','4.75 mm','pan'],
-                    20: ['40 mm', '20 mm', '10 mm', '4.75 mm','pan'],
-                    16: ['20 mm', '16 mm', '10 mm', '4.75 mm', 'pan'],
-                    12: ['16 mm', '12.5 mm', '10 mm', '4.75 mm', 'pan'],
-                }
-                specific_limits_mapping = {
-                    40: ['100', '95 - 100', '30 - 70', '10 - 35','0 - 5', '0'],
-                    20: ['100', '95 - 100', '25 - 55', '0 - 10', '0'],
-                    16: ['100', '90 - 100', '30 - 70', '0 - 10', '0'],
-                    12: ['100', '90 - 100', '40 - 85', '0 - 10', '0'],
-                }
-            else:
-                return res
 
-            # Extract numeric part
-            match = re.search(r'\d+', size_str)
-            if match:
-                number = int(match.group())
-                sieve_list = sieve_mapping.get(number, [])
-                specific_limits = specific_limits_mapping.get(number, [])
-                
-                # Check if lists have same length
-                # if len(sieve_list) != len(specific_limits):
-                #     _logger.warning(f"Mismatch in sieve sizes and limits for size {number}")
-                #     return res
-                    
-                # Create sieve analysis lines
-                for sieve_size, specific_limit in zip(sieve_list, specific_limits):
-                    size = {
-                        'sieve_size': sieve_size,
-                        'specific_limits': specific_limit,
-                    }
-                    default_sieve_sizes.append((0, 0, size))
-                
-                res['sieve_analysis_child_lines'] = default_sieve_sizes
+        res = super(CoarseAggregateMechanical, self).default_get(fields)
+
+        # ------------------ NOTES ------------------
+        if 'notes_id' in fields:
+            default_notes = [
+                (0, 0, {'sr_no': 'a', 'notes': 'The report shall not be reproduced in full or partially without written approval of the laboratory HOD/CEO/Management.'}),
+                (0, 0, {'sr_no': 'b', 'notes': 'Sampling is not done by us unless mentioned otherwise.'}),
+                (0, 0, {'sr_no': 'c', 'notes': 'Without a QR Code and hologram this report is considered invalid.'}),
+                (0, 0, {'sr_no': 'd', 'notes': 'The results listed refer only to tested samples & applicable parameters. Endorsement of product is neither intended nor implied.'}),
+                (0, 0, {'sr_no': 'e', 'notes': 'The use of report for arbitration, publicity & evidence in legal dispute is forbidden except with prior written consent NBML Lab.'}),
+                (0, 0, {'sr_no': 'f', 'notes': 'All disputes are subject to Raipur jurisdiction. Corrections after 7 days invalidate this report.'}),
+                (0, 0, {'sr_no': 'g', 'notes': 'Sample will be destroyed after 30 days from the date of test report unless otherwise specified.'}),
+            ]
+            res['notes_id'] = default_notes
+
+        # ------------------ SIEVE LOGIC ------------------
+        if 'sieve_analysis_child_lines' in fields:
+            default_sieve_sizes = []
+
+            eln_ref = res.get('eln_ref')
+            if eln_ref:
+                eln = self.env['lerm.eln'].sudo().browse(eln_ref)
+                if eln.exists():
+
+                    size_str = eln.size_id.size or ''
+                    grade_str = (eln.grade_id.grade or '').lower()
+
+                    if grade_str == 'single sized aggregate':
+                        sieve_mapping = {
+                            63: ['80 mm', '63 mm', '40 mm', '20 mm', '10 mm', 'pan'],
+                            40: ['63 mm', '40 mm', '20 mm', '10 mm', 'pan'],
+                            20: ['40 mm', '20 mm', '10 mm', '4.75 mm', 'pan'],
+                            16: ['20 mm', '16 mm', '10 mm', '4.75 mm', 'pan'],
+                            12: ['16 mm', '12.5 mm', '10 mm', '4.75 mm', 'pan'],
+                            10: ['12.5 mm', '10 mm', '4.75 mm', '2.36 mm', 'pan'],
+                        }
+                        specific_limits_mapping = {
+                            63: ['100', '85 - 100', '0 - 30', '0 - 5', '0 - 5', '0'],
+                            40: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+                            20: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+                            16: ['100', '85 - 100', '0 - 30', '0 - 5', '0'],
+                            12: ['100', '85 - 100', '0 - 45', '0 - 10', '0'],
+                            10: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
+                        }
+
+                    elif grade_str == 'graded aggregate':
+                        sieve_mapping = {
+                            40: ['80 mm', '40 mm', '20 mm', '10 mm', '4.75 mm', 'pan'],
+                            20: ['40 mm', '20 mm', '10 mm', '4.75 mm', 'pan'],
+                            16: ['20 mm', '16 mm', '10 mm', '4.75 mm', 'pan'],
+                            12: ['16 mm', '12.5 mm', '10 mm', '4.75 mm', 'pan'],
+                        }
+                        specific_limits_mapping = {
+                            40: ['100', '95 - 100', '30 - 70', '10 - 35', '0 - 5', '0'],
+                            20: ['100', '95 - 100', '25 - 55', '0 - 10', '0'],
+                            16: ['100', '90 - 100', '30 - 70', '0 - 10', '0'],
+                            12: ['100', '90 - 100', '40 - 85', '0 - 10', '0'],
+                        }
+                    else:
+                        return res
+
+                    match = re.search(r'\d+', size_str)
+                    if match:
+                        number = int(match.group())
+
+                        sieve_list = sieve_mapping.get(number, [])
+                        specific_limits = specific_limits_mapping.get(number, [])
+
+                        for sieve_size, specific_limit in zip(sieve_list, specific_limits):
+                            default_sieve_sizes.append((0, 0, {
+                                'sieve_size': sieve_size,
+                                'specific_limits': specific_limit,
+                            }))
+
+                        res['sieve_analysis_child_lines'] = default_sieve_sizes
 
         return res
-    
+        
     def populate_sieve_analysis_lines(self):
         self.ensure_one()
 
@@ -263,6 +356,53 @@ class CoarseAggregateMechanical(models.Model):
             # Only update specific_limits of existing lines
             for line, specific_limit in zip(self.sieve_analysis_child_lines, specific_limits):
                 line.specific_limits = specific_limit
+
+
+    graph_image_slive = fields.Binary(
+            "Sieve Graph",
+            compute="_compute_graph_image_slive",
+            store=True
+        )
+
+    @api.depends('sieve_analysis_child_lines.passing_percent',
+             'sieve_analysis_child_lines.sieve_size')
+    def _compute_graph_image_slive(self):
+        for record in self:
+            x_vals = []
+            y_vals = []
+
+            for line in record.sieve_analysis_child_lines:
+                if line.sieve_size and line.passing_percent is not None:
+                    
+                    # Extract numeric value from sieve_size
+                    match = re.search(r'\d+\.?\d*', line.sieve_size)
+                    if match:
+                        x_vals.append(float(match.group()))
+                        y_vals.append(line.passing_percent)
+
+            if not x_vals:
+                record.graph_image_slive = False
+                continue
+
+            # Sort values (important for graph)
+            combined = sorted(zip(x_vals, y_vals), reverse=True)
+            x_vals, y_vals = zip(*combined)
+
+            # ---- Plot Graph ----
+            plt.figure()
+            plt.plot(x_vals, y_vals, marker='o')
+            plt.xlabel("Sieve Size (mm)")
+            plt.ylabel("Passing Percentage (%)")
+            plt.title("Sieve Analysis Graph")
+            plt.grid()
+
+            # Save image to buffer
+            buf = io.BytesIO()
+            plt.savefig(buf, format='png')
+            plt.close()
+            buf.seek(0)
+
+            record.graph_image_slive = base64.b64encode(buf.read())
 
 
 
@@ -2471,13 +2611,21 @@ class SieveAnalysisLine(models.Model):
             parent_id.sieve_analysis_child_lines._reorder_serial_numbers()
         return res
 
-    @api.depends('wt_retained', 'parent_id.weight_of_sample')
+    # @api.depends('wt_retained', 'parent_id.weight_of_sample')
+    # def _compute_percent_retained(self):
+    #     for record in self:
+    #         try:
+    #             record.percent_retained = (record.wt_retained / self.parent_id.weight_of_sample) * 100
+    #         except ZeroDivisionError:
+    #             record.percent_retained = 0
+
+    @api.depends('parent_id.weight_of_sample', 'wt_retained')
     def _compute_percent_retained(self):
-        for record in self:
-            try:
-                record.percent_retained = (record.wt_retained / self.parent_id.weight_of_sample) * 100
-            except ZeroDivisionError:
-                record.percent_retained = 0
+        for rec in self:
+            if rec.parent_id.weight_of_sample:
+                rec.percent_retained = (rec.wt_retained / rec.parent_id.weight_of_sample) * 100
+            else:
+                rec.percent_retained = 0
 
 
     @api.depends('cumulative_retained')
