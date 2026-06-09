@@ -271,7 +271,11 @@ class ELN(models.Model):
     def open_product_based_form(self):
         for record in self:
             # Sample ला target कर
-            if record.sample_id:
+            if (
+                record.state not in ['2-confirm', '3-approved', '4-rejected']
+                and record.sample_id
+                and record.sample_id.state != '7-calculated'
+            ):
                 record.sample_id.state = '7-calculated'
                 
         model_record = self.material.product_based_calculation.filtered(lambda r: r.grade.id == self.grade_id.id)
