@@ -8,11 +8,12 @@
         <field name="arch" type="xml">
             <form>
                 <sheet>
-                    <group >
+                    
                         <h1>
                             <field name="name_admixture" readonly="1" nolabel="1"/>
                         </h1>
-                    </group>
+                        <button type="object" class="oe_highlight" name="prefill_data" string="Prefill Data"/>
+                   
                     
                     <group>
                         <field name="srf_id" invisible="1"/>
@@ -614,6 +615,36 @@
             </form>
         </field>
         </record>
+
+
+        <record id="view_admixture_prefill_data_form" model="ir.ui.view">
+            <field name="name">admixture.prefill.data.form</field>
+            <field name="model">admixture.prefill.data</field>
+            <field name="arch" type="xml">
+                <form string="Prefill Data">
+                    <group>
+                        <field name="product_id" readonly="1"/>
+                        <field name="sample_id"/>
+
+                    </group>
+                    <footer>
+                        <button name="prefill_data" string="Prefill Data" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_admixture_prefill_data_wizard" model="ir.actions.act_window">
+            <field name="name">Prefill Data</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">admixture.prefill.data</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_admixture_prefill_data_form"/>
+            <field name="target">new</field>
+        </record>
+
+
 
     </data>
 </odoo>

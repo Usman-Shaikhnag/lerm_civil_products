@@ -19,54 +19,32 @@ class CoarseAggregatePrefillWizard(models.TransientModel):
         ], limit=1)
 
         normal_fields = [
-            'total_weight_sample_abrasion',
-            'weight_passing_sample_abrasion',
-            'wt_surface_dry',
-            'wt_sample_inwater',
-            'oven_dried_wt',
-            'wt_surface_dry_2',
-            'wt_sample_inwater_2',
-            'oven_dried_wt_2',
-            'wt_sample_10fine',
-            'wt_sample_passing_10fine',
-            'load_applied_10fine',
-            'wt_sample_finer75',
-            'wt_dry_sample_finer75',
-            'wt_sample_clay_lumps',
-            'wt_dry_sample_clay_lumps',
-            'wt_sample_light_weight',
-            'wt_dry_sample_light_weight',
-            'volume_of_bucket_loose',
-            'weight_empty_bucket_loose',
-            'sample_plus_bucket_loose',
-            'sample_plus_bucket_rodded',
+            'temperature',
             'weight_of_sample',
-            'mean_wt_aggregate',
-            'wt_water_required_angularity',
-            'specific_gravity_aggregate_angularity',
-            'wt_of_compact',
-            'weight_empty_cylender',
-            'volume_of_cylender',
-            'volume_of_cylender1',
-            'weight_empty_cylender1',
-            'wt_of_compact1',
-            'specific_gravity2',
-            'specific_gravity3',
-            'wt_of_loose',
-            'wt_of_loose1',
-            'specific_gravity4',
-            'specific_gravity5'
 
         ]
 
         one2many_fields = [
-            'crushing_value_child_lines',
-            'impact_value_child_lines',
-            'soundness_na2so4_child_lines',
-            'soundness_mgso4_child_lines',
-            'elongation_table',
             'sieve_analysis_child_lines',
-            'aggregate_grading_child_lines'
+            'loose_line_ids',
+            'rodded_line_ids',
+            'crushing_value_child_lines',
+            'elongation_fl_table',
+            'impact_value_child_lines',
+            'specific_water_line_ids',
+            'deleterious_coal_lignite_line_ids',
+            'abrasion_value_line_ids',
+            'finer75_line_ids',
+            'fine10_line_ids',
+            'clay_lumps_percent_line_ids',
+            'stripping_value_line_ids',
+            'wet_impact_line_ids',
+            'soundness_sod_line_ids',
+            'soundness_sodtwo_line_ids',
+            'soundness_mag_line_ids',
+            'soundness_magtwo_line_ids'
+
+
         ]
 
         update_vals = {}
@@ -75,31 +53,72 @@ class CoarseAggregatePrefillWizard(models.TransientModel):
             if hasattr(copy_product, field):
                 update_vals[field] = getattr(copy_product, field)
 
+        # for field in one2many_fields:
+        #     lines = getattr(copy_product, field)
+        #     if lines:
+        #         update_vals[field] = [(0, 0, vals) for vals in (line.copy_data()[0] for line in lines)]
+
         for field in one2many_fields:
-            lines = getattr(copy_product, field)
-            if lines:
-                update_vals[field] = [(0, 0, vals) for vals in (line.copy_data()[0] for line in lines)]
+          lines = getattr(copy_product, field)
+          if lines:
+              commands = [(5, 0, 0)]  # Remove all existing lines
+              commands += [(0, 0, line.copy_data()[0])for line in lines]
+              update_vals[field] = commands
 
-        if not current_product.crushing_visible:
-            update_vals.pop('crushing_value_child_lines', None)
-
-        if not current_product.impact_visible:
-            update_vals.pop('impact_value_child_lines', None)
-
-        if not current_product.soundness_na2so4_visible:
-            update_vals.pop('soundness_na2so4_child_lines', None)
-
-        if not current_product.soundness_mgso4_visible:
-            update_vals.pop('soundness_mgso4_child_lines', None)
-
-        if not current_product.elongation_visible:
-            update_vals.pop('elongation_table', None)
+        
 
         if not current_product.sieve_visible:
             update_vals.pop('sieve_analysis_child_lines', None)
 
-        if not current_product.aggregate_grading_visible:
-            update_vals.pop('aggregate_grading_child_lines', None)
+        if not current_product.loose_bulk_density_visible:
+            update_vals.pop('loose_line_ids', None)
+
+        if not current_product.rodded_bulk_density_visible:
+            update_vals.pop('rodded_line_ids', None)
+
+        if not current_product.crushing_visible:
+            update_vals.pop('crushing_value_child_lines', None)
+
+        if not current_product.elongation_fl_visible:
+            update_vals.pop('elongation_fl_table', None)
+
+        if not current_product.impact_visible:
+            update_vals.pop('impact_value_child_lines', None)
+
+        if not current_product.deleterious_coal_lignite_visible:
+            update_vals.pop('deleterious_coal_lignite_line_ids', None)
+
+        if not current_product.abrasion_visible:
+            update_vals.pop('abrasion_value_line_ids', None)
+
+        if not current_product.finer75_visible:
+            update_vals.pop('finer75_line_ids', None)
+
+        if not current_product.fine10_visible:
+            update_vals.pop('fine10_line_ids', None)
+
+        if not current_product.clay_lump_visible:
+            update_vals.pop('clay_lumps_percent_line_ids', None)
+
+        if not current_product.stripping_value_visible:
+            update_vals.pop('stripping_value_line_ids', None)
+
+        if not current_product.wet_impact_visible:
+            update_vals.pop('wet_impact_line_ids', None)
+
+        if not current_product.soundness_na2so4_visible:
+            update_vals.pop('soundness_sod_line_ids', None)
+
+        if not current_product.soundness_na2so4_visible:
+            update_vals.pop('soundness_sodtwo_line_ids', None)
+
+        if not current_product.soundness_mgso4_visible:
+            update_vals.pop('soundness_mag_line_ids', None)
+
+        if not current_product.soundness_mgso4_visible:
+            update_vals.pop('soundness_magtwo_line_ids', None)
+
+        
 
 
         if update_vals:

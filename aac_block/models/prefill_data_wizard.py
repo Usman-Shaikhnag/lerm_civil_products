@@ -3,8 +3,8 @@ from odoo.exceptions import UserError
 
 
 
-class BrickPrefillWizard(models.TransientModel):
-    _name = 'bricks.prefill.data'
+class AACBlockPrefillWizard(models.TransientModel):
+    _name = 'aac.block.prefill.data'
     _description = 'Prefill Data'
 
     product_id = fields.Many2one('product.template',string="Product")
@@ -13,23 +13,25 @@ class BrickPrefillWizard(models.TransientModel):
 
 
     def prefill_data(self):
-        current_product = self.env['mechanical.bricks'].sudo().browse(self._context['active_id'])
-        copy_product = self.env['mechanical.bricks'].sudo().search([
+        current_product = self.env['mechanical.aac.block'].sudo().browse(self._context['active_id'])
+        copy_product = self.env['mechanical.aac.block'].sudo().search([
             ('eln_ref.sample_id.id', '=', self.sample_id.id)
         ], limit=1)
 
         normal_fields = [
-            'length_in_mm',
-            'width_in_mm',
-            'height_in_mm',
-            'brick_temperature',
-            'brick_humidity',
-            'visual_observation_1'
+            'aac_temp',
+            'aac_humidity',
+
         ]
 
         one2many_fields = [
-            'water_absorbtion_line_ids',
+            'length_dimen_line_ids',
+            'height_dimen_line_ids',
+            'thickness_dimen_line_ids',
+            'bulk_density_ids',
+            'moisture_content_line_ids',
             'compressive_strength_line_ids',
+            'drying_shrinkage_line_ids',
         ]
 
         update_vals = {}
@@ -52,16 +54,28 @@ class BrickPrefillWizard(models.TransientModel):
 
         
 
-        if not current_product.water_absorbtion_visible:
-            update_vals.pop('water_absorbtion_line_ids', None)
+        if not current_product.length_dimen_visible:
+            update_vals.pop('length_dimen_line_ids', None)
+
+        if not current_product.height_dimen_visible:
+            update_vals.pop('height_dimen_line_ids', None)
+
+        if not current_product.thickness_dimen_visible:
+            update_vals.pop('thickness_dimen_line_ids', None)
+
+        if not current_product.bulk_density_visible:
+            update_vals.pop('bulk_density_ids', None)
+
+        if not current_product.moisture_content_visible:
+            update_vals.pop('moisture_content_line_ids', None)
 
         if not current_product.compressive_strength_visible:
             update_vals.pop('compressive_strength_line_ids', None)
 
+        if not current_product.drying_shrinkage_visible:
+            update_vals.pop('drying_shrinkage_line_ids', None)
 
         
-
-
         if update_vals:
             current_product.sudo().write(update_vals)
 

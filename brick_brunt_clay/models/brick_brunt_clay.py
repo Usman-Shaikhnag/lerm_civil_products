@@ -26,6 +26,21 @@ class MechanicalBricksBurntClay(models.Model):
     )
 
 
+    def prefill_data(self):
+        # import wdb; wdb.set_trace()
+        return {
+            'name': 'Prefill Data',
+            'type': 'ir.actions.act_window',
+            'res_model': 'bricks.burnt.clay.prefill.data',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+                },
+        }
+
+
     def _compute_units(self):
         for rec in self:
             comp_param = self.env['lerm.parameter.master'].search([

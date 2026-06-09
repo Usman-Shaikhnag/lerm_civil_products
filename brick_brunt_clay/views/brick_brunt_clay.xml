@@ -12,6 +12,8 @@
                         <field name="name2" readonly="1" nolabel="1"/>
                     </h1>
 
+                    <button type="object" class="oe_highlight" name="prefill_data" string="Prefill Data"/>
+
                       <group>
                        <field name="grade"/>
                     </group>
@@ -369,23 +371,38 @@
                    
 
 
-                    <notebook>
-                        <page string="Notes">
-                            <div class="custom_table_borders" style="margin-top: 15px;">
-                                <field name="notes_id" nolabel="1">
-                                    <tree editable="bottom">
-                                        <field name="sr_no" width="100"/>
-                                        <field name="notes" />
-                                    </tree>
-                                </field>
-                            </div>
-                        </page>
-                    </notebook>
 
                   <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
                 </sheet>
             </form>
         </field>
+        </record>
+
+        <record id="view_bricks_burnt_clay_prefill_data_form" model="ir.ui.view">
+            <field name="name">bricks.burnt.clay.prefill.data.form</field>
+            <field name="model">bricks.burnt.clay.prefill.data</field>
+            <field name="arch" type="xml">
+                <form string="Prefill Data">
+                    <group>
+                        <field name="product_id" readonly="1"/>
+                        <field name="sample_id"/>
+
+                    </group>
+                    <footer>
+                        <button name="prefill_data" string="Prefill Data" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_bricks_burnt_clay_prefill_data_wizard" model="ir.actions.act_window">
+            <field name="name">Prefill Data</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">bricks.burnt.clay.prefill.data</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_bricks_burnt_clay_prefill_data_form"/>
+            <field name="target">new</field>
         </record>
 
     </data>

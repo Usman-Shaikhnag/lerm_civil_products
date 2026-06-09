@@ -31,6 +31,20 @@ class AacBlockMechanical(models.Model):
             print("Size iD",record.eln_ref.size_id)
             record.size_id = record.eln_ref.size_id.id
 
+    def prefill_data(self):
+        # import wdb; wdb.set_trace()
+        return {
+            'name': 'Prefill Data',
+            'type': 'ir.actions.act_window',
+            'res_model': 'aac.block.prefill.data',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+                },
+        }
+
     # Dimension Length
     length_dimen_name = fields.Char(default="Dimension Length")
     length_dimen_visible = fields.Boolean(string="Dimension Length Visible" ,compute="_compute_visible")

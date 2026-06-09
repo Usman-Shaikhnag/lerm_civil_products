@@ -3,8 +3,8 @@ from odoo.exceptions import UserError
 
 
 
-class BallastPrefillWizard(models.TransientModel):
-    _name = 'ballast.prefill.data'
+class AdmixturePrefillWizard(models.TransientModel):
+    _name = 'admixture.prefill.data'
     _description = 'Prefill Data'
 
     product_id = fields.Many2one('product.template',string="Product")
@@ -13,24 +13,25 @@ class BallastPrefillWizard(models.TransientModel):
 
 
     def prefill_data(self):
-        current_product = self.env['mechanical.ballast'].sudo().browse(self._context['active_id'])
-        copy_product = self.env['mechanical.ballast'].sudo().search([
+        current_product = self.env['mechanical.admixture'].sudo().browse(self._context['active_id'])
+        copy_product = self.env['mechanical.admixture'].sudo().search([
             ('eln_ref.sample_id.id', '=', self.sample_id.id)
         ], limit=1)
 
         normal_fields = [
-            'temperature',
-            'weight_of_sample',
+            'admixture_temp',
+            'admixture_humidity',
+            'span_length',
 
         ]
 
         one2many_fields = [
-            'sieve_analysis_child_lines',
-            'loose_line_ids',
-            'rodded_line_ids',
-            'impact_value_child_lines',
-            'specific_water_line_ids',
-            'abrasion_value_line_ids'
+            'bleeding_lines_ids',
+            'slump_test_line_ids',
+            'compressive_strength_line_ids',
+            'flexural_strength_line_ids',
+            'loss_work_line_ids',
+            'flowhigh_work_line_ids',
 
 
         ]
@@ -55,24 +56,23 @@ class BallastPrefillWizard(models.TransientModel):
 
         
 
-        if not current_product.sieve_visible:
-            update_vals.pop('sieve_analysis_child_lines', None)
+        if not current_product.bleeding_visible:
+            update_vals.pop('bleeding_lines_ids', None)
 
-        if not current_product.loose_bulk_density_visible:
-            update_vals.pop('loose_line_ids', None)
+        if not current_product.slump_test_visible:
+            update_vals.pop('slump_test_line_ids', None)
 
-        if not current_product.rodded_bulk_density_visible:
-            update_vals.pop('rodded_line_ids', None)
+        if not current_product.compressive_strength_visible:
+            update_vals.pop('compressive_strength_line_ids', None)
 
-        if not current_product.impact_visible:
-            update_vals.pop('impact_value_child_lines', None)
+        if not current_product.flexural_strength_visible:
+            update_vals.pop('flexural_strength_line_ids', None)
 
-        if not current_product.specific_gravity_visible:
-            update_vals.pop('specific_water_line_ids', None)
+        if not current_product.loss_work_visible:
+            update_vals.pop('loss_work_line_ids', None)
 
-        if not current_product.abrasion_visible:
-            update_vals.pop('abrasion_value_line_ids', None)
-
+        if not current_product.flowhigh_work_visible:
+            update_vals.pop('flowhigh_work_line_ids', None)
 
         
 

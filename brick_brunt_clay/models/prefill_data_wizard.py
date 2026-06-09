@@ -3,8 +3,8 @@ from odoo.exceptions import UserError
 
 
 
-class BallastPrefillWizard(models.TransientModel):
-    _name = 'ballast.prefill.data'
+class BurntClayBrickPrefillWizard(models.TransientModel):
+    _name = 'bricks.burnt.clay.prefill.data'
     _description = 'Prefill Data'
 
     product_id = fields.Many2one('product.template',string="Product")
@@ -13,26 +13,20 @@ class BallastPrefillWizard(models.TransientModel):
 
 
     def prefill_data(self):
-        current_product = self.env['mechanical.ballast'].sudo().browse(self._context['active_id'])
-        copy_product = self.env['mechanical.ballast'].sudo().search([
+        current_product = self.env['mechanical.bricks.burnt.clay'].sudo().browse(self._context['active_id'])
+        copy_product = self.env['mechanical.bricks.burnt.clay'].sudo().search([
             ('eln_ref.sample_id.id', '=', self.sample_id.id)
         ], limit=1)
 
         normal_fields = [
-            'temperature',
-            'weight_of_sample',
-
+            'brick_temperature',
+            'brick_humidity',
         ]
 
         one2many_fields = [
-            'sieve_analysis_child_lines',
-            'loose_line_ids',
-            'rodded_line_ids',
-            'impact_value_child_lines',
-            'specific_water_line_ids',
-            'abrasion_value_line_ids'
-
-
+            'water_absorption_lines',
+            'compressive_strength_lines',
+            'dimension_lines',
         ]
 
         update_vals = {}
@@ -55,23 +49,14 @@ class BallastPrefillWizard(models.TransientModel):
 
         
 
-        if not current_product.sieve_visible:
-            update_vals.pop('sieve_analysis_child_lines', None)
+        if not current_product.water_absorbtion_visible:
+            update_vals.pop('water_absorption_lines', None)
 
-        if not current_product.loose_bulk_density_visible:
-            update_vals.pop('loose_line_ids', None)
+        if not current_product.compressive_strength_visible:
+            update_vals.pop('compressive_strength_lines', None)
 
-        if not current_product.rodded_bulk_density_visible:
-            update_vals.pop('rodded_line_ids', None)
-
-        if not current_product.impact_visible:
-            update_vals.pop('impact_value_child_lines', None)
-
-        if not current_product.specific_gravity_visible:
-            update_vals.pop('specific_water_line_ids', None)
-
-        if not current_product.abrasion_visible:
-            update_vals.pop('abrasion_value_line_ids', None)
+        if not current_product.dimension_visible:
+            update_vals.pop('dimension_lines', None)
 
 
         
