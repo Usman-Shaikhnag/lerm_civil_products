@@ -546,12 +546,15 @@ class Soil(models.Model):
     
     liquid_limit_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_liquid_limit_conformity", store=True)
+            ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_liquid_limit_conformity", store=True)
 
     @api.depends('liquid_limit','eln_ref','grade')
     def _compute_liquid_limit_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.liquid_limit_conformity = 'na'
+                continue
             record.liquid_limit_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23fg21gh-7202-4d62-864b-8efa58b6b61f')]).parameter_table
@@ -699,12 +702,15 @@ class Soil(models.Model):
 
     plastic_limit_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Plastic Limit Conformity", compute="_compute_plastic_limit_conformity", store=True)
+            ('fail', 'Fail'),('na', 'NA'),], string="Plastic Limit Conformity", compute="_compute_plastic_limit_conformity", store=True)
 
     @api.depends('plastic_limit','eln_ref','grade')
     def _compute_plastic_limit_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.plastic_limit_conformity = 'na'
+                continue
             record.plastic_limit_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','120vbf14-2ff0-4b81-aca1-0e07dab7cd87')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','120vbf14-2ff0-4b81-aca1-0e07dab7cd87')]).parameter_table
@@ -761,12 +767,15 @@ class Soil(models.Model):
 
     plasticity_index_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Plasticity Index Conformity", compute="_compute_plasticity_index_conformity", store=True)
+            ('fail', 'Fail'),('na', 'NA'),], string="Plasticity Index Conformity", compute="_compute_plasticity_index_conformity", store=True)
 
     @api.depends('plasticity_index','eln_ref','grade')
     def _compute_plasticity_index_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.plasticity_index_conformity = 'na'
+                continue
             record.plasticity_index_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1045789654-2ff0-4b81-aca1-0e07dab7cd87')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1045789654-2ff0-4b81-aca1-0e07dab7cd87')]).parameter_table
@@ -810,6 +819,86 @@ class Soil(models.Model):
                 record.plasticity_index_nabl = 'fail'
 
 
+     # Shrinkage limit (%)
+    shrinkage_limit_name = fields.Char("Name",default="Shrinkage limit")
+    shrinkage_limit_visible = fields.Boolean("Shrinkage limit Visible",compute="_compute_visible")
+
+    shrinkage_limit_table = fields.One2many('mechanical.shrinkage.limit.line','parent_id',string="Parameter")
+
+    shrinkage_limit1 = fields.Float(string="Shrinkage limit (%)",digits=(12,3),compute="_compute_shrinkage_limit1")
+
+    shrinkage_limit1_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_shrinkage_limit1_conformity", store=True)
+
+    @api.depends('shrinkage_limit1','eln_ref','grade')
+    def _compute_shrinkage_limit1_conformity(self):
+        
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.shrinkage_limit1_conformity = 'na'
+                continue
+            record.shrinkage_limit1_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5487gt21-ca64-44dd-b0ae-278954ggh114')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5487gt21-ca64-44dd-b0ae-278954ggh114')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.shrinkage_limit1 - record.shrinkage_limit1*mu_value
+                    upper = record.shrinkage_limit1 + record.shrinkage_limit1*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.shrinkage_limit1_conformity = 'pass'
+                        break
+                    else:
+                        record.shrinkage_limit1_conformity = 'fail'
+
+    shrinkage_limit1_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')], string="NABL", compute="_compute_shrinkage_limit1_nabl", store=True)
+
+    @api.depends('shrinkage_limit1','eln_ref','grade')
+    def _compute_shrinkage_limit1_nabl(self):
+        
+        for record in self:
+            record.shrinkage_limit1_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5487gt21-ca64-44dd-b0ae-278954ggh114')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5487gt21-ca64-44dd-b0ae-278954ggh114')]).parameter_table
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.shrinkage_limit1 - record.shrinkage_limit1*mu_value
+            upper = record.shrinkage_limit1 + record.shrinkage_limit1*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.shrinkage_limit1_nabl = 'pass'
+                break
+            else:
+                record.shrinkage_limit1_nabl = 'fail'
+
+
+    @api.depends('shrinkage_limit_table.shrinkage_limit')
+    def _compute_shrinkage_limit1(self):
+        for record in self:
+            if record.shrinkage_limit_table:
+                total_shrinkage_limit = sum(record.shrinkage_limit_table.mapped('shrinkage_limit'))
+                average = total_shrinkage_limit / len(record.shrinkage_limit_table)
+                record.shrinkage_limit1 = (average)  # ⬅️ Rounds to nearest integer
+            else:
+                record.shrinkage_limit1 = 0.0
+
+   
+    volume_dry_table = fields.One2many('mechanical.volume.dry.line','parent_id',string="Parameter")
+    volume_dry_name = fields.Char("Name",default="Volume of dry Pat(V2)")
+
+    volume_wet_table = fields.One2many('mechanical.volume.wet.line','parent_id',string="Parameter")
+    volume_wet_name = fields.Char("Name",default="Volume of wet soil(V1)")
+
+
    
 
       # Havy Compaction-MDD
@@ -842,15 +931,18 @@ class Soil(models.Model):
    
 
 
-    heavy_table_conformity = fields.Selection([
+    max_dry_density_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_heavy_table_conformity", store=True)
+            ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_max_dry_density_conformity", store=True)
 
     @api.depends('max_dry_density','eln_ref','grade')
-    def _compute_heavy_table_conformity(self):
+    def _compute_max_dry_density_conformity(self):
         
         for record in self:
-            record.heavy_table_conformity = 'fail'
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.max_dry_density_conformity = 'na'
+                continue
+            record.max_dry_density_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210vbf-20fb-4843-aa0e-2ee981be0d7c')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210vbf-20fb-4843-aa0e-2ee981be0d7c')]).parameter_table
             for material in materials:
@@ -862,20 +954,20 @@ class Soil(models.Model):
                     lower = record.max_dry_density - record.max_dry_density*mu_value
                     upper = record.max_dry_density + record.max_dry_density*mu_value
                     if lower >= req_min and upper <= req_max:
-                        record.heavy_table_conformity = 'pass'
+                        record.max_dry_density_conformity = 'pass'
                         break
                     else:
-                        record.heavy_table_conformity = 'fail'
+                        record.max_dry_density_conformity = 'fail'
 
-    heavy_table_nabl = fields.Selection([
+    max_dry_density_nabl = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_heavy_table_nabl", store=True)
+        ('fail', 'Fail')], string="NABL", compute="_compute_max_dry_density_nabl", store=True)
 
     @api.depends('max_dry_density','eln_ref','grade')
-    def _compute_heavy_table_nabl(self):
+    def _compute_max_dry_density_nabl(self):
         
         for record in self:
-            record.heavy_table_nabl = 'fail'
+            record.max_dry_density_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210vbf-20fb-4843-aa0e-2ee981be0d7c')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210vbf-20fb-4843-aa0e-2ee981be0d7c')]).parameter_table
             # for material in materials:
@@ -887,10 +979,64 @@ class Soil(models.Model):
             lower = record.max_dry_density - record.max_dry_density*mu_value
             upper = record.max_dry_density + record.max_dry_density*mu_value
             if lower >= lab_min and upper <= lab_max:
-                record.heavy_table_nabl = 'pass'
+                record.max_dry_density_nabl = 'pass'
                 break
             else:
-                record.heavy_table_nabl = 'fail'
+                record.max_dry_density_nabl = 'fail'
+
+
+    omc_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_omc_conformity", store=True)
+
+    @api.depends('omc','eln_ref','grade')
+    def _compute_omc_conformity(self):
+        
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.omc_conformity = 'na'
+                continue
+            record.omc_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','po567888hhhllly1-ca64-44dd-b0ae-23120114r')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','po567888hhhllly1-ca64-44dd-b0ae-23120114r')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.omc - record.omc*mu_value
+                    upper = record.omc + record.omc*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.omc_conformity = 'pass'
+                        break
+                    else:
+                        record.omc_conformity = 'fail'
+
+    omc_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')], string="NABL", compute="_compute_omc_nabl", store=True)
+
+    @api.depends('omc','eln_ref','grade')
+    def _compute_omc_nabl(self):
+        
+        for record in self:
+            record.omc_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','po567888hhhllly1-ca64-44dd-b0ae-23120114r')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','po567888hhhllly1-ca64-44dd-b0ae-23120114r')]).parameter_table
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.omc - record.omc*mu_value
+            upper = record.omc + record.omc*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.omc_nabl = 'pass'
+                break
+            else:
+                record.omc_nabl = 'fail'
 
     
     graph_image_density = fields.Binary("Line Chart", compute="_compute_graph_image_density_omc_light", store=True)
@@ -992,7 +1138,7 @@ class Soil(models.Model):
 
 
     # Light Compaction-MDD
-    omc_name = fields.Char("Name",default="DETERMINATION  OMC BY PROCTOR TEST ")
+    omc_name = fields.Char("Name",default="DETERMINATION  OMC AND MDD BY PROCTOR TEST ")
     omc_visible = fields.Boolean("omc Compaction-MDD Visible",compute="_compute_visible")
     omc_table = fields.One2many('mechanical.omc.compaction.line','parent_id',string="OMC Compaction")
 
@@ -1021,15 +1167,71 @@ class Soil(models.Model):
    
 
 
-    omc_table_conformity = fields.Selection([
+    max_dry_density1_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_omc_table_conformity", store=True)
+            ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_max_dry_density1_conformity", store=True)
 
-    @api.depends('omc1','eln_ref','grade')
-    def _compute_omc_table_conformity(self):
+    @api.depends('max_dry_density1','eln_ref','grade')
+    def _compute_max_dry_density1_conformity(self):
         
         for record in self:
-            record.omc_table_conformity = 'fail'
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.max_dry_density1_conformity = 'na'
+                continue
+            record.max_dry_density1_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','poty7888hhhllly1-ca64-44dd-b0ae-23141478h')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','poty7888hhhllly1-ca64-44dd-b0ae-23141478h')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.max_dry_density1 - record.max_dry_density1*mu_value
+                    upper = record.max_dry_density1 + record.max_dry_density1*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.max_dry_density1_conformity = 'pass'
+                        break
+                    else:
+                        record.max_dry_density1_conformity = 'fail'
+
+    max_dry_density1_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')], string="NABL", compute="_compute_max_dry_density1_nabl", store=True)
+
+    @api.depends('max_dry_density1','eln_ref','grade')
+    def _compute_max_dry_density1_nabl(self):
+        
+        for record in self:
+            record.max_dry_density1_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','poty7888hhhllly1-ca64-44dd-b0ae-23141478h')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','poty7888hhhllly1-ca64-44dd-b0ae-23141478h')]).parameter_table
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.max_dry_density1 - record.max_dry_density1*mu_value
+            upper = record.max_dry_density1 + record.max_dry_density1*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.max_dry_density1_nabl = 'pass'
+                break
+            else:
+                record.max_dry_density1_nabl = 'fail'
+
+    omc1_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_omc1_conformity", store=True)
+
+    @api.depends('omc1','eln_ref','grade')
+    def _compute_omc1_conformity(self):
+        
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.omc1_conformity = 'na'
+                continue
+            record.omc1_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210vbf-20fb-4843-aa0e-142578bgtyu')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210vbf-20fb-4843-aa0e-142578bgtyu')]).parameter_table
             for material in materials:
@@ -1041,20 +1243,20 @@ class Soil(models.Model):
                     lower = record.omc1 - record.omc1*mu_value
                     upper = record.omc1 + record.omc1*mu_value
                     if lower >= req_min and upper <= req_max:
-                        record.omc_table_conformity = 'pass'
+                        record.omc1_conformity = 'pass'
                         break
                     else:
-                        record.omc_table_conformity = 'fail'
+                        record.omc1_conformity = 'fail'
 
-    omc_table_nabl = fields.Selection([
+    omc1_nabl = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_omc_table_nabl", store=True)
+        ('fail', 'Fail')], string="NABL", compute="_compute_omc1_nabl", store=True)
 
     @api.depends('omc1','eln_ref','grade')
-    def _compute_omc_table_nabl(self):
+    def _compute_omc1_nabl(self):
         
         for record in self:
-            record.omc_table_nabl = 'fail'
+            record.omc1_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210vbf-20fb-4843-aa0e-142578bgtyu')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210vbf-20fb-4843-aa0e-142578bgtyu')]).parameter_table
             # for material in materials:
@@ -1066,10 +1268,10 @@ class Soil(models.Model):
             lower = record.omc1 - record.omc1*mu_value
             upper = record.omc1 + record.omc1*mu_value
             if lower >= lab_min and upper <= lab_max:
-                record.omc_table_nabl = 'pass'
+                record.omc1_nabl = 'pass'
                 break
             else:
-                record.omc_table_nabl = 'fail'
+                record.omc1_nabl = 'fail'
 
     
     graph_image_density1 = fields.Binary("Line Chart", compute="_compute_graph_image_density_omc_light1", store=True)
@@ -1145,80 +1347,7 @@ class Soil(models.Model):
 
 
 
-     # TRIAXIAL SHEAR TEST (By LVDT Reading )
-    triaxial_name = fields.Char("Name",default="TRIAXIAL SHEAR TEST (By LVDT Reading ) ")
-    triaxial_visible = fields.Boolean("TRIAXIAL SHEAR TEST (By LVDT Reading )",compute="_compute_visible")
-   
-    observations = fields.Char(string="Observations")
-
-    diameter_triaxial = fields.Float(string="Diameter of the specimen  (d) in  meters",digits=(12,3))
-    length_triaxial = fields.Float(string="Length of the specimen (L) in meters",digits=(12,3))
-    area_triaxial = fields.Float(string="Area of the specimen  in m2",compute="_compute_area_triaxial",digits=(12,3))
-
-    area_triaxial_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_area_triaxial_conformity", store=True)
-
-    @api.depends('area_triaxial','eln_ref','grade')
-    def _compute_area_triaxial_conformity(self):
-        
-        for record in self:
-            record.area_triaxial_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210vbf-20fb-4843-aa0e-145ght27854l')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210vbf-20fb-4843-aa0e-145ght27854l')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.area_triaxial - record.area_triaxial*mu_value
-                    upper = record.area_triaxial + record.area_triaxial*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.area_triaxial_conformity = 'pass'
-                        break
-                    else:
-                        record.area_triaxial_conformity = 'fail'
-
-    area_triaxial_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_area_triaxial_nabl", store=True)
-
-    @api.depends('area_triaxial','eln_ref','grade')
-    def _compute_area_triaxial_nabl(self):
-        
-        for record in self:
-            record.area_triaxial_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210vbf-20fb-4843-aa0e-145ght27854l')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3210vbf-20fb-4843-aa0e-145ght27854l')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.area_triaxial - record.area_triaxial*mu_value
-            upper = record.area_triaxial + record.area_triaxial*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.area_triaxial_nabl = 'pass'
-                break
-            else:
-                record.area_triaxial_nabl = 'fail'
-
-    @api.depends('diameter_triaxial')
-    def _compute_area_triaxial(self):
-        for rec in self:
-            d = rec.diameter_triaxial or 0.0
-            rec.area_triaxial = 0.7853 * (d ** 2)
-
-    triaxial_table = fields.One2many('mechanical.lvdt.line','parent_id',string="LVDT Reading ")
-
-
-       # CALCULATIONS OF COHESION AND ANGLE OF INTERNAL FRICTION
-    internal_fraction_name = fields.Char("Name",default="CALCULATIONS OF COHESION AND ANGLE OF INTERNAL FRICTION")
-    internal_fraction_visible = fields.Boolean("CALCULATIONS OF COHESION AND ANGLE OF INTERNAL FRICTION",compute="_compute_visible")
-
-    internal_fraction_table = fields.One2many('mechanical.cohesion.line','parent_id',string="LVDT Reading ")
+    
 
 
     # CBR
@@ -1367,12 +1496,15 @@ class Soil(models.Model):
 
     fsi_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_fsi_conformity", store=True)
+            ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_fsi_conformity", store=True)
 
     @api.depends('fsi','eln_ref','grade')
     def _compute_fsi_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.fsi_conformity = 'na'
+                continue
             record.fsi_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ght4125-ca64-44dd-b0ae-228aacf04998')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ght4125-ca64-44dd-b0ae-228aacf04998')]).parameter_table
@@ -1416,220 +1548,6 @@ class Soil(models.Model):
                 record.fsi_nabl = 'fail'
 
 
-         # DETERMINATION OF 'K'
-    determination_name = fields.Char("Name",default="DETERMINATION OF 'K'")
-    determination_visible = fields.Boolean("DETERMINATION OF 'K' Visible",compute="_compute_visible")
-  
-    dia_burette = fields.Float(string="Dia Of Burette (d) ")
-    dia_specimen = fields.Float(string="Dia of Specimen (D)")
-    area_burrette = fields.Float(string="Area of Burrette")
-    area_specimen = fields.Float(string="Area of Specimen A")
-    lenght_specimen = fields.Float(string="Length of Specimen L ")
-    initial_height = fields.Float(string="Initial height ho")
-    final_height = fields.Float(string="Final height h1 ")
-    permeability = fields.Float(string="PERMEABILITY 'k'")
-
-
-    permeability_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_permeability_conformity", store=True)
-
-    @api.depends('permeability','eln_ref','grade')
-    def _compute_permeability_conformity(self):
-        
-        for record in self:
-            record.permeability_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5487gt21-ca64-44dd-b0ae-228aacf04965')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5487gt21-ca64-44dd-b0ae-228aacf04965')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.permeability - record.permeability*mu_value
-                    upper = record.permeability + record.permeability*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.permeability_conformity = 'pass'
-                        break
-                    else:
-                        record.permeability_conformity = 'fail'
-
-    permeability_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_permeability_nabl", store=True)
-
-    @api.depends('permeability','eln_ref','grade')
-    def _compute_permeability_nabl(self):
-        
-        for record in self:
-            record.permeability_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5487gt21-ca64-44dd-b0ae-228aacf04965')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5487gt21-ca64-44dd-b0ae-228aacf04965')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.permeability - record.permeability*mu_value
-            upper = record.permeability + record.permeability*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.permeability_nabl = 'pass'
-                break
-            else:
-                record.permeability_nabl = 'fail'
-
-     # Shrinkage limit (%)
-    shrinkage_limit_name = fields.Char("Name",default="Shrinkage limit")
-    shrinkage_limit_visible = fields.Boolean("Shrinkage limit Visible",compute="_compute_visible")
-
-    shrinkage_limit_table = fields.One2many('mechanical.shrinkage.limit.line','parent_id',string="Parameter")
-
-    shrinkage_limit1 = fields.Float(string="Shrinkage limit (%)",digits=(12,3),compute="_compute_shrinkage_limit1")
-
-    shrinkage_limit1_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_shrinkage_limit1_conformity", store=True)
-
-    @api.depends('shrinkage_limit1','eln_ref','grade')
-    def _compute_shrinkage_limit1_conformity(self):
-        
-        for record in self:
-            record.shrinkage_limit1_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5487gt21-ca64-44dd-b0ae-278954ggh114')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5487gt21-ca64-44dd-b0ae-278954ggh114')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.shrinkage_limit1 - record.shrinkage_limit1*mu_value
-                    upper = record.shrinkage_limit1 + record.shrinkage_limit1*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.shrinkage_limit1_conformity = 'pass'
-                        break
-                    else:
-                        record.shrinkage_limit1_conformity = 'fail'
-
-    shrinkage_limit1_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_shrinkage_limit1_nabl", store=True)
-
-    @api.depends('shrinkage_limit1','eln_ref','grade')
-    def _compute_shrinkage_limit1_nabl(self):
-        
-        for record in self:
-            record.shrinkage_limit1_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5487gt21-ca64-44dd-b0ae-278954ggh114')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5487gt21-ca64-44dd-b0ae-278954ggh114')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.shrinkage_limit1 - record.shrinkage_limit1*mu_value
-            upper = record.shrinkage_limit1 + record.shrinkage_limit1*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.shrinkage_limit1_nabl = 'pass'
-                break
-            else:
-                record.shrinkage_limit1_nabl = 'fail'
-
-
-    @api.depends('shrinkage_limit_table.shrinkage_limit')
-    def _compute_shrinkage_limit1(self):
-        for record in self:
-            if record.shrinkage_limit_table:
-                total_shrinkage_limit = sum(record.shrinkage_limit_table.mapped('shrinkage_limit'))
-                average = total_shrinkage_limit / len(record.shrinkage_limit_table)
-                record.shrinkage_limit1 = (average)  # ⬅️ Rounds to nearest integer
-            else:
-                record.shrinkage_limit1 = 0.0
-
-   
-    volume_dry_table = fields.One2many('mechanical.volume.dry.line','parent_id',string="Parameter")
-    volume_dry_name = fields.Char("Name",default="Volume of dry Pat(V2)")
-
-    volume_wet_table = fields.One2many('mechanical.volume.wet.line','parent_id',string="Parameter")
-    volume_wet_name = fields.Char("Name",default="Volume of wet soil(V1)")
-
-    # Permeability Falling Head Test
-    permeability_falling_name = fields.Char("Name",default="Permeability Falling Head Test")
-    permeability_falling_visible = fields.Boolean("Permeability Falling Head Test Visible",compute="_compute_visible")
-
-   
-    length = fields.Float(string="Length of Soil Specimen (L) [cm]", digits=(12,2))
-    diameter_mold = fields.Float(string="Diameter of Mold (D) [cm]", digits=(12,2))
-    diameter_standpipe = fields.Float(string="Diameter of Stand Pipe (d) [cm]", digits=(12,2))
-
-    # Child lines
-    test_line_ids = fields.One2many("mechanical.permeability.line", "parent_id", string="Test Readings")
-
-    # Average K
-    avg_k = fields.Float(string="Average Permeability (k) [cm/s]", compute="_compute_avg_k", store=True, digits=(12,2))
-
-    @api.depends("test_line_ids.k_value")
-    def _compute_avg_k(self):
-        for rec in self:
-            if rec.test_line_ids:
-                vals = rec.test_line_ids.mapped("k_value")
-                rec.avg_k = sum(vals) / len(vals)
-            else:
-                rec.avg_k = 0.0
-
-    avg_k_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_k_conformity", store=True)
-
-    @api.depends('avg_k','eln_ref','grade')
-    def _compute_avg_k_conformity(self):
-        
-        for record in self:
-            record.avg_k_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','897546gt21-ca64-44dd-b0ae-22145687')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','897546gt21-ca64-44dd-b0ae-22145687')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.avg_k - record.avg_k*mu_value
-                    upper = record.avg_k + record.avg_k*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.avg_k_conformity = 'pass'
-                        break
-                    else:
-                        record.avg_k_conformity = 'fail'
-
-    avg_k_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_avg_k_nabl", store=True)
-
-    @api.depends('avg_k','eln_ref','grade')
-    def _compute_avg_k_nabl(self):
-        
-        for record in self:
-            record.avg_k_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','897546gt21-ca64-44dd-b0ae-22145687')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','897546gt21-ca64-44dd-b0ae-22145687')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.avg_k - record.avg_k*mu_value
-            upper = record.avg_k + record.avg_k*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.avg_k_nabl = 'pass'
-                break
-            else:
-                record.avg_k_nabl = 'fail'
-
      # Specific Gravity
     specific_gravity_name = fields.Char("Name",default="Specific Gravity")
     specific_gravity_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
@@ -1661,12 +1579,15 @@ class Soil(models.Model):
 
     specific_gravity_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_specific_gravity_conformity", store=True)
+            ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_specific_gravity_conformity", store=True)
 
     @api.depends('specific_gravity','eln_ref','grade')
     def _compute_specific_gravity_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.specific_gravity_conformity = 'na'
+                continue
             record.specific_gravity_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','26a889da-3ab8-40e9-af69-2399b62dce9f')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','26a889da-3ab8-40e9-af69-2399b62dce9f')]).parameter_table
@@ -1732,12 +1653,15 @@ class Soil(models.Model):
     
     avg_shear_stress_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_shear_stress_conformity", store=True)
+            ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_avg_shear_stress_conformity", store=True)
 
     @api.depends('avg_shear_stress','eln_ref','grade')
     def _compute_avg_shear_stress_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_shear_stress_conformity = 'na'
+                continue
             record.avg_shear_stress_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')]).parameter_table
@@ -1781,249 +1705,9 @@ class Soil(models.Model):
                 record.avg_shear_stress_nabl = 'fail'
 
 
-      # Unconfined Compressive Strength (UCS) Test
-    ucs_name = fields.Char("Name",default="Unconfined Compressive Strength (UCS) Test")
-    ucs_visible = fields.Boolean("Unconfined Compressive Strength (UCS) Test Visible",compute="_compute_visible")
+     
 
-    initial_diameter = fields.Float(string="Initial Diameter of Specimen (D0) ", digits=(12,3))
-    initial_length = fields.Float(string="Initial Length of Specimen (L0) ", digits=(12,3))
-    initial_density = fields.Float(string="Initial Density of Specimen ", digits=(12,3))
-    proving_ring_constant = fields.Float(string="Proving Ring Constant (K) ", digits=(12,3))
-
-    ucs_ids = fields.One2many("mechanical.ucs.test.line", "parent_id", string="Test Readings")
-
-    avg_stress = fields.Float(string="Average Stress", compute="_compute_avg_stress", store=True, digits=(12,3))
-    avg_strain = fields.Float(string="Average Axial Strain", compute="_compute_avg_stress", store=True, digits=(12,3))
-
-    @api.depends("ucs_ids.stress", "ucs_ids.axial_strain")
-    def _compute_avg_stress(self):
-        for rec in self:
-            stresses = [line.stress for line in rec.ucs_ids if line.stress is not None]
-            strains = [line.axial_strain for line in rec.ucs_ids if line.axial_strain is not None]
-            rec.avg_stress = round(sum(stresses)/len(stresses),3) if stresses else 0.0
-            rec.avg_strain = round(sum(strains)/len(strains),3) if strains else 0.0
-
-    avg_stress_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_stress_conformity", store=True)
-
-    @api.depends('avg_stress','eln_ref','grade')
-    def _compute_avg_stress_conformity(self):
-        
-        for record in self:
-            record.avg_stress_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','t4y57888hhhllly1-ca64-44dd-b0ae-1234567rt')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','t4y57888hhhllly1-ca64-44dd-b0ae-1234567rt')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.avg_stress - record.avg_stress*mu_value
-                    upper = record.avg_stress + record.avg_stress*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.avg_stress_conformity = 'pass'
-                        break
-                    else:
-                        record.avg_stress_conformity = 'fail'
-
-    avg_stress_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_avg_stress_nabl", store=True)
-
-    @api.depends('avg_stress','eln_ref','grade')
-    def _compute_avg_stress_nabl(self):
-        
-        for record in self:
-            record.avg_stress_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','t4y57888hhhllly1-ca64-44dd-b0ae-1234567rt')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','t4y57888hhhllly1-ca64-44dd-b0ae-1234567rt')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.avg_stress - record.avg_stress*mu_value
-            upper = record.avg_stress + record.avg_stress*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.avg_stress_nabl = 'pass'
-                break
-            else:
-                record.avg_stress_nabl = 'fail'
-
-     # Consolidation Test (Cc) Test
-    consolidation_name = fields.Char("Name",default="Consolidation Test (Cc)")
-    consolidation_visible = fields.Boolean("Consolidation Test (Cc) Visible",compute="_compute_visible")
-
-    initial_height = fields.Float(string="Initial Height H0 ", digits=(12,3))
-    diameter = fields.Float(string="Diameter D0 ", digits=(12,3))
-    area = fields.Float(string="Area ", compute="_compute_area", store=True, digits=(12,3))
-    initial_void_ratio = fields.Float(string="Initial Void Ratio e0", digits=(12,3))
-
-    consolidation_name_ids = fields.One2many("mechanical.consolidation.test.line", "parent_id", string="Test Lines")
-
-    compression_index = fields.Float(string="Compression Index Cc", compute="_compute_cc", store=True, digits=(12,3))
-
-    compression_index_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_compression_index_conformity", store=True)
-
-    @api.depends('compression_index','eln_ref','grade')
-    def _compute_compression_index_conformity(self):
-        
-        for record in self:
-            record.compression_index_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.compression_index - record.compression_index*mu_value
-                    upper = record.compression_index + record.compression_index*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.compression_index_conformity = 'pass'
-                        break
-                    else:
-                        record.compression_index_conformity = 'fail'
-
-    compression_index_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_compression_index_nabl", store=True)
-
-    @api.depends('compression_index','eln_ref','grade')
-    def _compute_compression_index_nabl(self):
-        
-        for record in self:
-            record.compression_index_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78957888hhhllly1-ca64-44dd-b0ae-2314780ty')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.compression_index - record.compression_index*mu_value
-            upper = record.compression_index + record.compression_index*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.compression_index_nabl = 'pass'
-                break
-            else:
-                record.compression_index_nabl = 'fail'
-
-    @api.depends("diameter")
-    def _compute_area(self):
-        for rec in self:
-            if rec.diameter:
-                radius = rec.diameter / 2.0 / 10  # mm to cm
-                rec.area = math.pi * radius**2
-            else:
-                rec.area = 0.0
-
-    @api.depends("consolidation_name_ids.void_ratio")
-    def _compute_cc(self):
-        # Simple approximation: slope of virgin compression line
-        for rec in self:
-            lines = sorted(rec.consolidation_name_ids, key=lambda l: l.stress or 0)
-            if len(lines) >= 2:
-                e1, e2 = lines[0].void_ratio, lines[-1].void_ratio
-                sigma1, sigma2 = lines[0].stress, lines[-1].stress
-                if sigma1 > 0 and sigma2 > 0:
-                    rec.compression_index = round((e1 - e2) / (math.log10(sigma2) - math.log10(sigma1)), 3)
-                else:
-                    rec.compression_index = 0.0
-            else:
-                rec.compression_index = 0.0
-
-    # Consolidation Test (Pc) Test
-    consolidation_pc_name = fields.Char("Name",default="Consolidation Test (Pc)")
-    consolidation_pc_visible = fields.Boolean("Consolidation Test (Pc) Visible",compute="_compute_visible")
-
-    initial_height_pc = fields.Float(string="Initial Height H0 ")
-    diameter_pc = fields.Float(string="Diameter D0 ")
-    area_pc = fields.Float(string="Area ", compute="_compute_area_pc", store=True)
-    initial_void_ratio_pc = fields.Float(string="Initial Void Ratio e0")
-
-    consolidation_pc_ids = fields.One2many("mechanical.consolidation.test.pc.line", "parent_id", string="Test Lines")
-
-    preconsolidation_pressure = fields.Float(string="Preconsolidation Pressure Pc ", compute="_compute_preconsolidation_pressure", store=True)
-
-    preconsolidation_pressure_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_preconsolidation_pressure_conformity", store=True)
-
-    @api.depends('preconsolidation_pressure','eln_ref','grade')
-    def _compute_preconsolidation_pressure_conformity(self):
-        
-        for record in self:
-            record.preconsolidation_pressure_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','98ggh7888hhhllly1-ca64-44dd-b0ae-6547ggt0r')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','98ggh7888hhhllly1-ca64-44dd-b0ae-6547ggt0r')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.preconsolidation_pressure - record.preconsolidation_pressure*mu_value
-                    upper = record.preconsolidation_pressure + record.preconsolidation_pressure*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.preconsolidation_pressure_conformity = 'pass'
-                        break
-                    else:
-                        record.preconsolidation_pressure_conformity = 'fail'
-
-    preconsolidation_pressure_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_preconsolidation_pressure_nabl", store=True)
-
-    @api.depends('preconsolidation_pressure','eln_ref','grade')
-    def _compute_preconsolidation_pressure_nabl(self):
-        
-        for record in self:
-            record.preconsolidation_pressure_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','98ggh7888hhhllly1-ca64-44dd-b0ae-6547ggt0r')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','98ggh7888hhhllly1-ca64-44dd-b0ae-6547ggt0r')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.preconsolidation_pressure - record.preconsolidation_pressure*mu_value
-            upper = record.preconsolidation_pressure + record.preconsolidation_pressure*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.preconsolidation_pressure_nabl = 'pass'
-                break
-            else:
-                record.preconsolidation_pressure_nabl = 'fail'
-
-    @api.depends("diameter_pc")
-    def _compute_area_pc(self):
-        for rec in self:
-            if rec.diameter_pc:
-                radius = rec.diameter_pc / 2.0 / 10  # mm to cm
-                rec.area_pc = math.pi * radius**2
-            else:
-                rec.area_pc = 0.0
-
-    @api.depends('consolidation_pc_ids.void_ratio_pc')
-    def _compute_preconsolidation_pressure(self):
-        for record in self:
-            if record.consolidation_pc_ids:
-                total_preconsolidation_pressure = sum(record.consolidation_pc_ids.mapped('void_ratio_pc'))
-                average = total_preconsolidation_pressure / len(record.consolidation_pc_ids)
-                record.preconsolidation_pressure = (average)  # ⬅️ Rounds to nearest integer
-            else:
-                record.preconsolidation_pressure = 0.0
-
-
-     # Direct Shear Test (Angle of Friction)
+    # Direct Shear Test (Angle of Friction)
     angle_shear_name = fields.Char("Name",default="Direct Shear Test (Angle of Friction)")
     angle_shear_visible = fields.Boolean("Direct Shear Test (Angle of Friction) Visible",compute="_compute_visible")
      
@@ -2034,12 +1718,15 @@ class Soil(models.Model):
 
     phi_deg_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_phi_deg_conformity", store=True)
+            ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_phi_deg_conformity", store=True)
 
     @api.depends('phi_deg','eln_ref','grade')
     def _compute_phi_deg_conformity(self):
         
         for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.phi_deg_conformity = 'na'
+                continue
             record.phi_deg_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr')]).parameter_table
@@ -2119,289 +1806,79 @@ class Soil(models.Model):
             rec.phi_deg = phi_deg
             rec.cohesion = c
 
-      # Swelling Pressure by Consolidometer Method
-    swelling_pressure_name = fields.Char("Name",default="Swelling Pressure by Consolidometer Method")
-    swelling_pressure_visible = fields.Boolean("Swelling Pressure by Consolidometer Method Visible",compute="_compute_visible")
 
-    swelling_pressure_line_ids = fields.One2many(
-        'mechanical.swelling.line',
-        'parent_id',
-        string="swelling_pressure Table"
-    )
+     # Moisture Content
+    moisture_content_name = fields.Char("Name",default="Moisture Content")
+    moisture_content_visible = fields.Boolean("Moisture Content Visible",compute="_compute_visible")
 
-    # Final result (average swelling pressure)
-    avg_swelling_pressure = fields.Float(
-        string="Average Swelling ",
-        compute="_compute_avg_swelling_pressure",
-        store=True
-    )
+    moisture_content_ids = fields.One2many("soil.moisture.content.line", "parent_id", string="Test Readings")
 
+    avg_moisture_content = fields.Float(
+        string="Average Moisture Content % ",
+        compute="_compute_avg_moisture_content",
+        store=True,
+        digits=(12,2))
 
-    avg_swelling_pressure_conformity = fields.Selection([
+    @api.depends("moisture_content_ids.moisture_content")
+    def _compute_avg_moisture_content(self):
+        for rec in self:
+            vals = [line.moisture_content for line in rec.moisture_content_ids if line.moisture_content is not None]
+            rec.avg_moisture_content = round(sum(vals)/len(vals), 2) if vals else 0.0
+    
+    avg_moisture_content_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_swelling_pressure_conformity", store=True)
+            ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_avg_moisture_content_conformity", store=True)
 
-    @api.depends('avg_swelling_pressure','eln_ref','grade')
-    def _compute_avg_swelling_pressure_conformity(self):
+    @api.depends('avg_moisture_content','eln_ref','grade')
+    def _compute_avg_moisture_content_conformity(self):
         
         for record in self:
-            record.avg_swelling_pressure_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')]).parameter_table
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_moisture_content_conformity = 'na'
+                continue
+            record.avg_moisture_content_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
                     
-                    lower = record.avg_swelling_pressure - record.avg_swelling_pressure*mu_value
-                    upper = record.avg_swelling_pressure + record.avg_swelling_pressure*mu_value
+                    lower = record.avg_moisture_content - record.avg_moisture_content*mu_value
+                    upper = record.avg_moisture_content + record.avg_moisture_content*mu_value
                     if lower >= req_min and upper <= req_max:
-                        record.avg_swelling_pressure_conformity = 'pass'
+                        record.avg_moisture_content_conformity = 'pass'
                         break
                     else:
-                        record.avg_swelling_pressure_conformity = 'fail'
+                        record.avg_moisture_content_conformity = 'fail'
 
-    avg_swelling_pressure_nabl = fields.Selection([
+    avg_moisture_content_nabl = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_avg_swelling_pressure_nabl", store=True)
+        ('fail', 'Fail')], string="NABL", compute="_compute_avg_moisture_content_nabl", store=True)
 
-    @api.depends('avg_swelling_pressure','eln_ref','grade')
-    def _compute_avg_swelling_pressure_nabl(self):
+    @api.depends('avg_moisture_content','eln_ref','grade')
+    def _compute_avg_moisture_content_nabl(self):
         
         for record in self:
-            record.avg_swelling_pressure_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2')]).parameter_table
+            record.avg_moisture_content_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9')]).parameter_table
             # for material in materials:
             #     if material.grade.id == record.grade.id:
             lab_min = line.lab_min_value
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.avg_swelling_pressure - record.avg_swelling_pressure*mu_value
-            upper = record.avg_swelling_pressure + record.avg_swelling_pressure*mu_value
+            lower = record.avg_moisture_content - record.avg_moisture_content*mu_value
+            upper = record.avg_moisture_content + record.avg_moisture_content*mu_value
             if lower >= lab_min and upper <= lab_max:
-                record.avg_swelling_pressure_nabl = 'pass'
+                record.avg_moisture_content_nabl = 'pass'
                 break
             else:
-                record.avg_swelling_pressure_nabl = 'fail'
+                record.avg_moisture_content_nabl = 'fail'
 
-    @api.depends('swelling_pressure_line_ids.swelling_pressure')
-    def _compute_avg_swelling_pressure(self):
-        for rec in self:
-            if rec.swelling_pressure_line_ids:
-                total = sum(rec.swelling_pressure_line_ids.mapped('swelling_pressure'))
-                rec.avg_swelling_pressure = total / len(rec.swelling_pressure_line_ids)
-            else:
-                rec.avg_swelling_pressure = 0.0
-
-     # Unconsolidated Undrained Triaxial Test (Angle of Friction)
-    uu_triaxial_angle_name = fields.Char("Name",default="Unconsolidated Undrained Triaxial Test (Angle of Friction)")
-    uu_triaxial_angle_visible = fields.Boolean("Unconsolidated Undrained Triaxial Test (Angle of Friction) Visible",compute="_compute_visible")
-
-    uu_triaxial_angle_line_ids = fields.One2many("mechanical.uu.triaxial.line", "parent_id", string="Test Observations")
-
-    phi_deg_uu_triaxial_angle = fields.Float(string="Angle of Friction φ (°)", compute="_compute_phi_c", store=True)
-    cohesion_uu_triaxial_angle = fields.Float(string="Cohesion c (kPa)", compute="_compute_phi_c", store=True)
-
-    phi_deg_uu_triaxial_angle_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_phi_deg_uu_triaxial_angle_conformity", store=True)
-
-    @api.depends('phi_deg_uu_triaxial_angle','eln_ref','grade')
-    def _compute_phi_deg_uu_triaxial_angle_conformity(self):
-        
-        for record in self:
-            record.phi_deg_uu_triaxial_angle_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65478h88hhhllly1-ca64-44dd-b0ae-89745785gt41d')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65478h88hhhllly1-ca64-44dd-b0ae-89745785gt41d')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.phi_deg_uu_triaxial_angle - record.phi_deg_uu_triaxial_angle*mu_value
-                    upper = record.phi_deg_uu_triaxial_angle + record.phi_deg_uu_triaxial_angle*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.phi_deg_uu_triaxial_angle_conformity = 'pass'
-                        break
-                    else:
-                        record.phi_deg_uu_triaxial_angle_conformity = 'fail'
-
-    phi_deg_uu_triaxial_angle_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_phi_deg_uu_triaxial_angle_nabl", store=True)
-
-    @api.depends('phi_deg_uu_triaxial_angle','eln_ref','grade')
-    def _compute_phi_deg_uu_triaxial_angle_nabl(self):
-        
-        for record in self:
-            record.phi_deg_uu_triaxial_angle_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65478h88hhhllly1-ca64-44dd-b0ae-89745785gt41d')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65478h88hhhllly1-ca64-44dd-b0ae-89745785gt41d')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.phi_deg_uu_triaxial_angle - record.phi_deg_uu_triaxial_angle*mu_value
-            upper = record.phi_deg_uu_triaxial_angle + record.phi_deg_uu_triaxial_angle*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.phi_deg_uu_triaxial_angle_nabl = 'pass'
-                break
-            else:
-                record.phi_deg_uu_triaxial_angle_nabl = 'fail'
-
-    @api.depends("uu_triaxial_angle_line_ids.sigma", "uu_triaxial_angle_line_ids.tau")
-    def _compute_phi_c(self):
-        for rec in self:
-            lines = rec.uu_triaxial_angle_line_ids
-
-            # किमान 2 data points असले पाहिजेत
-            if not lines or len(lines) < 2:
-                rec.phi_deg_uu_triaxial_angle = 0.0
-                rec.cohesion_uu_triaxial_angle = 0.0
-                continue
-
-            slopes = []
-            intercepts = []
-
-            # सर्व सलग points वरून slope व intercept काढा
-            for i in range(len(lines) - 1):
-                p1 = lines[i]
-                p2 = lines[i + 1]
-
-                if (p2.sigma - p1.sigma) == 0:
-                    continue
-
-                m = (p2.tau - p1.tau) / (p2.sigma - p1.sigma)
-                c = p1.tau - m * p1.sigma
-                slopes.append(m)
-                intercepts.append(c)
-
-            if not slopes:
-                rec.phi_deg_uu_triaxial_angle = 0.0
-                rec.cohesion_uu_triaxial_angle = 0.0
-                continue
-
-            avg_m = sum(slopes) / len(slopes)
-            avg_c = sum(intercepts) / len(intercepts)
-
-            phi_rad = math.atan(avg_m)
-            phi_deg = phi_rad * 180.0 / math.pi
-
-            rec.phi_deg_uu_triaxial_angle = round(phi_deg, 3)
-            rec.cohesion_uu_triaxial_angle = round(avg_c, 3)
-
-      # Unconsolidated Undrained Triaxial Test (Angle of Friction)
-    uu_triaxial_cohesion_name = fields.Char("Name",default="Unconsolidated Undrained Triaxial Test (Cohesion)")
-    uu_triaxial_cohesion_visible = fields.Boolean("Unconsolidated Undrained Triaxial Test (Cohesion) Visible",compute="_compute_visible")
-
-    uu_triaxial_cohesion_line_ids = fields.One2many("mechanical.uu.triaxial.cohesion.line", "parent_id", string="Test Observations")
-
-    phi_deg_uu_triaxial_cohesion = fields.Float(string="Angle of Friction φ (°)", compute="_compute_phi_cohesion", store=True)
-    cohesion_uu_triaxial_cohesion = fields.Float(string="Cohesion c (kPa)", compute="_compute_phi_cohesion", store=True)
-
-    cohesion_uu_triaxial_cohesion_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_cohesion_uu_triaxial_cohesion_conformity", store=True)
-
-    @api.depends('cohesion_uu_triaxial_cohesion','eln_ref','grade')
-    def _compute_cohesion_uu_triaxial_cohesion_conformity(self):
-        
-        for record in self:
-            record.cohesion_uu_triaxial_cohesion_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2r478h88hhhllly1-ca64-44dd-b0ae-897897gghtre0')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2r478h88hhhllly1-ca64-44dd-b0ae-897897gghtre0')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.cohesion_uu_triaxial_cohesion - record.cohesion_uu_triaxial_cohesion*mu_value
-                    upper = record.cohesion_uu_triaxial_cohesion + record.cohesion_uu_triaxial_cohesion*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.cohesion_uu_triaxial_cohesion_conformity = 'pass'
-                        break
-                    else:
-                        record.cohesion_uu_triaxial_cohesion_conformity = 'fail'
-
-    cohesion_uu_triaxial_cohesion_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_cohesion_uu_triaxial_cohesion_nabl", store=True)
-
-    @api.depends('cohesion_uu_triaxial_cohesion','eln_ref','grade')
-    def _compute_cohesion_uu_triaxial_cohesion_nabl(self):
-        
-        for record in self:
-            record.cohesion_uu_triaxial_cohesion_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2r478h88hhhllly1-ca64-44dd-b0ae-897897gghtre0')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2r478h88hhhllly1-ca64-44dd-b0ae-897897gghtre0')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.cohesion_uu_triaxial_cohesion - record.cohesion_uu_triaxial_cohesion*mu_value
-            upper = record.cohesion_uu_triaxial_cohesion + record.cohesion_uu_triaxial_cohesion*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.cohesion_uu_triaxial_cohesion_nabl = 'pass'
-                break
-            else:
-                record.cohesion_uu_triaxial_cohesion_nabl = 'fail'
-
-    @api.depends("uu_triaxial_cohesion_line_ids.sigma", "uu_triaxial_cohesion_line_ids.tau")
-    def _compute_phi_cohesion(self):
-        for rec in self:
-            lines = rec.uu_triaxial_cohesion_line_ids
-
-            # किमान 2 data points असले पाहिजेत
-            if not lines or len(lines) < 2:
-                rec.phi_deg_uu_triaxial_cohesion = 0.0
-                rec.cohesion_uu_triaxial_cohesion = 0.0
-                continue
-
-            slopes = []
-            intercepts = []
-
-            # सर्व सलग points वरून slope व intercept काढा
-            for i in range(len(lines) - 1):
-                p1 = lines[i]
-                p2 = lines[i + 1]
-
-                if (p2.sigma - p1.sigma) == 0:
-                    continue
-
-                m = (p2.tau - p1.tau) / (p2.sigma - p1.sigma)
-                c = p1.tau - m * p1.sigma
-                slopes.append(m)
-                intercepts.append(c)
-
-            if not slopes:
-                rec.phi_deg_uu_triaxial_cohesion = 0.0
-                rec.cohesion_uu_triaxial_cohesion = 0.0
-                continue
-
-            avg_m = sum(slopes) / len(slopes)
-            avg_c = sum(intercepts) / len(intercepts)
-
-            phi_rad = math.atan(avg_m)
-            phi_deg = phi_rad * 180.0 / math.pi
-
-            rec.phi_deg_uu_triaxial_cohesion = round(phi_deg, 3)
-            rec.cohesion_uu_triaxial_cohesion = round(avg_c, 3)
      
-
-    
-
-
-    
-   
 
      ### Compute Visible
     @api.depends('sample_parameters')
@@ -2412,24 +1889,16 @@ class Soil(models.Model):
             # water_content_visible = False
             record.liquid_limit_visible = False
             record.plastic_limit_visible = False
+            record.shrinkage_limit_visible  = False 
             record.heavy_visible = False
             record.omc_visible = False
-            record.triaxial_visible = False
-            record.internal_fraction_visible = False
             record.soil_visible = False
             record.fsi_visible  = False 
-            record.determination_visible  = False 
-            record.shrinkage_limit_visible  = False 
-            record.permeability_falling_visible  = False 
             record.specific_gravity_visible  = False 
             record.direct_shear_visible  = False 
-            record.ucs_visible  = False 
-            record.consolidation_visible  = False 
-            record.consolidation_pc_visible  = False 
             record.angle_shear_visible  = False 
-            record.swelling_pressure_visible  = False 
-            record.uu_triaxial_angle_visible  = False
-            record.uu_triaxial_cohesion_visible  = False
+            record.moisture_content_visible = False
+
 
 
             for sample in record.sample_parameters:
@@ -2441,38 +1910,30 @@ class Soil(models.Model):
                 # if sample.internal_id == '800a2dc9-49fe-4dab-83e8-63758c7f351a':
                 #     record.water_content_visible = True
                 
+                if sample.internal_id == '7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9':
+                    record.moisture_content_visible = True
+
                 if sample.internal_id == '23fg21gh-7202-4d62-864b-8efa58b6b61f':
                     record.liquid_limit_visible = True
 
                 if sample.internal_id == '120vbf14-2ff0-4b81-aca1-0e07dab7cd87':
                     record.plastic_limit_visible = True
 
+                if sample.internal_id == '5487gt21-ca64-44dd-b0ae-278954ggh114':
+                    record.shrinkage_limit_visible = True
+
                 if sample.internal_id == '3210vbf-20fb-4843-aa0e-2ee981be0d7c':
                     record.heavy_visible = True
 
                 if sample.internal_id == '3210vbf-20fb-4843-aa0e-142578bgtyu':
                     record.omc_visible = True
-
-                if sample.internal_id == '3210vbf-20fb-4843-aa0e-145ght27854l':
-                    record.triaxial_visible = True
-
-                if sample.internal_id == '14578nhy87-20fb-4843-aa0e-145ght27854l':
-                    record.internal_fraction_visible = True
                 
                 if sample.internal_id == '15247gtr-2065-4532-814a-3a4c1e884305':
                     record.soil_visible = True
 
                 if sample.internal_id == 'ght4125-ca64-44dd-b0ae-228aacf04998':
                     record.fsi_visible = True
-
-                if sample.internal_id == '5487gt21-ca64-44dd-b0ae-228aacf04965':
-                    record.determination_visible = True
-
-                if sample.internal_id == '5487gt21-ca64-44dd-b0ae-278954ggh114':
-                    record.shrinkage_limit_visible = True
                 
-                if sample.internal_id == '897546gt21-ca64-44dd-b0ae-22145687':
-                    record.permeability_falling_visible = True
 
                 if sample.internal_id == '26a889da-3ab8-40e9-af69-2399b62dce9f':
                     record.specific_gravity_visible = True
@@ -2480,26 +1941,9 @@ class Soil(models.Model):
                 if sample.internal_id == '21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr':
                     record.direct_shear_visible = True
 
-                if sample.internal_id == 't4y57888hhhllly1-ca64-44dd-b0ae-1234567rt':
-                    record.ucs_visible = True
-                
-                if sample.internal_id == '78957888hhhllly1-ca64-44dd-b0ae-2314780ty':
-                    record.consolidation_visible = True
-
-                if sample.internal_id == '98ggh7888hhhllly1-ca64-44dd-b0ae-6547ggt0r':
-                    record.consolidation_pc_visible = True
-
                 if sample.internal_id == '00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr':
                     record.angle_shear_visible = True
 
-                if sample.internal_id == '9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2':
-                    record.swelling_pressure_visible = True
-
-                if sample.internal_id == '65478h88hhhllly1-ca64-44dd-b0ae-89745785gt41d':
-                    record.uu_triaxial_angle_visible = True
-                
-                if sample.internal_id == '2r478h88hhhllly1-ca64-44dd-b0ae-897897gghtre0':
-                    record.uu_triaxial_cohesion_visible = True
 
     
     def open_eln_page(self):
@@ -2517,12 +1961,16 @@ class Soil(models.Model):
             # Sieve Analysis
             if result.parameter.internal_id == '12014fgr-5c56-475b-9a89-93a59c9ee3a2':
                 result.calculated = True
-                # result.result_char = round(self.liquid_limit,2)
-                # if self.liquid_limit_nabl == 'pass':
-                #     result.nabl_status = 'nabl'
-                # else:
-                #     result.nabl_status = 'non-nabl'
-                # continue
+
+            # Moisture Content
+            if result.parameter.internal_id == '7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9':
+                result.calculated = True
+                result.result_char = round(self.avg_moisture_content,2)
+                if self.avg_moisture_content_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
             
             
             # Liquid Limit
@@ -2562,7 +2010,17 @@ class Soil(models.Model):
             if result.parameter.internal_id == '3210vbf-20fb-4843-aa0e-2ee981be0d7c':
                 result.calculated = True
                 result.result_char = round(self.max_dry_density,2)
-                if self.heavy_table_nabl == 'pass':
+                if self.max_dry_density_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Heavy Visible
+            if result.parameter.internal_id == 'po567888hhhllly1-ca64-44dd-b0ae-23120114r':
+                result.calculated = True
+                result.result_char = round(self.omc,2)
+                if self.omc_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -2570,10 +2028,20 @@ class Soil(models.Model):
 
 
             # OMC
+            if result.parameter.internal_id == 'poty7888hhhllly1-ca64-44dd-b0ae-23141478h':
+                result.calculated = True
+                result.result_char = round(self.max_dry_density1,2)
+                if self.max_dry_density1_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # OMC
             if result.parameter.internal_id == '3210vbf-20fb-4843-aa0e-142578bgtyu':
                 result.calculated = True
                 result.result_char = round(self.omc1,2)
-                if self.omc_table_nabl == 'pass':
+                if self.omc1_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -2590,50 +2058,11 @@ class Soil(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
 
-
-            # DETERMINATION OF 'K'
-            if result.parameter.internal_id == '5487gt21-ca64-44dd-b0ae-228aacf04965':
-                result.calculated = True
-                result.result_char = round(self.permeability,2)
-                if self.permeability_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-
-
-            
-            # Triaxial 
-            if result.parameter.internal_id == '3210vbf-20fb-4843-aa0e-145ght27854l':
-                result.calculated = True
-                result.result_char = round(self.area_triaxial,2)
-                if self.area_triaxial_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-
-            
-            # CALCULATIONS OF COHESION AND ANGLE OF INTERNAL FRICTION
-            if result.parameter.internal_id == '14578nhy87-20fb-4843-aa0e-145ght27854l':
-                result.calculated = True
-                # result.result_char = round(self.area_triaxial,2)
-                # if self.area_triaxial_nabl == 'pass':
-                #     result.nabl_status = 'nabl'
-                # else:
-                #     result.nabl_status = 'non-nabl'
-                # continue
-
+         
             
             # California Bearing Ratio
             if result.parameter.internal_id == '15247gtr-2065-4532-814a-3a4c1e884305':
                 result.calculated = True
-                # result.result_char = round(self.area_triaxial,2)
-                # if self.area_triaxial_nabl == 'pass':
-                #     result.nabl_status = 'nabl'
-                # else:
-                #     result.nabl_status = 'non-nabl'
-                # continue
 
 
             # Shrinkage limit Visible
@@ -2641,16 +2070,6 @@ class Soil(models.Model):
                 result.calculated = True
                 result.result_char = round(self.shrinkage_limit1,2)
                 if self.shrinkage_limit1_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-
-            # Permeability Falling Head Test
-            if result.parameter.internal_id == '897546gt21-ca64-44dd-b0ae-22145687':
-                result.calculated = True
-                result.result_char = round(self.avg_k,2)
-                if self.avg_k_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -2669,7 +2088,7 @@ class Soil(models.Model):
 
 
             # Direct Shear Test
-            if result.parameter.internal_id == '321456ki8hhhllly1-ca64-44dd-b0ae-3214654lk':
+            if result.parameter.internal_id == '21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr':
                 result.calculated = True
                 result.result_char = round(self.avg_shear_stress,2)
                 if self.avg_shear_stress_nabl == 'pass':
@@ -2679,38 +2098,7 @@ class Soil(models.Model):
                 continue
 
 
-            # Unconfined Compressive Strength (UCS) Test
-            if result.parameter.internal_id == 't4y57888hhhllly1-ca64-44dd-b0ae-1234567rt':
-                result.calculated = True
-                result.result_char = round(self.avg_stress,2)
-                if self.avg_stress_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-
-
-            # Consolidation Test (Cc) Test
-            if result.parameter.internal_id == '78957888hhhllly1-ca64-44dd-b0ae-2314780ty':
-                result.calculated = True
-                result.result_char = round(self.compression_index,2)
-                if self.compression_index_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-
-
-            # Consolidation Test (Pc) Test
-            if result.parameter.internal_id == '32145888hhhllly1-ca64-44dd-b0ae-2578886oopp':
-                result.calculated = True
-                result.result_char = round(self.preconsolidation_pressure,2)
-                if self.preconsolidation_pressure_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-
+           
             
             # Direct Shear Test (Angle of Friction)
             if result.parameter.internal_id == '00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr':
@@ -2723,61 +2111,6 @@ class Soil(models.Model):
                 continue
 
 
-            # Swelling Pressure by Consolidometer Method
-            if result.parameter.internal_id == '9521yt88hhhllly1-ca64-44dd-b0ae-8974578ghtr2':
-                result.calculated = True
-                result.result_char = round(self.avg_swelling_pressure,2)
-                if self.avg_swelling_pressure_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-
-
-            # Unconsolidated Undrained Triaxial Test (Angle of Friction)
-            if result.parameter.internal_id == 'yt25ec57-11f8-4249-9fa8-788889999rtt':
-                result.calculated = True
-                result.result_char = round(self.phi_deg_uu_triaxial_angle,2)
-                if self.phi_deg_uu_triaxial_angle_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-
-
-            if result.parameter.internal_id == '2r478h88hhhllly1-ca64-44dd-b0ae-897897gghtre0':
-                result.calculated = True
-                result.result_char = round(self.cohesion_uu_triaxial_cohesion,2)
-                if self.cohesion_uu_triaxial_cohesion_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-
-            # this is comment for sieve
-            # if result.parameter.internal_id == 'tyer4fgr-5c56-475b-9arty156878965uut':
-            #     result.calculated = True
-
-            if result.parameter.internal_id == '7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9':
-                result.calculated = True
-
-            if result.parameter.internal_id == '26a889da-3ab8-40e9-af69-2399b62dce9f':
-                result.calculated = True
-
-            if result.parameter.internal_id == '3825ec57-11f8-4249-9fa8-d99f64ffd396':
-                result.calculated = True
-
-            if result.parameter.internal_id == 'c800e59a-b847-4049-9e2b-673fcd1fcde5':
-                result.calculated = True
-
-            if result.parameter.internal_id == 'tyer4fgrtlmjy-475b-9arty156878901247':
-                result.calculated = True
-
-            if result.parameter.internal_id == 'jkt56888hhhllly1-ca64-44dd-b0ae-23120147g':
-                result.calculated = True
-
-            if result.parameter.internal_id == 'po567888hhhllly1-ca64-44dd-b0ae-23120114r':
-                result.calculated = True
 
 
 
@@ -2871,6 +2204,65 @@ class Soil(models.Model):
             (0, 0, {'sr_no': 'v', 'notes': 'This report shall not be reproduced, except in full, without the prior written approval of Make Infracon.'}),
             (0, 0, {'sr_no': 'vi', 'notes': 'The laboratory assumes no responsibility for the purpose for which the test results are used or for any subsequent actions taken based on these results.'}),
         ]
+
+
+
+class SoilMoistureContentLine(models.Model):
+    _name = 'soil.moisture.content.line'
+    _description = 'Moisture Content Line'
+
+    parent_id = fields.Many2one('mechanical.soil', string="Parent Id")
+    
+    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
+
+    wet_weight = fields.Float(
+        string='Weight of wet soil + container (gm)'
+    )
+
+    dry_weight = fields.Float(
+        string='Weight of oven dry soil + container (gm)'
+    )
+
+    container_weight = fields.Float(
+        string='Weight of container (gm)'
+    )
+
+    moisture_content = fields.Float(
+        string='Moisture Content %',
+        compute='_compute_moisture_content',
+        store=True
+    )
+
+    @api.depends('wet_weight', 'dry_weight', 'container_weight')
+    def _compute_moisture_content(self):
+        for rec in self:
+            moisture_soil = rec.dry_weight - rec.container_weight
+
+            if moisture_soil > 0:
+                rec.moisture_content = (
+                    (rec.wet_weight - rec.dry_weight)
+                    / moisture_soil
+                ) * 100
+            else:
+                rec.moisture_content = 0.0
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(SoilMoistureContentLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
 
 
 class SoilSieveAnalysisLine(models.Model):
@@ -3221,80 +2613,6 @@ class HEAVYCOMPACTIONLINE(models.Model):
             record.serial_no = index + 1
 
 
-class LVDTLINE(models.Model):
-    _name = "mechanical.lvdt.line"
-    parent_id = fields.Many2one('mechanical.soil',string="Parent Id")
-
-    serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
-
-    lvdt_triaxial = fields.Float(string="LVDT Reading in mm")
-    load_triaxial31 = fields.Integer(string="Load in σ 31=50kN/m2")
-    load_triaxial32 = fields.Integer(string="Load in σ 32=100kN/m2")
-    al_l = fields.Float(string="AL/L")
-    ac = fields.Integer(string="Ac = Ao/1 - c in mm2")
-    deviatore_triaxial31 = fields.Float(string="Deviator Stress σ 31=50kN/m2")
-    deviatore_triaxial32 = fields.Float(string=" Deviator Stress σ 32=100kN/m2")
-    
-
-
-
-  
-
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
-
-        return super(LVDTLINE, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
-
-
-
-class INTERNALFRACTIONLINE(models.Model):
-    _name = "mechanical.cohesion.line"
-    parent_id = fields.Many2one('mechanical.soil',string="Parent Id")
-
-    serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
-
-    normal_lbs = fields.Float(string=" Normal Load LBS")
-    normal_kgs = fields.Integer(string=" Normal Load Kgs")
-    load_5 = fields.Integer(string="(Load X 5)+Self Weight")
-    shear_division = fields.Float(string="Shear Force at Failure Divisions")
-    shear_lc = fields.Integer(string="Shear Force at Failure L.C X DIV")
-    noraml_stress = fields.Float(string="Normal Stress ( kg / cm2 )")
-    shear_stress = fields.Float(string=" Shear Stress ( kg / cm2 )")
-    
-
-
-
-  
-
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
-
-        return super(INTERNALFRACTIONLINE, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
-
 
 class SoilCBRLine(models.Model):
     _name = "mechanical.cbr.line"
@@ -3604,55 +2922,6 @@ class VolumeWetLINE(models.Model):
         for index, record in enumerate(records):
             record.serial_no = index + 1
 
-class SoilPermeabilityLine(models.Model):
-    _name = "mechanical.permeability.line"
-    parent_id = fields.Many2one('mechanical.soil',string="Parent Id")
-
-    serial_no = fields.Integer(string="Test",readonly=True, copy=False, default=1)
-
-    h1 = fields.Float(string="Initial Head (h1) [cm]", digits=(12,2))
-    h2 = fields.Float(string="Final Head (h2) [cm]", digits=(12,2))
-    t = fields.Float(string="Time Interval (t) [s]", digits=(12,2))
-
-    k_value = fields.Float(string="Permeability (k) [cm/s]", compute="_compute_k_value", store=True, digits=(12,2))
-
-    @api.depends("h1","h2","t","parent_id.length","parent_id.diameter_mold","parent_id.diameter_standpipe")
-    def _compute_k_value(self):
-        for rec in self:
-            rec.k_value = 0.0
-            if all([rec.h1, rec.h2, rec.t, rec.parent_id.length, rec.parent_id.diameter_mold, rec.parent_id.diameter_standpipe]):
-                # Areas
-                A = math.pi * rec.parent_id.diameter_mold**2 / 4.0
-                a = math.pi * rec.parent_id.diameter_standpipe**2 / 4.0
-                L = rec.parent_id.length
-                t = rec.t
-
-                if rec.h1 != rec.h2 and A > 0 and a > 0 and L > 0 and t > 0:
-                    h1, h2 = rec.h1, rec.h2
-                    if h1 < h2:
-                        h1, h2 = h2, h1  # swap to ensure positive log
-                    k = (2.303 * a * L) / (A * t) * math.log10(h1 / h2)
-                    rec.k_value = round(k, 2)
-
-    
-
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
-
-        return super(SoilPermeabilityLine, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
-
 
 
 
@@ -3706,191 +2975,6 @@ class DirectShearTestLine(models.Model):
 
 
 
-class UCSTestLine(models.Model):
-    _name = "mechanical.ucs.test.line"
-    parent_id = fields.Many2one('mechanical.soil',string="Parent Id")
-
-    serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
-
-
-    dial_gauge = fields.Float(string="Dial Gauge Reading [mm]", digits=(12,3))
-    proving_ring_reading = fields.Float(string="Proving Ring Reading [Division]", digits=(12,3))
-    deformation = fields.Float(string="Deformation [mm]", digits=(12,3))
-    
-    load = fields.Float(string="Load [Kg]")  # now user input
-    corrected_area = fields.Float(string="Corrected Area [cm²]", compute="_compute_corrected_area", store=True, digits=(12,3))
-    axial_strain = fields.Float(string="Axial Strain", compute="_compute_axial_strain", store=True, digits=(12,3))
-    stress = fields.Float(string="Stress [Kg/cm²]", compute="_compute_stress", store=True, digits=(12,3))
-
-    @api.depends("parent_id.initial_diameter")
-    def _compute_corrected_area(self):
-        for rec in self:
-            if rec.parent_id.initial_diameter:
-                radius = rec.parent_id.initial_diameter / 2.0
-                rec.corrected_area = 3.1416 * radius * radius
-            else:
-                rec.corrected_area = 0.0
-
-    @api.depends("deformation","parent_id.initial_length")
-    def _compute_axial_strain(self):
-        for rec in self:
-            L0 = rec.parent_id.initial_length or 1
-            rec.axial_strain = rec.deformation / L0
-
-    @api.depends("load","corrected_area")
-    def _compute_stress(self):
-        for rec in self:
-            if rec.corrected_area != 0:
-                rec.stress = rec.load / rec.corrected_area
-            else:
-                rec.stress = 0.0
-    
-
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
-
-        return super(UCSTestLine, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
-
-
-
-class ConsolidationTestLine(models.Model):
-    _name = "mechanical.consolidation.test.line"
-    parent_id = fields.Many2one('mechanical.soil',string="Parent Id")
-
-    serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
-
-    load = fields.Float(string="Load [Kg]")
-    dial_gauge = fields.Float(string="Dial Gauge δ [mm]")
-    delta_h = fields.Float(string="ΔH [mm]", compute="_compute_corrected_height", store=True)
-    corrected_height = fields.Float(string="Corrected Height H [mm]", compute="_compute_corrected_height", store=True)
-    stress = fields.Float(string="Stress σ [Kg/cm²]", compute="_compute_stress", store=True, digits=(12,3))
-    strain = fields.Float(string="Strain ε", compute="_compute_strain", store=True, digits=(12,3))
-    void_ratio = fields.Float(string="Void Ratio e", compute="_compute_void_ratio", store=True, digits=(12,3))
-
-    @api.depends("dial_gauge","parent_id.initial_height")
-    def _compute_corrected_height(self):
-        for rec in self:
-            H0 = rec.parent_id.initial_height or 1
-            rec.delta_h = rec.dial_gauge
-            rec.corrected_height = H0 - rec.delta_h
-
-    @api.depends("load","parent_id.area")
-    def _compute_stress(self):
-        for rec in self:
-            A = rec.parent_id.area or 1
-            rec.stress = rec.load / A if A !=0 else 0.0
-
-    @api.depends("delta_h","parent_id.initial_height")
-    def _compute_strain(self):
-        for rec in self:
-            H0 = rec.parent_id.initial_height or 1
-            rec.strain = rec.delta_h / H0 if H0 !=0 else 0.0
-
-    @api.depends("parent_id.initial_void_ratio","stress")
-    def _compute_void_ratio(self):
-        for rec in self:
-            e0 = rec.parent_id.initial_void_ratio or 0.0
-            sigma0 = 1.0  # reference stress (usually 1 Kg/cm²)
-            if rec.stress > 0:
-                rec.void_ratio = e0 - 0.1 * math.log10(rec.stress/sigma0)  # factor 0.1 placeholder, modify as per standard
-            else:
-                rec.void_ratio = e0
-
-
-    
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
-
-        return super(ConsolidationTestLine, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
-
-
-
-class ConsolidationPCTestLine(models.Model):
-    _name = "mechanical.consolidation.test.pc.line"
-    parent_id = fields.Many2one('mechanical.soil',string="Parent Id")
-
-    serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
-
-   
-    load_pc = fields.Float(string="Load [Kg]")
-    dial_gauge_pc = fields.Float(string="Dial Gauge δ [mm]")
-    delta_h_pc = fields.Float(string="ΔH [mm]", compute="_compute_corrected_height_pc", store=True)
-    corrected_height_pc = fields.Float(string="Corrected Height H [mm]", compute="_compute_corrected_height_pc", store=True)
-    stress_pc = fields.Float(string="Stress σ [Kg/cm²]", compute="_compute_stress_pc", store=True)
-    strain_pc = fields.Float(string="Strain ε", compute="_compute_strain_pc", store=True)
-    void_ratio_pc = fields.Float(string="Void Ratio e", compute="_compute_void_ratio_pc", store=True)
-
-    @api.depends("dial_gauge_pc","parent_id.initial_height_pc")
-    def _compute_corrected_height_pc(self):
-        for rec in self:
-            H0 = rec.parent_id.initial_height_pc or 1
-            rec.delta_h_pc = rec.dial_gauge_pc
-            rec.corrected_height_pc = H0 - rec.delta_h_pc
-
-    @api.depends("load_pc","parent_id.area_pc")
-    def _compute_stress_pc(self):
-        for rec in self:
-            A = rec.parent_id.area_pc or 1
-            rec.stress_pc = rec.load_pc / A if A!=0 else 0.0
-
-    @api.depends("delta_h_pc","parent_id.initial_height_pc")
-    def _compute_strain_pc(self):
-        for rec in self:
-            H0 = rec.parent_id.initial_height_pc or 1
-            rec.strain_pc = rec.delta_h_pc / H0 if H0 !=0 else 0.0
-
-
-    @api.depends("parent_id.initial_void_ratio_pc","stress_pc")
-    def _compute_void_ratio_pc(self):
-        for rec in self:
-            e0 = rec.parent_id.initial_void_ratio_pc or 0.0
-            sigma0 = 1.0  # reference stress_pc (usually 1 Kg/cm²)
-            if rec.stress_pc > 0:
-                rec.void_ratio_pc = e0 - 0.1 * math.log10(rec.stress_pc / sigma0)  # factor can be adjusted per standard
-            else:
-                rec.void_ratio_pc = e0
-    
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
-
-        return super(ConsolidationPCTestLine, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
-
 
 class DirectShearLine(models.Model):
     _name = "mechanical.soil.direct.shear.line"
@@ -3921,139 +3005,7 @@ class DirectShearLine(models.Model):
         for index, record in enumerate(records):
             record.serial_no = index + 1
 
-class SwellingPressureLine(models.Model):
-    _name = "mechanical.swelling.line"
-    parent_id = fields.Many2one('mechanical.soil',string="Parent Id")
 
-    serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
-
-    dial_gauge_reading = fields.Float(string="Dial Gauge Reading (mm)")
-    load_applied = fields.Float(string="Load Applied (kg)")
-    area_of_sample = fields.Float(string="Area of Sample (cm²)", required=True)
-
-    swelling_pressure = fields.Float(
-        string="Swelling Pressure (kg/cm²)",
-        compute="_compute_swelling_pressure",
-        store=True
-     )
-
-    @api.depends('load_applied', 'area_of_sample')
-    def _compute_swelling_pressure(self):
-        for line in self:
-            if line.area_of_sample > 0:
-                line.swelling_pressure = line.load_applied / line.area_of_sample
-            else:
-                line.swelling_pressure = 0.0
-
-   
-
-    
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
-
-        return super(SwellingPressureLine, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
-
-
-class UUTriaxialLine(models.Model):
-    _name = "mechanical.uu.triaxial.line"
-    parent_id = fields.Many2one('mechanical.soil',string="Parent Id")
-
-    serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
-
-    confining_pressure = fields.Float(string="Minor Principal Stress σ3 (kPa)")   # cell pressure
-    deviator_stress = fields.Float(string="Deviator Stress qf (kPa)")
-
-    sigma1 = fields.Float(string="Major Principal Stress σ1 (kPa)", compute="_compute_sigma_tau", store=True)
-    sigma = fields.Float(string="σ (Mohr center)", compute="_compute_sigma_tau", store=True)
-    tau = fields.Float(string="τ (Mohr radius)", compute="_compute_sigma_tau", store=True)
-
-    @api.depends("confining_pressure", "deviator_stress")
-    def _compute_sigma_tau(self):
-        for rec in self:
-            if rec.confining_pressure and rec.deviator_stress:
-                rec.sigma1 = rec.confining_pressure + rec.deviator_stress
-                rec.sigma = (rec.sigma1 + rec.confining_pressure) / 2.0
-                rec.tau = (rec.sigma1 - rec.confining_pressure) / 2.0
-            else:
-                rec.sigma1 = rec.sigma = rec.tau = 0.0
-
-
-   
-
-    
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
-
-        return super(UUTriaxialLine, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
-
-
-class UUTriaxialCohesionLine(models.Model):
-    _name = "mechanical.uu.triaxial.cohesion.line"
-    parent_id = fields.Many2one('mechanical.soil',string="Parent Id")
-
-    serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
-
-    confining_pressure = fields.Float(string="Minor Principal Stress σ3 (kPa)")   # cell pressure
-    deviator_stress = fields.Float(string="Deviator Stress qf (kPa)")
-
-    sigma1 = fields.Float(string="Major Principal Stress σ1 (kPa)", compute="_compute_sigma_chausion", store=True)
-    sigma = fields.Float(string="σ (Mohr center)", compute="_compute_sigma_chausion", store=True)
-    tau = fields.Float(string="τ (Mohr radius)", compute="_compute_sigma_chausion", store=True)
-
-    @api.depends("confining_pressure", "deviator_stress")
-    def _compute_sigma_chausion(self):
-        for rec in self:
-            if rec.confining_pressure and rec.deviator_stress:
-                rec.sigma1 = rec.confining_pressure + rec.deviator_stress
-                rec.sigma = (rec.sigma1 + rec.confining_pressure) / 2.0
-                rec.tau = (rec.sigma1 - rec.confining_pressure) / 2.0
-            else:
-                rec.sigma1 = rec.sigma = rec.tau = 0.0
-
-
-   
-
-    
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
-
-        return super(UUTriaxialCohesionLine, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
 class SoilNotes(models.Model):
     _name = "mechanical.soil.notes"
 
