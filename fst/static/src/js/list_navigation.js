@@ -1,102 +1,102 @@
-/** @odoo-module **/
+// /** @odoo-module **/
 
-import { ListRenderer } from "@web/views/list/list_renderer";
-import { patch } from "@web/core/utils/patch";
+// import { ListRenderer } from "@web/views/list/list_renderer";
+// import { patch } from "@web/core/utils/patch";
 
-patch(ListRenderer.prototype, {
+// patch(ListRenderer.prototype, {
 
-    setup() {
-        super.setup();
-    },
+//     setup() {
+//         super.setup();
+//     },
 
-    onCellKeydown(ev) {
-        super.onCellKeydown?.(ev);
+//     onCellKeydown(ev) {
+//         super.onCellKeydown?.(ev);
 
-        const allowed = [
-            "ArrowUp",
-            "ArrowDown",
-            "ArrowLeft",
-            "ArrowRight",
-            "Enter",
-        ];
+//         const allowed = [
+//             "ArrowUp",
+//             "ArrowDown",
+//             "ArrowLeft",
+//             "ArrowRight",
+//             "Enter",
+//         ];
 
-        if (!allowed.includes(ev.key)) {
-            return;
-        }
+//         if (!allowed.includes(ev.key)) {
+//             return;
+//         }
 
-        const currentInput = ev.target;
+//         const currentInput = ev.target;
 
-        const currentCell = currentInput.closest("td");
-        const currentRow = currentInput.closest("tr");
+//         const currentCell = currentInput.closest("td");
+//         const currentRow = currentInput.closest("tr");
 
-        if (!currentCell || !currentRow) {
-            return;
-        }
+//         if (!currentCell || !currentRow) {
+//             return;
+//         }
 
-        const rows = Array.from(
-            currentRow.parentElement.querySelectorAll("tr")
-        );
+//         const rows = Array.from(
+//             currentRow.parentElement.querySelectorAll("tr")
+//         );
 
-        const cells = Array.from(
-            currentRow.querySelectorAll("td")
-        );
+//         const cells = Array.from(
+//             currentRow.querySelectorAll("td")
+//         );
 
-        const rowIndex = rows.indexOf(currentRow);
-        const colIndex = cells.indexOf(currentCell);
+//         const rowIndex = rows.indexOf(currentRow);
+//         const colIndex = cells.indexOf(currentCell);
 
-        let targetRow = rowIndex;
-        let targetCol = colIndex;
+//         let targetRow = rowIndex;
+//         let targetCol = colIndex;
 
-        switch (ev.key) {
+//         switch (ev.key) {
 
-            case "ArrowUp":
-                targetRow--;
-                break;
+//             case "ArrowUp":
+//                 targetRow--;
+//                 break;
 
-            case "ArrowDown":
-            case "Enter":
-                targetRow++;
-                break;
+//             case "ArrowDown":
+//             case "Enter":
+//                 targetRow++;
+//                 break;
 
-            case "ArrowLeft":
-                targetCol--;
-                break;
+//             case "ArrowLeft":
+//                 targetCol--;
+//                 break;
 
-            case "ArrowRight":
-                targetCol++;
-                break;
-        }
+//             case "ArrowRight":
+//                 targetCol++;
+//                 break;
+//         }
 
-        const nextRow = rows[targetRow];
+//         const nextRow = rows[targetRow];
 
-        if (!nextRow) {
-            return;
-        }
+//         if (!nextRow) {
+//             return;
+//         }
 
-        const nextCells = Array.from(
-            nextRow.querySelectorAll("td")
-        );
+//         const nextCells = Array.from(
+//             nextRow.querySelectorAll("td")
+//         );
 
-        const nextCell = nextCells[targetCol];
+//         const nextCell = nextCells[targetCol];
 
-        if (!nextCell) {
-            return;
-        }
+//         if (!nextCell) {
+//             return;
+//         }
 
-        const nextInput = nextCell.querySelector(
-            "input, textarea"
-        );
+//         const nextInput = nextCell.querySelector(
+//             "input, textarea"
+//         );
 
-        if (!nextInput) {
-            return;
-        }
+//         if (!nextInput) {
+//             return;
+//         }
 
-        ev.preventDefault();
+//         ev.preventDefault();
 
-        nextInput.focus();
+//         nextInput.focus();
 
-        if (nextInput.select) {
-            nextInput.select();
-        }
-    },
-});
+//         if (nextInput.select) {
+//             nextInput.select();
+//         }
+//     },
+// });
