@@ -3,7 +3,11 @@ from odoo.exceptions import ValidationError
 from openpyxl import load_workbook
 import base64
 import io
-from datetime import datetime
+from datetime import datetime, time
+from pytz import timezone
+import pytz
+
+india_tz = timezone('Asia/Kolkata')
 
 class PileLoadImportWizard(models.TransientModel):
     _name = 'pile.load.import.wizard'
@@ -57,7 +61,8 @@ class PileLoadImportWizard(models.TransientModel):
         Model = self.env[model_name]
 
         headers = [
-            'Date Time',
+            'Date',
+            'Time',
             'Load',
             'Dial A',
             'Dial B',
@@ -71,10 +76,18 @@ class PileLoadImportWizard(models.TransientModel):
         ):
 
             # Skip fully empty rows
-            if not any(row):
-                continue
+            # if not any(row):
+            #     continue
 
             row_data = dict(zip(headers, row))
+            if (
+                row_data['Load'] in (None, '')
+                and row_data['Dial A'] in (None, '')
+                and row_data['Dial B'] in (None, '')
+                and row_data['Dial C'] in (None, '')
+                and row_data['Dial D'] in (None, '')
+            ):
+                continue
 
             for field_name, value in row_data.items():
 
@@ -84,16 +97,41 @@ class PileLoadImportWizard(models.TransientModel):
                         f"{sheet.title} sheet row {index}"
                     )
 
-            excel_dt = row_data['Date Time']
+            excel_date = row_data['Date']
+            excel_time = row_data['Time']
 
-            if not isinstance(excel_dt, datetime):
+            
+            if not isinstance(excel_date, datetime):
                 raise ValidationError(
-                    f"Invalid Date Time in "
+                    f"Invalid Date in "
                     f"{sheet.title} sheet row {index}"
                 )
 
-            # Round to minute
-            normalized_dt = excel_dt.replace(
+            if isinstance(excel_time, datetime):
+                time_part = excel_time.time()
+
+            elif isinstance(excel_time, time):
+                time_part = excel_time
+
+            else:
+                raise ValidationError(
+                    f"Invalid Time in "
+                    f"{sheet.title} sheet row {index}"
+                )
+
+            excel_dt = datetime.combine(
+                excel_date.date(),
+                time_part
+            )
+
+            # Excel times are local India times
+            localized_dt = india_tz.localize(excel_dt)
+
+            # Convert to UTC for Odoo storage
+            normalized_dt = localized_dt.astimezone(
+                pytz.UTC
+            ).replace(
+                tzinfo=None,
                 second=0,
                 microsecond=0
             )
