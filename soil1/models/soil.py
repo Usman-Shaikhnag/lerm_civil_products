@@ -15515,7 +15515,7 @@ class ConsolidationLine(models.Model):
 )
 
     pc_x = fields.Float(string="Pc X", compute="_compute_pc_casagrande", store=True)
-    pc_y = fields.Float(string="Preconsolidation Pressure",compute="_compute_pc_y")
+    pc_y = fields.Float(string="Preconsolidation Pressure (Pc) kg/cm²",compute="_compute_pc_y")
 
     @api.depends('preconsolidation_pressure_x')
     def _compute_pc_y(self):
@@ -15687,7 +15687,7 @@ class ConsolidationLine(models.Model):
 
             
 
-    pc_final = fields.Float(string="PC", compute="_compute_pc_final")
+    pc_final = fields.Float(string="Preconsolidation Pressure (Pc) kg/cm²", compute="_compute_pc_final")
 
     @api.depends('pc_y')
     def _compute_pc_final(self):
@@ -15703,7 +15703,7 @@ class ConsolidationLine(models.Model):
 
     
     h13 = fields.Float(string="Depth (m)")
-    pc_overburden = fields.Float(string="Overburden", compute="_compute_pc_value", store=True)
+    pc_overburden = fields.Float(string="Overburden kg/cm²", compute="_compute_pc_value", store=True)
 
     @api.depends('pc_depth', 'con_bulk_density_soil')
     def _compute_pc_value(self):
