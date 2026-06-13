@@ -82,24 +82,12 @@
                         </field>
                     </page>
                 </xpath>
-                 <!-- <xpath expr="//field[@name='invoice_payment_term_id']" position="after">
-                    <field name="tds" />
-                    <field name="amount_after_tds" />
-                    <field name="tds_percentage" widget="percentage" />                
-                </xpath> -->
-                <!-- <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='product_id']" position="after">
-                    <field name="pricelist_id" invisible="1"/>
-                    <field name="report_no"  invisible="1"/>
-                    <field name="report_no1"   widget="many2many_tags" options="{'no_create': True}" />
-                </xpath> -->
+                
                 <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='name']" position="replace">
                     <field name="name"  column_invisible="parent.move_type not in ('out_invoice', 'out_refund', 'out_receipt')"  />
                 </xpath>
                 
-                <!-- <xpath expr="//field[@name='line_ids']/tree/field[@name='account_id']" position="after">
-                    <field name="report_no"  />
-                    <field name="report_no1"  widget="many2many_tags" options="{'no_create': True}" />
-                </xpath> -->
+               
                 
             </field>
         </record>
