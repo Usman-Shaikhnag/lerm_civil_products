@@ -1222,6 +1222,13 @@
 						<t t-set="triaxialp_index" t-value="0"/>
 
 
+						<t t-set="elasticitye_vals" t-value="[g.modulus_e for g in (data.elasticity_ids or []) if g.modulus_e]"/>
+			             <t t-set="elasticitye_index" t-value="0"/>
+
+						<t t-set="elasticityu_vals" t-value="[g.poissons_ratio for g in (data.elasticity_ids or []) if g.poissons_ratio]"/>
+						<t t-set="elasticityu_index" t-value="0"/>
+
+
 						<t t-set="slackfirst_vals" t-value="[g.slake_second for g in (data.slake_durability_child_lines or []) if g.slake_second]"/>
 			             <t t-set="slackfirst_index" t-value="0"/>
 
@@ -1249,6 +1256,10 @@
 							
 									len(triaxialc_vals or []),
 									len(triaxialp_vals or []),
+
+									len(elasticitye_vals or []),
+									len(elasticityu_vals or []),
+
 									len(slackfirst_vals or []),
 									len(slackclass_vals or []),
 
@@ -1372,6 +1383,14 @@
 								</span>
 								</td>
 								</t>
+
+								<t t-if="data.elasticity_visible">
+								<td  colspan="2" style="text-align: center;">
+								<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','22145-f6f5-4b5b-bfc2-34792cf1a235265555677')]).parameter_name"/>
+								</span>
+								</td>
+								</t>
                               
 
 							  
@@ -1438,14 +1457,20 @@
 								</span>
 								</td>
 								</t>
+
+
+								
 								<!-- <td colspan="3" style="text-align: center;"><b>Load (UCS)</b></td> -->
 								
                             </tr>
 							<tr style="background-color:#f9f9f9;">
-                            <th>Angle of internal friction ( f )</th><th>Cohesion (c )</th>
-							 <th>Id</th><th>Classification (Cl 6.2)</th>
+							<th>E</th><th>mu ( μ )</th>
+                            <th>ϕ</th><th>C</th>
+							 <th>Id</th><th>CL</th>
 
-							 <th>CAI</th><th>Classification (Cl. 11.1.10)</th>
+							 <th>CAI</th><th>CL</th>
+
+							
 							</tr>
 
 							<!-- Units row -->
@@ -1562,6 +1587,24 @@
 							</td>
 							</t>
 
+							  <t t-if="data.elasticity_visible">
+							<td  colspan="1" style="text-align: center;">
+							<span>
+									<!-- <span t-field="env['lerm.parameter.master'].search([('internal_id','=','210324nrhh2277j-0bc7-41a6-a2bb-0fe92111234poy')]).unit.name"/> -->
+									GPa
+								</span>
+							</td>
+							</t>
+
+							 <t t-if="data.elasticity_visible">
+							<td  colspan="1" style="text-align: center;">
+							<span>
+									<!-- <span t-field="env['lerm.parameter.master'].search([('internal_id','=','210324nrhh2277j-0bc7-41a6-a2bb-0fe92111234poy')]).unit.name"/> -->
+									--
+								</span>
+							</td>
+							</t>
+
 
                            <!-- <t t-set="show_duration_of_test" t-value="any(line.duration_of_test for line in data.rock_child_lines)"/> -->
 							<!-- <td t-if="show_duration_of_test" colspan="3" style="text-align: center;"><b>Sec</b></td> -->
@@ -1648,6 +1691,8 @@
 								</span>
 							</td>
 							</t>
+
+						 
 						</tr>
 
 						<tr style="background-color:#f9f9f9;">
@@ -1797,9 +1842,21 @@
 							</td> 
 							</t> -->
 							<t t-if="data.point_load_visible">
-							<td  colspan="3" style="text-align: center;">
+							<td  colspan="2" style="text-align: center;">
 							<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','785587rttgg11-0bc7-41a6-a2bb-0fe92114rr445t')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
+								</span>
+							</td> 
+							</t>
+
+								<t t-if="data.elasticity_visible">
+							<td  colspan="2" style="text-align: center;">
+							<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','22145-f6f5-4b5b-bfc2-34792cf1a235265555677')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.specification"/>
                                         </t>
@@ -1817,7 +1874,7 @@
 									</t>
 								</span>
 							</td> 
-							</t>
+							</t> -->
 							<t t-if="data.duration_of_test_visible">
 							<td  colspan="1" style="text-align: center;">
 							<span>
@@ -1827,8 +1884,8 @@
                                         </t>
 									</t>
 								</span>
-							</td>  -->
-							<!-- </t> -->
+							</td> 
+							</t>
 							<t t-if="data.stress_rate_visible">
 							<td  colspan="1" style="text-align: center;">
 							<span>
@@ -1921,6 +1978,8 @@
 								</span>
 							</td> 
 							</t>
+
+						
 
 							<!-- <t t-if="data.cerchar_abrasivity_visible">
 							<td  colspan="1" style="text-align: center;">
@@ -2043,6 +2102,28 @@
                                 </td>     
 								</t>
 
+									<td colspan="1" style="text-align: center;">
+								<t t-set="di" t-value="elasticitye_index if elasticitye_index is not None else 0"/>
+
+								<t t-if="elasticitye_vals and di &lt; len(elasticitye_vals)">
+									<!-- <t t-esc="'%.3f' % elasticitye_vals[di]"/> -->
+									<t t-esc="round(elasticitye_vals[di])"/>
+									<t t-set="elasticitye_index" t-value="di + 1"/>
+								</t>
+								<t t-else="">--</t>
+							</td>
+
+								<td colspan="1" style="text-align: center;">
+								<t t-set="di" t-value="elasticityu_index if elasticityu_index is not None else 0"/>
+
+								<t t-if="elasticityu_vals and di &lt; len(elasticityu_vals)">
+									<t t-esc="'%.1f' % elasticityu_vals[di]"/>
+									<t t-set="elasticityu_index" t-value="di + 1"/>
+								</t>
+								<t t-else="">--</t>
+							</td>
+							
+
 								<!-- <td t-if="show_duration_of_test" colspan="1" style="text-align: center;"> -->
 								<t t-if="data.duration_of_test_visible">
 								<td colspan="1" style="text-align: center;">
@@ -2143,6 +2224,10 @@
 
 								<t t-else="">--</t>
 							</td>
+
+
+
+
 							
 
 
@@ -2165,6 +2250,7 @@
 										2.  *Refer to Annexure- I (A) to know NABL accredited scope, range and uncertainty of measurement for test parameter<br/>
 										3.  Mode of failure for UCS test: A] Axial B] Shear C] Multiple Fracturing D] Along foliation  E] Y shaped <br/>
 										4.  Orientation of sample for Point load strength index test:  A1] Axial B1] Diametric<br/>
+										5. Abbreviation-D - Average Diameter / Distance between Platens,W - Average Width,H - Average height,Is/Il (50) - Point load strength index,E - Modulus of Elasticity,µ - Poissions Ratio,Ø - Angle of internal friction,c - Cohesion,CL - Classification
 
 
 									<b>Notes:-</b><br/><br/>
