@@ -61,6 +61,8 @@
     'assets': {
     'web.assets_backend':[
         'lerm_civil/static/src/css/custom_styles.css',
+        'lerm_civil/static/src/css/eln_readonly.css',
+        'lerm_civil/static/src/js/eln_readonly_form.js',
     ],
     'web.report_assets_common': [
             '/lerm_civil/static/src/css/eln_report.scss',

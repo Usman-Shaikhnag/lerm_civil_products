@@ -32,6 +32,7 @@ class CoarseAggregateMechanical(models.Model):
     size_id = fields.Many2one('lerm.size.line',compute="_compute_size_id")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     avg_compacted_unit  = fields.Char("Compacted Density", compute="_compute_units", store=False)
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
     calc_mode = fields.Boolean(default=True)     # Calculate चालू असताना True
 

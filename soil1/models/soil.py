@@ -88,6 +88,7 @@ class Soil(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
     sample_id = fields.Many2one('lerm.srf.sample',string="Sample")
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
     notes_id = fields.One2many('soil1.notes','parent_id',string="Notes")
     

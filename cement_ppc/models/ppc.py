@@ -21,6 +21,7 @@ class PPCCementNormalConsistency(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
     date_of_casting = fields.Date(string="Date of Casting",compute="compute_date_of_casting")
     notes_id = fields.One2many('cement.ppc.notes','parent_id',string="Notes")

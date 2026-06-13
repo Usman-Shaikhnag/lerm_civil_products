@@ -24,6 +24,7 @@ class FlyaschNormalConsistency(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
     date_of_casting = fields.Date(string="Date of Casting",compute="compute_date_of_casting")
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
     notes_id = fields.One2many('flyash.notes','parent_id',string="Notes")
 
