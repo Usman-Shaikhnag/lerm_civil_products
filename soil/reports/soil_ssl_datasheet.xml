@@ -60,8 +60,6 @@
 								</span>
 						</div>
 						<table style="margin-top:30px;" t-if="data.soil_visible">
-
-						   
 							<thead>
 								<tr>
 									<th>
@@ -77,13 +75,35 @@
 
 									<th>
 										<span>
-											Proving Ring Reading
+											Proving ring Reading 1
 										</span>
 									</th>
 
 									<th>
 										<span>
-											Load in Kg
+											Corrected load (Kg) 
+										</span>
+									</th>
+									<th>
+										<span>
+											Proving ring Reading 2
+										</span>
+									</th>
+
+									<th>
+										<span>
+											Corrected load (Kg) 2
+										</span>
+									</th>
+									<th>
+										<span>
+											Proving ring Reading 3
+										</span>
+									</th>
+
+									<th>
+										<span>
+											Corrected load (Kg) 3
 										</span>
 									</th>
 								</tr>
@@ -98,17 +118,69 @@
 										</div>
 									</td>
 									<td>
-										<span t-esc="r.penetration" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.penetration"/>
 									</td>
 									<td>
-										<span t-esc="r.proving_reading" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.sample1_reading" />
 									</td>
 									<td>
-										<span t-esc="r.load" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.sample1_load" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.sample2_reading" />
+									</td>
+									<td>
+										<span t-esc="r.sample2_load" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.sample3_reading" />
+									</td>
+									<td>
+										<span t-esc="r.sample3_load" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 								</tr>
 							</tbody>
 						</table>
+						
+
+						<table style="margin-top:30px;" class="table table-sm o_form_table table-bordered custom_table_borders w-100" invisible="not soil_visible " >
+                            <tbody>
+                                <tr>
+                                    <td rowspan="2" style="text-align:center;font-weight:bold;vertical-align:middle;"><span>Mould No</span></td>
+                                    <td colspan="2" style="text-align:center;font-weight:bold;"><span>Corrected Unit Load in kg    (from graph)</span></td>
+                                    <td colspan="2" style="text-align:center;font-weight:bold;"><span>CBR%</span></td>
+                                    <td rowspan="2" style="text-align:center;font-weight:bold;vertical-align:middle;"><span>CRB % reported</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center;font-weight:bold;"><span>2.5 mm</span></td>
+                                    <td style="text-align:center;font-weight:bold;"><span>5.0 mm</span></td>
+                                    <td style="text-align:center;font-weight:bold;"><span>2.5 mm</span></td>
+                                    <td style="text-align:center;font-weight:bold;"><span>5.0 mm</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center;font-weight:bold;"><span>1</span></td>
+                                    <td style="text-align:center;"><span t-esc="data.corrected_load_25_s1"/></td>
+                                    <td style="text-align:center;"><span t-esc="data.corrected_load_5_s1"/></td>
+                                    <td style="text-align:center;"><span t-esc="data.cbr_25_s1" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-esc="data.cbr_5_s1" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;vertical-align:middle;" rowspan="3"><span t-esc="data.cbr_25_avg" t-options='{"widget": "float", "precision": 2}'/></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center;font-weight:bold;"><span>2</span></td>
+                                    <td style="text-align:center;"><span t-esc="data.corrected_load_25_s2"/></td>
+                                    <td style="text-align:center;"><span t-esc="data.corrected_load_5_s2"/></td>
+                                    <td style="text-align:center;"><span t-esc="data.cbr_25_s2" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-esc="data.cbr_5_s2" t-options='{"widget": "float", "precision": 2}'/></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center;font-weight:bold;"><span>3</span></td>
+                                    <td style="text-align:center;"><span t-esc="data.corrected_load_25_s3"/></td>
+                                    <td style="text-align:center;"><span t-esc="data.corrected_load_5_s3"/></td>
+                                    <td style="text-align:center;"><span t-esc="data.cbr_25_s3" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-esc="data.cbr_5_s3" t-options='{"widget": "float", "precision": 2}'/></td>
+                                </tr>
+                            </tbody>
+                        </table>
 
 						<div class="signatureContainer girdgird">
 							<div>
