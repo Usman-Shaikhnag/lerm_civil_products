@@ -7,7 +7,7 @@ import math
 class ChequeredCementTile(models.Model):
     _name = "mechanical.cement.chequered.tile"
     _inherit = "lerm.eln"
-    _description = 'mechanical.cement.chequered.tile'
+    # _description = 'mechanical.cement.chequered.tile'
     _rec_name = "name"
 
     name = fields.Char("Name",default="Cement Concrete flooring Tiles")
@@ -21,6 +21,64 @@ class ChequeredCementTile(models.Model):
     def _compute_grade_id(self):
         if self.eln_ref:
             self.grade = self.eln_ref.grade_id.id
+
+    def prefill_data(self):
+        # import wdb; wdb.set_trace()
+        return {
+            'name': 'Prefill Data',
+            'type': 'ir.actions.act_window',
+            'res_model': 'mechanical.cement.chequered.tile.prefill.data',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+                },
+        }
+
+
+
+    notes_id = fields.One2many('mechanical.cement.chequered.tile.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(ChequeredCementTile, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The report shall not be reproduced in full or partially without written approval of the laboratory HOD/CEO/Maganement.',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'Sampling is not done by us unless mentioned otherwide.',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'without a QR Code and hologram this report is considered invalid.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'The Result listed refer only to tested samples & applicable parameter Endorsement of product is neither interred nor inplied.',
+            }),
+
+            (0, 0, {
+                'sr_no': 'e',
+                'notes': 'The use or report for arbitration, publicity & evidence in legal dispute is forbidden except with prior written consent NBML Lab.',
+            }),
+             (0, 0, {
+                'sr_no': 'f',
+                'notes': 'All disputed are subject to Raipur jurisdiction 7 days correction to this report invalidates this report.',
+            }),
+
+             (0, 0, {
+                'sr_no': 'g',
+                'notes': 'Sample will be destroyed after 30-days from the date of test report unless otherwise Specified.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
 
 
      # Dimension
@@ -695,3 +753,12 @@ class ChequeredCementWetTransverLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.sr_no = index + 1
+
+
+
+class ChequerdTileNotes(models.Model):
+    _name = "mechanical.cement.chequered.tile.notes"
+
+    parent_id = fields.Many2one('mechanical.cement.chequered.tile',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")

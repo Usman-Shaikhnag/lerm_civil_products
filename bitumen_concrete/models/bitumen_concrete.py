@@ -21,6 +21,63 @@ class BitumenConcrete(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
 
+    def prefill_data(self):
+        # import wdb; wdb.set_trace()
+        return {
+            'name': 'Prefill Data',
+            'type': 'ir.actions.act_window',
+            'res_model': 'mechanical.bitumen.concrete.prefill.data',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+                },
+        }
+
+
+    notes_id = fields.One2many('mechanical.bitumen.concrete.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(BitumenConcrete, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The report shall not be reproduced in full or partially without written approval of the laboratory HOD/CEO/Maganement.',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'Sampling is not done by us unless mentioned otherwide.',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'without a QR Code and hologram this report is considered invalid.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'The Result listed refer only to tested samples & applicable parameter Endorsement of product is neither interred nor inplied.',
+            }),
+
+            (0, 0, {
+                'sr_no': 'e',
+                'notes': 'The use or report for arbitration, publicity & evidence in legal dispute is forbidden except with prior written consent NBML Lab.',
+            }),
+             (0, 0, {
+                'sr_no': 'f',
+                'notes': 'All disputed are subject to Raipur jurisdiction 7 days correction to this report invalidates this report.',
+            }),
+
+             (0, 0, {
+                'sr_no': 'g',
+                'notes': 'Sample will be destroyed after 30-days from the date of test report unless otherwise Specified.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
     @api.depends('eln_ref')
     def _compute_size_id(self):
         if self.eln_ref:
@@ -52,14 +109,19 @@ class BitumenConcrete(models.Model):
     binder_content = fields.Float(string="% Binder content",compute="_compute_binder_content",digits=(12,2),store=True)
 
     binder_content_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),
-            ('na', 'NA'),
-            ], string="Conformity", compute="_compute_binder_content_conformity", store=True)
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+    ], string='Conformity',compute="_compute_binder_content_conformity",store=True)
+
+    binder_content_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL'),
+    ], string='NABL', default='fail',compute="_compute_binder_content_nabl")
+
 
     @api.depends('binder_content','eln_ref','grade')
     def _compute_binder_content_conformity(self):
-        
         for record in self:
 
             if not record.eln_ref or not record.eln_ref.conformity:
@@ -69,23 +131,23 @@ class BitumenConcrete(models.Model):
             record.binder_content_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32578999-7188-4086-b132-62b50e63f1247ui')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32578999-7188-4086-b132-62b50e63f1247ui')]).parameter_table
+            mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
-                    mu_value = line.mu_value
-                    
+                    # mu_value = line.mu_value
                     lower = record.binder_content - record.binder_content*mu_value
                     upper = record.binder_content + record.binder_content*mu_value
-                    if lower >= req_min and upper <= req_max:
+                    if lower >= req_min and upper <= req_max :
                         record.binder_content_conformity = 'pass'
                         break
                     else:
                         record.binder_content_conformity = 'fail'
 
-    binder_content_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_binder_content_nabl", store=True)
+
+   
+
 
     @api.depends('binder_content','eln_ref','grade')
     def _compute_binder_content_nabl(self):
@@ -94,19 +156,18 @@ class BitumenConcrete(models.Model):
             record.binder_content_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32578999-7188-4086-b132-62b50e63f1247ui')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','32578999-7188-4086-b132-62b50e63f1247ui')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.binder_content - record.binder_content*mu_value
-                    upper = record.binder_content + record.binder_content*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.binder_content_nabl = 'pass'
-                        break
-                    else:
-                        record.binder_content_nabl = 'fail'
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.binder_content - record.binder_content*mu_value
+            upper = record.binder_content + record.binder_content*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.binder_content_nabl = 'pass'
+                break
+            else:
+                record.binder_content_nabl = 'fail'
 
     @api.depends('wt_of_extraction', 'wt_of_intial')
     def _compute_wt_of_filter(self):
@@ -244,14 +305,19 @@ class BitumenConcrete(models.Model):
     mean_flash = fields.Float(string="Mean Value Flash",compute="_compute_mean_flash",digits=(12,2))
 
     mean_flash_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),
-            ('na', 'NA'),
-            ], string="Conformity", compute="_compute_mean_flash_conformity", store=True)
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+    ], string='Conformity',compute="_compute_mean_flash_conformity",store=True)
+
+    mean_flash_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL'),
+    ], string='NABL', default='fail',compute="_compute_mean_flash_nabl")
+
 
     @api.depends('mean_flash','eln_ref','grade')
     def _compute_mean_flash_conformity(self):
-        
         for record in self:
 
             if not record.eln_ref or not record.eln_ref.conformity:
@@ -259,58 +325,62 @@ class BitumenConcrete(models.Model):
                 continue
 
             record.mean_flash_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','012457hy-4587-4086-b132-62b50e63f124772')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','012457hy-4587-4086-b132-62b50e63f124772')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6587412-4587-4086-b132-62b50e63f114578365')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6587412-4587-4086-b132-62b50e63f114578365')]).parameter_table
+            mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
-                    mu_value = line.mu_value
-                    
+                    # mu_value = line.mu_value
                     lower = record.mean_flash - record.mean_flash*mu_value
                     upper = record.mean_flash + record.mean_flash*mu_value
-                    if lower >= req_min and upper <= req_max:
+                    if lower >= req_min and upper <= req_max :
                         record.mean_flash_conformity = 'pass'
                         break
                     else:
                         record.mean_flash_conformity = 'fail'
 
-    mean_flash_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_mean_flash_nabl", store=True)
+
+   
+
 
     @api.depends('mean_flash','eln_ref','grade')
     def _compute_mean_flash_nabl(self):
         
         for record in self:
             record.mean_flash_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','012457hy-4587-4086-b132-62b50e63f124772')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','012457hy-4587-4086-b132-62b50e63f124772')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.mean_flash - record.mean_flash*mu_value
-                    upper = record.mean_flash + record.mean_flash*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.mean_flash_nabl = 'pass'
-                        break
-                    else:
-                        record.mean_flash_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6587412-4587-4086-b132-62b50e63f114578365')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6587412-4587-4086-b132-62b50e63f114578365')]).parameter_table
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.mean_flash - record.mean_flash*mu_value
+            upper = record.mean_flash + record.mean_flash*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.mean_flash_nabl = 'pass'
+                break
+            else:
+                record.mean_flash_nabl = 'fail'
 
     mean_fire = fields.Float(string="Mean Value Fire",compute="_compute_mean_fire",digits=(12,2))
 
     mean_fire_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),
-            ('na', 'NA'),
-            ], string="Conformity", compute="_compute_mean_fire_conformity", store=True)
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+    ], string='Conformity',compute="_compute_mean_fire_conformity",store=True)
+
+    mean_fire_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL'),
+    ], string='NABL', default='fail',compute="_compute_mean_fire_nabl")
+
 
     @api.depends('mean_fire','eln_ref','grade')
     def _compute_mean_fire_conformity(self):
-        
         for record in self:
 
             if not record.eln_ref or not record.eln_ref.conformity:
@@ -320,23 +390,23 @@ class BitumenConcrete(models.Model):
             record.mean_fire_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','98547ytrg-4587-4086-b132-62b50e63f124714')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','98547ytrg-4587-4086-b132-62b50e63f124714')]).parameter_table
+            mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
-                    mu_value = line.mu_value
-                    
+                    # mu_value = line.mu_value
                     lower = record.mean_fire - record.mean_fire*mu_value
                     upper = record.mean_fire + record.mean_fire*mu_value
-                    if lower >= req_min and upper <= req_max:
+                    if lower >= req_min and upper <= req_max :
                         record.mean_fire_conformity = 'pass'
                         break
                     else:
                         record.mean_fire_conformity = 'fail'
 
-    mean_fire_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_mean_fire_nabl", store=True)
+
+   
+
 
     @api.depends('mean_fire','eln_ref','grade')
     def _compute_mean_fire_nabl(self):
@@ -345,19 +415,18 @@ class BitumenConcrete(models.Model):
             record.mean_fire_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','98547ytrg-4587-4086-b132-62b50e63f124714')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','98547ytrg-4587-4086-b132-62b50e63f124714')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.mean_fire - record.mean_fire*mu_value
-                    upper = record.mean_fire + record.mean_fire*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.mean_fire_nabl = 'pass'
-                        break
-                    else:
-                        record.mean_fire_nabl = 'fail'
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.mean_fire - record.mean_fire*mu_value
+            upper = record.mean_fire + record.mean_fire*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.mean_fire_nabl = 'pass'
+                break
+            else:
+                record.mean_fire_nabl = 'fail'
 
     @api.depends('flash_and_fire_lines.flash_point')
     def _compute_mean_flash(self):
@@ -387,14 +456,19 @@ class BitumenConcrete(models.Model):
 
 
     avg_temp_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),
-            ('na', 'NA'),
-            ], string="Conformity", compute="_compute_avg_temp_conformity", store=True)
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+    ], string='Conformity',compute="_compute_avg_temp_conformity",store=True)
+
+    avg_temp_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL'),
+    ], string='NABL', default='fail',compute="_compute_avg_temp_nabl")
+
 
     @api.depends('avg_temp','eln_ref','grade')
     def _compute_avg_temp_conformity(self):
-        
         for record in self:
 
             if not record.eln_ref or not record.eln_ref.conformity:
@@ -404,23 +478,23 @@ class BitumenConcrete(models.Model):
             record.avg_temp_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3587914-4587-4086-b132-62b50e63f124772')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3587914-4587-4086-b132-62b50e63f124772')]).parameter_table
+            mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
-                    mu_value = line.mu_value
-                    
+                    # mu_value = line.mu_value
                     lower = record.avg_temp - record.avg_temp*mu_value
                     upper = record.avg_temp + record.avg_temp*mu_value
-                    if lower >= req_min and upper <= req_max:
+                    if lower >= req_min and upper <= req_max :
                         record.avg_temp_conformity = 'pass'
                         break
                     else:
                         record.avg_temp_conformity = 'fail'
 
-    avg_temp_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_avg_temp_nabl", store=True)
+
+   
+
 
     @api.depends('avg_temp','eln_ref','grade')
     def _compute_avg_temp_nabl(self):
@@ -429,19 +503,18 @@ class BitumenConcrete(models.Model):
             record.avg_temp_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3587914-4587-4086-b132-62b50e63f124772')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3587914-4587-4086-b132-62b50e63f124772')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.avg_temp - record.avg_temp*mu_value
-                    upper = record.avg_temp + record.avg_temp*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.avg_temp_nabl = 'pass'
-                        break
-                    else:
-                        record.avg_temp_nabl = 'fail'
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.avg_temp - record.avg_temp*mu_value
+            upper = record.avg_temp + record.avg_temp*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.avg_temp_nabl = 'pass'
+                break
+            else:
+                record.avg_temp_nabl = 'fail'
 
     @api.depends('softining_point_lines.softining_point')
     def _computeavg_temp(self):
@@ -462,14 +535,19 @@ class BitumenConcrete(models.Model):
     avg_penetration = fields.Float(string=" Avg penetration",compute="_compute_avg_penetration",digits=(12,2),store=True)
 
     avg_penetration_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),
-            ('na', 'NA'),
-            ], string="Conformity", compute="_compute_avg_penetration_conformity", store=True)
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+    ], string='Conformity',compute="_compute_avg_penetration_conformity",store=True)
+
+    avg_penetration_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL'),
+    ], string='NABL', default='fail',compute="_compute_avg_penetration_nabl")
+
 
     @api.depends('avg_penetration','eln_ref','grade')
     def _compute_avg_penetration_conformity(self):
-        
         for record in self:
 
             if not record.eln_ref or not record.eln_ref.conformity:
@@ -479,23 +557,23 @@ class BitumenConcrete(models.Model):
             record.avg_penetration_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','68574nht-4587-4086-b132-62b50e63f12474h')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','68574nht-4587-4086-b132-62b50e63f12474h')]).parameter_table
+            mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
-                    mu_value = line.mu_value
-                    
+                    # mu_value = line.mu_value
                     lower = record.avg_penetration - record.avg_penetration*mu_value
                     upper = record.avg_penetration + record.avg_penetration*mu_value
-                    if lower >= req_min and upper <= req_max:
+                    if lower >= req_min and upper <= req_max :
                         record.avg_penetration_conformity = 'pass'
                         break
                     else:
                         record.avg_penetration_conformity = 'fail'
 
-    avg_penetration_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_avg_penetration_nabl", store=True)
+
+   
+
 
     @api.depends('avg_penetration','eln_ref','grade')
     def _compute_avg_penetration_nabl(self):
@@ -504,19 +582,18 @@ class BitumenConcrete(models.Model):
             record.avg_penetration_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','68574nht-4587-4086-b132-62b50e63f12474h')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','68574nht-4587-4086-b132-62b50e63f12474h')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.avg_penetration - record.avg_penetration*mu_value
-                    upper = record.avg_penetration + record.avg_penetration*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.avg_penetration_nabl = 'pass'
-                        break
-                    else:
-                        record.avg_penetration_nabl = 'fail'
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.avg_penetration - record.avg_penetration*mu_value
+            upper = record.avg_penetration + record.avg_penetration*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.avg_penetration_nabl = 'pass'
+                break
+            else:
+                record.avg_penetration_nabl = 'fail'
 
     @api.depends('penetration_lines.penetration')
     def _compute_avg_penetration(self):
@@ -987,6 +1064,9 @@ class BitumenConcrete(models.Model):
 
             if result.parameter.internal_id == '234587hjy-7188-4086-b132-62b50e63f1247ui':
                 result.calculated = True
+
+            if result.parameter.internal_id == '6587412-4587-4086-b132-62b50e63f114578365':
+                result.calculated = True
           
         return {
                 'view_mode': 'form',
@@ -1308,3 +1388,11 @@ class PenetrationLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
+
+class BitumenConcreteNotes(models.Model):
+    _name = "mechanical.bitumen.concrete.notes"
+
+    parent_id = fields.Many2one('mechanical.bitumen.concrete',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
