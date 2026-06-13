@@ -1102,7 +1102,7 @@
 				</t>
 
 				<t t-if="graphHeavy">
-                   <div style="text-align:center; margin-top:20px;" t-if="data.heavy_visible and (data.max_dry_density_nabl == 'pass' and nabl or (data.max_dry_density_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+                   <div style="text-align:center; margin-top:20px;" t-if="(data.heavy_visible and (data.max_dry_density_nabl == 'pass' and nabl or (data.max_dry_density_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)) or (data.heavy_visible and (data.omc_nabl == 'pass' and nabl or (data.omc_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl))">
                    <img t-att-src="'data:image/png;base64,%s' % graphHeavy" style="max-width:100%; height:auto;"/>
                  
 
@@ -1125,7 +1125,7 @@
 
 
 				<t t-if="graphlight">
-                   <div style="text-align:center; margin-top:20px;" t-if="data.omc_visible and (data.omc1_nabl == 'pass' and nabl or (data.omc1_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+                   <div style="text-align:center; margin-top:20px;" t-if="(data.omc_visible and (data.max_dry_density1_nabl == 'pass' and nabl or (data.max_dry_density1_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)) or (data.omc_visible and (data.omc1_nabl == 'pass' and nabl or (data.omc1_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl))">
                    <img t-att-src="'data:image/png;base64,%s' % graphlight" style="max-width:100%; height:auto;"/>
                  
 
