@@ -102,189 +102,179 @@ class ChequeredCementTile(models.Model):
     
 
     average_cememt_flatness_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),
-            ('na', 'NA'),
-            ], string="Flatness Conformity", compute="_compute_average_cememt_flatness_conformity", store=True)
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+    ], string='Conformity',compute="_compute_average_cememt_flatness_conformity")
 
+    average_cememt_flatness_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL'),
+    ], string='NABL', default='fail',compute="_compute_average_cememt_flatness_nabl")
 
 
     @api.depends('average_cememt_flatness','eln_ref','grade')
     def _compute_average_cememt_flatness_conformity(self):
-        
         for record in self:
-
             if not record.eln_ref or not record.eln_ref.conformity:
                 record.average_cememt_flatness_conformity = 'na'
                 continue
-
             record.average_cememt_flatness_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2568fgt4-9cbe-4f6b-a53f-7aa6de46c884')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2568fgt4-9cbe-4f6b-a53f-7aa6de46c884')]).parameter_table
+            mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
-                    mu_value = line.mu_value
-                    
+                    # mu_value = line.mu_value
                     lower = record.average_cememt_flatness - record.average_cememt_flatness*mu_value
                     upper = record.average_cememt_flatness + record.average_cememt_flatness*mu_value
-                    if lower >= req_min and upper <= req_max:
+                    if lower >= req_min and upper <= req_max :
                         record.average_cememt_flatness_conformity = 'pass'
                         break
                     else:
                         record.average_cememt_flatness_conformity = 'fail'
 
-    average_cememt_flatness_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="Flatness NABL", compute="_compute_average_cememt_flatness_nabl", store=True)
-
     @api.depends('average_cememt_flatness','eln_ref','grade')
     def _compute_average_cememt_flatness_nabl(self):
         
         for record in self:
+            
             record.average_cememt_flatness_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2568fgt4-9cbe-4f6b-a53f-7aa6de46c884')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2568fgt4-9cbe-4f6b-a53f-7aa6de46c884')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.average_cememt_flatness - record.average_cememt_flatness*mu_value
-                    upper = record.average_cememt_flatness + record.average_cememt_flatness*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.average_cememt_flatness_nabl = 'pass'
-                        break
-                    else:
-                        record.average_cememt_flatness_nabl = 'fail'
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.average_cememt_flatness - record.average_cememt_flatness*mu_value
+            upper = record.average_cememt_flatness + record.average_cememt_flatness*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.average_cememt_flatness_nabl = 'pass'
+                break
+            else:
+                record.average_cememt_flatness_nabl = 'fail'
 
 
     average_cement_perpendicularity = fields.Float(string="Average Perpendicularity (%)", compute="_compute_average_cement_perpendicularity",digits=(16,2))
 
     average_cement_perpendicularity_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),
-            ('na', 'NA'),
-            ], string="Perpendicularity Conformity", compute="_compute_average_cement_perpendicularity_conformity", store=True)
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+    ], string='Conformity',compute="_compute_average_cement_perpendicularity_conformity")
 
+    average_cement_perpendicularity_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL'),
+    ], string='NABL', default='fail',compute="_compute_average_cement_perpendicularity_nabl")
 
 
     @api.depends('average_cement_perpendicularity','eln_ref','grade')
     def _compute_average_cement_perpendicularity_conformity(self):
-        
         for record in self:
-
             if not record.eln_ref or not record.eln_ref.conformity:
                 record.average_cement_perpendicularity_conformity = 'na'
                 continue
-
             record.average_cement_perpendicularity_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','256opy-7664-4997-b116-6bb1ad2d43d0')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','256opy-7664-4997-b116-6bb1ad2d43d0')]).parameter_table
+            mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
-                    mu_value = line.mu_value
-                    
+                    # mu_value = line.mu_value
                     lower = record.average_cement_perpendicularity - record.average_cement_perpendicularity*mu_value
                     upper = record.average_cement_perpendicularity + record.average_cement_perpendicularity*mu_value
-                    if lower >= req_min and upper <= req_max:
+                    if lower >= req_min and upper <= req_max :
                         record.average_cement_perpendicularity_conformity = 'pass'
                         break
                     else:
                         record.average_cement_perpendicularity_conformity = 'fail'
 
-    average_cement_perpendicularity_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="Perpendicularity NABL", compute="_compute_average_cement_perpendicularity_nabl", store=True)
-
     @api.depends('average_cement_perpendicularity','eln_ref','grade')
     def _compute_average_cement_perpendicularity_nabl(self):
         
         for record in self:
+            
             record.average_cement_perpendicularity_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','256opy-7664-4997-b116-6bb1ad2d43d0')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','256opy-7664-4997-b116-6bb1ad2d43d0')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.average_cement_perpendicularity - record.average_cement_perpendicularity*mu_value
-                    upper = record.average_cement_perpendicularity + record.average_cement_perpendicularity*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.average_cement_perpendicularity_nabl = 'pass'
-                        break
-                    else:
-                        record.average_cement_perpendicularity_nabl = 'fail'
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.average_cement_perpendicularity - record.average_cement_perpendicularity*mu_value
+            upper = record.average_cement_perpendicularity + record.average_cement_perpendicularity*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.average_cement_perpendicularity_nabl = 'pass'
+                break
+            else:
+                record.average_cement_perpendicularity_nabl = 'fail'
 
 
     average_cement_straightness = fields.Float(string="Average Straightness (%)", compute="_compute_average_cement_straightness",digits=(16,2))
 
 
     average_cement_straightness_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),
-            ('na', 'NA'),
-            ], string="Straightness Conformity", compute="_compute_average_cement_straightness_conformity", store=True)
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+    ], string='Conformity',compute="_compute_average_cement_straightness_conformity")
 
+    average_cement_straightness_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL'),
+    ], string='NABL', default='fail',compute="_compute_average_cement_straightness_nabl")
 
 
     @api.depends('average_cement_straightness','eln_ref','grade')
     def _compute_average_cement_straightness_conformity(self):
-        
         for record in self:
-
             if not record.eln_ref or not record.eln_ref.conformity:
                 record.average_cement_straightness_conformity = 'na'
                 continue
-
-
             record.average_cement_straightness_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','254opyt1-0a6a-4a00-ab70-04908d78524c')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','254opyt1-0a6a-4a00-ab70-04908d78524c')]).parameter_table
+            mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
-                    mu_value = line.mu_value
-                    
+                    # mu_value = line.mu_value
                     lower = record.average_cement_straightness - record.average_cement_straightness*mu_value
                     upper = record.average_cement_straightness + record.average_cement_straightness*mu_value
-                    if lower >= req_min and upper <= req_max:
+                    if lower >= req_min and upper <= req_max :
                         record.average_cement_straightness_conformity = 'pass'
                         break
                     else:
                         record.average_cement_straightness_conformity = 'fail'
 
-    average_cement_straightness_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="Straightness NABL", compute="_compute_average_cement_straightness_nabl", store=True)
-
     @api.depends('average_cement_straightness','eln_ref','grade')
     def _compute_average_cement_straightness_nabl(self):
         
         for record in self:
+            
             record.average_cement_straightness_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','254opyt1-0a6a-4a00-ab70-04908d78524c')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','254opyt1-0a6a-4a00-ab70-04908d78524c')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.average_cement_straightness - record.average_cement_straightness*mu_value
-                    upper = record.average_cement_straightness + record.average_cement_straightness*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.average_cement_straightness_nabl = 'pass'
-                        break
-                    else:
-                        record.average_cement_straightness_nabl = 'fail'
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.average_cement_straightness - record.average_cement_straightness*mu_value
+            upper = record.average_cement_straightness + record.average_cement_straightness*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.average_cement_straightness_nabl = 'pass'
+                break
+            else:
+                record.average_cement_straightness_nabl = 'fail'
 
 
     deviation_cement_flatness = fields.Float(string="Flatness,mm",digits=(16,2))
@@ -334,65 +324,60 @@ class ChequeredCementTile(models.Model):
     average_water_cement_absorption = fields.Float(string="Average Water Absorption %",compute="_compute_average_water_cement_absorption",digits=(12,2))
 
     average_water_cement_absorption_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),
-            ('na', 'NA'),
-            ], string="Conformity", compute="_compute_average_water_cement_absorption_conformity", store=True)
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+    ], string='Conformity',compute="_compute_average_water_cement_absorption_conformity")
 
-
+    average_water_cement_absorption_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL'),
+    ], string='NABL', default='fail',compute="_compute_average_water_cement_absorption_nabl")
 
 
     @api.depends('average_water_cement_absorption','eln_ref','grade')
     def _compute_average_water_cement_absorption_conformity(self):
-        
         for record in self:
-
             if not record.eln_ref or not record.eln_ref.conformity:
                 record.average_water_cement_absorption_conformity = 'na'
                 continue
-
-
             record.average_water_cement_absorption_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','258opk1-5406-4010-a81f-88e591d4197e')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','258opk1-5406-4010-a81f-88e591d4197e')]).parameter_table
+            mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
-                    mu_value = line.mu_value
-                    
+                    # mu_value = line.mu_value
                     lower = record.average_water_cement_absorption - record.average_water_cement_absorption*mu_value
                     upper = record.average_water_cement_absorption + record.average_water_cement_absorption*mu_value
-                    if lower >= req_min and upper <= req_max:
+                    if lower >= req_min and upper <= req_max :
                         record.average_water_cement_absorption_conformity = 'pass'
                         break
                     else:
                         record.average_water_cement_absorption_conformity = 'fail'
 
-    average_water_cement_absorption_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_average_water_cement_absorption_nabl", store=True)
-
     @api.depends('average_water_cement_absorption','eln_ref','grade')
     def _compute_average_water_cement_absorption_nabl(self):
         
         for record in self:
+            
             record.average_water_cement_absorption_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','258opk1-5406-4010-a81f-88e591d4197e')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','258opk1-5406-4010-a81f-88e591d4197e')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.average_water_cement_absorption - record.average_water_cement_absorption*mu_value
-                    upper = record.average_water_cement_absorption + record.average_water_cement_absorption*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.average_water_cement_absorption_nabl = 'pass'
-                        break
-                    else:
-                        record.average_water_cement_absorption_nabl = 'fail'
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.average_water_cement_absorption - record.average_water_cement_absorption*mu_value
+            upper = record.average_water_cement_absorption + record.average_water_cement_absorption*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.average_water_cement_absorption_nabl = 'pass'
+                break
+            else:
+                record.average_water_cement_absorption_nabl = 'fail'
 
   
 
@@ -421,63 +406,60 @@ class ChequeredCementTile(models.Model):
     average_cement_wet_transver = fields.Float(string="Average Wet Transveres %",compute="_compute_average_cement_wet_transver",digits=(12,2))
 
     average_cement_wet_transver_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),
-            ('na', 'NA'),
-            ], string="Conformity", compute="_compute_average_cement_wet_transver_conformity", store=True)
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+    ], string='Conformity',compute="_compute_average_cement_wet_transver_conformity")
 
+    average_cement_wet_transver_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL'),
+    ], string='NABL', default='fail',compute="_compute_average_cement_wet_transver_nabl")
 
 
     @api.depends('average_cement_wet_transver','eln_ref','grade')
     def _compute_average_cement_wet_transver_conformity(self):
-        
         for record in self:
-
             if not record.eln_ref or not record.eln_ref.conformity:
                 record.average_cement_wet_transver_conformity = 'na'
                 continue
-
             record.average_cement_wet_transver_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2658piy-34eb-4442-bccb-3b13f9d05ea2')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2658piy-34eb-4442-bccb-3b13f9d05ea2')]).parameter_table
+            mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
-                    mu_value = line.mu_value
-                    
+                    # mu_value = line.mu_value
                     lower = record.average_cement_wet_transver - record.average_cement_wet_transver*mu_value
                     upper = record.average_cement_wet_transver + record.average_cement_wet_transver*mu_value
-                    if lower >= req_min and upper <= req_max:
+                    if lower >= req_min and upper <= req_max :
                         record.average_cement_wet_transver_conformity = 'pass'
                         break
                     else:
                         record.average_cement_wet_transver_conformity = 'fail'
 
-    average_cement_wet_transver_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_average_cement_wet_transver_nabl", store=True)
-
     @api.depends('average_cement_wet_transver','eln_ref','grade')
     def _compute_average_cement_wet_transver_nabl(self):
         
         for record in self:
+            
             record.average_cement_wet_transver_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2658piy-34eb-4442-bccb-3b13f9d05ea2')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2658piy-34eb-4442-bccb-3b13f9d05ea2')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.average_cement_wet_transver - record.average_cement_wet_transver*mu_value
-                    upper = record.average_cement_wet_transver + record.average_cement_wet_transver*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.average_cement_wet_transver_nabl = 'pass'
-                        break
-                    else:
-                        record.average_cement_wet_transver_nabl = 'fail'
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.average_cement_wet_transver - record.average_cement_wet_transver*mu_value
+            upper = record.average_cement_wet_transver + record.average_cement_wet_transver*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.average_cement_wet_transver_nabl = 'pass'
+                break
+            else:
+                record.average_cement_wet_transver_nabl = 'fail'
 
     @api.depends('chequeredwet_cement_transver_lines.wet_transver')
     def _compute_average_cement_wet_transver(self):
@@ -561,6 +543,37 @@ class ChequeredCementTile(models.Model):
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+            if result.parameter.internal_id == '2568fgt4-9cbe-4f6b-a53f-7aa6de46c884':
+                result.result_char = round(self.average_cememt_flatness,2)
+                result.calculated = True
+                if self.average_cememt_flatness_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '256opy-7664-4997-b116-6bb1ad2d43d0':
+                result.result_char = round(self.average_cement_perpendicularity,2)
+                result.calculated = True
+                if self.average_cement_perpendicularity_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '254opyt1-0a6a-4a00-ab70-04908d78524c':
+                result.result_char = round(self.average_cement_straightness,2)
+                result.calculated = True
+                if self.average_cement_straightness_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '30214hy-34eb-4442-bccb-3b13f9d541hng':
+                # result.result_char = self.avg_specific_gravity
+                result.calculated = True
 
         return {
                 'view_mode': 'form',

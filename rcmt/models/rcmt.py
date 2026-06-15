@@ -417,52 +417,61 @@ class RCMT(models.Model):
                 record.date_of_casting = None
 
 
-    @api.depends('eln_ref', 'grade')
-    def _compute_rcmt_nabl(self):
-        for record in self:
-            record.rcmt_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id', '=', '78954gh24-391c-4d7b-818d-28f7b75ea261')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id', '=', '78954gh24-391c-4d7b-818d-28f7b75ea261')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
+    overall_average_conformity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+    ], string='Conformity',compute="_compute_overall_average_conformity")
 
-                    # Your logic for rcmt_nabl based on lab_min, lab_max, and mu_value
-                    if lab_min >= lab_min and lab_max <= lab_max:
-                        record.rcmt_nabl = 'pass'
-                        break
-                else:
-                    record.rcmt_nabl = 'fail'
-
-    
-    rcmt_nabl = fields.Selection([
+    overall_average_nabl = fields.Selection([
         ('pass', 'NABL'),
-        ('fail', 'Non-NABL')],string="NABL",compute="_compute_rcmt_nabl",store=True)
+        ('fail', 'Non-NABL'),
+    ], string='NABL', default='fail',compute="_compute_overall_average_nabl")
 
 
-
-    @api.depends('overall_average','eln_ref')
-    def _compute_rcmt_nabl(self):
-        
+    @api.depends('overall_average','eln_ref','grade')
+    def _compute_overall_average_conformity(self):
         for record in self:
-            record.rcmt_nabl = 'fail'
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.overall_average_conformity = 'na'
+                continue
+            record.overall_average_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78954gh24-391c-4d7b-818d-28f7b75ea261')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78954gh24-391c-4d7b-818d-28f7b75ea261')]).parameter_table
+            mu_value = line.mu_value
             for material in materials:
-                # if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    # mu_value = line.mu_value
                     lower = record.overall_average - record.overall_average*mu_value
                     upper = record.overall_average + record.overall_average*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.rcmt_nabl = 'pass'
+                    if lower >= req_min and upper <= req_max :
+                        record.overall_average_conformity = 'pass'
                         break
                     else:
-                        record.rcmt_nabl = 'fail'
+                        record.overall_average_conformity = 'fail'
+
+    @api.depends('overall_average','eln_ref','grade')
+    def _compute_overall_average_nabl(self):
+        
+        for record in self:
+            
+            record.overall_average_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78954gh24-391c-4d7b-818d-28f7b75ea261')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78954gh24-391c-4d7b-818d-28f7b75ea261')]).parameter_table
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.overall_average - record.overall_average*mu_value
+            upper = record.overall_average + record.overall_average*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.overall_average_nabl = 'pass'
+                break
+            else:
+                record.overall_average_nabl = 'fail'
 
 
 

@@ -442,12 +442,19 @@
                             </tr>
                             
                              <tr>
-                                <td><label class="fw-bold" for="rcmt_nabl">NABL</label></td>
-                                <td><field name="rcmt_nabl"
-                                            decoration-success="rcmt_nabl == 'pass'"
-                                            decoration-danger="rcmt_nabl == 'fail'"
-                                             readonly="1"/></td>
-                            </tr>
+                             <td><label for="overall_average_conformity" class="text-bold">Conformity</label></td>
+                              <td><field name='overall_average_conformity'
+                                       decoration-success="overall_average_conformity == 'pass'" 
+                                       decoration-danger="overall_average_conformity == 'fail'" 
+                                       readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="overall_average_nabl" class="text-bold">NABL</label></td>
+                            <td><field name="overall_average_nabl"
+                                       decoration-success="overall_average_nabl == 'pass'" 
+                                       decoration-danger="overall_average_nabl == 'fail'" 
+                                       readonly="1"/></td>
+                           </tr>
                         </tbody>
                     </table>
 

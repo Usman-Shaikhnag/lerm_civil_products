@@ -206,7 +206,7 @@ class RcptConcreteCube(models.Model):
 
 
         #  for result in self.eln_ref.parameters_result:
-            if result.parameter.internal_id == '78954gh24-391c-4d7b-818d-28f7b75ea261':
+            if result.parameter.internal_id == '78954gh24-391c-4d7b-818d-28f7456877844':
                 # result.result_char = round(self.binder_content,2)
                 result.calculated = True
                 # if self.binder_content_nabl == 'pass':

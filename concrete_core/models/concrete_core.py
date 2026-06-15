@@ -461,7 +461,7 @@ class ConcreteCore(models.Model):
             
             for sample in record.sample_parameters:
 
-                if sample.internal_id == "254187-47c9-4662-9298-3095ac900ffc":
+                if sample.internal_id == "254187-47c9-4662-9298-3095ac900ffcrtyyyy":
                     record.concrete_visible = True
 
                 if sample.internal_id == "30214uy-0268-46ef-ba88-9c04532103012t":
@@ -477,6 +477,7 @@ class ConcreteCore(models.Model):
 
 
 
+    
     def open_eln_page(self):
         # parameter_based_assignment
         current_user = self.env.user
@@ -486,35 +487,12 @@ class ConcreteCore(models.Model):
         )
 
         for result in technician_results:
-            # import wdb;wdb.set_trace()
-        
             
-            if result.parameter.internal_id == '254187-47c9-4662-9298-3095ac900ffc':
-                # result.result_char = round(self.aggregate_elongation,2)
-                result.calculated = True
-                # if self.aggregate_combine_conformity == 'pass':
-                #     result.nabl_status = 'nabl'
-                # else:
-                #     result.nabl_status = 'non-nabl'
-                # continue
+          
 
-            if result.parameter.internal_id == '30214uy-0268-46ef-ba88-9c04532103012t':
-                result.result_char = round(self.average_of_wpt,2)
+            if result.parameter.internal_id == '254187-47c9-4662-9298-3095ac900ffcrtyyyy':
+                # result.result_char = round(self.average_ira,2)
                 result.calculated = True
-                if self.wpt_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-
-            if result.parameter.internal_id == '02145jj-eba3-4f15-b33d-679b39f73301':
-                result.result_char = round(self.avg_water_absorption,2)
-                result.calculated = True
-                if self.avg_water_absorption_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
 
 
         return {
@@ -524,7 +502,7 @@ class ConcreteCore(models.Model):
                 'target': 'current',
                 'res_id': self.eln_ref.id,
                 
-            }           
+            }
 
 
     @api.model
@@ -603,17 +581,7 @@ class ConcreteCore(models.Model):
         if self.eln_ref:
             self.grade = self.eln_ref.grade_id.id
 
-    def open_eln_page(self):
-        # import wdb; wdb.set_trace()
-
-        return {
-                'view_mode': 'form',
-                'res_model': "lerm.eln",
-                'type': 'ir.actions.act_window',
-                'target': 'current',
-                'res_id': self.eln_ref.id,
-                
-            }
+   
 
 
 

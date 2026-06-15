@@ -28,6 +28,20 @@ class ChequeredTile(models.Model):
         if self.eln_ref:
             self.grade = self.eln_ref.grade_id.id
 
+    def prefill_data(self):
+        # import wdb; wdb.set_trace()
+        return {
+            'name': 'Prefill Data',
+            'type': 'ir.actions.act_window',
+            'res_model': 'mechanical.chequered.tiles.prefill.data',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+                },
+        }
+
 
     # remark
 
@@ -40,24 +54,39 @@ class ChequeredTile(models.Model):
         default_notes = [
             (0, 0, {
                 'sr_no': 'a',
-                'notes': 'The information marked with an # received from customer',
+                'notes': 'The report shall not be reproduced in full or partially without written approval of the laboratory HOD/CEO/Maganement.',
             }),
             (0, 0, {
                 'sr_no': 'b',
-                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+                'notes': 'Sampling is not done by us unless mentioned otherwide.',
             }),
             (0, 0, {
                 'sr_no': 'c',
-                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+                'notes': 'without a QR Code and hologram this report is considered invalid.',
             }),
             (0, 0, {
                 'sr_no': 'd',
-                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+                'notes': 'The Result listed refer only to tested samples & applicable parameter Endorsement of product is neither interred nor inplied.',
+            }),
+
+            (0, 0, {
+                'sr_no': 'e',
+                'notes': 'The use or report for arbitration, publicity & evidence in legal dispute is forbidden except with prior written consent NBML Lab.',
+            }),
+             (0, 0, {
+                'sr_no': 'f',
+                'notes': 'All disputed are subject to Raipur jurisdiction 7 days correction to this report invalidates this report.',
+            }),
+
+             (0, 0, {
+                'sr_no': 'g',
+                'notes': 'Sample will be destroyed after 30-days from the date of test report unless otherwise Specified.',
             }),
         ]
 
         res['notes_id'] = default_notes
         return res
+
 
 
 
@@ -80,190 +109,179 @@ class ChequeredTile(models.Model):
     average_flatness = fields.Float(string="Average Flatness (mm)", compute="_compute_average_flatness",digits=(16,2))
 
     average_flatness_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),
-             ('na', 'NA'),
-            ], 
-            string="Flatness Conformity", compute="_compute_average_flatness_conformity", store=True)
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+    ], string='Conformity',compute="_compute_average_flatness_conformity")
 
+    average_flatness_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL'),
+    ], string='NABL', default='fail',compute="_compute_average_flatness_nabl")
 
 
     @api.depends('average_flatness','eln_ref','grade')
     def _compute_average_flatness_conformity(self):
-        
         for record in self:
-
             if not record.eln_ref or not record.eln_ref.conformity:
                 record.average_flatness_conformity = 'na'
                 continue
-
             record.average_flatness_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1254785r-79c0-44a8-9379-f40dd3323rg34')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1254785r-79c0-44a8-9379-f40dd3323rg34')]).parameter_table
+            mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
-                    mu_value = line.mu_value
-                    
+                    # mu_value = line.mu_value
                     lower = record.average_flatness - record.average_flatness*mu_value
                     upper = record.average_flatness + record.average_flatness*mu_value
-                    if lower >= req_min and upper <= req_max:
+                    if lower >= req_min and upper <= req_max :
                         record.average_flatness_conformity = 'pass'
                         break
                     else:
                         record.average_flatness_conformity = 'fail'
 
-    average_flatness_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')
-        ], string="Flatness NABL", compute="_compute_average_flatness_nabl", store=True)
-
     @api.depends('average_flatness','eln_ref','grade')
     def _compute_average_flatness_nabl(self):
         
         for record in self:
+            
             record.average_flatness_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1254785r-79c0-44a8-9379-f40dd3323rg34')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1254785r-79c0-44a8-9379-f40dd3323rg34')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.average_flatness - record.average_flatness*mu_value
-                    upper = record.average_flatness + record.average_flatness*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.average_flatness_nabl = 'pass'
-                        break
-                    else:
-                        record.average_flatness_nabl = 'fail'
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.average_flatness - record.average_flatness*mu_value
+            upper = record.average_flatness + record.average_flatness*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.average_flatness_nabl = 'pass'
+                break
+            else:
+                record.average_flatness_nabl = 'fail'
 
 
     average_perpendicularity = fields.Float(string="Average Perpendicularity (%)", compute="_compute_average_perpendicularity",digits=(16,2))
 
     average_perpendicularity_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),
-             ('na', 'NA'),
-            ], string="Perpendicularity Conformity", compute="_compute_average_perpendicularity_conformity", store=True)
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+    ], string='Conformity',compute="_compute_average_perpendicularity_conformity")
 
+    average_perpendicularity_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL'),
+    ], string='NABL', default='fail',compute="_compute_average_perpendicularity_nabl")
 
 
     @api.depends('average_perpendicularity','eln_ref','grade')
     def _compute_average_perpendicularity_conformity(self):
-        
         for record in self:
-
             if not record.eln_ref or not record.eln_ref.conformity:
                 record.average_perpendicularity_conformity = 'na'
                 continue
-
             record.average_perpendicularity_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2546369f82-79c0-44a8-9379-f40dd3323rg34')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2546369f82-79c0-44a8-9379-f40dd3323rg34')]).parameter_table
+            mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
-                    mu_value = line.mu_value
-                    
+                    # mu_value = line.mu_value
                     lower = record.average_perpendicularity - record.average_perpendicularity*mu_value
                     upper = record.average_perpendicularity + record.average_perpendicularity*mu_value
-                    if lower >= req_min and upper <= req_max:
+                    if lower >= req_min and upper <= req_max :
                         record.average_perpendicularity_conformity = 'pass'
                         break
                     else:
                         record.average_perpendicularity_conformity = 'fail'
 
-    average_perpendicularity_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="Perpendicularity NABL", compute="_compute_average_perpendicularity_nabl", store=True)
-
     @api.depends('average_perpendicularity','eln_ref','grade')
     def _compute_average_perpendicularity_nabl(self):
         
         for record in self:
+            
             record.average_perpendicularity_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2546369f82-79c0-44a8-9379-f40dd3323rg34')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2546369f82-79c0-44a8-9379-f40dd3323rg34')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.average_perpendicularity - record.average_perpendicularity*mu_value
-                    upper = record.average_perpendicularity + record.average_perpendicularity*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.average_perpendicularity_nabl = 'pass'
-                        break
-                    else:
-                        record.average_perpendicularity_nabl = 'fail'
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.average_perpendicularity - record.average_perpendicularity*mu_value
+            upper = record.average_perpendicularity + record.average_perpendicularity*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.average_perpendicularity_nabl = 'pass'
+                break
+            else:
+                record.average_perpendicularity_nabl = 'fail'
 
 
     average_straightness = fields.Float(string="Average Straightness (%)", compute="_compute_average_straightness",digits=(16,2))
 
 
     average_straightness_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),
-            ('na', 'NA'),
-            ], string="Straightness Conformity", compute="_compute_average_straightness_conformity", store=True)
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+    ], string='Conformity',compute="_compute_average_straightness_conformity")
 
+    average_straightness_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL'),
+    ], string='NABL', default='fail',compute="_compute_average_straightness_nabl")
 
 
     @api.depends('average_straightness','eln_ref','grade')
     def _compute_average_straightness_conformity(self):
-        
         for record in self:
-
             if not record.eln_ref or not record.eln_ref.conformity:
                 record.average_straightness_conformity = 'na'
                 continue
-
             record.average_straightness_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23k45868469f82-79c0-44a8-9379-f40dd3323rg34')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23k45868469f82-79c0-44a8-9379-f40dd3323rg34')]).parameter_table
+            mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
-                    mu_value = line.mu_value
-                    
+                    # mu_value = line.mu_value
                     lower = record.average_straightness - record.average_straightness*mu_value
                     upper = record.average_straightness + record.average_straightness*mu_value
-                    if lower >= req_min and upper <= req_max:
+                    if lower >= req_min and upper <= req_max :
                         record.average_straightness_conformity = 'pass'
                         break
                     else:
                         record.average_straightness_conformity = 'fail'
 
-    average_straightness_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="Straightness NABL", compute="_compute_average_straightness_nabl", store=True)
-
     @api.depends('average_straightness','eln_ref','grade')
     def _compute_average_straightness_nabl(self):
         
         for record in self:
+            
             record.average_straightness_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23k45868469f82-79c0-44a8-9379-f40dd3323rg34')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23k45868469f82-79c0-44a8-9379-f40dd3323rg34')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.average_straightness - record.average_straightness*mu_value
-                    upper = record.average_straightness + record.average_straightness*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.average_straightness_nabl = 'pass'
-                        break
-                    else:
-                        record.average_straightness_nabl = 'fail'
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.average_straightness - record.average_straightness*mu_value
+            upper = record.average_straightness + record.average_straightness*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.average_straightness_nabl = 'pass'
+                break
+            else:
+                record.average_straightness_nabl = 'fail'
 
 
     deviation_flatness = fields.Float(string="Flatness,mm",digits=(16,2))
@@ -313,63 +331,60 @@ class ChequeredTile(models.Model):
     average_water_absorption = fields.Float(string="Average Water Absorption %",compute="_compute_average_water_absorption",digits=(12,2))
 
     average_water_absorption_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),
-            ('na', 'NA'),
-            ], string="Conformity", compute="_compute_average_water_absorption_conformity", store=True)
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+    ], string='Conformity',compute="_compute_average_water_absorption_conformity")
 
+    average_water_absorption_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL'),
+    ], string='NABL', default='fail',compute="_compute_average_water_absorption_nabl")
 
 
     @api.depends('average_water_absorption','eln_ref','grade')
     def _compute_average_water_absorption_conformity(self):
-        
         for record in self:
-
             if not record.eln_ref or not record.eln_ref.conformity:
                 record.average_water_absorption_conformity = 'na'
                 continue
-
             record.average_water_absorption_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','26579pi7-ef96-446d-9108-c13d740424ca')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','26579pi7-ef96-446d-9108-c13d740424ca')]).parameter_table
+            mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
-                    mu_value = line.mu_value
-                    
+                    # mu_value = line.mu_value
                     lower = record.average_water_absorption - record.average_water_absorption*mu_value
                     upper = record.average_water_absorption + record.average_water_absorption*mu_value
-                    if lower >= req_min and upper <= req_max:
+                    if lower >= req_min and upper <= req_max :
                         record.average_water_absorption_conformity = 'pass'
                         break
                     else:
                         record.average_water_absorption_conformity = 'fail'
 
-    average_water_absorption_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_average_water_absorption_nabl", store=True)
-
     @api.depends('average_water_absorption','eln_ref','grade')
     def _compute_average_water_absorption_nabl(self):
         
         for record in self:
+            
             record.average_water_absorption_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','26579pi7-ef96-446d-9108-c13d740424ca')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','26579pi7-ef96-446d-9108-c13d740424ca')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.average_water_absorption - record.average_water_absorption*mu_value
-                    upper = record.average_water_absorption + record.average_water_absorption*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.average_water_absorption_nabl = 'pass'
-                        break
-                    else:
-                        record.average_water_absorption_nabl = 'fail'
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.average_water_absorption - record.average_water_absorption*mu_value
+            upper = record.average_water_absorption + record.average_water_absorption*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.average_water_absorption_nabl = 'pass'
+                break
+            else:
+                record.average_water_absorption_nabl = 'fail'
 
     @api.depends('chequered_water_absorption_lines.water_absorption')
     def _compute_average_water_absorption(self):
@@ -396,63 +411,60 @@ class ChequeredTile(models.Model):
     average_wet_transver = fields.Float(string="Average Wet Transveres %",compute="_compute_average_wet_transver",digits=(12,2))
 
     average_wet_transver_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),
-            ('na', 'NA'),
-            ], string="Conformity", compute="_compute_average_wet_transver_conformity", store=True)
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+    ], string='Conformity',compute="_compute_average_wet_transver_conformity")
 
+    average_wet_transver_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL'),
+    ], string='NABL', default='fail',compute="_compute_average_wet_transver_nabl")
 
 
     @api.depends('average_wet_transver','eln_ref','grade')
     def _compute_average_wet_transver_conformity(self):
-        
         for record in self:
-
             if not record.eln_ref or not record.eln_ref.conformity:
                 record.average_wet_transver_conformity = 'na'
                 continue
-
             record.average_wet_transver_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3258li68-d457-4f5d-a912-48c756bb7837')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3258li68-d457-4f5d-a912-48c756bb7837')]).parameter_table
+            mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
-                    mu_value = line.mu_value
-                    
+                    # mu_value = line.mu_value
                     lower = record.average_wet_transver - record.average_wet_transver*mu_value
                     upper = record.average_wet_transver + record.average_wet_transver*mu_value
-                    if lower >= req_min and upper <= req_max:
+                    if lower >= req_min and upper <= req_max :
                         record.average_wet_transver_conformity = 'pass'
                         break
                     else:
                         record.average_wet_transver_conformity = 'fail'
 
-    average_wet_transver_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_average_wet_transver_nabl", store=True)
-
     @api.depends('average_wet_transver','eln_ref','grade')
     def _compute_average_wet_transver_nabl(self):
         
         for record in self:
+            
             record.average_wet_transver_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3258li68-d457-4f5d-a912-48c756bb7837')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3258li68-d457-4f5d-a912-48c756bb7837')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.average_wet_transver - record.average_wet_transver*mu_value
-                    upper = record.average_wet_transver + record.average_wet_transver*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.average_wet_transver_nabl = 'pass'
-                        break
-                    else:
-                        record.average_wet_transver_nabl = 'fail'
+            
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.average_wet_transver - record.average_wet_transver*mu_value
+            upper = record.average_wet_transver + record.average_wet_transver*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.average_wet_transver_nabl = 'pass'
+                break
+            else:
+                record.average_wet_transver_nabl = 'fail'
 
     @api.depends('chequered_wet_transver_lines.wet_transver')
     def _compute_average_wet_transver(self):
@@ -496,10 +508,10 @@ class ChequeredTile(models.Model):
                 if sample.internal_id == "b0d3008e-918a-4602-a329-835d38f63c34":
                     record.chequered_tiles_visible = True
 
-                if sample.internal_id == "15784955-ef96-446d-9108-c13d740424ca":
+                if sample.internal_id == "26579pi7-ef96-446d-9108-c13d740424ca":
                     record.chequered_water_absorption_visible = True
 
-                if sample.internal_id == "6d833bd3-d457-4f5d-a912-48c756bb7837":
+                if sample.internal_id == "3258li68-d457-4f5d-a912-48c756bb7837":
                     record.chequeredwet_transver_visible = True
 
                 if sample.internal_id == "6dytrbv-d457-4f5d-a912-48c7302145tyr":
@@ -528,7 +540,7 @@ class ChequeredTile(models.Model):
                 result.calculated = True
 
             # Water Absorption
-            if result.parameter.internal_id == '15784955-ef96-446d-9108-c13d740424ca':
+            if result.parameter.internal_id == '26579pi7-ef96-446d-9108-c13d740424ca':
                 result.result_char = round(self.average_water_absorption,2)
                 result.calculated = True
                 if self.average_water_absorption_nabl == 'pass':
@@ -538,7 +550,7 @@ class ChequeredTile(models.Model):
                 continue
 
             # WET TRANSVERSE STRENGTH TEST
-            if result.parameter.internal_id == '6d833bd3-d457-4f5d-a912-48c756bb7837':
+            if result.parameter.internal_id == '3258li68-d457-4f5d-a912-48c756bb7837':
                 result.result_char = round(self.average_wet_transver,2)
                 result.calculated = True
                 if self.average_wet_transver_nabl == 'pass':
@@ -548,7 +560,7 @@ class ChequeredTile(models.Model):
                 continue
 
             # Flatness Avg in  (mm)
-            if result.parameter.internal_id == '19999f82-79c0-44a8-9379-f40dd3323rg34':
+            if result.parameter.internal_id == '1254785r-79c0-44a8-9379-f40dd3323rg34':
                 result.result_char = round(self.average_flatness,2)
                 result.calculated = True
                 if self.average_flatness_nabl == 'pass':
@@ -558,7 +570,7 @@ class ChequeredTile(models.Model):
                 continue
 
             # Perpendicularity Avg in %
-            if result.parameter.internal_id == 'rtgh4569f82-79c0-44a8-9379-f40dd3323rg34':
+            if result.parameter.internal_id == '2546369f82-79c0-44a8-9379-f40dd3323rg34':
                 result.result_char = round(self.average_perpendicularity,2)
                 result.calculated = True
                 if self.average_perpendicularity_nabl == 'pass':
@@ -568,7 +580,7 @@ class ChequeredTile(models.Model):
                 continue
 
             # Straightness Avg in %
-            if result.parameter.internal_id == 'hjty5678469f82-79c0-44a8-9379-f40dd3323rg34':
+            if result.parameter.internal_id == '23k45868469f82-79c0-44a8-9379-f40dd3323rg34':
                 result.result_char = round(self.average_straightness,2)
                 result.calculated = True
                 if self.average_straightness_nabl == 'pass':
@@ -576,6 +588,13 @@ class ChequeredTile(models.Model):
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+            if result.parameter.internal_id == '6dytrbv-d457-4f5d-a912-48c7302145tyr':
+                # result.result_char = self.avg_specific_gravity
+                result.calculated = True
+
+
+        
 
         
 
