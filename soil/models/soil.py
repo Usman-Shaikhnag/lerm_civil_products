@@ -14,6 +14,7 @@ from io import BytesIO
 from scipy.interpolate import make_interp_spline
 from matplotlib.ticker import LogLocator, MultipleLocator
 import re
+from matplotlib.ticker import AutoMinorLocator
 
 from matplotlib.ticker import MultipleLocator, StrMethodFormatter
 
@@ -58,9 +59,9 @@ class Soil(models.Model):
 
     
 
-    # Sieve Analysis
-    sieve_name = fields.Char("Name",default="Sieve Analysis")
-    sieve_visible = fields.Boolean("Sieve Analysis Visible",compute="_compute_visible")
+    # Grain Sieve Analysis
+    sieve_name = fields.Char("Name",default="Grain Sieve Analysis")
+    sieve_visible = fields.Boolean("Grain Sieve Analysis Visible",compute="_compute_visible")
  
     sieve_analysis_child_lines = fields.One2many('mechanical.soil.sieve.analysis.line','parent_id',string="Sieve Analysis",default=lambda self: self._default_sieve_analysis_child_lines())
 
@@ -179,116 +180,216 @@ class Soil(models.Model):
     @api.depends('gravel', 'silt_clay')
     def _compute_sand(self):
         for record in self:
-            record.sand = 100 - ((record.gravel or 0.0) + (record.silt_clay or 0.0))
+            record.sand = 100 - ((record.gravel or 0.0) + (record.silt or 0.0))
 
-    d60 = fields.Float(string="D60 (mm)",compute="_compute_d60",digits=(12,4))
-    d30 = fields.Float(string="D30 (mm)",compute="_compute_d30",digits=(12,4))
-    d10 = fields.Float(string="D10 (mm)",compute="_compute_d10",digits=(12,4))
-    cu = fields.Float(string="Cu = D60/D10",compute="_compute_cu",digits=(12,4))
-    cc = fields.Float(string="Cc = D30^2/D10* D60",compute="_compute_cc_slive",digits=(12,4))
+    d60 = fields.Float(string="D60 (mm)",compute="_compute_d60",digits=(12,5))
+    d30 = fields.Float(string="D30 (mm)",compute="_compute_d30",digits=(12,5))
+    d10 = fields.Float(string="D10 (mm)",compute="_compute_d10",digits=(12,5))
+    cu = fields.Float(string="Cu = D60/D10",compute="_compute_cu",digits=(12,5))
+    cc = fields.Float(string="Cc = D30^2/D10* D60",compute="_compute_cc_slive",digits=(12,5))
 
 
-    @api.depends('sieve_analysis_child_lines.sieve_size', 'sieve_analysis_child_lines.passing_percent')
+    import math
+
+    def _get_sieve_mm(self, sieve):
+     sieve = str(sieve).strip().replace('µ', 'μ')
+
+     mapping = {
+        '80mm': 80.0,
+        '40mm': 40.0,
+        '20mm': 20.0,
+        '16mm': 16.0,
+        '10mm': 10.0,
+        '4.75mm': 4.75,
+        '2.00mm': 2.00,
+        '1.18mm': 1.18,
+        '600μ': 0.600,
+        '425μ': 0.425,
+        '300μ': 0.300,
+        '212μ': 0.212,
+        '150μ': 0.150,
+        '75μ': 0.075,
+    }
+
+     return mapping.get(sieve, 0.0)
+ 
+    def _interpolate_d_value(self, target_percent):
+
+      points = []
+
+      for line in self.sieve_analysis_child_lines:
+        size = self._get_sieve_mm(line.sieve_size)
+
+        if size > 0:
+            points.append({
+                'size': size,
+                'passing': float(line.passing_percent or 0)
+            })
+
+      points = sorted(points, key=lambda x: x['size'], reverse=True)
+
+      for i in range(len(points) - 1):
+
+        x1 = points[i]['size']
+        x2 = points[i + 1]['size']
+
+        y1 = points[i]['passing']
+        y2 = points[i + 1]['passing']
+
+        if y1 >= target_percent >= y2 and y1 != y2:
+
+            log_d = (
+                math.log10(x1)
+                + ((target_percent - y1) / (y2 - y1))
+                * (math.log10(x2) - math.log10(x1))
+            )
+
+            return round(10 ** log_d, 8)
+
+      return 0.0
+
+
+
+    @api.depends(
+    'sieve_analysis_child_lines.particle_size',
+    'sieve_analysis_child_lines.passing_percent')
     def _compute_d60(self):
-        for record in self:
-            # extract 16mm and 10mm lines
-            line_16 = next((l for l in record.sieve_analysis_child_lines if '16' in str(l.sieve_size)), None)
-            line_10 = next((l for l in record.sieve_analysis_child_lines if '10' in str(l.sieve_size)), None)
+     for rec in self:
+        rec.d60 = rec._interpolate_d_value(60)
 
-            if line_16 and line_10 and line_16.passing_percent is not None and line_10.passing_percent is not None:
-                try:
-                    x1 = 16.0
-                    x2 = 10.0
-                    y1 = float(line_16.passing_percent)
-                    y2 = float(line_10.passing_percent)
 
-                    # Check to avoid division by zero
-                    if y2 != y1:
-                        # Linear interpolation to find D60
-                        d60_value = x1 + (x2 - x1) * ((60 - y1) / (y2 - y1))
-                    else:
-                        d60_value = 0.0
-
-                    record.d60 = d60_value
-                except Exception:
-                    record.d60 = 0.0
-            else:
-                record.d60 = 0.0
-
-    @api.depends('sieve_analysis_child_lines.sieve_size', 'sieve_analysis_child_lines.passing_percent')
+    @api.depends(
+    'sieve_analysis_child_lines.particle_size',
+    'sieve_analysis_child_lines.passing_percent')
     def _compute_d30(self):
-        for record in self:
-            # extract 4.75mm and 2.36mm lines
-            line_4_75 = next((l for l in record.sieve_analysis_child_lines if '4.75' in str(l.sieve_size)), None)
-            line_2_36 = next((l for l in record.sieve_analysis_child_lines if '2.36' in str(l.sieve_size)), None)
+     for rec in self:
+        rec.d30 = rec._interpolate_d_value(30)
 
-            if line_4_75 and line_2_36 and line_4_75.passing_percent is not None and line_2_36.passing_percent is not None:
-                try:
-                    x1 = 4.75
-                    x2 = 2.36
-                    y1 = float(line_4_75.passing_percent)
-                    y2 = float(line_2_36.passing_percent)
-
-                    # Linear interpolation for target percent = 10%
-                    target_percent = 30.0
-
-                    if y2 != y1:
-                        d30_value = x1 + (x2 - x1) * ((target_percent - y1) / (y2 - y1))
-                    else:
-                        d30_value = 0.0
-
-                    record.d30 = d30_value
-                except Exception:
-                    record.d30 = 0.0
-            else:
-                record.d30 = 0.0
-
-    @api.depends('sieve_analysis_child_lines.sieve_size', 'sieve_analysis_child_lines.passing_percent')
+    @api.depends(
+    'sieve_analysis_child_lines.particle_size',
+    'sieve_analysis_child_lines.passing_percent')
     def _compute_d10(self):
-        for record in self:
-            # find lines 1.18 mm and 600 µ
-            line_1_18 = next((l for l in record.sieve_analysis_child_lines if '1.18' in str(l.sieve_size)), None)
-            line_600um = next((l for l in record.sieve_analysis_child_lines if '600' in str(l.sieve_size)), None)
+     for rec in self:
+        rec.d10 = rec._interpolate_d_value(10)
 
-            if line_1_18 and line_600um and line_1_18.passing_percent is not None and line_600um.passing_percent is not None:
-                try:
-                    # Convert sieve sizes to mm
-                    x1 = 1.18
-                    x2 = 0.6  # 600 µm = 0.6 mm
-                    y1 = float(line_1_18.passing_percent)
-                    y2 = float(line_600um.passing_percent)
-
-                    target_percent = 10.0  # D10 corresponds to 10% passing
-
-                    if y2 != y1:
-                        d10_value = x1 + (x2 - x1) * ((target_percent - y1) / (y2 - y1))
-                    else:
-                        d10_value = 0.0
-
-                    record.d10 = d10_value
-                except Exception:
-                    record.d10 = 0.0
-            else:
-                record.d10 = 0.0
-
-
-    # --- Compute Cu ---
-    @api.depends('d60','d10')
+    @api.depends('d60', 'd10')
     def _compute_cu(self):
-        for record in self:
-            if record.d10 and record.d10 != 0:
-                record.cu = record.d60 / record.d10
-            else:
-                record.cu = 0.0
+     for rec in self:
+        rec.cu = round(rec.d60 / rec.d10, 4) if rec.d10 else 0.0
 
-    # --- Compute Cc ---
-    @api.depends('d30','d10','d60')
+    @api.depends('d30', 'd10', 'd60')
     def _compute_cc_slive(self):
-        for record in self:
-            if record.d10 and record.d10 != 0 and record.d60 and record.d60 != 0:
-                record.cc = (record.d30 ** 2) / (record.d10 * record.d60)
-            else:
-                record.cc = 0.0
+     for rec in self:
+        if rec.d10 and rec.d60:
+            rec.cc = round(
+                (rec.d30 ** 2) / (rec.d10 * rec.d60),
+                4
+            )
+        else:
+            rec.cc = 0.0
+
+
+    # @api.depends('sieve_analysis_child_lines.sieve_size', 'sieve_analysis_child_lines.passing_percent')
+    # def _compute_d60(self):
+    #     for record in self:
+    #         # extract 16mm and 10mm lines
+    #         line_16 = next((l for l in record.sieve_analysis_child_lines if '16' in str(l.sieve_size)), None)
+    #         line_10 = next((l for l in record.sieve_analysis_child_lines if '10' in str(l.sieve_size)), None)
+
+    #         if line_16 and line_10 and line_16.passing_percent is not None and line_10.passing_percent is not None:
+    #             try:
+    #                 x1 = 16.0
+    #                 x2 = 10.0
+    #                 y1 = float(line_16.passing_percent)
+    #                 y2 = float(line_10.passing_percent)
+
+    #                 # Check to avoid division by zero
+    #                 if y2 != y1:
+    #                     # Linear interpolation to find D60
+    #                     d60_value = x1 + (x2 - x1) * ((60 - y1) / (y2 - y1))
+    #                 else:
+    #                     d60_value = 0.0
+
+    #                 record.d60 = d60_value
+    #             except Exception:
+    #                 record.d60 = 0.0
+    #         else:
+    #             record.d60 = 0.0
+
+    # @api.depends('sieve_analysis_child_lines.sieve_size', 'sieve_analysis_child_lines.passing_percent')
+    # def _compute_d30(self):
+    #     for record in self:
+    #         # extract 4.75mm and 2.00mm lines
+    #         line_4_75 = next((l for l in record.sieve_analysis_child_lines if '4.75' in str(l.sieve_size)), None)
+    #         line_2_36 = next((l for l in record.sieve_analysis_child_lines if '2.00' in str(l.sieve_size)), None)
+
+    #         if line_4_75 and line_2_36 and line_4_75.passing_percent is not None and line_2_36.passing_percent is not None:
+    #             try:
+    #                 x1 = 4.75
+    #                 x2 = 2.00
+    #                 y1 = float(line_4_75.passing_percent)
+    #                 y2 = float(line_2_36.passing_percent)
+
+    #                 # Linear interpolation for target percent = 10%
+    #                 target_percent = 30.0
+
+    #                 if y2 != y1:
+    #                     d30_value = x1 + (x2 - x1) * ((target_percent - y1) / (y2 - y1))
+    #                 else:
+    #                     d30_value = 0.0
+
+    #                 record.d30 = d30_value
+    #             except Exception:
+    #                 record.d30 = 0.0
+    #         else:
+    #             record.d30 = 0.0
+
+    # @api.depends('sieve_analysis_child_lines.sieve_size', 'sieve_analysis_child_lines.passing_percent')
+    # def _compute_d10(self):
+    #     for record in self:
+    #         # find lines 1.18 mm and 600 µ
+    #         line_1_18 = next((l for l in record.sieve_analysis_child_lines if '1.18' in str(l.sieve_size)), None)
+    #         line_600um = next((l for l in record.sieve_analysis_child_lines if '600' in str(l.sieve_size)), None)
+
+    #         if line_1_18 and line_600um and line_1_18.passing_percent is not None and line_600um.passing_percent is not None:
+    #             try:
+    #                 # Convert sieve sizes to mm
+    #                 x1 = 1.18
+    #                 x2 = 0.6  # 600 µm = 0.6 mm
+    #                 y1 = float(line_1_18.passing_percent)
+    #                 y2 = float(line_600um.passing_percent)
+
+    #                 target_percent = 10.0  # D10 corresponds to 10% passing
+
+    #                 if y2 != y1:
+    #                     d10_value = x1 + (x2 - x1) * ((target_percent - y1) / (y2 - y1))
+    #                 else:
+    #                     d10_value = 0.0
+
+    #                 record.d10 = d10_value
+    #             except Exception:
+    #                 record.d10 = 0.0
+    #         else:
+    #             record.d10 = 0.0
+
+
+    # # --- Compute Cu ---
+    # @api.depends('d60','d10')
+    # def _compute_cu(self):
+    #     for record in self:
+    #         if record.d10 and record.d10 != 0:
+    #             record.cu = record.d60 / record.d10
+    #         else:
+    #             record.cu = 0.0
+
+    # # --- Compute Cc ---
+    # @api.depends('d30','d10','d60')
+    # def _compute_cc_slive(self):
+    #     for record in self:
+    #         if record.d10 and record.d10 != 0 and record.d60 and record.d60 != 0:
+    #             record.cc = (record.d30 ** 2) / (record.d10 * record.d60)
+    #         else:
+    #             record.cc = 0.0
     
 
 
@@ -302,10 +403,10 @@ class Soil(models.Model):
             (0, 0, {'sieve_size': '16mm'}),
             (0, 0, {'sieve_size': '10mm'}),
             (0, 0, {'sieve_size': '4.75mm'}),
-            (0, 0, {'sieve_size': ' 2.36mm'}),
+            (0, 0, {'sieve_size': ' 2.00mm'}),
             (0, 0, {'sieve_size': '1.18mm'}),
-            (0, 0, {'sieve_size': '600 µ'}),
-            (0, 0, {'sieve_size': '425 µ'}),
+            (0, 0, {'sieve_size': '600µ'}),
+            (0, 0, {'sieve_size': '425µ'}),
             (0, 0, {'sieve_size': '300µ'}),
             (0, 0, {'sieve_size': '212µ'}),
             (0, 0, {'sieve_size': '150µ'}),
@@ -320,7 +421,7 @@ class Soil(models.Model):
         for rec in self:
             pan_line = None
             total_retained = 0.0
-            target_sieves = ['80mm','40mm','20mm','16mm', '10mm', '4.75mm', '2.36mm','1.18mm','600 µ','425 µ','300µ','212µ','150µ','75µ']
+            target_sieves = ['80mm','40mm','20mm','16mm', '10mm', '4.75mm', '2.00mm','1.18mm','600µ','425µ','300µ','212µ','150µ','75µ']
 
             for line in rec.sieve_analysis_child_lines:
                 if line.sieve_size and line.sieve_size.lower() == 'pan':
@@ -390,95 +491,263 @@ class Soil(models.Model):
     #         print("recordd",record)
     #         record.total_sieve_analysis = sum(record.sieve_analysis_child_lines.mapped('wt_retained'))
 
-    graph_image_slive = fields.Binary("Sieve Graph", compute="_compute_graph_image_slive", store=True)
+    graph_image_slive = fields.Binary("Sieve Graph", store=True)
+    graph_filename = fields.Char(
+        string="Graph Filename",
+        readonly=True
+    )
 
-    @api.depends('sieve_analysis_child_lines.cumulative_retained', 'sieve_analysis_child_lines.passing_percent')
-    def _compute_graph_image_slive(self):
-        for record in self:
-            if record.sieve_analysis_child_lines:
-                record.graph_image_slive = record.generate_line_chart_slive()
-            else:
-                record.graph_image_slive = False
+    show_sieve_graph = fields.Boolean(string="Show Sieve Graph",default=False)
 
-
+    def action_generate_graph(self):
+        for rec in self:
+            rec.graph_image_slive = rec.generate_line_chart_slive()
+            rec.graph_filename = "grain_size_analysis.png"
 
 
     def generate_line_chart_slive(self):
-   
+
+        self.ensure_one()
+
         x_value = []
         y_value = []
         x_labels = []
 
         for line in self.sieve_analysis_child_lines:
-            if line.sieve_size and line.passing_percent is not None:
-                sieve_str = str(line.sieve_size).strip().lower()
-                try:
-                    if 'mm' in sieve_str:
-                        sieve_val = float(sieve_str.replace('mm', '').strip())
-                        label = f"{int(sieve_val)} mm"
-                    elif 'µ' in sieve_str or 'micron' in sieve_str:
-                        sieve_val = float(sieve_str.replace('µ', '').replace('micron', '').strip()) / 1000
-                        label = f"{int(float(line.sieve_size.replace('µ', '').replace('micron', '').strip()))} µm"
-                    else:
-                        sieve_val = float(sieve_str)
-                        label = f"{sieve_val} mm"
 
-                    x_value.append(sieve_val)
-                    y_value.append(float(line.passing_percent))
-                    x_labels.append(label)
-                except ValueError:
+            if not line.sieve_size:
+                continue
+
+            try:
+                sieve_str = str(line.sieve_size).strip().lower()
+
+                if 'mm' in sieve_str:
+                    sieve_val = float(
+                        sieve_str.replace('mm', '').strip()
+                    )
+                    label = f"{sieve_val:g} mm"
+
+                elif 'µ' in sieve_str or 'μ' in sieve_str:
+                    micron = float(
+                        sieve_str.replace('µ', '')
+                        .replace('μ', '')
+                        .strip()
+                    )
+
+                    sieve_val = micron / 1000.0
+                    label = f"{int(micron)} µm"
+
+                else:
                     continue
 
-        if not x_value or not y_value:
+                x_value.append(sieve_val)
+                y_value.append(float(line.passing_percent or 0))
+                x_labels.append(label)
+
+            except Exception:
+                continue
+
+        if not x_value:
             return False
 
-        # Sort ascending
-        sorted_data = sorted(zip(x_value, y_value, x_labels))
+        sorted_data = sorted(
+            zip(x_value, y_value, x_labels),
+            key=lambda x: x[0]
+        )
+
         x_value, y_value, x_labels = zip(*sorted_data)
 
-        plt.figure(figsize=(12, 5))
-        plt.xscale('log')
+        fig, ax = plt.subplots(figsize=(10, 5))
 
-        # Main curve
-        plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2)
-        plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5)
+        ax.set_xscale('log')
 
-        plt.xlabel('Sieve Size', fontsize=12)
-        plt.ylabel('Passing %', fontsize=12)
-        plt.title('Grain Size Analysis', fontsize=14)
+        ax.plot(
+            x_value,
+            y_value,
+            color='blue',
+            linewidth=2
+        )
 
-        ax = plt.gca()
-        plt.xticks(ticks=x_value, labels=x_labels, rotation=45, ha='right')
-        ax.xaxis.set_minor_locator(LogLocator(base=10.0, subs=np.arange(1.0, 10.0)*0.1, numticks=200))
-        ax.yaxis.set_minor_locator(MultipleLocator(2))
-        plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
+        ax.scatter(
+            x_value,
+            y_value,
+            color='red',
+            s=60,
+            zorder=5
+        )
 
-        plt.xlim(left=min(x_value)/1.5, right=max(x_value)*1.5)
-        plt.ylim(bottom=0, top=100)
+        ax.set_xlabel("Particle Size (mm)")
+        ax.set_ylabel("% Passing")
+        ax.set_title("Grain Size Distribution Curve")
 
-        # --- D-points: D10, D30, D60 ---
+        ax.set_xticks(x_value)
+        ax.set_xticklabels(
+            x_labels,
+            rotation=45,
+            ha='right'
+        )
+
+        ax.xaxis.set_minor_locator(
+            LogLocator(
+                base=10.0,
+                subs=np.arange(1, 10) * 0.1,
+                numticks=100
+            )
+        )
+
+        ax.yaxis.set_minor_locator(
+            MultipleLocator(2)
+        )
+
+        ax.grid(
+            True,
+            which='both',
+            linestyle='--',
+            linewidth=0.4
+        )
+
+        ax.set_xlim(
+            left=min(x_value) / 1.5,
+            right=max(x_value) * 1.5
+        )
+
+        ax.set_ylim(0, 110)
+
         d_points = [
-            (getattr(self, 'd10', None), 10, 'black'),
-            (getattr(self, 'd30', None), 30, 'yellow'),
-            (getattr(self, 'd60', None), 60, 'orange')
+            (self.d10, 10, 'black', 'D10'),
+            (self.d30, 30, 'green', 'D30'),
+            (self.d60, 60, 'orange', 'D60'),
         ]
 
-        for dx, dy, color in d_points:
-            if dx:
-                # Solid point
-                plt.scatter(dx, dy, color=color, s=80, zorder=10)
-                # Draw X and Y guide lines only to intersection
-                plt.plot([dx, dx], [0, dy], color=color, linestyle='-', linewidth=1.2)
-                plt.plot([0, dx], [dy, dy], color=color, linestyle='-', linewidth=1.2)
+        for dx, dy, color, label in d_points:
 
-        # Save figure
-        buffer = io.BytesIO()
+            if dx and dx > 0:
+
+                ax.scatter(
+                    dx,
+                    dy,
+                    color=color,
+                    s=90,
+                    zorder=10
+                )
+
+                ax.plot(
+                    [dx, dx],
+                    [0, dy],
+                    color=color,
+                    linewidth=1.2
+                )
+
+                ax.plot(
+                    [min(x_value), dx],
+                    [dy, dy],
+                    color=color,
+                    linewidth=1.2
+                )
+
+                ax.annotate(
+                    f"{label}={dx:.4f}",
+                    (dx, dy)
+                )
+
         plt.tight_layout()
-        plt.savefig(buffer, format='png')
-        plt.close()
+
+        buffer = io.BytesIO()
+
+        plt.savefig(
+            buffer,
+            format='png',
+            dpi=100,
+            bbox_inches='tight'
+        )
+
+        plt.close(fig)
+
         buffer.seek(0)
 
-        return base64.b64encode(buffer.read())
+        return base64.b64encode(
+            buffer.read()
+        )
+
+
+
+
+    # def generate_line_chart_slive(self):
+   
+    #     x_value = []
+    #     y_value = []
+    #     x_labels = []
+
+    #     for line in self.sieve_analysis_child_lines:
+    #         if line.sieve_size and line.passing_percent is not None:
+    #             sieve_str = str(line.sieve_size).strip().lower()
+    #             try:
+    #                 if 'mm' in sieve_str:
+    #                     sieve_val = float(sieve_str.replace('mm', '').strip())
+    #                     label = f"{int(sieve_val)} mm"
+    #                 elif 'µ' in sieve_str or 'micron' in sieve_str:
+    #                     sieve_val = float(sieve_str.replace('µ', '').replace('micron', '').strip()) / 1000
+    #                     label = f"{int(float(line.sieve_size.replace('µ', '').replace('micron', '').strip()))} µm"
+    #                 else:
+    #                     sieve_val = float(sieve_str)
+    #                     label = f"{sieve_val} mm"
+
+    #                 x_value.append(sieve_val)
+    #                 y_value.append(float(line.passing_percent))
+    #                 x_labels.append(label)
+    #             except ValueError:
+    #                 continue
+
+    #     if not x_value or not y_value:
+    #         return False
+
+    #     # Sort ascending
+    #     sorted_data = sorted(zip(x_value, y_value, x_labels))
+    #     x_value, y_value, x_labels = zip(*sorted_data)
+
+    #     plt.figure(figsize=(12, 5))
+    #     plt.xscale('log')
+
+    #     # Main curve
+    #     plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2)
+    #     plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5)
+
+    #     plt.xlabel('Sieve Size', fontsize=12)
+    #     plt.ylabel('Passing %', fontsize=12)
+    #     plt.title('Grain Size Analysis', fontsize=14)
+
+    #     ax = plt.gca()
+    #     plt.xticks(ticks=x_value, labels=x_labels, rotation=45, ha='right')
+    #     ax.xaxis.set_minor_locator(LogLocator(base=10.0, subs=np.arange(1.0, 10.0)*0.1, numticks=200))
+    #     ax.yaxis.set_minor_locator(MultipleLocator(2))
+    #     plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
+
+    #     plt.xlim(left=min(x_value)/1.5, right=max(x_value)*1.5)
+    #     plt.ylim(bottom=0, top=100)
+
+    #     # --- D-points: D10, D30, D60 ---
+    #     d_points = [
+    #         (getattr(self, 'd10', None), 10, 'black'),
+    #         (getattr(self, 'd30', None), 30, 'yellow'),
+    #         (getattr(self, 'd60', None), 60, 'orange')
+    #     ]
+
+    #     for dx, dy, color in d_points:
+    #         if dx:
+    #             # Solid point
+    #             plt.scatter(dx, dy, color=color, s=80, zorder=10)
+    #             # Draw X and Y guide lines only to intersection
+    #             plt.plot([dx, dx], [0, dy], color=color, linestyle='-', linewidth=1.2)
+    #             plt.plot([0, dx], [dy, dy], color=color, linestyle='-', linewidth=1.2)
+
+    #     # Save figure
+    #     buffer = io.BytesIO()
+    #     plt.tight_layout()
+    #     plt.savefig(buffer, format='png')
+    #     plt.close()
+    #     buffer.seek(0)
+
+    #     return base64.b64encode(buffer.read())
 
 
 
@@ -505,43 +774,79 @@ class Soil(models.Model):
    
    
 
+    # @api.depends('child_liness.blwo_no1', 'child_liness.moisture_content')
+    # def _compute_liquid_limit(self):
+    #     for record in self:
+    #         lines = record.child_liness.filtered(lambda l: l.blwo_no1 is not None and l.moisture_content is not None)
+    #         if not lines or len(lines) < 2:
+    #             record.liquid_limit = 0.0
+    #             continue
+
+    #         # Sort by blwo_no1 ascending
+    #         lines_sorted = sorted(lines, key=lambda l: l.blwo_no1)
+    #         target = 25.0
+
+    #         # Find the two points around target (just below and just above)
+    #         lower = None
+    #         upper = None
+    #         for i, line in enumerate(lines_sorted):
+    #             if line.blwo_no1 < target:
+    #                 lower = line
+    #             elif line.blwo_no1 >= target and lower:
+    #                 upper = line
+    #                 break
+
+    #         if lower and upper:
+    #             x1, x2 = lower.blwo_no1, upper.blwo_no1
+    #             y1, y2 = lower.moisture_content, upper.moisture_content
+
+    #             if x2 != x1:
+    #                 # Linear interpolation
+    #                 ll_value = y1 + (y2 - y1) * (target - x1) / (x2 - x1)
+    #             else:
+    #                 ll_value = y1
+    #             record.liquid_limit = ll_value
+    #         elif lower:
+    #             # If target above highest value
+    #             record.liquid_limit = lower.moisture_content
+    #         else:
+    #             record.liquid_limit = 0.0
+
+    import math
+
     @api.depends('child_liness.blwo_no1', 'child_liness.moisture_content')
     def _compute_liquid_limit(self):
-        for record in self:
-            lines = record.child_liness.filtered(lambda l: l.blwo_no1 is not None and l.moisture_content is not None)
-            if not lines or len(lines) < 2:
-                record.liquid_limit = 0.0
-                continue
+     for record in self:
+        lines = record.child_liness.filtered(
+            lambda l: l.blwo_no1 and l.moisture_content
+        )
 
-            # Sort by blwo_no1 ascending
-            lines_sorted = sorted(lines, key=lambda l: l.blwo_no1)
-            target = 25.0
+        if len(lines) < 2:
+            record.liquid_limit = 0.0
+            continue
 
-            # Find the two points around target (just below and just above)
-            lower = None
-            upper = None
-            for i, line in enumerate(lines_sorted):
-                if line.blwo_no1 < target:
-                    lower = line
-                elif line.blwo_no1 >= target and lower:
-                    upper = line
-                    break
+        x = [math.log10(float(l.blwo_no1)) for l in lines]
+        y = [float(l.moisture_content) for l in lines]
 
-            if lower and upper:
-                x1, x2 = lower.blwo_no1, upper.blwo_no1
-                y1, y2 = lower.moisture_content, upper.moisture_content
+        n = len(x)
 
-                if x2 != x1:
-                    # Linear interpolation
-                    ll_value = y1 + (y2 - y1) * (target - x1) / (x2 - x1)
-                else:
-                    ll_value = y1
-                record.liquid_limit = ll_value
-            elif lower:
-                # If target above highest value
-                record.liquid_limit = lower.moisture_content
-            else:
-                record.liquid_limit = 0.0
+        sum_x = sum(x)
+        sum_y = sum(y)
+        sum_xy = sum(xi * yi for xi, yi in zip(x, y))
+        sum_x2 = sum(xi * xi for xi in x)
+
+        denominator = n * sum_x2 - (sum_x ** 2)
+
+        if denominator == 0:
+            record.liquid_limit = 0.0
+            continue
+
+        a = (n * sum_xy - sum_x * sum_y) / denominator
+        b = (sum_y - a * sum_x) / n
+
+        ll = a * math.log10(25.0) + b
+
+        record.liquid_limit = round(ll, 2)
 
     
     liquid_limit_conformity = fields.Selection([
@@ -600,75 +905,268 @@ class Soil(models.Model):
 
     graph_image_liquid = fields.Binary("Line Chart", compute="_compute_graph_image_liquid", store=True)
 
+    show_liquid_graph = fields.Boolean(string="Show Liquid Limit Graph")
+
     
 
 
 
    
 
+    # def generate_line_chart_liquid(self):
+    #     x_value = []
+    #     y_value = []
+    #     for line in self.child_liness:
+    #         if line.blwo_no1 and line.moisture_content is not None:
+    #             x_value.append(line.blwo_no1)
+    #             y_value.append(line.moisture_content)
+
+    #     if not x_value or not y_value:
+    #         return False
+
+    #     plt.figure(figsize=(10, 5))
+
+    #     # ✅ Blue line with red points
+    #     plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
+    #     plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
+
+    #     # ✅ Labels and title
+    #     plt.xlabel('No. of Blows', fontsize=12)
+    #     plt.ylabel('Water Content (%)', fontsize=12)
+    #     plt.title('LIQUID LIMIT', fontsize=14)
+
+    #     # ✅ Axis limits (rounded)
+    #     max_y = max(y_value)
+    #     y_limit = (int(max_y / 10) + 1) * 10
+    #     plt.ylim(bottom=0, top=y_limit)
+
+    #     max_x = max(x_value)
+    #     x_limit = (int(max_x / 10) + 1) * 10
+    #     plt.xlim(left=0, right=x_limit)
+
+    #     # ✅ Minor ticks for fine grid lines
+    #     ax = plt.gca()
+    #     ax.xaxis.set_minor_locator(MultipleLocator(1))
+    #     ax.yaxis.set_minor_locator(MultipleLocator(1))
+
+    #     # ✅ Fine grid
+    #     plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
+
+    #     # 🔹 Highlight Liquid Limit point (DB field value वापरून)
+    #     if self.liquid_limit:
+    #         highlight_x = 25                # Blows (fixed at 25)
+    #         highlight_y = self.liquid_limit # Moisture content from field
+
+    #         # Dotted guide lines
+    #         plt.axhline(y=highlight_y, color='green', linestyle='--', linewidth=1)
+    #         plt.axvline(x=highlight_x, color='green', linestyle='--', linewidth=1)
+
+    #         # Point mark
+    #         plt.plot(highlight_x, highlight_y, marker='o', color='green', markersize=8)
+
+    #         # Label
+    #         plt.text(highlight_x + 1, highlight_y + 1, f"LL = {highlight_y:.2f}%", color='green')
+
+    #     # ✅ Save to buffer
+    #     buffer = io.BytesIO()
+    #     plt.tight_layout()
+    #     plt.legend()
+    #     plt.savefig(buffer, format='png')
+    #     plt.close()
+    #     buffer.seek(0)
+
+    #     return base64.b64encode(buffer.read()).decode('utf-8')
+
+
     def generate_line_chart_liquid(self):
-        x_value = []
-        y_value = []
-        for line in self.child_liness:
-            if line.blwo_no1 and line.moisture_content is not None:
-                x_value.append(line.blwo_no1)
-                y_value.append(line.moisture_content)
 
-        if not x_value or not y_value:
-            return False
+      x_value = []
+      y_value = []
 
-        plt.figure(figsize=(10, 5))
+      for line in self.child_liness:
+        if line.blwo_no1 and line.moisture_content is not None:
+            x_value.append(float(line.blwo_no1))
+            y_value.append(float(line.moisture_content))
 
-        # ✅ Blue line with red points
-        plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
-        plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
+      if len(x_value) < 2:
+        return False
 
-        # ✅ Labels and title
-        plt.xlabel('No. of Blows', fontsize=12)
-        plt.ylabel('Water Content (%)', fontsize=12)
-        plt.title('LIQUID LIMIT', fontsize=14)
+    # Sort data
+      data = sorted(zip(x_value, y_value), key=lambda x: x[0])
+      x_value = [d[0] for d in data]
+      y_value = [d[1] for d in data]
 
-        # ✅ Axis limits (rounded)
-        max_y = max(y_value)
-        y_limit = (int(max_y / 10) + 1) * 10
-        plt.ylim(bottom=0, top=y_limit)
+    # ----------------------------------
+    # Regression: w = a log(N) + b
+    # ----------------------------------
+      x_log = [math.log10(x) for x in x_value]
 
-        max_x = max(x_value)
-        x_limit = (int(max_x / 10) + 1) * 10
-        plt.xlim(left=0, right=x_limit)
+      n = len(x_log)
 
-        # ✅ Minor ticks for fine grid lines
-        ax = plt.gca()
-        ax.xaxis.set_minor_locator(MultipleLocator(1))
-        ax.yaxis.set_minor_locator(MultipleLocator(1))
+      sum_x = sum(x_log)
+      sum_y = sum(y_value)
+      sum_xy = sum(x * y for x, y in zip(x_log, y_value))
+      sum_x2 = sum(x * x for x in x_log)
 
-        # ✅ Fine grid
-        plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
+      denominator = n * sum_x2 - sum_x ** 2
 
-        # 🔹 Highlight Liquid Limit point (DB field value वापरून)
-        if self.liquid_limit:
-            highlight_x = 25                # Blows (fixed at 25)
-            highlight_y = self.liquid_limit # Moisture content from field
+      if denominator == 0:
+        return False
 
-            # Dotted guide lines
-            plt.axhline(y=highlight_y, color='green', linestyle='--', linewidth=1)
-            plt.axvline(x=highlight_x, color='green', linestyle='--', linewidth=1)
+      a = (n * sum_xy - sum_x * sum_y) / denominator
+      b = (sum_y - a * sum_x) / n
 
-            # Point mark
-            plt.plot(highlight_x, highlight_y, marker='o', color='green', markersize=8)
+      # LL at 25 blows
+      ll_value = a * math.log10(25) + b
 
-            # Label
-            plt.text(highlight_x + 1, highlight_y + 1, f"LL = {highlight_y:.2f}%", color='green')
+      # ----------------------------------
+      # Create smooth regression line
+      # ----------------------------------
+      x_fit = np.linspace(min(x_value), max(x_value), 500)
+      y_fit = [a * math.log10(x) + b for x in x_fit]
 
-        # ✅ Save to buffer
-        buffer = io.BytesIO()
-        plt.tight_layout()
-        plt.legend()
-        plt.savefig(buffer, format='png')
-        plt.close()
-        buffer.seek(0)
+    # ----------------------------------
+    # Plot
+    # ----------------------------------
+      fig, ax = plt.subplots(figsize=(10, 4))
 
-        return base64.b64encode(buffer.read()).decode('utf-8')
+      ax.set_xscale('log')
+
+    # Regression line
+      ax.plot(
+        x_fit,
+        y_fit,
+        color='blue',
+        linewidth=2,
+        label='Flow Curve'
+    )
+
+    # Actual points
+      ax.scatter(
+        x_value,
+        y_value,
+        color='red',
+        edgecolors='black',
+        s=80,
+        zorder=5,
+        label='Test Points'
+    )
+
+    # ----------------------------------
+    # LL Marker
+    # ----------------------------------
+      ax.axvline(
+        x=25,
+        color='green',
+        linestyle='--',
+        linewidth=1.2
+    )
+
+      ax.axhline(
+        y=ll_value,
+        color='green',
+        linestyle='--',
+        linewidth=1.2
+    )
+
+      ax.scatter(
+        [25],
+        [ll_value],
+        color='green',
+        s=120,
+        zorder=10
+    )
+
+      ax.annotate(
+        f'LL = {ll_value:.2f}%',
+        xy=(25, ll_value),
+        xytext=(26, ll_value + 2),
+        color='green',
+        fontsize=12,
+        fontweight='bold'
+    )
+
+    # ----------------------------------
+    # Labels
+    # ----------------------------------
+      ax.set_title(
+        'LIQUID LIMIT',
+        fontsize=18,
+        fontweight='bold'
+    )
+
+      ax.set_xlabel(
+        'Number of Blows (Log Scale)',
+        fontsize=12
+    )
+
+      ax.set_ylabel(
+        'Water Content (%)',
+        fontsize=12
+    )
+
+    # ----------------------------------
+    # Limits
+    # ----------------------------------
+      ax.set_xlim(
+        min(x_value) * 0.8,
+        max(x_value) * 1.2
+    )
+
+      y_min = min(y_value)
+      y_max = max(y_value)
+
+      ax.set_ylim(
+        max(0, y_min - 5),
+        ((int(y_max / 10) + 1) * 10)
+    )
+
+    # ----------------------------------
+    # Grid
+    # ----------------------------------
+      ax.xaxis.set_major_locator(LogLocator(base=10))
+      ax.xaxis.set_minor_locator(
+        LogLocator(
+            base=10,
+            subs=np.arange(2, 10) * 0.1
+        )
+    )
+
+      ax.yaxis.set_minor_locator(MultipleLocator(1))
+
+      ax.grid(
+        which='major',
+        linestyle='-',
+        linewidth=0.5,
+        alpha=0.7
+    )
+
+      ax.grid(
+        which='minor',
+        linestyle='--',
+        linewidth=0.3,
+        alpha=0.5
+    )
+
+      ax.legend()
+
+      plt.tight_layout()
+
+      buffer = io.BytesIO()
+      plt.savefig(
+        buffer,
+        format='png',
+        dpi=100,
+        bbox_inches='tight'
+    )
+
+      plt.close()
+
+      buffer.seek(0)
+
+      return base64.b64encode(
+        buffer.read()
+    ).decode('utf-8')
 
 
         
@@ -759,7 +1257,7 @@ class Soil(models.Model):
     def _compute_plasticity_index(self):
         for record in self:
             if record.liquid_limit is not None and record.plastic_limit is not None:
-                record.plasticity_index = record.plastic_limit - record.liquid_limit
+                record.plasticity_index = record.liquid_limit - record.plastic_limit
             else:
                 record.plasticity_index = 0.0
 
@@ -1041,85 +1539,253 @@ class Soil(models.Model):
     
     graph_image_density = fields.Binary("Line Chart", compute="_compute_graph_image_density_omc_light", store=True)
 
+    show_heavy_graph = fields.Boolean(string="Show Compaction Graph")
 
 
 
 
 
 
+
+
+    # def generate_line_chart_light_omc(self):
+    #     x_value = []
+    #     y_value = []
+    #     for line in self.heavy_table:
+    #         if line.water_content and line.dry_density:
+    #             x_value.append(line.water_content)
+    #             y_value.append(line.dry_density)
+
+    #     if not x_value or not y_value:
+    #         return False
+
+    #     x = np.array(x_value)
+    #     y = np.array(y_value)
+
+    #     # Sort data
+    #     sorted_indices = np.argsort(x)
+    #     x = x[sorted_indices]
+    #     y = y[sorted_indices]
+
+    #     # Gentle smooth curve (quadratic)
+    #     x_smooth = np.linspace(x.min(), x.max(), 200)
+    #     spline = make_interp_spline(x, y, k=2)
+    #     y_smooth = spline(x_smooth)
+
+    #     # Find smooth curve peak (OMC/MDD)
+    #     smooth_max_index = np.argmax(y_smooth)
+    #     smooth_max_x = x_smooth[smooth_max_index]
+    #     smooth_max_y = y_smooth[smooth_max_index]
+
+    #     # Trim curve so it never goes above MDD
+    #     y_smooth = np.minimum(y_smooth, smooth_max_y)
+
+    #     # Figure size
+    #     plt.figure(figsize=(15, 5))
+
+    #     # Plot smooth curve
+    #     plt.plot(x_smooth, y_smooth, color='blue', linewidth=2)
+
+    #     # Plot points (smaller, subtle)
+    #     plt.scatter(x, y, color='red', edgecolors='none', s=40, zorder=5)
+
+    #     # Labels and title
+    #     plt.xlabel('Water Content (%)', fontsize=12)
+    #     plt.ylabel('Dry Density (g/cc)', fontsize=12)
+    #     plt.title('DETERMINATION OF COMPACTION OMC / MDD', fontsize=14)
+
+    #     # Extend y-axis
+    #     plt.xlim(left=0, right=max(x) + 2)
+    #     plt.ylim(bottom=min(y) - 0.03, top=smooth_max_y + 0.03)
+
+    #     # Grid
+    #     ax = plt.gca()
+    #     ax.xaxis.set_minor_locator(MultipleLocator(0.2))
+    #     ax.yaxis.set_minor_locator(MultipleLocator(0.005))
+    #     plt.grid(True, which='both', linestyle='--', linewidth=0.3, color='darkgreen', alpha=0.9)
+
+    #     # Highlight OMC/MDD (shifted peak)
+    #     plt.axhline(y=smooth_max_y, color='red', linestyle='--', linewidth=1)
+    #     plt.axvline(x=smooth_max_x, color='red', linestyle='--', linewidth=1)
+    #     plt.plot(smooth_max_x, smooth_max_y, marker='o', color='red', markersize=6)
+    #     plt.text(smooth_max_x + 0.2, smooth_max_y + 0.002,
+    #             f"OMC: {smooth_max_x:.2f}%\nMDD: {smooth_max_y:.2f}",
+    #             color='red', fontsize=10)
+
+    #     plt.tight_layout()
+
+    #     # Save to base64
+    #     buffer = io.BytesIO()
+    #     plt.savefig(buffer, format='png', dpi=150)
+    #     plt.close()
+    #     buffer.seek(0)
+    #     return base64.b64encode(buffer.read()).decode('utf-8')
 
     def generate_line_chart_light_omc(self):
-        x_value = []
-        y_value = []
-        for line in self.heavy_table:
-            if line.water_content and line.dry_density:
-                x_value.append(line.water_content)
-                y_value.append(line.dry_density)
 
-        if not x_value or not y_value:
-            return False
+     x_value = []
+     y_value = []
 
-        x = np.array(x_value)
-        y = np.array(y_value)
+     for line in self.heavy_table:
+        if line.water_content and line.dry_density:
+            x_value.append(float(line.water_content))
+            y_value.append(float(line.dry_density))
 
-        # Sort data
-        sorted_indices = np.argsort(x)
-        x = x[sorted_indices]
-        y = y[sorted_indices]
+     if len(x_value) < 3:
+        return False
 
-        # Gentle smooth curve (quadratic)
-        x_smooth = np.linspace(x.min(), x.max(), 200)
-        spline = make_interp_spline(x, y, k=2)
-        y_smooth = spline(x_smooth)
+    # Sort data
+     data = sorted(zip(x_value, y_value))
+     x = np.array([d[0] for d in data])
+     y = np.array([d[1] for d in data])
 
-        # Find smooth curve peak (OMC/MDD)
-        smooth_max_index = np.argmax(y_smooth)
-        smooth_max_x = x_smooth[smooth_max_index]
-        smooth_max_y = y_smooth[smooth_max_index]
+    # ==========================
+    # Quadratic Compaction Curve
+    # ==========================
+     coeff = np.polyfit(x, y, 2)
+     poly = np.poly1d(coeff)
 
-        # Trim curve so it never goes above MDD
-        y_smooth = np.minimum(y_smooth, smooth_max_y)
+     x_smooth = np.linspace(x.min(), x.max(), 500)
+     y_smooth = poly(x_smooth)
 
-        # Figure size
-        plt.figure(figsize=(15, 5))
+    # OMC / MDD
+     omc = -coeff[1] / (2 * coeff[0])
+     mdd = poly(omc)
 
-        # Plot smooth curve
-        plt.plot(x_smooth, y_smooth, color='blue', linewidth=2)
+     plt.figure(figsize=(15, 5))
 
-        # Plot points (smaller, subtle)
-        plt.scatter(x, y, color='red', edgecolors='none', s=40, zorder=5)
+    # Smooth blue curve
+     plt.plot(
+        x_smooth,
+        y_smooth,
+        color='blue',
+        linewidth=2.5
+    )
 
-        # Labels and title
-        plt.xlabel('Water Content (%)', fontsize=12)
-        plt.ylabel('Dry Density (g/cc)', fontsize=12)
-        plt.title('DETERMINATION OF COMPACTION OMC / MDD', fontsize=14)
+    # Show points ON CURVE only
+     y_curve_points = poly(x)
+  
+     plt.scatter(
+        x,
+        y_curve_points,
+        color='red',
+        edgecolors='none',
+        s=40,
+        zorder=5
+    )
 
-        # Extend y-axis
-        plt.xlim(left=0, right=max(x) + 2)
-        plt.ylim(bottom=min(y) - 0.03, top=smooth_max_y + 0.03)
+    # Peak point
+     plt.scatter(
+        omc,
+        mdd,
+        color='red',
+        s=120,
+        zorder=10
+    )
 
-        # Grid
-        ax = plt.gca()
-        ax.xaxis.set_minor_locator(MultipleLocator(0.2))
-        ax.yaxis.set_minor_locator(MultipleLocator(0.005))
-        plt.grid(True, which='both', linestyle='--', linewidth=0.3, color='darkgreen', alpha=0.9)
+    # OMC / MDD guide lines
+     plt.axhline(
+        y=mdd,
+        color='red',
+        linestyle='--',
+        linewidth=1
+    )
 
-        # Highlight OMC/MDD (shifted peak)
-        plt.axhline(y=smooth_max_y, color='red', linestyle='--', linewidth=1)
-        plt.axvline(x=smooth_max_x, color='red', linestyle='--', linewidth=1)
-        plt.plot(smooth_max_x, smooth_max_y, marker='o', color='red', markersize=6)
-        plt.text(smooth_max_x + 0.2, smooth_max_y + 0.002,
-                f"OMC: {smooth_max_x:.2f}%\nMDD: {smooth_max_y:.2f}",
-                color='red', fontsize=10)
+     plt.axvline(
+        x=omc,
+        color='red',
+        linestyle='--',
+        linewidth=1
+    )
 
-        plt.tight_layout()
+    # Annotation
+     plt.text(
+        omc + 0.2,
+        mdd + 0.002,
+        f"OMC: {omc:.2f}%\nMDD: {mdd:.2f}",
+        color='red',
+        fontsize=11,
+        fontweight='bold'
+    )
 
-        # Save to base64
-        buffer = io.BytesIO()
-        plt.savefig(buffer, format='png', dpi=150)
-        plt.close()
-        buffer.seek(0)
-        return base64.b64encode(buffer.read()).decode('utf-8')
+    # Labels
+     plt.xlabel(
+        'Water Content (%)',
+        fontsize=12
+    )
+
+     plt.ylabel(
+        'Dry Density (g/cc)',
+        fontsize=12
+    )
+
+     plt.title(
+        'DETERMINATION OF COMPACTION OMC / MDD',
+        fontsize=16
+    )
+
+    # Limits
+     plt.xlim(
+        left=0,
+        right=max(x) + 2
+    )
+
+     plt.ylim(
+        bottom=min(y) - 0.03,
+        top=max(y_smooth) + 0.03
+    )
+
+    # ==========================
+    # Graph Paper Background
+    # ==========================
+     ax = plt.gca()
+
+    # X-axis grid
+     ax.xaxis.set_major_locator(MultipleLocator(1))
+     ax.xaxis.set_minor_locator(MultipleLocator(0.1))
+
+    # Y-axis grid
+     ax.yaxis.set_major_locator(MultipleLocator(0.05))
+     ax.yaxis.set_minor_locator(MultipleLocator(0.001))
+
+    # Major Grid
+     plt.grid(
+        which='major',
+        color='green',
+        linestyle='-',
+        linewidth=0.5,
+        alpha=0.55
+    )
+
+    # Minor Grid
+     plt.grid(
+        which='minor',
+        color='green',
+        linestyle=':',
+        linewidth=0.3,
+        alpha=0.45
+    )
+
+     plt.tight_layout()
+
+    # Save Image
+     buffer = io.BytesIO()
+
+     plt.savefig(
+        buffer,
+        format='png',
+        dpi=150,
+        bbox_inches='tight'
+    )
+
+     plt.close()
+
+     buffer.seek(0)
+
+     return base64.b64encode(
+        buffer.read()
+    ).decode('utf-8')
+    
 
 
     
@@ -1276,65 +1942,234 @@ class Soil(models.Model):
     
     graph_image_density1 = fields.Binary("Line Chart", compute="_compute_graph_image_density_omc_light1", store=True)
 
+    show_light_graph = fields.Boolean(string="Show Compaction Graph")
 
+
+
+
+
+
+    # def generate_line_chart_light_omc1(self):
+    # # Prepare data
+    #     x_value = []
+    #     y_value = []
+    #     for line in self.omc_table:
+    #         x_value.append(line.water_content1)
+    #         y_value.append(line.dry_density1)
+
+    #     if not x_value or not y_value:
+    #         return False
+
+    #     plt.figure(figsize=(10, 5))
+
+    #     # ✅ Blue curve with red points
+    #     plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
+    #     plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
+
+    #     # ✅ Axis labels and title
+    #     plt.xlabel('Water Content (%)', fontsize=12)
+    #     plt.ylabel('Dry Density (g/cc)', fontsize=12)
+    #     plt.title('DETERMINATION OF COMPACTION OMC / MDD', fontsize=14)
+
+    #     # ✅ Axis range
+    #     plt.xlim(left=0, right=max(x_value) + 2)
+    #     plt.ylim(bottom=min(y_value) - 0.02, top=max(y_value) + 0.02)
+
+    #     # ✅ Minor ticks for fine grid
+    #     ax = plt.gca()
+    #     ax.xaxis.set_minor_locator(MultipleLocator(0.5))
+    #     ax.yaxis.set_minor_locator(MultipleLocator(0.005))
+
+    #     # ✅ Fine grid (major + minor)
+    #     plt.grid(True, which='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
+
+    #     # ✅ Highlight max dry density
+    #     max_index = y_value.index(max(y_value))
+    #     max_x = x_value[max_index]
+    #     max_y = y_value[max_index]
+
+    #     plt.axhline(y=max_y, color='red', linestyle='--', linewidth=1)
+    #     plt.axvline(x=max_x, color='red', linestyle='--', linewidth=1)
+    #     plt.plot(max_x, max_y, marker='o', color='red', markersize=8)
+    #     plt.text(max_x + 0.3, max_y + 0.003, f"OMC: {max_x:.2f}%\nMDD: {max_y:.2f}", color='red')
+
+    #     # ✅ Save image
+    #     buffer = io.BytesIO()
+    #     plt.tight_layout()
+    #     plt.legend()
+    #     plt.savefig(buffer, format='png')
+    #     plt.close()
+    #     buffer.seek(0)
+
+    #     return base64.b64encode(buffer.read()).decode('utf-8')
 
 
     def generate_line_chart_light_omc1(self):
-    # Prepare data
-        x_value = []
-        y_value = []
-        for line in self.omc_table:
-            x_value.append(line.water_content1)
-            y_value.append(line.dry_density1)
 
-        if not x_value or not y_value:
-            return False
+     x_value = []
+     y_value = []
 
-        plt.figure(figsize=(10, 5))
+     for line in self.omc_table:
+        if line.water_content1 and line.dry_density1:
+            x_value.append(float(line.water_content1))
+            y_value.append(float(line.dry_density1))
 
-        # ✅ Blue curve with red points
-        plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
-        plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
+     if len(x_value) < 3:
+        return False
 
-        # ✅ Axis labels and title
-        plt.xlabel('Water Content (%)', fontsize=12)
-        plt.ylabel('Dry Density (g/cc)', fontsize=12)
-        plt.title('DETERMINATION OF COMPACTION OMC / MDD', fontsize=14)
+    # Sort data
+     data = sorted(zip(x_value, y_value))
+     x = np.array([d[0] for d in data])
+     y = np.array([d[1] for d in data])
 
-        # ✅ Axis range
-        plt.xlim(left=0, right=max(x_value) + 2)
-        plt.ylim(bottom=min(y_value) - 0.02, top=max(y_value) + 0.02)
+    # ==========================
+    # Quadratic Compaction Curve
+    # ==========================
+     coeff = np.polyfit(x, y, 2)
+     poly = np.poly1d(coeff)
 
-        # ✅ Minor ticks for fine grid
-        ax = plt.gca()
-        ax.xaxis.set_minor_locator(MultipleLocator(0.5))
-        ax.yaxis.set_minor_locator(MultipleLocator(0.005))
+     x_smooth = np.linspace(x.min(), x.max(), 500)
+     y_smooth = poly(x_smooth)
 
-        # ✅ Fine grid (major + minor)
-        plt.grid(True, which='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
+    # OMC / MDD
+     omc = -coeff[1] / (2 * coeff[0])
+     mdd = poly(omc)
 
-        # ✅ Highlight max dry density
-        max_index = y_value.index(max(y_value))
-        max_x = x_value[max_index]
-        max_y = y_value[max_index]
+     plt.figure(figsize=(15, 5))
 
-        plt.axhline(y=max_y, color='red', linestyle='--', linewidth=1)
-        plt.axvline(x=max_x, color='red', linestyle='--', linewidth=1)
-        plt.plot(max_x, max_y, marker='o', color='red', markersize=8)
-        plt.text(max_x + 0.3, max_y + 0.003, f"OMC: {max_x:.2f}%\nMDD: {max_y:.2f}", color='red')
+    # Smooth blue curve
+     plt.plot(
+        x_smooth,
+        y_smooth,
+        color='blue',
+        linewidth=2.5
+    )
 
-        # ✅ Save image
-        buffer = io.BytesIO()
-        plt.tight_layout()
-        plt.legend()
-        plt.savefig(buffer, format='png')
-        plt.close()
-        buffer.seek(0)
+    # Show points ON CURVE only
+     y_curve_points = poly(x)
+  
+     plt.scatter(
+        x,
+        y_curve_points,
+        color='red',
+        edgecolors='none',
+        s=40,
+        zorder=5
+    )
 
-        return base64.b64encode(buffer.read()).decode('utf-8')
+    # Peak point
+     plt.scatter(
+        omc,
+        mdd,
+        color='red',
+        s=120,
+        zorder=10
+    )
+
+    # OMC / MDD guide lines
+     plt.axhline(
+        y=mdd,
+        color='red',
+        linestyle='--',
+        linewidth=1
+    )
+
+     plt.axvline(
+        x=omc,
+        color='red',
+        linestyle='--',
+        linewidth=1
+    )
+
+    # Annotation
+     plt.text(
+        omc + 0.2,
+        mdd + 0.002,
+        f"OMC: {omc:.2f}%\nMDD: {mdd:.2f}",
+        color='red',
+        fontsize=11,
+        fontweight='bold'
+    )
+
+    # Labels
+     plt.xlabel(
+        'Water Content (%)',
+        fontsize=12
+    )
+
+     plt.ylabel(
+        'Dry Density (g/cc)',
+        fontsize=12
+    )
+
+     plt.title(
+        'DETERMINATION OF COMPACTION OMC / MDD',
+        fontsize=16
+    )
+
+    # Limits
+     plt.xlim(
+        left=0,
+        right=max(x) + 2
+    )
+
+     plt.ylim(
+        bottom=min(y) - 0.03,
+        top=max(y_smooth) + 0.03
+    )
+
+    # ==========================
+    # Graph Paper Background
+    # ==========================
+     ax = plt.gca()
+
+    # X-axis grid
+     ax.xaxis.set_major_locator(MultipleLocator(1))
+     ax.xaxis.set_minor_locator(MultipleLocator(0.1))
+
+    # Y-axis grid
+     ax.yaxis.set_major_locator(MultipleLocator(0.05))
+     ax.yaxis.set_minor_locator(MultipleLocator(0.001))
+
+    # Major Grid
+     plt.grid(
+        which='major',
+        color='green',
+        linestyle='-',
+        linewidth=0.5,
+        alpha=0.55
+    )
+
+    # Minor Grid
+     plt.grid(
+        which='minor',
+        color='green',
+        linestyle=':',
+        linewidth=0.3,
+        alpha=0.45
+    )
+
+     plt.tight_layout()
+
+    # Save Image
+     buffer = io.BytesIO()
+
+     plt.savefig(
+        buffer,
+        format='png',
+        dpi=150,
+        bbox_inches='tight'
+    )
+
+     plt.close()
+
+     buffer.seek(0)
+
+     return base64.b64encode(
+        buffer.read()
+    ).decode('utf-8')
+
         
-       
-    
 
     @api.depends('omc_table')
     def _compute_graph_image_density_omc_light1(self):
@@ -1355,122 +2190,328 @@ class Soil(models.Model):
     soil_name = fields.Char("Name",default="California Bearing Ratio")
     soil_visible = fields.Boolean("California Bearing Ratio Visible",compute="_compute_visible")
    
-    soil_table = fields.One2many('mechanical.cbr.line','parent_id',string="CBR")
+    soil_table = fields.One2many('mechanical.cbr.line','parent_id',string="CBR",default=lambda self: self._default_soil_table())
+
+    proving_ring_cf = fields.Float(string="Proving Ring Calibration Factor",digits=(10,3))
+
+    corrected_load_25_s1 = fields.Float(compute="_compute_cbr", store=True,digits=(12,3))
+    corrected_load_25_s2 = fields.Float(compute="_compute_cbr", store=True,digits=(12,3))
+    corrected_load_25_s3 = fields.Float(compute="_compute_cbr", store=True,digits=(12,3))
+
+    corrected_load_5_s1 = fields.Float(compute="_compute_cbr", store=True,digits=(12,3))
+    corrected_load_5_s2 = fields.Float(compute="_compute_cbr", store=True,digits=(12,3))
+    corrected_load_5_s3 = fields.Float(compute="_compute_cbr", store=True,digits=(12,3))
+
+
+    cbr_25_s1 = fields.Float("2.5mm", compute="_compute_cbr", store=True)
+    cbr_25_s2 = fields.Float("2.5mm", compute="_compute_cbr", store=True)
+    cbr_25_s3 = fields.Float("2.5mm ", compute="_compute_cbr", store=True)
+
+    cbr_5_s1 = fields.Float("5mm", compute="_compute_cbr", store=True)
+    cbr_5_s2 = fields.Float("5mm", compute="_compute_cbr", store=True)
+    cbr_5_s3 = fields.Float("5mm", compute="_compute_cbr", store=True)
+
+    cbr_25_avg = fields.Float("2.5mm", compute="_compute_cbr", store=True)
+
+    # cbr_5_avg = fields.Float("5mm", compute="_compute_cbr", store=True)
+    # cbr_max = fields.Float("CBR Max", compute="_compute_cbr", store=True)
+
+
+    @api.depends('soil_table.sample1_load',
+             'soil_table.sample2_load',
+             'soil_table.sample3_load',
+             'soil_table.penetration')
+    def _compute_cbr(self):
+     for rec in self:
+        lines = rec.soil_table
+
+        # Get 2.5 mm & 5 mm rows
+        line_25 = lines.filtered(lambda l: l.penetration == 2.5)
+        line_5 = lines.filtered(lambda l: l.penetration == 5.0)
+
+        if line_25:
+          l = line_25[0]
+          rec.corrected_load_25_s1 = l.sample1_load
+          rec.corrected_load_25_s2 = l.sample2_load
+          rec.corrected_load_25_s3 = l.sample3_load
+
+        if line_5:
+          l = line_5[0]
+          rec.corrected_load_5_s1 = l.sample1_load
+          rec.corrected_load_5_s2 = l.sample2_load
+          rec.corrected_load_5_s3 = l.sample3_load
+
+        # Default values
+        rec.cbr_25_s1 = rec.cbr_25_s2 = rec.cbr_25_s3 = 0.0
+        rec.cbr_5_s1 = rec.cbr_5_s2 = rec.cbr_5_s3 = 0.0
+
+        # -------- 2.5 mm --------
+        if line_25:
+            l = line_25[0]
+            rec.cbr_25_s1 = (l.sample1_load / 1370)*100 if l.sample1_load else 0
+            rec.cbr_25_s2 = (l.sample2_load / 1370)*100 if l.sample2_load else 0
+            rec.cbr_25_s3 = (l.sample3_load / 1370*100) if l.sample3_load else 0
+
+        # -------- 5 mm --------
+        if line_5:
+            l = line_5[0]
+            rec.cbr_5_s1 = (l.sample1_load / 2055)*100 if l.sample1_load else 0
+            rec.cbr_5_s2 = (l.sample2_load / 2055)*100 if l.sample2_load else 0
+            rec.cbr_5_s3 = (l.sample3_load / 2055)*100 if l.sample3_load else 0
+
+        # -------- AVERAGE --------
+        rec.cbr_25_avg = (rec.cbr_25_s1 + rec.cbr_25_s2 + rec.cbr_25_s3) / 3
+        # rec.cbr_5_avg = (rec.cbr_5_s1 + rec.cbr_5_s2 + rec.cbr_5_s3) / 3
+
+        # # -------- MAX --------
+        # rec.cbr_max = max(rec.cbr_25_avg, rec.cbr_5_avg)
+
+
+    @api.model
+    def _default_soil_table(self):
+        default_lines = [
+            (0, 0, {'penetration': '0.50'}),
+            (0, 0, {'penetration': '1.0'}),
+            (0, 0, {'penetration': '1.50'}),
+            (0, 0, {'penetration': '2.00'}),
+            (0, 0, {'penetration': '2.50'}),
+            (0, 0, {'penetration': ' 3.00'}),
+            (0, 0, {'penetration': '4.00'}),
+            (0, 0, {'penetration': '5.00'}),
+            (0, 0, {'penetration': '7.50'}),
+            (0, 0, {'penetration': '10.00'}),
+            (0, 0, {'penetration': '12.50'})
+        ]
+        return default_lines
+    
+    cbr_chart_image = fields.Binary("CBR Chart", readonly=True)
+    cbr_chart_filename = fields.Char("Filename")
+    show_cbr = fields.Boolean(string="Show CBR Graph")
+
+
+    def action_generate_cbr_chart(self):
+     for rec in self:
+        lines = self.env['mechanical.cbr.line'].search([
+            ('parent_id', '=', rec.id)
+        ], order='penetration asc')
+
+        penetration = [l.penetration for l in lines]
+
+        s1 = [l.sample1_load for l in lines]
+        s2 = [l.sample2_load for l in lines]
+        s3 = [l.sample3_load for l in lines]
+
+        # ✅ Increase width only (width=12, height=5)
+        plt.figure(figsize=(12, 5))
+
+        plt.plot(penetration, s1, marker='o', label='Sample-1')
+        plt.plot(penetration, s2, marker='o', label='Sample-2')
+        plt.plot(penetration, s3, marker='o', label='Sample-3')
+
+        plt.xlabel('Penetration (mm)')
+        plt.ylabel('Load (Kg/cm²)')
+        plt.title('CBR Test Graph')
+
+        # ✅ Major grid (big squares)
+        plt.grid(which='major', linestyle='-', linewidth=0.8)
+
+        # ✅ Minor grid (small squares inside)
+        ax = plt.gca()
+        ax.xaxis.set_minor_locator(AutoMinorLocator(5))
+        ax.yaxis.set_minor_locator(AutoMinorLocator(5))
+        plt.grid(which='minor', linestyle=':', linewidth=0.5)
+
+        plt.legend()
+
+        # Save image
+        buffer = io.BytesIO()
+        plt.savefig(buffer, format='png', bbox_inches='tight')
+        plt.close()
+
+        image = base64.b64encode(buffer.getvalue())
+        buffer.close()
+
+        rec.cbr_chart_image = image
+        rec.cbr_chart_filename = "cbr_chart.png"
+
+
+    cbr_25_avg_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),
+            ('na', 'NA'),
+            ], string="Conformity", compute="_compute_cbr_25_avg_conformity", store=True)
+
+    @api.depends('cbr_25_avg','eln_ref','grade')
+    def _compute_cbr_25_avg_conformity(self):
+        
+        for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.cbr_25_avg_conformity = 'na'
+                continue
+
+            record.cbr_25_avg_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.cbr_25_avg - record.cbr_25_avg*mu_value
+                    upper = record.cbr_25_avg + record.cbr_25_avg*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.cbr_25_avg_conformity = 'pass'
+                        break
+                    else:
+                        record.cbr_25_avg_conformity = 'fail'
+
+    cbr_25_avg_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')], string="NABL", compute="_compute_cbr_25_avg_nabl", store=True)
+
+    @api.depends('cbr_25_avg','eln_ref','grade')
+    def _compute_cbr_25_avg_nabl(self):
+        
+        for record in self:
+            record.cbr_25_avg_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')]).parameter_table
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.cbr_25_avg - record.cbr_25_avg*mu_value
+            upper = record.cbr_25_avg + record.cbr_25_avg*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.cbr_25_avg_nabl = 'pass'
+                break
+            else:
+                record.cbr_25_avg_nabl = 'fail'
+
+
+
+
+
+
     # chart_image_cbr = fields.Binary("Line Chart", compute="_compute_chart_image_cbr", store=True)
 
-    ps_2mm = fields.Float("PS for 2.5mm",compute="_compute_ps_2mm")
-    pt_2mm = fields.Float("PT at 2.5mm",default=1370)
-    cbr_2mm = fields.Float("CBR at 2.5mm",compute="_compute_cbr_2mm")
+    # ps_2mm = fields.Float("PS for 2.5mm",compute="_compute_ps_2mm")
+    # pt_2mm = fields.Float("PT at 2.5mm",default=1370)
+    # cbr_2mm = fields.Float("CBR at 2.5mm",compute="_compute_cbr_2mm")
 
-    ps_5mm = fields.Float("PS for 5mm",compute="_compute_ps_5mm")
-    pt_5mm = fields.Float("PT at 5mm",default=2055)
-    cbr_5mm = fields.Float("CBR at 5mm",compute="_compute_cbr_5mm")
+    # ps_5mm = fields.Float("PS for 5mm",compute="_compute_ps_5mm")
+    # pt_5mm = fields.Float("PT at 5mm",default=2055)
+    # cbr_5mm = fields.Float("CBR at 5mm",compute="_compute_cbr_5mm")
 
-    cbr_result = fields.Float("CBR",compute="_compute_final_cbr")
+    # cbr_result = fields.Float("CBR",compute="_compute_final_cbr")
 
-    @api.depends('soil_table')
-    def _compute_ps_2mm(self):
-        for record in self:
-            if record.soil_table and len(record.soil_table) >= 6:
-                fifth_row = record.soil_table[5] 
-                record.ps_2mm = fifth_row.load
-            else:
-                record.ps_2mm = 0
+    # @api.depends('soil_table')
+    # def _compute_ps_2mm(self):
+    #     for record in self:
+    #         if record.soil_table and len(record.soil_table) >= 6:
+    #             fifth_row = record.soil_table[5] 
+    #             record.ps_2mm = fifth_row.load
+    #         else:
+    #             record.ps_2mm = 0
 
 
-    @api.depends('soil_table')
-    def _compute_ps_5mm(self):
-        for record in self:
-            if record.soil_table and len(record.soil_table) >= 9:
-                fifth_row = record.soil_table[8] 
-                record.ps_5mm = fifth_row.load
-            else:
-                record.ps_5mm = 0
+    # @api.depends('soil_table')
+    # def _compute_ps_5mm(self):
+    #     for record in self:
+    #         if record.soil_table and len(record.soil_table) >= 9:
+    #             fifth_row = record.soil_table[8] 
+    #             record.ps_5mm = fifth_row.load
+    #         else:
+    #             record.ps_5mm = 0
 
-    @api.depends('pt_2mm','ps_2mm')
-    def _compute_cbr_2mm(self):
-        for record in self:
-            if record.pt_2mm != 0:
-                record.cbr_2mm = round((record.ps_2mm/record.pt_2mm)*100,2)
-            else:
-                record.cbr_2mm = 0
+    # @api.depends('pt_2mm','ps_2mm')
+    # def _compute_cbr_2mm(self):
+    #     for record in self:
+    #         if record.pt_2mm != 0:
+    #             record.cbr_2mm = round((record.ps_2mm/record.pt_2mm)*100,2)
+    #         else:
+    #             record.cbr_2mm = 0
 
-    @api.depends('pt_5mm','ps_5mm')
-    def _compute_cbr_5mm(self):
-        for record in self:
-            if record.pt_5mm != 0:
-                record.cbr_5mm = round((record.ps_5mm/record.pt_5mm)*100,2)
-            else:
-                record.cbr_5mm = 0
+    # @api.depends('pt_5mm','ps_5mm')
+    # def _compute_cbr_5mm(self):
+    #     for record in self:
+    #         if record.pt_5mm != 0:
+    #             record.cbr_5mm = round((record.ps_5mm/record.pt_5mm)*100,2)
+    #         else:
+    #             record.cbr_5mm = 0
 
-    @api.depends('cbr_5mm','cbr_2mm')
-    def _compute_final_cbr(self):
-        for record in self:
-            if record.cbr_5mm > record.cbr_2mm:
-                record.cbr_result = record.cbr_5mm
-            else:
-                record.cbr_result = record.cbr_2mm
+    # @api.depends('cbr_5mm','cbr_2mm')
+    # def _compute_final_cbr(self):
+    #     for record in self:
+    #         if record.cbr_5mm > record.cbr_2mm:
+    #             record.cbr_result = record.cbr_5mm
+    #         else:
+    #             record.cbr_result = record.cbr_2mm
 
 
    
 
-    chart_image_cbr = fields.Binary(
-    "Line Chart",
-    compute="_compute_chart_image_cbr",
-    store=True
-      )
+    # chart_image_cbr = fields.Binary(
+    # "Line Chart",
+    # compute="_compute_chart_image_cbr",
+    # store=True
+    #   )
 
-    def generate_line_chart_cbr(self):
-        # Prepare data
-        x_values = []
-        y_values = []
-        for line in self.soil_table:
-            x_values.append(line.penetration)
-            y_values.append(line.load)
+    # def generate_line_chart_cbr(self):
+    #     # Prepare data
+    #     x_values = []
+    #     y_values = []
+    #     for line in self.soil_table:
+    #         x_values.append(line.penetration)
+    #         y_values.append(line.load)
 
-        if not x_values or not y_values:
-            return False
+    #     if not x_values or not y_values:
+    #         return False
 
-        plt.figure(figsize=(10, 5))
+    #     plt.figure(figsize=(10, 5))
 
-        # ✅ Blue curve with red points
-        plt.plot(x_values, y_values, color='blue', linestyle='-', linewidth=2, label='Curve')
-        plt.scatter(x_values, y_values, color='red', edgecolors='black', s=60, zorder=5, label='Points')
+    #     # ✅ Blue curve with red points
+    #     plt.plot(x_values, y_values, color='blue', linestyle='-', linewidth=2, label='Curve')
+    #     plt.scatter(x_values, y_values, color='red', edgecolors='black', s=60, zorder=5, label='Points')
 
-        # ✅ Axis labels and title
-        plt.xlabel('Penetration (mm)', fontsize=12)
-        plt.ylabel('Load (kg)', fontsize=12)
-        plt.title('CBR (California Bearing Ratio)', fontsize=14)
+    #     # ✅ Axis labels and title
+    #     plt.xlabel('Penetration (mm)', fontsize=12)
+    #     plt.ylabel('Load (kg)', fontsize=12)
+    #     plt.title('CBR (California Bearing Ratio)', fontsize=14)
 
-        # ✅ Axis range
-        plt.xlim(left=0, right=max(x_values) + 2)
-        plt.ylim(bottom=0, top=max(y_values) + (max(y_values) * 0.1))
+    #     # ✅ Axis range
+    #     plt.xlim(left=0, right=max(x_values) + 2)
+    #     plt.ylim(bottom=0, top=max(y_values) + (max(y_values) * 0.1))
 
-        # ✅ Grid (major + minor)
-        ax = plt.gca()
-        ax.xaxis.set_minor_locator(MultipleLocator(0.5))
-        ax.yaxis.set_minor_locator(MultipleLocator(5))
-        plt.grid(True, which='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
+    #     # ✅ Grid (major + minor)
+    #     ax = plt.gca()
+    #     ax.xaxis.set_minor_locator(MultipleLocator(0.5))
+    #     ax.yaxis.set_minor_locator(MultipleLocator(5))
+    #     plt.grid(True, which='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
 
-        # ✅ Save image
-        buffer = io.BytesIO()
-        plt.tight_layout()
-        plt.legend()
-        plt.savefig(buffer, format='png')
-        plt.close()
-        buffer.seek(0)
+    #     # ✅ Save image
+    #     buffer = io.BytesIO()
+    #     plt.tight_layout()
+    #     plt.legend()
+    #     plt.savefig(buffer, format='png')
+    #     plt.close()
+    #     buffer.seek(0)
 
-        return base64.b64encode(buffer.read()).decode('utf-8')
+    #     return base64.b64encode(buffer.read()).decode('utf-8')
 
 
-    @api.depends('soil_table')
-    def _compute_chart_image_cbr(self):
-        try:
-            for record in self:
-                chart_image = record.generate_line_chart_cbr()
-                record.chart_image_cbr = chart_image
-        except:
-            pass
+    # @api.depends('soil_table')
+    # def _compute_chart_image_cbr(self):
+    #     try:
+    #         for record in self:
+    #             chart_image = record.generate_line_chart_cbr()
+    #             record.chart_image_cbr = chart_image
+    #     except:
+    #         pass
 
 
 
@@ -1971,7 +3012,11 @@ class Soil(models.Model):
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
-            
+
+             # Atterberg Limit
+            if result.parameter.internal_id == '582ac73a-3f86-4c7a-8dda-04357ade5617':
+                result.calculated = True
+
             
             # Liquid Limit
             if result.parameter.internal_id == '23fg21gh-7202-4d62-864b-8efa58b6b61f':
@@ -2063,6 +3108,12 @@ class Soil(models.Model):
             # California Bearing Ratio
             if result.parameter.internal_id == '15247gtr-2065-4532-814a-3a4c1e884305':
                 result.calculated = True
+                result.result_char = round(self.cbr_25_avg,2)
+                if self.cbr_25_avg_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
 
 
             # Shrinkage limit Visible
@@ -2620,15 +3671,41 @@ class SoilCBRLine(models.Model):
 
     serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
 
-    penetration = fields.Float(string="Penetration in mm")
-    proving_reading = fields.Float(string="Load on Piston in KN")
-    load = fields.Float(string="Load on Piston in Kg", compute="_compute_load",digits=(12,4))
+    penetration = fields.Float(string="Penetration (mm)")
+
+    
+
+    
+    # SAMPLE 1
+    sample1_reading = fields.Float(string="Proving ring Reading	1")
+    sample1_load = fields.Float(string="Corrected load (Kg) 1", compute="_compute_loads", store=True,digits=(12,3))
 
 
-    @api.depends('proving_reading')
-    def _compute_load(self):
-        for record in self:
-            record.load = record.proving_reading * 101.97
+    # SAMPLE 2
+    sample2_reading = fields.Float(string="Proving ring Reading	2")
+    sample2_load = fields.Float(string="Corrected load (Kg) 2", compute="_compute_loads", store=True,digits=(12,3))
+
+    
+    # SAMPLE 3
+    sample3_reading = fields.Float(string="Proving ring Reading	3")
+    sample3_load = fields.Float(string="Corrected load (Kg) 3", compute="_compute_loads", store=True,digits=(12,3))
+
+    
+    @api.depends(
+        'sample1_reading', 'sample2_reading', 'sample3_reading','parent_id', 'parent_id.proving_ring_cf'
+    )
+    def _compute_loads(self):
+        for rec in self:
+            proving_ring_cf = rec.parent_id.proving_ring_cf if rec.parent_id else 0
+
+            if proving_ring_cf:
+                rec.sample1_load = (rec.sample1_reading * proving_ring_cf) 
+                rec.sample2_load = (rec.sample2_reading * proving_ring_cf) 
+                rec.sample3_load = (rec.sample3_reading * proving_ring_cf) 
+            else:
+                rec.sample1_load = 0.0
+                rec.sample2_load = 0.0
+                rec.sample3_load = 0.0
 
     @api.model
     def create(self, vals):

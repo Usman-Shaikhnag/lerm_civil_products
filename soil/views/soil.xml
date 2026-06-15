@@ -164,9 +164,29 @@
                     </div>
 
                     
+
+                    <button name="action_generate_graph" string="Generate Graph" type="object" class="btn-primary"/>
+
+                    <div invisible="sieve_visible == False">
+
+                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not sieve_visible">
+                        <tbody>
+                            <tr>
+                                <td style="width:10%;"><label for="show_sieve_graph">Print Graph</label></td>
+                                <td style="width:10%;"><field name="show_sieve_graph" class="blue-input" decoration-info="show_sieve_graph != 0"/></td>
+                            </tr>
+                       </tbody>
+                    </table>
+                   </div>
+
+
+
+                    
                     <div invisible = "sieve_visible == False" class="custom_table_borders text-center">
                         <field name="graph_image_slive" widget="image" readonly="1"/>
                     </div>
+
+
 
 
                        <!-- Liquid Limit-->
@@ -219,6 +239,16 @@
                             </tr>
                         </tbody>
                     </table>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not liquid_limit_visible">
+                        <tbody>
+                            <tr>
+                                <td style="width:10%;"><label for="show_liquid_graph">Print Graph</label></td>
+                                <td style="width:10%;"><field name="show_liquid_graph" class="blue-input" decoration-info="show_liquid_graph != 0"/></td>
+                            </tr>
+                       </tbody>
+                    </table>
+                   
 
                     <div invisible = "liquid_limit_visible == False" class="custom_table_borders text-center">
                         <field name="graph_image_liquid" widget="image" readonly="1"/>
@@ -383,6 +413,15 @@
                         </field>
                     </div>
 
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not heavy_visible">
+                        <tbody>
+                            <tr>
+                                <td style="width:10%;"><label for="show_heavy_graph">Print Graph</label></td>
+                                <td style="width:10%;"><field name="show_heavy_graph" class="blue-input" decoration-info="show_heavy_graph != 0"/></td>
+                            </tr>
+                       </tbody>
+                    </table>
+
                     
 
                     <div invisible = "heavy_visible == False" class="custom_table_borders text-center">
@@ -470,6 +509,15 @@
                         </field>
                     </div>
 
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not omc_visible">
+                        <tbody>
+                            <tr>
+                                <td style="width:10%;"><label for="show_light_graph">Print Graph</label></td>
+                                <td style="width:10%;"><field name="show_light_graph" class="blue-input" decoration-info="show_light_graph != 0"/></td>
+                            </tr>
+                       </tbody>
+                    </table>
+
 
 
                     <div invisible="omc_visible == False" class="custom_table_borders text-center">
@@ -532,59 +580,112 @@
                             <field name="soil_visible" invisible="1"/>
                         </h1>
                     </div>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not soil_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="proving_ring_cf">Proving Ring Calibration Factor</label></td>
+                                    <td><field name="proving_ring_cf" class="blue-input"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     
                     <div invisible = "soil_visible == False">
                         <field name="soil_table" class="custom_table_borders">
                             <tree editable="bottom" >
                                 <field name="serial_no"/>
-                                <field name="penetration" class="blue-input" decoration-info="penetration != 0"/>
-                                <field name="proving_reading" class="blue-input" decoration-info="proving_reading != 0"/>
-                                <field name="load"/>
+                                <field name="penetration"/>
+                                <field name="sample1_reading" class="blue-input" decoration-info="sample1_reading != 0"/>
+                                <field name="sample1_load"/>
+                                <field name="sample2_reading" class="blue-input" decoration-info="sample2_reading != 0"/>
+                                <field name="sample2_load"/>
+                                <field name="sample3_reading" class="blue-input" decoration-info="sample3_reading != 0"/>
+                                <field name="sample3_load"/>
                             </tree>
                         </field>                      
                     </div>
 
-                    <div invisible = "soil_visible == False" class="text-center">
-                      <field name="chart_image_cbr" widget="image" readonly="1"/>
-                    </div>
-
-
-                    <div class="d-flex gap-2">
-                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not soil_visible">
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-100" invisible="not soil_visible " >
                             <tbody>
                                 <tr>
-                                    <td><label for="ps_2mm"></label></td>
-                                    <td><field name="ps_2mm"/></td>
+                                    <td rowspan="2" style="text-align:center;font-weight:bold;vertical-align:middle;"><span>Mould No</span></td>
+                                    <td colspan="2" style="text-align:center;font-weight:bold;"><span>Corrected Unit Load in kg    (from graph)</span></td>
+                                    <td colspan="2" style="text-align:center;font-weight:bold;"><span>CBR%</span></td>
+                                    <td rowspan="2" style="text-align:center;font-weight:bold;vertical-align:middle;"><span>CRB % reported</span></td>
                                 </tr>
                                 <tr>
-                                    <td><label for="pt_2mm"></label></td>
-                                    <td><field name="pt_2mm"/></td>
+                                    <td style="text-align:center;font-weight:bold;"><span>2.5 mm</span></td>
+                                    <td style="text-align:center;font-weight:bold;"><span>5.0 mm</span></td>
+                                    <td style="text-align:center;font-weight:bold;"><span>2.5 mm</span></td>
+                                    <td style="text-align:center;font-weight:bold;"><span>5.0 mm</span></td>
                                 </tr>
                                 <tr>
-                                    <td><label for="cbr_2mm"></label></td>
-                                    <td><field name="cbr_2mm"/></td>
+                                    <td style="text-align:center;font-weight:bold;"><span>1</span></td>
+                                    <td style="text-align:center;"><field name="corrected_load_25_s1"/></td>
+                                    <td style="text-align:center;"><field name="corrected_load_5_s1"/></td>
+                                    <td style="text-align:center;"><field name="cbr_25_s1"/></td>
+                                    <td style="text-align:center;"><field name="cbr_5_s1"/></td>
+                                    <td style="text-align:center;vertical-align:middle;" rowspan="3"><field name="cbr_25_avg"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center;font-weight:bold;"><span>2</span></td>
+                                    <td style="text-align:center;"><field name="corrected_load_25_s2"/></td>
+                                    <td style="text-align:center;"><field name="corrected_load_5_s2"/></td>
+                                    <td style="text-align:center;"><field name="cbr_25_s2"/></td>
+                                    <td style="text-align:center;"><field name="cbr_5_s2"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center;font-weight:bold;"><span>3</span></td>
+                                    <td style="text-align:center;"><field name="corrected_load_25_s3"/></td>
+                                    <td style="text-align:center;"><field name="corrected_load_5_s3"/></td>
+                                    <td style="text-align:center;"><field name="cbr_25_s3"/></td>
+                                    <td style="text-align:center;"><field name="cbr_5_s3"/></td>
                                 </tr>
                             </tbody>
                         </table>
-                        
-                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not soil_visible">
+
+                   <button name="action_generate_cbr_chart"
+                         string="Generate Chart" invisible = "soil_visible == False" type="object" class="btn-primary"/>
+
+                    <div invisible = "soil_visible == False" >
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not soil_visible">
+                        <tbody>
+                            <tr>
+                                <td style="width:10%;"><label for="show_cbr">Print Graph</label></td>
+                                <td style="width:10%;"><field name="show_cbr" class="blue-input" decoration-info="show_cbr != 0"/></td>
+                            </tr>
+                       </tbody>
+                    </table>
+                    </div>
+                  
+
+                  <div invisible = "soil_visible == False" class="custom_table_borders text-center">
+                        <field name="cbr_chart_image" widget="image" readonly="1"/>
+                    </div>
+
+                
+                    
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not soil_visible">
                             <tbody>
                                 <tr>
-                                    <td><label for="ps_5mm"></label></td>
-                                    <td><field name="ps_5mm"/></td>
+                                <td><span>2.5 mm Penetration Value Conformity</span></td>
+                                <td><field name="cbr_25_avg_conformity"
+                                            decoration-success="cbr_25_avg_conformity == 'pass'" 
+                                            decoration-danger="cbr_25_avg_conformity == 'fail'" 
+                                            readonly="1" /></td>
                                 </tr>
                                 <tr>
-                                    <td><label for="pt_5mm"></label></td>
-                                    <td><field name="pt_5mm"/></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="cbr_5mm"></label></td>
-                                    <td><field name="cbr_5mm"/></td>
+                                <td><span>2.5 mm Penetration Value NABL</span></td>
+                                <td><field name="cbr_25_avg_nabl"
+                                            decoration-success="cbr_25_avg_nabl == 'pass'" 
+                                            decoration-danger="cbr_25_avg_nabl == 'fail'" 
+                                            readonly="1" /></td>
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
 
+
+                    
 
                    <!--  FSI -->
                     <div invisible="fsi_visible == False">
