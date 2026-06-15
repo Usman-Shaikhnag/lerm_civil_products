@@ -70,8 +70,10 @@ class AccountMoveLineInherited(models.Model):
     report_no = fields.Char(string="Report No")
     pricelist_id = fields.Many2one("product.pricelist",string="Pricelist",compute='_compute_pricelist')
     product_id = fields.Many2one('product.product', string='Product', ondelete='restrict')
-    report_no1 = fields.Many2many("lerm.srf.sample", string="Report No",domain="[('state', '=', '4-in_report'),('invoice_status', '!=', '2-invoiced'),('srf_id.customer', '=', partner_id)]")
+    report_no1 = fields.Many2many("lerm.srf.sample", string="Report No",domain="[('state', '=', '4-in_report'),('invoice_status', '!=', '2-invoiced'),('srf_id.customer', '=', partner_id),('material_id', '=', product_tmpl_id)]")
     
+    parameters = fields.Many2many('lerm.parameter.master', string='Parameters')
+    product_tmpl_id = fields.Many2one('product.template', related='product_id.product_tmpl_id', string='Product Template')
     # @api.onchange('partner_id', 'product_id')
     # def _onchange_partner_or_product(self):
     #     for rec in self:

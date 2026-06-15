@@ -1,27 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_ftp_upload_wizard_form" model="ir.ui.view">
-        <field name="name">ftp.upload.wizard.form</field>
-        <field name="model">file.upload.wizard</field>
-        <field name="arch" type="xml">
-            <form string="Upload File to SFTP">
-                <group>
-                    <field name="ftp_storage_id" required="1"/>
-                    <field name="file_data" filename="file_name" required="1"/>
-                    <field name="file_name" required="1"/>
-                    <field name="form_name" invisible="1"/>
-                    <field name="field_name" invisible="1"/>
-                </group>
-                <footer>
-                    <button name="action_upload_files" string="Upload" type="object" class="btn-primary"/>
-                    <button string="Cancel" class="btn-secondary" special="cancel"/>
-                </footer>
-            </form>
-        </field>
-    </record>
+    <data>
 
-    <act_window id="action_ftp_upload_wizard"
-        name="Upload File to SFTP"
-        res_model="file.upload.wizard"
-        view_mode="form"
-        target="new"/>
+        <record id="view_ftp_upload_wizard_form" model="ir.ui.view">
+            <field name="name">ftp.upload.wizard.form</field>
+            <field name="model">file.upload.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Upload File to SFTP">
+                    <group>
+                        <field name="ftp_storage_id" required="1"/>
+                        <field name="file_data" filename="file_name" required="1"/>
+                        <field name="file_name" required="1"/>
+                        <field name="form_name" invisible="1"/>
+                        <field name="field_name" invisible="1"/>
+                    </group>
+                    <footer>
+                        <button name="action_upload_files"
+                                string="Upload"
+                                type="object"
+                                class="btn-primary"/>
+                        <button string="Cancel"
+                                class="btn-secondary"
+                                special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_ftp_upload_wizard" model="ir.actions.act_window">
+            <field name="name">Upload File to SFTP</field>
+            <field name="res_model">file.upload.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+    </data>
 </odoo>
