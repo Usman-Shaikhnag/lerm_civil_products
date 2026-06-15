@@ -14,6 +14,8 @@ import sys
 import tempfile
 import unicodedata
 from collections import OrderedDict, defaultdict
+import qrcode
+from io import BytesIO
 
 import babel.messages.pofile
 import werkzeug
@@ -43,6 +45,11 @@ from odoo.service import db, security
 from odoo.addons.web.controllers.main import ReportController 
 from odoo.addons.portal.controllers.portal import CustomerPortal
 from odoo.http import request
+
+import requests
+from odoo import http
+from odoo.http import request
+
 
 # class MyReportName(ReportController):
 #     @http.route(['/report/download'], type='http', auth="user")
@@ -678,6 +685,7 @@ class ReportDownloadControllerOPC(http.Controller):
                 headers=[('Content-Type', 'text/plain')],
                 status=500,
             )
+
 
 
 class ReportDownloadControllerPPC(http.Controller):

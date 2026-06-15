@@ -110,6 +110,9 @@ class OPCReport(models.AbstractModel):
             box_size=10,
             border=4,
         )
+
+       
+
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         report_url = f"{base_url}/download_report/opc/{'nabl' if nabl else 'nonnabl'}/{eln.id}"
 
@@ -137,13 +140,10 @@ class OPCReport(models.AbstractModel):
             'notes_list': general_data.notes_id if hasattr(general_data, 'notes_id') and general_data.notes_id else [],
             'qrcode': qr_code,
             'nabl' : nabl,
-            'qrcode_static': qr_static_b64,
+            # 'qrcode_static': qr_static_b64,
             # 'stamp' : inreport_value,
             'nabl' : nabl
         }
-
-
-
 
 
 
