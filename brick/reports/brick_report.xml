@@ -204,7 +204,7 @@
 					</div>
 
 					<div  t-if="data.compressive_strength_visible and (data.water_absorption_nabl == 'pass' and nabl or (data.water_absorption_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-					<div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;">
+					<div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 10px;margin-top: 20px;">
 							Water Absorption
 						</div>
 
@@ -268,7 +268,7 @@
 						</div>
 
 					<div  t-if="data.compressive_strength_visible and (data.comp_strength_nabl == 'pass' and nabl or (data.comp_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-					<div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;">
+					<div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 10px;margin-top: 20px;">
 							Compressive Strength
 						</div>
 
@@ -334,6 +334,70 @@
 						</table>
 
 						</div>
+
+
+							<!-- Dimension  -->
+
+					<div  t-if="data.dimension_visible">
+					<div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 10px;margin-top: 20px;">
+							Dimension
+						</div>
+
+						<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+							<tbody>
+								<tr style="text-align: center;">
+									<th style="text-align:center;border: 1px solid black; padding: 2px;vertical-align: middle;" colspan="2"></th>
+									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" colspan="2">Length in mm</th>
+									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" colspan="2">Width in mm</th>
+									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" colspan="2"> Height in mm</th>
+									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" width="200"  >
+									  Test Method/Specifications
+                                     </th>
+								</tr>
+								<tr style="text-align: center;">
+								   <th style="text-align:center;border: 1px solid black; padding: 2px;vertical-align: middle;" colspan="2"> Size of the Brick :- (mm)</th>
+									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" colspan="2"><span t-field="data.length_in_mm"/></th>
+									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" colspan="2"><span t-field="data.width_in_mm"/></th>
+									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" colspan="2"><span t-field="data.height_in_mm"/></th>
+									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" width="200" >
+									  IS 1077 :2025
+                                     </th>
+								</tr>
+							</tbody>
+						</table>
+
+						</div>
+
+
+						<!-- Efflorescence  -->
+
+					<div  t-if="data.efflorescence_visible">
+					<div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 10px;margin-top: 20px;">
+							Efflorescence
+						</div>
+
+						<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+							<tbody>
+								<tr style="text-align: center;">
+									<th style="text-align:center;border: 1px solid black; padding: 2px;vertical-align: middle;" colspan="2"></th>
+									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" colspan="2">Observation 1</th>
+									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" width="260" >
+									  Test Method/Specifications
+                                     </th>
+								</tr>
+								<tr style="text-align: center;">
+								   <th style="text-align:center;border: 1px solid black; padding: 2px;vertical-align: middle;" colspan="2">Observation</th>
+									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" colspan="2"><span t-field="data.visual_observation_1"/></th>
+									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" width="260" >
+									  IS 3495 (Part 3) :2019
+                                     </th>
+
+								</tr>
+							</tbody>
+						</table>
+
+						</div>
+
 
 						
 

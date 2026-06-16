@@ -360,7 +360,7 @@
 
                 <!-- Dimension -->
 
-            <!-- <div t-if="data.dimension_visible" style="margin-top:20px">
+            <div t-if="data.dimension_visible" style="margin-top:20px">
 				<div style="text-align:center;font-size:18px;font-weight: bold">
 						Dimension (mm) 
                         <span>
@@ -372,19 +372,16 @@
 							</span>
 
 				</div>
-                <div style="text-align:center;font-size:18px;font-weight: bold">
-                        20 Bricks 
-				</div>
-                <table style="margin-top:30px;">
+                <table style="margin-top:30px; width:100%">
                 
                     <thead>
                         <tr>
-                            <th style="text-align: center;max-width:200px">
-                                <span style="font-weight: bold;">
+                            <th style="text-align: center;">
+                                <!-- <span style="font-weight: bold;">
                                     Sr.No
-                                </span>
+                                </span> -->
                             </th>
-                            <th style="text-align: center;max-width:100px">
+                            <th style="text-align: center;">
                                 <span style="font-weight: bold;">
                                      Length in mm
                                 </span>
@@ -404,34 +401,86 @@
                     <tbody>
                         <tr>
                             
-                            <td style="text-align: center;max-width:200px">
+                            <td style="text-align: center;">
                                 <span style="text-align: center;">
-                                    1
+                                    Size of the Brick :- (mm)
                                 </span>    
                             </td>
                             
                             <td style="text-align: center;">
                                 <span style="text-align: center;" >
-                                    <span t-field="data.avrg_length" t-options='{"widget": "float", "precision": 2}'/>
+                                    <span t-field="data.length_in_mm" />
                                 </span>									
                             </td>
 
                             <td style="text-align: center;">
                                 <span style="text-align: center;" >
-                                    <span t-field="data.avrg_width" t-options='{"widget": "float", "precision": 2}'/>
+                                    <span t-field="data.width_in_mm"/>
                                 </span>									
                             </td>
 
                             <td style="text-align: center;">
                                 <span style="text-align: center;" >
-                                    <span t-field="data.avrg_height" t-options='{"widget": "float", "precision": 2}'/>
+                                    <span t-field="data.height_in_mm" />
                                 </span>									
                             </td>
                         </tr>
                     </tbody>
 				
 				</table>	
-			</div> -->
+			</div>
+
+
+            <!-- Visual Observation -->
+
+            <div t-if="data.efflorescence_visible" style="margin-top:20px; page-break-before: always;">
+				<div style="text-align:center;font-size:18px;font-weight: bold">
+						Efflorescence
+                         <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3214598fgrt-d27d-4ef9-9b27-e8eb4e7ae6ac')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+				</div>
+                <table style="margin-top:30px;width:100%;">
+                
+                    <thead>
+                        <tr>
+                            
+                            <th style="text-align: center;">
+                                <span style="font-weight: bold;">
+                                   
+                                </span>
+                            </th>
+                            <th style="text-align: center;">
+                                <span style="font-weight: bold;">
+                                     Observation
+                                </span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            
+                            <td style="text-align: center;">
+                                <span style="text-align: center;">
+                                    Observation
+                                </span>    
+                            </td>
+                            
+                            <td style="text-align: center;">
+                                <span style="text-align: center;" >
+                                    <span t-field="data.visual_observation_1" />
+                                </span>									
+                            </td>
+                            
+                        </tr>
+                    </tbody>
+				
+				</table>	
+			</div>
 
                 
                 
