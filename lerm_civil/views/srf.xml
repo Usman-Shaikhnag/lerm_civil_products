@@ -60,7 +60,8 @@
                             <field name="contractor" domain="[('id', 'in', contractor_ids)]" options="{'no_create': True, 'no_open': True}" />
                             <field name="contractor_ids" invisible='1'/>
                             <field name="contact_other_ids" invisible='1'/>
-                            <field name="billing_customer" readonly="state == '2-confirm'" options="{'no_create': True, 'no_open': True}" />
+                            <field name="available_billing_customer_ids" invisible="1"/>
+                            <field name="billing_customer" readonly="state == '2-confirm'"/>
                             <field name="name_works" invisible='1'/>
                             <field name="consultant_name1"/>
                         </group>
