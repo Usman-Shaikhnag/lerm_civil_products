@@ -1180,7 +1180,7 @@
 											<span t-esc="finer75.unit.name"/>
 										</span>
 									</td>
-									 <!-- <td style="text-align: center;">
+									 <td style="text-align: center;">
 										<span>
 											<t t-foreach="finer75.parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -1188,7 +1188,7 @@
 												</t>
 											</t>
 										</span>
-									</td> -->
+									</td>
 
                                     <td style="text-align: center;">
 										<span>
@@ -1231,7 +1231,7 @@
 										</span>
 									</td>
 
-									<!-- <td style="text-align: center;">
+									<td style="text-align: center;">
 										<span>
 											<t t-foreach="clay_lump.parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -1239,7 +1239,7 @@
 												</t>
 											</t>
 										</span>
-									</td> -->
+									</td>
 
                                     <td style="text-align: center;">
 										<span>
@@ -1281,7 +1281,7 @@
 										</span>
 									</td>
 
-									  <!-- <td style="text-align: center;">
+									  <td style="text-align: center;">
 										<span>
 											<t t-foreach="coal_lignite.parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -1289,7 +1289,7 @@
 												</t>
 											</t>
 										</span>
-									</td> -->
+									</td>
 
                                     <td style="text-align: center;">
 										<span>
@@ -1405,9 +1405,12 @@
 								Checked By
                                     </b>
                                 </div>
-                                <div style="height:40px">
-
-                                </div>
+                                <div style="height: 30px;">
+									<t t-if="eln.sample_id.checkby_signature_required and eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')"
+											style="max-width: 200px; max-height: 45px; margin-top: 1px; z-index: -10;"/>
+									</t>
+								</div>
                                 <div>
                                     <b>
                                         <span t-esc="eln.sample_id.check_by.name"/>
@@ -1419,15 +1422,14 @@
                                     </b>
                                 </div>
                             </div>
-
+                           <t t-if="o.sample_id.stamp_attached">
 							<div>
 						<div>
 							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
 						</div>
-						<div style="padding-top:5px">
-							Format No. <span t-esc="eln.material.test_format_no"/>
-						</div>
+						
 					</div>
+					</t>
                             <div>
                                 <div>
                                     <b>
@@ -1435,9 +1437,14 @@
                                     </b>
 
                                 </div>
-                                <div style="height:40px">
-
-                                </div>
+                                <div style="height: 30px;">
+									<t t-if="eln.sample_id.approveby_signature_required">
+										<div t-if="eln.sample_id.approved_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 45px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
                                 <div>
                                     <b>
                                         <span t-esc="eln.sample_id.approved_by.name"/>
