@@ -23,6 +23,7 @@ class ELN(models.Model):
 
 
     eln_id = fields.Char("ELN ID",required=True,readonly=True, default=lambda self: 'New',tracking=3)
+    # lab_id = fields.Many2one('lerm.lab.master', string="Lab")
     ir_model = fields.Many2one('ir.model',string="Model")
 
     srf_id = fields.Many2one('lerm.civil.srf',string="SRF ID")

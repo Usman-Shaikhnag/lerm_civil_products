@@ -315,7 +315,7 @@
 								
 								
 							
-							<tr t-if=" (rcmt.rcmt_nabl == 'pass' and nabl or (rcmt.rcmt_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl )">
+							<tr t-if=" (rcmt.overall_average_nabl == 'pass' and nabl or (rcmt.overall_average_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl )">
 								<td style="text-align: center;padding:0px">
                                     <span t-esc="i + 1" />
                                     <t t-set="i" t-value="i+1"/>
@@ -386,7 +386,7 @@
 							</tr>
 
 
-							<tr t-if=" (rcmt.rcmt_nabl == 'pass' and nabl or (rcmt.rcmt_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl )">
+							<tr t-if=" (rcmt.overall_average_nabl == 'pass' and nabl or (rcmt.overall_average_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl )">
 								<td style="text-align: center;padding:0px">
                                     <span t-esc="i + 1" />
                                     <t t-set="i" t-value="i+1"/>
@@ -452,7 +452,7 @@
 							</tr>
 
 
-							<tr t-if=" (rcmt.rcmt_nabl == 'pass' and nabl or (rcmt.rcmt_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl )">
+							<tr t-if=" (rcmt.overall_average_nabl == 'pass' and nabl or (rcmt.overall_average_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl )">
 								<td style="text-align: center;padding:0px">
                                     <span t-esc="i + 1" />
                                     <t t-set="i" t-value="i+1"/>
@@ -536,7 +536,7 @@
 					<table style="margin-top:20px;">
 					<tbody>
 					   
-						<tr  cols="6" t-if="(rcmt.rcmt_nabl == 'pass' and nabl or (rcmt.rcmt_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl )">
+						<tr  cols="6" t-if="(rcmt.overall_average_nabl == 'pass' and nabl or (rcmt.overall_average_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl )">
 						<td style="font-weight: bold;">Average 10 <sup>-12</sup> m²/sec</td>
 						<td style="text-align: center;"><span t-field="rcmt.overall_average"  t-options='{"widget": "float", "precision": 2}'  /></td>
 						</tr>

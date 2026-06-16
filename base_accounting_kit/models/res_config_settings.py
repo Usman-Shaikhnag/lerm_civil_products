@@ -31,6 +31,7 @@ class ResConfigSettings(models.TransientModel):
     sale_footer_name = fields.Char(string="Sale Footer Name")
     sale_footer = fields.Binary(string='Sale Footer')
     l10n_in_gsp = fields.Boolean(string="GSP")
+    
 
     use_anglo_saxon_accounting = fields.Boolean(
         string="Use Anglo-Saxon accounting", readonly=False,

@@ -492,8 +492,13 @@
 					
 					</table>
 
+					<div style="text-align:center;margin-top:25px">
+							......End of Report......
+						</div>
+
+
 				
-						<div style="margin-top:20px" class="noteContainer">
+						<!-- <div style="margin-top:20px" class="noteContainer">
 							<div>
 								<b>Note :-</b>
 							</div>
@@ -517,7 +522,7 @@
 									</li>
 								</ul>
 							</div>
-						</div>
+						</div> -->
 						<div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -525,8 +530,11 @@
 										Checked By
 									</b>
 								</div>
-								<div style="height:20px">
-
+								<div style="height: 50px;">
+									<t t-if="eln.sample_id.checkby_signature_required and eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')"
+											style="max-width: 200px; max-height: 45px; margin-top: 1px; z-index: -10;"/>
+									</t>
 								</div>
 								<div>
 									<b>
@@ -555,8 +563,13 @@
 									</b>
 									
 								</div>
-								<div style="height:20px">
-
+								<div style="height: 50px;">
+									<t t-if="eln.sample_id.approveby_signature_required">
+										<div t-if="eln.sample_id.approved_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 45px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
 								</div>
 								<div>
 									<b>
@@ -577,10 +590,7 @@
 								</div> -->
 							</div>
 						</div>
-						<div style="text-align:center;margin-top:25px">
-							......End of Report......
-						</div>
-
+						
 				</div>
 			</t>
 		</t>

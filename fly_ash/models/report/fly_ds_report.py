@@ -133,26 +133,45 @@ class FlyashReport(models.AbstractModel):
     @api.model
     def _get_report_values(self, docids, data=None):
         data = data or {}
-        nabl = data.get('nabl', False)
+        nabl = data.get("nabl", False)
 
-        # 🧩 ELN Record मिळवा
-        if data.get('report_wizard'):
-            eln = self.env['lerm.eln'].sudo().search([('sample_id', '=', data.get('sample'))])
-        elif 'active_id' in data.get('context', {}):
-            eln = self.env['lerm.eln'].sudo().search([('sample_id', '=', data['context']['active_id'])])
+        # ✅ ELN Fetch
+        if data.get("report_wizard"):
+            eln = (
+                self.env["lerm.eln"]
+                .sudo()
+                .search([("sample_id", "=", data.get("sample"))], limit=1)
+            )
+        elif data.get("context", {}).get("active_id"):
+            eln = (
+                self.env["lerm.eln"]
+                .sudo()
+                .search([("sample_id", "=", data["context"]["active_id"])], limit=1)
+            )
         else:
-            eln = self.env['lerm.eln'].sudo().browse(docids)
+            eln = self.env["lerm.eln"].sudo().browse(docids)
 
-        if not eln:
+        if not eln or not eln.exists():
             raise ValueError("ELN record not found")
 
-        # Static QR
-        qr_static = qrcode.QRCode(box_size=6, border=2)
-        qr_static.add_data("https://nablwp.qci.org.in/CertificateScopenew?x=4Rf+3mOSznNeFNvAasH49g==&a=MTI0NDAx")
-        qr_static.make(fit=True)
-        buf_static = BytesIO()
-        qr_static.make_image(fill_color="black", back_color="white").save(buf_static, format="PNG")
-        qr_static_b64 = base64.b64encode(buf_static.getvalue()).decode()
+        # ✅ LAB FETCH
+        lab = eln.sample_id.lab_location if eln.sample_id else False
+
+        # ✅ QR LINK (थेट NABL ची मूळ लिंक QR मध्ये टाकणे)
+        qr_link = lab.nabl_scope_link or ""
+
+        qrcode_static = False  # <--- हे नाव खाली return मध्ये वापरले आहे
+        if qr_link:
+            # 🔳 QR Generate (NABL च्या लिंकचा QR)
+            qr = qrcode.QRCode(box_size=6, border=2)
+            qr.add_data(qr_link)
+            qr.make(fit=True)
+
+            buffer = BytesIO()
+            qr.make_image(fill_color="black", back_color="white").save(
+                buffer, format="PNG"
+            )
+            qrcode_static = base64.b64encode(buffer.getvalue()).decode()
 
         # 🧩 QR Code तयार करा
         qr = qrcode.QRCode(
@@ -188,7 +207,5 @@ class FlyashReport(models.AbstractModel):
             'notes_list': general_data.notes_id if hasattr(general_data, 'notes_id') and general_data.notes_id else [],
             'qrcode': qr_code,
             'nabl' : nabl,
-            'qrcode_static': qr_static_b64,
-            # 'stamp' : inreport_value,
-            'nabl' : nabl
+            "qrcode_static": qrcode_static,
         }

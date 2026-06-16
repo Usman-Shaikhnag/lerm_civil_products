@@ -276,8 +276,8 @@ class Soil(models.Model):
 
     
     @api.depends(
-        'sieve_analysis_child_lines.sieve_size',
-        'sieve_analysis_child_lines.passing_percent'
+    'sieve_analysis_child_lines.sieve_size',
+    'sieve_analysis_child_lines.passing_percent'
     )
     def _compute_d_values(self):
 
@@ -323,6 +323,9 @@ class Soil(models.Model):
             # -----------------------------------------
             def get_d(target):
 
+                if not data:
+                    return 0.0
+
                 for i in range(len(data) - 1):
 
                     d1, p1 = data[i]
@@ -335,8 +338,14 @@ class Soil(models.Model):
                     if p2 == target:
                         return d2
 
-                    # interpolation / extrapolation
-                    if p1 >= target >= p2 or p1 <= target <= p2:
+                    # interpolation / extrapolation zone
+                    if (p1 >= target >= p2) or (p1 <= target <= p2):
+
+                        # ---------------------------------
+                        # SAFE GUARD (avoid division by zero)
+                        # ---------------------------------
+                        if abs(p2 - p1) < 1e-9:
+                            return d1
 
                         result = d1 + (
                             (target - p1)
@@ -347,13 +356,15 @@ class Soil(models.Model):
                         return result
 
                 # -----------------------------------------
-                # EXTRAPOLATION
-                # (same behavior as Excel TREND)
+                # EXTRAPOLATION (Excel TREND style)
                 # -----------------------------------------
                 if len(data) >= 2:
 
                     d1, p1 = data[-2]
                     d2, p2 = data[-1]
+
+                    if abs(p2 - p1) < 1e-9:
+                        return d1
 
                     result = d1 + (
                         (target - p1)
@@ -373,24 +384,20 @@ class Soil(models.Model):
             record.d60 = get_d(60)
 
             # -----------------------------------------
-            # COMPUTE Cu
+            # OPTIONAL: Cu (commented safe version)
             # -----------------------------------------
             # if record.d10:
             #     record.cu = record.d60 / record.d10
             # else:
             #     record.cu = 0.0
 
-            # # -----------------------------------------
-            # # COMPUTE Cc
-            # # -----------------------------------------
+            # -----------------------------------------
+            # OPTIONAL: Cc (commented safe version)
+            # -----------------------------------------
             # if record.d10 and record.d60:
-
-            #     record.cc =((record.d30 ** 2) /
-            #         (record.d10 * record.d60))
-
+            #     record.cc = (record.d30 ** 2) / (record.d10 * record.d60)
             # else:
             #     record.cc = 0.0
-
 
 
     # @api.depends('d60','d10')
