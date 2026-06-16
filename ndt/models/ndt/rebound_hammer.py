@@ -53,12 +53,18 @@ class ReboundHammer(models.Model):
     #         self.maximum = round(float(max(values)),2) if values else 0.0
 
     def open_eln_page(self):
-    # import wdb; wdb.set_trace()
-        for result in self.eln_ref.parameters_result:
-            if result.parameter.internal_id == 'fe02d1e0-c893-4991-a463-650b73264c1a':
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+            if result.parameter.internal_id == 'ac8884d0-a4f0-4f4d-9da3-459ff8921289':
                 result.result_char = round(self.average_mpa,2)
+                result.calculated = True
                 continue
-          
 
         return {
                 'view_mode': 'form',
