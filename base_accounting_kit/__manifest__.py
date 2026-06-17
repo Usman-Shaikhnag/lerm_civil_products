@@ -59,7 +59,7 @@
         'views/account_move_views.xml',
         'views/product_template_views.xml',
         'views/multiple_invoice_layout_view.xml',
-        # 'views/multiple_invoice_form.xml',
+        'views/multiple_invoice_form.xml',
         'wizard/financial_report.xml',
         'wizard/general_ledger.xml',
         'wizard/partner_ledger.xml',
