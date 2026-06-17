@@ -25,11 +25,28 @@ class CrackDepth(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
 
     def open_eln_page(self):
-    # import wdb; wdb.set_trace()
-        for result in self.eln_ref.parameters_result:
+        self.ensure_one()
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
             if result.parameter.internal_id == 'b6daa925-6296-4f2e-991e-6c4cb6e4da68':
                 result.result_char = round(self.average,2)
+                result.calculated = True
                 continue
+
+        return {
+                'view_mode': 'form',
+                'res_model': "lerm.eln",
+                'type': 'ir.actions.act_window',
+                'target': 'current',
+                'res_id': self.eln_ref.id,
+                
+            }
 
 
 
@@ -59,16 +76,31 @@ class CrackDepth(models.Model):
             max_cd_value = round(max(record.child_lines.mapped('cd'), default=0.0),2)
             record.max_cd = max_cd_value
 
-    @api.depends('eln_ref')
+    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
-        # records = self.env['lerm.eln'].sudo().search([('id','=', record.eln_id.id)]).parameters_result
-        # print("records",records)
-        # self.sample_parameters = records
-        for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
+        current_user = self.env.user
 
+        for record in self:
+            if not record.eln_ref:
+                record.sample_parameters = [(6, 0, [])]
+                continue
+
+            # Check if user is in Lerm Admin group
+            if (
+                current_user.has_group('lerm_civil.kes_admin_access_group')
+                or current_user.has_group('lerm_civil.lerm_sample_verification')
+                or current_user.has_group('lerm_civil.lerm_sample_approval')
+            ):
+                # Admin sees all parameters
+                parameter_ids = record.eln_ref.parameters_result.mapped('parameter').ids
+            else:
+                # Other users only see parameters assigned to them
+                user_param_results = record.eln_ref.parameters_result.filtered(
+                    lambda r: r.technician and r.technician.id == current_user.id
+                )
+                parameter_ids = user_param_results.mapped('parameter').ids
+
+            record.sample_parameters = [(6, 0, parameter_ids)]
     @api.depends('eln_ref')
     def _compute_grade_id(self):
         if self.eln_ref:
@@ -89,6 +121,20 @@ class CrackDepth(models.Model):
         record = super(CrackDepth, self).create(vals)
         record.parameter_id.write({'model_id':record.id})
         return record
+
+
+    notes_id = fields.One2many('ndt.crack.depth.notes', 'parent_id', string="Notes", default=lambda self: self._default_notes_lines())
+
+    @api.model
+    def _default_notes_lines(self):
+        return [
+            (0, 0, {'sr_no': 'i', 'notes': 'The results stated in this report apply only to the tested sample(s) and are based on the conditions and parameters at the time of testing.'}),
+            (0, 0, {'sr_no': 'ii', 'notes': 'This report is invalid without the official paper seal of Make Infracon.'}),
+            (0, 0, {'sr_no': 'iii', 'notes': 'All test results are confidential and will not be disclosed to any third party without written consent of the client, except where required by law.'}),
+            (0, 0, {'sr_no': 'iv', 'notes': 'Any discrepancies or complaints regarding this report must be communicated in writing within 7 days from the date of issue.'}),
+            (0, 0, {'sr_no': 'v', 'notes': 'This report shall not be reproduced, except in full, without the prior written approval of Make Infracon.'}),
+            (0, 0, {'sr_no': 'vi', 'notes': 'The laboratory assumes no responsibility for the purpose for which the test results are used or for any subsequent actions taken based on these results.'}),
+        ]
 
 
 class CrackDepthLine(models.Model):
@@ -131,4 +177,10 @@ class CrackDepthNotes(models.Model):
     _name = "ndt.crack.depth.notes"
 
     parent_id = fields.Many2one('ndt.crack.depth',string="Parent Id")
+    notes = fields.Char("Notes")
+class CrackDepthNotes(models.Model):
+    _name = "ndt.crack.depth.notes"
+
+    parent_id = fields.Many2one('ndt.crack.depth', string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
     notes = fields.Char("Notes")
