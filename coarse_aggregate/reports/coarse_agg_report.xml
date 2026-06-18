@@ -1123,7 +1123,7 @@
 									
 								</tr>
 
-								<tr t-if="data.finer75_visible and data.clay_lump_visible and data.deleterious_coal_lignite_visible and ((nabl and data.avg_finer_percent_nabl != 'fail' and data.clay_lumps_percent_nabl != 'fail' and data.avg_deleterious_coal_lignite_nabl != 'fail') or (not nabl and (data.avg_finer_percent_nabl == 'fail' or data.clay_lumps_percent_nabl == 'fail' or data.avg_deleterious_coal_lignite_nabl == 'fail')))">
+								<!-- <tr t-if="data.finer75_visible and data.clay_lump_visible and data.deleterious_coal_lignite_visible and ((nabl and data.avg_finer_percent_nabl != 'fail' and data.clay_lumps_percent_nabl != 'fail' and data.avg_deleterious_coal_lignite_nabl != 'fail') or (not nabl and (data.avg_finer_percent_nabl == 'fail' or data.clay_lumps_percent_nabl == 'fail' or data.avg_deleterious_coal_lignite_nabl == 'fail')))">
 									<td style="text-align: center;">
 										<span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/>
@@ -1140,7 +1140,7 @@
 										</span>									
 									</td>
 									
-									<td rowspan="4" style="text-align: center; vertical-align: middle;">
+									<td  style="text-align: center; vertical-align: middle;">
 										<span>
 										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','988f5bf6-c865-453c-9cd6-993a5a59ad95')]).parameter_table" t-as="parameter">
 											<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -1160,7 +1160,7 @@
 										</span>
 									</td>
 									
-								</tr>
+								</tr> -->
 
 
 								<!-- Material finer than 75 micron -->
