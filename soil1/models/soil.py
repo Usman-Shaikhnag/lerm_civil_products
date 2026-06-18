@@ -23,6 +23,14 @@ from decimal import Decimal, getcontext
 
 from matplotlib.ticker import MultipleLocator, StrMethodFormatter
 
+import numpy as np
+import matplotlib.pyplot as plt
+import io
+import base64
+from odoo import models, fields, api
+from odoo.exceptions import UserError
+import math
+
 
 
 
@@ -3136,57 +3144,204 @@ class Soil(models.Model):
     max_shear_1_5 = fields.Float("Max Shear Stress 1.5", compute="_compute_final", store=True)
 
     # Converted (Ton/m²)
-    normal_stress_0_5 = fields.Float(default=0.5 * 11.0231,digits=(10,1),readonly=1)  # 5.5
-    normal_stress_1_0 = fields.Float(default=1.0 * 11.0231 ,digits=(10,1),readonly=1)  # 11
-    normal_stress_1_5 = fields.Float(default=1.5 * 11.0231 ,digits=(10,1),readonly=1)  # 16.5
+    normal_stress_0_5 = fields.Float(default=0.5 * 11.0231,digits=(10,1),readonly=True)  # 5.5
+    normal_stress_1_0 = fields.Float(default=1.0 * 11.0231 ,digits=(10,1),readonly=True)  # 11
+    normal_stress_1_5 = fields.Float(default=1.5 * 11.0231 ,digits=(10,1),readonly=True)  # 16.5
 
-    shear_ton_0_5 = fields.Float("Max. Shear Stress (Ton/m2) ", store=True)
-    shear_ton_1_0 = fields.Float("Max. Shear Stress (Ton/m2) ", store=True)
-    shear_ton_1_5 = fields.Float("Max. Shear Stress (Ton/m2) ", store=True)
+    shear_ton_0_5 = fields.Float("Max. Shear Stress (Ton/m2) ", store=True,digits=(10,1))
+    shear_ton_1_0 = fields.Float("Max. Shear Stress (Ton/m2) ", store=True,digits=(10,1))
+    shear_ton_1_5 = fields.Float("Max. Shear Stress (Ton/m2) ", store=True,digits=(10,1))
 
     # Final results
-    tan_phi = fields.Float("tanφ", compute="_compute_final", store=True)
-    angle_phi = fields.Float("Angle of Internal Friction (φ)", compute="_compute_final", store=True)
-    cohesion = fields.Float("Cohesion (Ton/m²)", compute="_compute_final", store=True)
+    tan_phi = fields.Float("tanφ", compute="_compute_final", store=True,digits=(10,4))
+    angle_phi = fields.Float("Angle of Internal Friction (φ)",compute="_compute_final",  store=True,digits=(10,4))
+    cohesion = fields.Float("Cohesion (Ton/m²)",  compute="_compute_final",store=True,digits=(10,4))
 
-    @api.depends('direct_shear_ids.shear_stress_0_5',
-             'direct_shear_ids.shear_stress_1_0',
-             'direct_shear_ids.shear_stress_1_5','shear_ton_0_5',
-    'shear_ton_1_0',
-    'shear_ton_1_5')
+
+    @api.depends(
+        'normal_stress_0_5',
+        'normal_stress_1_0',
+        'normal_stress_1_5',
+        'shear_ton_0_5',
+        'shear_ton_1_0',
+        'shear_ton_1_5'
+    )
     def _compute_final(self):
-     for rec in self:
+        for rec in self:
+            try:
+                n = 3
 
-        # 1. Get MAX shear stress from lines
-        rec.max_shear_0_5 = max(rec.direct_shear_ids.mapped('shear_stress_0_5') or [0])
-        rec.max_shear_1_0 = max(rec.direct_shear_ids.mapped('shear_stress_1_0') or [0])
-        rec.max_shear_1_5 = max(rec.direct_shear_ids.mapped('shear_stress_1_5') or [0])
+                # ---------------------------------
+                # ✅ SLOPE (Excel: =SLOPE(P,Q))
+                # P = normal (Y), Q = shear (X)
+                # ---------------------------------
+                x1 = [
+                    rec.shear_ton_0_5,
+                    rec.shear_ton_1_0,
+                    rec.shear_ton_1_5
+                ]
+
+                y1 = [
+                    rec.normal_stress_0_5,
+                    rec.normal_stress_1_0,
+                    rec.normal_stress_1_5
+                ]
+
+                sum_x1 = sum(x1)
+                sum_y1 = sum(y1)
+                sum_xy1 = sum(x1[i] * y1[i] for i in range(n))
+                sum_x1_2 = sum(val * val for val in x1)
+
+                denom1 = (n * sum_x1_2) - (sum_x1 ** 2)
+
+                if denom1 != 0:
+                    rec.tan_phi = ((n * sum_xy1) - (sum_x1 * sum_y1)) / denom1
+                else:
+                    rec.tan_phi = 0.0
+
+                # ---------------------------------
+                # ✅ ANGLE φ
+                # ---------------------------------
+                rec.angle_phi = math.degrees(math.atan(rec.tan_phi))
+
+                # ---------------------------------
+                # ✅ INTERCEPT (Excel: =INTERCEPT(Q,P))
+                # Q = shear (Y), P = normal (X)
+                # ---------------------------------
+                x2 = [
+                    rec.normal_stress_0_5,
+                    rec.normal_stress_1_0,
+                    rec.normal_stress_1_5
+                ]
+
+                y2 = [
+                    rec.shear_ton_0_5,
+                    rec.shear_ton_1_0,
+                    rec.shear_ton_1_5
+                ]
+
+                sum_x2 = sum(x2)
+                sum_y2 = sum(y2)
+                sum_xy2 = sum(x2[i] * y2[i] for i in range(n))
+                sum_x2_2 = sum(val * val for val in x2)
+
+                denom2 = (n * sum_x2_2) - (sum_x2 ** 2)
+
+                if denom2 != 0:
+                    m2 = ((n * sum_xy2) - (sum_x2 * sum_y2)) / denom2
+                    rec.cohesion = (sum_y2 - m2 * sum_x2) / n
+                else:
+                    rec.cohesion = 0.0
+
+            except:
+                rec.tan_phi = 0.0
+                rec.angle_phi = 0.0
+                rec.cohesion = 0.0
+
+    # @api.depends(
+    #     'normal_stress_0_5',
+    #     'normal_stress_1_0',
+    #     'normal_stress_1_5',
+    #     'shear_ton_0_5',
+    #     'shear_ton_1_0',
+    #     'shear_ton_1_5'
+    # )
+    # def _compute_final(self):
+    #     for rec in self:
+    #         try:
+    #             # ---------------------------------
+    #             # ⚠️ Excel Mapping
+    #             # SLOPE(P,Q)
+    #             # P = normal (Y)
+    #             # Q = shear (X)
+    #             # ---------------------------------
+    #             x = [
+    #                 rec.shear_ton_0_5 or 0.0,
+    #                 rec.shear_ton_1_0 or 0.0,
+    #                 rec.shear_ton_1_5 or 0.0
+    #             ]
+
+    #             y = [
+    #                 rec.normal_stress_0_5 or 0.0,
+    #                 rec.normal_stress_1_0 or 0.0,
+    #                 rec.normal_stress_1_5 or 0.0
+    #             ]
+
+    #             n = 3
+
+    #             sum_x = sum(x)
+    #             sum_y = sum(y)
+    #             sum_xy = sum(x[i] * y[i] for i in range(n))
+    #             sum_x2 = sum(val * val for val in x)
+
+    #             denominator = (n * sum_x2) - (sum_x ** 2)
+
+    #             # ---------------------------------
+    #             # tanφ (Excel exact)
+    #             # ---------------------------------
+    #             if denominator != 0:
+    #                 rec.tan_phi = ((n * sum_xy) - (sum_x * sum_y)) / denominator
+    #             else:
+    #                 rec.tan_phi = 0.0
+
+    #             # ---------------------------------
+    #             # φ (Angle)
+    #             # ---------------------------------
+    #             rec.angle_phi = math.degrees(math.atan(rec.tan_phi))
+
+    #             # ---------------------------------
+    #             # Cohesion (c)
+    #             # y = mx + c → c = y - mx
+    #             # ---------------------------------
+    #             c_vals = []
+    #             for i in range(n):
+    #                 c = y[i] - (rec.tan_phi * x[i])
+    #                 c_vals.append(c)
+
+    #             rec.cohesion = sum(c_vals) / n
+
+    #         except:
+    #             rec.tan_phi = 0.0
+    #             rec.angle_phi = 0.0
+    #             rec.cohesion = 0.0
+    # @api.depends('direct_shear_ids.shear_stress_0_5',
+    #          'direct_shear_ids.shear_stress_1_0',
+    #          'direct_shear_ids.shear_stress_1_5','shear_ton_0_5',
+    # 'shear_ton_1_0',
+    # 'shear_ton_1_5')
+    # def _compute_final(self):
+    #  for rec in self:
+
+    #     # 1. Get MAX shear stress from lines
+    #     rec.max_shear_0_5 = max(rec.direct_shear_ids.mapped('shear_stress_0_5') or [0])
+    #     rec.max_shear_1_0 = max(rec.direct_shear_ids.mapped('shear_stress_1_0') or [0])
+    #     rec.max_shear_1_5 = max(rec.direct_shear_ids.mapped('shear_stress_1_5') or [0])
 
       
        
 
-        x = np.array([
-            rec.normal_stress_0_5,
-            rec.normal_stress_1_0,
-            rec.normal_stress_1_5
-        ])
+    #     x = np.array([
+    #         rec.normal_stress_0_5,
+    #         rec.normal_stress_1_0,
+    #         rec.normal_stress_1_5
+    #     ])
 
-        y = np.array([
-            rec.shear_ton_0_5,
-            rec.shear_ton_1_0,
-            rec.shear_ton_1_5
-        ])
+    #     y = np.array([
+    #         rec.shear_ton_0_5,
+    #         rec.shear_ton_1_0,
+    #         rec.shear_ton_1_5
+    #     ])
 
-        if len(x) >= 2 and all(y):
-            m, c = np.polyfit(x, y, 1)
+    #     if len(x) >= 2 and all(y):
+    #         m, c = np.polyfit(x, y, 1)
 
-            rec.tan_phi = m          # → 3.3312 ✅
-            rec.cohesion = c         # → 1.5 ✅
-        else:
-            rec.tan_phi = 0
-            rec.cohesion = 0
+    #         rec.tan_phi = m          # → 3.3312 ✅
+    #         rec.cohesion = c         # → 1.5 ✅
+    #     else:
+    #         rec.tan_phi = 0
+    #         rec.cohesion = 0
 
-        rec.angle_phi = math.degrees(math.atan(rec.tan_phi)) if rec.tan_phi else 0
+    #     rec.angle_phi = math.degrees(math.atan(rec.tan_phi)) if rec.tan_phi else 0
 
 
    
@@ -3200,9 +3355,68 @@ class Soil(models.Model):
     show_direct_graph = fields.Boolean(string="Show Direct Shear Graph")
 
   
-    def action_generate_direct_graph(self):
+    # def action_generate_direct_graph(self):
      
-     for rec in self:
+    #  for rec in self:
+
+    #         x = np.array([
+    #             rec.normal_stress_0_5,
+    #             rec.normal_stress_1_0,
+    #             rec.normal_stress_1_5
+    #         ])
+
+    #         y = np.array([
+    #             rec.shear_ton_0_5,
+    #             rec.shear_ton_1_0,
+    #             rec.shear_ton_1_5
+    #         ])
+
+    #         plt.figure(figsize=(8, 5))
+
+    #         # Scatter
+    #         plt.scatter(x, y)
+
+    #         # Line (correct)
+    #         m = rec.tan_phi
+    #         c = rec.cohesion
+
+    #         x_line = np.linspace(0, 20, 100)
+    #         y_line = m * x_line + c
+    #         plt.plot(x_line, y_line, color='red')
+
+    #         # Dotted backward
+    #         x_back = np.linspace(0, min(x), 50)
+    #         y_back = m * x_back + c
+    #         plt.plot(x_back, y_back, linestyle='dotted', color='blue')
+
+    #         # Labels
+    #         plt.title("DIRECT SHEAR TEST GRAPH")
+    #         plt.xlabel("Normal Stress (Ton/m²)")
+    #         plt.ylabel("Max Shear Stress (Ton/m²)")
+
+    #         plt.xlim(0, 20)
+    #         plt.ylim(0, 10)
+
+    #         # Excel-style grid
+    #         plt.minorticks_on()
+    #         plt.grid(which='major', color='green', linewidth=0.5)
+    #         plt.grid(which='minor', color='green', linewidth=0.2)
+
+    #         # Save image
+    #         buffer = io.BytesIO()
+    #         plt.savefig(buffer, format='png')
+    #         buffer.seek(0)
+
+    #         rec.direct_graph_image = base64.b64encode(buffer.read())
+    #         rec.graph_filename = "shear_graph.png"
+
+    #         buffer.close()
+    #         plt.close()
+
+
+    def action_generate_direct_graph(self):
+
+        for rec in self:
 
             x = np.array([
                 rec.normal_stress_0_5,
@@ -3221,9 +3435,8 @@ class Soil(models.Model):
             # Scatter
             plt.scatter(x, y)
 
-            # Line (correct)
-            m = rec.tan_phi
-            c = rec.cohesion
+            # ✅ BEST FIT LINE (AUTO TANGENT)
+            m, c = np.polyfit(x, y, 1)
 
             x_line = np.linspace(0, 20, 100)
             y_line = m * x_line + c
@@ -3242,7 +3455,7 @@ class Soil(models.Model):
             plt.xlim(0, 20)
             plt.ylim(0, 10)
 
-            # Excel-style grid
+            # Grid
             plt.minorticks_on()
             plt.grid(which='major', color='green', linewidth=0.5)
             plt.grid(which='minor', color='green', linewidth=0.2)
@@ -3257,8 +3470,8 @@ class Soil(models.Model):
 
             buffer.close()
             plt.close()
-            
 
+    
 
     angle_phi_conformity = fields.Selection([
             ('pass', 'Pass'),

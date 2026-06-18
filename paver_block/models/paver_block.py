@@ -637,7 +637,7 @@ class WaterLine(models.Model):
     parent_id = fields.Many2one('mechanical.paver.block',string="Parent Id")
 
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
-    sample_identification = fields.Float(string="Sample Identification")
+    sample_identification = fields.Char(string="Sample Identification")
     dry_wt_w1 = fields.Float(string="Dry wt (W1)")
     wet_w2 = fields.Float(string="Wet wt (W2)")
     water_absorption = fields.Float(string="  Water Absorption %",compute="_compute_water_absorption")
@@ -676,7 +676,7 @@ class CompressiveLine(models.Model):
     parent_id = fields.Many2one('mechanical.paver.block',string="Parent Id")
 
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
-    sample_identification_com = fields.Float(string="Sample Identification")
+    sample_identification_com = fields.Char(string="Sample Identification")
     wt_block = fields.Float(string="Weight of Block (gms)")
     correction_factor = fields.Float(string="Correction Factor",compute="_compute_correction_factor",store=True)
     load = fields.Float(string=" Load (kN)")
