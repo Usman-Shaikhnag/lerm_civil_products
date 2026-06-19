@@ -51,8 +51,8 @@ class Soil(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
 
-    temprature = fields.Float("Temperature (°C)", digits=(10,2))
-    humidity = fields.Float("Humidity (%)", digits=(10,2))
+    temprature = fields.Integer("Temperature (°C)", digits=(10,2))
+    humidity = fields.Integer("Humidity (%)", digits=(10,2))
 
     condition = fields.Char("Condition")
 
@@ -2747,8 +2747,8 @@ class Soil(models.Model):
                         record.cbr_5_avg_conformity = 'fail'
 
     cbr_5_avg_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_cbr_5_avg_nabl", store=True)
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_cbr_5_avg_nabl", store=True)
 
     @api.depends('cbr_5_avg','eln_ref','grade')
     def _compute_cbr_5_avg_nabl(self):
@@ -3751,8 +3751,8 @@ class Soil(models.Model):
                         record.angle_phi_conformity = 'fail'
 
     angle_phi_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_angle_phi_nabl", store=True)
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_angle_phi_nabl", store=True)
 
     @api.depends('angle_phi','eln_ref','grade')
     def _compute_angle_phi_nabl(self):
@@ -3808,8 +3808,8 @@ class Soil(models.Model):
                         record.cohesion_conformity = 'fail'
 
     cohesion_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_cohesion_nabl", store=True)
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_cohesion_nabl", store=True)
 
     @api.depends('cohesion','eln_ref','grade')
     def _compute_cohesion_nabl(self):

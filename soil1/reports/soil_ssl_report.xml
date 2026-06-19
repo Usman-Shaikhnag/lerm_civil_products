@@ -104,7 +104,7 @@
 								<td style="width:20%;">
 
 								  <t t-if="data.temprature">
-											<span t-field="data.temprature"/>
+											<span t-field="data.temprature"/> (°C)
 										</t>
 									<t t-else="">--</t>
 								
@@ -114,7 +114,7 @@
 									
 
 									<t t-if="data.humidity">
-											<span t-field="data.humidity"/>
+											<span t-field="data.humidity"/>  (%)
 										</t>
 									<t t-else="">--</t>
 								</td>
@@ -1628,6 +1628,78 @@
                    <div style="text-align:center; margin-top:20px;">
                    <img t-att-src="'data:image/png;base64,%s' % graph_direct_shear" style="max-width:100%; height:auto;"/>
                   </div>
+				</t>
+
+
+                <t t-if="data.direct_shear_visible and (show_angle_phi or show_cohesion)">
+				  <div class="d-flex gap-3" >
+
+                        <table class="table table-sm o_form_table table-bordered w-100"
+							style="border:2px solid black; border-collapse:collapse;">
+                            <tbody>
+                                <tr>
+                                    <td><label for="angle_phi"/></td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <field name="angle_phi"/>
+                                            <span>Ton/m²</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-100"
+							style="border:2px solid black; border-collapse:collapse;">
+                            <tbody>
+                                <tr>
+                                    <td><label for="cohesion"/></td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <field name="cohesion"/>
+                                            <span>Ton/m²</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                    <div class="d-flex gap-3">
+
+                        <table class="table table-sm o_form_table table-bordered w-100"
+							style="border:2px solid black; border-collapse:collapse;">
+                            <tbody>
+                                <tr>
+                                    <td><label for="angle_phi_kg_cm2"/></td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <field name="angle_phi_kg_cm2"/>
+                                            <span>Kg/cm²</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-100"
+							style="border:2px solid black; border-collapse:collapse;" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="cohesion_kg_cm2"/></td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <field name="cohesion_kg_cm2"/>
+                                            <span>Kg/cm²</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+
 				</t>
 
 				
