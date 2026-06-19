@@ -15,7 +15,7 @@ class ChequeredTile(models.Model):
     _description = 'mechanical.chequered.tiles'
     _rec_name = "name"
 
-    name = fields.Char("Name",default=" CHEQUERED TILE")
+    name = fields.Char("Name",default="CHEQUERED TILE")
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
