@@ -3,6 +3,7 @@ from odoo import models, fields ,api
 
 _logger = logging.getLogger(__name__)
 
+
 class PriceListInherited(models.Model):
     _inherit = 'product.pricelist.item'
     parameter_id = fields.Many2one(
@@ -11,7 +12,7 @@ class PriceListInherited(models.Model):
         help="If set, this price applies to this specific parameter only.",
         domain="[('material', '=', product_tmpl_id)]"
     )
-    
+
 class AccountMoveInheritedLerm(models.Model):
     _inherit = 'account.move'
 
@@ -86,7 +87,6 @@ class AccountMoveLineInherited(models.Model):
     parameters = fields.Many2many('lerm.parameter.master', string='Parameters')
     product_tmpl_id = fields.Many2one('product.template', related='product_id.product_tmpl_id', string='Product Template')
 
-    
 
     @api.onchange("pricelist_id")
     def onchange_pricelist_id(self):
@@ -108,29 +108,42 @@ class AccountMoveLineInherited(models.Model):
         # import wdb; wdb.set_trace();
         self.pricelist_id = self.move_id.pricelist_id.id
 
-    @api.depends('parameters')
+    @api.depends('parameters', 'product_id', 'move_id.pricelist_id')
     def _compute_price_unit(self):
         res = super()._compute_price_unit()
-        # import wdb; wdb.set_trace()
         for line in self:
             if line.parameters and line.move_id.pricelist_id and line.product_id:
                 total = line._get_price_with_pricelist()
                 line.price_unit = total
             elif not line.parameters and line.move_id.pricelist_id and line.product_id:
-                # If no parameters are selected, but the product HAS parameter-specific prices in this pricelist,
-                # standard Odoo might incorrectly pick one of those prices. We should force it to 0.
+                # No parameters selected — check if pricelist has a whole-product price
+                # (i.e. an item WITHOUT parameter_id for this product)
                 pt_id = line.product_id.product_tmpl_id._origin.id if line.product_id.product_tmpl_id._origin else line.product_id.product_tmpl_id.id
                 prod_id = line.product_id._origin.id if line.product_id._origin else line.product_id.id
-                
-                has_param_prices = line.move_id.pricelist_id.item_ids.filtered(
+
+                # Look for whole-product pricelist items (no parameter_id)
+                whole_product_price = line.move_id.pricelist_id.item_ids.filtered(
                     lambda i: (
-                        ((i.product_tmpl_id._origin.id if i.product_tmpl_id._origin else i.product_tmpl_id.id) == pt_id 
+                        ((i.product_tmpl_id._origin.id if i.product_tmpl_id._origin else i.product_tmpl_id.id) == pt_id
                          or (i.product_id._origin.id if i.product_id._origin else i.product_id.id) == prod_id)
-                        and i.parameter_id
+                        and not i.parameter_id
                     )
                 )
-                if has_param_prices:
-                    line.price_unit = 0.0
+                if whole_product_price:
+                    # Use the first matching whole-product pricelist item
+                    line.price_unit = whole_product_price[0].fixed_price
+                else:
+                    # Check if ONLY parameter-specific prices exist (no whole-product entry)
+                    has_param_prices = line.move_id.pricelist_id.item_ids.filtered(
+                        lambda i: (
+                            ((i.product_tmpl_id._origin.id if i.product_tmpl_id._origin else i.product_tmpl_id.id) == pt_id
+                             or (i.product_id._origin.id if i.product_id._origin else i.product_id.id) == prod_id)
+                            and i.parameter_id
+                        )
+                    )
+                    if has_param_prices:
+                        # Only parameter-specific prices exist, no whole-product price — force 0
+                        line.price_unit = 0.0
 
 
 
