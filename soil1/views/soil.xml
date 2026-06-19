@@ -35,6 +35,42 @@
                         </field>
                     </div>
 
+                         <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="temprature"></label></td>
+                                    <td><field name="temprature" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="humidity"></label></td>
+                                    <td><field  name="humidity" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="condition"></label></td>
+                                    <td><field  name="condition" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+
 
 
 
@@ -1036,39 +1072,39 @@
                     
                     <div class="d-flex gap-2">
                     
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not moisture_content_visible">
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not cbr_visible">
                             <tbody>
                                 <tr>
                                 <td><span>2.5 mm Penetration Value Conformity</span></td>
-                                <td><field name="avg_moisture_content_conformity"
-                                            decoration-success="avg_moisture_content_conformity == 'pass'" 
-                                            decoration-danger="avg_moisture_content_conformity == 'fail'" 
+                                <td><field name="cbr_25_avg_conformity"
+                                            decoration-success="cbr_25_avg_conformity == 'pass'" 
+                                            decoration-danger="cbr_25_avg_conformity == 'fail'" 
                                             readonly="1" /></td>
                                 </tr>
                                 <tr>
                                 <td><span>2.5 mm Penetration Value NABL</span></td>
-                                <td><field name="avg_moisture_content_nabl"
-                                            decoration-success="avg_moisture_content_nabl == 'pass'" 
-                                            decoration-danger="avg_moisture_content_nabl == 'fail'" 
+                                <td><field name="cbr_25_avg_nabl"
+                                            decoration-success="cbr_25_avg_nabl == 'pass'" 
+                                            decoration-danger="cbr_25_avg_nabl == 'fail'" 
                                             readonly="1" /></td>
                                 </tr>
                             </tbody>
                         </table>
 
-                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not moisture_content_visible">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not cbr_visible">
                             <tbody>
                                 <tr>
                                 <td><span>5 mm Penetration Value Conformity</span></td>
-                                <td><field name="avg_moisture_content_conformity"
-                                            decoration-success="avg_moisture_content_conformity == 'pass'" 
-                                            decoration-danger="avg_moisture_content_conformity == 'fail'" 
+                                <td><field name="cbr_5_avg_conformity"
+                                            decoration-success="cbr_5_avg_conformity == 'pass'" 
+                                            decoration-danger="cbr_5_avg_conformity == 'fail'" 
                                             readonly="1" /></td>
                                 </tr>
                                 <tr>
                                 <td><span>5 mm Penetration Value NABL</span></td>
-                                <td><field name="avg_moisture_content_nabl"
-                                            decoration-success="avg_moisture_content_nabl == 'pass'" 
-                                            decoration-danger="avg_moisture_content_nabl == 'fail'" 
+                                <td><field name="cbr_5_avg_nabl"
+                                            decoration-success="cbr_5_avg_nabl == 'pass'" 
+                                            decoration-danger="cbr_5_avg_nabl == 'fail'" 
                                             readonly="1" /></td>
                                 </tr>
                             </tbody>
@@ -1538,7 +1574,7 @@
                             </tr>
                             <tr>
                                 <td><label for="proving_ring_num"></label></td>
-                                <td><field name="proving_ring_num" class="blue-input" /></td>
+                                <td><field name="proving_ring_num" class="blue-input"  widget="char"/></td>
                             </tr>
                           
                             
@@ -1602,35 +1638,70 @@
                     </table>
 
                     <div class="d-flex gap-3">
-                      <table class="table table-sm o_form_table table-bordered custom_table_borders w-100" invisible="not direct_shear_visible">
-                        <tbody>
-                            <tr>
-                                <td><label for="tan_phi"></label></td>
-                                <td><field name="tan_phi" /></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                        
-                     <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
-                        <tbody>
-                            <tr>
-                                <td><label for="angle_phi"></label></td>
-                                <td><field name="angle_phi" /></td>
-                            </tr>
-                        </tbody>
-                    </table>
 
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
-                        <tbody>
-                            <tr>
-                                <td><label for="cohesion"></label></td>
-                                <td><field name="cohesion" /></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="angle_phi"/></td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <field name="angle_phi"/>
+                                            <span>Ton/m²</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="cohesion"/></td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <field name="cohesion"/>
+                                            <span>Ton/m²</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
                     </div>
 
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not consolidation_visible">
+                    <div class="d-flex gap-3">
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="angle_phi_kg_cm2"/></td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <field name="angle_phi_kg_cm2"/>
+                                            <span>Kg/cm²</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label for="cohesion_kg_cm2"/></td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <field name="cohesion_kg_cm2"/>
+                                            <span>Kg/cm²</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not direct_shear_visible">
                         <tbody>
                             
                             <tr>

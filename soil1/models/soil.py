@@ -19,6 +19,7 @@ from scipy.interpolate import PchipInterpolator
 from scipy.ndimage import gaussian_filter1d
 from matplotlib.ticker import AutoMinorLocator
 from decimal import Decimal, getcontext
+from decimal import Decimal, ROUND_HALF_UP
 
 
 from matplotlib.ticker import MultipleLocator, StrMethodFormatter
@@ -49,6 +50,11 @@ class Soil(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
+
+    temprature = fields.Float("Temperature (°C)", digits=(10,2))
+    humidity = fields.Float("Humidity (%)", digits=(10,2))
+
+    condition = fields.Char("Condition")
 
 
 
@@ -2505,97 +2511,197 @@ class Soil(models.Model):
     show_cbr = fields.Boolean(string="Show CBR Graph")
 
 
+    # def action_generate_cbr_chart(self):
+    #  for rec in self:
+    #     lines = self.env[''].search([
+    #         ('parent_id', '=', rec.id)
+    #     ], order='penetration asc')
+
+    #     penetration = [l.penetration for l in lines]
+
+    #     s1 = [l.sample1_load for l in lines]
+    #     s2 = [l.sample2_load for l in lines]
+    #     s3 = [l.sample3_load for l in lines]
+
+    #     # ✅ Increase width only (width=12, height=5)
+    #     plt.figure(figsize=(12, 5))
+
+    #     plt.plot(penetration, s1, marker='o', label='Sample-1')
+    #     plt.plot(penetration, s2, marker='o', label='Sample-2')
+    #     plt.plot(penetration, s3, marker='o', label='Sample-3')
+
+    #     plt.xlabel('Penetration (mm)')
+    #     plt.ylabel('Load (Kg/cm²)')
+    #     plt.title('CBR Test Graph')
+
+    #     # ✅ Major grid (big squares)
+    #     plt.grid(which='major', linestyle='-', linewidth=0.8)
+
+    #     # ✅ Minor grid (small squares inside)
+    #     ax = plt.gca()
+    #     ax.xaxis.set_minor_locator(AutoMinorLocator(5))
+    #     ax.yaxis.set_minor_locator(AutoMinorLocator(5))
+    #     plt.grid(which='minor', linestyle=':', linewidth=0.5)
+
+    #     plt.legend()
+
+    #     # Save image
+    #     buffer = io.BytesIO()
+    #     plt.savefig(buffer, format='png', bbox_inches='tight')
+    #     plt.close()
+
+    #     image = base64.b64encode(buffer.getvalue())
+    #     buffer.close()
+
+    #     rec.cbr_chart_image = image
+    #     rec.cbr_chart_filename = "cbr_chart.png"
+
     def action_generate_cbr_chart(self):
-     for rec in self:
-        lines = self.env['california.bearing.test'].search([
-            ('parent_id', '=', rec.id)
-        ], order='penetration asc')
+        for rec in self:
 
-        penetration = [l.penetration for l in lines]
+            lines = self.env['california.bearing.test'].search([
+                ('parent_id', '=', rec.id)
+            ], order='penetration asc')
 
-        s1 = [l.sample1_load for l in lines]
-        s2 = [l.sample2_load for l in lines]
-        s3 = [l.sample3_load for l in lines]
+            # ----------------------------------------
+            # Data
+            # ----------------------------------------
+            penetration = [float(l.penetration) for l in lines]
 
-        # ✅ Increase width only (width=12, height=5)
-        plt.figure(figsize=(12, 5))
+            s1 = [l.sample1_load or 0 for l in lines]
+            s2 = [l.sample2_load or 0 for l in lines]
+            s3 = [l.sample3_load or 0 for l in lines]
 
-        plt.plot(penetration, s1, marker='o', label='Sample-1')
-        plt.plot(penetration, s2, marker='o', label='Sample-2')
-        plt.plot(penetration, s3, marker='o', label='Sample-3')
+            # ----------------------------------------
+            # Helper
+            # ----------------------------------------
+            def get_value(sample_list, x_val):
+                for i, pen in enumerate(penetration):
+                    if abs(pen - x_val) < 0.01:
+                        return sample_list[i]
+                return 0
 
-        plt.xlabel('Penetration (mm)')
-        plt.ylabel('Load (Kg/cm²)')
-        plt.title('CBR Test Graph')
+            x_points = [2.5, 5]
 
-        # ✅ Major grid (big squares)
-        plt.grid(which='major', linestyle='-', linewidth=0.8)
+            # ----------------------------------------
+            # Graph
+            # ----------------------------------------
+            plt.figure(figsize=(12, 5))
 
-        # ✅ Minor grid (small squares inside)
-        ax = plt.gca()
-        ax.xaxis.set_minor_locator(AutoMinorLocator(5))
-        ax.yaxis.set_minor_locator(AutoMinorLocator(5))
-        plt.grid(which='minor', linestyle=':', linewidth=0.5)
+            # 👉 IMPORTANT: capture line colors
+            line1, = plt.plot(penetration, s1, marker='o', label='Sample-1')
+            line2, = plt.plot(penetration, s2, marker='o', label='Sample-2')
+            line3, = plt.plot(penetration, s3, marker='o', label='Sample-3')
 
-        plt.legend()
+            colors = [line1.get_color(), line2.get_color(), line3.get_color()]
+            samples = [s1, s2, s3]
 
-        # Save image
-        buffer = io.BytesIO()
-        plt.savefig(buffer, format='png', bbox_inches='tight')
-        plt.close()
+            # ----------------------------------------
+            # Projection lines + values
+            # ----------------------------------------
+            for sample, color in zip(samples, colors):
 
-        image = base64.b64encode(buffer.getvalue())
-        buffer.close()
+                for x in x_points:
 
-        rec.cbr_chart_image = image
-        rec.cbr_chart_filename = "cbr_chart.png"
+                    y = get_value(sample, x)
+
+                    # Vertical line
+                    plt.vlines(x=x, ymin=0, ymax=y,
+                            colors=color, linewidth=1.5)
+
+                    # Horizontal line
+                    plt.hlines(y=y, xmin=0, xmax=x,
+                            colors=color, linewidth=1.5)
+
+                    # Point
+                    plt.scatter([x], [y], color=color, s=60, zorder=5)
+
+                    # ✅ VALUE DISPLAY (important)
+                    plt.text(x + 0.1, y + 0.2,
+                            f"{y:.2f}",
+                            color=color,
+                            fontsize=9,
+                            fontweight='bold')
+
+            # ----------------------------------------
+            # Labels & grid
+            # ----------------------------------------
+            plt.xlabel('Penetration in mm', fontweight='bold')
+            plt.ylabel('Load (Kg/cm²)', fontweight='bold')
+            plt.title('CBR Test Graph')
+
+            plt.grid(which='major', linestyle='-', linewidth=0.8)
+
+            ax = plt.gca()
+            ax.xaxis.set_minor_locator(AutoMinorLocator(5))
+            ax.yaxis.set_minor_locator(AutoMinorLocator(5))
+            plt.grid(which='minor', linestyle=':', linewidth=0.5)
+
+            plt.legend()
+
+            # ----------------------------------------
+            # Save
+            # ----------------------------------------
+            buffer = io.BytesIO()
+            plt.savefig(buffer, format='png', bbox_inches='tight')
+            plt.close()
+
+            image = base64.b64encode(buffer.getvalue())
+            buffer.close()
+
+            rec.cbr_chart_image = image
+            rec.cbr_chart_filename = "cbr_chart.png"
+
+   
+
+    
+    
 
 
     cbr_25_avg_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),
-            ('na', 'NA'),
-            ], string="Conformity", compute="_compute_cbr_25_avg_conformity", store=True)
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+    ], string='Conformity',compute="_compute_cbr_25_avg_conformity")
+
+    cbr_25_avg_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL'),
+    ], string='NABL', default='fail',compute="_compute_cbr_25_avg_nabl")
+
 
     @api.depends('cbr_25_avg','eln_ref','grade')
     def _compute_cbr_25_avg_conformity(self):
-        
         for record in self:
-
             if not record.eln_ref or not record.eln_ref.conformity:
                 record.cbr_25_avg_conformity = 'na'
                 continue
-
             record.cbr_25_avg_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0423e6c3-4253-42fb-8492-b1feae8e1b8d')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0423e6c3-4253-42fb-8492-b1feae8e1b8d')]).parameter_table
+            mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
-                    mu_value = line.mu_value
-                    
+                    # mu_value = line.mu_value
                     lower = record.cbr_25_avg - record.cbr_25_avg*mu_value
                     upper = record.cbr_25_avg + record.cbr_25_avg*mu_value
-                    if lower >= req_min and upper <= req_max:
+                    if lower >= req_min and upper <= req_max :
                         record.cbr_25_avg_conformity = 'pass'
                         break
                     else:
                         record.cbr_25_avg_conformity = 'fail'
 
-    cbr_25_avg_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_cbr_25_avg_nabl", store=True)
-
     @api.depends('cbr_25_avg','eln_ref','grade')
     def _compute_cbr_25_avg_nabl(self):
         
         for record in self:
+            
             record.cbr_25_avg_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0423e6c3-4253-42fb-8492-b1feae8e1b8d')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0423e6c3-4253-42fb-8492-b1feae8e1b8d')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
+            
             lab_min = line.lab_min_value
             lab_max = line.lab_max_value
             mu_value = line.mu_value
@@ -2641,8 +2747,8 @@ class Soil(models.Model):
                         record.cbr_5_avg_conformity = 'fail'
 
     cbr_5_avg_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_cbr_5_avg_nabl", store=True)
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_cbr_5_avg_nabl", store=True)
 
     @api.depends('cbr_5_avg','eln_ref','grade')
     def _compute_cbr_5_avg_nabl(self):
@@ -3055,16 +3161,16 @@ class Soil(models.Model):
     direct_shear_name = fields.Char("Name",default="Direct Shear Test")
     direct_shear_visible = fields.Boolean("Direct Shear Test Visible",compute="_compute_visible")
 
-    proving_ring_least = fields.Float(string="Proving Ring Least Count", digits=(12,3))
+    proving_ring_least = fields.Float(string="Proving Ring Least Count", digits=(12,3),default=0.002)
 
-    least_dial_gauge = fields.Float(string="Least Count of Dial Gauge", digits=(12,2))
+    least_dial_gauge = fields.Float(string="Least Count of Dial Gauge", digits=(12,2),default=0.01)
 
-    direct_area_specimen = fields.Float(string="Area of Specimen (cm2)", digits=(12,2))
+    direct_area_specimen = fields.Float(string="Area of Specimen (cm2)", digits=(12,2),default=36.00)
 
-    direct_cp_proving_ring = fields.Float(string="Capacity of Proving Ring", digits=(12,1))
+    direct_cp_proving_ring = fields.Float(string="Capacity of Proving Ring", digits=(12,1),default=2.5)
 
-    proving_ring_factor = fields.Float(string="Proving Ring Factor", digits=(12,3))
-    proving_ring_num = fields.Float(string="Proving Ring Number", digits=(12,0))
+    proving_ring_factor = fields.Float(string="Proving Ring Factor", digits=(12,3),default=0.260)
+    proving_ring_num = fields.Integer(string="Proving Ring Number",default=1936)
 
 
     direct_shear_ids = fields.One2many("mechanical.direct.shear.test.line", "parent_id", string="Test Readings",default=lambda self: self._default_direct_shear_ids())
@@ -3144,99 +3250,23 @@ class Soil(models.Model):
     max_shear_1_5 = fields.Float("Max Shear Stress 1.5", compute="_compute_final", store=True)
 
     # Converted (Ton/m²)
-    normal_stress_0_5 = fields.Float(default=0.5 * 11.0231,digits=(10,1),readonly=True)  # 5.5
-    normal_stress_1_0 = fields.Float(default=1.0 * 11.0231 ,digits=(10,1),readonly=True)  # 11
-    normal_stress_1_5 = fields.Float(default=1.5 * 11.0231 ,digits=(10,1),readonly=True)  # 16.5
+    normal_stress_0_5 = fields.Float(string="Normal Stress (Ton/m2)", compute="_compute_final",digits=(10,1))  # 5.5
+    normal_stress_1_0 = fields.Float(string="Normal Stress (Ton/m2)", compute="_compute_final",digits=(10,1))  # 11
+    normal_stress_1_5 = fields.Float(string="Normal Stress (Ton/m2)", compute="_compute_final",digits=(10,1))  # 16.5
 
-    shear_ton_0_5 = fields.Float("Max. Shear Stress (Ton/m2) ", store=True,digits=(10,1))
-    shear_ton_1_0 = fields.Float("Max. Shear Stress (Ton/m2) ", store=True,digits=(10,1))
-    shear_ton_1_5 = fields.Float("Max. Shear Stress (Ton/m2) ", store=True,digits=(10,1))
+    shear_ton_0_5 = fields.Float("Max. Shear Stress (Ton/m2) ", store=True,digits=(10,1), compute="_compute_final")
+    shear_ton_1_0 = fields.Float("Max. Shear Stress (Ton/m2) ", store=True,digits=(10,1), compute="_compute_final")
+    shear_ton_1_5 = fields.Float("Max. Shear Stress (Ton/m2) ", store=True,digits=(10,1), compute="_compute_final")
 
     # Final results
     tan_phi = fields.Float("tanφ", compute="_compute_final", store=True,digits=(10,4))
-    angle_phi = fields.Float("Angle of Internal Friction (φ)",compute="_compute_final",  store=True,digits=(10,4))
-    cohesion = fields.Float("Cohesion (Ton/m²)",  compute="_compute_final",store=True,digits=(10,4))
+    angle_phi = fields.Float("Angle of Internal Friction (φ) (deg) ",compute="_compute_final",digits=(10,1))
+    cohesion = fields.Float("Cohesion (Ton/m²)",  compute="_compute_final",digits=(10,1))
 
 
-    @api.depends(
-        'normal_stress_0_5',
-        'normal_stress_1_0',
-        'normal_stress_1_5',
-        'shear_ton_0_5',
-        'shear_ton_1_0',
-        'shear_ton_1_5'
-    )
-    def _compute_final(self):
-        for rec in self:
-            try:
-                n = 3
+    angle_phi_kg_cm2 = fields.Float("Angle of Internal Friction (φ) (deg) ",digits=(10,1),compute="_compute_final")
+    cohesion_kg_cm2 = fields.Float("Cohesion (kg/cm²)",  digits=(10,1),compute="_compute_final")
 
-                # ---------------------------------
-                # ✅ SLOPE (Excel: =SLOPE(P,Q))
-                # P = normal (Y), Q = shear (X)
-                # ---------------------------------
-                x1 = [
-                    rec.shear_ton_0_5,
-                    rec.shear_ton_1_0,
-                    rec.shear_ton_1_5
-                ]
-
-                y1 = [
-                    rec.normal_stress_0_5,
-                    rec.normal_stress_1_0,
-                    rec.normal_stress_1_5
-                ]
-
-                sum_x1 = sum(x1)
-                sum_y1 = sum(y1)
-                sum_xy1 = sum(x1[i] * y1[i] for i in range(n))
-                sum_x1_2 = sum(val * val for val in x1)
-
-                denom1 = (n * sum_x1_2) - (sum_x1 ** 2)
-
-                if denom1 != 0:
-                    rec.tan_phi = ((n * sum_xy1) - (sum_x1 * sum_y1)) / denom1
-                else:
-                    rec.tan_phi = 0.0
-
-                # ---------------------------------
-                # ✅ ANGLE φ
-                # ---------------------------------
-                rec.angle_phi = math.degrees(math.atan(rec.tan_phi))
-
-                # ---------------------------------
-                # ✅ INTERCEPT (Excel: =INTERCEPT(Q,P))
-                # Q = shear (Y), P = normal (X)
-                # ---------------------------------
-                x2 = [
-                    rec.normal_stress_0_5,
-                    rec.normal_stress_1_0,
-                    rec.normal_stress_1_5
-                ]
-
-                y2 = [
-                    rec.shear_ton_0_5,
-                    rec.shear_ton_1_0,
-                    rec.shear_ton_1_5
-                ]
-
-                sum_x2 = sum(x2)
-                sum_y2 = sum(y2)
-                sum_xy2 = sum(x2[i] * y2[i] for i in range(n))
-                sum_x2_2 = sum(val * val for val in x2)
-
-                denom2 = (n * sum_x2_2) - (sum_x2 ** 2)
-
-                if denom2 != 0:
-                    m2 = ((n * sum_xy2) - (sum_x2 * sum_y2)) / denom2
-                    rec.cohesion = (sum_y2 - m2 * sum_x2) / n
-                else:
-                    rec.cohesion = 0.0
-
-            except:
-                rec.tan_phi = 0.0
-                rec.angle_phi = 0.0
-                rec.cohesion = 0.0
 
     # @api.depends(
     #     'normal_stress_0_5',
@@ -3249,61 +3279,78 @@ class Soil(models.Model):
     # def _compute_final(self):
     #     for rec in self:
     #         try:
-    #             # ---------------------------------
-    #             # ⚠️ Excel Mapping
-    #             # SLOPE(P,Q)
-    #             # P = normal (Y)
-    #             # Q = shear (X)
-    #             # ---------------------------------
-    #             x = [
-    #                 rec.shear_ton_0_5 or 0.0,
-    #                 rec.shear_ton_1_0 or 0.0,
-    #                 rec.shear_ton_1_5 or 0.0
-    #             ]
-
-    #             y = [
-    #                 rec.normal_stress_0_5 or 0.0,
-    #                 rec.normal_stress_1_0 or 0.0,
-    #                 rec.normal_stress_1_5 or 0.0
-    #             ]
-
     #             n = 3
 
-    #             sum_x = sum(x)
-    #             sum_y = sum(y)
-    #             sum_xy = sum(x[i] * y[i] for i in range(n))
-    #             sum_x2 = sum(val * val for val in x)
-
-    #             denominator = (n * sum_x2) - (sum_x ** 2)
-
     #             # ---------------------------------
-    #             # tanφ (Excel exact)
+    #             # ✅ SLOPE (Excel: =SLOPE(P,Q))
+    #             # P = normal (Y), Q = shear (X)
     #             # ---------------------------------
-    #             if denominator != 0:
-    #                 rec.tan_phi = ((n * sum_xy) - (sum_x * sum_y)) / denominator
+    #             x1 = [
+    #                 rec.shear_ton_0_5,
+    #                 rec.shear_ton_1_0,
+    #                 rec.shear_ton_1_5
+    #             ]
+
+    #             y1 = [
+    #                 rec.normal_stress_0_5,
+    #                 rec.normal_stress_1_0,
+    #                 rec.normal_stress_1_5
+    #             ]
+
+    #             sum_x1 = sum(x1)
+    #             sum_y1 = sum(y1)
+    #             sum_xy1 = sum(x1[i] * y1[i] for i in range(n))
+    #             sum_x1_2 = sum(val * val for val in x1)
+
+    #             denom1 = (n * sum_x1_2) - (sum_x1 ** 2)
+
+    #             if denom1 != 0:
+    #                 rec.tan_phi = ((n * sum_xy1) - (sum_x1 * sum_y1)) / denom1
     #             else:
     #                 rec.tan_phi = 0.0
 
     #             # ---------------------------------
-    #             # φ (Angle)
+    #             # ✅ ANGLE φ
     #             # ---------------------------------
     #             rec.angle_phi = math.degrees(math.atan(rec.tan_phi))
 
     #             # ---------------------------------
-    #             # Cohesion (c)
-    #             # y = mx + c → c = y - mx
+    #             # ✅ INTERCEPT (Excel: =INTERCEPT(Q,P))
+    #             # Q = shear (Y), P = normal (X)
     #             # ---------------------------------
-    #             c_vals = []
-    #             for i in range(n):
-    #                 c = y[i] - (rec.tan_phi * x[i])
-    #                 c_vals.append(c)
+    #             x2 = [
+    #                 rec.normal_stress_0_5,
+    #                 rec.normal_stress_1_0,
+    #                 rec.normal_stress_1_5
+    #             ]
 
-    #             rec.cohesion = sum(c_vals) / n
+    #             y2 = [
+    #                 rec.shear_ton_0_5,
+    #                 rec.shear_ton_1_0,
+    #                 rec.shear_ton_1_5
+    #             ]
+
+    #             sum_x2 = sum(x2)
+    #             sum_y2 = sum(y2)
+    #             sum_xy2 = sum(x2[i] * y2[i] for i in range(n))
+    #             sum_x2_2 = sum(val * val for val in x2)
+
+    #             denom2 = (n * sum_x2_2) - (sum_x2 ** 2)
+
+    #             if denom2 != 0:
+    #                 m2 = ((n * sum_xy2) - (sum_x2 * sum_y2)) / denom2
+    #                 rec.cohesion = (sum_y2 - m2 * sum_x2) / n
+    #             else:
+    #                 rec.cohesion = 0.0
 
     #         except:
     #             rec.tan_phi = 0.0
     #             rec.angle_phi = 0.0
     #             rec.cohesion = 0.0
+
+    
+
+    
     # @api.depends('direct_shear_ids.shear_stress_0_5',
     #          'direct_shear_ids.shear_stress_1_0',
     #          'direct_shear_ids.shear_stress_1_5','shear_ton_0_5',
@@ -3343,6 +3390,204 @@ class Soil(models.Model):
 
     #     rec.angle_phi = math.degrees(math.atan(rec.tan_phi)) if rec.tan_phi else 0
 
+    # @api.depends(
+    # 'direct_shear_ids.shear_stress_0_5',
+    # 'direct_shear_ids.shear_stress_1_0',
+    # 'direct_shear_ids.shear_stress_1_5'
+    # )
+    # def _compute_final(self):
+    #     for rec in self:
+
+    #         # ----------------------------------------
+    #         # MAX SHEAR
+    #         # ----------------------------------------
+    #         rec.max_shear_0_5 = max(rec.direct_shear_ids.mapped('shear_stress_0_5') or [0])
+    #         rec.max_shear_1_0 = max(rec.direct_shear_ids.mapped('shear_stress_1_0') or [0])
+    #         rec.max_shear_1_5 = max(rec.direct_shear_ids.mapped('shear_stress_1_5') or [0])
+
+    #         # ----------------------------------------
+    #         # ✅ NORMAL STRESS (CONVERT)
+    #         # ----------------------------------------
+    #         rec.normal_stress_0_5 = (0.5 * 9.807)
+    #         rec.normal_stress_1_0 = (1.0 * 9.807)
+    #         rec.normal_stress_1_5 = (1.5 * 9.807)
+
+    #         # ----------------------------------------
+    #         # ✅ SHEAR STRESS (CONVERT)
+    #         # ----------------------------------------
+    #         rec.shear_ton_0_5 = (rec.max_shear_0_5 or 0) * 9.807
+    #         rec.shear_ton_1_0 = (rec.max_shear_1_0 or 0) * 9.807
+    #         rec.shear_ton_1_5 = (rec.max_shear_1_5 or 0) * 9.807
+
+    #         # ----------------------------------------
+    #         # LINE FIT
+    #         # ----------------------------------------
+    #         x = np.array([
+    #             rec.normal_stress_0_5,
+    #             rec.normal_stress_1_0,
+    #             rec.normal_stress_1_5
+    #         ])
+
+    #         y = np.array([
+    #             rec.shear_ton_0_5,
+    #             rec.shear_ton_1_0,
+    #             rec.shear_ton_1_5
+    #         ])
+
+    #         # CLEAN DATA
+    #         data = [(xi, yi) for xi, yi in zip(x, y) if xi > 0 and yi > 0]
+
+    #         if len(data) < 2:
+    #             rec.tan_phi = 0
+    #             rec.cohesion = 0
+    #             rec.angle_phi = 0
+    #             continue
+
+    #         x_clean = np.array([d[0] for d in data])
+    #         y_clean = np.array([d[1] for d in data])
+
+    #         if len(set(x_clean)) < 2:
+    #             rec.tan_phi = 0
+    #             rec.cohesion = 0
+    #             rec.angle_phi = 0
+    #             continue
+
+    #         try:
+    #             m, c = np.polyfit(x_clean, y_clean, 1)
+
+    #             rec.tan_phi = m
+    #             rec.cohesion = c
+    #             rec.angle_phi = math.degrees(math.atan(m))
+
+    #         except Exception:
+    #             rec.tan_phi = 0
+    #             rec.cohesion = 0
+    #             rec.angle_phi = 0
+
+    @api.depends(
+        'direct_shear_ids.shear_stress_0_5',
+        'direct_shear_ids.shear_stress_1_0',
+        'direct_shear_ids.shear_stress_1_5'
+    )
+    def _compute_final(self):
+        for rec in self:
+
+            # ----------------------------------------
+            # DEFAULT VALUES (NO ERROR 🔥)
+            # ----------------------------------------
+            rec.normal_stress_0_5 = 0
+            rec.normal_stress_1_0 = 0
+            rec.normal_stress_1_5 = 0
+
+            rec.max_shear_0_5 = 0
+            rec.max_shear_1_0 = 0
+            rec.max_shear_1_5 = 0
+
+            rec.shear_ton_0_5 = 0
+            rec.shear_ton_1_0 = 0
+            rec.shear_ton_1_5 = 0
+
+            rec.tan_phi = 0
+            rec.cohesion = 0
+            rec.angle_phi = 0
+
+            rec.angle_phi_kg_cm2 = 0
+            rec.cohesion_kg_cm2 = 0
+
+            # ----------------------------------------
+            # 1. MAX SHEAR
+            # ----------------------------------------
+            rec.max_shear_0_5 = max(rec.direct_shear_ids.mapped('shear_stress_0_5') or [0])
+            rec.max_shear_1_0 = max(rec.direct_shear_ids.mapped('shear_stress_1_0') or [0])
+            rec.max_shear_1_5 = max(rec.direct_shear_ids.mapped('shear_stress_1_5') or [0])
+
+            # ----------------------------------------
+            # 2. NORMAL STRESS
+            # ----------------------------------------
+            rec.normal_stress_0_5 = 0.5 * 9.807
+            rec.normal_stress_1_0 = 1.0 * 9.807
+            rec.normal_stress_1_5 = 1.5 * 9.807
+
+            # ----------------------------------------
+            # 3. SHEAR CONVERT
+            # ----------------------------------------
+            rec.shear_ton_0_5 = rec.max_shear_0_5 * 9.807
+            rec.shear_ton_1_0 = rec.max_shear_1_0 * 9.807
+            rec.shear_ton_1_5 = rec.max_shear_1_5 * 9.807
+
+            # ----------------------------------------
+            # 4. ENGINEERING (polyfit)
+            # ----------------------------------------
+            x = np.array([
+                rec.normal_stress_0_5,
+                rec.normal_stress_1_0,
+                rec.normal_stress_1_5
+            ])
+
+            y = np.array([
+                rec.shear_ton_0_5,
+                rec.shear_ton_1_0,
+                rec.shear_ton_1_5
+            ])
+
+            data = [(xi, yi) for xi, yi in zip(x, y) if xi > 0 and yi > 0]
+
+            if len(data) >= 2 and len(set([d[0] for d in data])) >= 2:
+                try:
+                    m, c = np.polyfit(x, y, 1)
+                    rec.tan_phi = m
+                    rec.cohesion = c
+                    rec.angle_phi = math.degrees(math.atan(m))
+                except Exception:
+                    pass
+
+            # ----------------------------------------
+            # 5. EXCEL EXACT (🔥 FINAL)
+            # ----------------------------------------
+            x_excel = [0.5, 1.0, 1.5]
+            y_excel = [
+                rec.max_shear_0_5,
+                rec.max_shear_1_0,
+                rec.max_shear_1_5
+            ]
+
+            data_excel = [(xi, yi) for xi, yi in zip(x_excel, y_excel) if yi > 0]
+
+            if len(data_excel) >= 2:
+
+                x_vals = [d[0] for d in data_excel]
+                y_vals = [d[1] for d in data_excel]
+
+                n = len(x_vals)
+
+                sum_x = sum(x_vals)
+                sum_y = sum(y_vals)
+                sum_xy = sum(xi * yi for xi, yi in zip(x_vals, y_vals))
+                sum_x2 = sum(xi * xi for xi in x_vals)
+
+                denominator = (n * sum_x2) - (sum_x ** 2)
+
+                if denominator != 0:
+                    m_excel = ((n * sum_xy) - (sum_x * sum_y)) / denominator
+                    c_excel = (sum_y - (m_excel * sum_x)) / n
+
+                    angle = math.degrees(math.atan(m_excel))
+
+                    # ✅ Excel rounding
+                    rec.angle_phi_kg_cm2 = float(
+                        Decimal(angle).quantize(Decimal('0.1'), rounding=ROUND_HALF_UP)
+                    )
+
+                    rec.cohesion_kg_cm2 = float(
+                        Decimal(c_excel).quantize(Decimal('0.1'), rounding=ROUND_HALF_UP)
+                    )
+
+
+    
+
+
+
+    
 
    
 
@@ -3506,8 +3751,8 @@ class Soil(models.Model):
                         record.angle_phi_conformity = 'fail'
 
     angle_phi_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_angle_phi_nabl", store=True)
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_angle_phi_nabl", store=True)
 
     @api.depends('angle_phi','eln_ref','grade')
     def _compute_angle_phi_nabl(self):
@@ -3563,8 +3808,8 @@ class Soil(models.Model):
                         record.cohesion_conformity = 'fail'
 
     cohesion_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_cohesion_nabl", store=True)
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_cohesion_nabl", store=True)
 
     @api.depends('cohesion','eln_ref','grade')
     def _compute_cohesion_nabl(self):

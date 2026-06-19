@@ -53,15 +53,9 @@
 							</tr>
 							
 							<tr>
-								<td style="width:25%;">Samples Description :-</td>
-								<td style="width:25%;">
-								      <t t-if="o.material and o.material.lab_name">
-											<span t-field="o.material.lab_name"/>
-										</t>
-									<t t-else="">--</t>
-								</td>
+								
 
-								<td style="width:20%;">Customer's Ref. No :-</td>
+								<td style="width:20%;">Letter No :-</td>
 								<td style="width:20%;">
 
 								  <t t-if="o.srf_id.client_refrence">
@@ -70,12 +64,128 @@
 									<t t-else="">--</t>
 								
 								</td>
+								<td>Letter Date :-</td>
+								<td>
+									
+
+									<t t-if="o.srf_id.letter_date">
+											<span t-field="o.srf_id.letter_date"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
 							</tr>
 
 							<tr>
-								<!-- <td>Quantity of Samples :-</td>
-								<td>Litre</td> -->
-								<td>No. of Samples :-</td>
+
+							<tr>
+
+								<td>SRF No. :-</td>
+										<td >
+
+											<t t-if="o.srf_id">
+											<span t-field="o.srf_id"/>
+										</t>
+									<t t-else="">--</t>
+										</td>
+								<td>SRF Date:-</td>
+								<td>
+
+									<t t-if="o.srf_date">
+											<span t-field="o.srf_date"/>
+										</t>
+								</td>
+
+								
+								
+							</tr>
+								
+
+								<td style="width:20%;">Temperature :-</td>
+								<td style="width:20%;">
+
+								  <t t-if="data.temprature">
+											<span t-field="data.temprature"/>
+										</t>
+									<t t-else="">--</t>
+								
+								</td>
+								<td>Humidity :-</td>
+								<td>
+									
+
+									<t t-if="data.humidity">
+											<span t-field="data.humidity"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="width:20%;">Discipline :
+									
+								</td>
+								<td style="width:20%;">
+								<span t-field="o.discipline.discipline"/>
+								</td>
+
+								<td style="width:20%;">Group :	
+								</td>
+								<td style="width:20%;">
+									<span t-field="o.group.group"/>
+								
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="1">Description Of Work :
+									
+								</td>
+
+								<td colspan="3">
+									--
+								</td>
+								
+							</tr>
+
+							<tr>
+								<td>Date of Samples Received :-</td>
+								<td>
+
+									<t t-if="o.sample_id.sample_received_date">
+											<span t-field="o.sample_id.sample_received_date"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+
+									<td>Condition :-</td>
+										<td >
+
+											<t t-if="data.condition">
+											<span t-field="data.condition"/>
+										</t>
+									<t t-else="">--</t>
+										</td>
+								
+							</tr>
+
+							<tr>
+								
+
+								<td colspan="1">Samples Description :-</td>
+								<td colspan="3">
+								      <t t-if="o.material and o.material.lab_name">
+											<span t-field="o.material.lab_name"/>
+										</t>
+								</td>
+								
+							</tr>
+
+							<tr>
+
+								<td>Sample Status :-</td>
+								<td></td>
+								
+								<td>Quantity:-</td>
 								<td>
 
 								<t t-if="o.sample_id.sample_qty">
@@ -90,48 +200,16 @@
 								
 								</td>
 
-								<td>Letter Date :-</td>
-								<td>
-									
+							
 
-									<t t-if="o.srf_id.letter_date">
-											<span t-field="o.srf_id.letter_date"/>
-										</t>
-									<t t-else="">--</t>
-								</td>
-							</tr>
-
-							<tr>
-								<td>Date of Samples Received :-</td>
-								<td>
-
-									<t t-if="o.sample_id.sample_received_date">
-											<span t-field="o.sample_id.sample_received_date"/>
-										</t>
-									<t t-else="">--</t>
-								</td>
-
-									<td>SRF No. :-</td>
-										<td >
-
-											<t t-if="o.srf_id">
-											<span t-field="o.srf_id"/>
-										</t>
-									<t t-else="">--</t>
-										</td>
 								
 							</tr>
 
-							<tr>
-								<td>Brand &amp; Grade :-</td>
-								<td>
-								<t t-if="o.sample_id.grade_id.grade">
-											<span t-field="o.sample_id.grade_id.grade"/>
-										</t>
-									<t t-else="">--</t>
-									</td>
+							
 
-								<td>Date of Test Initiation  :-</td>
+							<tr>
+								
+								<td>Test Start Date  :-</td>
 								<td>
 
 									<t t-if="o.start_date">
@@ -139,20 +217,8 @@
 										</t>
 									<t t-else="">--</t>
 								</td>
-							</tr>
 
-							<tr>
-								
-
-								<td>Size  :-</td>
-								<td>
-
-										<t t-if="o.sample_id.size_id.size">
-											<span t-field="o.sample_id.size_id.size"/>
-										</t>
-									<t t-else="">--</t>
-								</td>
-								<td>Date of Test Completion  :-</td>
+								<td>Test Completion Date  :-</td>
 								<td>
 
 									<t t-if="o.end_date">
@@ -162,32 +228,7 @@
 								</td>
 							</tr>
 
-							<tr>
-								
-
-								<td>Week No.  :-</td>
-								<td>
-
-								--
-								</td>
-								<td>Sample ID  :-</td>
-								<td>
-
-									<t t-if="o.sample_id.kes_no">
-											<span t-field="o.sample_id.kes_no"/>
-										</t>
-									<t t-else="">--</t>
-								</td>
-							</tr>
-
-							<tr>
-								<td colspan="1">Other Details:</td>
-								<td colspan="3">--</td>
-
-								
-							</tr>
-
-
+						
 							<tr t-if="o.material.test_method_adopted" >
 								
 
@@ -1368,9 +1409,25 @@
 
 		    <div class="header">
 
-              <div style="width:100%; text-align:center;">
+              <!-- <div style="width:100%; text-align:center;">
                  <img t-att-src="'/soil1/static/src/img/raipur_header.png'" style="height:150px; width:100%;"/>
-              </div>
+				 <img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.non_nabl_header.decode('utf-8')"
+                          style="width:100%; height:150px; object-fit:contain;"/>
+              </div> -->
+			  <div t-if="(eln.sample_id.scope == 'nabl' and nabl) or fromEln"
+						class="col-12 imageContainer"
+						style="text-align:center; margin-bottom:5px;">
+						
+						 <img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.header_image.decode('utf-8')"
+                          style="width:100%; height:150px; object-fit:contain;"/>
+					</div>
+					
+					<div t-if="(eln.sample_id.scope == 'non_nabl' or not nabl) and not fromEln" class="col-12 imageContainer"
+						style="text-align:center; margin-bottom:5px;" >
+						<!-- <img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.non_nabl_header.decode('utf-8')"/> -->
+						 <img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.non_nabl_header.decode('utf-8')"
+                          style="width:100%; height:150px; object-fit:contain;"/>
+					</div>
 
 	               <div style="width:100%; text-align:center; vertical-align:middle; padding: 6px;">
 					   <h5><strong>Annexure</strong></h5>
@@ -1486,12 +1543,72 @@
                    <img t-att-src="'data:image/png;base64,%s' % graph_heavy" style="max-width:100%; height:auto;"/>
                   </div>
 				</t>
+               <t t-set="show_cbr25" t-value="data.cbr_25_avg_nabl == 'pass' and nabl or (data.cbr_25_avg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+					
+					<t t-set="show_cbr5" t-value="data.cbr_5_avg_nabl == 'pass' and nabl or (data.cbr_5_avg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
 
-				<t t-if="graph_cbr">
+
+				<t t-if="data.cbr_visible and (show_cbr25 or show_cbr5)">
                    <div style="text-align:center; margin-top:20px;">
                    <img t-att-src="'data:image/png;base64,%s' % graph_cbr" style="max-width:100%; height:auto;"/>
                   </div>
 				</t>
+				
+				<t t-if="data.cbr_visible and (show_cbr25 or show_cbr5)">
+						<table class="table table-sm o_form_table table-bordered w-100"
+							style="border:2px solid black; border-collapse:collapse;">
+
+							<tbody>
+								<tr>
+									<td style="border:1px solid black;text-align:center;font-weight:bold;">CBR</td>
+									<td style="border:1px solid black;text-align:center;font-weight:bold;">Sample-1</td>
+									<td style="border:1px solid black;text-align:center;font-weight:bold;">Sample-2</td>
+									<td style="border:1px solid black;text-align:center;font-weight:bold;">Sample-3</td>
+									<td style="border:1px solid black;text-align:center;font-weight:bold;">Average</td>
+									<td style="border:1px solid black;text-align:center;font-weight:bold;">Max</td>
+								</tr>
+
+								<tr>
+									<td style="border:1px solid black;text-align:center;font-weight:bold;">2.5mm</td>
+
+									<td style="border:1px solid black;text-align:center;">
+										<span t-esc="data.cbr_25_s1" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="border:1px solid black;text-align:center;">
+										<span t-esc="data.cbr_25_s2" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="border:1px solid black;text-align:center;">
+										<span t-esc="data.cbr_25_s3" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="border:1px solid black;text-align:center;">
+										<span t-esc="data.cbr_25_avg" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+
+									<td style="border:1px solid black;text-align:center;vertical-align:middle;" rowspan="2">
+										<span t-esc="data.cbr_max" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+
+								<tr>
+									<td style="border:1px solid black;text-align:center;font-weight:bold;">5mm</td>
+
+									<td style="border:1px solid black;text-align:center;">
+										<span t-esc="data.cbr_5_s1" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="border:1px solid black;text-align:center;">
+										<span t-esc="data.cbr_5_s2" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="border:1px solid black;text-align:center;">
+										<span t-esc="data.cbr_5_s3" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="border:1px solid black;text-align:center;">
+										<span t-esc="data.cbr_5_avg" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+
+							</tbody>
+						</table>
+					</t>
 
 				<t t-if="graph_consolidation">
                    <div style="text-align:center; margin-top:20px;">
@@ -1499,17 +1616,29 @@
                   </div>
 				</t>
 
-				<t t-if="graph_direct_shear">
+
+				<t t-set="show_angle_phi" t-value="data.angle_phi_nabl == 'pass' and nabl or (data.angle_phi_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+					
+					<t t-set="show_cohesion" t-value="data.cohesion_nabl == 'pass' and nabl or (data.cohesion_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+					
+
+
+
+				<t t-if="data.direct_shear_visible and (show_angle_phi or show_cohesion)">
                    <div style="text-align:center; margin-top:20px;">
                    <img t-att-src="'data:image/png;base64,%s' % graph_direct_shear" style="max-width:100%; height:auto;"/>
                   </div>
 				</t>
 
+				
+
 				<t t-if="graphSieve or graph_liquid1 or graph_liquid2 or graph_light1 or graph_light2 or graph_heavy or graph_cbr or graph_consolidation or graph_direct_shear">
                  <div style="margin-top:10px;text-align:center;">
-                   <h5><strong>*NOTE:</strong> ABOVE PROVIDED GRAPH HAS NO TRACEABILITY</h5>
+                   <h6><strong>*NOTE:</strong> ABOVE PROVIDED GRAPH HAS NO TRACEABILITY</h6>
                  </div>
                 </t>
+
+				
 
 
                     <div style="text-align:center;margin-top:5px">

@@ -975,61 +975,161 @@ class SoilReport(models.AbstractModel):
 
 
 
+    # def action_generate_cbr_chart(self, data):
+
+    #   import matplotlib.pyplot as plt
+    #   from matplotlib.ticker import AutoMinorLocator
+    #   import io, base64
+
+    #   # -------------------------------
+    #   # FETCH DATA
+    #   # -------------------------------
+    #   lines = self.env['california.bearing.test'].search([
+    #     ('parent_id', '=', data.id)
+    # ], order='penetration asc')
+
+    #   penetration = [l.penetration for l in lines]
+
+    #   s1 = [l.sample1_load for l in lines]
+    #   s2 = [l.sample2_load for l in lines]
+    #   s3 = [l.sample3_load for l in lines]
+
+    #   if not penetration:
+    #       return False
+
+    #   # -------------------------------
+    #   # GRAPH
+    #   # -------------------------------
+    #   plt.figure(figsize=(12, 5))
+
+    #   plt.plot(penetration, s1, marker='o', label='Sample-1')
+    #   plt.plot(penetration, s2, marker='o', label='Sample-2')
+    #   plt.plot(penetration, s3, marker='o', label='Sample-3')
+
+    #   plt.xlabel('Penetration (mm)')
+    #   plt.ylabel('Load (Kg/cm²)')
+    #   plt.title('CBR Test Graph')
+
+    #   # Major grid
+    #   plt.grid(which='major', linestyle='-', linewidth=0.8)
+
+    #   # Minor grid
+    #   ax = plt.gca()
+    #   ax.xaxis.set_minor_locator(AutoMinorLocator(5))
+    #   ax.yaxis.set_minor_locator(AutoMinorLocator(5))
+    #   plt.grid(which='minor', linestyle=':', linewidth=0.5)
+
+    #   plt.legend()
+
+    #   # -------------------------------
+    #   # SAVE
+    #   # -------------------------------
+    #   buffer = io.BytesIO()
+    #   plt.savefig(buffer, format='png', bbox_inches='tight')
+    #   plt.close()
+    #   buffer.seek(0)
+
+    #   return base64.b64encode(buffer.read()).decode('utf-8')
+
     def action_generate_cbr_chart(self, data):
 
-      import matplotlib.pyplot as plt
-      from matplotlib.ticker import AutoMinorLocator
-      import io, base64
+        import matplotlib.pyplot as plt
+        from matplotlib.ticker import AutoMinorLocator
+        import io, base64
 
-      # -------------------------------
-      # FETCH DATA
-      # -------------------------------
-      lines = self.env['california.bearing.test'].search([
-        ('parent_id', '=', data.id)
-    ], order='penetration asc')
+        # -------------------------------
+        # FETCH DATA
+        # -------------------------------
+        lines = self.env['california.bearing.test'].search([
+            ('parent_id', '=', data.id)
+        ], order='penetration asc')
 
-      penetration = [l.penetration for l in lines]
+        penetration = [float(l.penetration) for l in lines]
 
-      s1 = [l.sample1_load for l in lines]
-      s2 = [l.sample2_load for l in lines]
-      s3 = [l.sample3_load for l in lines]
+        s1 = [l.sample1_load or 0 for l in lines]
+        s2 = [l.sample2_load or 0 for l in lines]
+        s3 = [l.sample3_load or 0 for l in lines]
 
-      if not penetration:
-          return False
+        if not penetration:
+            return False
 
-      # -------------------------------
-      # GRAPH
-      # -------------------------------
-      plt.figure(figsize=(12, 5))
+        # -------------------------------
+        # HELPER
+        # -------------------------------
+        def get_value(sample_list, x_val):
+            for i, pen in enumerate(penetration):
+                if abs(pen - x_val) < 0.01:
+                    return sample_list[i]
+            return 0
 
-      plt.plot(penetration, s1, marker='o', label='Sample-1')
-      plt.plot(penetration, s2, marker='o', label='Sample-2')
-      plt.plot(penetration, s3, marker='o', label='Sample-3')
+        x_points = [2.5, 5]
 
-      plt.xlabel('Penetration (mm)')
-      plt.ylabel('Load (Kg/cm²)')
-      plt.title('CBR Test Graph')
+        # -------------------------------
+        # GRAPH
+        # -------------------------------
+        plt.figure(figsize=(12, 5))
 
-      # Major grid
-      plt.grid(which='major', linestyle='-', linewidth=0.8)
+        # 👉 capture line colors
+        line1, = plt.plot(penetration, s1, marker='o', label='Sample-1')
+        line2, = plt.plot(penetration, s2, marker='o', label='Sample-2')
+        line3, = plt.plot(penetration, s3, marker='o', label='Sample-3')
 
-      # Minor grid
-      ax = plt.gca()
-      ax.xaxis.set_minor_locator(AutoMinorLocator(5))
-      ax.yaxis.set_minor_locator(AutoMinorLocator(5))
-      plt.grid(which='minor', linestyle=':', linewidth=0.5)
+        colors = [line1.get_color(), line2.get_color(), line3.get_color()]
+        samples = [s1, s2, s3]
 
-      plt.legend()
+        # -------------------------------
+        # PROJECTION + VALUE
+        # -------------------------------
+        for sample, color in zip(samples, colors):
 
-      # -------------------------------
-      # SAVE
-      # -------------------------------
-      buffer = io.BytesIO()
-      plt.savefig(buffer, format='png', bbox_inches='tight')
-      plt.close()
-      buffer.seek(0)
+            for x in x_points:
 
-      return base64.b64encode(buffer.read()).decode('utf-8')
+                y = get_value(sample, x)
+
+                # Vertical line (only till point)
+                plt.vlines(x=x, ymin=0, ymax=y,
+                        colors=color, linewidth=1.5)
+
+                # Horizontal line
+                plt.hlines(y=y, xmin=0, xmax=x,
+                        colors=color, linewidth=1.5)
+
+                # Point highlight
+                plt.scatter([x], [y], color=color, s=60, zorder=5)
+
+                # ✅ VALUE TEXT
+                plt.text(x + 0.1, y + 0.2,
+                        f"{y:.2f}",
+                        color=color,
+                        fontsize=9,
+                        fontweight='bold')
+
+        # -------------------------------
+        # LABELS
+        # -------------------------------
+        plt.xlabel('Penetration (mm)', fontweight='bold')
+        plt.ylabel('Load (Kg/cm²)', fontweight='bold')
+        plt.title('CBR Test Graph')
+
+        # Grid
+        plt.grid(which='major', linestyle='-', linewidth=0.8)
+
+        ax = plt.gca()
+        ax.xaxis.set_minor_locator(AutoMinorLocator(5))
+        ax.yaxis.set_minor_locator(AutoMinorLocator(5))
+        plt.grid(which='minor', linestyle=':', linewidth=0.5)
+
+        plt.legend()
+
+        # -------------------------------
+        # SAVE
+        # -------------------------------
+        buffer = io.BytesIO()
+        plt.savefig(buffer, format='png', bbox_inches='tight')
+        plt.close()
+        buffer.seek(0)
+
+        return base64.b64encode(buffer.read()).decode('utf-8')
     
     def action_generate_graph(self, data):
 
