@@ -8,11 +8,13 @@ import re
 import matplotlib.pyplot as plt
 import xlsxwriter
 from openpyxl import load_workbook
+from pytz import timezone
+
+india_tz = timezone('Asia/Kolkata')
 
 # Constants for graph styling
 GRAPH_MAJOR_GRID_COLOR = '#d28b5c'
 GRAPH_MINOR_GRID_COLOR = '#f0c7a0'
-
 
 class PileLoadTestParent(models.Model):
     _name = "pile.load.test.parent"
@@ -475,8 +477,13 @@ class PileLoadTestParent(models.Model):
             'border': 1,
         })
 
-        datetime_format = workbook.add_format({
-            'num_format': 'dd/mm/yyyy hh:mm',
+        date_format = workbook.add_format({
+            'num_format': 'dd/mm/yyyy',
+            'border': 1,
+        })
+
+        time_format = workbook.add_format({
+            'num_format': 'hh:mm AM/PM',
             'border': 1,
         })
 
@@ -485,7 +492,8 @@ class PileLoadTestParent(models.Model):
         })
 
         headers = [
-            'Date Time',
+            'Date',
+            'Time',
             'Load',
             'Dial A',
             'Dial B',
@@ -498,25 +506,99 @@ class PileLoadTestParent(models.Model):
             sheet = workbook.add_worksheet(sheet_name)
 
             # Column widths
-            sheet.set_column(0, 0, 22)
-            sheet.set_column(1, 5, 15)
+            sheet.set_column(0, 0, 15)  # Date
+            sheet.set_column(1, 1, 12)  # Time
+            sheet.set_column(2, 6, 15)  # Numeric columns
 
             # Headers
             for col, header in enumerate(headers):
                 sheet.write(0, col, header, header_format)
 
-            # Sample datetime row
-            sheet.write_datetime(
-                1,
-                0,
-                fields.Datetime.now(),
-                datetime_format
-            )
-
             # Empty sample numeric cells
             for col in range(1, 6):
-                sheet.write(1, col, '', normal_format)
+                sheet.write(1, col, None, normal_format)
 
+        instructions_sheet = workbook.add_worksheet('Instructions')
+        instructions_sheet.set_column(0, 0, 30)
+        instructions_sheet.set_column(1, 1, 80)
+
+        instructions_sheet.write(0, 0, 'Field', header_format)
+        instructions_sheet.write(0, 1, 'Requirement', header_format)
+
+        instructions_sheet.write(1, 0, 'Date')
+        instructions_sheet.write(
+            1, 1,
+            'Required. Must be a valid Excel date. Example: 09/06/2026'
+        )
+
+        instructions_sheet.write(2, 0, 'Time')
+        instructions_sheet.write(
+            2, 1,
+            'Required. Must be a valid Excel time. Example: 14:30'
+        )
+
+        instructions_sheet.write(3, 0, 'Load')
+        instructions_sheet.write(
+            3, 1,
+            'Required. Numeric value in tonnes.'
+        )
+
+        instructions_sheet.write(4, 0, 'Dial A')
+        instructions_sheet.write(
+            4, 1,
+            'Required. Numeric reading in mm.'
+        )
+
+        instructions_sheet.write(5, 0, 'Dial B')
+        instructions_sheet.write(
+            5, 1,
+            'Required. Numeric reading in mm.'
+        )
+
+        instructions_sheet.write(6, 0, 'Dial C')
+        instructions_sheet.write(
+            6, 1,
+            'Required. Numeric reading in mm.'
+        )
+
+        instructions_sheet.write(7, 0, 'Dial D')
+        instructions_sheet.write(
+            7, 1,
+            'Required. Numeric reading in mm.'
+        )
+
+        instructions_sheet.write(10, 0, 'Important Notes', header_format)
+
+        instructions_sheet.write(
+            11, 0,
+            '1. Do not rename the sheets "Loading" and "Unloading".'
+        )
+
+        instructions_sheet.write(
+            12, 0,
+            '2. Do not change the column headers.'
+        )
+
+        instructions_sheet.write(
+            13, 0,
+            '3. Date, Time, Load, Dial A, Dial B, Dial C and Dial D cannot be blank.'
+        )
+
+        instructions_sheet.write(
+            14, 0,
+            '4. Date and Time must be entered using Excel date/time format.'
+        )
+
+        instructions_sheet.write(
+            15, 0,
+            '5. One reading per row.'
+        )
+
+        instructions_sheet.write(
+            16, 0,
+            '6. Duplicate date and time entries will update existing records.'
+        )
+        
         workbook.close()
 
         output.seek(0)
