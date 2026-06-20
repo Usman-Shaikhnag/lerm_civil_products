@@ -159,11 +159,6 @@
 							<tr>
 								
 
-								<td>Week No.  :-</td>
-								<td>
-
-								--
-								</td>
 								<td>Sample ID  :-</td>
 								<td>
 
@@ -172,14 +167,12 @@
 										</t>
 									<t t-else="">--</t>
 								</td>
+
+								<td >Other Details:</td>
+								<td >--</td>
 							</tr>
 
-							<tr>
-								<td colspan="1">Other Details:</td>
-								<td colspan="3">--</td>
-
-								
-							</tr>
+						
 
 
 							<tr t-if="o.material.test_method_adopted" >
@@ -238,6 +231,11 @@
 									<th style="text-align: center; font-weight: bold; width: 9%;">Date of Testing</th>
 									<th style="text-align: center; font-weight: bold; white-space: nowrap;">Sample Identification</th>
 									<th style="text-align: center; font-weight: bold; width: 10%;">Weight of Cube (gms)</th>
+
+
+									<th style="text-align: center; font-weight: bold; width: 10%;">Length (mm)</th>
+									<th style="text-align: center; font-weight: bold; width: 10%;">Breadth (mm)</th>
+									<th style="text-align: center; font-weight: bold; width: 10%;">Area (mm²)</th>
 									
 									<th style="text-align: center; font-weight: bold; width: 6%;">Load (kN)</th>
 									<th style="text-align: center; font-weight: bold; width: 13%;">Compressive Strength (N/mm²)</th>
@@ -269,6 +267,9 @@
 									</t>
 									<td style="text-align: center; white-space: nowrap;"><span t-esc="r.id_mark"/></td>
 									<td style="text-align: center;"><span t-esc="r.wt_sample"/></td>
+									<td style="text-align: center;"><span t-esc="r.length"/></td>
+									<td style="text-align: center;"><span t-esc="r.breadth"/></td>
+									<td style="text-align: center;"><span t-esc="r.area"/></td>
 									
 									<td style="text-align: center;"><span t-esc="r.load"/></td>
 									<td style="text-align: center;">

@@ -726,6 +726,14 @@ class MechanicalConcreteCubeLine(models.Model):
     parent_id = fields.Many2one('mechanical.concrete.cube',string="Parent Id")
 
     sr_no = fields.Integer(string="Sr.No.",readonly=True, copy=False, default=1)
+    length = fields.Float(string="Length (mm)")
+    breadth = fields.Float(string="Breadth (mm)")
+    area = fields.Float(string="Area (sq.mm)", compute="_compute_area")
+
+    @api.depends('length', 'breadth')
+    def _compute_area(self):
+        for rec in self:
+            rec.area = rec.length * rec.breadth
   
     id_mark = fields.Char(string="Sample Identification",store=True)
     wt_sample = fields.Float(string="Weight of Cube (gms)",digits=(16,3))
