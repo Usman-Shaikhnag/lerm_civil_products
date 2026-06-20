@@ -27,3 +27,5 @@ from . import sample_register
 from . import customer_sample_request
 from . import partner_document
 from . import res_users
+from . import sale_order
+

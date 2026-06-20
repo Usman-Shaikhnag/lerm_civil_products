@@ -1641,7 +1641,7 @@
                                     <td><label for="angle_phi"/></td>
                                     <td>
                                         <div class="d-flex align-items-center gap-2">
-                                            <field name="angle_phi"/>
+											<span t-esc="data.angle_phi" t-options='{"widget": "float", "precision": 2}'/>
                                             <span>Ton/m²</span>
                                         </div>
                                     </td>
@@ -1657,6 +1657,7 @@
                                     <td>
                                         <div class="d-flex align-items-center gap-2">
                                             <field name="cohesion"/>
+											<span t-esc="data.angle_phi" t-options='{"widget": "float", "precision": 2}'/>
                                             <span>Ton/m²</span>
                                         </div>
                                     </td>
