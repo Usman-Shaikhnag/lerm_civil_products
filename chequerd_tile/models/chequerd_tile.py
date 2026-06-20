@@ -23,6 +23,9 @@ class ChequeredTile(models.Model):
 
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
+    temperature = fields.Char("Temperature",store=True)
+    humidity = fields.Char("Humidity",store=True)
+
     @api.depends('eln_ref')
     def _compute_grade_id(self):
         if self.eln_ref:
