@@ -226,7 +226,7 @@
 							</thead>
 							<tbody>
 
-							<!-- Bulk Density -->
+							<!-- Dimension -->
                             <t t-set="show_length" t-value="data.avg_length_nabl == 'pass' and nabl or (data.avg_length_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
 
                             <t t-set="show_width" t-value="data.avg_width_nabl == 'pass' and nabl or (data.avg_width_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
