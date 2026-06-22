@@ -12,7 +12,7 @@
 				<div class="container_eln">
 					<div t-foreach="eln" t-as="o">
 						
-									<table style="width:100%; border-collapse: collapse;" border="1">
+						<table style="width:100%; border-collapse: collapse;" border="1">
 
 						   <tr style="height:10px;">
 								<td colspan="1">Customer Party Name :</td>
@@ -54,15 +54,9 @@
 							</tr>
 							
 							<tr>
-								<td style="width:25%;">Samples Description :-</td>
-								<td style="width:25%;">
-								      <t t-if="o.material and o.material.lab_name">
-											<span t-field="o.material.lab_name"/>
-										</t>
-									<t t-else="">--</t>
-								</td>
+								
 
-								<td style="width:20%;">Customer's Ref. No :-</td>
+								<td style="width:20%;">Letter No :-</td>
 								<td style="width:20%;">
 
 								  <t t-if="o.srf_id.client_refrence">
@@ -71,12 +65,150 @@
 									<t t-else="">--</t>
 								
 								</td>
+								<td>Letter Date :-</td>
+								<td>
+									
+
+									<t t-if="o.srf_id.letter_date">
+											<span t-field="o.srf_id.letter_date"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
 							</tr>
 
 							<tr>
-								<!-- <td>Quantity of Samples :-</td>
-								<td>Litre</td> -->
-								<td>No. of Samples :-</td>
+
+							<tr>
+
+								<td>SRF No. :-</td>
+										<td >
+
+											<t t-if="o.srf_id">
+											<span t-field="o.srf_id"/>
+										</t>
+									<t t-else="">--</t>
+										</td>
+								<td>SRF Date:-</td>
+								<td>
+
+									<t t-if="o.srf_date">
+											<span t-field="o.srf_date"/>
+										</t>
+								</td>
+
+								
+								
+							</tr>
+								
+
+								<td style="width:20%;">Temperature :-</td>
+								<td style="width:20%;">
+
+								  <t t-if="data.temprature">
+											<span t-field="data.temprature"/> (°C)
+										</t>
+									<t t-else="">--</t>
+								
+								</td>
+								<td>Humidity :-</td>
+								<td>
+									
+
+									<t t-if="data.humidity">
+											<span t-field="data.humidity"/>  (%)
+										</t>
+									<t t-else="">--</t>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="width:20%;">Discipline :
+									
+								</td>
+								<td style="width:20%;">
+								<span t-field="o.discipline.discipline"/>
+								</td>
+
+								<td style="width:20%;">Group :	
+								</td>
+								<td style="width:20%;">
+									<span t-field="o.group.group"/>
+								
+								</td>
+							</tr>
+
+							<tr>
+								<td>Brand &amp; Grade :-</td>
+								<td>
+								<t t-if="o.sample_id.grade_id.grade">
+											<span t-field="o.sample_id.grade_id.grade"/>
+										</t>
+									<t t-else="">--</t>
+									</td>
+
+								<td>Size  :-</td>
+								<td>
+
+										<t t-if="o.sample_id.size_id.size">
+											<span t-field="o.sample_id.size_id.size"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="1">Description Of Work :
+									
+								</td>
+
+								<td colspan="3">
+								<t t-if="data.description_work">
+											<span t-field="data.description_work"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+								
+							</tr>
+
+							<tr>
+								<td>Date of Samples Received :-</td>
+								<td>
+
+									<t t-if="o.sample_id.sample_received_date">
+											<span t-field="o.sample_id.sample_received_date"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+
+									<td>Condition :-</td>
+										<td >
+
+											<t t-if="data.condition">
+											<span t-field="data.condition"/>
+										</t>
+									<t t-else="">--</t>
+										</td>
+								
+							</tr>
+
+							<tr>
+								
+
+								<td colspan="1">Samples Description :-</td>
+								<td colspan="3">
+								      <t t-if="o.material and o.material.lab_name">
+											<span t-field="o.material.lab_name"/>
+										</t>
+								</td>
+								
+							</tr>
+
+							<tr>
+
+								<td>Sample Status :-</td>
+								<td></td>
+								
+								<td>Quantity:-</td>
 								<td>
 
 								<t t-if="o.sample_id.sample_qty">
@@ -91,48 +223,16 @@
 								
 								</td>
 
-								<td>Letter Date :-</td>
-								<td>
-									
+							
 
-									<t t-if="o.srf_id.letter_date">
-											<span t-field="o.srf_id.letter_date"/>
-										</t>
-									<t t-else="">--</t>
-								</td>
-							</tr>
-
-							<tr>
-								<td>Date of Samples Received :-</td>
-								<td>
-
-									<t t-if="o.sample_id.sample_received_date">
-											<span t-field="o.sample_id.sample_received_date"/>
-										</t>
-									<t t-else="">--</t>
-								</td>
-
-									<td>SRF No. :-</td>
-										<td >
-
-											<t t-if="o.srf_id">
-											<span t-field="o.srf_id"/>
-										</t>
-									<t t-else="">--</t>
-										</td>
 								
 							</tr>
 
-							<tr>
-								<td>Brand &amp; Grade :-</td>
-								<td>
-								<t t-if="o.sample_id.grade_id.grade">
-											<span t-field="o.sample_id.grade_id.grade"/>
-										</t>
-									<t t-else="">--</t>
-									</td>
+							
 
-								<td>Date of Test Initiation  :-</td>
+							<tr>
+								
+								<td>Test Start Date  :-</td>
 								<td>
 
 									<t t-if="o.start_date">
@@ -140,20 +240,8 @@
 										</t>
 									<t t-else="">--</t>
 								</td>
-							</tr>
 
-							<tr>
-								
-
-								<td>Size  :-</td>
-								<td>
-
-										<t t-if="o.sample_id.size_id.size">
-											<span t-field="o.sample_id.size_id.size"/>
-										</t>
-									<t t-else="">--</t>
-								</td>
-								<td>Date of Test Completion  :-</td>
+								<td>Test Completion Date  :-</td>
 								<td>
 
 									<t t-if="o.end_date">
@@ -167,28 +255,25 @@
 								
 
 								<td>Week No.  :-</td>
-								<td>
+								<td >
 
-								--
+									<t t-if="data.week_no">
+									<span t-field="data.week_no"/>
+								</t>
+							<t t-else="">--</t>
 								</td>
-								<td>Sample ID  :-</td>
-								<td>
 
-									<t t-if="o.sample_id.kes_no">
-											<span t-field="o.sample_id.kes_no"/>
-										</t>
-									<t t-else="">--</t>
+								<td>Other Details  :-</td>
+								<td >
+
+									<t t-if="data.other_details">
+									<span t-field="data.other_details"/>
+								</t>
+							<t t-else="">--</t>
 								</td>
 							</tr>
 
-							<tr>
-								<td colspan="1">Other Details:</td>
-								<td colspan="3">--</td>
-
-								
-							</tr>
-
-
+						
 							<tr t-if="o.material.test_method_adopted" >
 								
 
@@ -211,7 +296,7 @@
 					</div>
 					
                     <!-- Transverse Strength -->
-                    <div t-if="data.transverse_visible" style="margin-top:20px">
+                    <div t-if="data.transverse_visible" style="margin-top:5px">
                             <div style="text-align:center;font-size:18px">
                                 <!-- Transverse Strength -->
 								<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','0b48abe6-07a4-4345-bcc1-30ff6e4830af')]).parameter_name"/>
@@ -265,7 +350,7 @@
                     </div>
 
                     <!-- Water Absorbtion  -->
-                    <div t-if="data.water_absorbtion_visible" style="margin-top:20px">
+                    <div t-if="data.water_absorbtion_visible" style="margin-top:5px">
                         <div style="text-align:center;font-size:18px">
                             <!-- Water Absorbtion -->
 							<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','f913fc79-eeb4-4e16-a7fc-75608384d9b0')]).parameter_name"/>
@@ -366,30 +451,7 @@
 
 						 <!-- Remarks Section -->
 
-                    <div style="margin-top:50px" class="noteContainer">
-						<table >
-							<tr>
-							
-								<td style="padding: 5px; font-style: italic; font-size: 15px; line-height: 18px;">
-									<b>Remarks:</b><br/><br/>
-									    * Refer to Annexure-I for environmental and test conditions<br/><br/>
-									    * Refer to Annexure-I (A) to know NABL accredited scope, range and uncertainty of measurement for test parameter<br/><br/>
-
-									<b>Notes:-</b><br/><br/>
-								    	<!-- a. The information marked with an # received from customer<br/><br/>
-							        	b. The results listed refer only to tested parameters and sample as received from customer<br/><br/>
-							        	c. The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.<br/><br/>
-							        	d. This document shall not be reproduced in part or full without the approval of Genstru. -->
-
-										<t t-if="data.notes_id">
-										<t t-foreach="data.notes_id" t-as="n">
-											<span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span><br/><br/>
-										</t>
-									</t>
-								</td>
-							</tr>
-							</table  >
-						</div>
+                    
 
 
 						<div class="signatureContainer girdgird">
@@ -418,14 +480,14 @@
 									</b>
 								</div>
 							</div>
+							<t t-if="o.sample_id.stamp_attached">
 							<div>
 								<div>
 									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
 								</div>
-								<div style="padding-top:5px">
-									Format No. <span t-esc="eln.material.test_format_no"/>
-								</div>
+								
 							</div>
+							</t>
 							<div>
 								<div>
 									<b>

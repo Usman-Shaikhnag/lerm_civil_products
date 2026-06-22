@@ -21,6 +21,35 @@ class GgbsMechanical(models.Model):
     tests = fields.Many2many("mechanical.ggbs.test",string="Tests")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
+    temprature = fields.Integer("Temperature (°C)", digits=(10,2))
+    humidity = fields.Integer("Humidity (%)", digits=(10,2))
+
+    week_no = fields.Char("Week No")
+
+    other_details = fields.Char("Other Details")
+
+    condition = fields.Char("Condition")
+
+    description_work = fields.Text("Description Of Work")
+
+    temp_percent_normal = fields.Float("Temperature °c")
+    humidity_percent_normal = fields.Float("Humidity %")
+
+
+    def prefill_data(self):
+        # import wdb; wdb.set_trace()
+        return {
+            'name': 'Prefill Data',
+            'type': 'ir.actions.act_window',
+            'res_model': 'mechanical.ggbs.prefill.data',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+                },
+        }
+
 
 
 
@@ -480,8 +509,8 @@ class GgbsMechanical(models.Model):
                 continue
 
             record.slag_7days_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1452fgr0-8e67-4e94-86ea-98d9472f5c71')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1452fgr0-8e67-4e94-86ea-98d9472f5c71')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-321478658')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-321478658')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
@@ -500,8 +529,8 @@ class GgbsMechanical(models.Model):
         
         for record in self:
             record.slag_7days_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1452fgr0-8e67-4e94-86ea-98d9472f5c71')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1452fgr0-8e67-4e94-86ea-98d9472f5c71')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-321478658')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-321478658')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -538,8 +567,8 @@ class GgbsMechanical(models.Model):
                 continue
 
             record.slag_28days_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','bg21hy20-f42a-4405-b127-b5d84fe78485')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','bg21hy20-f42a-4405-b127-b5d84fe78485')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-3214855pp')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-3214855pp')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
@@ -558,8 +587,8 @@ class GgbsMechanical(models.Model):
         
         for record in self:
             record.slag_28days_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','bg21hy20-f42a-4405-b127-b5d84fe78485')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','bg21hy20-f42a-4405-b127-b5d84fe78485')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-3214855pp')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-3214855pp')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -1221,11 +1250,11 @@ class GgbsMechanical(models.Model):
                     record.normal_consistency_cement_visible = True
                 if sample.internal_id == '210bgf54-baa4-466f-a6a7-044da708f265':
                     record.specific_gravity_visible = True
-                if sample.internal_id == '1452fgr0-8e67-4e94-86ea-98d9472f5c71':
+                if sample.internal_id == '5214hgtb-c526-4092-a3a7-321478658':
                     record.slag_activity_7_visible = True
                 if sample.internal_id == '5214hgtb-c526-4092-a3a7-6b0ff7e69c0a':
                     record.fineness_visible = True
-                if sample.internal_id == 'bg21hy20-f42a-4405-b127-b5d84fe78485':
+                if sample.internal_id == '5214hgtb-c526-4092-a3a7-3214855pp':
                     record.slag_activity_7_visible = True
                     record.slag_activity_28_visible = True
 
@@ -1266,7 +1295,7 @@ class GgbsMechanical(models.Model):
                         continue
 
                     
-                    if result.parameter.internal_id == '1452fgr0-8e67-4e94-86ea-98d9472f5c71':
+                    if result.parameter.internal_id == '5214hgtb-c526-4092-a3a7-321478658':
                         result.result_char = self.slag_activity_index_7days
                         result.calculated = True
                         if self.specific_gravity_nabl == 'pass':
@@ -1286,7 +1315,7 @@ class GgbsMechanical(models.Model):
                         continue
 
 
-                    if result.parameter.internal_id == 'bg21hy20-f42a-4405-b127-b5d84fe78485':
+                    if result.parameter.internal_id == '5214hgtb-c526-4092-a3a7-3214855pp':
                         result.result_char = self.slag_activity_index_28days
                         result.calculated = True
                         if self.slag_28days_nabl == 'pass':

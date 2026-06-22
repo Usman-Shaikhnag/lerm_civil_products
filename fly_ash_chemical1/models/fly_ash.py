@@ -14,6 +14,34 @@ class ChemicalFlyAsh(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
+    temprature = fields.Integer("Temperature (°C)", digits=(10,2))
+    humidity = fields.Integer("Humidity (%)", digits=(10,2))
+
+    week_no = fields.Char("Week No")
+
+    other_details = fields.Char("Other Details")
+
+    condition = fields.Char("Condition")
+
+    description_work = fields.Text("Description Of Work")
+
+    temp_percent_normal = fields.Float("Temperature °c")
+    humidity_percent_normal = fields.Float("Humidity %")
+
+    def prefill_data(self):
+        # import wdb; wdb.set_trace()
+        return {
+            'name': 'Prefill Data',
+            'type': 'ir.actions.act_window',
+            'res_model': 'chemical.fly.ash.prefill.data',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+                },
+        }
+
     notes_id = fields.One2many('chem.fly.ash.notes', 'parent_id', string="Notes")
     
     @api.model

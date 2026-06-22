@@ -13,6 +13,26 @@ class MechanicalAdmixture(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
+    temprature = fields.Integer("Temperature (°C)", digits=(10,2))
+    humidity = fields.Integer("Humidity (%)", digits=(10,2))
+
+    condition = fields.Char("Condition")
+
+
+    def prefill_data(self):
+        # import wdb; wdb.set_trace()
+        return {
+            'name': 'Prefill Data',
+            'type': 'ir.actions.act_window',
+            'res_model': 'mechanical.admixture.prefill.data',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+                },
+        }
+
     notes_id = fields.One2many('mecha.admixture.notes', 'parent_id', string="Notes")
     
     @api.model

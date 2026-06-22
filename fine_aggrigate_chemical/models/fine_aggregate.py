@@ -14,6 +14,31 @@ class ChemicalFineAggregate(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
+    temprature = fields.Integer("Temperature (°C)", digits=(10,2))
+    humidity = fields.Integer("Humidity (%)", digits=(10,2))
+
+    week_no = fields.Char("Week No")
+
+    other_details = fields.Char("Other Details")
+
+    condition = fields.Char("Condition")
+
+    description_work = fields.Text("Description Of Work")
+
+    def prefill_data(self):
+        # import wdb; wdb.set_trace()
+        return {
+            'name': 'Prefill Data',
+            'type': 'ir.actions.act_window',
+            'res_model': 'chemical.fine.aggregate.prefill.data',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+                },
+        }
+
     notes_id = fields.One2many('chem.fine.notes', 'parent_id', string="Notes")
     
     @api.model
@@ -55,6 +80,101 @@ class ChemicalFineAggregate(models.Model):
 
         res['notes_id'] = default_notes
         return res
+
+
+    def open_eln_page(self):
+    # import wdb; wdb.set_trace()
+        for result in self.eln_ref.parameters_result:
+            if result.parameter.internal_id == '628cf04d-645d-4794-a0fd-3daabff4b044':
+                result.result_char = round(self.ph_average,2)
+                result.calculated = True
+                if self.ph_average_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == 'fa80a69f-bf0f-4aa3-a9d3-70767e7bf24a':
+                result.result_char = round(self.average_dissolved_silica,2)
+                result.calculated = True
+                if self.average_dissolved_silica_nabl_fine == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '0437ea07-5283-4248-9430-e5d89866d3c5':
+                result.result_char = round(self.average_reduction_alkalinity,2)
+                result.calculated = True
+                if self.average_reduction_alkalinity_nabl_fine == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == 'c87d2fa3-ba0b-4e64-84d1-e3b23f19dafa':
+                result.result_char = round(self.chloride_percent,2)
+                result.calculated = True
+                if self.chloride_percent_nabl_fine == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == 'f605daf3-ffb4-48c2-aa20-fffb1d556c07':
+                result.result_char = round(self.sulphate_percent,2)
+                result.calculated = True
+                if self.sulphate_percent_nabl_fine == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Compacted density
+            if result.parameter.internal_id == '03507018-bb06-4362-a2e7-6d70ec7d8870':
+                result.result_char = round(self.na2O,2)
+                result.calculated = True
+                if self.na2O_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            
+
+            
+            # % void Compacted density
+            if result.parameter.internal_id == '3997903d-8a2e-49fc-baa1-531f0b805cac':
+                result.result_char = round(self.k2O,2)
+                result.calculated = True
+                if self.k2O_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            # % void Loose density
+            if result.parameter.internal_id == '0510b578-b3de-4045-bd55-5f54198e9dc8':
+                result.result_char = round(self.total_alkali_content,2)
+                result.calculated = True
+                if self.total_alkali_content_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+
+
+
+
+
+          
+
+        return {
+                'view_mode': 'form',
+                'res_model': "lerm.eln",
+                'type': 'ir.actions.act_window',
+                'target': 'current',
+                'res_id': self.eln_ref.id,
+                
+            }
 
 
     ph_name = fields.Char("Name",default="pH of 1 % Solution in water")

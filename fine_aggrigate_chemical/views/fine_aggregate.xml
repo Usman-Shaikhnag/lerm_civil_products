@@ -13,6 +13,7 @@
                         <field name="name" readonly="1" nolabel="1"/>
                     </h1>
                 </div>
+                <button type="object" class="oe_highlight" name="prefill_data" string="Prefill Data"/>
                 <group>
                         <field name="srf_id" invisible="1"/>
                         <field name="sample_id" readonly="1"/>
@@ -27,6 +28,80 @@
                           <field name="test_method"/>
                         </tree>
                       </field>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="temprature"></label></td>
+                                    <td><field name="temprature" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="humidity"></label></td>
+                                    <td><field  name="humidity" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+                     <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="week_no"></label></td>
+                                    <td><field name="week_no" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="other_details"></label></td>
+                                    <td><field  name="other_details" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="condition"></label></td>
+                                    <td><field name="condition" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="description_work"></label></td>
+                                    <td><field  name="description_work" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
                     </div>
 
 
@@ -974,6 +1049,33 @@
                           </table>
                       </div> 
                     <group/>
+
+                       <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
+
+
+
+
+                
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
                     
                     
                     
@@ -995,6 +1097,34 @@
                 </sheet>
             </form>
         </field>
+        </record>
+
+
+        <record id="view_fine_aggregate_chemical_prefill_data_form" model="ir.ui.view">
+            <field name="name">chemical.fine.aggregate.prefill.data.form</field>
+            <field name="model">chemical.fine.aggregate.prefill.data</field>
+            <field name="arch" type="xml">
+                <form string="Prefill Data">
+                    <group>
+                        <field name="product_id" readonly="1"/>
+                        <field name="sample_id"/>
+
+                    </group>
+                    <footer>
+                        <button name="prefill_data" string="Prefill Data" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_fine_aggregate_chemical_prefill_data_wizard" model="ir.actions.act_window">
+            <field name="name">Prefill Data</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">chemical.fine.aggregate.prefill.data</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_fine_aggregate_chemical_prefill_data_form"/>
+            <field name="target">new</field>
         </record>
     </data>
 </odoo>

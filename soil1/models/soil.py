@@ -2658,61 +2658,61 @@ class Soil(models.Model):
     
 
 
-    cbr_25_avg_conformity = fields.Selection([
+    cbr_max_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
         ('na', 'NA'),
-    ], string='Conformity',compute="_compute_cbr_25_avg_conformity")
+    ], string='Conformity',compute="_compute_cbr_max_conformity")
 
-    cbr_25_avg_nabl = fields.Selection([
+    cbr_max_nabl = fields.Selection([
         ('pass', 'NABL'),
         ('fail', 'Non-NABL'),
-    ], string='NABL', default='fail',compute="_compute_cbr_25_avg_nabl")
+    ], string='NABL', default='fail',compute="_compute_cbr_max_nabl")
 
 
-    @api.depends('cbr_25_avg','eln_ref','grade')
-    def _compute_cbr_25_avg_conformity(self):
+    @api.depends('cbr_max','eln_ref','grade')
+    def _compute_cbr_max_conformity(self):
         for record in self:
             if not record.eln_ref or not record.eln_ref.conformity:
-                record.cbr_25_avg_conformity = 'na'
+                record.cbr_max_conformity = 'na'
                 continue
-            record.cbr_25_avg_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0423e6c3-4253-42fb-8492-b1feae8e1b8d')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0423e6c3-4253-42fb-8492-b1feae8e1b8d')]).parameter_table
+            record.cbr_max_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')]).parameter_table
             mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
                     req_max = material.req_max
                     # mu_value = line.mu_value
-                    lower = record.cbr_25_avg - record.cbr_25_avg*mu_value
-                    upper = record.cbr_25_avg + record.cbr_25_avg*mu_value
+                    lower = record.cbr_max - record.cbr_max*mu_value
+                    upper = record.cbr_max + record.cbr_max*mu_value
                     if lower >= req_min and upper <= req_max :
-                        record.cbr_25_avg_conformity = 'pass'
+                        record.cbr_max_conformity = 'pass'
                         break
                     else:
-                        record.cbr_25_avg_conformity = 'fail'
+                        record.cbr_max_conformity = 'fail'
 
-    @api.depends('cbr_25_avg','eln_ref','grade')
-    def _compute_cbr_25_avg_nabl(self):
+    @api.depends('cbr_max','eln_ref','grade')
+    def _compute_cbr_max_nabl(self):
         
         for record in self:
             
-            record.cbr_25_avg_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0423e6c3-4253-42fb-8492-b1feae8e1b8d')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0423e6c3-4253-42fb-8492-b1feae8e1b8d')]).parameter_table
+            record.cbr_max_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')]).parameter_table
             
             lab_min = line.lab_min_value
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.cbr_25_avg - record.cbr_25_avg*mu_value
-            upper = record.cbr_25_avg + record.cbr_25_avg*mu_value
+            lower = record.cbr_max - record.cbr_max*mu_value
+            upper = record.cbr_max + record.cbr_max*mu_value
             if lower >= lab_min and upper <= lab_max:
-                record.cbr_25_avg_nabl = 'pass'
+                record.cbr_max_nabl = 'pass'
                 break
             else:
-                record.cbr_25_avg_nabl = 'fail'
+                record.cbr_max_nabl = 'fail'
 
     cbr_5_avg_conformity = fields.Selection([
             ('pass', 'Pass'),
@@ -4095,28 +4095,26 @@ class Soil(models.Model):
                 continue
 
             # California Bearing Test 
+           
+             # California Bearing Test 2.5mm
             if result.parameter.internal_id == '15247gtr-2065-4532-814a-3a4c1e884305':
                 result.calculated = True
-
-             # California Bearing Test 2.5mm
-            if result.parameter.internal_id == '0423e6c3-4253-42fb-8492-b1feae8e1b8d':
-                result.calculated = True
-                result.result_char = round(self.cbr_25_avg,2)
-                if self.cbr_25_avg_nabl == 'pass':
+                result.result_char = round(self.cbr_max,2)
+                if self.cbr_max_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
 
              # California Bearing Test 5mm
-            if result.parameter.internal_id == '775d7276-e9a9-44e6-93d9-b4ee6236298e':
-                result.calculated = True
-                result.result_char = round(self.cbr_5_avg,2)
-                if self.cbr_5_avg_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
+            # if result.parameter.internal_id == '775d7276-e9a9-44e6-93d9-b4ee6236298e':
+            #     result.calculated = True
+            #     result.result_char = round(self.cbr_5_avg,2)
+            #     if self.cbr_5_avg_nabl == 'pass':
+            #         result.nabl_status = 'nabl'
+            #     else:
+            #         result.nabl_status = 'non-nabl'
+            #     continue
 
             # Constant Head
             if result.parameter.internal_id == 'b2a605ac-6eb0-4101-a020-0b6b3f6304db':

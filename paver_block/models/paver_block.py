@@ -24,6 +24,8 @@ class PaverBlock(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
 
+    
+
 
     def prefill_data(self):
         # import wdb; wdb.set_trace()

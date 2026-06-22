@@ -19,6 +19,33 @@ class PrecastKerbMechanical(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     tests = fields.Many2many("mechanical.gypsum.test",string="Tests")
 
+    temprature = fields.Integer("Temperature (°C)", digits=(10,2))
+    humidity = fields.Integer("Humidity (%)", digits=(10,2))
+
+    week_no = fields.Char("Week No")
+
+    other_details = fields.Char("Other Details")
+
+    condition = fields.Char("Condition")
+
+    description_work = fields.Text("Description Of Work")
+
+
+    def prefill_data(self):
+        # import wdb; wdb.set_trace()
+        return {
+            'name': 'Prefill Data',
+            'type': 'ir.actions.act_window',
+            'res_model': 'mechanical.precast.kerb.prefill.data',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+                },
+        }
+
+
 
 
 
@@ -93,10 +120,7 @@ class PrecastKerbMechanical(models.Model):
                 if sample.internal_id == 'klrt1230t-eeb4-4e16-a7fc-7560838410lo':
                     record.dimension_visible = True
 
-    # def open_eln_page(self):
-        # import wdb; wdb.set_trace()
-
-
+  
 
 
     def open_eln_page(self):
@@ -214,6 +238,8 @@ class PrecastKerbMechanical(models.Model):
     water_absorbtion_table = fields.One2many('mech.precast.water.absorbtion.line','parent_id')
 
 
+
+    
    
 
 class PrecastTransverseLine(models.Model):

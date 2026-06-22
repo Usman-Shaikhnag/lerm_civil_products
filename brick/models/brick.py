@@ -16,6 +16,17 @@ class MechanicalBricks(models.Model):
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
 
+    temprature = fields.Integer("Temperature (°C)", digits=(10,2))
+    humidity = fields.Integer("Humidity (%)", digits=(10,2))
+
+    week_no = fields.Char("Week No")
+
+    other_details = fields.Char("Other Details")
+
+    condition = fields.Char("Condition")
+
+    description_work = fields.Text("Description Of Work")
+
     notes_id = fields.One2many('brickfly.notes', 'parent_id', string="Notes")
     
     @api.model

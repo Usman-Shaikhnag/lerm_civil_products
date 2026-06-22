@@ -14,6 +14,7 @@
                         <field name="name" readonly="1" nolabel="1"/>
                     </h1>
                     </group>
+                    <button type="object" class="oe_highlight" name="prefill_data" string="Prefill Data"/>
                     <group>
                         <field name="srf_id" invisible="1"/>
                         <field name="sample_id" readonly="1"/>
@@ -30,6 +31,98 @@
                       </field>
                     </div>
 
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="temprature"></label></td>
+                                    <td><field name="temprature" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="humidity"></label></td>
+                                    <td><field  name="humidity" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+                     <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="week_no"></label></td>
+                                    <td><field name="week_no" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="other_details"></label></td>
+                                    <td><field  name="other_details" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="condition"></label></td>
+                                    <td><field name="condition" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="description_work"></label></td>
+                                    <td><field  name="description_work" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
                     <group  invisible="dimension_visible == False">
                         <h1>
                             <field name="dimension_name" readonly="1" nolabel="1"/>
@@ -42,7 +135,7 @@
                             <tbody>
                                 <tr>
                                     <td style="width:50%;"><label for="length"></label></td>
-                                    <td style="width:50%;"><field name="length"/></td>
+                                    <td style="width:50%;"><field name="length" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -52,7 +145,7 @@
                             <tbody>
                                 <tr>
                                     <td style="width:50%;"><label for="thickness"></label></td>
-                                    <td style="width:50%;"><field name="thickness"/></td>
+                                    <td style="width:50%;"><field name="thickness" class="blue-input"/></td>
                                 </tr>
                               
                             </tbody>
@@ -61,7 +154,7 @@
                             <tbody>
                                 <tr>
                                     <td style="width:50%;"><label for="width"></label></td>
-                                    <td style="width:50%;"><field name="width"/></td>
+                                    <td style="width:50%;"><field name="width" class="blue-input"/></td>
                                 </tr>
                                 
                             </tbody>
@@ -80,11 +173,11 @@
                     <div class="custom_table_borders" style="width: 100%;"  invisible="transverse_visible == False">
                         <field name="transverse_table" nolabel="1">
                         <tree editable="bottom">
-                          <field name="trial_no"/>
-                          <field name="required_load"/>
-                          <field name="observed_test_result"/>
-                          <field name="protocol"/>
-                          <field name="requirement"/>
+                          <!-- <field name="trial_no"/> -->
+                          <field name="required_load" class="blue-input" decoration-info="required_load != 0"/>
+                          <field name="observed_test_result" class="blue-input" decoration-info="observed_test_result != 0"/>
+                          <field name="protocol" class="blue-input" decoration-info="protocol != 0"/>
+                          <field name="requirement" class="blue-input" decoration-info="requirement != 0"/>
                         </tree>
                         </field>
                     </div>
@@ -99,12 +192,12 @@
                     <div class="custom_table_borders" style="width: 100%;"  invisible="water_absorbtion_visible == False">
                         <field name="water_absorbtion_table" nolabel="1">
                         <tree editable="bottom">
-                          <field name="dry_wt_oven"/>
-                          <field name="wt_10_min"/>
-                          <field name="wt_24_hr"/>
-                          <field name="initial_water_absorbtion"/>
-                          <field name="final_water_absorbtion"/>
-                          <field name="protocol"/>
+                          <field name="dry_wt_oven" class="blue-input" decoration-info="dry_wt_oven != 0"/>
+                          <field name="wt_10_min" class="blue-input" decoration-info="wt_10_min != 0"/>
+                          <field name="wt_24_hr" class="blue-input" decoration-info="wt_24_hr != 0"/>
+                          <field name="initial_water_absorbtion" class="blue-input" decoration-info="initial_water_absorbtion != 0"/>
+                          <field name="final_water_absorbtion" class="blue-input" decoration-info="final_water_absorbtion != 0"/>
+                          <field name="protocol" class="blue-input" decoration-info="protocol != 0"/>
                         </tree>
                         </field>
                     </div>
@@ -144,6 +237,33 @@
                 </sheet>
             </form>
         </field>
+        </record>
+
+        <record id="view_kerb_prefill_data_form" model="ir.ui.view">
+            <field name="name">mechanical.precast.kerb.prefill.data.form</field>
+            <field name="model">mechanical.precast.kerb.prefill.data</field>
+            <field name="arch" type="xml">
+                <form string="Prefill Data">
+                    <group>
+                        <field name="product_id" readonly="1"/>
+                        <field name="sample_id"/>
+
+                    </group>
+                    <footer>
+                        <button name="prefill_data" string="Prefill Data" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_kerb_prefill_data_wizard" model="ir.actions.act_window">
+            <field name="name">Prefill Data</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mechanical.precast.kerb.prefill.data</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_kerb_prefill_data_form"/>
+            <field name="target">new</field>
         </record>
     </data>
 </odoo>

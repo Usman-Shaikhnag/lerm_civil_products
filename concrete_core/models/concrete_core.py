@@ -18,6 +18,17 @@ class ConcreteCore(models.Model):
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
     sample_id = fields.Many2one('lerm.srf.sample',string='Sample')
 
+    temprature = fields.Integer("Temperature (°C)", digits=(10,2))
+    humidity = fields.Integer("Humidity (%)", digits=(10,2))
+
+    week_no = fields.Char("Week No")
+
+    other_details = fields.Char("Other Details")
+
+    condition = fields.Char("Condition")
+
+    description_work = fields.Text("Description Of Work")
+
 
 
     

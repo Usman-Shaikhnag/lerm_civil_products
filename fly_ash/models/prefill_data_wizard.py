@@ -4,7 +4,7 @@ from odoo.exceptions import UserError
 
 
 class FlyAshPrefillWizard(models.TransientModel):
-    _name = 'mech.flyash.prefill.data'
+    _name = 'mechanical.flyasch.normalconsistency.prefill.data'
     _description = 'Prefill Data'
 
     product_id = fields.Many2one('product.template',string="Product")

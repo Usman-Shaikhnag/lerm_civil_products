@@ -22,6 +22,11 @@ class AacBlockMechanical(models.Model):
     tests = fields.Many2many("mechanical.gypsum.test",string="Tests")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
+    temprature = fields.Integer("Temperature (°C)", digits=(10,2))
+    humidity = fields.Integer("Humidity (%)", digits=(10,2))
+
+    condition = fields.Char("Condition")
+
     @api.depends("eln_ref")
     def _compute_size_id(self):
         for record in self:

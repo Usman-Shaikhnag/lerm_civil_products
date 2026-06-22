@@ -843,12 +843,12 @@
 
 					<!-- California Bearing Ratio -->
 
-					<t t-set="show_cbr25" t-value="data.cbr_25_avg_nabl == 'pass' and nabl or (data.cbr_25_avg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+					<!-- <t t-set="show_cbr25" t-value="data.cbr_25_avg_nabl == 'pass' and nabl or (data.cbr_25_avg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
 					
-					<t t-set="show_cbr5" t-value="data.cbr_5_avg_nabl == 'pass' and nabl or (data.cbr_5_avg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+					<t t-set="show_cbr5" t-value="data.cbr_5_avg_nabl == 'pass' and nabl or (data.cbr_5_avg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/> -->
 					
 					<!-- 🔹 Step 2: Rowspan calculation -->
-					<t t-set="rowspan_count" t-value="1 + int(show_cbr25) + int(show_cbr5)"/>
+					<!-- <t t-set="rowspan_count" t-value="1 + int(show_cbr25) + int(show_cbr5)"/>
 
 
 					<tr t-if="data.cbr_visible and (show_cbr25 or show_cbr5)">
@@ -928,7 +928,51 @@
                         </t>
                      </td>
 
-                    </tr>
+                    </tr> -->
+
+					<tr t-if="data.cbr_visible and (data.cbr_max_nabl == 'pass' and nabl or (data.cbr_max_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+									<t t-set="cbr" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','15247gtr-2065-4532-814a-3a4c1e884305')])"/>
+									
+									<td style="text-align: center;">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td>
+										<span t-esc="cbr.parameter_name"/>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="cbr.unit.name"/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="cbr.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+									<td style="text-align: center;font-weight:bold;">
+										<span>
+											<span t-field="data.cbr_max" t-options='{"widget": "float", "precision": 2}'/>
+										</span>									
+									</td>
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="cbr.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
 
 
 
@@ -1414,7 +1458,7 @@
 				 <img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.non_nabl_header.decode('utf-8')"
                           style="width:100%; height:150px; object-fit:contain;"/>
               </div> -->
-			  <div t-if="(eln.sample_id.scope == 'nabl' and nabl) or fromEln"
+			  <!-- <div t-if="(eln.sample_id.scope == 'nabl' and nabl) or fromEln"
 						class="col-12 imageContainer"
 						style="text-align:center; margin-bottom:5px;">
 						
@@ -1424,17 +1468,16 @@
 					
 					<div t-if="(eln.sample_id.scope == 'non_nabl' or not nabl) and not fromEln" class="col-12 imageContainer"
 						style="text-align:center; margin-bottom:5px;" >
-						<!-- <img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.non_nabl_header.decode('utf-8')"/> -->
 						 <img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.non_nabl_header.decode('utf-8')"
                           style="width:100%; height:150px; object-fit:contain;"/>
-					</div>
+					</div> -->
 
 	               <div style="width:100%; text-align:center; vertical-align:middle; padding: 6px;">
 					   <h5><strong>Annexure</strong></h5>
 					</div>
 
 
-				    <div style="width:100%;">
+				    <!-- <div style="width:100%;">
 							<table style="width:100%; border-collapse:collapse; border:1px solid #000; font-size:12px;">
 								<tr>
 							   	  <td colspan="6" style="border:1px solid black; padding:4px;">
@@ -1445,7 +1488,7 @@
 								  </td>	
 							    </tr>			
 							</table>
-					</div>
+					</div> -->
 
             </div>
 
@@ -1543,18 +1586,18 @@
                    <img t-att-src="'data:image/png;base64,%s' % graph_heavy" style="max-width:100%; height:auto;"/>
                   </div>
 				</t>
-               <t t-set="show_cbr25" t-value="data.cbr_25_avg_nabl == 'pass' and nabl or (data.cbr_25_avg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+               <!-- <t t-set="show_cbr25" t-value="data.cbr_25_avg_nabl == 'pass' and nabl or (data.cbr_25_avg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
 					
-					<t t-set="show_cbr5" t-value="data.cbr_5_avg_nabl == 'pass' and nabl or (data.cbr_5_avg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+					<t t-set="show_cbr5" t-value="data.cbr_5_avg_nabl == 'pass' and nabl or (data.cbr_5_avg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/> -->
 
 
-				<t t-if="data.cbr_visible and (show_cbr25 or show_cbr5)">
+				<t t-if="data.cbr_visible ">
                    <div style="text-align:center; margin-top:20px;">
                    <img t-att-src="'data:image/png;base64,%s' % graph_cbr" style="max-width:100%; height:auto;"/>
                   </div>
 				</t>
 				
-				<t t-if="data.cbr_visible and (show_cbr25 or show_cbr5)">
+				<t t-if="data.cbr_visible ">
 						<table class="table table-sm o_form_table table-bordered w-100"
 							style="border:2px solid black; border-collapse:collapse;">
 
@@ -1631,17 +1674,17 @@
 				</t>
 
 
-                <t t-if="data.direct_shear_visible and (show_angle_phi or show_cohesion)">
-				  <div class="d-flex gap-3" >
+                 <t t-if="data.direct_shear_visible and (show_angle_phi or show_cohesion)">
+				  <!-- <div class="d-flex gap-3" > -->
 
                         <table class="table table-sm o_form_table table-bordered w-100"
 							style="border:2px solid black; border-collapse:collapse;">
                             <tbody>
                                 <tr>
-                                    <td><label for="angle_phi"/></td>
+                                    <td>Angle of Internal Friction (φ) (deg)</td>
                                     <td>
                                         <div class="d-flex align-items-center gap-2">
-											<span t-esc="data.angle_phi" t-options='{"widget": "float", "precision": 2}'/>
+											<span t-esc="data.angle_phi" t-options='{"widget": "float", "precision": 1}'/>
                                             <span>Ton/m²</span>
                                         </div>
                                     </td>
@@ -1653,11 +1696,10 @@
 							style="border:2px solid black; border-collapse:collapse;">
                             <tbody>
                                 <tr>
-                                    <td><label for="cohesion"/></td>
+                                    <td>Cohesion (c)</td>
                                     <td>
                                         <div class="d-flex align-items-center gap-2">
-                                            <field name="cohesion"/>
-											<span t-esc="data.angle_phi" t-options='{"widget": "float", "precision": 2}'/>
+											<span t-esc="data.angle_phi" t-options='{"widget": "float", "precision": 1}'/>
                                             <span>Ton/m²</span>
                                         </div>
                                     </td>
@@ -1665,18 +1707,18 @@
                             </tbody>
                         </table>
 
-                    </div>
+                    <!-- </div> -->
 
-                    <div class="d-flex gap-3">
+                    <!-- <div class="d-flex gap-3"> -->
 
                         <table class="table table-sm o_form_table table-bordered w-100"
 							style="border:2px solid black; border-collapse:collapse;">
                             <tbody>
                                 <tr>
-                                    <td><label for="angle_phi_kg_cm2"/></td>
+                                    <td>Angle of Internal Friction (φ) (deg)</td>
                                     <td>
                                         <div class="d-flex align-items-center gap-2">
-                                            <field name="angle_phi_kg_cm2"/>
+											<span t-esc="data.angle_phi_kg_cm2" t-options='{"widget": "float", "precision": 1}'/>
                                             <span>Kg/cm²</span>
                                         </div>
                                     </td>
@@ -1688,10 +1730,10 @@
 							style="border:2px solid black; border-collapse:collapse;" >
                             <tbody>
                                 <tr>
-                                    <td><label for="cohesion_kg_cm2"/></td>
+                                    <td>Cohesion (c)</td>
                                     <td>
                                         <div class="d-flex align-items-center gap-2">
-                                            <field name="cohesion_kg_cm2"/>
+											<span t-esc="data.cohesion_kg_cm2" t-options='{"widget": "float", "precision": 1}'/>
                                             <span>Kg/cm²</span>
                                         </div>
                                     </td>
@@ -1699,7 +1741,7 @@
                             </tbody>
                         </table>
 
-                    </div>
+                    <!-- </div> -->
 
 				</t>
 
