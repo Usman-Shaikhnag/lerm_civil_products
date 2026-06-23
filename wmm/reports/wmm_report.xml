@@ -1386,6 +1386,112 @@
 
 				</div>
 
+
+				<t t-if="graphliquid">
+                   <div style="text-align:center; margin-top:20px;" t-if="data.liquid_limit_visible and data.liquid_limit_nabl == 'pass' and nabl or (data.liquid_limit_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl">
+                       <img t-att-src="'data:image/png;base64,%s' % graphliquid" style="max-width:100%; height:auto;"/>
+                  </div>
+				</t>
+
+				<t t-if="graphHeavy">
+                   <div style="text-align:center; margin-top:20px;" t-if="(data.heavy_visible and (data.max_dry_density_nabl == 'pass' and nabl or (data.max_dry_density_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)) or (data.heavy_visible and (data.omc_nabl == 'pass' and nabl or (data.omc_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl))">
+                   <img t-att-src="'data:image/png;base64,%s' % graphHeavy" style="max-width:100%; height:auto;"/>
+                 
+
+				  
+                      <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not heavy_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="max_dry_density">Max Dry Density </label></td>
+                                <td><span t-esc="data.max_dry_density" t-options='{"widget": "float", "precision": 2}'/><span> g/cc</span></td>
+                               
+                            </tr>
+							 <tr>
+                                 <td><label for="omc">Optimum Moisture Content </label></td>
+                                <td><span t-esc="data.omc" t-options='{"widget": "float", "precision": 2}'/><span> %</span></td>
+                             </tr>
+                        </tbody>
+                    </table>
+					 </div>
+				</t>
+
+
+				<t t-if="graphlight">
+                   <div style="text-align:center; margin-top:20px;" t-if="(data.omc_visible and (data.max_dry_density1_nabl == 'pass' and nabl or (data.max_dry_density1_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)) or (data.omc_visible and (data.omc1_nabl == 'pass' and nabl or (data.omc1_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl))">
+                   <img t-att-src="'data:image/png;base64,%s' % graphlight" style="max-width:100%; height:auto;"/>
+                 
+
+				  
+                      <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not omc_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="max_dry_density1">Max Dry Density </label></td>
+                                <td><span t-esc="data.max_dry_density1" t-options='{"widget": "float", "precision": 2}'/><span> g/cc</span></td>
+                               
+                            </tr>
+							 <tr>
+                                 <td><label for="omc1">Optimum Moisture Content </label></td>
+                                <td><span t-esc="data.omc1" t-options='{"widget": "float", "precision": 2}'/><span> %</span></td>
+                             </tr>
+                        </tbody>
+                    </table>
+					 </div>
+				</t>
+
+
+				<t t-if="graphcbr">
+                   <div style="text-align:center; margin-top:20px;" t-if="data.soil_visible and (data.cbr_25_avg_nabl == 'pass' and nabl or (data.cbr_25_avg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+                   <img t-att-src="'data:image/png;base64,%s' % graphcbr" style="max-width:100%; height:auto;"/>
+
+				   <table class="table table-sm o_form_table table-bordered custom_table_borders w-100" invisible="not soil_visible " >
+                            <tbody>
+                                <tr>
+                                    <td rowspan="2" style="text-align:center;font-weight:bold;vertical-align:middle;"><span>Mould No</span></td>
+                                    <td colspan="2" style="text-align:center;font-weight:bold;"><span>Corrected Unit Load in kg    (from graph)</span></td>
+                                    <td colspan="2" style="text-align:center;font-weight:bold;"><span>CBR%</span></td>
+                                    <td rowspan="2" style="text-align:center;font-weight:bold;vertical-align:middle;"><span>CRB % reported</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center;font-weight:bold;"><span>2.5 mm</span></td>
+                                    <td style="text-align:center;font-weight:bold;"><span>5.0 mm</span></td>
+                                    <td style="text-align:center;font-weight:bold;"><span>2.5 mm</span></td>
+                                    <td style="text-align:center;font-weight:bold;"><span>5.0 mm</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center;font-weight:bold;"><span>1</span></td>
+                                    <td style="text-align:center;"><span t-esc="data.corrected_load_25_s1"/></td>
+                                    <td style="text-align:center;"><span t-esc="data.corrected_load_5_s1"/></td>
+                                    <td style="text-align:center;"><span t-esc="data.cbr_25_s1" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-esc="data.cbr_5_s1" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;vertical-align:middle;" rowspan="3"><span t-esc="data.cbr_25_avg" t-options='{"widget": "float", "precision": 2}'/></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center;font-weight:bold;"><span>2</span></td>
+                                    <td style="text-align:center;"><span t-esc="data.corrected_load_25_s2"/></td>
+                                    <td style="text-align:center;"><span t-esc="data.corrected_load_5_s2"/></td>
+                                    <td style="text-align:center;"><span t-esc="data.cbr_25_s2" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-esc="data.cbr_5_s2" t-options='{"widget": "float", "precision": 2}'/></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center;font-weight:bold;"><span>3</span></td>
+                                    <td style="text-align:center;"><span t-esc="data.corrected_load_25_s3"/></td>
+                                    <td style="text-align:center;"><span t-esc="data.corrected_load_5_s3"/></td>
+                                    <td style="text-align:center;"><span t-esc="data.cbr_25_s3" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-esc="data.cbr_5_s3" t-options='{"widget": "float", "precision": 2}'/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+							</div>
+
+                  
+				</t>
+
+
+
+				
+
+
+
 					
 
 					

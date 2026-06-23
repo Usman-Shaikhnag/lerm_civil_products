@@ -1493,214 +1493,214 @@ class WmmMechanical(models.Model):
 
 
 
-    # graph_image_liquid = fields.Binary("Line Chart", compute="_compute_graph_image_liquid", store=True)
+    graph_image_liquid = fields.Binary("Line Chart", compute="_compute_graph_image_liquid", store=True)
 
-    # show_liquid_graph = fields.Boolean(string="Show Liquid Limit Graph")
+    show_liquid_graph = fields.Boolean(string="Show Liquid Limit Graph")
 
 
-    # def generate_line_chart_liquid(self):
+    def generate_line_chart_liquid(self):
 
-    #   x_value = []
-    #   y_value = []
+      x_value = []
+      y_value = []
 
-    #   for line in self.liquid_child_liness:
-    #     if line.blwo_no1 and line.moisture_content is not None:
-    #         x_value.append(float(line.blwo_no1))
-    #         y_value.append(float(line.moisture_content))
+      for line in self.liquid_child_liness:
+        if line.blwo_no1 and line.moisture_content is not None:
+            x_value.append(float(line.blwo_no1))
+            y_value.append(float(line.moisture_content))
 
-    #   if len(x_value) < 2:
-    #     return False
+      if len(x_value) < 2:
+        return False
 
-    # # Sort data
-    #   data = sorted(zip(x_value, y_value), key=lambda x: x[0])
-    #   x_value = [d[0] for d in data]
-    #   y_value = [d[1] for d in data]
+    # Sort data
+      data = sorted(zip(x_value, y_value), key=lambda x: x[0])
+      x_value = [d[0] for d in data]
+      y_value = [d[1] for d in data]
 
-    # # ----------------------------------
-    # # Regression: w = a log(N) + b
-    # # ----------------------------------
-    #   x_log = [math.log10(x) for x in x_value]
+    # ----------------------------------
+    # Regression: w = a log(N) + b
+    # ----------------------------------
+      x_log = [math.log10(x) for x in x_value]
 
-    #   n = len(x_log)
+      n = len(x_log)
 
-    #   sum_x = sum(x_log)
-    #   sum_y = sum(y_value)
-    #   sum_xy = sum(x * y for x, y in zip(x_log, y_value))
-    #   sum_x2 = sum(x * x for x in x_log)
+      sum_x = sum(x_log)
+      sum_y = sum(y_value)
+      sum_xy = sum(x * y for x, y in zip(x_log, y_value))
+      sum_x2 = sum(x * x for x in x_log)
 
-    #   denominator = n * sum_x2 - sum_x ** 2
+      denominator = n * sum_x2 - sum_x ** 2
 
-    #   if denominator == 0:
-    #     return False
+      if denominator == 0:
+        return False
 
-    #   a = (n * sum_xy - sum_x * sum_y) / denominator
-    #   b = (sum_y - a * sum_x) / n
+      a = (n * sum_xy - sum_x * sum_y) / denominator
+      b = (sum_y - a * sum_x) / n
 
-    #   # LL at 25 blows
-    #   ll_value = a * math.log10(25) + b
+      # LL at 25 blows
+      ll_value = a * math.log10(25) + b
 
-    #   # ----------------------------------
-    #   # Create smooth regression line
-    #   # ----------------------------------
-    #   x_fit = np.linspace(min(x_value), max(x_value), 500)
-    #   y_fit = [a * math.log10(x) + b for x in x_fit]
+      # ----------------------------------
+      # Create smooth regression line
+      # ----------------------------------
+      x_fit = np.linspace(min(x_value), max(x_value), 500)
+      y_fit = [a * math.log10(x) + b for x in x_fit]
 
-    # # ----------------------------------
-    # # Plot
-    # # ----------------------------------
-    #   fig, ax = plt.subplots(figsize=(10, 4))
+    # ----------------------------------
+    # Plot
+    # ----------------------------------
+      fig, ax = plt.subplots(figsize=(10, 4))
 
-    #   ax.set_xscale('log')
+      ax.set_xscale('log')
 
-    # # Regression line
-    #   ax.plot(
-    #     x_fit,
-    #     y_fit,
-    #     color='blue',
-    #     linewidth=2,
-    #     label='Flow Curve'
-    # )
+    # Regression line
+      ax.plot(
+        x_fit,
+        y_fit,
+        color='blue',
+        linewidth=2,
+        label='Flow Curve'
+    )
 
-    # # Actual points
-    #   ax.scatter(
-    #     x_value,
-    #     y_value,
-    #     color='red',
-    #     edgecolors='black',
-    #     s=80,
-    #     zorder=5,
-    #     label='Test Points'
-    # )
+    # Actual points
+      ax.scatter(
+        x_value,
+        y_value,
+        color='red',
+        edgecolors='black',
+        s=80,
+        zorder=5,
+        label='Test Points'
+    )
 
-    # # ----------------------------------
-    # # LL Marker
-    # # ----------------------------------
-    #   ax.axvline(
-    #     x=25,
-    #     color='green',
-    #     linestyle='--',
-    #     linewidth=1.2
-    # )
+    # ----------------------------------
+    # LL Marker
+    # ----------------------------------
+      ax.axvline(
+        x=25,
+        color='green',
+        linestyle='--',
+        linewidth=1.2
+    )
 
-    #   ax.axhline(
-    #     y=ll_value,
-    #     color='green',
-    #     linestyle='--',
-    #     linewidth=1.2
-    # )
+      ax.axhline(
+        y=ll_value,
+        color='green',
+        linestyle='--',
+        linewidth=1.2
+    )
 
-    #   ax.scatter(
-    #     [25],
-    #     [ll_value],
-    #     color='green',
-    #     s=120,
-    #     zorder=10
-    # )
+      ax.scatter(
+        [25],
+        [ll_value],
+        color='green',
+        s=120,
+        zorder=10
+    )
 
-    #   ax.annotate(
-    #     f'LL = {ll_value:.2f}%',
-    #     xy=(25, ll_value),
-    #     xytext=(26, ll_value + 2),
-    #     color='green',
-    #     fontsize=12,
-    #     fontweight='bold'
-    # )
+      ax.annotate(
+        f'LL = {ll_value:.2f}%',
+        xy=(25, ll_value),
+        xytext=(26, ll_value + 2),
+        color='green',
+        fontsize=12,
+        fontweight='bold'
+    )
 
-    # # ----------------------------------
-    # # Labels
-    # # ----------------------------------
-    #   ax.set_title(
-    #     'LIQUID LIMIT',
-    #     fontsize=18,
-    #     fontweight='bold'
-    # )
+    # ----------------------------------
+    # Labels
+    # ----------------------------------
+      ax.set_title(
+        'LIQUID LIMIT',
+        fontsize=18,
+        fontweight='bold'
+    )
 
-    #   ax.set_xlabel(
-    #     'Number of Blows (Log Scale)',
-    #     fontsize=12
-    # )
+      ax.set_xlabel(
+        'Number of Blows (Log Scale)',
+        fontsize=12
+    )
 
-    #   ax.set_ylabel(
-    #     'Water Content (%)',
-    #     fontsize=12
-    # )
+      ax.set_ylabel(
+        'Water Content (%)',
+        fontsize=12
+    )
 
-    # # ----------------------------------
-    # # Limits
-    # # ----------------------------------
-    #   ax.set_xlim(
-    #     min(x_value) * 0.8,
-    #     max(x_value) * 1.2
-    # )
+    # ----------------------------------
+    # Limits
+    # ----------------------------------
+      ax.set_xlim(
+        min(x_value) * 0.8,
+        max(x_value) * 1.2
+    )
 
-    #   y_min = min(y_value)
-    #   y_max = max(y_value)
+      y_min = min(y_value)
+      y_max = max(y_value)
 
-    #   ax.set_ylim(
-    #     max(0, y_min - 5),
-    #     ((int(y_max / 10) + 1) * 10)
-    # )
+      ax.set_ylim(
+        max(0, y_min - 5),
+        ((int(y_max / 10) + 1) * 10)
+    )
 
-    # # ----------------------------------
-    # # Grid
-    # # ----------------------------------
-    #   ax.xaxis.set_major_locator(LogLocator(base=10))
-    #   ax.xaxis.set_minor_locator(
-    #     LogLocator(
-    #         base=10,
-    #         subs=np.arange(2, 10) * 0.1
-    #     )
-    # )
+    # ----------------------------------
+    # Grid
+    # ----------------------------------
+      ax.xaxis.set_major_locator(LogLocator(base=10))
+      ax.xaxis.set_minor_locator(
+        LogLocator(
+            base=10,
+            subs=np.arange(2, 10) * 0.1
+        )
+    )
 
-    #   ax.yaxis.set_minor_locator(MultipleLocator(1))
+      ax.yaxis.set_minor_locator(MultipleLocator(1))
 
-    #   ax.grid(
-    #     which='major',
-    #     linestyle='-',
-    #     linewidth=0.5,
-    #     alpha=0.7
-    # )
+      ax.grid(
+        which='major',
+        linestyle='-',
+        linewidth=0.5,
+        alpha=0.7
+    )
 
-    #   ax.grid(
-    #     which='minor',
-    #     linestyle='--',
-    #     linewidth=0.3,
-    #     alpha=0.5
-    # )
+      ax.grid(
+        which='minor',
+        linestyle='--',
+        linewidth=0.3,
+        alpha=0.5
+    )
 
-    #   ax.legend()
+      ax.legend()
 
-    #   plt.tight_layout()
+      plt.tight_layout()
 
-    #   buffer = io.BytesIO()
-    #   plt.savefig(
-    #     buffer,
-    #     format='png',
-    #     dpi=100,
-    #     bbox_inches='tight'
-    # )
+      buffer = io.BytesIO()
+      plt.savefig(
+        buffer,
+        format='png',
+        dpi=100,
+        bbox_inches='tight'
+    )
 
-    #   plt.close()
+      plt.close()
 
-    #   buffer.seek(0)
+      buffer.seek(0)
 
-    #   return base64.b64encode(
-    #     buffer.read()
-    # ).decode('utf-8')
+      return base64.b64encode(
+        buffer.read()
+    ).decode('utf-8')
 
 
         
        
     
 
-    # @api.depends('liquid_child_liness')
-    # def _compute_graph_image_liquid(self):
-    #     try:
-    #         for record in self:
-    #             chart_image_liquid = record.generate_line_chart_liquid()
-    #             record.graph_image_liquid = chart_image_liquid
-    #     except:
-    #         pass 
+    @api.depends('liquid_child_liness')
+    def _compute_graph_image_liquid(self):
+        try:
+            for record in self:
+                chart_image_liquid = record.generate_line_chart_liquid()
+                record.graph_image_liquid = chart_image_liquid
+        except:
+            pass 
 
 
       # Plastic Limit
