@@ -331,7 +331,7 @@
                                 <field name='largest_gap' width="120"/>
                                 
                                 <field name='permissible_gap' width="150"/>
-                                <field name='maximum_gap_observed' width="120"/>
+                                <!-- <field name='maximum_gap_observed' width="120"/> -->
                             </tree> 
                          </field>   
                     </div>
@@ -340,24 +340,24 @@
                     <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="perpendicularity_visible == False" style="white-space:nowrap;">
                         <tbody>
                             <tr>
-                                <td><label class="fw-bold" for="maximum_gap_observed">Maximum Gap Observed (mm)</label></td>
-                                  <td><field name="maximum_gap_observed"/><span>  mm</span></td>
+                                <td><label class="fw-bold" for="permissible_average">Maximum Gap Observed (mm)</label></td>
+                                  <td><field name="permissible_average"/><span>  mm</span></td>
                             </tr>
                             <tr>
-                                <td><label class="fw-bold" for="maximum_gap_observed_confirmity">Conformity</label></td>
+                                <td><label class="fw-bold" for="permissible_average_confirmity">Conformity</label></td>
                                 <td>
-                                    <field name="maximum_gap_observed_confirmity"
-                                        decoration-success="maximum_gap_observed_confirmity == 'pass'" 
-                                        decoration-danger="maximum_gap_observed_confirmity == 'fail'" 
+                                    <field name="permissible_average_confirmity"
+                                        decoration-success="permissible_average_confirmity == 'pass'" 
+                                        decoration-danger="permissible_average_confirmity == 'fail'" 
                                         readonly="1"/>
                                 </td>
                             </tr>
                             <tr>
-                               <td><label class="fw-bold" for="maximum_gap_observed_nabl">NABL</label></td>
+                               <td><label class="fw-bold" for="permissible_average_nabl">NABL</label></td>
                                 <td>
-                                    <field name="maximum_gap_observed_nabl"
-                                        decoration-success="maximum_gap_observed_nabl == 'pass'" 
-                                        decoration-danger="maximum_gap_observed_nabl == 'fail'"/>
+                                    <field name="permissible_average_nabl"
+                                        decoration-success="permissible_average_nabl == 'pass'" 
+                                        decoration-danger="permissible_average_nabl == 'fail'"/>
                                 </td>
                             </tr>
                         </tbody>
