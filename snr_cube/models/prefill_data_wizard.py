@@ -4,7 +4,7 @@ from odoo.exceptions import UserError
 
 
 class ProductGradeWizard(models.TransientModel):
-    _name = 'concrete.cube.prefill.data'
+    _name = 'snr.cube.prefill.data'
     _description = 'Prefill Data'
 
     product_id = fields.Many2one('product.template',string="Product")
@@ -13,8 +13,8 @@ class ProductGradeWizard(models.TransientModel):
 
 
     def prefill_data(self):
-        current_product = self.env['mechanical.concrete.cube'].sudo().browse(self._context['active_id'])
-        copy_product = self.env['mechanical.concrete.cube'].sudo().search([
+        current_product = self.env['snr.cube'].sudo().browse(self._context['active_id'])
+        copy_product = self.env['snr.cube'].sudo().search([
             ('eln_ref.sample_id.id', '=', self.sample_id.id)
         ], limit=1)
 

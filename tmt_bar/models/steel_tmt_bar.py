@@ -44,12 +44,24 @@ class SteelTmtBarLine(models.Model):
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     tests = fields.Many2many("mechanical.tmt.test",string="Tests")
 
+    temprature = fields.Integer("Temperature (°C)", digits=(10,2))
+    humidity = fields.Integer("Humidity (%)", digits=(10,2))
+
+    week_no = fields.Char("Week No")
+
+    other_details = fields.Char("Other Details")
+
+    condition = fields.Char("Condition")
+
+    description_work = fields.Text("Description Of Work")
+
 
 
     # remark
 
     notes_id = fields.One2many('steeltmtbar.notes', 'parent_id', string="Notes")
-    
+
+
     @api.model
     def default_get(self, fields):
         res = super(SteelTmtBarLine, self).default_get(fields)
@@ -57,11 +69,11 @@ class SteelTmtBarLine(models.Model):
         default_notes = [
             (0, 0, {
                 'sr_no': 'a',
-                'notes': 'The report shall not be reproduced in fullor partially without written approval of the laboratory HOD/CEO/Maganement.',
+                'notes': 'The report shall not be reproduced in full or partially without written approval of the laboratory HOD/CEO/Maganement.',
             }),
             (0, 0, {
                 'sr_no': 'b',
-                'notes': 'ampling is not done by us unless mentioned otherwide.',
+                'notes': 'Sampling is not done by us unless mentioned otherwide.',
             }),
             (0, 0, {
                 'sr_no': 'c',
@@ -78,7 +90,7 @@ class SteelTmtBarLine(models.Model):
             }),
              (0, 0, {
                 'sr_no': 'f',
-                'notes': 'Alldisputed are subject to Raipur jurisdiction 7 days correction to this report invalidates this report.',
+                'notes': 'All disputed are subject to Raipur jurisdiction 7 days correction to this report invalidates this report.',
             }),
 
              (0, 0, {
@@ -90,7 +102,7 @@ class SteelTmtBarLine(models.Model):
         res['notes_id'] = default_notes
         return res
     
-
+    
     # fracture_visible = fields.Boolean("Fracture visible",compute="_compute_visible",store=True)
     # bend_visible = fields.Boolean("Bend visible",compute="_compute_visible",store=True)
     # rebend_visible = fields.Boolean("Rebend visible",compute="_compute_visible",store=True)

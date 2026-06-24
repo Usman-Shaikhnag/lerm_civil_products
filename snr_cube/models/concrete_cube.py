@@ -25,8 +25,19 @@ class MechanicalSNRCube(models.Model):
 
     sample_id = fields.Many2one('lerm.srf.sample',string='Sample')
 
+    temprature = fields.Integer("Temperature (°C)", digits=(10,2))
+    humidity = fields.Integer("Humidity (%)", digits=(10,2))
 
-    cube_name = fields.Char("Name",default=" Cube")
+    week_no = fields.Char("Week No")
+
+    other_details = fields.Char("Other Details")
+
+    condition = fields.Char("Condition")
+
+    description_work = fields.Text("Description Of Work")
+
+
+    cube_name = fields.Char("Name",default=" SNR Cube")
     cube_visible = fields.Boolean("Chequered Visible",compute="_compute_visible")   
 
     def action_calculate_avg_strength(self):
@@ -55,7 +66,7 @@ class MechanicalSNRCube(models.Model):
         return {
             'name': 'Prefill Data',
             'type': 'ir.actions.act_window',
-            'res_model': 'concrete.cube.prefill.data',
+            'res_model': 'snr.cube.prefill.data',
             'view_mode': 'form',
             'target': 'new',
             'context': {

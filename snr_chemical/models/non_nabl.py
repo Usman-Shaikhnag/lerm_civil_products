@@ -21,6 +21,21 @@ class SNRNONNABL(models.Model):
             self.ids,   # ✅ VERY IMPORTANT
             data={'nabl': False}
         )
+
+    def prefill_data(self):
+        # import wdb; wdb.set_trace()
+        return {
+            'name': 'Prefill Data',
+            'type': 'ir.actions.act_window',
+            'res_model': 'snr.chemical.prefill.data',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+                },
+        }
+
     notes_id = fields.One2many('snr.chemical.notes', 'parent_id', string="Notes")
     
     @api.model

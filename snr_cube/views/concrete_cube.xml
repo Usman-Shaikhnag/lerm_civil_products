@@ -20,6 +20,90 @@
                         </group>
 
 
+                         <div class="custom_table_borders" style="margin-top: 15px;">
+                            <field name="sample_parameters" nolabel="1">
+                                <tree>
+                                    <field name="parameter_name"/>
+                                    <field name="test_method"/>
+                                </tree>
+                            </field>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="temprature"></label></td>
+                                    <td><field name="temprature" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="humidity"></label></td>
+                                    <td><field  name="humidity" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+                     <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="week_no"></label></td>
+                                    <td><field name="week_no" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="other_details"></label></td>
+                                    <td><field  name="other_details" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="condition"></label></td>
+                                    <td><field name="condition" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="description_work"></label></td>
+                                    <td><field  name="description_work" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+
                          <style>
                         .blue-input input {
                             background-color: #d8ecff !important;   /* हलका Blue background */
@@ -49,7 +133,7 @@
                             </field>
                         </div>
 
-                        <group  invisible="cube_visible == False">
+                        <group  invisible="cube_visible == False" style="white-space: nowrap; width:70%;">
                         <h1>
                             <field name="cube_name" readonly="1" nolabel="1"/>
                             <field name="cube_visible" invisible="1"/>
@@ -455,9 +539,9 @@
             </field>
         </record>
 
-        <record id="view_cube_prefill_data_form" model="ir.ui.view">
-            <field name="name">concrete.cube.prefill.data.form</field>
-            <field name="model">concrete.cube.prefill.data</field>
+        <record id="view_cube_snr_prefill_data_form" model="ir.ui.view">
+            <field name="name">snr.cube.prefill.data.form</field>
+            <field name="model">snr.cube.prefill.data</field>
             <field name="arch" type="xml">
                 <form string="Prefill Data">
                     <group>
@@ -473,12 +557,12 @@
             </field>
         </record>
 
-        <record id="action_cube_prefill_data_wizard" model="ir.actions.act_window">
+        <record id="action_cube_snr_prefill_data_wizard" model="ir.actions.act_window">
             <field name="name">Prefill Data</field>
             <field name="type">ir.actions.act_window</field>
-            <field name="res_model">concrete.cube.prefill.data</field>
+            <field name="res_model">snr.cube.prefill.data</field>
             <field name="view_mode">form</field>
-            <field name="view_id" ref="view_cube_prefill_data_form"/>
+            <field name="view_id" ref="view_cube_snr_prefill_data_form"/>
             <field name="target">new</field>
         </record>
 
