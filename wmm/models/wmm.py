@@ -698,6 +698,163 @@ class WmmMechanical(models.Model):
                         record.clay_lumps_percent_nabl = 'fail'
 
 
+    # Deleterious Material (Fine Silt & Fine Dust)
+    
+    name_silt_dust = fields.Char("Name",default="Deleterious Material (Fine Silt & Fine Dust)")
+    silt_dust_visible = fields.Boolean("Deleterious Material (Fine Silt & Fine Dust) Visible",compute="_compute_visible")
+
+    silt_dust_ids = fields.One2many('wmm.deleterious.silt.dust.line', 'parent_id', string="Trials")
+
+    silt_dust_percent = fields.Float(
+        "Average Deleterious Material Fine Silt and Fine Dust (%)",
+        compute="_compute_silt_dust_percent",
+        store=True
+    )
+
+    @api.depends('silt_dust_ids.percent')
+    def _compute_silt_dust_percent(self):
+        for rec in self:
+            lines = rec.silt_dust_ids
+
+            if lines:
+                values = lines.mapped('percent')
+                rec.silt_dust_percent = sum(values) / len(values)
+            else:
+                rec.silt_dust_percent = 0.0
+
+
+    silt_dust_percent_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_silt_dust_percent_conformity", store=True)
+
+    @api.depends('silt_dust_percent','eln_ref','grade')
+    def _compute_silt_dust_percent_conformity(self):
+        
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.silt_dust_percent_conformity = 'na'
+                continue
+            record.silt_dust_percent_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','bff5966a-5c81-497e-a100-93eea630b4a0')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','bff5966a-5c81-497e-a100-93eea630b4a0')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.silt_dust_percent - record.silt_dust_percent*mu_value
+                    upper = record.silt_dust_percent + record.silt_dust_percent*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.silt_dust_percent_conformity = 'pass'
+                        break
+                    else:
+                        record.silt_dust_percent_conformity = 'fail'
+
+    silt_dust_percent_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_silt_dust_percent_nabl", store=True)
+
+    @api.depends('silt_dust_percent','eln_ref','grade')
+    def _compute_silt_dust_percent_nabl(self):
+        
+        for record in self:
+            record.silt_dust_percent_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','bff5966a-5c81-497e-a100-93eea630b4a0')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','bff5966a-5c81-497e-a100-93eea630b4a0')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.silt_dust_percent - record.silt_dust_percent*mu_value
+                    upper = record.silt_dust_percent + record.silt_dust_percent*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.silt_dust_percent_nabl = 'pass'
+                        break
+                    else:
+                        record.silt_dust_percent_nabl = 'fail'
+
+    # Deleterious Material (Soft Fragments)
+    
+    name_soft_fragments = fields.Char("Name",default="Deleterious Material (Soft Fragments)")
+    soft_fragments_visible = fields.Boolean("Deleterious Material (Soft Fragments) Visible",compute="_compute_visible")
+
+    soft_fragments_ids = fields.One2many('wmm.deleterious.soft.line', 'parent_id', string="Trials")
+
+    soft_fragments_percent = fields.Float(
+        "Average Deleterious Material Soft Fragments (%)",
+        compute="_compute_soft_fragments_percent",
+        store=True
+    )
+
+    @api.depends('soft_fragments_ids.percent')
+    def _compute_soft_fragments_percent(self):
+        for rec in self:
+            lines = rec.soft_fragments_ids
+
+            if lines:
+                values = lines.mapped('percent')
+                rec.soft_fragments_percent = sum(values) / len(values)
+            else:
+                rec.soft_fragments_percent = 0.0
+
+
+    soft_fragments_percent_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_soft_fragments_percent_conformity", store=True)
+
+    @api.depends('soft_fragments_percent','eln_ref','grade')
+    def _compute_soft_fragments_percent_conformity(self):
+        
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.soft_fragments_percent_conformity = 'na'
+                continue
+            record.soft_fragments_percent_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','01b2cc83-a922-40a8-9c7f-dd8ff411ad7d')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','01b2cc83-a922-40a8-9c7f-dd8ff411ad7d')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.soft_fragments_percent - record.soft_fragments_percent*mu_value
+                    upper = record.soft_fragments_percent + record.soft_fragments_percent*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.soft_fragments_percent_conformity = 'pass'
+                        break
+                    else:
+                        record.soft_fragments_percent_conformity = 'fail'
+
+    soft_fragments_percent_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_soft_fragments_percent_nabl", store=True)
+
+    @api.depends('soft_fragments_percent','eln_ref','grade')
+    def _compute_soft_fragments_percent_nabl(self):
+        
+        for record in self:
+            record.soft_fragments_percent_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','01b2cc83-a922-40a8-9c7f-dd8ff411ad7d')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','01b2cc83-a922-40a8-9c7f-dd8ff411ad7d')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.soft_fragments_percent - record.soft_fragments_percent*mu_value
+                    upper = record.soft_fragments_percent + record.soft_fragments_percent*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.soft_fragments_percent_nabl = 'pass'
+                        break
+                    else:
+                        record.soft_fragments_percent_nabl = 'fail'
+
+
     # Material Finer than 75 Micron
 
     finer75_name = fields.Char("Name",default="Material Finer than 75 Micron")					
@@ -2714,6 +2871,8 @@ class WmmMechanical(models.Model):
             record.loose_bulk_density_visible = False
             record.rodded_bulk_density_visible = False
             record.clay_lump_visible = False
+            record.silt_dust_visible = False
+            record.soft_fragments_visible = False
             record.finer75_visible = False
             record.fine10_visible = False
             record.wet_impact_visible = False
@@ -2759,6 +2918,12 @@ class WmmMechanical(models.Model):
 
                 if sample.internal_id == '8634c76e-ae55-4011-98c1-70f20c6b5fd1':
                     record.clay_lump_visible = True
+
+                if sample.internal_id == 'bff5966a-5c81-497e-a100-93eea630b4a0':
+                    record.silt_dust_visible = True
+
+                if sample.internal_id == '01b2cc83-a922-40a8-9c7f-dd8ff411ad7d':
+                    record.soft_fragments_visible = True
 
                 if sample.internal_id == '69ab02a7-1183-4c0c-8f00-76613ebfe25b':
                     record.finer75_visible = True
@@ -2854,8 +3019,8 @@ class WmmMechanical(models.Model):
             # impact value 
             if result.parameter.internal_id == 'nbv21455-7446-446e-a018-8a5f9dcfd549':
                 result.calculated = True
-                result.result_char = round(self.avg_impact,2)
-                if self.avg_impact_nabl == 'pass':
+                result.result_char = round(self.average_impact_value,2)
+                if self.average_impact_value_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -2926,6 +3091,26 @@ class WmmMechanical(models.Model):
                 result.calculated = True
                 result.result_char = round(self.clay_lumps_percent,2)
                 if self.clay_lumps_percent_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Deleterious Material (Fine Silt & Fine Dust)
+            if result.parameter.internal_id == 'bff5966a-5c81-497e-a100-93eea630b4a0':
+                result.calculated = True
+                result.result_char = round(self.silt_dust_percent,2)
+                if self.silt_dust_percent_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Deleterious Material (Soft Fragments)
+            if result.parameter.internal_id == '01b2cc83-a922-40a8-9c7f-dd8ff411ad7d':
+                result.calculated = True
+                result.result_char = round(self.soft_fragments_percent,2)
+                if self.soft_fragments_percent_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -3572,6 +3757,86 @@ class WmmDeleteriousClayLine(models.Model):
             record.sample_no = index + 1
 
 
+class WmmDeleteriousSiltDustLine(models.Model):
+    _name = "wmm.deleterious.silt.dust.line"
+    parent_id = fields.Many2one('mechanical.wmm', string="Parent Id")
+
+    sample_no = fields.Integer(string="Trial No", readonly=True, copy=False, default=1)
+
+    w1 = fields.Float("Weight of total sample (W1)")
+    w2 = fields.Float("Weight of Fine Silt and Fine Dust separated (W₂)")
+
+    percent = fields.Float(
+        "Deleterious Material (%)",
+        compute="_compute_percent",
+        store=True
+    )
+
+    @api.depends('w1', 'w2')
+    def _compute_percent(self):
+        for rec in self:
+            rec.percent = (rec.w2 / rec.w1) * 100 if rec.w1 else 0.0
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sample_no'))
+                vals['sample_no'] = max_serial_no + 1
+
+        return super(WmmDeleteriousSiltDustLine, self).create(vals)
+
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.sample_no = index + 1
+
+
+class WmmDeleteriousSoftLine(models.Model):
+    _name = "wmm.deleterious.soft.line"
+    parent_id = fields.Many2one('mechanical.wmm', string="Parent Id")
+
+    sample_no = fields.Integer(string="Trial No", readonly=True, copy=False, default=1)
+
+    w1 = fields.Float("Weight of total sample (W1)")
+    w2 = fields.Float("Weight of Fine Soft Fragments (W₂)")
+
+    percent = fields.Float(
+        "Deleterious Material (%)",
+        compute="_compute_percent",
+        store=True
+    )
+
+    @api.depends('w1', 'w2')
+    def _compute_percent(self):
+        for rec in self:
+            rec.percent = (rec.w2 / rec.w1) * 100 if rec.w1 else 0.0
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sample_no'))
+                vals['sample_no'] = max_serial_no + 1
+
+        return super(WmmDeleteriousSoftLine, self).create(vals)
+
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.sample_no = index + 1
+
+
 class WmmMaterialFiner75Line(models.Model):
     _name = "wmm.material.finer.75.line"
     parent_id = fields.Many2one('mechanical.wmm', string="Parent Id")
@@ -4153,7 +4418,7 @@ class WmmCBRLine(models.Model):
             record.serial_no = index + 1
 
 
-class LIGHTCOMPACTIONLINE(models.Model):
+class WMMLIGHTCOMPACTIONLINE(models.Model):
     _name = "wmm.omc.compaction.line"
     parent_id = fields.Many2one('mechanical.wmm', string="Parent Id")
 
@@ -4219,7 +4484,7 @@ class LIGHTCOMPACTIONLINE(models.Model):
                 max_serial_no = max(existing_records.mapped('serial_no'))
                 vals['serial_no'] = max_serial_no + 1
 
-        return super(LIGHTCOMPACTIONLINE, self).create(vals)
+        return super(WMMLIGHTCOMPACTIONLINE, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines
