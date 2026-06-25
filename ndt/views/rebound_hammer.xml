@@ -14,16 +14,44 @@
                          <!-- <field name="eln_ref" readonly="1"/> -->
                         <field name="parameter_id"/>
                     </group>
-                    <group style="white-space: nowrap; width:70%;">
-                        <h1>
+
+                    <div>
+                        <h1 style="text-align:center">
                             <field name="name" readonly="1" nolabel="1"/>
                         </h1>
-                    </group>
-                    <group style="width:50%">
-                        <field name="temperature" string="Temperature °C" identity="extra"/>
-                        <field name="structure" string="Structure Age" identity="extra"/>
-                    </group>
-                    <field name="child_lines"  >
+                    </div> 
+
+                    <div class="d-flex gap-2"> 
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="temperature"></label>
+                                    </td>
+                                    <td>
+                                        <field name="temperature" string="Temperature °C" identity="extra"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="structure" ></label>
+                                    </td>
+                                    <td>
+                                        <field name="structure" string="Structure Age" identity="extra"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div> 
+
+
+                    <div>
+                       <field name="child_lines" nolabel="1" >
                             <tree editable="bottom" class="custom_table_borders">
                                 <!-- <field name="element" string="Member / Element Type"/> -->
                                 <field name="location" string="Location Of Member"/>
@@ -41,21 +69,43 @@
                                 <field name="mpa" string="Mpa"/>
                                 <field name="direction" string='Direction'/>
                             </tree>
-                    </field>
-                    <group>
-                    <field name="average_mpa" string="Average Mpa" identity="result"/>
-                    <field name="minimum_mpa" string="Minimum Mpa" identity="result"/>
-                    <field name="maximum_mpa" string="Maximum Mpa" identity="result"/>
-                    </group>
+                        </field>
+                     </div> 
+
+                     <table class="table o_form_table w-50 mt-2 custom_table_borders" >
+                        <tbody>
+                            <tr>
+                                <td><strong>Average Mpa</strong></td>
+                                <td>
+                                    <field name="average_mpa" string="Average Mpa" identity="result"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Minimum Mpa</strong></td>
+                                <td>
+                                    <field name="minimum_mpa" string="Minimum Mpa" identity="result"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Maximum Mpa</strong></td>
+                                <td>
+                                    <field name="maximum_mpa" string="Maximum Mpa" identity="result"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <group/>
 
                   
 
-                    <field name="notes" nolabel="1" >
-                            <tree editable="bottom">
+                    <div>
+                        <field name="notes" nolabel="1" >
+                            <tree editable="bottom" class="custom_table_borders">
                                 <field name="notes" />
                                
                             </tree>
-                    </field>
+                        </field>
+                    </div>
 
                      <button
                             type="object"

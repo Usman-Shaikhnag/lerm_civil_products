@@ -18,7 +18,7 @@
 
 			
 			<div style="width:100%;text-align:center;">
-				<span style="font-size:1rem"><b>Test Report</b></span>
+				<span style="font-size:2rem"><b>Test Report</b></span>
 			</div>
 			<div class="container_eln" style="margin-right:4px;margin-left:4px;">
 			
@@ -132,7 +132,218 @@
 								</td>
 							</tr>
 						</table> -->
-						<table style="margin-top:20px;">
+
+						<div class="" t-foreach="eln" t-as="o">
+						<table style="width:100%; border-collapse: collapse;" border="1">
+
+						   <tr>
+								<td colspan="1">#Project Name/Site Name :</td>
+								  <td colspan="3" style="font-weight:bold;">
+									<![CDATA[&nbsp;]]>
+
+									<span t-field="o.srf_id.name_work"/>
+
+									<!-- <t t-if="o.srf_id.customer.name">
+									  <span t-field="o.srf_id.customer.name"/>
+									 </t>
+        							<t t-else=""></t>
+		                            <br/> -->
+
+									<!-- <span t-field="o.srf_id.customer.street"/>
+									<span t-field="o.srf_id.customer.street2"/>
+									<span t-field="o.srf_id.customer.city"/>
+									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
+									<span t-field="o.srf_id.customer.state_id"/>
+											,
+									<span t-field="o.srf_id.customer.country_id"/> -->
+									</td>
+								
+							</tr>
+							<tr >
+								<td colspan="1" >#Customer Name	:</td>
+
+								<td colspan="1" style="font-weight:bold;">
+									<![CDATA[&nbsp;]]>
+                                    <t t-if="o.srf_id.customer">
+									   <span t-field="o.srf_id.customer"/>
+                                    </t>
+                                    <t t-else="">--</t>
+								</td>
+
+                                <td colspan="1" >ULR NO:</td>
+
+								  <td colspan="1" style="font-weight:bold;">
+									<![CDATA[&nbsp;]]>
+                                    
+									  <span t-field="o.sample_id.ulr_no"/>
+                                   
+									</td>
+							</tr>
+
+							<tr>
+								<td colspan="1" >Address:</td>
+								  <td colspan="1" style="font-weight:bold;">
+									<![CDATA[&nbsp;]]>
+									<!-- <t t-if="o.srf_id.customer.name">
+									  <span t-field="o.srf_id.customer.name"/>
+									 </t>
+        							<t t-else=""></t>
+		                            <br/> -->
+
+									<span t-field="o.srf_id.customer.street"/>
+									<span t-field="o.srf_id.customer.street2"/>
+									<span t-field="o.srf_id.customer.city"/>
+									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
+									<span t-field="o.srf_id.customer.state_id"/>
+											,
+									<span t-field="o.srf_id.customer.country_id"/>
+									</td>
+                                    <td colspan="1" >Test Report No :</td>
+								  <td colspan="1" style="font-weight:bold;">
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.kes_no"/>
+
+									</td>
+							</tr>
+
+                            <tr>
+								<td colspan="1">Location of Performance :-</td>
+								<td colspan="1">
+								      <t t-if="o.sample_id.location_name">
+											 <span t-field="o.sample_id.location_name"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+
+                                <td colspan="1">Sample ID  :-</td>
+								<td colspan="1">
+
+								  <t t-if="o.sample_id.client_sample_id">
+											<span t-field="o.sample_id.client_sample_id"/>
+										</t>
+									<t t-else="">-</t>
+								
+								</td>
+                                </tr>
+
+							
+							<tr>
+								<td colspan="1">Samples Description :-</td>
+								<td colspan="1">
+								      <t t-if="o.material and o.material.lab_name and o.sample_id.size_id">
+											<span t-field="o.sample_id.size_id"/> <![CDATA[&nbsp;]]> <![CDATA[&nbsp;]]> <span t-field="o.material.lab_name"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+
+                                <td colspan="1">Date of Receipt :-</td>
+								<td colspan="1">
+
+								  <t t-if="o.sample_id.sample_received_date">
+											<span t-field="o.sample_id.sample_received_date"/>
+										</t>
+									<t t-else="">--</t>
+								
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="1">#Source of Sample	 :-</td>
+								<td colspan="1">
+								<t t-if="o.material.source_sample">
+											<span t-field="o.material.source_sample"/>
+										</t>
+									<t t-else="">-</t>
+								</td>
+
+								<td colspan="1">Date of Performance of Test :-</td>
+								<td colspan="1">
+									<t t-if="o.start_date and o.end_date">
+											<span t-field="o.start_date"/><![CDATA[&nbsp;]]> to <![CDATA[&nbsp;]]> <span t-field="o.end_date"/>
+										</t>
+									<t t-else="">-</t>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="1">Condition of Sample  :-</td>
+								<td colspan="1">
+									<!-- <t t-if="o.sample_id.sample_received_date">
+											<span t-field="o.sample_id.sample_received_date"/>
+										</t>
+									<t t-else="">-</t> -->
+								</td>
+
+									<td colspan="1">Date of Report Issue :-</td>
+										<td colspan="1" >
+											<t t-if="o.end_date">
+											<span t-field="o.end_date"/>
+										</t>
+									<t t-else="">-</t>
+										</td>
+								
+							</tr>
+
+                            <tr>
+								<td colspan="1">Discipline  :-</td>
+								<td colspan="1">
+									<t t-if="o.sample_id.group_id">
+											<span t-field="o.sample_id.group_id"/>
+										</t>
+									<t t-else="">-</t>
+								</td>
+
+									<td colspan="1">Test Method Followed :-</td>
+										<td colspan="1" >
+											<t t-if="o.material.test_method_adopted">
+											<span t-field="o.material.test_method_adopted"/>
+										</t>
+									    <t t-else="">-</t>
+										</td>
+								
+							</tr>
+
+                            <tr>
+								<td colspan="1">Reference No.  :-</td>
+								<td colspan="1">
+									<t t-if="o.srf_id.client_refrence">
+											<span t-field="o.srf_id.client_refrence"/>
+										</t>
+									<t t-else="">-</t>
+								</td>
+
+								<td colspan="1">Group :-</td>
+								<td colspan="1">
+									<span t-field="o.group.group"/>
+								</td>
+								
+							</tr>
+							<tr>
+								<td colspan="1">Test Name :</td>
+								<td colspan="1">
+									<span t-field="o.parameters_result.parameter[0].parameter_name"/>
+								</td>
+								<td colspan="1">Instrument :</td>
+								<td colspan="1">
+									<span t-field="o.instrument.name"/>
+								</td>
+							</tr>
+                            <tr>
+								
+								<td colspan="1">Temperature :</td>
+								<td colspan="1">
+									<span t-field="data.temperature"/>°C
+								</td>
+								<td colspan="1">Structure Age </td>
+								<td colspan="1">
+									<span t-field="data.structure"/>
+								</td>
+							</tr>
+
+							</table>
+					</div>
+
+						<!-- <table style="margin-top:20px;">
 							<tr>
 								<td colspan="12">Customer Party Name :
 									<![CDATA[&nbsp;]]>
@@ -146,7 +357,7 @@
 									<span t-field="o.srf_id.customer.country_id"/>
 								</td>
 							</tr>
-							<tr>
+							<tr> -->
 								<!-- <td colspan="12">Project / Site Address :
 									<![CDATA[&nbsp;]]>
 									<span t-field="o.srf_id.site_address.name"/>
@@ -158,9 +369,9 @@
 											,
 									<span t-field="o.srf_id.site_address.country_id"/>
 								</td> -->
-								<td colspan="12">Project / Site Address : <![CDATA[&nbsp;]]>
+								<!-- <td colspan="12">Project / Site Address : <![CDATA[&nbsp;]]> -->
 									<!-- <span t-field="o.srf_id.name_work"/> -->
-								</td>
+								<!-- </td>
 							</tr>
 							<tr>
 								<td colspan="12">Sample Description : <![CDATA[&nbsp;]]>
@@ -253,8 +464,10 @@
 									<span t-field="data.structure"/>
 								</td>
 							</tr>
-						</table>
-					</div>
+						</table>-->
+					</div> 
+
+
 					<div style="margin-top:20px;">
 						<u>Test Method</u><![CDATA[&nbsp;]]>:<![CDATA[&nbsp;]]>
 						<!-- <span t-field="eln.parameters_result.parameter[0].test_method.test_method"/> -->
@@ -519,12 +732,11 @@
 							<tr>
 								<td style="padding: 5px; font-style: italic; font-size: 12px;">
 									<b>Note:-</b>
-									&#160;&#160;(i) The results relate only to the items tested 
-									&#160;&#160;(ii) This test report should not be reproduced except in full, without written approval of this Laboratory 
-									&#160;&#160;(iii) Any corrections invalidate the test reports 
-									&#160;&#160;(iv) Any Query regarding the report must be reported immediately. 
-									&#160;&#160;(v) * mark indicate tests which are not in the scope of NABL. 
-									&#160;&#160;(vi) # mark indicates Details given by Client.
+									&#160;&#160;(i) The results stated in this report apply only to the tested sample(s) and are based on the conditions and parameters at the time of testing.
+									&#160;&#160;(ii) This report is invalid without the official paper seal of Make Infracon.  
+									&#160;&#160;(iii)  All test results are confidential and will not be disclosed to any third party without written consent of the client, except where required by law. 
+									&#160;&#160;(iv) The # points mentioned in the report which information is given by Client/Customer. 
+									&#160;&#160;(v) Any disputes shall be subject to jurisdiction of Nashik courts only.
 									<t t-if="eln.has_witness">
 										&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
 									</t>
