@@ -2,6 +2,7 @@ from odoo import models , fields,api
 import json
 import base64
 import qrcode
+import io
 from io import BytesIO
 from lxml import etree
 import matplotlib.pyplot as plt
@@ -10,6 +11,13 @@ import numpy as np
 import math
 from scipy.interpolate import CubicSpline , interp1d , Akima1DInterpolator
 from scipy.optimize import minimize_scalar
+from scipy.interpolate import make_interp_spline
+from matplotlib.ticker import LogLocator, MultipleLocator
+import re
+from matplotlib.ticker import AutoMinorLocator
+
+from matplotlib.ticker import MultipleLocator, StrMethodFormatter
+from datetime import timedelta
 
 
 
@@ -118,7 +126,7 @@ class WMMReport(models.AbstractModel):
 
     def generate_cbr_chart(self, data):
 
-      lines = self.env['mechanical.cbr.line'].search(
+      lines = self.env['wmm.cbr.line'].search(
         [('parent_id', '=', data.id)],
         order='penetration asc'
     )
@@ -209,6 +217,8 @@ class WMMReport(models.AbstractModel):
         buffer.read()
     ).decode('utf-8')
     
+
+
 
     def generate_line_chart_light_omc(self, data):
 
@@ -667,7 +677,7 @@ class WMMReport(models.AbstractModel):
       x_value = []
       y_value = []
 
-      for line in data.liquid_child_liness:
+      for line in data.child_liness:
 
         if line.blwo_no1 and line.moisture_content is not None:
             x_value.append(float(line.blwo_no1))

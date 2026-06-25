@@ -5,6 +5,8 @@ import math
 from decimal import Decimal
 import matplotlib.pyplot as plt
 import io
+import numpy as np
+import logging
 import base64
 from matplotlib.ticker import LogLocator, MultipleLocator
 from matplotlib.ticker import AutoMinorLocator
@@ -1554,16 +1556,16 @@ class WmmMechanical(models.Model):
     liquid_limit_visible = fields.Boolean("Liquid Limit Visible",compute="_compute_visible")
 
 
-    liquid_child_liness = fields.One2many('wmm.liquid.limits.line','parent_id',string="Liquid Limit")
+    child_liness = fields.One2many('wmm.liquid.limits.line','parent_id',string="Liquid Limit")
     liquid_limit = fields.Float('Liquid Limit %',compute="_compute_liquid_limit")
 
 
-    import math
+   
 
-    @api.depends('liquid_child_liness.blwo_no1', 'liquid_child_liness.moisture_content')
+    @api.depends('child_liness.blwo_no1', 'child_liness.moisture_content')
     def _compute_liquid_limit(self):
      for record in self:
-        lines = record.liquid_child_liness.filtered(
+        lines = record.child_liness.filtered(
             lambda l: l.blwo_no1 and l.moisture_content
         )
 
@@ -1648,6 +1650,8 @@ class WmmMechanical(models.Model):
             else:
                 record.liquid_limit_nabl = 'fail'
 
+    
+
 
 
     graph_image_liquid = fields.Binary("Line Chart", compute="_compute_graph_image_liquid", store=True)
@@ -1655,12 +1659,14 @@ class WmmMechanical(models.Model):
     show_liquid_graph = fields.Boolean(string="Show Liquid Limit Graph")
 
 
+
+
     def generate_line_chart_liquid(self):
 
       x_value = []
       y_value = []
 
-      for line in self.liquid_child_liness:
+      for line in self.child_liness:
         if line.blwo_no1 and line.moisture_content is not None:
             x_value.append(float(line.blwo_no1))
             y_value.append(float(line.moisture_content))
@@ -1849,15 +1855,17 @@ class WmmMechanical(models.Model):
         
        
     
-
-    @api.depends('liquid_child_liness')
+    @api.depends(
+    'child_liness.blwo_no1',
+    'child_liness.moisture_content'
+)
     def _compute_graph_image_liquid(self):
+     for record in self:
         try:
-            for record in self:
-                chart_image_liquid = record.generate_line_chart_liquid()
-                record.graph_image_liquid = chart_image_liquid
-        except:
-            pass 
+            record.graph_image_liquid = record.generate_line_chart_liquid() or False
+        except Exception as e:
+            _logger.exception(e)
+            record.graph_image_liquid = False
 
 
       # Plastic Limit

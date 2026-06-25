@@ -1534,9 +1534,9 @@
 
 				<t t-if="graphcbr">
                    <div style="text-align:center; margin-top:20px;" t-if="data.soil_visible and (data.cbr_25_avg_nabl == 'pass' and nabl or (data.cbr_25_avg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-                   <img t-att-src="'data:image/png;base64,%s' % graphcbr" style="max-width:100%; height:auto;"/>
+                      <img t-att-src="'data:image/png;base64,%s' % graphcbr" style="max-width:100%; height:auto;"/>
 
-				   <table class="table table-sm o_form_table table-bordered custom_table_borders w-100" invisible="not soil_visible " >
+				      <table class="table table-sm o_form_table table-bordered custom_table_borders w-100" invisible="not soil_visible " >
                             <tbody>
                                 <tr>
                                     <td rowspan="2" style="text-align:center;font-weight:bold;vertical-align:middle;"><span>Mould No</span></td>
@@ -1578,6 +1578,9 @@
 
                   
 				</t>
+
+
+				
 
 
 
