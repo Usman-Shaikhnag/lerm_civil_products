@@ -136,10 +136,10 @@
                                     <td><label for="age_of_days">Age of Cubes</label></td>
                                     <td><field name="age_of_days" class="blue-input"/></td>
                                 </tr>
-                                <tr>
+                                <!-- <tr>
                                     <td><label for="area_of_cube">Area of Cube</label></td>
                                     <td><field name="area_of_cube" class="blue-input"/></td>
-                                </tr>
+                                </tr> -->
                                 <tr>
                                     <td><label for="difference">Difference</label></td>
                                     <td><field name="difference" class="blue-input"/></td>
@@ -152,10 +152,14 @@
                         <tree editable="bottom">
                             <field name='sr_no' string="Sr. NO"/>
                             <field name='id_mark' />
-                            <field name='dimension'/>
+                            <!-- <field name='dimension'/> -->
                             <field name='wt_sample'  widget="char" class="blue-input" decoration-info="wt_sample != 0"/>
-                            <field name="volume" class="blue-input" decoration-info="volume != 0"/>
+                            <field name='length' class="blue-input" decoration-info="length != 0"/>
+                            <field name='breadth' class="blue-input" decoration-info="breadth != 0"/>
+                            <field name='height' class="blue-input" decoration-info="height != 0"/>
                             <field name="area"/>
+                            <field name="volume" class="blue-input" decoration-info="volume != 0"/>
+
                             <field name="density"/>
                             <field name='dt_of_casting' widget="date" options="{'format': 'dd-MM-yy'}" readonly="1" class="blue-input" decoration-info="dt_of_casting != 0"/>
                             <field name='days' class="blue-input" decoration-info="days != 0"/>

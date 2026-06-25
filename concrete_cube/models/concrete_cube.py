@@ -62,24 +62,24 @@ class MechanicalConcreteCube(models.Model):
         default_notes = [
             (0, 0, {
                 'sr_no': 'i',
-                'notes': 'The results stated in this report apply only to the tested sample(s) and are based on the conditions and parameters at the time of testing.',
+                'notes': 'Attention is drawn to the limitations of liability, indemnification, and jurisdiction provisions applicable to this report. The information contained herein reflects the findings of Geonyms India Private Limited at the time of testing and only within the scope of work and instructions received from the Client, where applicable',
             }),
             (0, 0, {
                 'sr_no': 'ii',
-                'notes': 'This report is invalid without the official paper seal of Make Infracon.',
+                'notes': 'The Companys responsibility is limited to the Client for whom this report has been issued. This report does not relieve any party from exercising its rights and fulfilling its obligations under any contract, agreement, or applicable statutory requirements. Unless otherwise stated, the results reported herein relate only to the sample(s) tested and do not necessarily indicate the quality of the entire lot, batch, or material from which the sample(s) were drawn. ',
             }),
             (0, 0, {
                 'sr_no': 'iii',
-                'notes': 'All test results are confidential and will not be disclosed to any third party without written consent of the client, except where required by law.',
+                'notes': 'The sample(s) tested shall be retained for a period of ninety (90) days from the date of issue of this report unless otherwise agreed with the Client. This report shall not be reproduced, except in full, without the prior written approval of Geonyms India Private Limited. ',
             }),
             (0, 0, {
                 'sr_no': 'iv',
-                'notes': 'The # points mentioned in the report which information is given by Client/Customer.',
+                'notes': 'Partial reproduction, unauthorized alteration, forgery, falsification, or misuse of this report is prohibited and may result in legal action.',
             }),
 
             (0, 0, {
                 'sr_no': 'v',
-                'notes': 'Any disputes shall be subject to jurisdiction of Nashik courts only.',
+                'notes': ' Any complaint concerning this report shall be submitted in writing within fifteen (15) days from the date of issue of the report. The use of this report or extracts thereof in advertisements, promotional material, media publications, or any public disclosure requires prior written approval from Geonyms India Private Limited',
             }),
         ]
 
@@ -132,22 +132,22 @@ class MechanicalConcreteCube(models.Model):
         if self.eln_ref:
             self.size_id = self.eln_ref.size_id.id
 
-    area_of_cube = fields.Float(string="Area of Cube",compute="_compute_area_cube",store=True)
+    # area_of_cube = fields.Float(string="Area of Cube",compute="_compute_area_cube",store=True)
 
-    @api.depends('size_id.size')
-    def _compute_area_cube(self):
-        import re
-        for record in self:
-            size_str = record.size_id.size
-            if size_str:
-                match = re.search(r'\d+', str(size_str))
-                if match:
-                    side = int(match.group())
-                    record.area_of_cube = side * side  # or whatever formula
-                else:
-                    record.area_of_cube = 0
-            else:
-                record.area_of_cube = 0
+    # @api.depends('size_id.size')
+    # def _compute_area_cube(self):
+    #     import re
+    #     for record in self:
+    #         size_str = record.size_id.size
+    #         if size_str:
+    #             match = re.search(r'\d+', str(size_str))
+    #             if match:
+    #                 side = int(match.group())
+    #                 record.area_of_cube = side * side  # or whatever formula
+    #             else:
+    #                 record.area_of_cube = 0
+    #         else:
+    #             record.area_of_cube = 0
 
 
 
@@ -744,20 +744,26 @@ class MechanicalConcreteCubeLine(models.Model):
     compressive_strength = fields.Float(string="Compressive Strength (N/mm2)",compute="_compute_strength",store=True)
 
     avg_compressive_strength = fields.Float(string="Avg. Compressive Strength (N/mm2)")
-    area = fields.Float(string="Area (m²)",compute="_compute_area",store=True)
-    dimension = fields.Char(string="Dimension (mm)",compute="_compute_dimension",store=True)
-    volume = fields.Float(string="Volume (m³)")
-    density = fields.Float(string="Density",compute="_compute_density",store=True,digits=(16,3))
+    
+    length = fields.Float(string="Length (mm)")
+    breadth = fields.Float(string="Breadth (mm)")
+    height = fields.Float(string="Height (mm)")
 
-    @api.depends('parent_id.size_id') 
+    area = fields.Float(
+        string="Area (m²)",
+        compute="_compute_area",
+        store=True,
+        readonly=True,
+    )
+
+    @api.depends('length', 'breadth')
     def _compute_area(self):
         for rec in self:
-            rec.area = rec.parent_id.area_of_cube / 1000
+            rec.area = rec.length * rec.breadth
 
-    @api.depends('parent_id.size_id') 
-    def _compute_dimension(self):
-        for rec in self:
-            rec.dimension = rec.parent_id.size_id.size
+    
+    volume = fields.Float(string="Volume (m³)")
+    density = fields.Float(string="Density",compute="_compute_density",store=True,digits=(16,3))
             
     @api.depends('wt_sample','volume')
     def _compute_density(self):
@@ -777,13 +783,23 @@ class MechanicalConcreteCubeLine(models.Model):
     #         else:
     #             rec.avg_compressive_strength = 0.0
 
+    # @api.depends('load', 'area')
+    # def _compute_strength(self):
+    #     for record in self:
+    #         if record.area:
+    #             record.compressive_strength = record.load / record.area
+    #         else:
+    #             record.compressive_strength = 0.0
+
+    
+
     @api.depends('load', 'area')
     def _compute_strength(self):
-        for record in self:
-            if record.area:
-                record.compressive_strength = record.load / record.area
+        for rec in self:
+            if rec.area:
+                rec.compressive_strength = (rec.load * 1000) / rec.area
             else:
-                record.compressive_strength = 0.0
+                rec.compressive_strength = 0.0
 
 
     @api.depends('parent_id.date_of_casting')
