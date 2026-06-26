@@ -67,6 +67,182 @@ class MechanicalBricksBurntClay(models.Model):
     height_in_mm = fields.Float(string="Height in mm")
 
 
+    length_in_mm_confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+    ], string='Length Confirmity', compute="_compute_length_in_mm_conformity")
+
+    length_in_mm_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')],string="Length NABL",compute="_compute_length_in_mm_nabl",store=True)
+
+
+
+    @api.depends('length_in_mm','eln_ref')
+    def _compute_length_in_mm_conformity(self):
+        for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.length_in_mm_confirmity = 'na'
+                continue
+
+            record.length_in_mm_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','457360db-e033-49ed-9c93-11e3bf87548d')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','457360db-e033-49ed-9c93-11e3bf87548d')]).parameter_table
+            for material in materials:
+                
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.length_in_mm - record.length_in_mm*mu_value
+                    upper = record.length_in_mm + record.length_in_mm*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.length_in_mm_confirmity = 'pass'
+                        break
+                    else:
+                        record.length_in_mm_confirmity = 'fail'
+
+    @api.depends('length_in_mm','eln_ref')
+    def _compute_length_in_mm_nabl(self):
+        
+        for record in self:
+            record.length_in_mm_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','457360db-e033-49ed-9c93-11e3bf87548d')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','457360db-e033-49ed-9c93-11e3bf87548d')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.length_in_mm - record.length_in_mm*mu_value
+                    upper = record.length_in_mm + record.length_in_mm*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.length_in_mm_nabl = 'pass'
+                        break
+                    else:
+                        record.length_in_mm_nabl = 'fail'
+
+
+    width_in_mm_confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+    ], string='Width Confirmity', compute="_compute_width_in_mm_conformity")
+
+    width_in_mm_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')],string="Width NABL",compute="_compute_width_in_mm_nabl",store=True)
+
+
+
+    @api.depends('width_in_mm','eln_ref')
+    def _compute_width_in_mm_conformity(self):
+        for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.width_in_mm_confirmity = 'na'
+                continue
+
+            record.width_in_mm_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c41c2f45-dc62-4d9b-a08f-607a05b87115')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c41c2f45-dc62-4d9b-a08f-607a05b87115')]).parameter_table
+            for material in materials:
+                
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.width_in_mm - record.width_in_mm*mu_value
+                    upper = record.width_in_mm + record.width_in_mm*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.width_in_mm_confirmity = 'pass'
+                        break
+                    else:
+                        record.width_in_mm_confirmity = 'fail'
+
+    @api.depends('width_in_mm','eln_ref')
+    def _compute_width_in_mm_nabl(self):
+        
+        for record in self:
+            record.width_in_mm_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c41c2f45-dc62-4d9b-a08f-607a05b87115')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c41c2f45-dc62-4d9b-a08f-607a05b87115')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.width_in_mm - record.width_in_mm*mu_value
+                    upper = record.width_in_mm + record.width_in_mm*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.width_in_mm_nabl = 'pass'
+                        break
+                    else:
+                        record.width_in_mm_nabl = 'fail'
+
+    height_in_mm_confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+    ], string='Height Confirmity', compute="_compute_height_in_mm_conformity")
+
+    height_in_mm_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')],string="Height NABL",compute="_compute_height_in_mm_nabl",store=True)
+
+
+
+    @api.depends('height_in_mm','eln_ref')
+    def _compute_height_in_mm_conformity(self):
+        for record in self:
+
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.height_in_mm_confirmity = 'na'
+                continue
+
+            record.height_in_mm_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b88e1360-4bdf-4170-b3bc-913bdbc467f6')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b88e1360-4bdf-4170-b3bc-913bdbc467f6')]).parameter_table
+            for material in materials:
+                
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.height_in_mm - record.height_in_mm*mu_value
+                    upper = record.height_in_mm + record.height_in_mm*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.height_in_mm_confirmity = 'pass'
+                        break
+                    else:
+                        record.height_in_mm_confirmity = 'fail'
+
+    @api.depends('height_in_mm','eln_ref')
+    def _compute_height_in_mm_nabl(self):
+        
+        for record in self:
+            record.height_in_mm_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b88e1360-4bdf-4170-b3bc-913bdbc467f6')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b88e1360-4bdf-4170-b3bc-913bdbc467f6')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.height_in_mm - record.height_in_mm*mu_value
+                    upper = record.height_in_mm + record.height_in_mm*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.height_in_mm_nabl = 'pass'
+                        break
+                    else:
+                        record.height_in_mm_nabl = 'fail'
+
+
     # remark
 
     notes_id = fields.One2many('brickbruntclay.notes', 'parent_id', string="Notes")
@@ -403,17 +579,36 @@ class MechanicalBricksBurntClay(models.Model):
                 result.result_char = round(self.average_ira,2)
                 result.calculated = True
 
+            
             if result.parameter.internal_id == '457360db-e033-49ed-9c93-11e3bf87548d':
-                # result.result_char = round(self.average_ira,2)
+                result.result_char = round(self.length_in_mm,2)
                 result.calculated = True
+                if self.length_in_mm_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue 
+
+           
 
             if result.parameter.internal_id == 'c41c2f45-dc62-4d9b-a08f-607a05b87115':
-                # result.result_char = round(self.average_ira,2)
+                result.result_char = round(self.width_in_mm,2)
                 result.calculated = True
+                if self.width_in_mm_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue 
 
+           
             if result.parameter.internal_id == 'b88e1360-4bdf-4170-b3bc-913bdbc467f6':
-                # result.result_char = round(self.average_ira,2)
+                result.result_char = round(self.height_in_mm,2)
                 result.calculated = True
+                if self.height_in_mm_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue 
 
 
         return {
