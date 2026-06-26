@@ -30,42 +30,130 @@
                       </field>
                     </div>
 
-                    <group  invisible="dimension_visible == False">
-                        <h1>
-                            <field name="dimension_name" readonly="1" nolabel="1"/>
-                            <field name="dimension_visible" invisible="1"/>
-                        </h1>
-                    </group>
+                     <!-- Dimension -->
 
-                    <div class="d-flex gap-2" invisible="dimension_visible == False">
-                        <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders" style="width:50%;">
-                            <tbody>
-                                <tr>
-                                    <td style="width:50%;"><label for="length"></label></td>
-                                    <td style="width:50%;"><field name="length"/></td>
-                                </tr>
+                    <div invisible="dimension_visible == False" style="text-align:center">
+                      <h1>
+                          <field name="dimension_name" readonly="1" nolabel="1"/>
+                          <field name="dimension_visible" invisible='1'/>
+                      </h1>
+                    </div>
+                    
+                   
+                     <div invisible = "dimension_visible == False"  >
+                    <field name="dimension_lines" nolabel="1" >
+                            <tree editable="bottom"  class="custom_table_borders">
+                                <field name="serial_no" />
+                                <field name='lengthh' class="blue-input" decoration-info="lengthh != 0"/>
+                                <field name='width' class="blue-input" decoration-info="height != 0"/>
+                                <field name='height' class="blue-input" decoration-info="height != 0"/>
                                 
-                            </tbody>
-                        </table>
-                        
-                        <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders" style="width:50%;">
-                            <tbody>
-                                <tr>
-                                    <td style="width:50%;"><label for="thickness"></label></td>
-                                    <td style="width:50%;"><field name="thickness"/></td>
-                                </tr>
-                              
-                            </tbody>
-                        </table>
-                        <table class="table table-sm o_form_table table-bordered w-30 custom_table_borders" style="width:50%;">
-                            <tbody>
-                                <tr>
-                                    <td style="width:50%;"><label for="width"></label></td>
-                                    <td style="width:50%;"><field name="width"/></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
+                            </tree>
+                    </field>
+                    </div>
+
+                    <div class="d-flex gap-3" invisible="dimension_visible == False"> 
+                         <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="dimension_visible == False">
+                          <tbody>
+                             <tr>
+                                <td><label class="fw-bold" for="avrg_length"></label>
+                                </td>
+                                <td>
+                                    <field name="avrg_length"/>
+                                </td>
+                            </tr>
+                              <tr>
+                                <td>
+                                    <label class="fw-bold" for="avrg_length_confirmity"></label>
+                                </td>
+                                <td>
+                                    <field name="avrg_length_confirmity"
+                                        decoration-success="avrg_length_confirmity == 'pass'" 
+                                        decoration-danger="avrg_length_confirmity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="fw-bold" for="avrg_length_nabl"></label>
+                                </td>
+                                <td>
+                                    <field name="avrg_length_nabl"
+                                        decoration-success="avrg_length_nabl == 'pass'" 
+                                        decoration-danger="avrg_length_nabl == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                      <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="dimension_visible == False">
+                          <tbody>
+                             <tr>
+                                <td><label class="fw-bold" for="avrg_width"></label>
+                                </td>
+                                <td>
+                                    <field name="avrg_width"/>
+                                </td>
+                            </tr>
+                              <tr>
+                                <td>
+                                    <label class="fw-bold" for="avrg_width_confirmity"></label>
+                                </td>
+                                <td>
+                                    <field name="avrg_width_confirmity"
+                                        decoration-success="avrg_width_confirmity == 'pass'" 
+                                        decoration-danger="avrg_width_confirmity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="fw-bold" for="avrg_width_nabl"></label>
+                                </td>
+                                <td>
+                                    <field name="avrg_width_nabl"
+                                        decoration-success="avrg_width_nabl == 'pass'" 
+                                        decoration-danger="avrg_width_nabl == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                     <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="dimension_visible == False">
+                          <tbody>
+                             <tr>
+                                <td><label class="fw-bold" for="avrg_height"></label>
+                                </td>
+                                <td>
+                                    <field name="avrg_height"/>
+                                </td>
+                            </tr>
+                              <tr>
+                                <td>
+                                    <label class="fw-bold" for="avrg_height_confirmity"></label>
+                                </td>
+                                <td>
+                                    <field name="avrg_height_confirmity"
+                                        decoration-success="avrg_height_confirmity == 'pass'" 
+                                        decoration-danger="avrg_height_confirmity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="fw-bold" for="avrg_height_nabl"></label>
+                                </td>
+                                <td>
+                                    <field name="avrg_height_nabl"
+                                        decoration-success="avrg_height_nabl == 'pass'" 
+                                        decoration-danger="avrg_height_nabl == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                     </div>
 
                     

@@ -404,33 +404,33 @@ class ChequeredTile(models.Model):
         string='Perpendicularity Lines'
     )
 
-    permissible_average = fields.Float(
-    string="Permissible Average (mm)",
-    compute="_compute_permissible_average",
+    largest_gap_average = fields.Float(
+    string="Largest Gap (mm)",
+    compute="_compute_largest_gap_average",
     store=True
 )
 
-    @api.depends('perpendicularity_line_ids.permissible_gap')
-    def _compute_permissible_average(self):
+    @api.depends('perpendicularity_line_ids.largest_gap')
+    def _compute_largest_gap_average(self):
      for rec in self:
         lines = rec.perpendicularity_line_ids
         if lines:
-            rec.permissible_average = sum(lines.mapped('permissible_gap')) / len(lines)
+            rec.largest_gap_average = sum(lines.mapped('largest_gap')) / len(lines)
         else:
-            rec.permissible_average = 0.0
+            rec.largest_gap_average = 0.0
 
 
-    permissible_average_confirmity = fields.Selection([
+    largest_gap_average_confirmity = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail'),('na', 'NA'),], string='Confirmity',compute="_compute_permissible_average_confirmity")
+        ('fail', 'Fail'),('na', 'NA'),], string='Confirmity',compute="_compute_largest_gap_average_confirmity")
     
-    @api.depends('permissible_average','eln_ref','grade')
-    def _compute_permissible_average_confirmity(self):
+    @api.depends('largest_gap_average','eln_ref','grade')
+    def _compute_largest_gap_average_confirmity(self):
         for record in self:
             if not record.eln_ref or not record.eln_ref.conformity:
-                record.permissible_average_confirmity = 'na'
+                record.largest_gap_average_confirmity = 'na'
                 continue
-            record.permissible_average_confirmity = 'fail'
+            record.largest_gap_average_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4ee01855-218f-48da-9729-82a54306a6c4')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4ee01855-218f-48da-9729-82a54306a6c4')]).parameter_table
             for material in materials:
@@ -438,23 +438,23 @@ class ChequeredTile(models.Model):
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
-                    lower = record.permissible_average - record.permissible_average*mu_value
-                    upper = record.permissible_average + record.permissible_average*mu_value
+                    lower = record.largest_gap_average - record.largest_gap_average*mu_value
+                    upper = record.largest_gap_average + record.largest_gap_average*mu_value
                     if lower >= req_min and upper <= req_max :
-                        record.permissible_average_confirmity = 'pass'
+                        record.largest_gap_average_confirmity = 'pass'
                         break
                     else:
-                        record.permissible_average_confirmity = 'fail'
+                        record.largest_gap_average_confirmity = 'fail'
 
-    permissible_average_nabl = fields.Selection([
+    largest_gap_average_nabl = fields.Selection([
         ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string='NABL', compute="_compute_permissible_average_nabl",store=True)
+        ('fail', 'Non-NABL')], string='NABL', compute="_compute_largest_gap_average_nabl",store=True)
 
-    @api.depends('permissible_average','eln_ref','grade')
-    def _compute_permissible_average_nabl(self):
+    @api.depends('largest_gap_average','eln_ref','grade')
+    def _compute_largest_gap_average_nabl(self):
         
         for record in self:
-            record.permissible_average_nabl = 'fail'
+            record.largest_gap_average_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4ee01855-218f-48da-9729-82a54306a6c4')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4ee01855-218f-48da-9729-82a54306a6c4')]).parameter_table
             for material in materials:
@@ -463,13 +463,13 @@ class ChequeredTile(models.Model):
                     lab_max = line.lab_max_value
                     mu_value = line.mu_value
                     
-                    lower = record.permissible_average - record.permissible_average*mu_value
-                    upper = record.permissible_average + record.permissible_average*mu_value
+                    lower = record.largest_gap_average - record.largest_gap_average*mu_value
+                    upper = record.largest_gap_average + record.largest_gap_average*mu_value
                     if lower >= lab_min and upper <= lab_max:
-                        record.permissible_average_nabl = 'pass'
+                        record.largest_gap_average_nabl = 'pass'
                         break
                     else:
-                        record.permissible_average_nabl = 'fail'
+                        record.largest_gap_average_nabl = 'fail'
 
 
 
@@ -738,8 +738,8 @@ class ChequeredTile(models.Model):
             # Perpendicularity
             if result.parameter.internal_id == '4ee01855-218f-48da-9729-82a54306a6c4':
                 result.calculated = True
-                result.result_char = round(self.permissible_average,2)
-                if self.permissible_average_nabl == 'pass':
+                result.result_char = round(self.largest_gap_average,2)
+                if self.largest_gap_average_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'

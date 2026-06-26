@@ -1319,12 +1319,12 @@ class AdmixtureBleedingTestLine(models.Model):
         for rec in self:
             rec.bleed_water_kg = rec.bleed_water_ml / 1000.0
 
-    @api.depends('bleed_water_kg', 'net_weight')
+    @api.depends('bleed_water_kg', 'mixing_water')
     def _compute_bleeding_percent(self):
         for rec in self:
             rec.bleeding_percent = (
-                (rec.bleed_water_kg * 100) / rec.net_weight
-                if rec.net_weight else 0.0
+                (rec.bleed_water_kg  / rec.mixing_water) * 100
+                if rec.mixing_water else 0.0
             )
 
 
