@@ -1,0 +1,605 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+    <record id="mechanical_ballast_form" model="ir.ui.view">
+        <field name="name">mechanical.ballast.form</field>
+        <field name="model">mechanical.ballast</field>
+        <field name="arch" type="xml">
+            <form create="false"> 
+                <sheet>
+                    <h1>
+                        <field name="name" readonly="1" nolabel="1"/>
+                    </h1>
+                    <button type="object" class="oe_highlight" name="prefill_data" string="Prefill Data"/>
+                    <group>
+                       <field name="grade"/>
+                    </group>
+
+
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1" />
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="size_id"/>
+                        <field name="parameter_id" invisible="1"/>
+                        <field name="eln_state" />
+                    </group>
+                    <!-- <group class="custom_table_borders"> -->
+                    <div class="custom_table_borders" style="margin-top: 15px;">
+                        <field name="sample_parameters" nolabel="1">
+                            <tree>
+                                <field name="parameter_name"/>
+                                <field name="test_method"/>
+                            </tree>
+                        </field>
+                    </div>
+
+
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="temprature"></label></td>
+                                    <td><field name="temprature" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="humidity"></label></td>
+                                    <td><field  name="humidity" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+                     <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="week_no"></label></td>
+                                    <td><field name="week_no" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="other_details"></label></td>
+                                    <td><field  name="other_details" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="condition"></label></td>
+                                    <td><field name="condition" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="description_work"></label></td>
+                                    <td><field  name="description_work" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                     <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+                    <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                        <tbody>
+                            <tr>
+                                <td><label for="temperature">Temperature</label></td>
+                                <td>
+                                    <field name="temperature" class="blue-input" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table> -->
+
+
+
+                    <!-- Sieve Alanysis  -->
+                    <div invisible="sieve_visible == False">
+                        <h1 style="text-align: center;">
+                            <field name="sieve_analysis_name" readonly="1" nolabel="1"/>
+                            <field name="sieve_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not sieve_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="weight_of_sample">Weight of Sample in kg</label></td>
+                                <td>
+                                    <field name="weight_of_sample" class="blue-input" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div invisible="sieve_visible == False" class="custom_table_borders">
+                        <field name="sieve_analysis_child_lines" nolabel="1">
+                            <tree editable="bottom">
+                                <!-- <field name="serial_no" string="Sr.No"/> -->
+                                <field name='sieve_size'/>
+                                <field name='wt_retained' class="blue-input" decoration-info="wt_retained != 0"/>
+                                <field name='percent_retained' readonly="1"/>
+                                <field name='cumulative_retained' context="{'default_cumulative_retained': cumulative_retained}" readonly="1"/>
+                                <field name='passing_percent' readonly="1"/>
+                                <field name='specific_limits' readonly="1"/>
+                            </tree>
+                        </field>
+                    </div>
+                    
+                    
+                    <div invisible="sieve_visible == False">
+                        <button type="object" name="calculate_sieve" class="btn btn-primary">
+                            <i class="fa fa-calculator mr-1"/> Calculate
+                        </button>
+                    </div>
+
+                    <!-- Table for Total Sieve Analysis -->
+                    <table class="table table-sm o_form_table table-bordered w-50 mt-2 custom_table_borders" invisible="not sieve_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="total_sieve_analysis" class="text-bold">Total</label></td>
+                                <td><field name="total_sieve_analysis" class="text-bold"/></td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+
+                    <!-- Aggregate Impact Value -->
+
+                    <div invisible = "impact_visible == False">
+                        <h1 class="text-center">
+                            <field name="impact_value_name" readonly="1" nolabel="1"/>
+                            <field name="impact_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+
+                    <div invisible = "impact_visible == False" class="custom_table_borders">
+                        <field name="impact_value_child_lines" nolabel="1">
+                            <tree editable="bottom">
+                                <field name='sample_no'/>
+                                <field name='w1'  class="blue-input" decoration-info="w1 != 0" />
+                                <field name='w2' class="blue-input" decoration-info="w2 != 0"/>
+                                <field name='w3' class="blue-input" decoration-info="w3 != 0"/>
+                                <field name='w4' />
+                                <field name='aiv'/>
+                            </tree>
+                        </field> 
+                    </div>
+
+                   
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not impact_visible" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="average_impact_value">Average Impact Value</label></td>
+                                <td><field name="average_impact_value"/></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="average_impact_value_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="average_impact_value_conformity"
+                                        decoration-success="average_impact_value_conformity == 'pass'" 
+                                        decoration-danger="average_impact_value_conformity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="average_impact_value_nabl">NABL</label></td>
+                                <td>
+                                    <field name="average_impact_value_nabl"
+                                        decoration-success="average_impact_value_nabl == 'pass'" 
+                                        decoration-danger="average_impact_value_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <group/>
+
+                    <!-- Loose Bulk Density -->
+
+                    <div class="text-center" invisible="loose_bulk_density_visible == False">
+                        <h1>
+                            <field name="loose_bulk_density_name" readonly="1" nolabel="1"/>
+                            <field name="loose_bulk_density_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+
+                    <div invisible = "loose_bulk_density_visible == False" class="custom_table_borders">
+                        <field name="loose_line_ids" nolabel="1">
+                            <tree editable="bottom">
+                                <field name='serial_no'/>
+                                <!-- <field name='empty_container_weight'  class="blue-input" decoration-info="empty_container_weight != 0" /> -->
+                                <field name='container_with_material' class="blue-input" decoration-info="container_with_material != 0"/>
+                                <!-- <field name='loose_weight'  /> -->
+                                <field name='volume_of_cont' class="blue-input" decoration-info="volume_of_cont != 0"/>
+                                <field name='loose_bulk_density'/>
+                            </tree>
+                        </field> 
+                    </div>
+
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not loose_bulk_density_visible" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="loose_avg">Average Loose Bulk Density</label></td>
+                                <td><field name="loose_avg"/><span>kg/cu.m</span></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="loose_avg_confirmity">Conformity</label></td>
+                                <td>
+                                    <field name="loose_avg_confirmity"
+                                        decoration-success="loose_avg_confirmity == 'pass'" 
+                                        decoration-danger="loose_avg_confirmity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="loose_avg_nabl">NABL</label></td>
+                                <td>
+                                    <field name="loose_avg_nabl"
+                                        decoration-success="loose_avg_nabl == 'pass'" 
+                                        decoration-danger="loose_avg_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                     <!-- Rodded Bulk Density -->
+
+                    <div class="text-center" invisible="rodded_bulk_density_visible == False">
+                        <h1>
+                            <field name="rodded_bulk_density_name" readonly="1" nolabel="1"/>
+                            <field name="rodded_bulk_density_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+
+                    <div invisible = "rodded_bulk_density_visible == False" class="custom_table_borders">
+                        <field name="rodded_line_ids" nolabel="1">
+                            <tree editable="bottom">
+                                <field name='serial_no'/>
+                                <!-- <field name='empty_container_weight'  class="blue-input" decoration-info="empty_container_weight != 0" /> -->
+                                <field name='container_with_material' class="blue-input" decoration-info="container_with_material != 0"/>
+                                <!-- <field name='rodded_weight'/> -->
+                                <field name='volume_of_cont' class="blue-input" decoration-info="volume_of_cont != 0"/>
+                                <field name='rodded_bulk_density'/>
+                            </tree>
+                        </field> 
+                    </div>
+
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not rodded_bulk_density_visible" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="rodded_avg">Average Rodded Bulk Density</label></td>
+                                <td><field name="rodded_avg"/><span>kg/cu.m</span></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="rodded_avg_confirmity">Conformity</label></td>
+                                <td>
+                                    <field name="rodded_avg_confirmity"
+                                        decoration-success="rodded_avg_confirmity == 'pass'" 
+                                        decoration-danger="rodded_avg_confirmity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="rodded_avg_nabl">NABL</label></td>
+                                <td>
+                                    <field name="rodded_avg_nabl"
+                                        decoration-success="rodded_avg_nabl == 'pass'" 
+                                        decoration-danger="rodded_avg_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                    
+
+        
+                 <!-- Specific Gravity and Water Absorbtion  -->
+
+                    <div class="text-center" invisible="specific_gravity_visible == False">
+                        <h1>
+                            <field name="specific_gravity_name" readonly="1" nolabel="1"/>
+                            <field name="specific_gravity_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+
+                    <div invisible= "specific_gravity_visible == False" class="custom_table_borders">
+                        <field name="specific_water_line_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name='sample_no'/>
+                                    <field name='w1' class="blue-input" decoration-info="w1 != 0"/>
+                                    <field name='w2' class="blue-input" decoration-info="w2 != 0"/>
+                                    <field name='w3' class="blue-input" decoration-info="w3 != 0"/>
+                                    <field name='w4' class="blue-input" decoration-info="w4 != 0"/>
+                                    <field name='specific_gravity'/>
+                                    <field name='apparent_specific_gravity'/>
+                                    <field name='water_absorption'/>
+                                </tree>
+                        </field> 
+                    </div>
+
+                    <div class="d-flex gap-2" invisible="specific_gravity_visible == False"> 
+                         <table class="table table-sm table-bordered w-50 custom_table_borders" >
+                          <tbody>
+                              <tr>
+                                 <td><label class="fw-bold" for="avg_specific_gravity">Average Specific Gravity </label></td>
+                                 <td><field name="avg_specific_gravity"/></td>
+                              </tr>
+                              <tr>
+                                 <td><label class="fw-bold" for="avg_specific_gravity_conformity">Specific Gravity Conformity</label></td>
+                                 <td>
+                                     <field name="avg_specific_gravity_conformity"
+                                        decoration-success="avg_specific_gravity_conformity == 'pass'" 
+                                        decoration-danger="avg_specific_gravity_conformity == 'fail'" 
+                                        readonly="1"/>
+                                 </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="fw-bold" for="avg_specific_gravity_nabl">Specific Gravity NABL</label>
+                                </td>
+                                <td>
+                                    <field name="avg_specific_gravity_nabl"
+                                        decoration-success="avg_specific_gravity_nabl == 'pass'" 
+                                        decoration-danger="avg_specific_gravity_nabl == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                     <table class="table table-sm table-bordered w-50 custom_table_borders" >
+                          <tbody>
+                               <tr>
+                                  <td><label class="fw-bold" for="avg_water_absorption">Average Water Absorption (%)</label></td>
+                                  <td><field name="avg_water_absorption"/></td>
+                                </tr>
+                                <tr>
+
+                                  <td><label class="fw-bold" for="avg_water_absorption_conformity">Water Absorption (%) Conformity</label></td>
+
+                                  <td>
+                                    <field name="avg_water_absorption_conformity"
+                                        decoration-success="avg_water_absorption_conformity == 'pass'" 
+                                        decoration-danger="avg_water_absorption_conformity == 'fail'" 
+                                        readonly="1"/>
+                                  </td>
+                                  </tr>
+                                  <tr>
+                                   <td>
+                                    <label class="fw-bold" for="avg_water_absorption_nabl">Water Absorption (%) NABL</label>
+                                  </td>
+                                  <td>
+                                    <field name="avg_water_absorption_nabl"
+                                        decoration-success="avg_water_absorption_nabl == 'pass'" 
+                                        decoration-danger="avg_water_absorption_nabl == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+
+                    
+
+                    <!-- Abrasion Value -->
+
+                    <div invisible="abrasion_visible == False">
+                        <h1 class="text-center">
+                            <field name="abrasion_value_name" readonly="1" nolabel="1"/>
+                            <field name="abrasion_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+
+                    <div class=" custom_table_borders" invisible="abrasion_visible == False">
+                        <field name="abrasion_value_line_ids" nolabel="1" colspan="2">
+                            <tree editable="bottom">
+                                <field name='sample_no'/>
+                                <field name="w1" class="blue-input" decoration-info="w1 != 0"/>
+                                <field name="w2" class="blue-input" decoration-info="w2 != 0"/>
+                                <field name="w3"/>
+                                <field name="la_value"/>
+                            </tree>
+                        </field>
+                    </div>
+
+                    <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" invisible="abrasion_visible == False" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_abrasion_value">Average Value of L.A. Abrasion Value (%) </label></td>
+                                  <td><field name="avg_abrasion_value"/></td>
+                            </tr>
+                             <tr>
+                                <td><label class="fw-bold" for="avg_abrasion_value_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="avg_abrasion_value_conformity"
+                                        decoration-success="avg_abrasion_value_conformity == 'pass'" 
+                                        decoration-danger="avg_abrasion_value_conformity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                               <td><label class="fw-bold" for="avg_abrasion_value_nabl">NABL</label></td>
+                                <td>
+                                    <field name="avg_abrasion_value_nabl"
+                                        decoration-success="avg_abrasion_value_nabl == 'pass'" 
+                                        decoration-danger="avg_abrasion_value_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <group/>
+
+
+                      <!-- bulk_density_visible -->
+
+                    <div invisible="bulk_density_visible == False">
+                        <h1 class="text-center">
+                            <field name="bulk_density_name" readonly="1" nolabel="1"/>
+                            <field name="bulk_density_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+
+                    <div class=" custom_table_borders" invisible="bulk_density_visible == False">
+                        <field name="bulk_density_line_ids" nolabel="1" colspan="2">
+                            <tree editable="bottom">
+                                <field name='sample_no'/>
+                                <field name="w" class="blue-input" decoration-info="w != 0"/>
+                                <field name="v" class="blue-input" decoration-info="v != 0"/>
+                                <field name="bulk_density"/>
+                            </tree>
+                        </field>
+                    </div>
+
+                    <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" invisible="bulk_density_visible == False" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_bulk_density"></label></td>
+                                  <td><field name="avg_bulk_density"/></td>
+                            </tr>
+                             <tr>
+                                <td><label class="fw-bold" for="avg_bulk_density_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="avg_bulk_density_conformity"
+                                        decoration-success="avg_bulk_density_conformity == 'pass'" 
+                                        decoration-danger="avg_bulk_density_conformity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                               <td><label class="fw-bold" for="avg_bulk_density_nabl">NABL</label></td>
+                                <td>
+                                    <field name="avg_bulk_density_nabl"
+                                        decoration-success="avg_bulk_density_nabl == 'pass'" 
+                                        decoration-danger="avg_bulk_density_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <group/>
+
+
+
+
+                   
+                   
+                  
+                   
+                   <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
+
+             
+
+
+
+
+
+
+
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+
+                </sheet>
+            </form>
+        </field>
+     </record>
+
+     <record id="view_ballast_prefill_data_form" model="ir.ui.view">
+            <field name="name">ballast.prefill.data.form</field>
+            <field name="model">ballast.prefill.data</field>
+            <field name="arch" type="xml">
+                <form string="Prefill Data">
+                    <group>
+                        <field name="product_id" readonly="1"/>
+                        <field name="sample_id"/>
+
+                    </group>
+                    <footer>
+                        <button name="prefill_data" string="Prefill Data" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_ballast_prefill_data_wizard" model="ir.actions.act_window">
+            <field name="name">Prefill Data</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ballast.prefill.data</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_ballast_prefill_data_form"/>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

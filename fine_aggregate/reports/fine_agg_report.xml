@@ -287,12 +287,16 @@
 									<td colspan="3"><span t-field="o.material.source_sample"/></td>
 								</tr>
 
-								<tr t-if="o.material.specifications">
+								<tr t-if="o.material.specification_code">
 									<td style="font-weight: bold;">Specifications</td>
-									<td colspan="3"><span t-field="o.material.specifications"/></td>
+									<td colspan="3"><span t-field="o.material.specification_code"/></td>
 								</tr>
 
 						</table>
+					</div>
+					<div style="margin-top:5px;text-align: center;">
+						<u>Test Results</u><![CDATA[&nbsp;]]>:<![CDATA[&nbsp;]]>
+						
 					</div>
 
                      <div t-if="data.sieve_visible" style="margin-top:5px">
