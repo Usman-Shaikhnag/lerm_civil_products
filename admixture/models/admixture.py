@@ -279,6 +279,7 @@ class MechanicalAdmixture(models.Model):
 
     compressive_strength_line_ids = fields.One2many('admixture.compressive.strength.line','parent_id',string='Compressive Strength Test Lines', default=lambda self: self.default_compressive_strength_lines_ids())
 
+
     @api.model
     def default_compressive_strength_lines_ids(self):
         default_lines = [
@@ -571,6 +572,11 @@ class MechanicalAdmixture(models.Model):
 
     flexural_strength_line_ids = fields.One2many('admixture.flexural.strength.line','parent_id',string='Flexural Strength Test Lines', default=lambda self: self._default_flexural_strength_lines())
 
+    flex_size_id = fields.Selection([
+    ('600 x 150 x 150 mm', '600 x 150 x 150 mm'),
+    ('700 x 150 x 150 mm', '700 x 150 x 150 mm'),
+     ], string="Size")
+
     @api.model
     def _default_flexural_strength_lines(self):
         default_lines = [
@@ -630,8 +636,6 @@ class MechanicalAdmixture(models.Model):
             setattr(rec, field_name, avg)
 
     span_length = fields.Float(string="Span Length")
-    beam_width = fields.Float(string="Width of Specimen")
-    beam_depth = fields.Float(string="Depth of Specimen")
 
     avg_3_days_flexural_confirmity = fields.Selection([
         ('pass', 'Pass'),
@@ -1432,7 +1436,7 @@ class AdmixtureCompressiveStrengthLine(models.Model):
     )
 
     weight = fields.Float(string='Weight (gms)')
-    volume = fields.Float(string='Volume (cc)')
+    volume = fields.Float(string='Volume (cc)',compute='_compute_volume', store=True,digits=(16,0))
 
     density = fields.Float(
         string='Density (gm/cc)',
@@ -1475,6 +1479,18 @@ class AdmixtureCompressiveStrengthLine(models.Model):
                 rec.weight / rec.volume
                 if rec.volume else 0.0
             )
+
+    @api.depends('parent_id.eln_ref.size_id.size')
+    def _compute_volume(self):
+     for rec in self:
+        rec.volume = 0.0
+
+        size_str = rec.parent_id.eln_ref.size_id.size
+        if size_str:
+            match = re.search(r'(\d+)', str(size_str))
+            if match:
+                side = float(match.group(1))   # mm
+                rec.volume = (side ** 3) / 1000.0   # convert mm³ to cc
 
     # area_of_cube = fields.Float(string="Area of Cube",compute="_compute_area_cube",store=True)
 
@@ -1527,7 +1543,8 @@ class AdmixtureFlexuralStrengthLine(models.Model):
     age = fields.Char(string='Age Of Beam')
 
     weight = fields.Float(string='Weight (Kg)')
-    volume = fields.Float(string='Volume (cm³)')
+    volume = fields.Float(string='Volume (cm³)',compute='_compute_volume',
+    store=True,digits=(16,0))
 
     density = fields.Float(
         string='Density (g/cc)',
@@ -1535,7 +1552,7 @@ class AdmixtureFlexuralStrengthLine(models.Model):
         store=True
     )
 
-    test_area = fields.Float(string="Test Area (mm²)",compute="_compute_test_area",store=True)
+    test_area = fields.Float(string="Test Area (mm²)",compute="_compute_test_area",store=True,digits=(16,0))
 
     # @api.depends('parent_id.beam_width', 'parent_id.beam_depth')
     # def _compute_test_area(self):
@@ -1561,50 +1578,111 @@ class AdmixtureFlexuralStrengthLine(models.Model):
             if rec.volume else 0.0
         )
 
-    @api.depends('parent_id.size_id.size')
+    @api.depends('parent_id.flex_size_id')
+    def _compute_volume(self):
+     for rec in self:
+        rec.volume = 0.0
+
+        size = rec.parent_id.flex_size_id
+        if size:
+            # Extract numbers from "700 x 150 x 150 mm"
+            values = [float(x) for x in re.findall(r'\d+', size)]
+
+            if len(values) == 3:
+                length, width, depth = values
+
+                # mm³ -> cm³
+                rec.volume = (length * width * depth) / 1000.0
+
+
+    @api.depends('parent_id.flex_size_id')
     def _compute_test_area(self):
-     import re
+     for rec in self:
+        rec.test_area = 0.0
 
-     for record in self:
-        record.test_area = 0.0
-
-        size_str = record.parent_id.size_id.size
+        size_str = rec.parent_id.flex_size_id
 
         if size_str:
-            match = re.search(r'\d+', str(size_str))
+            # Extract all numbers from the size string
+            values = [float(x) for x in re.findall(r'\d+', size_str)]
 
-            if match:
-                side = int(match.group())
-                record.test_area = side * side
+            if len(values) == 3:
+                length, width, depth = values
 
+                # Cross-sectional area = Width × Depth
+                rec.test_area = width * depth
 
-
-
-    @api.depends('load_kn', 'test_area', 'parent_id.span_length')
+    @api.depends(
+    'load_kn',
+    'test_area',
+    'parent_id.span_length',
+    'parent_id.flex_size_id'
+)
     def _compute_flexural_strength(self):
      import re
 
      for rec in self:
         rec.flexural_strength = 0.0
 
-        size_str = rec.parent_id.size_id.size
+        size_str = rec.parent_id.flex_size_id
 
         if size_str:
-            match = re.search(r'\d+', str(size_str))
+            values = [float(x) for x in re.findall(r'\d+', size_str)]
 
-            if match:
-                depth = float(match.group())  # 150
+            if len(values) == 3:
+                _, width, depth = values
 
                 P = rec.load_kn * 1000
                 L = rec.parent_id.span_length
                 A = rec.test_area
 
-                if P and L and A:
-                    rec.flexural_strength = (
-                        P * L
-                    ) / (
-                        A * depth
-                    )
+                if P and L and A and depth:
+                    rec.flexural_strength = (P * L) / (A * depth)
+
+    # @api.depends('parent_id.flex_size_id')
+    # def _compute_test_area(self):
+    #  import re
+
+    #  for record in self:
+    #     record.test_area = 0.0
+
+    #     size_str = record.parent_id.flex_size_id
+
+    #     if size_str:
+    #         match = re.search(r'\d+', str(size_str))
+
+    #         if match:
+    #             side = int(match.group())
+    #             record.test_area = side * side
+
+
+
+
+    # @api.depends('load_kn', 'test_area', 'parent_id.span_length')
+    # def _compute_flexural_strength(self):
+    #  import re
+
+    #  for rec in self:
+    #     rec.flexural_strength = 0.0
+
+    #     size_str = rec.parent_id.flex_size_id
+
+    #     if size_str:
+    #         match = re.search(r'\d+', str(size_str))
+
+    #         if match:
+    #             depth = float(match.group())  # 150
+
+    #             P = rec.load_kn * 1000
+    #             L = rec.parent_id.span_length
+    #             A = rec.test_area
+
+    #             if P and L and A:
+    #                 rec.flexural_strength = (
+    #                     P * L
+    #                 ) / (
+    #                     A * depth
+    #                 )
 
 
     
