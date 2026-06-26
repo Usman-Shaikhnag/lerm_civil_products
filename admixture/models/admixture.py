@@ -1300,13 +1300,14 @@ class AdmixtureBleedingTestLine(models.Model):
     bleed_water_kg = fields.Float(
         string="Mass of bleed water collected (kg)",
         compute='_compute_bleed_water_kg',
-        store=True,digits=(10,3)
+        store=True,digits=(16,14)
     )
 
     bleeding_percent = fields.Float(
         string="Bleeding of concrete (%)",
         compute='_compute_bleeding_percent',
-        store=True
+        store=True,
+        digits=(16,14)
     )
 
     @api.depends('w1', 'w2')
