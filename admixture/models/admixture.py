@@ -955,20 +955,82 @@ class MechanicalAdmixture(models.Model):
         return default_lines
     
 
-    avg_flow_diameter = fields.Float(
-        string='Average Flow Diameter (mm)',
-        compute='_compute_avg_flow_diameter',
-        store=True
-    )
+    avg_flow_0 = fields.Float(
+    string="Average Flow at 0 Min",
+    compute="_compute_flow_avg",
+    store=True)
 
-    @api.depends('flowhigh_work_line_ids.average_flow')
-    def _compute_avg_flow_diameter(self):
+    avg_flow_30 = fields.Float(
+    string="Average Flow at 30 Min",
+    compute="_compute_flow_avg",
+    store=True)
+
+    avg_flow_60 = fields.Float(
+    string="Average Flow at 60 Min",
+    compute="_compute_flow_avg",
+    store=True)
+
+    avg_flow_90 = fields.Float(
+    string="Average Flow at 90 Min",
+    compute="_compute_flow_avg",
+    store=True)
+
+    avg_flow_120 = fields.Float(
+    string="Average Flow at 120 Min",
+    compute="_compute_flow_avg",
+    store=True)
+
+    @api.depends(
+    'flowhigh_work_line_ids.flow_0',
+    'flowhigh_work_line_ids.flow_30',
+    'flowhigh_work_line_ids.flow_60',
+    'flowhigh_work_line_ids.flow_90',
+    'flowhigh_work_line_ids.flow_120',)
+    def _compute_flow_avg(self):
      for rec in self:
-        flow_diameter = rec.flowhigh_work_line_ids.mapped('average_flow')
-        rec.avg_flow_diameter = (
-            sum(flow_diameter) / len(flow_diameter)
-            if flow_diameter else 0.0
+        lines = rec.flowhigh_work_line_ids
+
+        rec.avg_flow_0 = (
+            sum(lines.mapped('flow_0')) / len(lines)
+            if lines else 0.0
         )
+
+        rec.avg_flow_30 = (
+            sum(lines.mapped('flow_30')) / len(lines)
+            if lines else 0.0
+        )
+
+        rec.avg_flow_60 = (
+            sum(lines.mapped('flow_60')) / len(lines)
+            if lines else 0.0
+        )
+
+        rec.avg_flow_90 = (
+            sum(lines.mapped('flow_90')) / len(lines)
+            if lines else 0.0
+        )
+
+        rec.avg_flow_120 = (
+            sum(lines.mapped('flow_120')) / len(lines)
+            if lines else 0.0
+        )
+    
+
+    avg_flow_diameter = fields.Float(
+    string="Calculation of Percentage Increase",
+    compute="_compute_percentage_increase",
+    store=True)
+
+    @api.depends('avg_flow_0', 'avg_flow_120')
+    def _compute_percentage_increase(self):
+     for rec in self:
+        rec.avg_flow_diameter = 0.0
+
+        if rec.avg_flow_0:
+            rec.avg_flow_diameter = (
+                (rec.avg_flow_120 - rec.avg_flow_0)
+                / rec.avg_flow_0
+            ) * 100
 
 
     avg_flow_diameter_confirmity = fields.Selection([
@@ -1774,23 +1836,23 @@ class AdmixtureFlowDiameterTestLine(models.Model):
     flow_90 = fields.Float('Flow Diameter at 90 Minutes (mm)')
     flow_120 = fields.Float('Flow Diameter at 120 Minutes (mm)')
 
-    average_flow = fields.Float(
-        string="Average Flow Diameter (mm) ",
-        compute="_compute_average_flow",
-        store=True
-    )
+    # average_flow = fields.Float(
+    #     string="Average Flow Diameter (mm) ",
+    #     compute="_compute_average_flow",
+    #     store=True
+    # )
 
-    @api.depends('flow_0', 'flow_30', 'flow_60', 'flow_90', 'flow_120')
-    def _compute_average_flow(self):
-        for rec in self:
-            values = [
-                rec.flow_0,
-                rec.flow_30,
-                rec.flow_60,
-                rec.flow_90,
-                rec.flow_120
-            ]
-            rec.average_flow = sum(values) / 5 if values else 0.0
+    # @api.depends('flow_0', 'flow_30', 'flow_60', 'flow_90', 'flow_120')
+    # def _compute_average_flow(self):
+    #     for rec in self:
+    #         values = [
+    #             rec.flow_0,
+    #             rec.flow_30,
+    #             rec.flow_60,
+    #             rec.flow_90,
+    #             rec.flow_120
+    #         ]
+    #         rec.average_flow = sum(values) / 5 if values else 0.0
 
 
     @api.model
