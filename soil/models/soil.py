@@ -72,8 +72,19 @@ class Soil(models.Model):
     silt_clay = fields.Float(string="%Clay",compute="_compute_clay_fraction")
 
     silt = fields.Float(string="%Silt",compute="_compute_silt")
+
+    silt_clay_total = fields.Float(
+    string="%Silt + Clay",
+    compute="_compute_silt_clay_total",
+    store=True
+)
     
     wt_of_sample = fields.Float(string="Weight of Sample, gms")
+
+    @api.depends('silt', 'silt_clay')
+    def _compute_silt_clay_total(self):
+     for record in self:
+        record.silt_clay_total = (record.silt or 0.0) + (record.silt_clay or 0.0)
 
     @api.depends('sieve_analysis_child_lines.passing_percent', 'sieve_analysis_child_lines.sieve_size')
     def _compute_clay_fraction(self):

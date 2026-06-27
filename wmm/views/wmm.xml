@@ -255,11 +255,10 @@
                     <field name="impact_value_child_lines" nolabel="1" colspan="2">
                             <tree editable="bottom" >
                                 <field name='sample_no'/>
-                                <field name='wt_of_cylinder' class="blue-input" decoration-info="wt_of_cylinder != 0"/>
-                                <field name='total_wt_of_dried' class="blue-input" decoration-info="total_wt_of_dried != 0"/>
-                                <field name='total_wt_aggregate'/>
-                                <field name='wt_of_aggregate_passing' class="blue-input" decoration-info="wt_of_aggregate_passing != 0"/>
-                                <field name='wt_of_aggregate_retained'/>
+                                 <field name='w1'  class="blue-input" decoration-info="w1 != 0" />
+                                <field name='w2' class="blue-input" decoration-info="w2 != 0"/>
+                                <field name='w3' class="blue-input" decoration-info="w3 != 0"/>
+                                <field name='w4' />
                                 <field name='impact_value'/>
                             </tree>
                            
@@ -1000,94 +999,158 @@
 
 
 
-                      <!-- Elongation and Flakiness Index -->
-
-
-                <div class="text-center" invisible="not elongation_visible or not flakiness_visible">
+                  <!-- Elongation and Flakiness  -->
+                    <div class="text-center" invisible="not elongation_fl_visible ">
                         <h1>
-                            <field name="elongation_name" readonly="1" nolabel="1"/>
-                            <field name="elongation_visible" invisible="1"/>
-                            <field name="flakiness_visible" invisible="1"/>
+                            <field name="elongation_fl_name" readonly="1" nolabel="1"/>
+                            <field name="elongation_fl_visible" invisible="1"/>
+                           
                         </h1>
                     </div>
-                    <group/>
 
-                    <div invisible="not elongation_visible or not flakiness_visible" class="custom_table_borders">
-                        <field name="elongation_table" colspan="2" nolabel="1">
-                        <tree editable="bottom" class="custom_table_borders">
-                          <field name="sieve_size"/>
-                          <field name="wt_retained" class="blue-input" decoration-info="wt_retained != 0"/>
-                          <field name="elongated_retained" class="blue-input" decoration-info="elongated_retained != 0"/>
-                          <field name="flakiness_retained" class="blue-input" decoration-info="flakiness_retained != 0"/>
-                        </tree>
+                    <div invisible="not elongation_fl_visible " class="custom_table_borders">
+                        <field name="elongation_fl_table" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="passing_sieve"  />
+                                <field name="retained_sieve"  />
+                                <field name="total_weight" class="blue-input" decoration-info="total_weight != 0"/>
+                                <field name="wt_passing_flakiness" class="blue-input" decoration-info="wt_passing_flakiness != 0"/>
+                                <field name="wt_retained_flakiness" class="blue-input" decoration-info="wt_retained_flakiness != 0"/>
+                                <field name="wt_retained_elongation" class="blue-input" decoration-info="wt_retained_elongation != 0"/>
+                                
+                            </tree>
                         </field>
                     </div>
+                        
+                    <div class="d-flex gap-2" invisible="elongation_fl_visible == False"> 
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="total_total_weight"></label>
+                                    </td>
+                                    <td>
+                                        <field name="total_total_weight"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="total_wt_passing_flakiness"></label>
+                                    </td>
+                                    <td>
+                                        <field name="total_wt_passing_flakiness"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="total_wt_retained_flakiness"></label>
+                                    </td>
+                                    <td>
+                                        <field name="total_wt_retained_flakiness"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="total_wt_retained_elongation"></label>
+                                    </td>
+                                    <td>
+                                        <field name="total_wt_retained_elongation"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
-                    <div style="display:flex;" invisible="not elongation_visible or not flakiness_visible">
-                  
-                      <div style="width:50%;">
-                          <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="elongation_fl_visible == False" style="white-space:nowrap;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="flakiness_index"></label>
+                                    </td>
+                                    <td>
+                                        <field name="flakiness_index"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="elongation_index"></label>
+                                    </td>
+                                    <td>
+                                        <field name="elongation_index"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="combined_index"></label>
+                                    </td>
+                                    <td>
+                                        <field name="combined_index"/>
+                                    </td>
+                                </tr>
+                           
+                            </tbody>
+                        </table>
+                        <group/>
+
+
+                       <div class="d-flex gap-2" invisible="elongation_fl_visible == False"> 
+                         <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="elongation_fl_visible == False">
                           <tbody>
-                          <tr>
-                            <td><span>Total</span></td>
-                            <td><field name="total_wt_retained_fl_el"/></td>
-                           </tr>
-                           <tr>
-                            <td><span>Total Elongation</span></td>
-                            <td><field name="total_elongated_retained"/></td>
-                           </tr>
-                          <tr>
-                            <td><span>Total Flakiness</span></td>
-                            <td><field name="total_flakiness_retained"/></td>
-                           </tr>
-                           <tr>
-                             <td><span>	Flakiness Conformity</span></td>
-                              <td><field  name="aggregate_flakiness_conformity"
-                                        decoration-success="aggregate_flakiness_conformity == 'pass'" 
-                                        decoration-danger="aggregate_flakiness_conformity == 'fail'" 
-                                        readonly="1" string="Flakiness Conformity"/>
-                            </td>
-                           </tr>
-                           <tr>
-                            <td><span>NABL</span></td>
-                            <td><field  name="aggregate_flakiness_nabl" /></td>
-                           </tr>
-                     </tbody>
-                          </table>
-                      </div>
-
-                      <div style="width:50%;" invisible="not elongation_visible or not flakiness_visible">
-                             <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                             <tbody>
-                          <tr>
-                            <td><span>Aggregate Elongation Value in %</span></td>
-                            <td><field name="aggregate_elongation"/></td>
-                           </tr>
-                           <tr>
-                            <td><span>Aggregate Flakiness Value in %</span></td>
-                            <td><field name="aggregate_flakiness"/></td>
-                           </tr>
-                          <tr>
-                            <td><span>Aggregate Elongation And Flakiness Value in %</span></td>
-                            <td><field name="aggregate_combine"/></td>
-                           </tr>
-                           <tr>
-                             <td><span>Elongation Conformity</span></td>
-                              <td><field  name="aggregate_elongation_conformity"
-                                        decoration-success="aggregate_elongation_conformity == 'pass'" 
-                                        decoration-danger="aggregate_elongation_conformity == 'fail'" 
-                                        readonly="1" string="Elongation Conformity" />
-                                        </td>
-                           </tr>
-                           <tr>
-                            <td><span>NABL</span></td>
-                            <td><field  name="aggregate_elongation_nabl" /></td>
-                           </tr>
+                              <tr>
+                                <td>
+                                    <label class="fw-bold" for="elongation_index_conformity"></label>
+                                </td>
+                                <td>
+                                    <field name="elongation_index_conformity"
+                                        decoration-success="elongation_index_conformity == 'pass'" 
+                                        decoration-danger="elongation_index_conformity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="fw-bold" for="elongation_index_nabl"></label>
+                                </td>
+                                <td>
+                                    <field name="elongation_index_nabl"
+                                        decoration-success="elongation_index_nabl == 'pass'" 
+                                        decoration-danger="elongation_index_nabl == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
                         </tbody>
-                          </table>
-                      </div>
-                      </div>
-
+                    </table>
+                     <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="elongation_fl_visible == False">
+                          <tbody>
+                               <tr>
+                                <td>
+                                    <label class="fw-bold" for="flakiness_index_conformity"></label>
+                                </td>
+                                <td>
+                                    <field name="flakiness_index_conformity"
+                                        decoration-success="flakiness_index_conformity == 'pass'" 
+                                        decoration-danger="flakiness_index_conformity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="fw-bold" for="flakiness_index_nabl"></label>
+                                </td>
+                                <td>
+                                    <field name="flakiness_index_nabl"
+                                        decoration-success="flakiness_index_nabl == 'pass'" 
+                                        decoration-danger="flakiness_index_nabl == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
                       <group/>
 
 

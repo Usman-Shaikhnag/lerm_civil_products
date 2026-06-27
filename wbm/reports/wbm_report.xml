@@ -685,7 +685,7 @@
 								</tr>
 
 								<!-- Impact Value -->
-							<tr t-if="data.impact_visible and (data.avg_impact_nabl == 'pass' and nabl or (data.avg_impact_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.impact_visible and (data.average_impact_value_nabl == 'pass' and nabl or (data.average_impact_value_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<t t-set="impact" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','gh124113-e282-488c-9dbb-16e9f14b065b')])"/>
 									
 									<td style="text-align: center;">
@@ -698,7 +698,7 @@
 
                                     <td style="text-align: center;">
 										<span>
-											<span t-field="data.avg_impact" t-options='{"widget": "float", "precision": 2}'/>
+											<span t-field="data.average_impact_value" t-options='{"widget": "float", "precision": 2}'/>
 										</span>
 									</td>
 
@@ -1147,8 +1147,8 @@
 									
 								</tr>
 
-								<!--  Elongation -->
-							<tr t-if="data.elongation_visible and (data.aggregate_elongation_nabl == 'pass' and nabl or (data.aggregate_elongation_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<!-- Elongation -->
+							<tr t-if="data.elongation_fl_visible and (data.elongation_index_nabl == 'pass' and nabl or (data.elongation_index_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<t t-set="elongation" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','21045gh-638d-4e6f-b258-df8a2fc0ea5c')])"/>
 									
 									<td style="text-align: center;">
@@ -1161,15 +1161,17 @@
 
                                     <td style="text-align: center;">
 										<span>
-											<span t-field="data.aggregate_elongation" t-options='{"widget": "float", "precision": 2}'/>
+											<span t-field="data.elongation_index" t-options='{"widget": "float", "precision": 2}'/>
 										</span>
+									</td>
 
 									<td style="text-align: center;">
 										<span>
 											<span t-esc="elongation.unit.name"/>
 										</span>
-									</td>								
 									</td>
+									
+									
 									<td style="text-align: center;">
 										<span>
 											<t t-foreach="elongation.parameter_table" t-as="parameter">
@@ -1179,7 +1181,6 @@
 											</t>
 										</span>
 									</td>
-
                                     <td style="text-align: center;">
 										<span>
 											<t t-foreach="elongation.parameter_table" t-as="parameter">
@@ -1192,42 +1193,43 @@
 									
 								</tr>
 
-								<!--  Elongation -->
-							<tr t-if="data.flakiness_visible and (data.aggregate_flakiness_nabl == 'pass' and nabl or (data.aggregate_flakiness_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="flakiness" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','2103654tr-8125-4f5f-aa7c-f82d1416d5eb')])"/>
+								<!-- Flakiness -->
+							<tr t-if="data.elongation_fl_visible and (data.flakiness_index_nabl == 'pass' and nabl or (data.flakiness_index_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+									<t t-set="elongation_fl" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','2103654tr-8125-4f5f-aa7c-f82d1416d5eb')])"/>
 									
 									<td style="text-align: center;">
 										<span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/>
 									</td>
 									<td>
-										<span t-esc="flakiness.parameter_name"/>
+										<span t-esc="elongation_fl.parameter_name"/>
 									</td>
 
                                     <td style="text-align: center;">
 										<span>
-											<span t-field="data.aggregate_flakiness" t-options='{"widget": "float", "precision": 2}'/>
+											<span t-field="data.flakiness_index" t-options='{"widget": "float", "precision": 2}'/>
 										</span>
+									</td>
 
 									<td style="text-align: center;">
 										<span>
-											<span t-esc="flakiness.unit.name"/>
+											<span t-esc="elongation_fl.unit.name"/>
 										</span>
-									</td>								
 									</td>
+									
+									
 									<td style="text-align: center;">
 										<span>
-											<t t-foreach="flakiness.parameter_table" t-as="parameter">
+											<t t-foreach="elongation_fl.parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
 													<span t-field="parameter.permissable_limit"/>
 												</t>
 											</t>
 										</span>
 									</td>
-
                                     <td style="text-align: center;">
 										<span>
-											<t t-foreach="flakiness.parameter_table" t-as="parameter">
+											<t t-foreach="elongation_fl.parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
 													<span t-field="parameter.specification"/>
 												</t>
@@ -1236,6 +1238,7 @@
 									</td>
 									
 								</tr>
+
 
 								<!-- CBR -->
 								<tr t-if="data.soil_visible and (data.cbr_25_avg_nabl == 'pass' and nabl or (data.cbr_25_avg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
