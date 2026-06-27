@@ -41,7 +41,7 @@
                                     <t t-else="">--</t>
 								</td>
 
-                                <td colspan="1" >URL NO:</td>
+                                <td colspan="1" >ULR NO:</td>
 
 								  <td colspan="1" style="font-weight:bold;">
 									<![CDATA[&nbsp;]]>
@@ -237,6 +237,392 @@
 							</thead>
 							<tbody>
 
+								<!-- Compressive Strength -->
+                            <t t-set="show_3days" t-value="data.avg_3_days_nabl == 'pass' and nabl or (data.avg_3_days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+
+							<t t-set="show_7days" t-value="data.avg_7_days_nabl == 'pass' and nabl or (data.avg_7_days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+
+							<t t-set="show_14days" t-value="data.avg_14_days_nabl == 'pass' and nabl or (data.avg_14_days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+
+							<t t-set="show_28days" t-value="data.avg_28_days_nabl == 'pass' and nabl or (data.avg_28_days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+
+                            
+
+                            <!-- 🔹 Step 2: Rowspan calculation -->
+					      <t t-set="rowspan_count" t-value="1 + int(show_3days) + int(show_7days) + int(show_14days) + int(show_28days)"/>
+
+                          <tr t-if="(data.compressive_strength_visible) and (show_3days or show_7days or show_14days or show_28days)">
+
+									<t t-set="compressive" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','4775ab5c-6c11-4f8b-9115-7fed4a9783c9')])"/>
+									
+									<td t-att-rowspan="rowspan_count"  style="text-align: center;vertical-align:middle;">
+						                 <span t-esc="i + 1"/>
+							             <t t-set="i" t-value="i+1"/>
+						            </td>
+									<td colspan="5">
+										<span t-esc="compressive.parameter_name"/>
+									</td>
+								</tr>
+
+					
+							 <!-- 3 Days -->
+                             <tr t-if="data.compressive_strength_visible and show_3days">
+									<t t-set="threedays" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','8ec2711d-3fb4-4ff7-b903-74b31b2a5c4b')])"/>
+									
+									<td>
+										<span t-esc="threedays.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="data.avg_3_days" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="threedays.unit.name"/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="threedays.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="threedays.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+								<!-- 7 Days -->
+							<tr t-if="data.compressive_strength_visible and show_7days">
+									<t t-set="sevendays" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','57a1b1b7-ae7a-4c60-8974-ec3e3b70c3b3')])"/>
+									
+									<td>
+										<span t-esc="sevendays.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="data.avg_7_days" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="sevendays.unit.name"/>
+										</span>
+									</td>
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="sevendays.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="sevendays.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+							<!-- 14 Days -->
+							<tr t-if="data.compressive_strength_visible and show_14days">
+									<t t-set="fourteendays" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','d6927f8e-0aff-4cff-8be4-242d807fdd7b')])"/>
+									
+									<td>
+										<span t-esc="fourteendays.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="data.avg_14_days" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="fourteendays.unit.name"/>
+										</span>
+									</td>
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="fourteendays.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="fourteendays.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+								<!-- 28 Days -->
+							<tr t-if="data.compressive_strength_visible and show_28days">
+									<t t-set="twoeightdays" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','86419a8f-580c-4ee2-91aa-2904ce7a665a')])"/>
+									
+									<td>
+										<span t-esc="twoeightdays.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="data.avg_28_days" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="twoeightdays.unit.name"/>
+										</span>
+									</td>
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="twoeightdays.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="twoeightdays.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+								<!-- Flexural Strength -->
+                            <t t-set="fshow_3days" t-value="data.avg_3_days_flexural_nabl == 'pass' and nabl or (data.avg_3_days_flexural_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+
+							<t t-set="fshow_7days" t-value="data.avg_7_days_flexural == 'pass' and nabl or (data.avg_7_days_flexural == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+
+							<t t-set="fshow_14days" t-value="data.avg_14_days_flexural_nabl == 'pass' and nabl or (data.avg_14_days_flexural_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+
+							<t t-set="fshow_28days" t-value="data.avg_28_days_flexural_nabl == 'pass' and nabl or (data.avg_28_days_flexural_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+
+                            
+
+                            <!-- 🔹 Step 2: Rowspan calculation -->
+					      <t t-set="rowspan_count" t-value="1 + int(fshow_3days) + int(fshow_7days) + int(fshow_14days) + int(fshow_28days)"/>
+
+                          <tr t-if="(data.flexural_strength_visible) and (fshow_3days or fshow_7days or fshow_14days or fshow_28days)">
+
+									<t t-set="flexural" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','fa874e16-57d4-4add-a60e-0916e8e7245b')])"/>
+									
+									<td t-att-rowspan="rowspan_count"  style="text-align: center;vertical-align:middle;">
+						                 <span t-esc="i + 1"/>
+							             <t t-set="i" t-value="i+1"/>
+						            </td>
+									<td colspan="5">
+										<span t-esc="flexural.parameter_name"/>
+									</td>
+								</tr>
+
+					
+							 <!-- 3 Days -->
+                             <tr t-if="data.flexural_strength_visible and fshow_3days">
+									<t t-set="threedays" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','e6c08fb2-dbd2-4e52-ba73-7d26a0b0a2b0')])"/>
+									
+									<td>
+										<span t-esc="threedays.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="data.avg_3_days_flexural" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="threedays.unit.name"/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="threedays.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="threedays.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+								<!-- 7 Days -->
+							<tr t-if="data.flexural_strength_visible and fshow_7days">
+									<t t-set="sevendays" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','ecdecc74-8383-4444-aed1-c7b814eeb4a7')])"/>
+									
+									<td>
+										<span t-esc="sevendays.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="data.avg_7_days_flexural" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="sevendays.unit.name"/>
+										</span>
+									</td>
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="sevendays.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="sevendays.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+							<!-- 14 Days -->
+							<tr t-if="data.flexural_strength_visible and fshow_14days">
+									<t t-set="fourteendays" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','bb6a5c21-8f60-4ad5-b421-7d7763c2e28a')])"/>
+									
+									<td>
+										<span t-esc="fourteendays.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="data.avg_14_days_flexural" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="fourteendays.unit.name"/>
+										</span>
+									</td>
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="fourteendays.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="fourteendays.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+								<!-- 28 Days -->
+							<tr t-if="data.flexural_strength_visible and fshow_28days">
+									<t t-set="twoeightdays" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','526191fe-36cf-4a90-ba82-2460a6661987')])"/>
+									
+									<td>
+										<span t-esc="twoeightdays.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="data.avg_28_days_flexural" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="twoeightdays.unit.name"/>
+										</span>
+									</td>
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="twoeightdays.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="twoeightdays.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
 							<!-- Bleeding Test  -->
 
 								<tr t-if="data.bleeding_visible and (data.avg_bleeding_percent_nabl == 'pass' and nabl or (data.avg_bleeding_percent_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
@@ -329,97 +715,7 @@
 									
 								</tr>
 
-								<!-- Compressive Strength  -->
-
-								<tr t-if="data.compressive_strength_visible and (data.avg_28_days_nabl == 'pass' and nabl or (data.avg_28_days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="avg_28" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','86419a8f-580c-4ee2-91aa-2904ce7a665a')])"/>
-									
-									<td style="text-align: center;">
-										<span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/>
-									</td>
-									<td>
-										<span t-esc="avg_28.parameter_name"/>
-									</td>
-
-                                    <td style="text-align: center;">
-										<span>
-											<span t-field="data.avg_28_days" t-options='{"widget": "float", "precision": 2}'/>
-										</span>
-									</td>
-
-									<td style="text-align: center;">
-										<span>
-											<span t-esc="avg_28.unit.name"/>
-										</span>
-									</td>
-									
-									<td style="text-align: center;">
-										<span>
-											<t t-foreach="avg_28.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.permissable_limit"/>
-												</t>
-											</t>
-										</span>
-									</td>
-                                    <td style="text-align: center;">
-										<span>
-											<t t-foreach="avg_28.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-												</t>
-											</t>
-										</span>
-									</td>
-									
-								</tr>
-
-								<!-- Flexural Strength  -->
-
-								<tr t-if="data.flexural_strength_visible and (data.avg_28_days_flexural_nabl == 'pass' and nabl or (data.avg_28_days_flexural_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="avg_28" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','526191fe-36cf-4a90-ba82-2460a6661987')])"/>
-									
-									<td style="text-align: center;">
-										<span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/>
-									</td>
-									<td>
-										<span t-esc="avg_28.parameter_name"/>
-									</td>
-
-                                    <td style="text-align: center;">
-										<span>
-											<span t-field="data.avg_28_days_flexural" t-options='{"widget": "float", "precision": 2}'/>
-										</span>
-									</td>
-
-									<td style="text-align: center;">
-										<span>
-											<span t-esc="avg_28.unit.name"/>
-										</span>
-									</td>
-									
-									<td style="text-align: center;">
-										<span>
-											<t t-foreach="avg_28.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.permissable_limit"/>
-												</t>
-											</t>
-										</span>
-									</td>
-                                    <td style="text-align: center;">
-										<span>
-											<t t-foreach="avg_28.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-												</t>
-											</t>
-										</span>
-									</td>
-									
-								</tr>
+								
 
 								<!-- Loss Of Workability  -->
 
