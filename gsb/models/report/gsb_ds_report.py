@@ -303,7 +303,7 @@ class GsbReport1(models.AbstractModel):
             'notes_list': general_data.notes_id if hasattr(general_data, 'notes_id') and general_data.notes_id else [],
             'qrcode': qr_code,
             "qrcode_static": qrcode_static,
-            'stamp' : inreport_value,
+            # 'stamp' : inreport_value,
             'nabl' : nabl,
             'graphHeavy' : graph_image,
             # 'mdd' : max_y,

@@ -13,13 +13,13 @@ class GgbsMechanical(models.Model):
 
 
     name = fields.Char("Name",default="GGBS")
-    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     tests = fields.Many2many("mechanical.ggbs.test",string="Tests")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
     temprature = fields.Integer("Temperature (°C)", digits=(10,2))
     humidity = fields.Integer("Humidity (%)", digits=(10,2))
@@ -32,81 +32,11 @@ class GgbsMechanical(models.Model):
 
     description_work = fields.Text("Description Of Work")
 
-    temp_percent_normal = fields.Float("Temperature °c")
-    humidity_percent_normal = fields.Float("Humidity %")
-
-
-    def prefill_data(self):
-        # import wdb; wdb.set_trace()
-        return {
-            'name': 'Prefill Data',
-            'type': 'ir.actions.act_window',
-            'res_model': 'mechanical.ggbs.prefill.data',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {
-                'default_product_id': self.eln_ref.sample_id.material_id.id,
-                'exclude_sample_id': self.eln_ref.sample_id.id,
-                },
-        }
-
-
-
 
     @api.depends('eln_ref')
     def _compute_grade_id(self):
         if self.eln_ref:
             self.grade = self.eln_ref.grade_id.id
-
-
-
-
-
-            # remark
-
-    notes_id = fields.One2many('ggbs.notes', 'parent_id', string="Notes")
-    
-    @api.model
-    def default_get(self, fields):
-        res = super(GgbsMechanical, self).default_get(fields)
-
-        default_notes = [
-            (0, 0, {
-                'sr_no': 'a',
-                'notes': 'The report shall not be reproduced in full or partially without written approval of the laboratory HOD/CEO/Maganement.',
-            }),
-            (0, 0, {
-                'sr_no': 'b',
-                'notes': 'Sampling is not done by us unless mentioned otherwide.',
-            }),
-            (0, 0, {
-                'sr_no': 'c',
-                'notes': 'without a QR Code and hologram this report is considered invalid.',
-            }),
-            (0, 0, {
-                'sr_no': 'd',
-                'notes': 'The Result listed refer only to tested samples & applicable parameter Endorsement of product is neither interred nor inplied.',
-            }),
-
-            (0, 0, {
-                'sr_no': 'e',
-                'notes': 'The use or report for arbitration, publicity & evidence in legal dispute is forbidden except with prior written consent NBML Lab.',
-            }),
-             (0, 0, {
-                'sr_no': 'f',
-                'notes': 'All disputed are subject to Raipur jurisdiction 7 days correction to this report invalidates this report.',
-            }),
-
-             (0, 0, {
-                'sr_no': 'g',
-                'notes': 'Sample will be destroyed after 30-days from the date of test report unless otherwise Specified.',
-            }),
-        ]
-
-        res['notes_id'] = default_notes
-        return res
-
-
 
 
     ## Normal Consistency
@@ -234,22 +164,17 @@ class GgbsMechanical(models.Model):
     specific_gravity_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-        ('na', 'NA'),
+        ('not_applicable', 'Not Applicable'),
     ], string='Confirmity', default='fail',compute="_compute_specific_gravity_confirmity")
     specific_gravity_nabl = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='NABL', compute="_compute_specific_gravity_nabl")
+    ], string='NABL', default='fail',compute="_compute_specific_gravity_nabl")
 
 
     @api.depends('average_specific_gravity','eln_ref','grade')
     def _compute_specific_gravity_confirmity(self):
         for record in self:
-
-            if not record.eln_ref or not record.eln_ref.conformity:
-                record.specific_gravity_confirmity = 'na'
-                continue
-
             record.specific_gravity_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')]).parameter_table
@@ -491,26 +416,24 @@ class GgbsMechanical(models.Model):
     slag_7days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-        ('na', 'NA'),
+    ('na', 'NA'),
     ], string='Conformity', default='fail',compute="_compute_slag_7days_conformity")
 
     slag_7days_nabl = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='NABL', compute="_compute_slag_7days_nabl")
+    ], string='NABL', default='fail',compute="_compute_slag_7days_nabl")
 
 
     @api.depends('slag_activity_index_7days','eln_ref','grade')
     def _compute_slag_7days_conformity(self):
         for record in self:
-
             if not record.eln_ref or not record.eln_ref.conformity:
                 record.slag_7days_conformity = 'na'
                 continue
-
             record.slag_7days_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-321478658')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-321478658')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1452fgr0-8e67-4e94-86ea-98d9472f5c71')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1452fgr0-8e67-4e94-86ea-98d9472f5c71')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
@@ -529,8 +452,8 @@ class GgbsMechanical(models.Model):
         
         for record in self:
             record.slag_7days_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-321478658')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-321478658')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1452fgr0-8e67-4e94-86ea-98d9472f5c71')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1452fgr0-8e67-4e94-86ea-98d9472f5c71')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -556,19 +479,17 @@ class GgbsMechanical(models.Model):
     slag_28days_nabl = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='NABL', compute="_compute_slag_28days_nabl")
+    ], string='NABL', default='fail',compute="_compute_slag_28days_nabl")
 
     @api.depends('slag_activity_index_28days','eln_ref','grade')
     def _compute_slag_28days_conformity(self):
         for record in self:
-
             if not record.eln_ref or not record.eln_ref.conformity:
                 record.slag_28days_conformity = 'na'
                 continue
-
             record.slag_28days_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-3214855pp')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-3214855pp')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','bg21hy20-f42a-4405-b127-b5d84fe78485')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','bg21hy20-f42a-4405-b127-b5d84fe78485')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
@@ -587,8 +508,8 @@ class GgbsMechanical(models.Model):
         
         for record in self:
             record.slag_28days_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-3214855pp')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-3214855pp')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','bg21hy20-f42a-4405-b127-b5d84fe78485')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','bg21hy20-f42a-4405-b127-b5d84fe78485')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -685,17 +606,15 @@ class GgbsMechanical(models.Model):
     fineness_nabl = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='NABL', compute="_compute_fineness_nabl")
+    ], string='NABL', default='fail',compute="_compute_fineness_nabl")
 
 
     @api.depends('fineness_air_permeability','eln_ref','grade')
     def _compute_fineness_confirmity(self):
         for record in self:
-
             if not record.eln_ref or not record.eln_ref.conformity:
                 record.fineness_confirmity = 'na'
                 continue
-
             record.fineness_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')]).parameter_table
@@ -854,8 +773,7 @@ class GgbsMechanical(models.Model):
     initial_setting_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-        ('na', 'NA'),
-    ], string='Conformity', compute="_compute_initial_setting_conformity")
+    ('na', 'NA'),], string='Conformity', default='fail',compute="_compute_initial_setting_conformity")
 
     initial_setting_nabl = fields.Selection([
         ('pass', 'NABL'),
@@ -866,11 +784,9 @@ class GgbsMechanical(models.Model):
     @api.depends('initial_setting_time_minutes_unrounded','eln_ref','grade')
     def _compute_initial_setting_conformity(self):
         for record in self:
-
             if not record.eln_ref or not record.eln_ref.conformity:
                 record.initial_setting_conformity = 'na'
                 continue
-
             record.initial_setting_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ytre147-30fe-4043-b518-015f5c60d916')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ytre147-30fe-4043-b518-015f5c60d916')]).parameter_table
@@ -958,9 +874,7 @@ class GgbsMechanical(models.Model):
 
     final_setting_conformity = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail'),
-        ('na', 'NA'),
-    ], string='Conformity', compute="_compute_final_setting_conformity")
+        ('fail', 'Fail'), ('na', 'NA'),], string='Conformity', default='fail',compute="_compute_final_setting_conformity")
 
     final_setting_nabl = fields.Selection([
         ('pass', 'NABL'),
@@ -971,11 +885,9 @@ class GgbsMechanical(models.Model):
     @api.depends('final_setting_time_minutes_unrounded','eln_ref','grade')
     def _compute_final_setting_conformity(self):
         for record in self:
-
             if not record.eln_ref or not record.eln_ref.conformity:
                 record.final_setting_conformity = 'na'
                 continue
-
             record.final_setting_conformity = 'fail'
             line = self.env['lerm.parameter.master'].search([('internal_id','=','yy1475u-5e9c-4335-9ea2-2d87624c3061')])
             materials = self.env['lerm.parameter.master'].search([('internal_id','=','yy1475u-5e9c-4335-9ea2-2d87624c3061')]).parameter_table
@@ -1088,19 +1000,15 @@ class GgbsMechanical(models.Model):
     avg_moisture_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),
-            ('na', 'NA'),
-            ], string="Conformity", compute="_compute_avg_moisture_conformity", store=True)
-
+    ('na', 'NA'),], string="Conformity", compute="_compute_avg_moisture_conformity", store=True)
 
     @api.depends('avg_moisture','eln_ref','grade')
     def _compute_avg_moisture_conformity(self):
         
         for record in self:
-
             if not record.eln_ref or not record.eln_ref.conformity:
                 record.avg_moisture_conformity = 'na'
                 continue
-
             record.avg_moisture_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4578nhgrr245-3fa3-4b83-ae31-9d281457457hy')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4578nhgrr245-3fa3-4b83-ae31-9d281457457hy')]).parameter_table
@@ -1250,11 +1158,11 @@ class GgbsMechanical(models.Model):
                     record.normal_consistency_cement_visible = True
                 if sample.internal_id == '210bgf54-baa4-466f-a6a7-044da708f265':
                     record.specific_gravity_visible = True
-                if sample.internal_id == '5214hgtb-c526-4092-a3a7-321478658':
+                if sample.internal_id == '1452fgr0-8e67-4e94-86ea-98d9472f5c71':
                     record.slag_activity_7_visible = True
                 if sample.internal_id == '5214hgtb-c526-4092-a3a7-6b0ff7e69c0a':
                     record.fineness_visible = True
-                if sample.internal_id == '5214hgtb-c526-4092-a3a7-3214855pp':
+                if sample.internal_id == 'bg21hy20-f42a-4405-b127-b5d84fe78485':
                     record.slag_activity_7_visible = True
                     record.slag_activity_28_visible = True
 
@@ -1295,7 +1203,7 @@ class GgbsMechanical(models.Model):
                         continue
 
                     
-                    if result.parameter.internal_id == '5214hgtb-c526-4092-a3a7-321478658':
+                    if result.parameter.internal_id == '1452fgr0-8e67-4e94-86ea-98d9472f5c71':
                         result.result_char = self.slag_activity_index_7days
                         result.calculated = True
                         if self.specific_gravity_nabl == 'pass':
@@ -1315,7 +1223,7 @@ class GgbsMechanical(models.Model):
                         continue
 
 
-                    if result.parameter.internal_id == '5214hgtb-c526-4092-a3a7-3214855pp':
+                    if result.parameter.internal_id == 'bg21hy20-f42a-4405-b127-b5d84fe78485':
                         result.result_char = self.slag_activity_index_28days
                         result.calculated = True
                         if self.slag_28days_nabl == 'pass':
@@ -1360,6 +1268,16 @@ class GgbsMechanical(models.Model):
                             result.nabl_status = 'non-nabl'
                         continue
 
+                    if result.parameter.internal_id == '5214hgtb-c526-4092-a3a7-321478658':
+                        # result.result_char = self.slag_activity_index_28days
+                        result.calculated = True
+
+                    if result.parameter.internal_id == '5214hgtb-c526-4092-a3a7-3214855pp':
+                        # result.result_char = self.slag_activity_index_28days
+                        result.calculated = True
+
+
+
         return {
                 'view_mode': 'form',
                 'res_model': "lerm.eln",
@@ -1377,13 +1295,6 @@ class GgbsMechanical(models.Model):
         record.eln_ref.write({'model_id':record.id})
         return record
 
-
-    # @api.depends('eln_ref')
-    # def _compute_sample_parameters(self):
-    #     for record in self:
-    #         records = record.eln_ref.parameters_result.parameter.ids
-    #         record.sample_parameters = records
-    #         print("Records",records)
 
     @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
@@ -1410,8 +1321,6 @@ class GgbsMechanical(models.Model):
                 parameter_ids = user_param_results.mapped('parameter').ids
 
             record.sample_parameters = [(6, 0, parameter_ids)]
-
-        
     def get_all_fields(self):
         record = self.env['mechanical.ggbs'].browse(self.ids[0])
         field_values = {}
@@ -1420,6 +1329,44 @@ class GgbsMechanical(models.Model):
             field_values[field_name] = field_value
 
         return field_values
+
+
+    notes_id = fields.One2many('mechanical.ggbs.notes', 'parent_id', string="Notes", default=lambda self: self._default_notes_lines())
+
+    @api.model
+    def _default_notes_lines(self):
+        return [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The report shall not be reproduced in full or partially without written approval of the laboratory HOD/CEO/Maganement.',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'Sampling is not done by us unless mentioned otherwide.',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'without a QR Code and hologram this report is considered invalid.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': 'The Result listed refer only to tested samples & applicable parameter Endorsement of product is neither interred nor inplied.',
+            }),
+
+            (0, 0, {
+                'sr_no': 'e',
+                'notes': 'The use or report for arbitration, publicity & evidence in legal dispute is forbidden except with prior written consent NBML Lab.',
+            }),
+             (0, 0, {
+                'sr_no': 'f',
+                'notes': 'All disputed are subject to Raipur jurisdiction 7 days correction to this report invalidates this report.',
+            }),
+
+             (0, 0, {
+                'sr_no': 'g',
+                'notes': 'Sample will be destroyed after 30-days from the date of test report unless otherwise Specified.',
+            }),
+        ]
 
 class GgbsTest(models.Model):
     _name = "mechanical.ggbs.test"
@@ -1693,15 +1640,13 @@ class SoundnessLeChatelierLine(models.Model):
 
 
 
-class ggbsNotes(models.Model):
-    _name = "ggbs.notes"
-
-    parent_id = fields.Many2one('mechanical.ggbs',string="Parent Id")
-    sr_no = fields.Char("Sr. No.")
-    notes = fields.Char("Notes")
-
-
-
 
 
     
+
+class GgbsMechanicalNotes(models.Model):
+    _name = "mechanical.ggbs.notes"
+
+    parent_id = fields.Many2one('mechanical.ggbs', string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")

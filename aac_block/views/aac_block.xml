@@ -58,17 +58,55 @@
                         </table>
                     </div>
 
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders">
+
+
+                     <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="week_no"></label></td>
+                                    <td><field name="week_no" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
                             <tbody>
                                 
                                     <tr>
-                                    <td><label for="condition"></label></td>
-                                    <td><field  name="condition" class="blue-input" /></td>
+                                    <td><label for="other_details"></label></td>
+                                    <td><field  name="other_details" class="blue-input" /></td>
                                 </tr>
                               
                                 
                             </tbody>
                         </table>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="condition"></label></td>
+                                    <td><field name="condition" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="description_work"></label></td>
+                                    <td><field  name="description_work" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                    </div>
 
                     <style>
                         .blue-input input {
@@ -141,15 +179,80 @@
                     </div>
 
 
-                    <!-- <group invisible="not dimension_visible">
-                        <group style="width:33%;display:flex;">
-                            <field name="average_length"/>
-                        
-                            <field name="average_width"/>
-                        
-                            <field name="average_height"/>
-                        </group>
-                    </group> -->
+                   <div class="d-flex gap-2">
+                         <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" >
+                        <tbody>
+                           
+                            <tr>
+                                <td><label class="fw-bold" for="average_width_conformity"> Conformity</label></td>
+                                <td>
+                                    <field name="average_width_conformity"
+                                        decoration-success="average_width_conformity == 'pass'"
+                                        decoration-danger="average_width_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="average_length_nabl"> NABL</label></td>
+                                <td>
+                                    <field name="average_length_nabl"
+                                        decoration-success="average_length_nabl == 'pass'"
+                                        decoration-danger="average_length_nabl == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                         <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" >
+                        <tbody>
+                           
+                            <tr>
+                                <td><label class="fw-bold" for="average_height_conformity"> Conformity</label></td>
+                                <td>
+                                    <field name="average_height_conformity"
+                                        decoration-success="average_height_conformity == 'pass'"
+                                        decoration-danger="average_height_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="average_width_nabl"> NABL</label></td>
+                                <td>
+                                    <field name="average_width_nabl"
+                                        decoration-success="average_width_nabl == 'pass'"
+                                        decoration-danger="average_width_nabl == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" >
+                        <tbody>
+                           
+                            <tr>
+                                <td><label class="fw-bold" for="average_height_conformity"> Conformity</label></td>
+                                <td>
+                                    <field name="average_height_conformity"
+                                        decoration-success="average_height_conformity == 'pass'"
+                                        decoration-danger="average_height_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="average_height_nabl"> NABL</label></td>
+                                <td>
+                                    <field name="average_height_nabl"
+                                        decoration-success="average_height_nabl == 'pass'"
+                                        decoration-danger="average_height_nabl == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                       
+                    </div>
 
                     <div style="display:flex;">
                     <div style="width:50%;">

@@ -32,8 +32,7 @@
                       </field>
                     </div>
 
-
-                     <div class="d-flex gap-2">
+                    <div class="d-flex gap-2">
                         <table class="table table-sm o_form_table table-bordered custom_table_borders" >
                             <tbody>
                                 <tr>
@@ -128,7 +127,7 @@
                     <!-- Dry Gradation -->
 
                     <div invisible="not dry_gradation_visible">
-                        <h1>
+                        <h1 class="text-center">
                             <field name="dry_gradation_name" readonly="1" nolabel="1"/>
                             <field name="dry_gradation_visible" invisible="1"/>
                         </h1>
@@ -155,7 +154,7 @@
                     </div>
                     <group/>
 
-                    <div>
+                    <div invisible="not dry_gradation_visible">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                             <tbody>
                               <tr>
@@ -178,14 +177,14 @@
 
                     <!-- Water Absorbtion  -->
                     <div invisible="not water_absorbtion_visible">
-                        <h1>
+                        <h1 class="text-center">
                             <field name="water_absorbtion_name" readonly="1" nolabel="1"/>
                             <field name="water_absorbtion_visible" invisible="1"/>
                         </h1>
                     </div>
                     <group/>
 
-                    <div>
+                    <div invisible="not water_absorbtion_visible">
                     <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:70%;">
                     <tbody>
                       <tr>
@@ -206,7 +205,7 @@
                     <group/>
                     <group/>
 
-                    <div>
+                    <div invisible="not water_absorbtion_visible">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                           <tbody>
                            <tr>
@@ -232,7 +231,7 @@
 
                     <!-- Elongation and Flakiness  -->
                     <div modifiers='{"invisible": [["|", ["elongation_visible", "=", false], ["flakiness_visible", "=", false]]]}'>
-                        <h1>
+                        <h1 class="text-center">
                             <field name="elongation_name" readonly="1" nolabel="1"/>
                             <field name="elongation_visible" invisible="1"/>
                             <field name="flakiness_visible" invisible="1"/>
@@ -255,7 +254,7 @@
                     <group/>
                     <group/>
 
-                    <div style="display:flex;">
+                    <div style="display:flex;" modifiers='{"invisible": [["|", ["elongation_visible", "=", false], ["flakiness_visible", "=", false]]]}'>
                       <div style="width: 50%;">
                           <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
                           <tbody>
@@ -287,7 +286,7 @@
                           </table>
                       </div>
 
-                      <div style="width: 50%;">
+                      <div style="width: 50%;" modifiers='{"invisible": [["|", ["elongation_visible", "=", false], ["flakiness_visible", "=", false]]]}'>
                              <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                              <tbody>
                           <tr>
@@ -327,7 +326,7 @@
 
                     <!-- Impact Value  -->
                     <div invisible="not impact_visible">
-                        <h1>
+                        <h1 class="text-center">
                             <field name="impact_value_name" readonly="1" nolabel="1"/>
                             <field name="impact_visible" invisible="1"/>
 
@@ -350,7 +349,7 @@
                     </field> 
                     </div>
 
-                    <div>
+                    <div invisible="not impact_visible">
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                         <tbody>
                           <tr>
@@ -378,7 +377,7 @@
 
                 <!-- Abrasion Value  -->
                 <div invisible="not abrasion_visible">
-                        <h1>
+                        <h1 class="text-center">
                             <field name="abrasion_value_name" readonly="1" nolabel="1"/>
                             <field name="abrasion_visible" invisible="1"/>
 
@@ -386,7 +385,7 @@
                 </div>
                 <group/>
 
-                <div style="display:flex;">
+                <div style="display:flex;" invisible="not abrasion_visible">
                 <div style="width:50%;">
                     <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
                     <tbody>
@@ -418,7 +417,7 @@
                     </div>
                 </div>
                     
-                    <div>
+                    <div invisible="not abrasion_visible">
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                         <tbody>
                            <tr>
@@ -440,7 +439,7 @@
 
                 <!-- Liquid Limit -->
                 <div invisible="not liquid_limit_visible">
-                        <h1>
+                        <h1 class="text-center">
                             <field name="liquid_limit_name" readonly="1" nolabel="1"/>
                             <field name="liquid_limit_visible" invisible="1"/>
 
@@ -476,7 +475,7 @@
                                 modifiers='{"invisible": [["are_child_lines_filled", "=", false]]}'/> -->
                 </group>
 
-                <div style="display:flex;">
+                <div style="display:flex;" invisible="not liquid_limit_visible">
                 <div style="width:50%;">
                         <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
                         <tbody>
@@ -488,7 +487,7 @@
                           </table>
                 </div>
 
-                <div style="width:50%;">
+                <div style="width:50%;" invisible="not liquid_limit_visible">
                         <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
                            <tr>
@@ -502,7 +501,7 @@
                 <group/>
 
 
-                <div>
+                <div invisible="not liquid_limit_visible">
                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                         <tbody>
                            <tr>
@@ -526,7 +525,7 @@
 
                 <!-- Plastic Limit -->
                 <div invisible="not plastic_visible">
-                        <h1>
+                        <h1 class="text-center">
                             <field name="plastic_name" readonly="1" nolabel="1"/>
                             <field name="plastic_visible" invisible="1"/>
 
@@ -549,7 +548,7 @@
                 </div>
                 <group/>
 
-                <div style="display:flex;">
+                <div style="display:flex;" invisible="not plastic_visible">
                 <div style="width: 50%;">
                         <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width: 98%;">
                         <tbody>
@@ -606,7 +605,7 @@
 
                 <!-- Plasticity index  -->
 
-                <div style="display:flex;">
+                <div style="display:flex;" invisible="not plastic_visible">
                 <div style="width:50%;">
                         <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
                         <tbody>
@@ -623,7 +622,7 @@
                           </table>
                       </div>
 
-                      <div style="width:50%;">
+                      <div style="width:50%;" invisible="not plastic_visible">
                         <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
                            <tr>
@@ -649,7 +648,7 @@
 
                 <!-- Density Relation Heavy Compaction  -->
                 <div invisible="not density_relation_visible">
-                        <h1>
+                        <h1 class="text-center">
                             <field name="density_relation_name" readonly="1" nolabel="1"/>
                             <field name="density_relation_visible" invisible="1"/>
 
@@ -657,7 +656,7 @@
                 </div>
                 <group/>
 
-                <div style="display:flex;">
+                <div style="display:flex;" invisible="not density_relation_visible">
                    <div style="width:50%;">
                         <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
                         <tbody>
@@ -670,7 +669,7 @@
                           </table>
                       </div>
 
-                 <div style="width:50%;">
+                 <div style="width:50%;" invisible="not density_relation_visible">
                         <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
                            <tr>
@@ -714,7 +713,7 @@
 
                 <group/>
 
-                <div style="display:flex;">
+                <div style="display:flex;" invisible="not density_relation_visible">
                 <div style="width: 50%;">
                         <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width: 98%;">
                         <tbody>
@@ -727,7 +726,7 @@
                           </table>
                       </div>
 
-                    <div style="width: 50%;">
+                    <div style="width: 50%;" invisible="not density_relation_visible">
                         <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders" >
                         <tbody>
                            <tr>
@@ -753,7 +752,7 @@
                 <!-- CBR -->
                 <group/>
                 <div invisible="not cbr_visible">
-                        <h1>
+                        <h1 class="text-center">
                             <field name="cbr_name" readonly="1" nolabel="1"/>
                             <field name="cbr_visible" invisible="1"/>
 
@@ -858,7 +857,7 @@
                             </tbody>
                         </table>
                         
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" nvisible= "crushing_visible == False" >
                             <tbody>
                                 <tr>
                                     <td><label for="humidity_crushing_value">Humidity %</label></td>
@@ -951,7 +950,7 @@
                     <group/>
                     <group/>
 
-                    <div>
+                    <div invisible= "specigic_gravity_visible == False">
                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                        <tbody>
                          <tr>
@@ -989,7 +988,7 @@
                     </div>
 
 
-                    <div>
+                    <div invisible= "specigic_gravity_visible == False">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                           <tbody>
                           <tr>
@@ -1260,7 +1259,7 @@
 
                      <div invisible="soudness_magnesium_visible == False">
                     <h1 class="text-center">
-                        <field name="soudness_magnesium_name" readonly="1" nolabel="1"/>
+                        <field name="soudness_magnesium_name1" readonly="1" nolabel="1"/>
                         <field name="soudness_magnesium_visible" invisible="1"/>
 
                     </h1>
@@ -1287,7 +1286,7 @@
 
                 <div invisible = "soudness_visible == False">
                         <h1 class="text-center">
-                            <field name="sieve_name" readonly="1" nolabel="1"/>
+                            <field name="sieve_name1" readonly="1" nolabel="1"/>
                             <field name="soudness_visible" invisible="1"/>
                         </h1>
                     </div>
@@ -1457,27 +1456,21 @@
 
 
 
-                    
-                           <notebook>
+                   
 
+                    <notebook>
                         <page string="Notes">
                             <div class="custom_table_borders" style="margin-top: 15px;">
                                 <field name="notes_id" nolabel="1">
                                     <tree editable="bottom">
                                         <field name="sr_no" width="100"/>
-                                        <field name="notes"  />
+                                        <field name="notes" />
                                     </tree>
                                 </field>
-                                
                             </div>
                         </page>
-
                     </notebook>
 
-
-
-
-                   
                  <button
                             type="object"
                             class="oe_highlight" 
