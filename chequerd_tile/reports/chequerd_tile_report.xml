@@ -473,7 +473,7 @@
 
 
 								<!-- Perpendicularity -->
-								<tr t-if="data.perpendicularity_visible and (data.permissible_average_nabl == 'pass' and nabl or (data.permissible_average_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.perpendicularity_visible and (data.largest_gap_average_nabl == 'pass' and nabl or (data.largest_gap_average_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<t t-set="perpendicularity" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','4ee01855-218f-48da-9729-82a54306a6c4')])"/>
 									
 									<td style="text-align: center;">
@@ -487,7 +487,7 @@
 
                                     <td style="text-align: center;">
 										<span>
-											<span t-field="data.permissible_average" t-options='{"widget": "float", "precision": 2}'/>
+											<span t-field="data.largest_gap_average" t-options='{"widget": "float", "precision": 2}'/>
 										</span>
 									</td>
 

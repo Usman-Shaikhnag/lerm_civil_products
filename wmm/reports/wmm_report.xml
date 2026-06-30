@@ -688,7 +688,7 @@
 								</tr>
 
 								<!-- Impact Value -->
-							<tr t-if="data.impact_visible and (data.avg_impact_nabl == 'pass' and nabl or (data.avg_impact_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.impact_visible and (data.average_impact_value_nabl == 'pass' and nabl or (data.average_impact_value_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<t t-set="impact" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','nbv21455-7446-446e-a018-8a5f9dcfd549')])"/>
 									
 									<td style="text-align: center;">
@@ -701,7 +701,7 @@
 
                                     <td style="text-align: center;">
 										<span>
-											<span t-field="data.avg_impact" t-options='{"widget": "float", "precision": 2}'/>
+											<span t-field="data.average_impact_value" t-options='{"widget": "float", "precision": 2}'/>
 										</span>
 									</td>
 
@@ -1106,7 +1106,7 @@
 
 								<!--  Soundness - MgSO4 -->
 							<tr t-if="data.soundness_mgso4_visible and (data.mag_total_weighted_avg_nabl == 'pass' and nabl or (data.mag_total_weighted_avg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="magnesium" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','d09e0cb7-b993-481c-bc47-84feb8cc8ba2')])"/>
+									<t t-set="magnesium" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','312gthdvfe-3e7e-4fff-b912-f7b046f5099c')])"/>
 									
 									<td style="text-align: center;">
 										<span t-esc="i + 1" />
@@ -1149,9 +1149,9 @@
 									
 								</tr>
 
-								<!--  Elongation -->
-							<tr t-if="data.elongation_visible and (data.aggregate_elongation_nabl == 'pass' and nabl or (data.aggregate_elongation_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="elongation" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','312gthdvfe-3e7e-4fff-b912-f7b046f5099c')])"/>
+								<!-- Elongation -->
+							<tr t-if="data.elongation_fl_visible and (data.elongation_index_nabl == 'pass' and nabl or (data.elongation_index_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+									<t t-set="elongation" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')])"/>
 									
 									<td style="text-align: center;">
 										<span t-esc="i + 1" />
@@ -1163,15 +1163,17 @@
 
                                     <td style="text-align: center;">
 										<span>
-											<span t-field="data.aggregate_elongation" t-options='{"widget": "float", "precision": 2}'/>
+											<span t-field="data.elongation_index" t-options='{"widget": "float", "precision": 2}'/>
 										</span>
+									</td>
 
 									<td style="text-align: center;">
 										<span>
 											<span t-esc="elongation.unit.name"/>
 										</span>
-									</td>								
 									</td>
+									
+									
 									<td style="text-align: center;">
 										<span>
 											<t t-foreach="elongation.parameter_table" t-as="parameter">
@@ -1181,7 +1183,6 @@
 											</t>
 										</span>
 									</td>
-
                                     <td style="text-align: center;">
 										<span>
 											<t t-foreach="elongation.parameter_table" t-as="parameter">
@@ -1194,42 +1195,43 @@
 									
 								</tr>
 
-								<!--  Elongation -->
-							<tr t-if="data.flakiness_visible and (data.aggregate_flakiness_nabl == 'pass' and nabl or (data.aggregate_flakiness_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="flakiness" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','asd21452-2d4b-47f4-b9ee-7a4a5b176b97')])"/>
+								<!-- Flakiness -->
+							<tr t-if="data.elongation_fl_visible and (data.flakiness_index_nabl == 'pass' and nabl or (data.flakiness_index_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+									<t t-set="elongation_fl" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','asd21452-2d4b-47f4-b9ee-7a4a5b176b97')])"/>
 									
 									<td style="text-align: center;">
 										<span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/>
 									</td>
 									<td>
-										<span t-esc="flakiness.parameter_name"/>
+										<span t-esc="elongation_fl.parameter_name"/>
 									</td>
 
                                     <td style="text-align: center;">
 										<span>
-											<span t-field="data.aggregate_flakiness" t-options='{"widget": "float", "precision": 2}'/>
+											<span t-field="data.flakiness_index" t-options='{"widget": "float", "precision": 2}'/>
 										</span>
+									</td>
 
 									<td style="text-align: center;">
 										<span>
-											<span t-esc="flakiness.unit.name"/>
+											<span t-esc="elongation_fl.unit.name"/>
 										</span>
-									</td>								
 									</td>
+									
+									
 									<td style="text-align: center;">
 										<span>
-											<t t-foreach="flakiness.parameter_table" t-as="parameter">
+											<t t-foreach="elongation_fl.parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
 													<span t-field="parameter.permissable_limit"/>
 												</t>
 											</t>
 										</span>
 									</td>
-
                                     <td style="text-align: center;">
 										<span>
-											<t t-foreach="flakiness.parameter_table" t-as="parameter">
+											<t t-foreach="elongation_fl.parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
 													<span t-field="parameter.specification"/>
 												</t>

@@ -279,6 +279,7 @@ class MechanicalAdmixture(models.Model):
 
     compressive_strength_line_ids = fields.One2many('admixture.compressive.strength.line','parent_id',string='Compressive Strength Test Lines', default=lambda self: self.default_compressive_strength_lines_ids())
 
+
     @api.model
     def default_compressive_strength_lines_ids(self):
         default_lines = [
@@ -571,6 +572,11 @@ class MechanicalAdmixture(models.Model):
 
     flexural_strength_line_ids = fields.One2many('admixture.flexural.strength.line','parent_id',string='Flexural Strength Test Lines', default=lambda self: self._default_flexural_strength_lines())
 
+    flex_size_id = fields.Selection([
+    ('600 x 150 x 150 mm', '600 x 150 x 150 mm'),
+    ('700 x 150 x 150 mm', '700 x 150 x 150 mm'),
+     ], string="Size")
+
     @api.model
     def _default_flexural_strength_lines(self):
         default_lines = [
@@ -630,8 +636,6 @@ class MechanicalAdmixture(models.Model):
             setattr(rec, field_name, avg)
 
     span_length = fields.Float(string="Span Length")
-    beam_width = fields.Float(string="Width of Specimen")
-    beam_depth = fields.Float(string="Depth of Specimen")
 
     avg_3_days_flexural_confirmity = fields.Selection([
         ('pass', 'Pass'),
@@ -951,20 +955,82 @@ class MechanicalAdmixture(models.Model):
         return default_lines
     
 
-    avg_flow_diameter = fields.Float(
-        string='Average Flow Diameter (mm)',
-        compute='_compute_avg_flow_diameter',
-        store=True
-    )
+    avg_flow_0 = fields.Float(
+    string="Average Flow at 0 Min",
+    compute="_compute_flow_avg",
+    store=True)
 
-    @api.depends('flowhigh_work_line_ids.average_flow')
-    def _compute_avg_flow_diameter(self):
+    avg_flow_30 = fields.Float(
+    string="Average Flow at 30 Min",
+    compute="_compute_flow_avg",
+    store=True)
+
+    avg_flow_60 = fields.Float(
+    string="Average Flow at 60 Min",
+    compute="_compute_flow_avg",
+    store=True)
+
+    avg_flow_90 = fields.Float(
+    string="Average Flow at 90 Min",
+    compute="_compute_flow_avg",
+    store=True)
+
+    avg_flow_120 = fields.Float(
+    string="Average Flow at 120 Min",
+    compute="_compute_flow_avg",
+    store=True)
+
+    @api.depends(
+    'flowhigh_work_line_ids.flow_0',
+    'flowhigh_work_line_ids.flow_30',
+    'flowhigh_work_line_ids.flow_60',
+    'flowhigh_work_line_ids.flow_90',
+    'flowhigh_work_line_ids.flow_120',)
+    def _compute_flow_avg(self):
      for rec in self:
-        flow_diameter = rec.flowhigh_work_line_ids.mapped('average_flow')
-        rec.avg_flow_diameter = (
-            sum(flow_diameter) / len(flow_diameter)
-            if flow_diameter else 0.0
+        lines = rec.flowhigh_work_line_ids
+
+        rec.avg_flow_0 = (
+            sum(lines.mapped('flow_0')) / len(lines)
+            if lines else 0.0
         )
+
+        rec.avg_flow_30 = (
+            sum(lines.mapped('flow_30')) / len(lines)
+            if lines else 0.0
+        )
+
+        rec.avg_flow_60 = (
+            sum(lines.mapped('flow_60')) / len(lines)
+            if lines else 0.0
+        )
+
+        rec.avg_flow_90 = (
+            sum(lines.mapped('flow_90')) / len(lines)
+            if lines else 0.0
+        )
+
+        rec.avg_flow_120 = (
+            sum(lines.mapped('flow_120')) / len(lines)
+            if lines else 0.0
+        )
+    
+
+    avg_flow_diameter = fields.Float(
+    string="Calculation of Percentage Increase",
+    compute="_compute_percentage_increase",
+    store=True)
+
+    @api.depends('avg_flow_0', 'avg_flow_120')
+    def _compute_percentage_increase(self):
+     for rec in self:
+        rec.avg_flow_diameter = 0.0
+
+        if rec.avg_flow_0:
+            rec.avg_flow_diameter = (
+                (rec.avg_flow_120 - rec.avg_flow_0)
+                / rec.avg_flow_0
+            ) * 100
 
 
     avg_flow_diameter_confirmity = fields.Selection([
@@ -1300,13 +1366,14 @@ class AdmixtureBleedingTestLine(models.Model):
     bleed_water_kg = fields.Float(
         string="Mass of bleed water collected (kg)",
         compute='_compute_bleed_water_kg',
-        store=True,digits=(10,3)
+        store=True,digits=(16,14)
     )
 
     bleeding_percent = fields.Float(
         string="Bleeding of concrete (%)",
         compute='_compute_bleeding_percent',
-        store=True
+        store=True,
+        digits=(16,14)
     )
 
     @api.depends('w1', 'w2')
@@ -1319,12 +1386,12 @@ class AdmixtureBleedingTestLine(models.Model):
         for rec in self:
             rec.bleed_water_kg = rec.bleed_water_ml / 1000.0
 
-    @api.depends('bleed_water_kg', 'net_weight')
+    @api.depends('bleed_water_kg', 'mixing_water')
     def _compute_bleeding_percent(self):
         for rec in self:
             rec.bleeding_percent = (
-                (rec.bleed_water_kg * 100) / rec.net_weight
-                if rec.net_weight else 0.0
+                (rec.bleed_water_kg  / rec.mixing_water) * 100
+                if rec.mixing_water else 0.0
             )
 
 
@@ -1431,7 +1498,7 @@ class AdmixtureCompressiveStrengthLine(models.Model):
     )
 
     weight = fields.Float(string='Weight (gms)')
-    volume = fields.Float(string='Volume (cc)')
+    volume = fields.Float(string='Volume (cc)',compute='_compute_volume', store=True,digits=(16,0))
 
     density = fields.Float(
         string='Density (gm/cc)',
@@ -1474,6 +1541,18 @@ class AdmixtureCompressiveStrengthLine(models.Model):
                 rec.weight / rec.volume
                 if rec.volume else 0.0
             )
+
+    @api.depends('parent_id.eln_ref.size_id.size')
+    def _compute_volume(self):
+     for rec in self:
+        rec.volume = 0.0
+
+        size_str = rec.parent_id.eln_ref.size_id.size
+        if size_str:
+            match = re.search(r'(\d+)', str(size_str))
+            if match:
+                side = float(match.group(1))   # mm
+                rec.volume = (side ** 3) / 1000.0   # convert mm³ to cc
 
     # area_of_cube = fields.Float(string="Area of Cube",compute="_compute_area_cube",store=True)
 
@@ -1526,7 +1605,8 @@ class AdmixtureFlexuralStrengthLine(models.Model):
     age = fields.Char(string='Age Of Beam')
 
     weight = fields.Float(string='Weight (Kg)')
-    volume = fields.Float(string='Volume (cm³)')
+    volume = fields.Float(string='Volume (cm³)',compute='_compute_volume',
+    store=True,digits=(16,0))
 
     density = fields.Float(
         string='Density (g/cc)',
@@ -1534,7 +1614,7 @@ class AdmixtureFlexuralStrengthLine(models.Model):
         store=True
     )
 
-    test_area = fields.Float(string="Test Area (mm²)",compute="_compute_test_area",store=True)
+    test_area = fields.Float(string="Test Area (mm²)",compute="_compute_test_area",store=True,digits=(16,0))
 
     # @api.depends('parent_id.beam_width', 'parent_id.beam_depth')
     # def _compute_test_area(self):
@@ -1560,50 +1640,111 @@ class AdmixtureFlexuralStrengthLine(models.Model):
             if rec.volume else 0.0
         )
 
-    @api.depends('parent_id.size_id.size')
+    @api.depends('parent_id.flex_size_id')
+    def _compute_volume(self):
+     for rec in self:
+        rec.volume = 0.0
+
+        size = rec.parent_id.flex_size_id
+        if size:
+            # Extract numbers from "700 x 150 x 150 mm"
+            values = [float(x) for x in re.findall(r'\d+', size)]
+
+            if len(values) == 3:
+                length, width, depth = values
+
+                # mm³ -> cm³
+                rec.volume = (length * width * depth) / 1000.0
+
+
+    @api.depends('parent_id.flex_size_id')
     def _compute_test_area(self):
-     import re
+     for rec in self:
+        rec.test_area = 0.0
 
-     for record in self:
-        record.test_area = 0.0
-
-        size_str = record.parent_id.size_id.size
+        size_str = rec.parent_id.flex_size_id
 
         if size_str:
-            match = re.search(r'\d+', str(size_str))
+            # Extract all numbers from the size string
+            values = [float(x) for x in re.findall(r'\d+', size_str)]
 
-            if match:
-                side = int(match.group())
-                record.test_area = side * side
+            if len(values) == 3:
+                length, width, depth = values
 
+                # Cross-sectional area = Width × Depth
+                rec.test_area = width * depth
 
-
-
-    @api.depends('load_kn', 'test_area', 'parent_id.span_length')
+    @api.depends(
+    'load_kn',
+    'test_area',
+    'parent_id.span_length',
+    'parent_id.flex_size_id'
+)
     def _compute_flexural_strength(self):
      import re
 
      for rec in self:
         rec.flexural_strength = 0.0
 
-        size_str = rec.parent_id.size_id.size
+        size_str = rec.parent_id.flex_size_id
 
         if size_str:
-            match = re.search(r'\d+', str(size_str))
+            values = [float(x) for x in re.findall(r'\d+', size_str)]
 
-            if match:
-                depth = float(match.group())  # 150
+            if len(values) == 3:
+                _, width, depth = values
 
                 P = rec.load_kn * 1000
                 L = rec.parent_id.span_length
                 A = rec.test_area
 
-                if P and L and A:
-                    rec.flexural_strength = (
-                        P * L
-                    ) / (
-                        A * depth
-                    )
+                if P and L and A and depth:
+                    rec.flexural_strength = (P * L) / (A * depth)
+
+    # @api.depends('parent_id.flex_size_id')
+    # def _compute_test_area(self):
+    #  import re
+
+    #  for record in self:
+    #     record.test_area = 0.0
+
+    #     size_str = record.parent_id.flex_size_id
+
+    #     if size_str:
+    #         match = re.search(r'\d+', str(size_str))
+
+    #         if match:
+    #             side = int(match.group())
+    #             record.test_area = side * side
+
+
+
+
+    # @api.depends('load_kn', 'test_area', 'parent_id.span_length')
+    # def _compute_flexural_strength(self):
+    #  import re
+
+    #  for rec in self:
+    #     rec.flexural_strength = 0.0
+
+    #     size_str = rec.parent_id.flex_size_id
+
+    #     if size_str:
+    #         match = re.search(r'\d+', str(size_str))
+
+    #         if match:
+    #             depth = float(match.group())  # 150
+
+    #             P = rec.load_kn * 1000
+    #             L = rec.parent_id.span_length
+    #             A = rec.test_area
+
+    #             if P and L and A:
+    #                 rec.flexural_strength = (
+    #                     P * L
+    #                 ) / (
+    #                     A * depth
+    #                 )
 
 
     
@@ -1695,23 +1836,23 @@ class AdmixtureFlowDiameterTestLine(models.Model):
     flow_90 = fields.Float('Flow Diameter at 90 Minutes (mm)')
     flow_120 = fields.Float('Flow Diameter at 120 Minutes (mm)')
 
-    average_flow = fields.Float(
-        string="Average Flow Diameter (mm) ",
-        compute="_compute_average_flow",
-        store=True
-    )
+    # average_flow = fields.Float(
+    #     string="Average Flow Diameter (mm) ",
+    #     compute="_compute_average_flow",
+    #     store=True
+    # )
 
-    @api.depends('flow_0', 'flow_30', 'flow_60', 'flow_90', 'flow_120')
-    def _compute_average_flow(self):
-        for rec in self:
-            values = [
-                rec.flow_0,
-                rec.flow_30,
-                rec.flow_60,
-                rec.flow_90,
-                rec.flow_120
-            ]
-            rec.average_flow = sum(values) / 5 if values else 0.0
+    # @api.depends('flow_0', 'flow_30', 'flow_60', 'flow_90', 'flow_120')
+    # def _compute_average_flow(self):
+    #     for rec in self:
+    #         values = [
+    #             rec.flow_0,
+    #             rec.flow_30,
+    #             rec.flow_60,
+    #             rec.flow_90,
+    #             rec.flow_120
+    #         ]
+    #         rec.average_flow = sum(values) / 5 if values else 0.0
 
 
     @api.model
