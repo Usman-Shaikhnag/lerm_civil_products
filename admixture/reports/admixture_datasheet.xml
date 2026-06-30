@@ -110,6 +110,7 @@
 							</tr>
 						</table>
 
+						<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
 						<div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -117,23 +118,23 @@
 										Prepared By
 									</b>
 								</div>
-								<!-- <div style="height: 40px;">
-							<t t-if="eln.tested_by_signature_datasheet">
+							<div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet and prepared_by_obj">
 
-								<div t-if="eln.sample_id.filled_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								<div t-if="prepared_by_obj.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,%s' % prepared_by_obj.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
 								</div>
 								
 							</t>
-						</div> -->
+						</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <span t-esc="prepared_by_obj.name or ''"/>
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    (<span t-esc="prepared_by_obj.job_title or ''"/>)
                                 </b>
                             </div>
                         </div>
@@ -226,6 +227,7 @@
 							</tr>
 						</table>
 
+						<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
 						<div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -233,23 +235,23 @@
 										Prepared By
 									</b>
 								</div>
-								<!-- <div style="height: 40px;">
-							<t t-if="eln.tested_by_signature_datasheet">
+							<div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet and prepared_by_obj">
 
-								<div t-if="eln.sample_id.filled_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								<div t-if="prepared_by_obj.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,%s' % prepared_by_obj.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
 								</div>
 								
 							</t>
-						</div> -->
+						</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <span t-esc="prepared_by_obj.name or ''"/>
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    (<span t-esc="prepared_by_obj.job_title or ''"/>)
                                 </b>
                             </div>
                         </div>
@@ -375,6 +377,7 @@
 							</tr>
 						</table>
 
+						<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
 						<div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -382,23 +385,23 @@
 										Prepared By
 									</b>
 								</div>
-								<!-- <div style="height: 40px;">
-							<t t-if="eln.tested_by_signature_datasheet">
+							<div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet and prepared_by_obj">
 
-								<div t-if="eln.sample_id.filled_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								<div t-if="prepared_by_obj.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,%s' % prepared_by_obj.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
 								</div>
 								
 							</t>
-						</div> -->
+						</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <span t-esc="prepared_by_obj.name or ''"/>
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    (<span t-esc="prepared_by_obj.job_title or ''"/>)
                                 </b>
                             </div>
                         </div>
@@ -512,6 +515,7 @@
 							</tr>
 						</table>
 
+						<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
 						<div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -519,23 +523,23 @@
 										Prepared By
 									</b>
 								</div>
-								<!-- <div style="height: 40px;">
-							<t t-if="eln.tested_by_signature_datasheet">
+							<div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet and prepared_by_obj">
 
-								<div t-if="eln.sample_id.filled_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								<div t-if="prepared_by_obj.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,%s' % prepared_by_obj.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
 								</div>
 								
 							</t>
-						</div> -->
+						</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <span t-esc="prepared_by_obj.name or ''"/>
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    (<span t-esc="prepared_by_obj.job_title or ''"/>)
                                 </b>
                             </div>
                         </div>
@@ -636,6 +640,7 @@
 							</tr>
 						</table>
 
+						<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
 						<div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -643,23 +648,23 @@
 										Prepared By
 									</b>
 								</div>
-								<!-- <div style="height: 40px;">
-							<t t-if="eln.tested_by_signature_datasheet">
+							<div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet and prepared_by_obj">
 
-								<div t-if="eln.sample_id.filled_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								<div t-if="prepared_by_obj.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,%s' % prepared_by_obj.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
 								</div>
 								
 							</t>
-						</div> -->
+						</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <span t-esc="prepared_by_obj.name or ''"/>
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    (<span t-esc="prepared_by_obj.job_title or ''"/>)
                                 </b>
                             </div>
                         </div>
@@ -763,10 +768,11 @@
 
                
                       <div class="authorizeRowDataSheet">
+						<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
 						<div>
                             <div>
-                                <b>
-                                    Tested By 
+                                                   <b>
+                                    Tested By
                                 </b>
                                 
                             </div>
@@ -775,12 +781,12 @@
                             </div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <span t-esc="prepared_by_obj.name or ''"/>
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    (<span t-esc="prepared_by_obj.job_title or ''"/>)
                                 </b>
                             </div>
 						</div>
