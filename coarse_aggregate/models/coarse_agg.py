@@ -565,7 +565,7 @@ class CoarseAggregateMechanical(models.Model):
 
     total_total_weight = fields.Float("Total (Total Wt of Aggregate Retained (gm)) (A)", compute="_compute_totals", store=True)
     total_wt_passing_flakiness = fields.Float("Total (Wt Passing Flakiness Gauge (gm)) (B)", compute="_compute_totals", store=True)
-    total_wt_retained_flakiness = fields.Float("Total (Wt Retained Flakiness Gauge (gm)) (C)", compute="_compute_totals", store=True)
+    total_wt_retained_flakiness = fields.Float("Total (Wt. Retained on Flakiness gauge (gm) = [(Total Wt of aggregate Retained (gm)) - (Wt. Passing on Flakiness gauge (gm)] (C)", compute="_compute_totals", store=True)
     total_wt_retained_elongation = fields.Float("Total (Wt Retained Elongation Gauge (gm)) (D)", compute="_compute_totals", store=True)
 
     @api.depends(
@@ -1084,6 +1084,85 @@ class CoarseAggregateMechanical(models.Model):
                         break
                     else:
                         record.avg_abrasion_value_nabl = 'fail'
+
+
+    # Deleterious Material (Soft Fragments)
+    
+    name_soft_fragments = fields.Char("Name",default="Deleterious Material (Soft Fragments)")
+    soft_fragments_visible = fields.Boolean("Deleterious Material (Soft Fragments) Visible",compute="_compute_visible")
+
+    soft_fragments_ids = fields.One2many('coarse.deleterious.soft.line', 'parent_id', string="Trials")
+
+    soft_fragments_percent = fields.Float(
+        "Average Deleterious Material Soft Fragments (%)",
+        compute="_compute_soft_fragments_percent",
+        store=True
+    )
+
+    @api.depends('soft_fragments_ids.percent')
+    def _compute_soft_fragments_percent(self):
+        for rec in self:
+            lines = rec.soft_fragments_ids
+
+            if lines:
+                values = lines.mapped('percent')
+                rec.soft_fragments_percent = sum(values) / len(values)
+            else:
+                rec.soft_fragments_percent = 0.0
+
+
+    soft_fragments_percent_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_soft_fragments_percent_conformity", store=True)
+
+    @api.depends('soft_fragments_percent','eln_ref','grade')
+    def _compute_soft_fragments_percent_conformity(self):
+        
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.soft_fragments_percent_conformity = 'na'
+                continue
+            record.soft_fragments_percent_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','dea75569-77bd-497b-994f-5c1f778e562f')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','dea75569-77bd-497b-994f-5c1f778e562f')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.soft_fragments_percent - record.soft_fragments_percent*mu_value
+                    upper = record.soft_fragments_percent + record.soft_fragments_percent*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.soft_fragments_percent_conformity = 'pass'
+                        break
+                    else:
+                        record.soft_fragments_percent_conformity = 'fail'
+
+    soft_fragments_percent_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_soft_fragments_percent_nabl", store=True)
+
+    @api.depends('soft_fragments_percent','eln_ref','grade')
+    def _compute_soft_fragments_percent_nabl(self):
+        
+        for record in self:
+            record.soft_fragments_percent_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','dea75569-77bd-497b-994f-5c1f778e562f')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','dea75569-77bd-497b-994f-5c1f778e562f')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.soft_fragments_percent - record.soft_fragments_percent*mu_value
+                    upper = record.soft_fragments_percent + record.soft_fragments_percent*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.soft_fragments_percent_nabl = 'pass'
+                        break
+                    else:
+                        record.soft_fragments_percent_nabl = 'fail'
 
     
     # Material Finer than 75 Micron
@@ -2079,6 +2158,7 @@ class CoarseAggregateMechanical(models.Model):
             record.specific_gravity_visible = False
             record.deleterious_coal_lignite_visible = False
             record.abrasion_visible = False
+            record.soft_fragments_visible = False
             record.finer75_visible = False
             record.fine10_visible = False
             record.clay_lump_visible = False
@@ -2121,6 +2201,9 @@ class CoarseAggregateMechanical(models.Model):
                 
                 if sample.internal_id == '37f2161e-5cc0-413f-b76c-10478c65baf9':
                     record.abrasion_visible = True
+
+                if sample.internal_id == 'dea75569-77bd-497b-994f-5c1f778e562f':
+                    record.soft_fragments_visible = True
 
                 if sample.internal_id == '988f5bf6-c865-453c-9cd6-993a5a59ad95':
                     record.finer75_visible = True
@@ -2263,6 +2346,17 @@ class CoarseAggregateMechanical(models.Model):
                 result.calculated = True
                 result.result_char = round(self.avg_deleterious_coal_lignite,2)
                 if self.avg_deleterious_coal_lignite_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            # Deleterious Material (Soft Fragments)
+            if result.parameter.internal_id == 'dea75569-77bd-497b-994f-5c1f778e562f':
+                result.calculated = True
+                result.result_char = round(self.soft_fragments_percent,2)
+                if self.soft_fragments_percent_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -2670,7 +2764,7 @@ class ElongationFlakinessLine(models.Model):
 
     total_weight = fields.Float("Total Wt of Aggregate Retained (gm)")
     wt_passing_flakiness = fields.Float("Wt Passing Flakiness Gauge (gm)")
-    wt_retained_flakiness = fields.Float("Wt Retained Flakiness Gauge (gm)")
+    wt_retained_flakiness = fields.Float("Total (Wt. Retained on Flakiness gauge (gm) = [(Total Wt of aggregate Retained (gm)) - (Wt. Passing on Flakiness gauge (gm)]")
     wt_retained_elongation = fields.Float("Wt Retained Elongation Gauge (gm)")
 
 
@@ -2683,7 +2777,7 @@ class ImpactValueLine(models.Model):
 
     w1 = fields.Float("Weight of surface dry sample passing 12.5mm and retained on 10mm IS sieves, W1. (gm)")
     w2 = fields.Float("Weight of fraction passing 2.36mm sieve after the test, W2. (gm) ")
-    w3 = fields.Float("Weight of fraction retained on 2.36mm sieve after the test, W3. (gm)")
+    w3 = fields.Float("Weight of fraction retained on 2.36mm sieve after the test, W3 = [ (Weight of surface dry sample passing 12.5mm and retained on 10mm IS sieves, W1) - ( Weight of fraction passing2.36mm sieve after the test, W2)")
 
     w4 = fields.Float(
         string="W4 = W1 - (W2 + W3)	(gm)",
@@ -2880,6 +2974,46 @@ class LAAbrasionLine(models.Model):
         for index, record in enumerate(records):
             record.sample_no = index + 1
 
+
+class CoarseDeleteriousSoftLine(models.Model):
+    _name = "coarse.deleterious.soft.line"
+    parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
+
+    sample_no = fields.Integer(string="Trial No", readonly=True, copy=False, default=1)
+
+    w1 = fields.Float("Weight of total sample (W1)")
+    w2 = fields.Float("Weight of Fine Soft Fragments (W₂)")
+
+    percent = fields.Float(
+        "Deleterious Material (%)",
+        compute="_compute_percent",
+        store=True
+    )
+
+    @api.depends('w1', 'w2')
+    def _compute_percent(self):
+        for rec in self:
+            rec.percent = (rec.w2 / rec.w1) * 100 if rec.w1 else 0.0
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sample_no'))
+                vals['sample_no'] = max_serial_no + 1
+
+        return super(CoarseDeleteriousSoftLine, self).create(vals)
+
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.sample_no = index + 1
+
     
 
 
@@ -2941,9 +3075,9 @@ class TFVLine(models.Model):
     sample_no = fields.Integer(string="Trial No", readonly=True, copy=False, default=1)
 
     # Inputs
-    a = fields.Float("Sample Weight (A)")
+    a = fields.Float("Weight of Saturated surface dry Sample passing IS Sieve 14mm and retained on IS Sieve 10mm (A)")
     retained = fields.Float("Weight retained on 2.36 mm sieve")
-    b = fields.Float("Weight passing 2.36 mm sieve (B)")
+    b = fields.Float("WEIGHT PASSING 2.36 MM SIEVE (B) = Weight of Saturated surface dry Sample passing IS Sieve 14 mm and retained on IS Sieve 10mm (A) - Weight Retained on 2.36 mm sieve")
     x = fields.Float("Maximum Force X (kN)")
 
     # Computed
@@ -3080,7 +3214,7 @@ class WetImpactValueLine(models.Model):
     # Inputs
     w1 = fields.Float("Weight before soaking (W1)")
     w_ssd = fields.Float("Weight after soaking (SSD)")
-    w2 = fields.Float("Weight passing 2.36 mm (W2)")
+    w2 = fields.Float("WEIGHT PASSING ON 2.36 MM = (WIGHT AFTER SOAKING SSD) – (WEIGHT PASSING 2.36 MM (W2))")
 
     retained = fields.Float(
         "Weight retained on 2.36 mm",
