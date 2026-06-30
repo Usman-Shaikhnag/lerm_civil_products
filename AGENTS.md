@@ -78,6 +78,49 @@ No project-level build/test/lint tooling exists (no Makefile, tox, CI, pre-commi
 ./odoo/odoo-bin -d <db> --addons-path=addons,.../practice-addon17
 ```
 
+### Update modules on production server
+
+```bash
+sshpass -p '162026EML' ssh -o StrictHostKeyChecking=no root@13.140.181.34 "docker exec geonyms odoo -d geonyms --db_host db --db_user odoo --db_password odoo -u <comma-separated-modules> --stop-after-init"
+```
+
+### Pull latest code on production server
+
+```bash
+sshpass -p '162026EML' ssh -o StrictHostKeyChecking=no root@13.140.181.34 "docker exec geonyms bash -c 'cd /mnt/extra-addons && git pull origin lerm_geonyms'"
+```
+
 ## Configuration
 
-Addons use `whool` build system (no `setup.py` / `setup.cfg`). `.gitignore` only ignores `*.pyc` and `__pycache__/`.
+Addons use `whool` build system (no `setup.py` / `setup.cfg`). `.gitignore` ignores `*.pyc`, `__pycache__/`, and `.DS_Store`.
+
+## Production Server
+
+| Detail | Value |
+|---|---|
+| Server IP | `13.140.181.34` |
+| User | `root` |
+| Password | `162026EML` |
+| Docker container | `geonyms` (Odoo 17.0) |
+| DB container | `db` (PostgreSQL 15) |
+| Database name | `geonyms` |
+| DB user/password | `odoo` / `odoo` |
+| DB host | `db` (linked container) |
+| Addons path | `/mnt/extra-addons` |
+| Odoo config | `/etc/odoo/odoo.conf` |
+| Odoo data dir | `/var/lib/odoo` |
+| Web port | `8069` |
+| Git remote | `https://github.com/Usman-Shaikhnag/lerm_civil_products.git` |
+| Git branch | `lerm_geonyms` |
+
+### Update all installed modules (on server)
+
+```bash
+docker exec geonyms odoo -d geonyms --db_host db --db_user odoo --db_password odoo -u <comma-separated-modules> --stop-after-init
+```
+
+### Known server issues
+
+- `ftp_storage` XML views can cause `relaxng.assert_` errors — check `/mnt/extra-addons/ftp_storage/views/*.xml` if updates fail.
+- Missing unmaintained modules (`Cover_Block`, `door`, `gypsum_plaster_board`, `ht_strand`, `pt_grout`, `shuttering_plywood`, `wood`) produce non-blocking warnings on startup.
+- LibreOffice not installed on server — `report_py3o` reports will warn but not crash.
