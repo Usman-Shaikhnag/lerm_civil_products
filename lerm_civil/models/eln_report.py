@@ -63,30 +63,47 @@ class ElnReport(models.AbstractModel):
     _description = 'ELN Report'
 
     @api.model
-    def _get_report_values(self, docids, data):
-        # eln = self.env['lerm.eln'].sudo().browse(docids)
-        inreport_value = data.get('inreport', None)
-        nabl = data.get('nabl')
-        print(data , 'dataaaaaaaaaaaaaa')
-        # stamp = data['inreport']
-        # import wdb;wdb.set_trace();
-        if data.get('report_wizard') == True:
-            eln = self.env['lerm.eln'].sudo().search([('sample_id','=',data['sample'])])
-        elif 'active_id' in data.get('context', {}):
-            # stamp = data['inreport']
-            eln = self.env['lerm.eln'].sudo().search([('sample_id','=',data['context']['active_id'])])
-        else:
-            eln = self.env['lerm.eln'].sudo().browse(docids)
+    def _get_report_values(self, docids, data=None):
+        data = data or {}
+        nabl = data.get("nabl", False)
 
-        qr_static = qrcode.QRCode(box_size=6, border=2)
-        # scope_link = eln[0].nabl_scope_link if eln and hasattr(eln[0], 'nabl_scope_link') else False
-        qr_static.add_data("https://www.lerm.in")
-        # qr_static.add_data(scope_link)
-        qr_static.make(fit=True)
-        buf_static = BytesIO()
-        qr_static.make_image(fill_color="black", back_color="white").save(buf_static, format="PNG")
-        qr_static_b64 = base64.b64encode(buf_static.getvalue()).decode()
-        print()
+        # ✅ ELN Fetch
+        if data.get("report_wizard"):
+            eln = (
+                self.env["lerm.eln"]
+                .sudo()
+                .search([("sample_id", "=", data.get("sample"))], limit=1)
+            )
+        elif data.get("context", {}).get("active_id"):
+            eln = (
+                self.env["lerm.eln"]
+                .sudo()
+                .search([("sample_id", "=", data["context"]["active_id"])], limit=1)
+            )
+        else:
+            eln = self.env["lerm.eln"].sudo().browse(docids)
+
+        if not eln or not eln.exists():
+            raise ValueError("ELN record not found")
+
+        # ✅ LAB FETCH
+        lab = eln.sample_id.lab_location if eln.sample_id else False
+
+        # ✅ QR LINK (थेट NABL ची मूळ लिंक QR मध्ये टाकणे)
+        qr_link = lab.nabl_scope_link or ""
+
+        qrcode_static = False  # <--- हे नाव खाली return मध्ये वापरले आहे
+        if qr_link:
+            # 🔳 QR Generate (NABL च्या लिंकचा QR)
+            qr = qrcode.QRCode(box_size=6, border=2)
+            qr.add_data(qr_link)
+            qr.make(fit=True)
+
+            buffer = BytesIO()
+            qr.make_image(fill_color="black", back_color="white").save(
+                buffer, format="PNG"
+            )
+            qrcode_static = base64.b64encode(buffer.getvalue()).decode()
         # qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
         # qr.add_data(eln.kes_no)
         # qr.make(fit=True)
@@ -114,8 +131,8 @@ class ElnReport(models.AbstractModel):
         return {
             'eln': eln,
             'qrcode': qr_code,
-            'qrcode_static': qr_static_b64,
-            'stamp' : inreport_value,
+            # 'stamp' : inreport_value,
+            "qrcode_static": qrcode_static,
             'nabl' : nabl,
             'srf_id': eln.srf_id,
         }

@@ -295,10 +295,13 @@
 						<!-- ELSE -->
 						<t t-else="">
 							<b>Conditions:-</b>
-							&#160;(1) The results listed refer only to tested samples &amp; applicable parameters.
-							&#160;(2) The use of report for arbitration, publicity &amp; evidence in legal dispute is forbidden.
-							&#160;(3) All disputes are subject to Raipur Jurisdiction.
-							&#160;(4) Sample will be destroyed after 30 days.
+							&#160;(1) The report shall not be reproduced in full or partially without written approval of the laboratory HOD/CEO/Maganement.
+							&#160;(2) Sampling is not done by us unless mentioned otherwide.
+							&#160;(3) without a QR Code and hologram this report is considered invalid.
+							&#160;(4) The Result listed refer only to tested samples &amp; applicable parameter Endorsement of product is neither interred nor inplied
+							&#160;(5) The use or report for arbitration, publicity &amp; evidence in legal dispute is forbidden except with prior written consent NBML Lab.
+							&#160;(6) All disputed are subject to Raipur jurisdiction 7 days correction to this report invalidates this report.
+							&#160;(7) Sample will be destroyed after 30-days from the date of test report unless otherwise Specified.
 
 							<t t-if="eln.has_witness">
 								&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
@@ -645,16 +648,17 @@
 									<td colspan="3"><span t-field="o.material.source_sample"/></td>
 								</tr>
 
-								<tr t-if="o.material.specifications">
+								<tr t-if="o.material.specification_code">
 									<td style="font-weight: bold;">Specifications</td>
-									<td colspan="3"><span t-field="o.material.specifications"/></td>
+									<td colspan="3"><span t-field="o.material.specification_code"/></td>
 								</tr>
 
 						</table>
 					</div>
 					
-					<div style="margin-top:20px;">
-						<u>Results</u>
+					<div style="margin-top:5px;text-align: center;">
+						<b>Test Results</b><![CDATA[&nbsp;]]>:<![CDATA[&nbsp;]]>
+						
 					</div>
 					
 
@@ -681,59 +685,69 @@
 							<table>
 								<thead>
 									<tr>
-										<th>
+										<th style="text-align: center;">
+										<b>
 											<span>
 												Sr. No
 											</span>
+											</b>
 										</th>
-										<th>
-											<span>
-												Test Parameters
-											</span>
-										</th>
-											<th>
-											<span>
-											Units
-											
-											</span>
-										</th>
-										<th style="max-width: 200px;">
+										<th >
+										<b>
+									   <span t-esc="eln.material.test_parameter"/>
+									   </b>
+									
+									</th>
+										<th style="text-align: center;">
+										<b>
+										<span t-esc="eln.material.unit"/>
+										</b>
+										
+									</th>
+										<th style="max-width: 200px;text-align: center;">
+										<b>
 											<span>
 												<span t-esc="eln.material.method_reference"/>
 												
 
 											</span>
+											</b>
 										</th>
 										
 										
 									
 
-										<th>
-											<span>
-												Results
-											</span>
-										</th>
+										 <th style="text-align: center;">
+                                           <b>
+											<span t-esc="eln.material.result_remark"/>
+											</b>
+											
+											</th>
 
-										<th style="max-width: 250px;">
+										<th style="max-width: 250px;text-align: center;">
+										<b>
 											<span>
 												
 												<span t-esc="eln.material.specifications"/>
 											</span>
+											</b>
 										</th>
 										
 										
 										
-										<th t-if="eln.conformity">
+										<th t-if="eln.conformity"  style="text-align: center;">
+										<b>
 											<span>
 												Confirmity Status
 											</span>
+											</b>
 										</th>
 									</tr>
 								</thead>
 								<tbody>
 									<t t-foreach="non_nabl_parameters" t-as="parameter">
 										<tr t-if="'(depend)' not in parameter['parameter'].parameter_name">
-											<td>
+											<td style="text-align: center;">
 												<div>
 													<span t-esc="i + 1"/>
 													<t t-set="i" t-value="i+1"/>
@@ -742,16 +756,16 @@
 											<td>
 												<span t-esc="parameter['parameter'].parameter_name"/>
 											</td>
-											<td>
+											<td style="text-align: center;">
 												<span t-esc="parameter['unit'].name"/>
 											</td>
 										
 											
-											<td style="max-width: 250px;">
+											<td style="max-width: 250px;text-align: center;">
 												<span t-esc="parameter['specification']"/>
 											</td>
 											
-												<td t-if="parameter['result_type'] == 'number'">
+												<td t-if="parameter['result_type'] == 'number'" style="text-align: center;">
 												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
 
                                                 <strong>
@@ -759,7 +773,7 @@
 												</strong>
 												
 											</td>
-											<td t-if="parameter['result_type'] == 'char'">
+											<td t-if="parameter['result_type'] == 'char'" style="text-align: center;">
 												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
 												<strong>
 												<span t-esc="parameter['result_char']"/>
@@ -770,14 +784,14 @@
 											<!-- <td style="max-width: 250px;">
 												<span t-esc="parameter['test_method'].test_method"/>
 											</td> -->
-											<td style="max-width: 250px;">
+											<td style="max-width: 250px; text-align: center;">
 												<span t-esc="parameter['specification_permissible_limit']"/>
 											</td>
 											
 											<!-- <td>
 												<span t-esc="parameter['nabl_status']"/>
 											</td> -->
-											<td t-if="eln.conformity">
+											<td t-if="eln.conformity" style="text-align: center;">
 												<span t-esc="parameter['conformity_status']"/>
 											</td>
 										</tr>
@@ -789,59 +803,69 @@
 							<table>
 								<thead>
 									<tr>
-										<th>
+										<th style="text-align: center;">
+										<b>
 											<span>
 												Sr. No
 											</span>
+											</b>
 										</th>
-										<th>
-											<span>
-												Test Parameters
-											</span>
-										</th>
-										<th>
-											<span>
-											Units
-											
-											</span>
-										</th>
-										<th style="max-width: 200px;">
+										<th >
+										<b>
+									   <span t-esc="eln.material.test_parameter"/>
+									   </b>
+									
+									</th>
+										<th style="text-align: center;">
+										<b>
+										<span t-esc="eln.material.unit"/>
+										</b>
+										
+									</th>
+										<th style="max-width: 200px;text-align: center;">
+										<b>
 											<span>
 												<span t-esc="eln.material.method_reference"/>
 												
 
 											</span>
+											</b>
 										</th>
 										
 										
-										
+									
 
-										<th>
-											<span>
-												Results
-											</span>
-										</th>
+										 <th style="text-align: center;">
+                                           <b>
+											<span t-esc="eln.material.result_remark"/>
+											</b>
+											
+											</th>
 
-										<th style="max-width: 250px;">
+										<th style="max-width: 250px;text-align: center;">
+										<b>
 											<span>
 												
 												<span t-esc="eln.material.specifications"/>
 											</span>
+											</b>
 										</th>
 										
 										
 										
-										<th t-if="eln.conformity">
+										<th t-if="eln.conformity"  style="text-align: center;">
+										<b>
 											<span>
 												Confirmity Status
 											</span>
+											</b>
 										</th>
 									</tr>
 								</thead>
 								<tbody>
 									<t t-foreach="non_nabl_parameters[:o.sample_id.page_break]" t-as="parameter">
 										<tr t-if="'(depend)' not in parameter['parameter'].parameter_name">
-											<td>
+											<td style="text-align: center;">
 												<div>
 													<span t-esc="i + 1"/>
 													<t t-set="i" t-value="i+1"/>
@@ -850,16 +874,16 @@
 											<td>
 												<span t-esc="parameter['parameter'].parameter_name"/>
 											</td>
-												<td>
+												<td style="text-align: center;">
 												<span t-esc="parameter['unit'].name"/>
 											</td>
 										
 											
-											<td style="max-width: 250px;">
+											<td style="max-width: 250px;text-align: center;" >
 												<span t-esc="parameter['specification']"/>
 											</td>
 										
-												<td t-if="parameter['result_type'] == 'number'">
+												<td t-if="parameter['result_type'] == 'number'" style="text-align: center;">
 												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
 
                                               <strong>
@@ -867,7 +891,7 @@
 												</strong>
 												
 											</td>
-											<td t-if="parameter['result_type'] == 'char'">
+											<td t-if="parameter['result_type'] == 'char'" style="text-align: center;">
 												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
 												<strong>
 												<span t-esc="parameter['result_char']"/>
@@ -885,7 +909,7 @@
 											<!-- <td>
 												<span t-esc="parameter['nabl_status']"/>
 											</td> -->
-											<td t-if="eln.conformity">
+											<td t-if="eln.conformity" style="text-align: center;">
 												<span t-esc="parameter['conformity_status']"/>
 											</td>
 										</tr>
@@ -908,59 +932,69 @@
 							<table>
 								<thead>
 									<tr>
-										<th>
+										<th style="text-align: center;">
+										<b>
 											<span>
 												Sr. No
 											</span>
+											</b>
 										</th>
-										<th>
-											<span>
-												Test Parameters
-											</span>
-										</th>
-										<th>
-											<span>
-											Units
-											
-											</span>
-										</th>
-										<th style="max-width: 200px;">
+										<th >
+										<b>
+									   <span t-esc="eln.material.test_parameter"/>
+									   </b>
+									
+									</th>
+										<th style="text-align: center;">
+										<b>
+										<span t-esc="eln.material.unit"/>
+										</b>
+										
+									</th>
+										<th style="max-width: 200px;text-align: center;">
+										<b>
 											<span>
 												<span t-esc="eln.material.method_reference"/>
 												
 
 											</span>
+											</b>
 										</th>
 										
 										
-										
+									
 
-										<th>
-											<span>
-												Results
-											</span>
-										</th>
+										 <th style="text-align: center;">
+                                           <b>
+											<span t-esc="eln.material.result_remark"/>
+											</b>
+											
+											</th>
 
-										<th style="max-width: 250px;">
+										<th style="max-width: 250px;text-align: center;">
+										<b>
 											<span>
 												
 												<span t-esc="eln.material.specifications"/>
 											</span>
+											</b>
 										</th>
 										
 										
 										
-										<th t-if="eln.conformity">
+										<th t-if="eln.conformity"  style="text-align: center;">
+										<b>
 											<span>
 												Confirmity Status
 											</span>
+											</b>
 										</th>
 									</tr>
 								</thead>
 								<tbody>
 									<t t-foreach="non_nabl_parameters[o.sample_id.page_break:]" t-as="parameter">
 										<tr t-if="'(depend)' not in parameter['parameter'].parameter_name">
-											<td>
+											<td style="text-align: center;">
 												<div>
 													<span t-esc="i + 1"/>
 													<t t-set="i" t-value="i+1"/>
@@ -969,16 +1003,16 @@
 											<td>
 												<span t-esc="parameter['parameter'].parameter_name"/>
 											</td>
-											<td>
+											<td style="text-align: center;">
 												<span t-esc="parameter['unit'].name"/>
 											</td>
 										
 											
-											<td style="max-width: 250px;">
+											<td style="max-width: 250px;text-align: center;">
 												<span t-esc="parameter['specification']"/>
 											</td>
 											
-												<td t-if="parameter['result_type'] == 'number'">
+												<td t-if="parameter['result_type'] == 'number'" style="text-align: center;">
 												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
 
                                                 <strong>
@@ -986,7 +1020,7 @@
 												</strong>
 												
 											</td>
-											<td t-if="parameter['result_type'] == 'char'">
+											<td t-if="parameter['result_type'] == 'char'" style="text-align: center;">
 												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
 												<strong>
 												<span t-esc="parameter['result_char']"/>
@@ -997,14 +1031,14 @@
 											<!-- <td style="max-width: 250px;">
 												<span t-esc="parameter['test_method'].test_method"/>
 											</td> -->
-											<td style="max-width: 250px;">
+											<td style="max-width: 250px;text-align: center;">
 												<span t-esc="parameter['specification_permissible_limit']"/>
 											</td>
 											
 											<!-- <td>
 												<span t-esc="parameter['nabl_status']"/>
 											</td> -->
-											<td t-if="eln.conformity">
+											<td t-if="eln.conformity" style="text-align: center;">
 												<span t-esc="parameter['conformity_status']"/>
 											</td>
 										</tr>
@@ -1022,59 +1056,69 @@
 							<table>
 								<thead>
 									<tr>
-										<th>
+										<th style="text-align: center;">
+										<b>
 											<span>
 												Sr. No
 											</span>
+											</b>
 										</th>
-										<th>
-											<span>
-												Test Parameters
-											</span>
-										</th>
-											<th>
-											<span>
-											Units
-											
-											</span>
-										</th>
-										<th style="max-width: 200px;">
+										<th >
+										<b>
+									   <span t-esc="eln.material.test_parameter"/>
+									   </b>
+									
+									</th>
+										<th style="text-align: center;">
+										<b>
+										<span t-esc="eln.material.unit"/>
+										</b>
+										
+									</th>
+										<th style="max-width: 200px;text-align: center;">
+										<b>
 											<span>
 												<span t-esc="eln.material.method_reference"/>
 												
 
 											</span>
+											</b>
 										</th>
 										
 										
 									
 
-										<th>
-											<span>
-												Results
-											</span>
-										</th>
+										 <th style="text-align: center;">
+                                           <b>
+											<span t-esc="eln.material.result_remark"/>
+											</b>
+											
+											</th>
 
-										<th style="max-width: 250px;">
+										<th style="max-width: 250px;text-align: center;">
+										<b>
 											<span>
 												
 												<span t-esc="eln.material.specifications"/>
 											</span>
+											</b>
 										</th>
 										
 										
 										
-										<th t-if="eln.conformity">
+										<th t-if="eln.conformity"  style="text-align: center;">
+										<b>
 											<span>
 												Confirmity Status
 											</span>
+											</b>
 										</th>
 									</tr>
 								</thead>
 								<tbody>
 									<t t-foreach="nabl_parameters" t-as="parameter">
 										<tr t-if="parameter['parameter'].parameter_name">
-											<td>
+											<td style="text-align: center;">
 												<div>
 													<span t-esc="i + 1"/>
 													<t t-set="i" t-value="i+1"/>
@@ -1083,16 +1127,16 @@
 											<td>
 												<span t-esc="parameter['parameter'].parameter_name"/>
 											</td>
-												<td>
+												<td style="text-align: center;">
 												<span t-esc="parameter['unit'].name"/>
 											</td>
 										
 											
-											<td style="max-width: 250px;">
+											<td style="max-width: 250px;text-align: center;">
 												<span t-esc="parameter['specification']"/>
 											</td>
 										
-												<td t-if="parameter['result_type'] == 'number'">
+												<td t-if="parameter['result_type'] == 'number'" style="text-align: center;">
 												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
 
                                                <strong>
@@ -1100,7 +1144,7 @@
 												</strong>
 												
 											</td>
-											<td t-if="parameter['result_type'] == 'char'">
+											<td t-if="parameter['result_type'] == 'char'" style="text-align: center;">
 												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
 												<strong>
 												<span t-esc="parameter['result_char']"/>
@@ -1111,14 +1155,14 @@
 											<!-- <td style="max-width: 250px;">
 												<span t-esc="parameter['test_method'].test_method"/>
 											</td> -->
-											<td style="max-width: 250px;">
+											<td style="max-width: 250px;text-align: center;">
 												<span t-esc="parameter['specification_permissible_limit']"/>
 											</td>
 											
 											<!-- <td>
 												<span t-esc="parameter['nabl_status']"/>
 											</td> -->
-											<td t-if="eln.conformity">
+											<td t-if="eln.conformity"  style="text-align: center;">
 												<span t-esc="parameter['conformity_status']"/>
 											</td>
 										</tr>
@@ -1130,59 +1174,69 @@
 							<table>
 								<thead>
 									<tr>
-										<th>
+										<th style="text-align: center;">
+										<b>
 											<span>
 												Sr. No
 											</span>
+											</b>
 										</th>
-										<th>
-											<span>
-												Test Parameters
-											</span>
-										</th>
-											<th>
-											<span>
-											Units
-											
-											</span>
-										</th>
-										<th style="max-width: 200px;">
+										<th >
+										<b>
+									   <span t-esc="eln.material.test_parameter"/>
+									   </b>
+									
+									</th>
+										<th style="text-align: center;">
+										<b>
+										<span t-esc="eln.material.unit"/>
+										</b>
+										
+									</th>
+										<th style="max-width: 200px;text-align: center;">
+										<b>
 											<span>
 												<span t-esc="eln.material.method_reference"/>
 												
 
 											</span>
+											</b>
 										</th>
 										
 										
 									
 
-										<th>
-											<span>
-												Results
-											</span>
-										</th>
+										 <th style="text-align: center;">
+                                           <b>
+											<span t-esc="eln.material.result_remark"/>
+											</b>
+											
+											</th>
 
-										<th style="max-width: 250px;">
+										<th style="max-width: 250px;text-align: center;">
+										<b>
 											<span>
 												
 												<span t-esc="eln.material.specifications"/>
 											</span>
+											</b>
 										</th>
 										
 										
 										
-										<th t-if="eln.conformity">
+										<th t-if="eln.conformity"  style="text-align: center;">
+										<b>
 											<span>
 												Confirmity Status
 											</span>
+											</b>
 										</th>
 									</tr>
 								</thead>
 								<tbody>
 									<t t-foreach="nabl_parameters[:o.sample_id.page_break]" t-as="parameter">
 										<tr t-if="parameter['parameter'].parameter_name">
-											<td>
+											<td style="text-align: center;">
 												<div>
 													<span t-esc="i + 1"/>
 													<t t-set="i" t-value="i+1"/>
@@ -1191,16 +1245,16 @@
 											<td>
 												<span t-esc="parameter['parameter'].parameter_name"/>
 											</td>
-											<td>
+											<td style="text-align: center;">
 												<span t-esc="parameter['unit'].name"/>
 											</td>
 										
 											
-											<td style="max-width: 250px;">
+											<td style="max-width: 250px;text-align: center;">
 												<span t-esc="parameter['specification']"/>
 											</td>
 											
-												<td t-if="parameter['result_type'] == 'number'">
+												<td t-if="parameter['result_type'] == 'number'" style="text-align: center;">
 												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
 
                                                 <strong>
@@ -1208,7 +1262,7 @@
 												</strong>
 												
 											</td>
-											<td t-if="parameter['result_type'] == 'char'">
+											<td t-if="parameter['result_type'] == 'char'" style="text-align: center;">
 												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
 												<strong>
 												<span t-esc="parameter['result_char']"/>
@@ -1219,14 +1273,14 @@
 											<!-- <td style="max-width: 250px;">
 												<span t-esc="parameter['test_method'].test_method"/>
 											</td> -->
-											<td style="max-width: 250px;">
+											<td style="max-width: 250px;text-align: center;">
 												<span t-esc="parameter['specification_permissible_limit']"/>
 											</td>
 											
 											<!-- <td>
 												<span t-esc="parameter['nabl_status']"/>
 											</td> -->
-											<td t-if="eln.conformity">
+											<td t-if="eln.conformity" style="text-align: center;">
 												<span t-esc="parameter['conformity_status']"/>
 											</td>
 										</tr>
@@ -1249,59 +1303,69 @@
 							<table>
 								<thead>
 									<tr>
-										<th>
+										<th style="text-align: center;">
+										<b>
 											<span>
 												Sr. No
 											</span>
+											</b>
 										</th>
-										<th>
-											<span>
-												Test Parameters
-											</span>
-										</th>
-											<th>
-											<span>
-											Units
-											
-											</span>
-										</th>
-										<th style="max-width: 200px;">
+										<th >
+										<b>
+									   <span t-esc="eln.material.test_parameter"/>
+									   </b>
+									
+									</th>
+										<th style="text-align: center;">
+										<b>
+										<span t-esc="eln.material.unit"/>
+										</b>
+										
+									</th>
+										<th style="max-width: 200px;text-align: center;">
+										<b>
 											<span>
 												<span t-esc="eln.material.method_reference"/>
 												
 
 											</span>
+											</b>
 										</th>
 										
 										
 									
 
-										<th>
-											<span>
-												Results
-											</span>
-										</th>
+										 <th style="text-align: center;">
+                                           <b>
+											<span t-esc="eln.material.result_remark"/>
+											</b>
+											
+											</th>
 
-										<th style="max-width: 250px;">
+										<th style="max-width: 250px;text-align: center;">
+										<b>
 											<span>
 												
 												<span t-esc="eln.material.specifications"/>
 											</span>
+											</b>
 										</th>
 										
 										
 										
-										<th t-if="eln.conformity">
+										<th t-if="eln.conformity"  style="text-align: center;">
+										<b>
 											<span>
 												Confirmity Status
 											</span>
+											</b>
 										</th>
 									</tr>
 								</thead>
 								<tbody>
 									<t t-foreach="nabl_parameters[o.sample_id.page_break:]" t-as="parameter">
 										<tr t-if="parameter['parameter'].parameter_name">
-											<td>
+											<td style="text-align: center;">
 												<div>
 													<span t-esc="i + 1"/>
 													<t t-set="i" t-value="i+1"/>
@@ -1310,23 +1374,23 @@
 											<td>
 												<span t-esc="parameter['parameter'].parameter_name"/>
 											</td>
-											<td>
+											<td style="text-align: center;">
 												<span t-esc="parameter['unit'].name"/>
 											</td>
 										
 											
-											<td style="max-width: 250px;">
+											<td style="max-width: 250px;text-align: center;">
 												<span t-esc="parameter['specification']"/>
 											</td>
 											
-												<td t-if="parameter['result_type'] == 'number'">
+												<td t-if="parameter['result_type'] == 'number'" style="text-align: center;">
 												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
 
                                                <strong>
 												<span t-esc="'{:.{}f}'.format(parameter['result'], parameter['parameter'].decimal)"/>
 												</strong>
 											</td>
-											<td t-if="parameter['result_type'] == 'char'">
+											<td t-if="parameter['result_type'] == 'char'" style="text-align: center;">
 												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
 												<strong>
 												<span t-esc="parameter['result_char']"/>
@@ -1337,14 +1401,14 @@
 											<!-- <td style="max-width: 250px;">
 												<span t-esc="parameter['test_method'].test_method"/>
 											</td> -->
-											<td style="max-width: 250px;">
+											<td style="max-width: 250px;text-align: center;">
 												<span t-esc="parameter['specification_permissible_limit']"/>
 											</td>
 											
 											<!-- <td>
 												<span t-esc="parameter['nabl_status']"/>
 											</td> -->
-											<td t-if="eln.conformity">
+											<td t-if="eln.conformity" style="text-align: center;">
 												<span t-esc="parameter['conformity_status']"/>
 											</td>
 										</tr>
