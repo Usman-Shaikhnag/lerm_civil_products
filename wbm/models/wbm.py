@@ -1089,7 +1089,7 @@ class WbmMechanical(models.Model):
 
     # Soundness Na2SO4
     soundness_na2so4_name = fields.Char("Name",default="SOUNDNESS (SODIUM SULPHATE TEST)")
-    soundness_na2so4_visible = fields.Boolean("SOUNDNESS OF COARSE AGGREGATE (SODIUM SULPHATE TEST) Visible",compute="_compute_visible")
+    soundness_na2so4_visible = fields.Boolean("SOUNDNESS (SODIUM SULPHATE TEST) Visible",compute="_compute_visible")
 
     soundness_sod_line_ids = fields.One2many(
         'wbm.sodium.sulphate.line',
@@ -1367,7 +1367,7 @@ class WbmMechanical(models.Model):
 
 
     # Flakiness and Elongation 
-    elongation_fl_name = fields.Char(default="FLAKINESS AND ELONGATION INDEX COARSE AGGREGATE")
+    elongation_fl_name = fields.Char(default="FLAKINESS AND ELONGATION INDEX")
     elongation_fl_visible = fields.Boolean("FLAKINESS AND ELONGATION INDEX",compute="_compute_visible")
 
 

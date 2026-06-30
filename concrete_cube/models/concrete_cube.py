@@ -28,6 +28,10 @@ class MechanicalConcreteCube(models.Model):
 
     sample_id = fields.Many2one('lerm.srf.sample',string='Sample')
 
+    nature_work = fields.Char(string="Nature of Work")
+    curing_condition = fields.Char(string="Curing Conditions")
+    machine_testing = fields.Char(string="Machine used for testing / Loading range")
+
 
     cube_name = fields.Char("Name",default=" Cube")
     cube_visible = fields.Boolean("Chequered Visible",compute="_compute_visible")   
@@ -734,7 +738,7 @@ class MechanicalConcreteCubeLine(models.Model):
     sr_no = fields.Integer(string="Sr.No.",readonly=True, copy=False, default=1)
   
     id_mark = fields.Char(string="Sample Identification",store=True)
-    wt_sample = fields.Float(string="Weight of  Specimen (Kg)",digits=(16,3))
+    wt_sample = fields.Float(string="Weight of  Specimen (gms)",digits=(16,3))
 
     dt_of_casting = fields.Date(string="Date of casting",compute="_compute_dt_of_casting",store=True)
     days = fields.Integer(string="No.of Days",compute="_compute_days",store=True)
@@ -744,10 +748,10 @@ class MechanicalConcreteCubeLine(models.Model):
     compressive_strength = fields.Float(string="Compressive Strength (N/mm2)",compute="_compute_strength",store=True)
 
     avg_compressive_strength = fields.Float(string="Avg. Compressive Strength (N/mm2)")
-    area = fields.Float(string="Area (m²)",compute="_compute_area",store=True)
+    area = fields.Float(string="Area (cm²)",compute="_compute_area",store=True)
     dimension = fields.Char(string="Dimension (mm)",compute="_compute_dimension",store=True)
-    volume = fields.Float(string="Volume (m³)")
-    density = fields.Float(string="Density",compute="_compute_density",store=True,digits=(16,3))
+    volume = fields.Float(string="Volume (cc)")
+    density = fields.Float(string="Density (gms/cc)",compute="_compute_density",store=True,digits=(16,3))
 
     @api.depends('parent_id.size_id') 
     def _compute_area(self):

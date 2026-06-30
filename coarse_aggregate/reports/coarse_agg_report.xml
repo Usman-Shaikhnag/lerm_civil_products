@@ -891,6 +891,52 @@
 									
 								</tr>
 
+								<!-- Deleterious Material (Soft Fragments) -->
+							<tr t-if="data.soft_fragments_visible and (data.soft_fragments_percent_nabl == 'pass' and nabl or (data.soft_fragments_percent_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+									<t t-set="soft_fragments" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','dea75569-77bd-497b-994f-5c1f778e562f')])"/>
+									
+									<td style="text-align: center;">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td>
+										<span t-esc="soft_fragments.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="data.soft_fragments_percent" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="soft_fragments.unit.name"/>
+										</span>
+									</td>
+									
+									</td>
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="soft_fragments.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="soft_fragments.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
 								<!-- Material finer than 75 micron -->
 							<tr t-if="data.finer75_visible and (data.avg_finer_percent_nabl == 'pass' and nabl or (data.avg_finer_percent_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<t t-set="finer75" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','988f5bf6-c865-453c-9cd6-993a5a59ad95')])"/>
