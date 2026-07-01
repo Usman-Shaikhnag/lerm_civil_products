@@ -306,15 +306,7 @@ class AccountMoveInherited(models.Model):
 
     
 
-    # @api.onchange("partner_id")
-    # def set_domain_for_contact_person(self):
-    #     if self.partner_id:
-    #         domain = [('parent_id', '=', self.partner_id.id),('type', '=', 'contact')]
-     
-    #         result = { 
-    #                     'domain': {'contact_person': domain} 
-    #                 } 
-    #         return result
+
 
 class AccountMovePO(models.Model):
     _name = 'account.move.po'
@@ -355,55 +347,7 @@ class AccountMovePO(models.Model):
             return result
 
         
-        # if self.customer:
-        #     domain = [('contact_id', '=', self.customer.id),('closed_boolean', '=', False)]
-     
-        #     result = { 
-        #                 'domain': {'po_number': domain} 
-        #             } 
-        #     return result
-
-# class AccountMoveLineInherited(models.Model):
-#     _inherit = 'account.move.line'
-    
-#     report_no = fields.Char(string="Report No")
-#     pricelist_id = fields.Many2one("product.pricelist",string="Pricelist",compute='_compute_pricelist')
-#     product_id = fields.Many2one('product.product', string='Product', ondelete='restrict')
-#     report_no1 = fields.Many2many("lerm.srf.sample", string="Report No",domain="['&',('state', '=', '4-in_report'),('invoice_status', '!=', '2-invoiced'),'|',('srf_id.customer', '=', partner_id),('srf_id.billing_customer', '=', partner_id)]")
-    
-#     @api.onchange('partner_id', 'product_id')
-#     def _onchange_partner_or_product(self):
-#         for rec in self:
-#             domain = [
-#                 '&',
-#                 '|',
-#                 ('srf_id.customer', '=', rec.partner_id.id),
-#                 ('srf_id.billing_customer', '=', rec.partner_id.id),
-#                 ('state', '=', '4-in_report'),
-#                 ('invoice_status', '!=', '2-invoiced'),
-#                 ('material_id', '=', rec.product_id.id)
-#             ]
-#             return {'domain': {'report_no1': domain}}
-
-#     @api.onchange("pricelist_id")
-#     def onchange_pricelist_id(self):
-#         for record in self:
-#             # import wdb; wdb.set_trace();
-#             # data = []
-#             if self.pricelist_id:
-#                 data = self.pricelist_id.item_ids.product_tmpl_id.product_variant_ids.ids
-#                 # for product in self.pricelist_id.item_ids:
-#                 #     data.append(product.product_tmpl_id.id)
-#                 return {'domain': {'product_id': [('id','in', data)]}}
-#             else:
-#                 return{}
-    
-
-
-#     @api.depends("move_id.pricelist_id")
-#     def _compute_pricelist(self):
-#         # import wdb; wdb.set_trace();
-#         self.pricelist_id = self.move_id.pricelist_id.id
+        
 
 
 class PriceListInherited(models.Model):

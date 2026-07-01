@@ -10,7 +10,7 @@
                 <group>
                     <field name="sample" invisible="1"/>
                     <field name="cancellation_reason" required="1"/>
-                    <field name="other_cancellation_reason" invisible="cancellation_reason != 'other'"/>
+                    <field name="other_cancellation_reason" attrs="{'invisible': [('cancellation_reason', '!=', 'other')]}"/>
                     
                 </group>
                 <footer>

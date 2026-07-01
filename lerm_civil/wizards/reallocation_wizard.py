@@ -102,6 +102,8 @@ import logging
 #     def discard_reallocation(self):
 #         return {'type': 'ir.actions.act_window_close'}
 
+
+
 class ReallocationWizard(models.TransientModel):
     _name = "sample.reallocation.wizard"
 
@@ -212,6 +214,9 @@ class ReallocationWizard(models.TransientModel):
         allot_wizard.with_context(active_ids=active_ids, is_reallocation=True).allot_sample()
 
         return {'type': 'ir.actions.act_window_close'}
+
+
+
 
 class SampleReallocationLine(models.TransientModel):
     _name = 'sample.reallocation.line'

@@ -11,7 +11,7 @@
                     type="object"
                     name="confirm_eln"
                     string="Confirm"
-                     invisible="state not in ('1-draft', '4-rejected')"/>
+                    invisible="state not in ('1-draft', '4-rejected')"/>
                 <field readonly="1" name="state" widget="statusbar" statusbar_visible="1-draft,,5-alloted,2-confirm,3-approved"/>
                 <button type="object" name="print_report" string="Print Report"/>
                 <button type="object" name="reupdate_result" string="Update Results"/>
@@ -98,10 +98,10 @@
 
                 <button string="Open Form" name="open_product_based_form" class="oe_highlight" type="object"
                             invisible="is_product_based_calculation == False"/>
-                <div>
+                <group>
                     <button string="Fetch Inputs" name="fetch_inputs" class="oe_highlight" type="object"
                             invisible="invisible_fetch_inputs == True or is_product_based_calculation == True"/>
-                </div>
+                </group>
 
                 <group style="width:50%" invisible="1">
                     

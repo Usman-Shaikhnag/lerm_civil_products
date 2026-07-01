@@ -558,7 +558,7 @@ class SrfForm(models.Model):
 
 
 
-    # ir sequence approach
+
     def confirm_srf(self):
         import re
         import paramiko
@@ -566,73 +566,51 @@ class SrfForm(models.Model):
 
         for rec in self:
 
-            # Context for backdated sequence resolution (still useful for other generic things if any)
-            seq_ctx = {'backdated_record_id': rec.id}
-            SeqWithCtx = self.env['ir.sequence'].with_context(**seq_ctx)
+            # -----------------------
+            # SRF SEQUENCE (DATE RANGE BASED)
+            # -----------------------
+            srf_seq = self.env['ir.sequence'].search([
+                ('code', '=', 'lerm.srf.main.seq')
+            ], limit=1)
 
-            # Get Sequences
-            srf_seq = self.env['ir.sequence'].search([('code', '=', 'lerm.srf.main.seq')], limit=1)
-            kes_seq = self.env['ir.sequence'].search([('code', '=', 'lerm.kes.main.seq')], limit=1)
+            srf_first = self.env['ir.sequence'].next_by_code('lerm.srf.main.seq')
+
+            srf_parts = srf_first.split('/')
+
+            base_prefix = srf_parts[0]
+            full_part = srf_parts[1]
+
+            date_part = full_part[:6]
+            first_number = int(full_part[-3:])
 
             total_samples = sum(rec.sample_range_table.mapped('sample_qty'))
-            is_backdated = srf_seq and srf_seq.is_backdated
+            last_number = first_number + total_samples - 1
 
-            last_kes_no = False
+            # -----------------------
+            # UPDATE DATE RANGE (SRF)
+            # -----------------------
+            if srf_seq and srf_seq.use_date_range:
 
-            if is_backdated:
-                # -----------------------
-                # BACKDATED MANUAL COUNT
-                # -----------------------
-                count = self.env['lerm.srf.sample'].search_count([
-                    ('srf_id.srf_date', '=', rec.srf_date), 
-                    ('kes_no', '!=', 'New'), 
-                    ('status', '=', '2-confirmed')
-                ])
-                
-                year = str(rec.srf_date.year)[-2:]
-                month = str(rec.srf_date.month).zfill(2)
-                day = str(rec.srf_date.day).zfill(2)
+                today = fields.Date.today()
 
-                first_number = count + 1
-                last_number = count + total_samples
-                
-                # SRF format assumption: SRF/YYMMDD001-YYMMDD005
-                modified_srf_id = f"SRF/{year}{month}{day}{str(first_number).zfill(3)}-{year}{month}{day}{str(last_number).zfill(3)}"
-                kes_counter = count
+                date_range = self.env['ir.sequence.date_range'].search([
+                    ('sequence_id', '=', srf_seq.id),
+                    ('date_from', '<=', today),
+                    ('date_to', '>=', today)
+                ], limit=1)
 
-            else:
-                # -----------------------
-                # ODOO SEQUENCE (NOT BACKDATED)
-                # -----------------------
-                srf_first = SeqWithCtx.next_by_code('lerm.srf.main.seq')
+                if date_range:
+                    date_range.sudo().write({
+                        'number_next_actual': last_number + 1
+                    })
 
-                srf_parts = srf_first.split('/')
-                base_prefix = srf_parts[0]
-                full_part = srf_parts[1]
-
-                date_part = full_part[:6]
-                first_number = int(full_part[-3:])
-                last_number = first_number + total_samples - 1
-
-                # Update the Date Range
-                if srf_seq and srf_seq.use_date_range:
-                    effective_date = fields.Date.today()
-                    date_range = self.env['ir.sequence.date_range'].search([
-                        ('sequence_id', '=', srf_seq.id),
-                        ('date_from', '<=', effective_date),
-                        ('date_to', '>=', effective_date)
-                    ], limit=1)
-
-                    if date_range:
-                        date_range.sudo().write({'number_next_actual': last_number + 1})
-
-                modified_srf_id = "%s/%s%s-%s%s" % (
-                    base_prefix,
-                    date_part,
-                    str(first_number).zfill(3),
-                    date_part,
-                    str(last_number).zfill(3)
-                )
+            modified_srf_id = "%s/%s%s-%s%s" % (
+                base_prefix,
+                date_part,
+                str(first_number).zfill(3),
+                date_part,
+                str(last_number).zfill(3)
+            )
 
             # -----------------------
             # SAMPLE PROCESS
@@ -666,17 +644,14 @@ class SrfForm(models.Model):
                     ('sample_range_id', '=', range_line.id)
                 ])
 
+                last_kes_no = False
+
                 for sample in samples:
 
-                    sample_no = SeqWithCtx.next_by_code('lerm.srf.sample') or 'New'
+                    sample_no = self.env['ir.sequence'].next_by_code('lerm.srf.sample') or 'New'
 
-                    # KES
-                    if is_backdated:
-                        kes_counter += 1
-                        kes_no = "LERM/TR/" + year + month + day + str(kes_counter).zfill(3)
-                    else:
-                        kes_no = SeqWithCtx.next_by_code('lerm.kes.main.seq')
-                    
+                    # KES (already date_range based)
+                    kes_no = self.env['ir.sequence'].next_by_code('lerm.kes.main.seq')
                     last_kes_no = kes_no
 
                     # ULR
@@ -1530,325 +1505,353 @@ class CreateSampleWizard(models.TransientModel):
     def close_sample_wizard(self):
         return {'type': 'ir.actions.act_window_close'}
 
+
     
-    class AllotSampleWizard(models.TransientModel):
-        _name = "sample.allotment.wizard"
-        _inherit = ['mail.thread','mail.activity.mixin']
+class AllotSampleWizard(models.TransientModel):
+    _name = "sample.allotment.wizard"
+    _inherit = ['mail.thread','mail.activity.mixin']
 
-        allocation_type = fields.Selection(
-            [('sample','Sample'), ('parameter','Parameter')],
-            string='Allocate By',
-            default='sample',
-            required=True,
-        )
+    allocation_type = fields.Selection(
+        [('sample','Sample'), ('parameter','Parameter')],
+        string='Allocate By',
+        default='sample',
+        required=True,
+    )
 
-        # used in Sample mode (single tech)
-        technicians = fields.Many2one("res.users", string="Technician")
+    # used in Sample mode (single tech)
+    technicians = fields.Many2one("res.users", string="Technician")
 
-        # used in Parameter mode (final technician set to be stored in ELN)
-        technician_ids = fields.Many2many('res.users',string='Technicians',store=True)
+    # used in Parameter mode (final technician set to be stored in ELN)
+    technician_ids = fields.Many2many('res.users',string='Technicians',store=True)
 
-        allowed_technician_domain_ids = fields.Many2many(
-            'res.users',
-            compute='_compute_allowed_technician_domain_ids',
-            store=False
-        )
+    allowed_technician_domain_ids = fields.Many2many(
+        'res.users',
+        compute='_compute_allowed_technician_domain_ids',
+        store=False
+    )
 
-        sample_id = fields.Many2one('lerm.srf.sample', string='Sample')   # optional
-        line_ids = fields.One2many('sample.allot.line', 'wizard_id', string='Parameters')
+    sample_id = fields.Many2one('lerm.srf.sample', string='Sample')   # optional
+    line_ids = fields.One2many('sample.allot.line', 'wizard_id', string='Parameters')
 
-        @api.depends('sample_id', 'sample_id.lab_location')
-        def _compute_allowed_technician_domain_ids(self):
-            for wizard in self:
-                if wizard.sample_id and wizard.sample_id.lab_location:
-                    lab = wizard.sample_id.lab_location
-                    employees = self.env['hr.employee'].sudo().search([
-                        ('lab_ids', 'in', [lab.id])
-                    ])
-                    employee_user_ids = employees.mapped('user_id').ids
-                    wizard.allowed_technician_domain_ids = [(6, 0, employee_user_ids)]
-                else:
-                    wizard.allowed_technician_domain_ids = [(5,)]
-
-
-        @api.model
-        def default_get(self, fields):
-            res = super().default_get(fields)
-            active_ids = self.env.context.get('active_ids') or []
-            if not active_ids:
-                return res
-
-            # Only support one sample in parameter mode
-            sample = self.env['lerm.srf.sample'].browse(active_ids[0])
-
-            res['sample_id'] = sample.id
-
-            lines = []
-
-            eln = sample.eln_id.sudo()
-
-            for param in sample.parameters:
-                assigned_tech = False
-                is_locked = False
-
-                # If ELN exists, try to find existing parameter_result
-                if eln:
-                    pr = eln.parameters_result.sudo().filtered(lambda r: r.parameter.id == param.id)
-                    if pr and pr[0].technician:
-                        assigned_tech = pr[0].technician.id
-                        is_locked = True
-
-                lines.append((0, 0, {
-                    'sample_id': sample.id,
-                    'parameter_id': param.id,
-                    'technician': assigned_tech,
-                    'is_locked': is_locked,
-                }))
-
-            res['line_ids'] = lines
-            if sample.eln_id:
-                res['allocation_type'] = 'parameter'
+    @api.depends('sample_id', 'sample_id.lab_location')
+    def _compute_allowed_technician_domain_ids(self):
+        for wizard in self:
+            if wizard.sample_id and wizard.sample_id.lab_location:
+                lab = wizard.sample_id.lab_location
+                employees = self.env['hr.employee'].sudo().search([
+                    ('lab_ids', 'in', [lab.id])
+                ])
+                employee_user_ids = employees.mapped('user_id').ids
+                wizard.allowed_technician_domain_ids = [(6, 0, employee_user_ids)]
+            else:
+                wizard.allowed_technician_domain_ids = [(5,)]
 
 
+    @api.model
+    def default_get(self, fields):
+        res = super().default_get(fields)
+        active_ids = self.env.context.get('active_ids') or []
+        if not active_ids:
             return res
 
+        # Only support one sample in parameter mode
+        sample = self.env['lerm.srf.sample'].browse(active_ids[0])
+
+        res['sample_id'] = sample.id
+
+        lines = []
+
+        eln = sample.eln_id.sudo()
+
+        for param in sample.parameters:
+            assigned_tech = False
+            is_locked = False
+
+            # If ELN exists, try to find existing parameter_result
+            if eln:
+                pr = eln.parameters_result.sudo().filtered(lambda r: r.parameter.id == param.id)
+                if pr and pr[0].technician:
+                    assigned_tech = pr[0].technician.id
+                    is_locked = True
+
+            lines.append((0, 0, {
+                'sample_id': sample.id,
+                'parameter_id': param.id,
+                'technician': assigned_tech,
+                'is_locked': is_locked,
+            }))
+
+        res['line_ids'] = lines
+        if sample.eln_id:
+            res['allocation_type'] = 'parameter'
+
+
+        return res
+
+
+    @api.onchange('allocation_type')
+    def _onchange_allocation_type(self):
+        # When switching to parameter mode, populate technician_ids from sample.parameters if active_ids present
+        if self.allocation_type == 'parameter':
+            active_ids = self.env.context.get('active_ids') or []
+            techs = self.env['res.users']
+            for sid in active_ids:
+                sample = self.env['lerm.srf.sample'].browse(sid)
+                # import wdb;wdb.set_trace()
+                for param in sample.parameters:
+                    if hasattr(param, 'allowed_technicians'):
+                        techs |= param.allowed_technicians
+            if techs:
+                self.technician_ids = [(6, 0, techs.ids)]
+        else:
+            # clear technician_ids on sample mode switch
+            self.technician_ids = [(5,)]
+
+    @api.onchange('technicians')
+    def onchange_technicians(self):
+        users = self.env.ref('lerm_civil.kes_technician_access_group').users
+        ids = []
+        for user_id in users:
+            ids.append(user_id.id)
+        print("IDS " + str(ids))
+        # import wdb; wdb.set_trace()
+
+        return {'domain': {'technicians': [('id', 'in', ids)]}}
     
-        @api.onchange('allocation_type')
-        def _onchange_allocation_type(self):
-            # When switching to parameter mode, populate technician_ids from sample.parameters if active_ids present
+
+    # @api.one
+    def allot_sample(self):
+        active_ids = self.env.context.get('active_ids') or []
+        is_reallocation = self.env.context.get('is_reallocation', False)  # 🔑 CHECK FLAG
+        
+        if not active_ids:
+            raise UserError(_("No samples selected."))
+
+        Sample = self.env['lerm.srf.sample'].sudo()
+        ELN = self.env['lerm.eln'].sudo()
+
+        for rec_id in active_ids:
+            sample = Sample.browse(rec_id)
+            if not sample or sample.state not in ('1-allotment_pending', '7-partially-alloted', '2-alloted'):  # 🔑 ALLOW '2-alloted' FOR REALLOCATION
+                if not is_reallocation:  # 🔑 ONLY ENFORCE STATE CHECK IF NOT REALLOCATION
+                    continue
+
+            # Prepare variables
+            parameters_result = []
+            eln_tech_ids = []
+            technician_parameters = {}
+
+
             if self.allocation_type == 'parameter':
-                active_ids = self.env.context.get('active_ids') or []
-                techs = self.env['res.users']
-                for sid in active_ids:
-                    sample = self.env['lerm.srf.sample'].browse(sid)
-                    # import wdb;wdb.set_trace()
+                # enforce single-sample mode (recommended)
+                if len(active_ids) > 1:
+                    raise UserError(_("Parameter allocation supports only one sample at a time. Select a single sample."))
+
+                if not self.line_ids:
+                    raise UserError(_("No parameters available to assign."))
+
+                # Determine new sample state: fully alloted if no unassigned lines else partially alloted
+                existing_param_tech = {}
+                if sample.eln_id:
+                    for pr in sample.eln_id.parameters_result:
+                        existing_param_tech[pr.parameter.id] = pr.technician.id if pr.technician else False
+
+                # Partition lines into assigned / unassigned
+                valid_lines = [line for line in self.line_ids if line.parameter_id]
+
+                assigned_lines = [line for line in valid_lines if line.technician]
+                unassigned_lines = []
+
+                for line in valid_lines:
+                    param_id = line.parameter_id.id
+                    wizard_tech = line.technician.id if line.technician else False
+                    existing_tech = existing_param_tech.get(param_id)
+
+                    # unassigned ONLY if neither wizard nor existing ELN has technician
+                    if not wizard_tech and not existing_tech:
+                        unassigned_lines.append(line)
+
+
+                if len(assigned_lines) == 0:
+                    # No technician assigned at all → not allowed
+                    raise UserError(_("Please assign at least one technician."))
+
+                # Build parameter rows from lines (only for this sample)
+                params_for_eln = []
+                tech_ids_from_lines = set()
+                for line in self.line_ids:
+                    if line.sample_id and line.sample_id.id != sample.id:
+                        continue
+
+                    # 🔑 Skip locked check during reallocation
+                    if line.is_locked and not is_reallocation:
+                        continue 
+                        
+                    if not line.parameter_id:
+                        continue
+                    params_for_eln.append(line.parameter_id)
+                    parameters_result.append((0, 0, {
+                        'parameter': line.parameter_id.id,
+                        'unit': line.parameter_id.unit.id if line.parameter_id.unit else False,
+                        'test_method': line.parameter_id.test_method.id if line.parameter_id.test_method else False,
+                        'technician': line.technician.id if line.technician else False,
+                    }))
+                    if line.technician:
+                        tech_ids_from_lines.add(line.technician.id)
+                        if line.technician.id not in technician_parameters:
+                            technician_parameters[line.technician.id] = []
+                        technician_parameters[line.technician.id].append(line.parameter_id.parameter_name)
+
+                # Prefer user-edited union (tag field). If not present, use line assignments union.
+                eln_tech_ids = self.technician_ids.ids if self.technician_ids else list(tech_ids_from_lines)
+
+                # If still empty, fallback to allowed_technicians union from parameter masters
+                if not eln_tech_ids:
+                    techs = self.env['res.users']
                     for param in sample.parameters:
                         if hasattr(param, 'allowed_technicians'):
                             techs |= param.allowed_technicians
-                if techs:
-                    self.technician_ids = [(6, 0, techs.ids)]
+                    eln_tech_ids = techs.ids
+
+                if not eln_tech_ids:
+                    raise UserError(_("No technicians available/selected for Parameter mode."))
+
+
+                new_state = '2-alloted' if len(unassigned_lines) == 0 else '7-partially-alloted'
+
             else:
-                # clear technician_ids on sample mode switch
-                self.technician_ids = [(5,)]
+                # Sample mode: single technician applies to all parameters
+                if not self.technicians:
+                    raise UserError(_("Please choose a technician for Sample mode."))
+                    
+                technician_parameters[self.technicians.id] = []
 
-        @api.onchange('technicians')
-        def onchange_technicians(self):
-            users = self.env.ref('lerm_civil.kes_technician_access_group').users
-            ids = []
-            for user_id in users:
-                ids.append(user_id.id)
-            print("IDS " + str(ids))
-            # import wdb; wdb.set_trace()
+                for parameter in sample.parameters:
+                    parameters_result.append((0, 0, {
+                        'parameter': parameter.id,
+                        'unit': parameter.unit.id if parameter.unit else False,
+                        'test_method': parameter.test_method.id if parameter.test_method else False,
+                        'technician': self.technicians.id
+                    }))
+                    technician_parameters[self.technicians.id].append(parameter.parameter_name)
 
-            return {'domain': {'technicians': [('id', 'in', ids)]}}
-        
+                if not self.technicians:
+                    raise UserError(_("Please choose a technician for Sample mode."))
+                eln_tech_ids = [self.technicians.id]
+                new_state = '2-alloted'
 
-        # @api.one
-        def allot_sample(self):
-            active_ids = self.env.context.get('active_ids') or []
-            is_reallocation = self.env.context.get('is_reallocation', False)  # 🔑 CHECK FLAG
-            
-            if not active_ids:
-                raise UserError(_("No samples selected."))
-
-            Sample = self.env['lerm.srf.sample'].sudo()
-            ELN = self.env['lerm.eln'].sudo()
-
-            for rec_id in active_ids:
-                sample = Sample.browse(rec_id)
-                if not sample or sample.state not in ('1-allotment_pending', '7-partially-alloted', '2-alloted'):  # 🔑 ALLOW '2-alloted' FOR REALLOCATION
-                    if not is_reallocation:  # 🔑 ONLY ENFORCE STATE CHECK IF NOT REALLOCATION
-                        continue
-
-                # Prepare variables
-                parameters_result = []
-                eln_tech_ids = []
-
-                if self.allocation_type == 'parameter':
-                    # enforce single-sample mode (recommended)
-                    if len(active_ids) > 1:
-                        raise UserError(_("Parameter allocation supports only one sample at a time. Select a single sample."))
-
-                    if not self.line_ids:
-                        raise UserError(_("No parameters available to assign."))
-
-                    # Determine new sample state: fully alloted if no unassigned lines else partially alloted
-                    existing_param_tech = {}
-                    if sample.eln_id:
-                        for pr in sample.eln_id.parameters_result:
-                            existing_param_tech[pr.parameter.id] = pr.technician.id if pr.technician else False
-
-                    # Partition lines into assigned / unassigned
-                    valid_lines = [line for line in self.line_ids if line.parameter_id]
-
-                    assigned_lines = [line for line in valid_lines if line.technician]
-                    unassigned_lines = []
-
-                    for line in valid_lines:
-                        param_id = line.parameter_id.id
-                        wizard_tech = line.technician.id if line.technician else False
-                        existing_tech = existing_param_tech.get(param_id)
-
-                        # unassigned ONLY if neither wizard nor existing ELN has technician
-                        if not wizard_tech and not existing_tech:
-                            unassigned_lines.append(line)
-
-
-                    if len(assigned_lines) == 0:
-                        # No technician assigned at all → not allowed
-                        raise UserError(_("Please assign at least one technician."))
-
-                    # Build parameter rows from lines (only for this sample)
-                    params_for_eln = []
-                    tech_ids_from_lines = set()
-                    for line in self.line_ids:
-                        if line.sample_id and line.sample_id.id != sample.id:
-                            continue
-
-                        # 🔑 Skip locked check during reallocation
-                        if line.is_locked and not is_reallocation:
-                            continue 
-                            
-                        if not line.parameter_id:
-                            continue
-                        params_for_eln.append(line.parameter_id)
-                        parameters_result.append((0, 0, {
-                            'parameter': line.parameter_id.id,
-                            'unit': line.parameter_id.unit.id if line.parameter_id.unit else False,
-                            'test_method': line.parameter_id.test_method.id if line.parameter_id.test_method else False,
-                            'technician': line.technician.id if line.technician else False,
-                        }))
-                        if line.technician:
-                            tech_ids_from_lines.add(line.technician.id)
-
-                    # Prefer user-edited union (tag field). If not present, use line assignments union.
-                    eln_tech_ids = self.technician_ids.ids if self.technician_ids else list(tech_ids_from_lines)
-
-                    # If still empty, fallback to allowed_technicians union from parameter masters
-                    if not eln_tech_ids:
-                        techs = self.env['res.users']
-                        for param in sample.parameters:
-                            if hasattr(param, 'allowed_technicians'):
-                                techs |= param.allowed_technicians
-                        eln_tech_ids = techs.ids
-
-                    if not eln_tech_ids:
-                        raise UserError(_("No technicians available/selected for Parameter mode."))
-
-
-                    new_state = '2-alloted' if len(unassigned_lines) == 0 else '7-partially-alloted'
-
-                else:
-                    # Sample mode: single technician applies to all parameters
-                    parameters_result = []
-                    for parameter in sample.parameters:
-                        parameters_result.append((0, 0, {
-                            'parameter': parameter.id,
-                            'unit': parameter.unit.id if parameter.unit else False,
-                            'test_method': parameter.test_method.id if parameter.test_method else False,
-                            'technician': self.technicians.id
-                        }))
-
-                    if not self.technicians:
-                        raise UserError(_("Please choose a technician for Sample mode."))
-                    eln_tech_ids = [self.technicians.id]
-                    new_state = '2-alloted'
-
-                # If an ELN already exists for this sample, update it instead of creating a new one
-                if sample.eln_id:
-                    eln = ELN.browse(sample.eln_id.id)
-                    if not eln:
-                        # defensive: if eln_id set but record missing, create a new one
-                        eln = None
-                else:
+            # If an ELN already exists for this sample, update it instead of creating a new one
+            if sample.eln_id:
+                eln = ELN.browse(sample.eln_id.id)
+                if not eln:
+                    # defensive: if eln_id set but record missing, create a new one
                     eln = None
+            else:
+                eln = None
 
-                # If ELN exists: update technicians (union) and add any missing parameter lines
-                if eln:
-                    # union existing technicians with new ones
-                    existing_tech_ids = eln.technician_ids.ids or []
-                    combined_tech_ids = list(set(existing_tech_ids) | set(eln_tech_ids))
+            # If ELN exists: update technicians (union) and add any missing parameter lines
+            if eln:
+                # union existing technicians with new ones
+                existing_tech_ids = eln.technician_ids.ids or []
+                combined_tech_ids = list(set(existing_tech_ids) | set(eln_tech_ids))
 
-                    # update technician_ids
-                    eln.write({'technician_ids': [(6, 0, combined_tech_ids)]})
+                # update technician_ids
+                eln.write({'technician_ids': [(6, 0, combined_tech_ids)]})
 
-                    # add missing parameter_result lines (avoid duplicates)
-                    existing_results = {
-                        pr.parameter.id: pr
-                        for pr in eln.parameters_result
-                    }
+                # add missing parameter_result lines (avoid duplicates)
+                existing_results = {
+                    pr.parameter.id: pr
+                    for pr in eln.parameters_result
+                }
 
-                    for pr in parameters_result:
-                        vals = pr[2]
-                        param_id = vals.get('parameter')
-                        technician_id = vals.get('technician')
+                for pr in parameters_result:
+                    vals = pr[2]
+                    param_id = vals.get('parameter')
+                    technician_id = vals.get('technician')
 
-                        if param_id in existing_results:
-                            # 🔑 UPDATE existing line - ALWAYS UPDATE DURING REALLOCATION
-                            existing_pr = existing_results[param_id]
+                    if param_id in existing_results:
+                        # 🔑 UPDATE existing line - ALWAYS UPDATE DURING REALLOCATION
+                        existing_pr = existing_results[param_id]
 
-                            if is_reallocation:
-                                # During reallocation, always update the technician
-                                existing_pr.write({
-                                    'technician': technician_id if technician_id else False
-                                })
-                            elif technician_id and not existing_pr.technician:
-                                # During initial allotment, only update if no existing technician
-                                existing_pr.write({
-                                    'technician': technician_id
-                                })
-                        else:
-                            # CREATE new line
-                            eln.write({'parameters_result': [(0, 0, vals)]})
-                else:
-                    # Create a new ELN
-                    eln_vals = {
-                        'srf_id': sample.srf_id.id if sample.srf_id else False,
-                        'srf_date': sample.srf_id.srf_date if sample.srf_id else False,
-                        'kes_no': sample.kes_no,
-                        'discipline': sample.discipline_id.id if sample.discipline_id else False,
-                        'lab_no_value': sample.lab_no_value,
-                        'group': sample.group_id.id if sample.group_id else False,
-                        'material': sample.material_id.id if sample.material_id else False,
-                        'witness_name': sample.witness,
-                        'sample_id': sample.id,
-                        'parameters_result': parameters_result,
-                        'technician_ids': [(6, 0, eln_tech_ids)],
-                        'conformity': sample.conformity,
-                        'has_witness': sample.has_witness,
-                        'size_id': sample.size_id.id if sample.size_id else False,
-                        'grade_id': sample.grade_id.id if sample.grade_id else False,
-                        'department_id': sample.department_id,
-                        'casting_date': sample.casting_date,
-                        'quantity': sample.quantity,
-                        'uom_id': sample.uom_id.id if sample.uom_id else False,
-                        'quantity_received': sample.quantity_received,
-                        'quantity_consumed': sample.quantity_consumed,
-                        'quantity_balance': sample.quantity_balance,
-                    }
-                    eln = ELN.create(eln_vals)
+                        if is_reallocation:
+                            # During reallocation, always update the technician
+                            existing_pr.write({
+                                'technician': technician_id if technician_id else False
+                            })
+                        elif technician_id and not existing_pr.technician:
+                            # During initial allotment, only update if no existing technician
+                            existing_pr.write({
+                                'technician': technician_id
+                            })
+                    else:
+                        # CREATE new line
+                        eln.write({'parameters_result': [(0, 0, vals)]})
+            else:
+                # Create a new ELN
+                eln_vals = {
+                    'srf_id': sample.srf_id.id if sample.srf_id else False,
+                    'srf_date': sample.srf_id.srf_date if sample.srf_id else False,
+                    'kes_no': sample.kes_no,
+                    'discipline': sample.discipline_id.id if sample.discipline_id else False,
+                    'lab_no_value': sample.lab_no_value,
+                    'group': sample.group_id.id if sample.group_id else False,
+                    'material': sample.material_id.id if sample.material_id else False,
+                    'witness_name': sample.witness,
+                    'sample_id': sample.id,
+                    'parameters_result': parameters_result,
+                    'technician_ids': [(6, 0, eln_tech_ids)],
+                    'conformity': sample.conformity,
+                    'has_witness': sample.has_witness,
+                    'size_id': sample.size_id.id if sample.size_id else False,
+                    'grade_id': sample.grade_id.id if sample.grade_id else False,
+                    'department_id': sample.department_id,
+                    'casting_date': sample.casting_date,
+                    'quantity': sample.quantity,
+                    'uom_id': sample.uom_id.id if sample.uom_id else False,
+                    'quantity_received': sample.quantity_received,
+                    'quantity_consumed': sample.quantity_consumed,
+                    'quantity_balance': sample.quantity_balance,
+                }
+                eln = ELN.create(eln_vals)
 
-                # Update sample state and link eln if not already linked
-                eln.write({'state': '5-alloted'})
-                sample_vals = {'state': new_state, 'eln_id': eln.id}
-                sample.write(sample_vals)
+            # Update sample state and link eln if not already linked
+            # if new_state == '2-alloted':
+            #     eln.write({'state': '2-confirm'})
+            # else:
+            #     eln.write({'state': '1-draft'})
+            sample_vals = {'state': new_state, 'eln_id': eln.id}
+            sample.write(sample_vals)
 
-            return {'type': 'ir.actions.act_window_close'}
+            # Create Tasks for assigned technicians
+            for tech_id, params in technician_parameters.items():
+                param_list_str = ', '.join(params)
+                action_word = "Reallocation" if is_reallocation else "Allocation"
+                action_verb = "re-allocated" if is_reallocation else "allocated"
+                task_name = f"Sample {action_word}: {sample.kes_no or 'Unknown'}"
+                task_description = f"**Sample ID:** {sample.kes_no or 'Unknown'}\n\nSample has been {action_verb} to you.\n\n**Parameters:** {param_list_str}"
+                self.env['project.task'].sudo().create({
+                    'name': task_name,
+                    'user_ids': [(4, tech_id)],
+                    'date_deadline': sample.report_due_date,
+                    'description': task_description,
+                })
+
+        return {'type': 'ir.actions.act_window_close'}
 
 
-        def close_allotment_wizard(self):
-            return {'type': 'ir.actions.act_window_close'}
-        
-        def schedule_activity(self):
-        # Schedule an activity for the current record
-            self.activity_schedule(
-                'mail.mail_activity_data_todo',
-                note='Your activity description here',
-                user_id=self.env.user.id,
-                date_deadline=fields.Date.today(),
-                summary='Your activity summary here'
-            )
-            return True
+    def close_allotment_wizard(self):
+        return {'type': 'ir.actions.act_window_close'}
+    
+    def schedule_activity(self):
+    # Schedule an activity for the current record
+        self.activity_schedule(
+            'mail.mail_activity_data_todo',
+            note='Your activity description here',
+            user_id=self.env.user.id,
+            date_deadline=fields.Date.today(),
+            summary='Your activity summary here'
+        )
+        return True
 
 
 class SampleAllotLine(models.TransientModel):

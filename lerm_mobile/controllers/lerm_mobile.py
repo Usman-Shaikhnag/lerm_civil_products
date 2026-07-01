@@ -432,12 +432,30 @@ class MobileAppController(http.Controller):
             # Prioritize: name, state/status fields, date fields, then others
             priority_fields = []
             other_fields = []
+            
+            # Custom priority fields per model
+            model_priorities = {
+                'lerm.srf.sample': ['discipline_id', 'group_id', 'material_id', 'state'],
+                'lerm.eln': ['discipline', 'group', 'material', 'state'],
+                'lerm.civil.srf': ['customer', 'srf_date', 'state'],
+            }
+            custom_priority = model_priorities.get(model_name, [])
+
             for f in display_fields:
-                if f in ('name', 'display_name', 'state', 'stage_id', 'partner_id',
-                         'date', 'date_order', 'date_start'):
-                    priority_fields.append(f)
+                if custom_priority:
+                    if f in custom_priority:
+                        priority_fields.append(f)
+                    else:
+                        other_fields.append(f)
                 else:
-                    other_fields.append(f)
+                    if f in ('name', 'display_name', 'state', 'stage_id', 'partner_id',
+                             'date', 'date_order', 'date_start'):
+                        priority_fields.append(f)
+                    else:
+                        other_fields.append(f)
+
+            if custom_priority:
+                priority_fields.sort(key=lambda x: custom_priority.index(x) if x in custom_priority else 999)
 
             selected_fields = (priority_fields + other_fields)[:8]
 

@@ -127,10 +127,6 @@ class ELN(models.Model):
     quantity_balance = fields.Integer(string="Quantity Balance", compute="compute_quantity_balance", readonly=True)
     unread_eln = fields.Boolean(string="Unread ELN", default=True)
 
-    test_started = fields.Boolean(string="Test Started", default=False)
-
-
-
     def action_open_form(self):
         """Called when clicking a record in the tree view — marks it as read and opens the form."""
         self.ensure_one()
@@ -291,7 +287,7 @@ class ELN(models.Model):
 
     def open_product_based_form(self):
         for record in self:
-            
+            # Sample ला target कर
             
             if (
                 record.state not in ['2-confirm', '3-approved', '4-rejected']
@@ -307,10 +303,6 @@ class ELN(models.Model):
         # print("model ",model)
 
         # import wdb; wdb.set_trace()
-        if not self.test_started or self.state == '5-alloted':
-            self.test_started = True
-            self.state = '1-draft'
-
         if self.model_id != 0:
             return {
                 'view_mode': 'form',
@@ -341,6 +333,7 @@ class ELN(models.Model):
                 }
 
    
+
 
     @api.depends('material')
     def _compute_product_based(self):
@@ -418,9 +411,6 @@ class ELN(models.Model):
             #             self.write({"parameters_input":[(0,0,{'parameter_result':data.id,'identifier':inputs.identifier,'inputs':inputs.id})]})
 
             #         self.env.cr.commit()
-        if not self.test_started or self.state == '5-alloted':
-            self.test_started = True
-            self.state = '1-draft'
 
     def calculate_results(self):
         for record in self.parameters_result:
@@ -434,6 +424,7 @@ class ELN(models.Model):
             record.write({'result':result})
             print(result) 
 
+ 
     def confirm_eln(self):
   
         
@@ -493,6 +484,47 @@ class ELN(models.Model):
                 'test_method':result.test_method.id
             })
         self.write({'state': '2-confirm'})
+
+        # Create tasks for users in Sample Verification / Sample Approval groups
+        # whose department matches the product's department
+        verification_group = self.env.ref('lerm_civil.lerm_sample_verification', raise_if_not_found=False)
+        approval_group = self.env.ref('lerm_civil.lerm_sample_approval', raise_if_not_found=False)
+
+        group_ids = []
+        if verification_group:
+            group_ids.append(verification_group.id)
+        if approval_group:
+            group_ids.append(approval_group.id)
+
+        if group_ids:
+            # Find all users who belong to either group
+            target_users = self.env['res.users'].sudo().search([
+                ('groups_id', 'in', group_ids),
+            ])
+
+            # Filter by department: sample's department_id (Char) must match
+            # one of the user's department names (via hr.employee.department_id)
+            sample_department = self.sample_id.department_id  # Char field
+            if sample_department:
+                matched_users = target_users.filtered(
+                    lambda u: sample_department in u.employee_ids.mapped('department_id.name')
+                )
+            else:
+                # If no department set on sample, send to all matching group users
+                matched_users = target_users
+
+            for user in matched_users:
+                self.env['project.task'].sudo().create({
+                    'name': f"Sample Verification/Approval: {self.sample_id.kes_no or 'Unknown'}",
+                    'user_ids': [(4, user.id)],
+                    'date_deadline': self.sample_id.report_due_date,
+                    'description': (
+                        f"**Sample ID:** {self.sample_id.kes_no or 'Unknown'}\n\n"
+                        f"**Material:** {self.material.name or ''}\n\n"
+                        f"**Department:** {sample_department or 'N/A'}\n\n"
+                        f"Sample has been submitted for verification/approval."
+                    ),
+                })
 
 
     def reupdate_result(self):

@@ -825,11 +825,14 @@ class MobileAppController(http.Controller):
         data = request.params or kwargs
         try:
             sample_id = data.get('sample_id')
-            technician_id = data.get('technician_id')
             is_reallocation = data.get('is_reallocation', False)
+            allocation_type = data.get('allocation_type', 'sample')
+            reallocation_mode = data.get('reallocation_mode', 'full')
+            technician_id = data.get('technician_id')
+            parameters_assignment = data.get('parameters_assignment', [])
 
-            if not sample_id or not technician_id:
-                return {'success': False, 'error': 'sample_id and technician_id are required'}
+            if not sample_id:
+                return {'success': False, 'error': 'sample_id is required'}
 
             sample = request.env['lerm.srf.sample'].browse(int(sample_id))
             if not sample.exists():
@@ -842,19 +845,41 @@ class MobileAppController(http.Controller):
                 'is_reallocation': is_reallocation,
             })
 
+            wizard_vals = {
+                'allocation_type': allocation_type,
+            }
+
+            if allocation_type == 'sample':
+                if not technician_id:
+                    return {'success': False, 'error': 'technician_id is required for sample allocation'}
+                wizard_vals['technicians'] = int(technician_id)
+            else:
+                # Parameter mode
+                if not parameters_assignment:
+                    return {'success': False, 'error': 'parameters_assignment is required for parameter allocation'}
+                
+                line_ids = []
+                technician_ids_set = set()
+                for p in parameters_assignment:
+                    tech_id = p.get('technician_id')
+                    line_ids.append((0, 0, {
+                        'sample_id': sample.id,
+                        'parameter_id': p.get('parameter_id'),
+                        'technician': int(tech_id) if tech_id else False,
+                        'is_locked': False,
+                    }))
+                    if tech_id:
+                        technician_ids_set.add(int(tech_id))
+                
+                wizard_vals['line_ids'] = line_ids
+                wizard_vals['technician_ids'] = [(6, 0, list(technician_ids_set))]
+
             if is_reallocation:
-                # Create reallocation wizard and execute
-                wizard = request.env['sample.reallocation.wizard'].with_context(**ctx).create({
-                    'allocation_type': 'sample',
-                    'technicians': int(technician_id),
-                })
+                wizard_vals['reallocation_mode'] = reallocation_mode
+                wizard = request.env['sample.reallocation.wizard'].with_context(**ctx).create(wizard_vals)
                 wizard.with_context(**ctx).reallocate_current_sample()
             else:
-                # Create allotment wizard and execute
-                wizard = request.env['sample.allotment.wizard'].with_context(**ctx).create({
-                    'allocation_type': 'sample',
-                    'technicians': int(technician_id),
-                })
+                wizard = request.env['sample.allotment.wizard'].with_context(**ctx).create(wizard_vals)
                 wizard.with_context(**ctx).allot_sample()
 
             return {'success': True, 'message': 'Sample allotted successfully'}

@@ -63,6 +63,8 @@ class AccountMove(models.Model):
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
+
+    
     @api.depends("quantity")
     def _compute_price_unit(self):
         res = super()._compute_price_unit()
