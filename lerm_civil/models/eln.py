@@ -126,6 +126,7 @@ class ELN(models.Model):
     quantity_consumed = fields.Integer(string="Quantity Consumed")
     quantity_balance = fields.Integer(string="Quantity Balance", compute="compute_quantity_balance", readonly=True)
 <<<<<<< HEAD
+<<<<<<< HEAD
     unread_eln = fields.Boolean(string="Unread ELN", default=True)
 
     def action_open_form(self):
@@ -144,6 +145,8 @@ class ELN(models.Model):
     
 
     
+=======
+>>>>>>> 177469d900021288c4dbda7bbc53e351f68ad16d
 =======
 >>>>>>> 177469d900021288c4dbda7bbc53e351f68ad16d
     test_started = fields.Boolean(string="Test Started", default=False)
@@ -295,7 +298,10 @@ class ELN(models.Model):
         for record in self:
             # Sample ला target कर
 <<<<<<< HEAD
+<<<<<<< HEAD
             
+=======
+>>>>>>> 177469d900021288c4dbda7bbc53e351f68ad16d
 =======
 >>>>>>> 177469d900021288c4dbda7bbc53e351f68ad16d
             if (
