@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+
+    <t t-name="gl_report.LedgerTable">
+        <div class="o_gl_table_wrapper">
+            <table class="o_gl_table">
+                <thead>
+                    <tr>
+                        <th style="width:32px;padding:10px 4px;"></th>
+                        <t t-foreach="props.columns" t-as="col" t-key="col.id">
+                            <th t-att-style="'width:' + col.width + 'px;'"
+                                t-att-class="(col.sortable ? 'sortable' : '') + ' ' + (col.align === 'right' ? 'right-align' : '') + ' ' + (sortField === col.id ? (sortOrder === 'asc' ? 'sorted-asc' : 'sorted-desc') : '')"
+                                t-on-click="() => onSortClick(col.id)">
+                                <t t-esc="col.label"/>
+                                <div class="col-resize-handle"
+                                     t-on-mousedown="(e) => startResize(e, col.id)"/>
+                            </th>
+                        </t>
+                        <th style="width:120px;padding:10px 4px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <!-- Opening Balance Row -->
+                    <tr t-if="props.data.summary.opening_balance">
+                        <td></td>
+                        <td colspan="5" style="font-weight:600;color:#475569;">
+                            <i class="fa fa-arrow-right me-1 text-muted"/>
+                            Opening Balance
+                        </td>
+                        <td class="amount o_gl_debit">
+                            <t t-esc="formatCurrency(props.data.summary.opening_balance_positive)"/>
+                        </td>
+                        <td class="amount o_gl_credit">
+                            <t t-esc="formatCurrency(props.data.summary.opening_balance_negative)"/>
+                        </td>
+                        <td class="amount" t-att-class="balanceClass(props.data.summary.opening_balance)">
+                            <t t-esc="formatCurrency(props.data.summary.opening_balance)"/>
+                        </td>
+                        <td t-foreach="props.columns.slice(9)" t-as="_extra" t-key="_extra.id" colspan="1"></td>
+                        <td></td>
+                    </tr>
+
+                    <!-- Grouped rows -->
+                    <t t-if="isGrouped() and props.data.groups">
+                        <t t-foreach="props.data.groups" t-as="group" t-key="group.group_key">
+                            <tr class="o_gl_group_header">
+                                <td colspan="2">
+                                    <span class="o_gl_group_toggle me-1">
+                                        <i class="fa fa-chevron-down"/>
+                                    </span>
+                                    <strong t-esc="group.group_key"/>
+                                </td>
+                                <td class="amount o_gl_debit" t-esc="formatCurrency(group.total_debit)"/>
+                                <td class="amount o_gl_credit" t-esc="formatCurrency(group.total_credit)"/>
+                                <td class="amount" t-att-class="balanceClass(group.total_balance)"
+                                    t-esc="formatCurrency(group.total_balance)"/>
+                                <td colspan="100" class="o_gl_group_subtotal">
+                                    <t t-esc="group.count"/> transactions
+                                </td>
+                            </tr>
+                        </t>
+                    </t>
+
+                    <!-- Regular data rows -->
+                    <t t-else="">
+                        <t t-foreach="props.data.records" t-as="row" t-key="row.id">
+                            <t t-call="gl_report.LedgerRow"/>
+                        </t>
+                    </t>
+
+                    <!-- Closing Balance Row -->
+                    <tr t-if="props.data.summary">
+                        <td></td>
+                        <td colspan="5" style="font-weight:700;border-top:2px solid #0f172a;">
+                            Closing Balance
+                        </td>
+                        <td class="amount" style="font-weight:700;border-top:2px solid #0f172a;">
+                            <t t-esc="formatCurrency(props.data.summary.total_debit)"/>
+                        </td>
+                        <td class="amount" style="font-weight:700;border-top:2px solid #0f172a;">
+                            <t t-esc="formatCurrency(props.data.summary.total_credit)"/>
+                        </td>
+                        <td class="amount" style="font-weight:700;border-top:2px solid #0f172a;"
+                            t-att-class="balanceClass(props.data.summary.closing_balance)">
+                            <t t-esc="formatCurrency(props.data.summary.closing_balance)"/>
+                        </td>
+                        <td colspan="100" style="border-top:2px solid #0f172a;"></td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="o_gl_pagination">
+            <div class="o_gl_page_info">
+                <t t-esc="(props.currentPage - 1) * (props.filters?.limit || 50) + 1"/>
+                –
+                <t t-esc="Math.min(props.currentPage * (props.filters?.limit || 50), props.totalRecords)"/>
+                of <t t-esc="props.totalRecords"/> records
+            </div>
+            <div class="o_gl_page_buttons">
+                <span class="text-muted me-2 small">Per page:</span>
+                <select t-att-value="props.filters?.limit || 50"
+                        t-on-change="(e) => props.onPageSizeChange(parseInt(e.target.value))">
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+                <button class="btn btn-outline-secondary btn-sm"
+                        t-att-disabled="props.currentPage === 1 ? 'disabled' : undefined"
+                        t-on-click="() => props.onPageChange(props.currentPage - 1)">
+                    <i class="fa fa-chevron-left"/>
+                </button>
+                <t t-foreach="getPageNumbers()" t-as="p" t-key="p">
+                    <button t-if="p === '...'"
+                            class="btn btn-sm btn-link disabled"
+                            disabled="disabled">...</button>
+                    <button t-else=""
+                            class="btn btn-sm"
+                            t-att-class="p === props.currentPage ? 'btn-primary' : 'btn-outline-secondary'"
+                            t-on-click="() => props.onPageChange(p)"
+                            t-esc="p"/>
+                </t>
+                <button class="btn btn-outline-secondary btn-sm"
+                        t-att-disabled="props.currentPage >= props.totalPages"
+                        t-on-click="() => props.onPageChange(props.currentPage + 1)">
+                    <i class="fa fa-chevron-right"/>
+                </button>
+            </div>
+        </div>
+    </t>
+
+    <!-- Single row template -->
+    <t t-name="gl_report.LedgerRow">
+        <tr t-att-class="props.expandedRows[row.id] ? 'expanded' : ''"
+            t-on-click="() => props.onToggleRow(row.id)"
+            style="cursor:pointer;">
+            <td class="text-center" style="padding:8px 4px;">
+                <i class="fa"
+                   t-att-class="props.expandedRows[row.id] ? 'fa-chevron-down' : 'fa-chevron-right'"
+                   style="font-size:10px;color:#94a3b8;"/>
+            </td>
+            <t t-foreach="props.columns" t-as="col" t-key="col.id">
+                <td t-att-class="col.align === 'right' ? 'amount' : ''">
+                    <t t-if="col.id === 'date'">
+                        <t t-esc="formatDate(row.date)"/>
+                    </t>
+                    <t t-elif="col.id === 'journal'">
+                        <span class="badge bg-light text-dark border"
+                              t-esc="row.journal_code"/>
+                    </t>
+                    <t t-elif="col.id === 'move'">
+                        <a class="text-decoration-none"
+                           t-esc="row.move_name"
+                           t-on-click.stop="() => props.onOpenMove(row.move_id)"/>
+                    </t>
+                    <t t-elif="col.id === 'partner'">
+                        <a t-if="row.partner_id"
+                           class="text-decoration-none"
+                           t-esc="row.partner_name"
+                           t-on-click.stop="() => props.onOpenPartner(row.partner_id)"/>
+                        <span t-else="" class="text-muted">—</span>
+                    </t>
+                    <t t-elif="col.id === 'label'">
+                        <span t-esc="row.label" class="text-truncate d-inline-block"
+                              style="max-width:200px;"/>
+                    </t>
+                    <t t-elif="col.id === 'ref'">
+                        <span t-esc="row.ref || '—'" class="text-muted"/>
+                    </t>
+                    <t t-elif="col.id === 'debit'">
+                        <span class="o_gl_debit" t-esc="formatCurrency(row.debit)"/>
+                    </t>
+                    <t t-elif="col.id === 'credit'">
+                        <span class="o_gl_credit" t-esc="formatCurrency(row.credit)"/>
+                    </t>
+                    <t t-elif="col.id === 'balance'">
+                        <span t-att-class="balanceClass(row.running_balance || row.balance)"
+                              t-esc="formatCurrency(row.running_balance || row.balance)"/>
+                    </t>
+                    <t t-elif="col.id === 'analytic'">
+                        <span t-esc="row.analytic_name || '—'" class="text-muted small"/>
+                    </t>
+                    <t t-elif="col.id === 'taxes'">
+                        <span class="text-muted">—</span>
+                    </t>
+                    <t t-elif="col.id === 'user'">
+                        <span t-esc="row.create_user_name || '—'" class="small"/>
+                    </t>
+                    <t t-elif="col.id === 'state'">
+                        <span t-if="row.state === 'posted'"
+                              class="o_gl_status_posted">Posted</span>
+                        <span t-elif="row.state === 'draft'"
+                              class="o_gl_status_draft">Draft</span>
+                        <span t-else="" t-esc="row.state || '—'"/>
+                    </t>
+                </td>
+            </t>
+            <td>
+                <div class="o_gl_row_actions">
+                    <button class="btn btn-sm btn-outline-primary"
+                            title="View Journal Entry"
+                            t-on-click.stop="() => props.onOpenMove(row.move_id)">
+                        <i class="fa fa-eye"/>
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary"
+                            title="Open Partner"
+                            t-on-click.stop="() => props.onOpenPartner(row.partner_id)"
+                            t-att-disabled="!row.partner_id">
+                        <i class="fa fa-user"/>
+                    </button>
+                    <button class="btn btn-sm btn-outline-info"
+                            title="Print">
+                        <i class="fa fa-print"/>
+                    </button>
+                </div>
+            </td>
+        </tr>
+
+        <!-- Expandable row -->
+        <tr class="o_gl_expandable_row" t-if="props.expandedRows[row.id]">
+            <td colspan="100">
+                <div class="o_gl_expandable_content">
+                    <div class="o_gl_detail_item">
+                        <dt>Move Line ID</dt>
+                        <dd><t t-esc="row.id"/></dd>
+                    </div>
+                    <div class="o_gl_detail_item">
+                        <dt>Account</dt>
+                        <dd>[<t t-esc="row.account_code"/>] <t t-esc="row.account_name"/></dd>
+                    </div>
+                    <div class="o_gl_detail_item" t-if="row.analytic_name">
+                        <dt>Analytic Account</dt>
+                        <dd><t t-esc="row.analytic_name"/></dd>
+                    </div>
+                    <div class="o_gl_detail_item">
+                        <dt>Created By</dt>
+                        <dd><t t-esc="row.create_user_name || '—'"/></dd>
+                    </div>
+                    <div class="o_gl_detail_item">
+                        <dt>Created On</dt>
+                        <dd><t t-esc="row.create_date || '—'"/></dd>
+                    </div>
+                    <div class="o_gl_detail_item" t-if="row.write_user_name">
+                        <dt>Modified By</dt>
+                        <dd><t t-esc="row.write_user_name"/></dd>
+                    </div>
+                    <div class="o_gl_detail_item" t-if="row.write_date">
+                        <dt>Modified On</dt>
+                        <dd><t t-esc="row.write_date"/></dd>
+                    </div>
+                    <div class="o_gl_detail_item">
+                        <dt>Move Type</dt>
+                        <dd><t t-esc="row.move_type || '—'"/></dd>
+                    </div>
+                    <div class="o_gl_detail_item">
+                        <dt>Quantity</dt>
+                        <dd><t t-esc="row.quantity || '0'"/></dd>
+                    </div>
+                    <div class="o_gl_detail_item">
+                        <dt>Notes</dt>
+                        <dd><t t-esc="row.label || '—'"/></dd>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </t>
+
+</templates>
