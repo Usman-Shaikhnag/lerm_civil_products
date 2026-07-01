@@ -125,24 +125,25 @@
 
                     
 
+                    <t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
                     <div style="display:flex; justify-content:space-between; margin-top:40px;">
 
                         <div>
                             <b>Prepared By</b>
 
                             <div style="height:40px;">
-                                <t t-if="eln.tested_by_signature_datasheet and eln.sample_id.filled_by.employee_id.signature">
-                                    <img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature"
+                                <t t-if="eln.tested_by_signature_datasheet and prepared_by_obj and prepared_by_obj.employee_id.signature">
+                                    <img t-att-src="'data:image/png;base64,%s' % prepared_by_obj.employee_id.signature"
                                          style="max-width:200px;max-height:35px;"/>
                                 </t>
                             </div>
 
                             <div>
-                                <b><span t-esc="eln.sample_id.filled_by.name"/></b>
+                                <b><span t-esc="prepared_by_obj.name or ''"/></b>
                             </div>
 
                             <div>
-                                (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                (<span t-esc="prepared_by_obj.job_title or ''"/>)
                             </div>
                         </div>
 

@@ -104,6 +104,7 @@
 						</table>
                     
 
+					<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
 					<div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -114,12 +115,12 @@
 								
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <span t-esc="prepared_by_obj.name or ''"/>
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    (<span t-esc="prepared_by_obj.job_title or ''"/>)
                                 </b>
                             </div>
                         </div>
@@ -289,6 +290,7 @@
 						</table>
                     
 
+					<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
 					<div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -299,12 +301,12 @@
 								
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <span t-esc="prepared_by_obj.name or ''"/>
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    (<span t-esc="prepared_by_obj.job_title or ''"/>)
                                 </b>
                             </div>
                         </div>
@@ -393,6 +395,7 @@
 						</table>
                     
 
+					<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
 					<div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -403,12 +406,12 @@
 								
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <span t-esc="prepared_by_obj.name or ''"/>
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    (<span t-esc="prepared_by_obj.job_title or ''"/>)
                                 </b>
                             </div>
                         </div>
@@ -555,6 +558,7 @@
 						</table>
                     
 
+					<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
 					<div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -565,12 +569,12 @@
 								
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <span t-esc="prepared_by_obj.name or ''"/>
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    (<span t-esc="prepared_by_obj.job_title or ''"/>)
                                 </b>
                             </div>
                         </div>
@@ -606,10 +610,11 @@
                     <!-- authorizeRowDataSheet -->
                     
                    <div class="authorizeRowDataSheet">
+						<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
 						<div>
                             <div>
-                                <b>
-                                    Tested By 
+                                               <b>
+                                                                                   Tested By 
                                 </b>
                                 
                             </div>
@@ -618,12 +623,12 @@
                             </div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <span t-esc="prepared_by_obj.name or ''"/>
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    (<span t-esc="prepared_by_obj.job_title or ''"/>)
                                 </b>
                             </div>
 						</div>
