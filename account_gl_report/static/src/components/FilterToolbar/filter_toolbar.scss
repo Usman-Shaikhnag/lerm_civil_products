@@ -1,0 +1,45 @@
+.o_gl_filter_toolbar {
+    background: #fff;
+}
+
+.o_gl_filter_group label {
+    display: block;
+}
+
+.o_gl_dropdown_menu {
+    animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.hover-bg-light:hover {
+    background: #f1f5f9;
+}
+
+/* Dark mode overrides */
+.o_web_client.o_dark .o_gl_filter_toolbar {
+    background: #1e293b;
+    border-color: #334155;
+}
+
+.o_web_client.o_dark .o_gl_dropdown_menu {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+}
+
+.o_web_client.o_dark .o_gl_dropdown_menu .btn-light {
+    background: #334155;
+    color: #e2e8f0;
+    border-color: #475569;
+}
+
+.o_web_client.o_dark .o_gl_dropdown_menu .btn-light:hover {
+    background: #475569;
+}
