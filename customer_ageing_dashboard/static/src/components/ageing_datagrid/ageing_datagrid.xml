@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="customer_ageing_dashboard.AgeingDatagrid" owl="1">
+        <div>
+            <div t-if="!props.rows || props.rows.length === 0" class="cad-empty">
+                <i class="fa fa-inbox"/>
+                <p>No overdue invoices found for the selected filters.</p>
+            </div>
+
+            <div t-else="" class="cad-table-wrapper">
+                <table class="cad-table">
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th t-foreach="bucketKeys" t-as="k" t-key="k">
+                                <t t-esc="bucketLabel(k)"/>
+                            </th>
+                            <th>Total Outstanding</th>
+                            <th>Invoices</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="props.rows" t-as="row" t-key="row.partner_id">
+                            <td>
+                                <span class="cad-cell-link" t-on-click="() => onCellClick('partner', row, false)">
+                                    <t t-esc="row.partner_name"/>
+                                </span>
+                            </td>
+                            <t t-foreach="bucketKeys" t-as="k" t-key="k">
+                                <td>
+                                    <span class="cad-cell-link cad-cell-drilldown" t-att-title="bucketTooltip(row, k)" t-on-click="() => onCellClick(k, row, false)">
+                                        <t t-esc="formatAmount((row.buckets || {})[k])"/>
+                                    </span>
+                                </td>
+                            </t>
+                            <td>
+                                <span class="cad-cell-link cad-cell-drilldown" title="View all outstanding invoices for this customer" t-on-click="() => onCellClick('total', row, false)">
+                                    <t t-esc="formatAmount(row.total_outstanding)"/>
+                                </span>
+                            </td>
+                            <td>
+                                <t t-esc="row.invoice_count || 0"/>
+                            </td>
+                        </tr>
+                        <tr class="cad-totals-row" t-if="props.totals">
+                            <td>Total</td>
+                            <t t-foreach="bucketKeys" t-as="k" t-key="k">
+                                <td>
+                                    <span class="cad-cell-link cad-cell-drilldown" t-att-title="'All customers - ' + bucketLabel(k)" t-on-click="() => onCellClick(k, props.totals, true)">
+                                        <t t-esc="formatAmount((props.totals.buckets || {})[k])"/>
+                                    </span>
+                                </td>
+                            </t>
+                            <td>
+                                <span class="cad-cell-link cad-cell-drilldown" title="All outstanding invoices across all customers" t-on-click="() => onCellClick('total', props.totals, true)">
+                                    <t t-esc="formatAmount(props.totals.total_outstanding)"/>
+                                </span>
+                            </td>
+                            <td>
+                                <t t-esc="props.totals.invoice_count || 0"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </t>
+</templates>
