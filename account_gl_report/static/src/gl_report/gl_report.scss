@@ -1,0 +1,688 @@
+// ============================================================
+// General Ledger Report — Odoo 17 Modern Design
+// ============================================================
+
+// --- Variables ---
+$gl-primary: #7c3aed;
+$gl-debit: #2563eb;
+$gl-credit: #dc2626;
+$gl-positive: #16a34a;
+$gl-negative: #e11d48;
+$gl-zero: #9ca3af;
+$gl-bg: #f8fafc;
+$gl-header-bg: #f1f5f9;
+$gl-card-radius: 12px;
+$gl-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+$gl-card-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.1);
+$gl-transition: all 0.2s ease;
+$gl-border: #e2e8f0;
+
+// ============================================================
+// Root container
+// ============================================================
+.o_gl_report {
+    background: $gl-bg;
+    min-height: 100%;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+// ============================================================
+// Report Header
+// ============================================================
+.o_gl_report_header {
+    background: #fff;
+    border-bottom: 1px solid $gl-border;
+}
+
+.o_gl_title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+}
+
+.o_gl_meta {
+    font-size: 12px;
+    color: #64748b;
+}
+
+// ============================================================
+// Filter Chips
+// ============================================================
+.o_gl_chips {
+    background: #fff;
+    border-bottom: 1px solid $gl-border;
+}
+
+.o_gl_chip {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    transition: $gl-transition;
+
+    &:hover {
+        background: #e2e8f0 !important;
+    }
+}
+
+// ============================================================
+// Summary KPI Cards
+// ============================================================
+.o_gl_summary_cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+    padding: 16px;
+
+    @media (max-width: 768px) {
+        grid-template-columns: repeat(5, 160px);
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+.o_gl_summary_card {
+    background: #fff;
+    border-radius: $gl-card-radius;
+    box-shadow: $gl-card-shadow;
+    padding: 16px;
+    transition: $gl-transition;
+    border: 1px solid $gl-border;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: $gl-card-shadow-hover;
+    }
+
+    .o_gl_card_label {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #64748b;
+    }
+
+    .o_gl_card_value {
+        font-size: 22px;
+        font-weight: 700;
+        color: #0f172a;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .o_gl_card_sub {
+        font-size: 11px;
+        color: #94a3b8;
+    }
+
+    &.card-debit .o_gl_card_value { color: $gl-debit; }
+    &.card-credit .o_gl_card_value { color: $gl-credit; }
+    &.card-positive .o_gl_card_value { color: $gl-positive; }
+    &.card-negative .o_gl_card_value { color: $gl-negative; }
+    &.card-zero .o_gl_card_value { color: $gl-zero; }
+}
+
+// ============================================================
+// Ledger Table
+// ============================================================
+.o_gl_table_wrapper {
+    flex: 1;
+    overflow: auto;
+    padding: 0 16px 16px;
+    position: relative;
+}
+
+.o_gl_table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: $gl-card-shadow;
+    overflow: hidden;
+    font-size: 12px;
+
+    thead {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+
+        th {
+            background: $gl-header-bg;
+            padding: 10px 12px;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #475569;
+            border-bottom: 2px solid $gl-border;
+            white-space: nowrap;
+            user-select: none;
+            position: relative;
+            cursor: default;
+
+            &.sortable {
+                cursor: pointer;
+                transition: $gl-transition;
+
+                &:hover {
+                    background: darken($gl-header-bg, 3%);
+                }
+            }
+
+            &.sorted-asc::after {
+                content: " ▲";
+                font-size: 8px;
+            }
+
+            &.sorted-desc::after {
+                content: " ▼";
+                font-size: 8px;
+            }
+
+            &.right-align {
+                text-align: right;
+            }
+
+            .col-resize-handle {
+                position: absolute;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                width: 4px;
+                cursor: col-resize;
+
+                &:hover {
+                    background: $gl-primary;
+                }
+            }
+        }
+    }
+
+    tbody {
+        tr {
+            transition: background 0.15s;
+
+            &:nth-child(even) {
+                background: #fafbfc;
+            }
+
+            &:hover {
+                background: #eef2ff;
+            }
+
+            &.expanded {
+                background: #f0f4ff;
+            }
+
+            td {
+                padding: 8px 12px;
+                border-bottom: 1px solid #f1f5f9;
+                vertical-align: middle;
+
+                &.amount {
+                    text-align: right;
+                    font-variant-numeric: tabular-nums;
+                    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+                    font-size: 12px;
+                }
+
+                &.o_gl_debit { color: $gl-debit; }
+                &.o_gl_credit { color: $gl-credit; }
+                &.o_gl_balance_positive { color: $gl-positive; }
+                &.o_gl_balance_negative { color: $gl-negative; }
+                &.o_gl_balance_zero { color: $gl-zero; }
+
+                .o_gl_status_posted {
+                    color: $gl-positive;
+                    font-weight: 600;
+                }
+
+                .o_gl_status_draft {
+                    color: #f59e0b;
+                    font-weight: 600;
+                }
+
+                .o_gl_row_actions {
+                    display: flex;
+                    gap: 4px;
+                    opacity: 0;
+                    transition: opacity 0.15s;
+
+                    .btn {
+                        padding: 2px 6px;
+                        font-size: 11px;
+                        line-height: 1;
+                    }
+                }
+            }
+
+            &:hover td .o_gl_row_actions {
+                opacity: 1;
+            }
+        }
+    }
+
+    .o_gl_expandable_row {
+        td {
+            padding: 0;
+            background: #f8fafc;
+
+            .o_gl_expandable_content {
+                padding: 12px 16px 12px 40px;
+                border-top: 1px solid $gl-border;
+                font-size: 12px;
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 8px;
+
+                .o_gl_detail_item {
+                    dt {
+                        font-weight: 600;
+                        color: #475569;
+                        font-size: 11px;
+                        text-transform: uppercase;
+                        letter-spacing: 0.03em;
+                    }
+                    dd {
+                        margin: 0;
+                        color: #0f172a;
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ============================================================
+// Group Header Row
+// ============================================================
+.o_gl_group_header {
+    background: #eef2ff !important;
+
+    td {
+        font-weight: 600;
+        padding: 8px 12px;
+        border-bottom: 2px solid #c7d2fe;
+        cursor: pointer;
+
+        .o_gl_group_toggle {
+            transition: transform 0.2s;
+            display: inline-block;
+
+            &.collapsed {
+                transform: rotate(-90deg);
+            }
+        }
+    }
+
+    .o_gl_group_subtotal {
+        font-size: 12px;
+        color: #475569;
+    }
+}
+
+// ============================================================
+// Pagination
+// ============================================================
+.o_gl_pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: #fff;
+    border-top: 1px solid $gl-border;
+    font-size: 12px;
+
+    .o_gl_page_info {
+        color: #64748b;
+    }
+
+    .o_gl_page_buttons {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+
+        .btn {
+            padding: 4px 10px;
+            font-size: 12px;
+            border-radius: 4px;
+        }
+
+        .btn-primary {
+            background: $gl-primary;
+            border-color: $gl-primary;
+        }
+
+        select {
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid $gl-border;
+        }
+    }
+}
+
+// ============================================================
+// Skeleton Loading
+// ============================================================
+.o_gl_skeleton_card {
+    height: 80px;
+    border-radius: $gl-card-radius;
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    flex: 1;
+}
+
+.o_gl_skeleton_table {
+    height: 300px;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+// ============================================================
+// Empty State
+// ============================================================
+.o_gl_empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+
+    .o_gl_empty_icon {
+        font-size: 64px;
+        color: #cbd5e1;
+        margin-bottom: 16px;
+    }
+
+    h4 {
+        color: #475569;
+        font-weight: 600;
+    }
+
+    p {
+        color: #94a3b8;
+        margin-bottom: 16px;
+    }
+}
+
+// ============================================================
+// Column Chooser Dropdown
+// ============================================================
+.o_gl_column_chooser_modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1050;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .o_gl_column_chooser_content {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        padding: 20px;
+        min-width: 300px;
+        max-width: 400px;
+        max-height: 80vh;
+        overflow-y: auto;
+
+        h5 {
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .o_gl_col_item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0;
+            font-size: 13px;
+            cursor: pointer;
+
+            &:hover {
+                color: $gl-primary;
+            }
+        }
+    }
+}
+
+// ============================================================
+// Export Dialog Modal
+// ============================================================
+.o_gl_export_modal {
+    @extend .o_gl_column_chooser_modal;
+
+    .o_gl_export_content {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        padding: 24px;
+        min-width: 350px;
+
+        h5 {
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .o_gl_export_btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border: 1px solid $gl-border;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: $gl-transition;
+            margin-bottom: 8px;
+
+            &:hover {
+                border-color: $gl-primary;
+                background: #f5f3ff;
+            }
+
+            i {
+                font-size: 24px;
+                color: #64748b;
+            }
+
+            .o_gl_export_label {
+                font-weight: 600;
+                font-size: 13px;
+            }
+
+            .o_gl_export_desc {
+                font-size: 11px;
+                color: #94a3b8;
+            }
+        }
+    }
+}
+
+// ============================================================
+// Mobile Filters Slide-over
+// ============================================================
+.o_gl_mobile_overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1040;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.o_gl_mobile_panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 320px;
+    max-width: 85vw;
+    z-index: 1050;
+    background: #fff;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    transform: translateX(0);
+    transition: transform 0.25s ease;
+
+    &.slide-out {
+        transform: translateX(100%);
+    }
+
+    .o_gl_mobile_header {
+        padding: 16px;
+        border-bottom: 1px solid $gl-border;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .o_gl_mobile_body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px;
+    }
+
+    .o_gl_mobile_footer {
+        padding: 12px 16px;
+        border-top: 1px solid $gl-border;
+        position: sticky;
+        bottom: 0;
+        background: #fff;
+    }
+}
+
+// ============================================================
+// Dark Mode
+// ============================================================
+.o_web_client.o_dark {
+    .o_gl_report {
+        background: #0f172a;
+    }
+
+    .o_gl_report_header,
+    .o_gl_chips {
+        background: #1e293b;
+        border-color: #334155;
+    }
+
+    .o_gl_title {
+        color: #f1f5f9;
+    }
+
+    .o_gl_meta {
+        color: #94a3b8;
+    }
+
+    .o_gl_summary_card {
+        background: #1e293b;
+        border-color: #334155;
+
+        .o_gl_card_label {
+            color: #94a3b8;
+        }
+
+        .o_gl_card_value {
+            color: #f1f5f9;
+        }
+
+        &:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+    }
+
+    .o_gl_table {
+        background: #1e293b;
+
+        thead th {
+            background: #334155;
+            color: #94a3b8;
+            border-color: #475569;
+
+            &.sorted-asc::after,
+            &.sorted-desc::after {
+                color: #94a3b8;
+            }
+        }
+
+        tbody tr {
+            &:nth-child(even) {
+                background: #1a2332;
+            }
+
+            &:hover {
+                background: #1e3a5f;
+            }
+
+            td {
+                border-color: #334155;
+                color: #e2e8f0;
+            }
+        }
+    }
+
+    .o_gl_pagination {
+        background: #1e293b;
+        border-color: #334155;
+
+        .o_gl_page_info {
+            color: #94a3b8;
+        }
+
+        select {
+            background: #334155;
+            color: #e2e8f0;
+            border-color: #475569;
+        }
+    }
+
+    .o_gl_column_chooser_content,
+    .o_gl_export_content,
+    .o_gl_mobile_panel {
+        background: #1e293b;
+        color: #e2e8f0;
+    }
+
+    .o_gl_chip {
+        background: #334155 !important;
+        color: #e2e8f0 !important;
+        border-color: #475569 !important;
+    }
+
+    .o_gl_empty_icon {
+        color: #475569;
+    }
+
+    .o_gl_empty h4 {
+        color: #94a3b8;
+    }
+
+    .o_gl_empty p {
+        color: #64748b;
+    }
+
+    .o_gl_expandable_row td {
+        background: #1a2332;
+    }
+}

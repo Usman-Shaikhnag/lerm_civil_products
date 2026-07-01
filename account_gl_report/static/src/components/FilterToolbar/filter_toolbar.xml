@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+
+    <t t-name="gl_report.FilterToolbar">
+        <div class="o_gl_filter_toolbar px-4 py-2 sticky-top bg-white border-bottom"
+             style="z-index:100;">
+            <div class="d-flex flex-wrap align-items-center gap-2">
+
+                <!-- Account Selector -->
+                <div class="o_gl_filter_group position-relative" style="min-width:200px;">
+                    <label class="text-uppercase small text-muted mb-0 fw-semibold"
+                           style="font-size:10px;">Account</label>
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control form-control-sm"
+                               placeholder="Search account..."
+                               t-att-value="state.accountSearchTerm"
+                               t-on-focus="() => this.onAccountSearch('')"
+                               t-on-input="(e) => this.onAccountSearch(e.target.value)"/>
+                        <button class="btn btn-outline-secondary btn-sm"
+                                t-if="props.filters.account_id"
+                                t-on-click="() => this.clearAccount()">
+                            <i class="fa fa-times"/>
+                        </button>
+                    </div>
+                    <div class="o_gl_dropdown_menu position-absolute bg-white border rounded shadow-sm"
+                         t-if="state.accountOpen"
+                         style="top:100%;left:0;right:0;z-index:50;max-height:200px;overflow-y:auto;">
+                        <t t-foreach="state.accountResults" t-as="acc" t-key="acc.id">
+                            <div class="px-2 py-1 cursor-pointer hover-bg-light"
+                                 t-on-click="() => this.selectAccount(acc)"
+                                 t-esc="acc.display_name"/>
+                        </t>
+                        <div t-if="!state.accountResults.length"
+                             class="px-2 py-1 text-muted small">No accounts found</div>
+                    </div>
+                </div>
+
+                <!-- Date Range -->
+                <div class="o_gl_filter_group position-relative" style="min-width:160px;">
+                    <label class="text-uppercase small text-muted mb-0 fw-semibold"
+                           style="font-size:10px;">Period</label>
+                    <div class="input-group input-group-sm">
+                        <button class="btn btn-outline-secondary btn-sm text-start w-100 d-flex justify-content-between align-items-center"
+                                t-on-click="() => this.state.datePickerOpen = !this.state.datePickerOpen">
+                            <span t-esc="dateRangeDisplay"/>
+                            <i class="fa fa-calendar ms-1"/>
+                        </button>
+                    </div>
+                    <div class="o_gl_dropdown_menu position-absolute bg-white border rounded shadow-sm p-2"
+                         t-if="state.datePickerOpen"
+                         style="top:100%;left:0;z-index:50;min-width:200px;">
+                        <div class="d-flex flex-column gap-1">
+                            <button class="btn btn-sm btn-light text-start"
+                                    t-on-click="() => this.setDateRange('today')">Today</button>
+                                    <button class="btn btn-sm btn-light text-start"
+                                    t-on-click="() => this.setDateRange('yesterday')">Yesterday</button>
+                                    <button class="btn btn-sm btn-light text-start"
+                                    t-on-click="() => this.setDateRange('this_week')">This Week</button>
+                                    <button class="btn btn-sm btn-light text-start"
+                                    t-on-click="() => this.setDateRange('last_week')">Last Week</button>
+                                    <button class="btn btn-sm btn-light text-start"
+                                    t-on-click="() => this.setDateRange('this_month')">This Month</button>
+                                    <button class="btn btn-sm btn-light text-start"
+                                    t-on-click="() => this.setDateRange('last_month')">Last Month</button>
+                                    <button class="btn btn-sm btn-light text-start"
+                                    t-on-click="() => this.setDateRange('quarter')">Quarter</button>
+                                    <button class="btn btn-sm btn-light text-start"
+                                    t-on-click="() => this.setDateRange('fiscal_year')">Fiscal Year</button>
+                            <hr class="my-1"/>
+                            <div class="d-flex gap-1">
+                                <input type="date" class="form-control form-control-sm"
+                                       t-att-value="props.filters.date_from || ''"
+                                       t-on-change="(e) => this.setCustomDate(e.target.value, this.props.filters.date_to)"/>
+                                       <span class="align-self-center">-</span>
+                                       <input type="date" class="form-control form-control-sm"
+                                              t-att-value="props.filters.date_to || ''"
+                                              t-on-change="(e) => this.setCustomDate(this.props.filters.date_from, e.target.value)"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Journals -->
+                <div class="o_gl_filter_group position-relative" style="min-width:140px;">
+                    <label class="text-uppercase small text-muted mb-0 fw-semibold"
+                           style="font-size:10px;">Journal</label>
+                    <div class="input-group input-group-sm">
+                        <button class="btn btn-outline-secondary btn-sm text-start w-100"
+                                t-on-click="() => this.openJournals()">
+                            <t t-if="(props.filters.journal_ids || []).length">
+                                <t t-esc="(props.filters.journal_ids || []).length"/> selected
+                            </t>
+                            <t t-else="">
+                                <span class="text-muted">All Journals</span>
+                            </t>
+                        </button>
+                    </div>
+                    <div class="o_gl_dropdown_menu position-absolute bg-white border rounded shadow-sm p-2"
+                         t-if="state.journalsOpen"
+                         style="top:100%;left:0;z-index:50;min-width:220px;max-height:250px;overflow-y:auto;">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="small text-muted">Select journals</span>
+                            <button class="btn btn-sm btn-link p-0"
+                                    t-on-click="() => this.state.journalsOpen = false">
+                                <i class="fa fa-times"/>
+                            </button>
+                        </div>
+                        <t t-foreach="state.journalOptions" t-as="j" t-key="j.id">
+                            <label class="d-flex align-items-center gap-2 py-1 small cursor-pointer">
+                                <input type="checkbox"
+                                       t-att-checked="(props.filters.journal_ids || []).includes(j.id)"
+                                       t-on-change="() => this.toggleJournal(j.id)"/>
+                                <t t-esc="j.display_name"/>
+                            </label>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- Partner -->
+                <div class="o_gl_filter_group" style="min-width:150px;">
+                    <label class="text-uppercase small text-muted mb-0 fw-semibold"
+                           style="font-size:10px;">Partner</label>
+                    <select class="form-select form-select-sm">
+                        <option value="">All Partners</option>
+                    </select>
+                </div>
+
+                <!-- Analytic Account -->
+                <div class="o_gl_filter_group" style="min-width:150px;">
+                    <label class="text-uppercase small text-muted mb-0 fw-semibold"
+                           style="font-size:10px;">Analytic</label>
+                    <select class="form-select form-select-sm">
+                        <option value="">All</option>
+                    </select>
+                </div>
+
+                <!-- Move State -->
+                <div class="o_gl_filter_group">
+                    <label class="text-uppercase small text-muted mb-0 fw-semibold"
+                           style="font-size:10px;">State</label>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <input type="radio" class="btn-check" name="stateRadio"
+                               id="stateAll" value="all"
+                               t-att-checked="props.filters.target_move === 'all'"
+                               t-on-change="() => this.props.filters.target_move = 'all'"/>
+                                                        <label class="btn btn-outline-secondary btn-sm" for="stateAll">All</label>
+                                                        <input type="radio" class="btn-check" name="stateRadio"
+                                                               id="statePosted" value="posted"
+                                                               t-att-checked="props.filters.target_move === 'posted'"
+                                                               t-on-change="() => this.props.filters.target_move = 'posted'"/>
+                                                        <label class="btn btn-outline-secondary btn-sm" for="statePosted">Posted</label>
+                                                        <input type="radio" class="btn-check" name="stateRadio"
+                                                               id="stateDraft" value="draft"
+                                                               t-att-checked="props.filters.target_move === 'draft'"
+                                                               t-on-change="() => this.props.filters.target_move = 'draft'"/>
+                        <label class="btn btn-outline-secondary btn-sm" for="stateDraft">Draft</label>
+                    </div>
+                </div>
+
+                <!-- Global Search -->
+                <div class="o_gl_filter_group flex-grow-1" style="min-width:160px;">
+                    <label class="text-uppercase small text-muted mb-0 fw-semibold"
+                           style="font-size:10px;">Search</label>
+                    <input type="text" class="form-control form-control-sm"
+                           t-ref="globalSearch"
+                           placeholder="Search label, ref, partner..."
+                           t-att-value="props.filters.search_term"
+                           t-on-input="(e) => this.onGlobalSearch(e)"/>
+                </div>
+
+                <!-- Group By -->
+                <div class="o_gl_filter_group" style="min-width:120px;">
+                    <label class="text-uppercase small text-muted mb-0 fw-semibold"
+                           style="font-size:10px;">Group By</label>
+                    <select class="form-select form-select-sm"
+                            t-att-value="props.filters.group_by"
+                            t-on-change="(e) => this.onGroupByChange(e)">
+                        <option value="none">None</option>
+                        <option value="journal">Journal</option>
+                        <option value="month">Month</option>
+                        <option value="partner">Partner</option>
+                        <option value="account">Account</option>
+                        <option value="analytic_account">Analytic Account</option>
+                    </select>
+                </div>
+
+                <div class="o_gl_filter_group position-relative">
+                    <label class="text-uppercase small text-muted mb-0 fw-semibold"
+                           style="font-size:10px;">&#160;</label>
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-secondary btn-sm"
+                                t-on-click="() => this.state.presetMenuOpen = !this.state.presetMenuOpen"
+                                title="Presets">
+                            <i class="fa fa-bookmark"/>
+                        </button>
+                    </div>
+                    <div class="position-absolute bg-white border rounded shadow-sm p-2"
+                         t-if="state.presetMenuOpen"
+                         style="top:100%;right:0;z-index:50;min-width:220px;">
+                        <div class="d-flex gap-1 mb-2">
+                            <input type="text" class="form-control form-control-sm"
+                                   placeholder="Preset name..."
+                                   t-att-value="state.savePresetName"
+                                   t-on-input="(e) => this.state.savePresetName = e.target.value"/>
+                                    <button class="btn btn-primary btn-sm"
+                                            t-on-click="() => this.savePreset()">
+                                <i class="fa fa-save"/>
+                            </button>
+                        </div>
+                        <div t-if="props.presets.length">
+                            <div class="small text-muted mb-1">Saved Presets</div>
+                            <t t-foreach="props.presets" t-as="p" t-key="p.id">
+                                <div class="d-flex justify-content-between align-items-center py-1">
+                                    <a class="small cursor-pointer text-decoration-none"
+                                        t-on-click="() => this.props.onLoadPreset(p)"
+                                        t-esc="p.name"/>
+                                    <button class="btn btn-sm btn-link text-danger p-0"
+                                            t-on-click="() => this.props.onDeletePreset(p.id)">
+                                        <i class="fa fa-trash-o"/>
+                                    </button>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Apply / Reset -->
+                <div class="o_gl_filter_group">
+                    <label class="text-uppercase small text-muted mb-0 fw-semibold"
+                           style="font-size:10px;">&#160;</label>
+                    <div class="d-flex gap-1">
+                        <button class="btn btn-primary btn-sm" t-on-click="() => this.apply()">
+                            <i class="fa fa-check"/> Apply
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm" t-on-click="() => this.reset()">
+                            <i class="fa fa-undo"/> Reset
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </t>
+
+</templates>

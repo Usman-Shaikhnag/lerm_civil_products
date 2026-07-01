@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+
+    <t t-name="gl_report.SummaryCards">
+        <div class="o_gl_summary_cards">
+            <t t-foreach="cards" t-as="card" t-key="card.id">
+                <div class="o_gl_summary_card" t-att-class="card.cssClass">
+                    <span class="o_gl_card_label"><t t-esc="card.label"/></span>
+                    <span class="o_gl_card_value">
+                        <t t-if="card.id === 'count'">
+                            <t t-esc="card.value"/>
+                        </t>
+                        <t t-else="">
+                            <t t-esc="formatCurrency(card.value)"/>
+                        </t>
+                    </span>
+                </div>
+            </t>
+        </div>
+    </t>
+
+</templates>

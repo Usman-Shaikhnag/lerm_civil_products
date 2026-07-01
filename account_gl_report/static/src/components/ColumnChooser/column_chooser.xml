@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+
+    <t t-name="gl_report.ColumnChooser">
+        <div class="o_gl_column_chooser_modal" t-on-click="props.onClose">
+            <div class="o_gl_column_chooser_content" t-on-click.stop="">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="mb-0"><i class="fa fa-columns me-2"/>Choose Columns</h5>
+                    <button class="btn btn-sm btn-close" t-on-click="props.onClose"/>
+                </div>
+                <t t-foreach="props.columns" t-as="col" t-key="col.id">
+                    <label class="o_gl_col_item">
+                        <input type="checkbox"
+                               t-att-checked="col.visible"
+                               t-on-change="() => props.onToggle(col.id)"/>
+                        <t t-esc="col.label"/>
+                    </label>
+                </t>
+            </div>
+        </div>
+    </t>
+
+</templates>
