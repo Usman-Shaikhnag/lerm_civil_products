@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_gl_pdf">
+        <t t-call="web.html_container">
+            <t t-call="web.internal_layout">
+                <div class="page">
+                    <h2>General Ledger Report</h2>
+                    <p><strong>Company:</strong> <span t-esc="env.company.name"/></p>
+                    <p><strong>Generated:</strong> <span t-esc="time.strftime('%Y-%m-%d %H:%M')"/></p>
+                    <table class="table table-sm mt32">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Journal</th>
+                                <th>Move</th>
+                                <th>Partner</th>
+                                <th>Label</th>
+                                <th>Debit</th>
+                                <th>Credit</th>
+                                <th>Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="docids" t-as="docid">
+                                <td colspan="8" class="text-center text-muted">
+                                    PDF export requires selecting from the report view.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>
