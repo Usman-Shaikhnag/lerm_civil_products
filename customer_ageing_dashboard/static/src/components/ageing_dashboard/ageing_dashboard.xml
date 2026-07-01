@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="customer_ageing_dashboard.AgeingDashboard" owl="1">
+        <div class="customer-ageing-dashboard">
+            <div class="row">
+                <div class="col-lg-3 col-xl-2 mb-4">
+                    <div class="d-flex flex-column gap-3">
+                        <SalespersonFilter onChange="_onFilterChange"/>
+
+                        <div class="cad-card cad-card-padded">
+                            <div class="cad-section-title">
+                                <i class="fa fa-chart-simple"/>
+                                Key Metrics
+                            </div>
+                            <div class="cad-metric-card">
+                                <div class="cad-metric-body">
+                                    <div class="cad-metric-value">
+                                        <t t-esc="formattedOutstanding"/>
+                                    </div>
+                                    <div class="cad-metric-label">Total Outstanding</div>
+                                </div>
+                            </div>
+                            <div class="cad-divider"/>
+                            <div class="cad-metric-card">
+                                <div class="cad-metric-body">
+                                    <div class="cad-metric-value">
+                                        <t t-esc="overdueCustomers"/>
+                                    </div>
+                                    <div class="cad-metric-label">Overdue Customers</div>
+                                </div>
+                            </div>
+                            <div class="cad-divider"/>
+                            <div class="cad-metric-card">
+                                <div class="cad-metric-body">
+                                    <div class="cad-metric-value">
+                                        <t t-esc="totalInvoices"/>
+                                    </div>
+                                    <div class="cad-metric-label">Overdue Invoices</div>
+                                </div>
+                            </div>
+                            <div class="cad-divider"/>
+                            <div class="cad-metric-card">
+                                <div class="cad-metric-body">
+                                    <div class="cad-metric-value">
+                                        <t t-esc="totalCustomers"/>
+                                    </div>
+                                    <div class="cad-metric-label">Total Customers</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cad-as-of text-center">
+                            <i class="fa fa-calendar me-1"/>
+                            As of <t t-esc="asOfDisplay"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-9 col-xl-10">
+                    <div class="cad-card cad-card-padded mb-4">
+                        <div class="cad-section-title">
+                            <i class="fa fa-clock"/>
+                            Ageing Summary
+                        </div>
+                        <div class="cad-bucket-grid">
+                            <t t-foreach="bucketData" t-as="b" t-key="b.key">
+                                <AgeingBucketCard
+                                    bucketKey="b.key"
+                                    label="b.label"
+                                    color="b.color"
+                                    value="b.value"
+                                    count="b.count"
+                                    onClick="() => _onBucketClick(b.key)"/>
+                            </t>
+                        </div>
+                    </div>
+
+                    <div class="cad-card cad-card-padded mb-4">
+                        <div class="cad-section-title">
+                            <i class="fa fa-chart-column"/>
+                            Ageing Distribution
+                        </div>
+                        <AgeingBarChart buckets="state.metrics.buckets || {}"/>
+                    </div>
+
+                    <div class="cad-card cad-card-padded">
+                        <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap" style="gap:8px;">
+                            <div class="cad-section-title mb-0">
+                                <i class="fa fa-table"/>
+                                Customer Ageing Breakdown
+                            </div>
+                            <div class="cad-toolbar mb-0">
+                                <div class="cad-search-wrapper">
+                                    <i class="fa fa-search"/>
+                                    <input type="text" class="cad-search-input" placeholder="Search customer..."
+                                           t-on-input="onSearchInput" t-on-keydown="onSearchKeydown"/>
+                                </div>
+                                <span class="cad-date-label">As of</span>
+                                <input type="date" class="cad-date-input" t-att-value="state.asOf" t-on-change="onAsOfChange"/>
+                                <button class="cad-btn" t-on-click="onApplyDate">
+                                    Apply
+                                </button>
+                            </div>
+                        </div>
+                        <AgeingDatagrid
+                            rows="state.customers"
+                            totals="state.totals"
+                            onCellClick="(colKey, row, isTotalRow) => _onGridCellClick(colKey, row, isTotalRow)"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

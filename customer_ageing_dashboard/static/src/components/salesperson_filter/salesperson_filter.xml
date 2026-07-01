@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="customer_ageing_dashboard.SalespersonFilter" owl="1">
+        <div class="cad-filter-card">
+            <div class="cad-filter-title">
+                <i class="fa fa-user-tie"/>
+                Sales Person
+            </div>
+            <div class="cad-filter-item mb-1" t-on-click="_onSelectAll">
+                <input type="checkbox" t-att-checked="allSelected" t-on-click.stop="_onSelectAll"/>
+                <span><t t-esc="allSelected ? 'Deselect All' : 'Select All'"/></span>
+            </div>
+            <div class="cad-divider"/>
+            <div class="cad-filter-list">
+                <t t-foreach="state.salespersons" t-as="sp" t-key="sp.id">
+                    <div class="cad-filter-item" t-att-data-sp-id="sp.id" t-on-click="_onToggleClick">
+                        <input type="checkbox" t-att-checked="state.selected.includes(sp.id)" t-att-data-sp-id="sp.id" t-on-click.stop="_onToggleClick"/>
+                        <span><t t-esc="sp.name"/></span>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+</templates>
