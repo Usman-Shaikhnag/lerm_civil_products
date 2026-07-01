@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="customer_ageing_dashboard.AgeingBarChart" owl="1">
+        <div class="cad-barchart">
+            <t t-foreach="buckets" t-as="key" t-key="key">
+                <t t-set="meta" t-value="getMeta(key)"/>
+                <t t-set="width" t-value="getBarWidth(key)"/>
+                <div class="cad-barchart-row">
+                    <div class="cad-barchart-label">
+                        <span t-esc="meta.label"/>
+                    </div>
+                    <div class="cad-barchart-track">
+                        <div class="cad-barchart-fill"
+                             t-att-style="barStyle(width, meta.color)">
+                            <span t-if="width > 15">
+                                <t t-esc="getFormattedValue(key)"/>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="cad-barchart-value">
+                        <t t-esc="getFormattedValue(key)"/>
+                    </div>
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>
