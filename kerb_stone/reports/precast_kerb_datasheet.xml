@@ -11,7 +11,7 @@
                 <div class="container_eln" style="margin-top:5px">
 
                    
-                    <div t-if="data.transverse_visible" style="margin-top:20px">
+                    <div style="margin-top:20px">
                         <table style="margin-top:20px">
                             <tr cols="12">
 					
@@ -46,117 +46,416 @@
                             </tr>
                         </table>
 
-                            <!-- Transverse Strength -->
 
-                            <!-- <div style="text-align:center;font-size:18px">
-                                Transverse Strength
-                            </div> -->
-                            <div style="text-align:center;font-size:18px;margin-top:20px">
-								<span t-field="env['lerm.parameter.master'].search([('internal_id','=','0b48abe6-07a4-4345-bcc1-30ff6e4830af')]).parameter_name"/>
-                            </div>
-                            
+                        <!-- Dimension  -->
+                    
+                    <div t-if="data.dimension_visible" style="margin-top:20px">
+                        <div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;">
+                              <span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','ff2e1110-a492-40e9-959a-c989ce4c1903')]).parameter_name"/>
+                        </div>
 
-                            <table style="margin-top:20px">
-                                <tr cols="12">
-                                    <td colspan="1">Trial no 
-                                    </td>
-                                    <td colspan="2">Required Load in (Ton)
-                                    </td>
-                                    <td colspan="2">Observed Test Result
-                                    </td>
-                                    <td colspan="4">Protocol
-                                    </td>
-                                    <td colspan="3">Requirement
-                                    </td>
-                                    
-                                    
-                                </tr>
+                       <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+							<thead>
+								<tr style="background-color: #f0f0f0; text-align: center;">
+									<th style="text-align: center;border: 1px solid #ccc; padding: 8px;" colspan="2">Sr No.</th>
+                                    <th style="text-align: center;border: 1px solid #ccc; padding: 8px;" colspan="2">Kerb Stone  ID </th>
+									<th style="text-align: center;border: 1px solid #ccc; padding: 8px;" colspan="2">Length, mm</th>
+									<th style="text-align: center;border: 1px solid #ccc; padding: 8px;" colspan="2">Width, mm</th>
+									<th style="text-align: center;border: 1px solid #ccc; padding: 8px;" colspan="2">Thickness, mm</th>
+                                    <th style="text-align: center;border: 1px solid #ccc; padding: 8px;" colspan="2">Remarks</th>
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="k" t-value="0"/>
+								<tr t-foreach="data.dimension_lines" t-as="r" style="text-align: center;">
+									<td style="text-align: center;border: 1px solid #ccc; padding: 6px;" colspan="2">
+										<span t-esc="k + 1" />
+										<t t-set="k" t-value="k+1"/>
+									</td>
+                                    <td style="text-align: center;border: 1px solid #ccc; padding: 6px;" colspan="2">
+										<span t-esc="r['kerb_id']"/>
+									</td>
+									<td style="text-align: center;border: 1px solid #ccc; padding: 6px;" colspan="2">
+										<span t-esc="r['lengthh']"/>
+									</td>
+									<td style="text-align: center;border: 1px solid #ccc; padding: 6px;" colspan="2">
+										<span t-esc="r['width']"/>
+									</td>
+									<td style="text-align: center;border: 1px solid #ccc; padding: 6px;" colspan="2">
+										<span t-esc="r['height']" />
+									</td>
+                                    <td style="text-align: center;border: 1px solid #ccc; padding: 6px;" colspan="2">
+										<span t-esc="r['remarks']" />
+									</td>
+								</tr>
+							</tbody>
+						</table>
 
-                                <t t-set="i" t-value="0"/>
-                                <tr t-foreach="data.transverse_table" t-as="r">
-                                    <td colspan="1">
-                                        <span t-esc="r['trial_no']"/>
-                                    </td>
-                                    <td colspan="2">
-                                        <span t-esc="r['required_load']"/>
-                                    </td>
-                                    <td colspan="2">
-                                        <span t-esc="r['observed_test_result']"/>
-                                    </td>
-                                    <td colspan="4">
-                                        <span t-esc="r['protocol']"/>
-                                    </td>
-                                    <td colspan="3">
-                                        <span t-esc="r['requirement']"/>
-                                    </td>
-                                    
-                                </tr>
-                            </table>
-                            
+						<table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;">
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Average Length (mm) :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+									<span t-field="data.avrg_length" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+                            <tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Average Width (mm) :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+									<span t-field="data.avrg_width" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+                            <tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Average Thickness (mm) :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+									<span t-field="data.avrg_height" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+						</table>
                     </div>
+                    
 
-                    <!-- Water Absorbtion  -->
-                    <div t-if="data.water_absorbtion_visible" style="margin-top:20px">
-                        <!-- <div style="text-align:center;font-size:18px">
-                            Water Absorbtion
-                        </div> -->
-                         <div style="text-align:center;font-size:18px;margin-top:20px">
-                            <!-- Water Absorbtion -->
-							<span t-field="env['lerm.parameter.master'].search([('internal_id','=','f913fc79-eeb4-4e16-a7fc-75608384d9b0')]).parameter_name"/>
+					<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
                         </div>
                         
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
 
-                        <table style="margin-top:20px">
-                            <tr cols="12">
-                                <td colspan="1">Sr no 
-                                </td>
-                                <td colspan="1">Dry Weight (after 24 hour in oven)
-                                </td>
-                                <td colspan="2">Weight (wt. after 10 minutes emersion in water)
-                                </td>
-                                <td colspan="2">Weight (wt. after 24 hour emersion in water)
-                                </td>
-                                <td colspan="2">Initial Water Absorption, %
-                                </td>
-                                <td colspan="2">Final Water Absorption, %
-                                </td>
-                                <td colspan="2">Protocol
-                                </td>
-                                
+				</div>
+
+
+                <!-- Compressive Strength -->
+
+           
+             <div t-if="data.compressive_strength_visible" style="margin-top:20px;page-break-before: always; ">
+                        <div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;">
+                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','9dccce17-5e98-43c1-8d32-bbca24aae288')]).parameter_name"/>
+                            <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','9dccce17-5e98-43c1-8d32-bbca24aae288')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+                        </div>
+
+                         <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                          <thead>
+                            <tr cols="12" style="background-color: #f0f0f0; text-align: center;">
+                                <th colspan="2"  style="text-align: center;border: 1px solid #ccc; padding: 8px;">Sr.No
+                                </th>
+                                  <th colspan="2"  style="text-align: center;border: 1px solid #ccc; padding: 8px;">Age of Specimen
+                                </th>
+                                <th colspan="2"  style="text-align: center;border: 1px solid #ccc; padding: 8px;"> Height, mm
+                                </th>
+                                <th colspan="2"  style="text-align: center;border: 1px solid #ccc; padding: 8px;">Dia (mm)
+                                </th>
+                                 <th colspan="2"  style="text-align: center;border: 1px solid #ccc; padding: 8px;">H/D Ratio (n)
+                                </th>
+                                 <th colspan="2" style="text-align: center;border: 1px solid #ccc; padding: 8px;width:200px">Correction factor f =0.11n+0.78 Where,  f= Correction factor,n= height to diameter ratio
+                                </th>
+                                 <th colspan="2"  style="text-align: center;border: 1px solid #ccc; padding: 8px;"> Area (mm²) π r² 
+                                </th>
+                                <th colspan="2"  style="text-align: center;border: 1px solid #ccc; padding: 8px;">Volume (cc) πr²h
+                                </th>
+                                <th colspan="2"  style="text-align: center;border: 1px solid #ccc; padding: 8px;">Weight (gm)
+                                </th>
+                                <th colspan="2"  style="text-align: center;border: 1px solid #ccc; padding: 8px;">Density (gm/cc)
+                                </th>
+                                <th colspan="2"  style="text-align: center;border: 1px solid #ccc; padding: 8px;">Load (kN)
+                                </th>
+                                <th colspan="2"  style="text-align: center;border: 1px solid #ccc; padding: 8px;">Compressive Strength (N/mm²)
+                                </th>
+                            
                             </tr>
+                            </thead>
+							<tbody>
 
-                            <t t-set="i" t-value="0"/>
-                            <tr t-foreach="data.water_absorbtion_table" t-as="r">
-                                <td colspan="1">
+                            <t t-set="k" t-value="0"/>
+                            <tr t-foreach="data.compressive_strength_table" t-as="r" style="text-align: center;">
+                                <td colspan="2" style="text-align: center;border: 1px solid #ccc; padding: 6px;">
                                     <div>
-                                        <span t-esc="i + 1" />
-                                        <t t-set="i" t-value="i+1"/>
+                                        <span t-esc="k + 1" />
+                                        <t t-set="k" t-value="k+1"/>
                                     </div>
                                 </td>
-                                <td colspan="1">
-                                    <span t-esc="r['dry_wt_oven']"/>
+                                <td colspan="2" style="text-align: center;border: 1px solid #ccc; padding: 6px;">
+                                    <span t-esc="r['age']"/>
                                 </td>
-                                <td colspan="2">
-                                    <span t-esc="r['wt_10_min']"/>
+                                <td colspan="2" style="text-align: center;border: 1px solid #ccc; padding: 6px;">
+                                    <span t-esc="r['height']"/>
                                 </td>
-                                <td colspan="2">
-                                    <span t-esc="r['wt_24_hr']"/>
+                                <td colspan="2" style="text-align: center;border: 1px solid #ccc; padding: 6px;">
+                                    <span t-esc="r['diameter']"/>
                                 </td>
-                                <td colspan="2">
-                                    <span t-esc="r['initial_water_absorbtion']"/>
+                              
+                                <td colspan="2" style="text-align: center;border: 1px solid #ccc; padding: 6px;">
+                                    <span t-esc="r['hd_ratio']" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>
-                                <td colspan="2">
-                                    <span t-esc="r['final_water_absorbtion']"/>
+                                  <td colspan="2" style="text-align: center;border: 1px solid #ccc; padding: 6px;">
+                                    <span t-esc="r['correction_factor']" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>
-                                <td colspan="2">
-                                    <span t-esc="r['protocol']"/>
+                                  <td colspan="2" style="text-align: center;border: 1px solid #ccc; padding: 6px;">
+                                    <span t-esc="r['area']" t-options='{"widget": "float", "precision": 3}'/>
                                 </td>
-                                
+                                  <td colspan="2" style="text-align: center;border: 1px solid #ccc; padding: 6px;">
+                                    <span t-esc="r['volume']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                  <td colspan="2" style="text-align: center;border: 1px solid #ccc; padding: 6px;">
+                                    <span t-esc="r['weight']" />
+                                </td>
+                                <td colspan="2" style="text-align: center;border: 1px solid #ccc; padding: 6px;">
+                                    <span t-esc="r['density']" t-options='{"widget": "float", "precision": 3}'/>
+                                </td>
+                                <td colspan="2" style="text-align: center;border: 1px solid #ccc; padding: 6px;">
+                                    <span t-esc="r['load']" />
+                                </td>
+                                <td colspan="2" style="text-align: center;border: 1px solid #ccc; padding: 6px;">
+                                    <span t-esc="r['compressive_strength']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                             
+                               
                             </tr>
-                        </table>
-                        
+                       </tbody>
+						</table>
+
+                        <table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;">
+                            <tr cols="12">
+                                <td colspan="6"  style="text-align: right; padding: 8px; border: 1px solid #ccc;">Average Compressive Strength  :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                <td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.avg_compressive_strength" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','9dccce17-5e98-43c1-8d32-bbca24aae288')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    
 
                     </div>
+
+
+
+                    <div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+
+                     <!-- Water Absorption -->
+
+           
+             <div t-if="data.water_absorption_visible" style="margin-top:20px;page-break-before: always; ">
+                        <div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;">
+                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','f913fc79-eeb4-4e16-a7fc-75608384d9b0')]).parameter_name"/>
+                            <span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','f913fc79-eeb4-4e16-a7fc-75608384d9b0')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+                        </div>
+
+                         <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                          <thead>
+                            <tr cols="12" style="background-color: #f0f0f0; text-align: center;">
+                                <th colspan="2"  style="text-align: center;border: 1px solid #ccc; padding: 8px;">Sr.No
+                                </th>
+                                  <th colspan="2"  style="text-align: center;border: 1px solid #ccc; padding: 8px;">Mass of specimens immersed in water (M1)
+                                </th>
+                                <th colspan="2"  style="text-align: center;border: 1px solid #ccc; padding: 8px;"> Mass of dry specimen (M2)
+                                </th>
+                                <th colspan="2"  style="text-align: center;border: 1px solid #ccc; padding: 8px;">Percentage water absorption=(M1-M2)/M2*100
+                                </th>
+                                 <th colspan="2"  style="text-align: center;border: 1px solid #ccc; padding: 8px;">H/Average
+                                </th>
+                                 <th colspan="2"  style="text-align: center;border: 1px solid #ccc; padding: 8px;"> Remark
+                                </th>
+                                
+                            
+                            </tr>
+                            </thead>
+							<tbody>
+
+                            <t t-set="k" t-value="0"/>
+                            <tr t-foreach="data.water_absorbtion_table" t-as="r" style="text-align: center;">
+                                <td colspan="2" style="text-align: center;border: 1px solid #ccc; padding: 6px;">
+                                    <div>
+                                        <span t-esc="k + 1" />
+                                        <t t-set="k" t-value="k+1"/>
+                                    </div>
+                                </td>
+                                <td colspan="2" style="text-align: center;border: 1px solid #ccc; padding: 6px;">
+                                    <span t-esc="r['m1']"/>
+                                </td>
+                                <td colspan="2" style="text-align: center;border: 1px solid #ccc; padding: 6px;">
+                                    <span t-esc="r['m2']"/>
+                                </td>
+                              
+                                <td colspan="2" style="text-align: center;border: 1px solid #ccc; padding: 6px;">
+                                    <span t-esc="r['water_absorption']" t-options='{"widget": "float", "precision": 3}'/>
+                                </td>
+                                  <td colspan="2" style="text-align: center;border: 1px solid #ccc; padding: 6px;">
+                                    <span t-esc="r['average']" t-options='{"widget": "float", "precision": 3}'/>
+                                </td>
+                                  <td colspan="2" style="text-align: center;border: 1px solid #ccc; padding: 6px;">
+                                    <span t-esc="r['remark']" />
+                                </td>
+                            </tr>
+                       </tbody>
+						</table>
+
+                        <table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;">
+                            <tr cols="12">
+                                <td colspan="6"  style="text-align: right; padding: 8px; border: 1px solid #ccc;">Average Water Absorption  :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                <td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.average_water_absorption" t-options='{"widget": "float", "precision": 3}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','f913fc79-eeb4-4e16-a7fc-75608384d9b0')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    
+
+                    </div>
+
+
+
+                    <div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+
+                            
+
+
+
+                            
+
+
+
+
+
+
                     <div class="authorizeRowDataSheet">
                         <div>
                             <div>

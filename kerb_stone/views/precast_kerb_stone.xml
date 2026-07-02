@@ -30,6 +30,26 @@
                       </field>
                     </div>
 
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+
+
                      <!-- Dimension -->
 
                     <div invisible="dimension_visible == False" style="text-align:center">
@@ -44,9 +64,12 @@
                     <field name="dimension_lines" nolabel="1" >
                             <tree editable="bottom"  class="custom_table_borders">
                                 <field name="serial_no" />
-                                <field name='lengthh' class="blue-input" decoration-info="lengthh != 0"/>
-                                <field name='width' class="blue-input" decoration-info="height != 0"/>
-                                <field name='height' class="blue-input" decoration-info="height != 0"/>
+                                <field name="kerb_id" width="120" />
+                                
+                                <field name='lengthh' class="blue-input" decoration-info="lengthh != 0" width="120"/>
+                                <field name='width' class="blue-input" decoration-info="height != 0" width="120"/>
+                                <field name='height' class="blue-input" decoration-info="height != 0" width="120"/>
+                                <field name='remarks' class="blue-input" decoration-info="remarks != 0"  width="120"/>
                                 
                             </tree>
                     </field>
@@ -156,47 +179,130 @@
                     </table>
                     </div>
 
+
+                     <!-- compressive Strength -->
+
+                    <div invisible="compressive_strength_visible == False" style="text-align:center">
+                      <h1>
+                          <field name="compressive_strength_name" readonly="1" nolabel="1"/>
+                          <field name="compressive_strength_visible" invisible='1'/>
+                      </h1>
+                    </div>
+
+                    <div invisible="compressive_strength_visible == False" class="custom_table_borders">
+                        <field name="compressive_strength_table" nolabel="1">
+                            <tree editable="bottom">
+                                <field name='serial_no' width="120"/>
+                                <field name='age' class="blue-input" decoration-info="age != 0" width="120"/>
+                                <field name='height' class="blue-input" decoration-info="height != 0" width="120"/>
+                                <field name='diameter' class="blue-input" decoration-info="diameter" width="120"/>
+                                <field name='hd_ratio' readonly="1" width="120"/>
+                                <field name='correction_factor' readonly="1" width="120"/>
+                                <field name='area' readonly="1" width="120"/>
+                                <field name='volume' readonly="1" width="120"/>
+                                <field name='weight'  class="blue-input" decoration-info="weight" width="120"/>
+                                <field name='density' readonly="1" width="120"/>
+                                <field name='load'  class="blue-input" decoration-info="load" width="120"/>
+                                
+                                <field name='compressive_strength' readonly="1" width="120"/>
+                            </tree>
+                        </field>
+                    </div>
                     
-                    <!-- Transverse Strength -->
+                    
 
-                    <group  invisible="transverse_visible == False" style="white-space: nowrap; width:70%;">
-                        <h1>
-                            <field name="transverse_name" readonly="1" nolabel="1"/>
-                            <field name="transverse_visible" invisible="1"/>
-                        </h1>
-                    </group>
-                    <div class="custom_table_borders" style="width: 100%;"  invisible="transverse_visible == False">
-                        <field name="transverse_table" nolabel="1">
-                        <tree editable="bottom">
-                          <field name="trial_no"/>
-                          <field name="required_load"/>
-                          <field name="observed_test_result"/>
-                          <field name="protocol"/>
-                          <field name="requirement"/>
-                        </tree>
-                        </field>
+                    <table class="table o_form_table w-50 mt-2 custom_table_borders" invisible="not compressive_strength_visible">
+                        <tbody>
+                            <tr>
+                                <td><strong>Average Compressive Strength</strong></td>
+                                <td>
+                                    <field name="avg_compressive_strength"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Conformity</strong></td>
+                                <td>
+                                    <field name="avg_compressive_strength_confirmity"
+                                        decoration-success="avg_compressive_strength_confirmity == 'pass'"
+                                        decoration-danger="avg_compressive_strength_confirmity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong for="avg_compressive_strength_nabl">NABL</strong></td>
+                                <td>
+                                    <field name="avg_compressive_strength_nabl"
+                                        decoration-success="avg_compressive_strength_nabl == 'pass'"
+                                        decoration-danger="avg_compressive_strength_nabl == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                  
+
+                    <!-- Water Absorption -->
+
+                    <div invisible="water_absorption_visible == False" style="text-align:center">
+                      <h1>
+                          <field name="water_absorbtion_name" readonly="1" nolabel="1"/>
+                          <field name="water_absorption_visible" invisible='1'/>
+                      </h1>
                     </div>
 
-
-                    <group  invisible="water_absorbtion_visible == False" style="white-space: nowrap; width:70%;">
-                        <h1>
-                            <field name="water_absorbtion_name" readonly="1" nolabel="1"/>
-                            <field name="water_absorbtion_visible" invisible="1"/>
-                        </h1>
-                    </group>
-                    <div class="custom_table_borders" style="width: 100%;"  invisible="water_absorbtion_visible == False">
+                    <div invisible="water_absorption_visible == False" class="custom_table_borders">
                         <field name="water_absorbtion_table" nolabel="1">
-                        <tree editable="bottom">
-                          <field name="dry_wt_oven"/>
-                          <field name="wt_10_min"/>
-                          <field name="wt_24_hr"/>
-                          <field name="initial_water_absorbtion"/>
-                          <field name="final_water_absorbtion"/>
-                          <field name="protocol"/>
-                        </tree>
+                            <tree editable="bottom">
+                                <field name='serial_no' width="120"/>
+                                <field name='m1' class="blue-input" decoration-info="m1 != 0" width="120"/>
+                                <field name='m2' class="blue-input" decoration-info="m2 != 0" width="120"/>
+                                <field name='water_absorption' width="120"/>
+                                <field name='average' readonly="1" width="120"/>
+                                <field name='remark'  class="blue-input" decoration-info="remark" width="120"/>
+                            </tree>
                         </field>
                     </div>
-                     
+                    
+                    
+
+                    <table class="table o_form_table w-50 mt-2 custom_table_borders" invisible="not water_absorption_visible">
+                        <tbody>
+                            <tr>
+                                <td><strong>Average Water Absorption</strong></td>
+                                <td>
+                                    <field name="average_water_absorption"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Conformity</strong></td>
+                                <td>
+                                    <field name="average_water_absorption_confirmity"
+                                        decoration-success="average_water_absorption_confirmity == 'pass'"
+                                        decoration-danger="average_water_absorption_confirmity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong for="average_water_absorption_nabl">NABL</strong></td>
+                                <td>
+                                    <field name="average_water_absorption_nabl"
+                                        decoration-success="average_water_absorption_nabl == 'pass'"
+                                        decoration-danger="average_water_absorption_nabl == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+
+
+
+
+
+
 
                     <notebook>
                         <page string="Notes">
