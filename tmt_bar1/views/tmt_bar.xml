@@ -9,13 +9,8 @@
             <form create="false">
                 <sheet>
 
-                  <div>
-                    <h1>
-                        <field name="name" readonly="1" nolabel="1"/>
-                    </h1>
-                    </div>
-
-
+                
+                   <button type="object" class="oe_highlight" name="prefill_data" string="Prefill Data"/>
                      <group>
                         <field name="srf_id" invisible="1"/>
                         <field name="sample_id" readonly="1"/>
@@ -26,6 +21,7 @@
                         <field name="grade"/>
                         <field name="size_id"/>
                     </group>
+                    
                     <!-- <group style="white-space: nowrap; width:70%;">
                         <h1>
                             <field name="name" readonly="1" nolabel="1"/>
@@ -50,27 +46,98 @@
                             }
                     </style>
 
+                    <div  style="text-align:center">
+                                    <h1>
+                                    <field name="name1" readonly="1" nolabel="1"/>
+                                    <!-- <field name="stainless_steel_visible" invisible='1'/> -->
+                                    </h1>
+                                </div>
+
                      <div class="d-flex gap-2">
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
                             <tbody>
                                 <tr>
-                                    <td style="width:50%;"><label for="temperature"></label></td>
-                                    <td style="width:50%;"><field name="temperature"/></td>
+                                    <td><label for="temprature"></label></td>
+                                    <td><field name="temprature" class="blue-input"/></td>
                                 </tr>
-                               
+                                
                             </tbody>
                         </table>
 
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
                             <tbody>
-                                <tr>
-                                    <td style="width:50%;"><label for="humidity"></label></td>
-                                    <td style="width:50%;"><field name="humidity"/></td>
+                                
+                                    <tr>
+                                    <td><label for="humidity"></label></td>
+                                    <td><field  name="humidity" class="blue-input" /></td>
                                 </tr>
-                               
+                              
+                                
                             </tbody>
                         </table>
-                        </div>
+                    </div>
+
+
+
+                     <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="week_no"></label></td>
+                                    <td><field name="week_no" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="other_details"></label></td>
+                                    <td><field  name="other_details" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="condition"></label></td>
+                                    <td><field name="condition" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="description_work"></label></td>
+                                    <td><field  name="description_work" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="product_name"></label></td>
+                                    <td><field  name="product_name" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
 
 
                      <div invisible="mechanical_test_visible == False" style="text-align:center">
@@ -206,6 +273,33 @@
                 </sheet>
             </form>
         </field>
+        </record>
+
+        <record id="view_tmt_bar_prefill_data_form" model="ir.ui.view">
+            <field name="name">mech.tmt.bar.prefill.data.form</field>
+            <field name="model">mech.tmt.bar.prefill.data</field>
+            <field name="arch" type="xml">
+                <form string="Prefill Data">
+                    <group>
+                        <field name="product_id" readonly="1"/>
+                        <field name="sample_id"/>
+
+                    </group>
+                    <footer>
+                        <button name="prefill_data" string="Prefill Data" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_tmt_bar_prefill_data_wizard" model="ir.actions.act_window">
+            <field name="name">Prefill Data</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mech.tmt.bar.prefill.data</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_tmt_bar_prefill_data_form"/>
+            <field name="target">new</field>
         </record>
 
     </data>

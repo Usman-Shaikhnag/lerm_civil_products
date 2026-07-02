@@ -8,15 +8,39 @@ class TMTBAR(models.Model):
     _inherit = "lerm.eln"
     _rec_name = "name"
 
-    name = fields.Char("Name",default="TMT BAR")
+    name1 = fields.Char("Name",default="Metals & Alloys-Structural Steel")
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     
     
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
+
+    def prefill_data(self):
+        wizard_action = self.env.ref('concrete_cube.action_cube_prefill_data_wizard')
+        # import wdb; wdb.set_trace()
+        return {
+            'name': 'Prefill Data',
+            'type': 'ir.actions.act_window',
+            'res_model': 'mech.tmt.bar.prefill.data',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
+                },
+        }
     
-    temperature = fields.Float("Temperature °C")
-    humidity = fields.Float("Humidity  %")
+    temprature = fields.Integer("Temperature (°C)", digits=(10,2))
+    humidity = fields.Integer("Humidity (%)", digits=(10,2))
+
+    week_no = fields.Char("Week No")
+
+    other_details = fields.Char("Other Details")
+
+    condition = fields.Char("Condition")
+
+    description_work = fields.Text("Description Of Work")
+    product_name = fields.Char(string="Product")
     
    
     eln_ref = fields.Many2one('lerm.eln',string="Eln")

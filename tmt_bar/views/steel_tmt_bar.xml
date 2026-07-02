@@ -13,7 +13,8 @@
                        
                        
                          <field name='eln_ref' readonly="1"/>
-                          <field name='name' readonly="1"/>
+                         <field name="sample_id" readonly="1"/>
+                          <!-- <field name='name' readonly="1"/> -->
                           <field name="eln_state" />
                     </group>
                          
@@ -24,6 +25,13 @@
                                
                                 
                             </group>
+
+                            <div  style="text-align:center">
+                                    <h1>
+                                    <field name="name1" readonly="1" nolabel="1"/>
+                                    <!-- <field name="stainless_steel_visible" invisible='1'/> -->
+                                    </h1>
+                                </div>
 
                              <div class="d-flex gap-2" >
                             <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
@@ -119,6 +127,18 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="product_name"></label></td>
+                                    <td><field  name="product_name" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
                              <style>
                         .blue-input input {
                             background-color: #d8ecff !important;   /* हलका Blue background */

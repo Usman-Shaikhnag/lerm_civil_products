@@ -14,7 +14,7 @@
 					<div class="" t-foreach="eln" t-as="o">
 						 <table style="width:100%; border-collapse: collapse;" border="1">
 
-						   <tr>
+						   <tr style="height:10px;">
 								<td colspan="1">Customer Party Name :</td>
 								  <td colspan="2" style="font-weight:bold;">
 									<![CDATA[&nbsp;]]>
@@ -54,15 +54,9 @@
 							</tr>
 							
 							<tr>
-								<td style="width:25%;">Samples Description :-</td>
-								<td style="width:25%;">
-								      <t t-if="o.material and o.material.lab_name">
-											<span t-field="o.material.lab_name"/>
-										</t>
-									<t t-else="">--</t>
-								</td>
+								
 
-								<td style="width:20%;">Customer's Ref. No :-</td>
+								<td style="width:20%;">Letter No :-</td>
 								<td style="width:20%;">
 
 								  <t t-if="o.srf_id.client_refrence">
@@ -71,12 +65,162 @@
 									<t t-else="">--</t>
 								
 								</td>
+								<td>Letter Date :-</td>
+								<td>
+									
+
+									<t t-if="o.srf_id.letter_date">
+											<span t-field="o.srf_id.letter_date"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
 							</tr>
 
 							<tr>
-								<!-- <td>Quantity of Samples :-</td>
-								<td>Litre</td> -->
-								<td>No. of Samples :-</td>
+
+							<tr>
+
+								<td>SRF No. :-</td>
+										<td >
+
+											<t t-if="o.srf_id">
+											<span t-field="o.srf_id"/>
+										</t>
+									<t t-else="">--</t>
+										</td>
+								<td>SRF Date:-</td>
+								<td>
+
+									<t t-if="o.srf_date">
+											<span t-field="o.srf_date"/>
+										</t>
+								</td>
+
+								
+								
+							</tr>
+								
+
+								<td style="width:20%;">Temperature :-</td>
+								<td style="width:20%;">
+
+								  <t t-if="rebond.temprature">
+											<span t-field="rebond.temprature"/> (°C)
+										</t>
+									<t t-else="">--</t>
+								
+								</td>
+								<td>Humidity :-</td>
+								<td>
+									
+
+									<t t-if="rebond.humidity">
+											<span t-field="rebond.humidity"/>  (%)
+										</t>
+									<t t-else="">--</t>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="width:20%;">Discipline :
+									
+								</td>
+								<td style="width:20%;">
+								<span t-field="o.discipline.discipline"/>
+								</td>
+
+								<td style="width:20%;">Group :	
+								</td>
+								<td style="width:20%;">
+									<span t-field="o.group.group"/>
+								
+								</td>
+							</tr>
+
+							<tr>
+								<td>Brand &amp; Grade :-</td>
+								<td>
+								<t t-if="o.sample_id.grade_id.grade">
+											<span t-field="o.sample_id.grade_id.grade"/>
+										</t>
+									<t t-else="">--</t>
+									</td>
+
+								<td>Size  :-</td>
+								<td>
+
+										<t t-if="o.sample_id.size_id.size">
+											<span t-field="o.sample_id.size_id.size"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="1">Description Of Work :
+									
+								</td>
+
+								<td colspan="3">
+								<t t-if="rebond.description_work">
+											<span t-field="rebond.description_work"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+								
+							</tr>
+
+							<tr>
+								<td>Date of Samples Received :-</td>
+								<td>
+
+									<t t-if="o.sample_id.sample_received_date">
+											<span t-field="o.sample_id.sample_received_date"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+
+									<td>Condition :-</td>
+										<td >
+
+											<t t-if="rebond.condition">
+											<span t-field="rebond.condition"/>
+										</t>
+									<t t-else="">--</t>
+										</td>
+								
+							</tr>
+
+							<tr>
+								
+
+								<td colspan="1">Samples Description :-</td>
+								<td colspan="3">
+								      <t t-if="o.material and o.material.lab_name">
+											<span t-field="o.material.lab_name"/>
+										</t>
+								</td>
+								
+							</tr>
+
+							<tr>
+								
+
+								<td colspan="1">Product Name :-</td>
+								<td colspan="3">
+								      <t t-if="rebond.product_name">
+											<span t-field="rebond.product_name"/>
+										</t>
+								</td>
+								
+							</tr>
+
+							<tr>
+
+								<td>Sample Status :-</td>
+								<td></td>
+								
+								<td>Quantity:-</td>
 								<td>
 
 								<t t-if="o.sample_id.sample_qty">
@@ -91,48 +235,16 @@
 								
 								</td>
 
-								<td>Letter Date :-</td>
-								<td>
-									
+							
 
-									<t t-if="o.srf_id.letter_date">
-											<span t-field="o.srf_id.letter_date"/>
-										</t>
-									<t t-else="">--</t>
-								</td>
-							</tr>
-
-							<tr>
-								<td>Date of Samples Received :-</td>
-								<td>
-
-									<t t-if="o.sample_id.sample_received_date">
-											<span t-field="o.sample_id.sample_received_date"/>
-										</t>
-									<t t-else="">--</t>
-								</td>
-
-									<td>SRF No. :-</td>
-										<td >
-
-											<t t-if="o.srf_id">
-											<span t-field="o.srf_id"/>
-										</t>
-									<t t-else="">--</t>
-										</td>
 								
 							</tr>
 
-							<tr>
-								<td>Brand &amp; Grade :-</td>
-								<td>
-								<t t-if="o.sample_id.grade_id.grade">
-											<span t-field="o.sample_id.grade_id.grade"/>
-										</t>
-									<t t-else="">--</t>
-									</td>
+							
 
-								<td>Date of Test Initiation  :-</td>
+							<tr>
+								
+								<td>Test Start Date  :-</td>
 								<td>
 
 									<t t-if="o.start_date">
@@ -140,20 +252,8 @@
 										</t>
 									<t t-else="">--</t>
 								</td>
-							</tr>
 
-							<tr>
-								
-
-								<td>Size  :-</td>
-								<td>
-
-										<t t-if="o.sample_id.size_id.size">
-											<span t-field="o.sample_id.size_id.size"/>
-										</t>
-									<t t-else="">--</t>
-								</td>
-								<td>Date of Test Completion  :-</td>
+								<td>Test Completion Date  :-</td>
 								<td>
 
 									<t t-if="o.end_date">
@@ -166,40 +266,26 @@
 							<tr>
 								
 
-								<td>Sample Condition   :-</td>
-								<td>
-
-								--
-								</td>
-								<td>Sample ID  :-</td>
-								<td>
-
-									<t t-if="o.sample_id.kes_no">
-											<span t-field="o.sample_id.kes_no"/>
-										</t>
-									<t t-else="">--</t>
-								</td>
-							</tr>
-
-                               <tr>
-								<td>Room Temperature   :-</td>
+								<td>Week No.  :-</td>
 								<td >
-									<t t-esc="rebond.temperature or ''"/>
+
+									<t t-if="rebond.week_no">
+									<span t-field="rebond.week_no"/>
+								</t>
+							<t t-else="">--</t>
 								</td>
-								<td>Humidity  :-</td>
+
+								<td>Other Details  :-</td>
 								<td >
-									<t t-esc="rebond.humidity or ''"/>
+
+									<t t-if="rebond.other_details">
+									<span t-field="rebond.other_details"/>
+								</t>
+							<t t-else="">--</t>
 								</td>
 							</tr>
 
-							<tr>
-								<td colspan="1">Sample Status:</td>
-								<td colspan="3">--</td>
-
-								
-							</tr>
-
-
+						
 							<tr t-if="o.material.test_method_adopted" >
 								
 
@@ -213,14 +299,17 @@
 									<td colspan="3"><span t-field="o.material.source_sample"/></td>
 								</tr>
 
-								<tr t-if="o.material.specifications">
+								<tr t-if="o.material.specification_code">
 									<td style="font-weight: bold;">Specifications</td>
-									<td colspan="3"><span t-field="o.material.specifications"/></td>
+									<td colspan="3"><span t-field="o.material.specification_code"/></td>
 								</tr>
 
 						</table>
 					</div>
-
+					<div style="margin-top:5px;text-align: center;">
+						<u>Test Results</u><![CDATA[&nbsp;]]>:<![CDATA[&nbsp;]]>
+						
+					</div>
                    
 					
 				   
@@ -261,7 +350,7 @@
 									<b>Specification as per IS 2062-2011 GRADE E250</b>
 								</td>
 
-								<td></td> <!-- blank -->
+								<t t-if="rebond.blanck_lable not in (False, None, '', ' ')"><td></td> </t><!-- blank -->
 								<td style="text-align: center;">
 								<span>
 										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','10238877-0268-46ef-ba88-9c0453210l69668755')]).parameter_table" t-as="parameter">
@@ -314,17 +403,17 @@
                                 </td>
 								
 							
-
+                            <t t-if="r.blank not in (False, None, '', ' ')">
 							<td style="text-align: center;">
-								<t t-if="r.blank not in (False, None, '', ' ')">
+								
 									<t t-esc="r.blank"/>
-								</t>
-
-								 <t t-else="">
-										--
-									</t>
+								
+								 <!-- <t t-else="">
+									</t> -->
 								
 							</td>
+							</t>
+
 								<td  style="text-align: center;">
                                     <span t-esc="r['uts']"/>
                                 </td>

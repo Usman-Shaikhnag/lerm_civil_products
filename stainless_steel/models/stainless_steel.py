@@ -8,17 +8,29 @@ class StatinlessSteel(models.Model):
     _inherit = "lerm.eln"
     _rec_name = "name"
 
-    name = fields.Char("Name",default="Stainless Steel")
+    name1 = fields.Char("Name",default="Stainless Steel")
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     
     stainless_steel_visible = fields.Boolean("Stainless Steel Visible",compute="_compute_visible")
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
-    temperature = fields.Float("Temperature °C")
-    humidity = fields.Float("Humidity  %")
+    
     child_lines = fields.One2many('stainless.steel.line','parent_id',string="Parameter")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
+
+    product_name = fields.Char(string="Product")
+
+    temprature = fields.Integer("Temperature (°C)", digits=(10,2))
+    humidity = fields.Integer("Humidity (%)", digits=(10,2))
+
+    week_no = fields.Char("Week No")
+
+    other_details = fields.Char("Other Details")
+
+    condition = fields.Char("Condition")
+
+    description_work = fields.Text("Description Of Work")
 
     @api.depends('eln_ref')
     def _compute_size_id(self):
@@ -145,6 +157,15 @@ class StatinlessSteel(models.Model):
                 continue
 
             if result.parameter.internal_id == '10238877-0268-46ef-ba88-9c0453210l69668755':
+                # result.result_char = round(self.average_mpa,2)
+                result.calculated = True
+                # if self.avg_compaction_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '10238877-0268-46ef-ba88-9c04532106745321457':
                 # result.result_char = round(self.average_mpa,2)
                 result.calculated = True
                 # if self.avg_compaction_nabl == 'pass':

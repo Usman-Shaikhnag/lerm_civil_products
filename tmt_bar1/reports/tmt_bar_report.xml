@@ -12,7 +12,7 @@
 
 				<div class="container_eln" style="padding-top:2px;">
 					<div class="" t-foreach="eln" t-as="o">
-						 <table style="width:100%; border-collapse: collapse;" border="1">
+						 	<table style="width:100%; border-collapse: collapse;" border="1">
 
 						   <tr style="height:10px;">
 								<td colspan="1">Customer Party Name :</td>
@@ -54,37 +54,172 @@
 							</tr>
 							
 							<tr>
-								<td style="width:25%;">Samples Description :-</td>
-								<td style="width:25%;">
-								      <t t-if="o.material and o.material.lab_name">
-											<span t-field="o.material.lab_name"/>
+								
+
+								<td style="width:20%;">Letter No :-</td>
+								<td style="width:20%;">
+
+								  <t t-if="o.srf_id.client_refrence">
+											<span t-field="o.srf_id.client_refrence"/>
+										</t>
+									<t t-else="">--</t>
+								
+								</td>
+								<td>Letter Date :-</td>
+								<td>
+									
+
+									<t t-if="o.srf_id.letter_date">
+											<span t-field="o.srf_id.letter_date"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+							</tr>
+
+							<tr>
+
+							<tr>
+
+								<td>SRF No. :-</td>
+										<td >
+
+											<t t-if="o.srf_id">
+											<span t-field="o.srf_id"/>
+										</t>
+									<t t-else="">--</t>
+										</td>
+								<td>SRF Date:-</td>
+								<td>
+
+									<t t-if="o.srf_date">
+											<span t-field="o.srf_date"/>
+										</t>
+								</td>
+
+								
+								
+							</tr>
+								
+
+								<td style="width:20%;">Temperature :-</td>
+								<td style="width:20%;">
+
+								  <t t-if="tmt.temprature">
+											<span t-field="tmt.temprature"/> (°C)
+										</t>
+									<t t-else="">--</t>
+								
+								</td>
+								<td>Humidity :-</td>
+								<td>
+									
+
+									<t t-if="tmt.humidity">
+											<span t-field="tmt.humidity"/>  (%)
+										</t>
+									<t t-else="">--</t>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="width:20%;">Discipline :
+									
+								</td>
+								<td style="width:20%;">
+								<span t-field="o.discipline.discipline"/>
+								</td>
+
+								<td style="width:20%;">Group :	
+								</td>
+								<td style="width:20%;">
+									<span t-field="o.group.group"/>
+								
+								</td>
+							</tr>
+
+							<tr>
+								<td>Brand &amp; Grade :-</td>
+								<td>
+								<t t-if="o.sample_id.grade_id.grade">
+											<span t-field="o.sample_id.grade_id.grade"/>
+										</t>
+									<t t-else="">--</t>
+									</td>
+
+								<td>Size  :-</td>
+								<td>
+
+										<t t-if="o.sample_id.size_id.size">
+											<span t-field="o.sample_id.size_id.size"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="1">Description Of Work :
+									
+								</td>
+
+								<td colspan="3">
+								<t t-if="tmt.description_work">
+											<span t-field="tmt.description_work"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+								
+							</tr>
+
+							<tr>
+								<td>Date of Samples Received :-</td>
+								<td>
+
+									<t t-if="o.sample_id.sample_received_date">
+											<span t-field="o.sample_id.sample_received_date"/>
 										</t>
 									<t t-else="">--</t>
 								</td>
 
+									<td>Condition :-</td>
+										<td >
+
+											<t t-if="tmt.condition">
+											<span t-field="tmt.condition"/>
+										</t>
+									<t t-else="">--</t>
+										</td>
 								
-								  <td colspan="2" style="padding:0;">
-										<div >
-
-											<div style="border-bottom:1px solid black; padding:5px; width:100%;">
-												Room Temperature :- 
-												<t t-esc="tmt.temperature or ''"/>
-											</div>
-
-											<div style="padding:5px;">
-												Humidity :- 
-												<t t-esc="tmt.humidity or ''"/>
-											</div>
-
-										</div>
-									</td>
-							
 							</tr>
 
 							<tr>
-								<!-- <td>Quantity of Samples :-</td>
-								<td>Litre</td> -->
-								<td>No. of Samples :-</td>
+								
+
+								<td colspan="1">Samples Description :-</td>
+								<td colspan="3">
+								      <t t-if="o.material and o.material.lab_name">
+											<span t-field="o.material.lab_name"/>
+										</t>
+								</td>
+								
+							</tr>
+							<tr>
+								
+
+								<td colspan="1">Product Name :-</td>
+								<td colspan="3">
+								      <t t-if="tmt.product_name">
+											<span t-field="tmt.product_name"/>
+										</t>
+								</td>
+								
+							</tr>
+
+							<tr>
+
+								<td>Sample Status :-</td>
+								<td></td>
+								
+								<td>Quantity:-</td>
 								<td>
 
 								<t t-if="o.sample_id.sample_qty">
@@ -99,48 +234,16 @@
 								
 								</td>
 
-								<td>Letter Date :-</td>
-								<td>
-									
+							
 
-									<t t-if="o.srf_id.letter_date">
-											<span t-field="o.srf_id.letter_date"/>
-										</t>
-									<t t-else="">--</t>
-								</td>
-							</tr>
-
-							<tr>
-								<td>Date of Samples Received :-</td>
-								<td>
-
-									<t t-if="o.sample_id.sample_received_date">
-											<span t-field="o.sample_id.sample_received_date"/>
-										</t>
-									<t t-else="">--</t>
-								</td>
-
-									<td>SRF No. :-</td>
-										<td >
-
-											<t t-if="o.srf_id">
-											<span t-field="o.srf_id"/>
-										</t>
-									<t t-else="">--</t>
-										</td>
 								
 							</tr>
 
-							<tr>
-								<td>Brand &amp; Grade :-</td>
-								<td>
-								<t t-if="o.sample_id.grade_id.grade">
-											<span t-field="o.sample_id.grade_id.grade"/>
-										</t>
-									<t t-else="">--</t>
-									</td>
+							
 
-								<td>Date of Test Initiation  :-</td>
+							<tr>
+								
+								<td>Test Start Date  :-</td>
 								<td>
 
 									<t t-if="o.start_date">
@@ -148,20 +251,8 @@
 										</t>
 									<t t-else="">--</t>
 								</td>
-							</tr>
 
-							<tr>
-								
-
-								<td>Size  :-</td>
-								<td>
-
-										<t t-if="o.sample_id.size_id.size">
-											<span t-field="o.sample_id.size_id.size"/>
-										</t>
-									<t t-else="">--</t>
-								</td>
-								<td>Date of Test Completion  :-</td>
+								<td>Test Completion Date  :-</td>
 								<td>
 
 									<t t-if="o.end_date">
@@ -171,51 +262,29 @@
 								</td>
 							</tr>
 
-							
-								<tr >
-
-									<td style="font-weight: bold;">Specifications</td>
-									
-									<td >
-									<t t-if="o.material.specifications">
-									<span t-field="o.material.specifications"/>
-									</t>
-									<t t-else="">--</t>
-
-									</td>
-								
-
-								
-								<td>Sample ID  :-</td>
-								<td>
-
-									<t t-if="o.sample_id.kes_no">
-											<span t-field="o.sample_id.kes_no"/>
-										</t>
-									<t t-else="">--</t>
-								</td>
-							</tr>
-
-							
-
 							<tr>
-
-							<td >Customer's Ref. No :-</td>
-								<td>
-
-								  <t t-if="o.srf_id.client_refrence">
-											<span t-field="o.srf_id.client_refrence"/>
-										</t>
-									<t t-else="">--</t>
 								
+
+								<td>Week No.  :-</td>
+								<td >
+
+									<t t-if="tmt.week_no">
+									<span t-field="tmt.week_no"/>
+								</t>
+							<t t-else="">--</t>
 								</td>
 
-								<td >Other Details:</td>
-								<td >--</td>
+								<td>Other Details  :-</td>
+								<td >
 
+									<t t-if="tmt.other_details">
+									<span t-field="tmt.other_details"/>
+								</t>
+							<t t-else="">--</t>
+								</td>
 							</tr>
 
-
+						
 							<tr t-if="o.material.test_method_adopted" >
 								
 
@@ -229,22 +298,15 @@
 									<td colspan="3"><span t-field="o.material.source_sample"/></td>
 								</tr>
 
-							
-
-							
+								<tr t-if="o.material.specification_code">
+									<td style="font-weight: bold;">Specifications</td>
+									<td colspan="3"><span t-field="o.material.specification_code"/></td>
+								</tr>
 
 						</table>
 					</div>
 
                    
-					
-				   
-
-					
-
-                      
-
-						 
 
                    <div style="text-align: center; font-weight: bold; margin-top: 2px; font-size: 16px;">
 						TEST RESULT
