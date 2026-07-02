@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="action_gl_report_open" model="ir.actions.client">
+            <field name="name">General Ledger</field>
+            <field name="tag">account_gl_report.open</field>
+            <field name="target">current</field>
+        </record>
+
+        <record id="action_gl_report_presets" model="ir.actions.act_window">
+            <field name="name">Saved Presets</field>
+            <field name="res_model">account.gl.report.preset</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p>Save and manage your General Ledger report filter presets here.</p>
+            </field>
+        </record>
+
+        <record id="action_report_gl_pdf" model="ir.actions.report">
+            <field name="name">General Ledger PDF</field>
+            <field name="model">account.gl.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">account_gl_report.report_gl_pdf</field>
+            <field name="print_report_name">'GeneralLedger_%s' % (datetime.now().strftime('%Y%m%d'))</field>
+        </record>
+
+        <menuitem id="menu_gl_report_root"
+                  name="GL"
+                  parent="account.menu_finance_reports"
+                  sequence="5"/>
+
+        <menuitem id="menu_gl_report_open"
+                  name="General Ledger"
+                  parent="menu_gl_report_root"
+                  sequence="10"
+                  action="action_gl_report_open"/>
+
+        <menuitem id="menu_gl_report_presets"
+                  name="Saved Presets"
+                  parent="menu_gl_report_root"
+                  sequence="20"
+                  action="action_gl_report_presets"
+                  groups="group_gl_report_user"/>
+    </data>
+</odoo>

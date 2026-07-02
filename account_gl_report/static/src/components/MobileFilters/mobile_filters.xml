@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+
+    <t t-name="gl_report.MobileFilters">
+        <div>
+            <div class="o_gl_mobile_overlay" t-on-click="props.onClose"/>
+            <div class="o_gl_mobile_panel">
+                <div class="o_gl_mobile_header">
+                    <h5 class="mb-0"><i class="fa fa-filter me-2"/>Filters</h5>
+                    <button class="btn btn-sm btn-close" t-on-click="props.onClose"/>
+                </div>
+                <div class="o_gl_mobile_body">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Account</label>
+                        <input type="text" class="form-control form-control-sm"
+                               placeholder="Search account..."
+                               t-att-value="localFilters.account_id_display || ''"/>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Date Range</label>
+                        <select class="form-select form-select-sm"
+                                t-att-value="localFilters.date_filter"
+                                t-on-change="(e) => localFilters.date_filter = e.target.value">
+                            <option value="today">Today</option>
+                            <option value="yesterday">Yesterday</option>
+                            <option value="this_week">This Week</option>
+                            <option value="last_week">Last Week</option>
+                            <option value="this_month">This Month</option>
+                            <option value="last_month">Last Month</option>
+                            <option value="quarter">Quarter</option>
+                            <option value="fiscal_year">Fiscal Year</option>
+                            <option value="custom">Custom Range</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">State</label>
+                        <div class="btn-group btn-group-sm w-100" role="group">
+                            <input type="radio" class="btn-check" name="mobState"
+                                   id="mobAll" value="all"
+                                   t-att-checked="localFilters.target_move === 'all'"
+                                   t-on-change="() => localFilters.target_move = 'all'"/>
+                            <label class="btn btn-outline-secondary" for="mobAll">All</label>
+                            <input type="radio" class="btn-check" name="mobState"
+                                   id="mobPosted" value="posted"
+                                   t-att-checked="localFilters.target_move === 'posted'"
+                                   t-on-change="() => localFilters.target_move = 'posted'"/>
+                            <label class="btn btn-outline-secondary" for="mobPosted">Posted</label>
+                            <input type="radio" class="btn-check" name="mobState"
+                                   id="mobDraft" value="draft"
+                                   t-att-checked="localFilters.target_move === 'draft'"
+                                   t-on-change="() => localFilters.target_move = 'draft'"/>
+                            <label class="btn btn-outline-secondary" for="mobDraft">Draft</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Search</label>
+                        <input type="text" class="form-control form-control-sm"
+                               placeholder="Search..."
+                               t-att-value="localFilters.search_term"
+                               t-on-input="(e) => localFilters.search_term = e.target.value"/>
+                    </div>
+                </div>
+                <div class="o_gl_mobile_footer">
+                    <button class="btn btn-primary w-100" t-on-click="apply">
+                        <i class="fa fa-check me-1"/>Apply Filters
+                    </button>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

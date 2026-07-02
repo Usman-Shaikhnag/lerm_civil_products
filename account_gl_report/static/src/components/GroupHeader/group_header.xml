@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+
+    <t t-name="gl_report.GroupHeader">
+        <tr class="o_gl_group_header" t-on-click="() => props.onToggle(props.group.group_key)">
+            <td colspan="2">
+                <span class="o_gl_group_toggle me-1"
+                      t-att-class="props.collapsed ? 'collapsed' : ''">
+                    <i class="fa fa-chevron-down"/>
+                </span>
+                <strong t-esc="props.group.group_key"/>
+            </td>
+            <td class="amount o_gl_debit" t-esc="props.group.total_debit"/>
+            <td class="amount o_gl_credit" t-esc="props.group.total_credit"/>
+            <td class="amount" t-att-class="props.group.total_balance >= 0 ? 'o_gl_balance_positive' : 'o_gl_balance_negative'"
+                t-esc="props.group.total_balance"/>
+            <td colspan="100" class="o_gl_group_subtotal">
+                <t t-esc="props.group.count"/> transactions
+            </td>
+        </tr>
+    </t>
+
+</templates>
