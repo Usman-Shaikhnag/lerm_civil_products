@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="customer_ageing_dashboard.AgeingBucketCard" owl="1">
+        <div class="cad-bucket-card" t-on-click="onClick" t-attf-title="Click to filter {{label}} invoices">
+            <div class="cad-bucket-label"><t t-esc="label"/></div>
+            <div class="cad-bucket-amount" t-attf-style="color: #{color}">
+                <t t-esc="formattedValue"/>
+            </div>
+            <div class="cad-bucket-count" t-if="count > 0">
+                <t t-esc="count"/> invoice<t t-if="count !== 1">s</t>
+            </div>
+        </div>
+    </t>
+</templates>
