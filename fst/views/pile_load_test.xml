@@ -133,6 +133,13 @@
                             placeholder="Enter test procedure here..."/>
                     </div>
 
+                    <group col="2">
+                        <field name="test_load"/>
+                        <field name="incremental_load"/>
+                        <field name="dial_gauge_count"/>
+                        <field name="allowable_capacity"/>
+                    </group>
+
                     <!-- ================= TABLE 1 : BASIC DATA ================= -->
                     <div style="margin-top:35px;">
                         <h3 style="border-bottom:2px solid #000;">
@@ -218,6 +225,7 @@
 
                     <field name="graph_image" widget="image"/>
 
+                    <field name="qr_code" widget="image"/>
                     <!-- ================= ANALYSIS OF TEST RESULTS ================= -->
                     <div style="margin-top:35px;">
                         <h3 style="font-weight:bold;">

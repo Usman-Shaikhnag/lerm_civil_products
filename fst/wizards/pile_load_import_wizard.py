@@ -56,6 +56,7 @@ class PileLoadImportWizard(models.TransientModel):
         self.parent_id.action_recompute_all()
         self.parent_id.action_generate_graph()
         self.parent_id.action_generate_analysis()
+        self.parent_id._compute_qr_code()
 
     def _process_sheet(self, sheet, model_name):
 
