@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="lerm_sale_order_inherited_form" model="ir.ui.view">
+            <field name="name">sale.order.inherited.form.lerm</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='order_line']/tree/field[@name='name']" position="before">
+                    <field name="product_tmpl_id" column_invisible="True"/>
+                    <field name="parameters" widget="many2many_tags" options="{'no_create': True}" domain="[('material', '=', product_tmpl_id)]"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
