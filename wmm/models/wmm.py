@@ -1572,7 +1572,7 @@ class WmmMechanical(models.Model):
 
     
 
-               # Liquid Limit
+     # Liquid Limit
     liquid_limit_name = fields.Char("Name",default="Liquid Limit")
     liquid_limit_visible = fields.Boolean("Liquid Limit Visible",compute="_compute_visible")
 

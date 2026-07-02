@@ -1699,13 +1699,13 @@ class CoarseAggregateMechanical(models.Model):
                  lab_max = line.lab_max_value
                  mu_value = line.mu_value
             
-                lower = record.total_weighted_avg - record.total_weighted_avg*mu_value
-                upper = record.total_weighted_avg + record.total_weighted_avg*mu_value
-                if lower >= lab_min and upper <= lab_max:
+                 lower = record.total_weighted_avg - record.total_weighted_avg*mu_value
+                 upper = record.total_weighted_avg + record.total_weighted_avg*mu_value
+                 if lower >= lab_min and upper <= lab_max:
                    record.total_weighted_avg_nabl = 'pass'
                    break
-                else:
-                   record.total_weighted_avg_nabl = 'fail'
+                 else:
+                    record.total_weighted_avg_nabl = 'fail'
 
 
     # SOUNDNESS (MAGNESIUM SULPHATE TEST)
