@@ -1395,7 +1395,7 @@ class WbmMechanical(models.Model):
 
     total_total_weight = fields.Float("Total (Total Wt of Aggregate Retained (gm)) (A)", compute="_compute_totals", store=True)
     total_wt_passing_flakiness = fields.Float("Total (Wt Passing Flakiness Gauge (gm)) (B)", compute="_compute_totals", store=True)
-    total_wt_retained_flakiness = fields.Float("Total (Wt Retained Flakiness Gauge (gm)) (C)", compute="_compute_totals", store=True)
+    total_wt_retained_flakiness = fields.Float("Total (Wt. Retained on Flakiness gauge (gm) = [(Total Wt of aggregate Retained (gm)) - (Wt. Passing on Flakiness gauge (gm)] (C)", compute="_compute_totals", store=True)
     total_wt_retained_elongation = fields.Float("Total (Wt Retained Elongation Gauge (gm)) (D)", compute="_compute_totals", store=True)
 
     @api.depends(
@@ -3539,7 +3539,7 @@ class WbmImpactValueLine(models.Model):
 
     w1 = fields.Float("Weight of surface dry sample passing 12.5mm and retained on 10mm IS sieves, W1. (gm)")
     w2 = fields.Float("Weight of fraction passing 2.36mm sieve after the test, W2. (gm) ")
-    w3 = fields.Float("Weight of fraction retained on 2.36mm sieve after the test, W3. (gm)")
+    w3 = fields.Float("Weight of fraction retained on 2.36mm sieve after the test, W3 = [ (Weight of surface dry sample passing 12.5mm and retained on 10mm IS sieves, W1) - ( Weight of fraction passing2.36mm sieve after the test, W2)")
 
     w4 = fields.Float(
         string="W4 = W1 - (W2 + W3)	(gm)",
@@ -3913,9 +3913,9 @@ class WbmTFVLine(models.Model):
     sample_no = fields.Integer(string="Trial No", readonly=True, copy=False, default=1)
 
     # Inputs
-    a = fields.Float("Sample Weight (A)")
+    a = fields.Float("Weight of Saturated surface dry Sample passing IS Sieve 14mm and retained on IS Sieve 10mm (A)")
     retained = fields.Float("Weight retained on 2.36 mm sieve")
-    b = fields.Float("Weight passing 2.36 mm sieve (B)")
+    b = fields.Float("WEIGHT PASSING 2.36 MM SIEVE (B) = Weight of Saturated surface dry Sample passing IS Sieve 14 mm and retained on IS Sieve 10mm (A) - Weight Retained on 2.36 mm sieve")
     x = fields.Float("Maximum Force X (kN)")
 
     # Computed
@@ -3968,7 +3968,7 @@ class WbmWetImpactValueLine(models.Model):
     # Inputs
     w1 = fields.Float("Weight before soaking (W1)")
     w_ssd = fields.Float("Weight after soaking (SSD)")
-    w2 = fields.Float("Weight passing 2.36 mm (W2)")
+    w2 = fields.Float("WEIGHT PASSING ON 2.36 MM = (WIGHT AFTER SOAKING SSD) – (WEIGHT PASSING 2.36 MM (W2))")
 
     retained = fields.Float(
         "Weight retained on 2.36 mm",
@@ -4204,7 +4204,7 @@ class WbmElongationLine(models.Model):
 
     total_weight = fields.Float("Total Wt of Aggregate Retained (gm)")
     wt_passing_flakiness = fields.Float("Wt Passing Flakiness Gauge (gm)")
-    wt_retained_flakiness = fields.Float("Wt Retained Flakiness Gauge (gm)")
+    wt_retained_flakiness = fields.Float("Wt. Retained on Flakiness gauge (gm) = [(Total Wt of aggregate Retained (gm)) - (Wt. Passing on Flakiness gauge (gm)]")
     wt_retained_elongation = fields.Float("Wt Retained Elongation Gauge (gm)")
 
 
