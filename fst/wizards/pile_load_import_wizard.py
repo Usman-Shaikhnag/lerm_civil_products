@@ -55,6 +55,7 @@ class PileLoadImportWizard(models.TransientModel):
 
         self.parent_id.action_recompute_all()
         self.parent_id.action_generate_graph()
+        self.parent_id.action_generate_analysis()
 
     def _process_sheet(self, sheet, model_name):
 
@@ -147,6 +148,7 @@ class PileLoadImportWizard(models.TransientModel):
                         second=0,
                         microsecond=0
                     ) == normalized_dt
+                    and r.load_tonne == row_data['Load']
             )
 
             vals = {

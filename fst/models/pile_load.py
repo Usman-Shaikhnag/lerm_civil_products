@@ -618,8 +618,36 @@ class PileLoadTestParent(models.Model):
             'target': 'self',
         }
 
+    def action_generate_analysis(self):
+        for rec in self:
 
+            gross = rec.gross_settlement or 0
 
+            if gross < 12:
+                rec.analysis_text = (
+                    f"1) Settlement upto 12 mm is not achieved during the test. "
+                    f"Gross Settlement is evaluated {gross:.2f} mm.\n"
+                    f"2) 50 percent of the final load at 10 % of the pile diameter "
+                    f"i.e. ____ mm not reached.\n"
+                    f"Hence allowable load is considered as two third of test load "
+                    f"i.e. ⅔ × ____ Tonne or say ____ Tonne."
+                )
+            else:
+                rec.analysis_text = (
+                    f"1) Two-thirds of the final load at 12 mm settlement = "
+                    f"⅔ × ____ Tonne or say ____ Tonne.\n"
+                    f"2) 50 percent of the final load at 10 % of the pile diameter "
+                    f"i.e. ____ mm = 50 % of ____ Tonne or say ____ Tonne.\n"
+                    f"Hence allowable load is considered ____ Tonne."
+                )
+
+    def action_reset_readings(self):
+        for rec in self:
+            rec.write({
+                'loading_reading_ids': [(5, 0, 0)],
+                'unloading_reading_ids': [(5, 0, 0)],
+                'graph_image': False,
+            })
 
 # NEW: Separate Loading Model
 class PileLoadReadingLoading(models.Model):
@@ -742,9 +770,14 @@ class PileLoadReadingLoading(models.Model):
     def _compute_split_dt(self):
         for rec in self:
             if rec.reading_datetime:
-                dt = fields.Datetime.context_timestamp(rec, rec.reading_datetime)
+                dt = fields.Datetime.context_timestamp(
+                    rec,
+                    rec.reading_datetime
+                )
+
                 rec.reading_date_str = dt.strftime("%d/%m/%y")
-                rec.reading_time_str = dt.strftime("%H:%M")
+                rec.reading_time_str = dt.strftime("%I:%M %p")
+
             else:
                 rec.reading_date_str = False
                 rec.reading_time_str = False
@@ -846,9 +879,14 @@ class PileLoadReadingUnloading(models.Model):
     def _compute_split_dt(self):
         for rec in self:
             if rec.reading_datetime:
-                dt = fields.Datetime.context_timestamp(rec, rec.reading_datetime)
+                dt = fields.Datetime.context_timestamp(
+                    rec,
+                    rec.reading_datetime
+                )
+
                 rec.reading_date_str = dt.strftime("%d/%m/%y")
-                rec.reading_time_str = dt.strftime("%H:%M")
+                rec.reading_time_str = dt.strftime("%I:%M %p")
+
             else:
                 rec.reading_date_str = False
                 rec.reading_time_str = False

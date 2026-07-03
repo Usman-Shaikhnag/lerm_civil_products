@@ -432,12 +432,30 @@ class MobileAppController(http.Controller):
             # Prioritize: name, state/status fields, date fields, then others
             priority_fields = []
             other_fields = []
+            
+            # Custom priority fields per model
+            model_priorities = {
+                'lerm.srf.sample': ['discipline_id', 'group_id', 'material_id', 'state'],
+                'lerm.eln': ['discipline', 'group', 'material', 'state'],
+                'lerm.civil.srf': ['customer', 'srf_date', 'state'],
+            }
+            custom_priority = model_priorities.get(model_name, [])
+
             for f in display_fields:
-                if f in ('name', 'display_name', 'state', 'stage_id', 'partner_id',
-                         'date', 'date_order', 'date_start'):
-                    priority_fields.append(f)
+                if custom_priority:
+                    if f in custom_priority:
+                        priority_fields.append(f)
+                    else:
+                        other_fields.append(f)
                 else:
-                    other_fields.append(f)
+                    if f in ('name', 'display_name', 'state', 'stage_id', 'partner_id',
+                             'date', 'date_order', 'date_start'):
+                        priority_fields.append(f)
+                    else:
+                        other_fields.append(f)
+
+            if custom_priority:
+                priority_fields.sort(key=lambda x: custom_priority.index(x) if x in custom_priority else 999)
 
             selected_fields = (priority_fields + other_fields)[:8]
 
@@ -638,44 +656,47 @@ class MobileAppController(http.Controller):
                     if field_type in ['one2many', 'many2many']:
                         rel_model = field_def.comodel_name
                         if rel_model:
-                            rel_records = request.env[rel_model].browse(val)
-                            RelModel = request.env[rel_model]
-                            rel_fields = RelModel.fields_get()
-                            
-                            # Find the primary many2one field (first m2o that isn't the parent link)
-                            primary_m2o = None
-                            parent_field = None
-                            for rf_name, rf_info in rel_fields.items():
-                                if rf_info.get('type') == 'many2one':
-                                    # Skip the parent link field (points back to current model)
-                                    if rf_info.get('relation') == model:
-                                        parent_field = rf_name
-                                        continue
-                                    if not primary_m2o:
-                                        primary_m2o = rf_name
-                            
-                            # Build enriched data: {id, display_name, primary_m2o_field: [id, name], ...}
-                            enriched = []
-                            if primary_m2o:
-                                m2o_relation = rel_fields[primary_m2o].get('relation', '')
-                                for r in rel_records:
-                                    item = {
-                                        'id': r.id,
-                                        'display_name': r.display_name,
-                                        '_primary_m2o_field': primary_m2o,
-                                        '_primary_m2o_model': m2o_relation,
-                                    }
-                                    # Read the primary m2o value
-                                    m2o_val = getattr(r, primary_m2o, False)
-                                    if m2o_val:
-                                        item[primary_m2o] = [m2o_val.id, m2o_val.display_name]
-                                    else:
-                                        item[primary_m2o] = False
-                                    enriched.append(item)
-                                record_data[fname] = enriched
-                            else:
-                                # Fallback: just [id, display_name]
-                                record_data[fname] = [[r.id, r.display_name] for r in rel_records]
+                            try:
+                                rel_records = request.env[rel_model].sudo().browse(val)
+                                RelModel = request.env[rel_model].sudo()
+                                rel_fields = RelModel.fields_get()
+                                
+                                # Find the primary many2one field (first m2o that isn't the parent link)
+                                primary_m2o = None
+                                parent_field = None
+                                for rf_name, rf_info in rel_fields.items():
+                                    if rf_info.get('type') == 'many2one':
+                                        # Skip the parent link field (points back to current model)
+                                        if rf_info.get('relation') == model:
+                                            parent_field = rf_name
+                                            continue
+                                        if not primary_m2o:
+                                            primary_m2o = rf_name
+                                
+                                # Build enriched data: {id, display_name, primary_m2o_field: [id, name], ...}
+                                enriched = []
+                                if primary_m2o:
+                                    m2o_relation = rel_fields[primary_m2o].get('relation', '')
+                                    for r in rel_records:
+                                        item = {
+                                            'id': r.id,
+                                            'display_name': r.display_name,
+                                            '_primary_m2o_field': primary_m2o,
+                                            '_primary_m2o_model': m2o_relation,
+                                        }
+                                        # Read the primary m2o value
+                                        m2o_val = getattr(r, primary_m2o, False)
+                                        if m2o_val:
+                                            item[primary_m2o] = [m2o_val.id, m2o_val.display_name]
+                                        else:
+                                            item[primary_m2o] = False
+                                        enriched.append(item)
+                                    record_data[fname] = enriched
+                                else:
+                                    # Fallback: just [id, display_name]
+                                    record_data[fname] = [[r.id, r.display_name] for r in rel_records]
+                            except Exception as e:
+                                _logger.warning("Could not enrich x2many field %s: %s", fname, e)
             
             return {
                 'success': True,
@@ -1305,3 +1326,306 @@ class MobileAppController(http.Controller):
         except Exception as e:
             _logger.exception("Error rendering mobile PDF for report %s", data.get('report_name', ''))
             return {'success': False, 'error': str(e)}
+
+    @http.route('/mobile/call_button', type='json', auth='user', methods=['POST'], csrf=False, cors='*')
+    def call_button(self, **kwargs):
+        """
+        Call a button method on a record.
+        Expects: model, id, method, and optionally context.
+        """
+        data = request.params or kwargs
+        try:
+            model = data.get('model')
+            record_id = data.get('id')
+            method = data.get('method')
+            context = data.get('context', {})
+
+            if not model or not record_id or not method:
+                return {'success': False, 'error': 'Model, ID, and method are required'}
+
+            Model = request.env[model]
+            if context:
+                Model = Model.with_context(**context)
+
+            record = Model.browse(int(record_id))
+            if not record.exists():
+                return {'success': False, 'error': 'Record not found'}
+
+            # Call the method
+            result = getattr(record, method)()
+
+            # If the method returns a dict (like an action), pass it through
+            if isinstance(result, dict):
+                # For mobile webview, if an action returns a form without a res_id but with context,
+                # we need to pre-create the record so the mobile app has an ID to navigate to.
+                if result.get('type') == 'ir.actions.act_window' and not result.get('res_id') and result.get('context'):
+                    try:
+                        ctx = result['context']
+                        new_record = request.env[result['res_model']].with_context(**ctx).create({})
+                        result['res_id'] = new_record.id
+                        # Link back to the ELN if this was the open_product_based_form action
+                        if method == 'open_product_based_form' and model == 'lerm.eln':
+                            record.write({'model_id': new_record.id})
+                    except Exception as e:
+                        _logger.error("Failed to pre-create record for mobile action: %s", e)
+                return {'success': True, **result}
+
+            return {'success': True, 'message': f'{method} executed successfully'}
+
+        except Exception as e:
+            _logger.exception("Error calling button %s on %s(%s)", data.get('method', ''), data.get('model', ''), data.get('id', ''))
+            return {'success': False, 'error': str(e)}
+
+    @http.route('/mobile/allot_sample', type='json', auth='user', methods=['POST'], csrf=False, cors='*')
+    def allot_sample_mobile(self, **kwargs):
+        """
+        Mobile-specific endpoint to allot or re-allot a sample.
+        Handles the full wizard creation + execution in a single call.
+        Expects: sample_id, technician_id, is_reallocation (bool)
+        """
+        data = request.params or kwargs
+        try:
+            sample_id = data.get('sample_id')
+            technician_id = data.get('technician_id')
+            is_reallocation = data.get('is_reallocation', False)
+
+            if not sample_id or not technician_id:
+                return {'success': False, 'error': 'sample_id and technician_id are required'}
+
+            sample = request.env['lerm.srf.sample'].browse(int(sample_id))
+            if not sample.exists():
+                return {'success': False, 'error': 'Sample not found'}
+
+            ctx = dict(request.env.context)
+            ctx.update({
+                'active_ids': [sample.id],
+                'active_id': sample.id,
+                'is_reallocation': is_reallocation,
+            })
+
+            if is_reallocation:
+                # Create reallocation wizard and execute
+                wizard = request.env['sample.reallocation.wizard'].with_context(**ctx).create({
+                    'allocation_type': 'sample',
+                    'technicians': int(technician_id),
+                })
+                wizard.with_context(**ctx).reallocate_current_sample()
+            else:
+                # Create allotment wizard and execute
+                wizard = request.env['sample.allotment.wizard'].with_context(**ctx).create({
+                    'allocation_type': 'sample',
+                    'technicians': int(technician_id),
+                })
+                wizard.with_context(**ctx).allot_sample()
+
+            return {'success': True, 'message': 'Sample allotted successfully'}
+
+        except Exception as e:
+            _logger.exception("Error in mobile allot_sample for sample %s", data.get('sample_id', ''))
+            return {'success': False, 'error': str(e)}
+
+    # ──────────────────────────────────────────────────────────────────────────
+    # FTP Upload/Download for Mobile
+    # ──────────────────────────────────────────────────────────────────────────
+
+    def _get_ftp_remote_path_info(self, ftp_storage, model_name, record):
+        """
+        Build the SFTP remote directory path and upload path prefix for a given record.
+        Mirrors the directory structure from ftp_storage wizard.
+        Returns: (remote_dir_parts, upload_path_prefix)
+            remote_dir_parts: list of directory path components to create
+            upload_path_prefix: string prefix for the final upload path stored on the record
+        """
+        base_dir = "/home/%s" % ftp_storage.name
+
+        if model_name == 'lerm.civil.srf':
+            srf_id = record.srf_id if record.srf_id else str(record.id)
+            srf_id = srf_id.replace("/", "").replace("-", "")
+            remote_dir = "%s/%s" % (base_dir, srf_id)
+            return [base_dir, remote_dir], "%s/%s" % (ftp_storage.name, srf_id)
+
+        elif model_name == 'lerm.srf.sample':
+            srf_id = record.srf_id.srf_id.replace("/", "").replace("-", "")
+            sample_id = record.kes_no.replace("/", "-")
+            remote_dir = "%s/%s" % (base_dir, srf_id)
+            sample_dir = "%s/%s" % (remote_dir, sample_id)
+            return [base_dir, remote_dir, sample_dir], "%s/%s/%s" % (ftp_storage.name, srf_id, sample_id)
+
+        elif model_name == 'lerm.eln':
+            srf_id = record.sample_id.srf_id.srf_id.replace("/", "").replace("-", "")
+            sample_id = record.sample_id.kes_no.replace("/", "-")
+            eln_id = record.eln_id
+            remote_dir = "%s/%s" % (base_dir, srf_id)
+            sample_dir = "%s/%s" % (remote_dir, sample_id)
+            eln_dir = "%s/%s" % (sample_dir, eln_id)
+            return [base_dir, remote_dir, sample_dir, eln_dir], "%s/%s/%s/%s" % (ftp_storage.name, srf_id, sample_id, eln_id)
+
+        else:
+            raise Exception("Unsupported model for FTP upload: %s" % model_name)
+
+    @http.route('/mobile/ftp_upload', type='json', auth='user', methods=['POST'], csrf=False, cors='*')
+    def mobile_ftp_upload(self, **kwargs):
+        """
+        Upload a file to the SFTP server from the mobile app.
+        Params:
+            model: str - target model (lerm.civil.srf, lerm.srf.sample, lerm.eln)
+            id: int - record ID
+            field_name: str - field to store the path (report_path, datasheet_path, etc.)
+            file_data: str - base64 encoded file content
+            file_name: str - original filename
+        """
+        import paramiko
+        import base64
+        from io import BytesIO
+
+        data = request.params or kwargs
+        transport = None
+        sftp = None
+
+        try:
+            model_name = data.get('model')
+            record_id = data.get('id')
+            field_name = data.get('field_name')
+            file_data_b64 = data.get('file_data')
+            file_name = data.get('file_name')
+
+            if not all([model_name, record_id, field_name, file_data_b64, file_name]):
+                return {'success': False, 'error': 'Missing required parameters (model, id, field_name, file_data, file_name)'}
+
+            # Get active FTP storage configuration
+            ftp_storage = request.env['ftp.storage'].sudo().search([('active', '=', True)], limit=1)
+            if not ftp_storage:
+                return {'success': False, 'error': 'No active FTP storage configuration found'}
+
+            if not ftp_storage.host or not ftp_storage.username:
+                return {'success': False, 'error': 'FTP storage host or username not configured'}
+
+            # Fetch the record
+            Model = request.env[model_name].sudo()
+            record = Model.browse(int(record_id))
+            if not record.exists():
+                return {'success': False, 'error': 'Record not found'}
+
+            # Build remote directory path
+            dir_parts, path_prefix = self._get_ftp_remote_path_info(ftp_storage, model_name, record)
+
+            # Connect to SFTP
+            transport = paramiko.Transport((ftp_storage.host, ftp_storage.port or 22))
+            transport.banner_timeout = 60
+            transport.connect(username=ftp_storage.username, password=ftp_storage.password)
+            sftp = paramiko.SFTPClient.from_transport(transport)
+
+            # Create directory structure
+            for dir_path in dir_parts:
+                try:
+                    sftp.stat(dir_path)
+                except FileNotFoundError:
+                    sftp.mkdir(dir_path)
+                    sftp.chmod(dir_path, 0o755)
+
+            # Decode file data and upload
+            file_bytes = base64.b64decode(file_data_b64)
+            clean_file_name = file_name.replace(" ", "_")
+            remote_path = "%s/%s" % (dir_parts[-1], clean_file_name)
+
+            with BytesIO(file_bytes) as file_obj:
+                sftp.putfo(file_obj, remote_path)
+            sftp.chmod(remote_path, 0o644)
+
+            # Save the path on the record
+            upload_path = "%s/%s" % (path_prefix, clean_file_name)
+            record.write({field_name: upload_path})
+
+            _logger.info("Mobile FTP Upload: %s -> %s (field: %s)", model_name, remote_path, field_name)
+
+            return {
+                'success': True,
+                'path': upload_path,
+                'message': 'File uploaded successfully to %s' % remote_path,
+            }
+
+        except Exception as e:
+            _logger.exception("Error in mobile FTP upload: model=%s, id=%s", data.get('model', ''), data.get('id', ''))
+            return {'success': False, 'error': str(e)}
+        finally:
+            if sftp:
+                sftp.close()
+            if transport:
+                transport.close()
+
+    @http.route('/mobile/ftp_download', type='json', auth='user', methods=['POST'], csrf=False, cors='*')
+    def mobile_ftp_download(self, **kwargs):
+        """
+        Download a file from the SFTP server and return as base64.
+        Params:
+            model: str - target model
+            id: int - record ID
+            field_name: str - field containing the SFTP path
+        """
+        import paramiko
+        import base64
+        from io import BytesIO
+
+        data = request.params or kwargs
+        transport = None
+        sftp = None
+
+        try:
+            model_name = data.get('model')
+            record_id = data.get('id')
+            field_name = data.get('field_name')
+
+            if not all([model_name, record_id, field_name]):
+                return {'success': False, 'error': 'Missing required parameters (model, id, field_name)'}
+
+            # Get active FTP storage configuration
+            ftp_storage = request.env['ftp.storage'].sudo().search([('active', '=', True)], limit=1)
+            if not ftp_storage:
+                return {'success': False, 'error': 'No active FTP storage configuration found'}
+
+            # Fetch the record and the stored path
+            Model = request.env[model_name].sudo()
+            record = Model.browse(int(record_id))
+            if not record.exists():
+                return {'success': False, 'error': 'Record not found'}
+
+            file_path = getattr(record, field_name, None)
+            if not file_path:
+                return {'success': False, 'error': 'No file uploaded for this field'}
+
+            # Build remote path
+            base_dir = "/home/%s" % ftp_storage.name
+            # file_path is stored as: ftp_name/srf_id/sample_id/file.jpg
+            # The actual remote path is: /home/ftp_name/srf_id/sample_id/file.jpg
+            # Since file_path already starts with ftp_storage.name, we need /home/ + file_path
+            remote_path = "/home/%s" % file_path
+
+            # Connect to SFTP
+            transport = paramiko.Transport((ftp_storage.host, ftp_storage.port or 22))
+            transport.banner_timeout = 60
+            transport.connect(username=ftp_storage.username, password=ftp_storage.password)
+            sftp = paramiko.SFTPClient.from_transport(transport)
+
+            # Download file
+            buffer = BytesIO()
+            sftp.getfo(remote_path, buffer)
+            buffer.seek(0)
+            file_base64 = base64.b64encode(buffer.read()).decode('utf-8')
+
+            _logger.info("Mobile FTP Download: %s -> %s", model_name, remote_path)
+
+            return {
+                'success': True,
+                'file_base64': file_base64,
+                'file_name': file_path.split('/')[-1],
+            }
+
+        except Exception as e:
+            _logger.exception("Error in mobile FTP download: model=%s, id=%s", data.get('model', ''), data.get('id', ''))
+            return {'success': False, 'error': str(e)}
+        finally:
+            if sftp:
+                sftp.close()
+            if transport:
+                transport.close()
+
