@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+
+    <t t-name="gl_report.GLReport">
+        <div class="o_gl_report h-100 d-flex flex-column">
+            <!-- Report Header -->
+            <div class="o_gl_report_header px-4 pt-3 pb-2">
+                <div class="d-flex justify-content-between align-items-start flex-wrap">
+                    <div>
+                        <h2 class="o_gl_title mb-1">General Ledger</h2>
+                        <div class="o_gl_meta text-muted small">
+                            <span t-if="companyName">Company: <t t-esc="companyName"/></span>
+                            <t t-if="state.filters.date_from or state.filters.date_to">
+                                <span class="mx-2">|</span>
+                                <span>Period:
+                                    <t t-esc="state.filters.date_from or '...'"/>
+                                    –
+                                    <t t-esc="state.filters.date_to or '...'"/>
+                                </span>
+                            </t>
+                            <span class="mx-2">|</span>
+                            <span>Generated: <t t-esc="generatedAt"/></span>
+                            <span class="mx-2">|</span>
+                            <span>User: <t t-esc="currentUser"/></span>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2 align-items-center">
+                        <button class="btn btn-outline-secondary btn-sm"
+                                t-on-click="toggleColumnChooser"
+                                title="Choose columns">
+                            <i class="fa fa-columns"/> Columns
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm"
+                                t-on-click="toggleExportDialog"
+                                title="Export report">
+                            <i class="fa fa-download"/> Export
+                        </button>
+                        <button class="btn btn-outline-primary btn-sm d-md-none"
+                                t-on-click="toggleMobileFilters">
+                            <i class="fa fa-filter"/> Filters
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Toolbar -->
+            <FilterToolbar
+                filters="state.filters"
+                presets="state.presets"
+                activePreset="state.activePreset"
+                activeFilters="activeFilters"
+                onApply="(f) => this.applyFilters(f)"
+                onReset="() => this.resetFilters()"
+                onSearch="(t) => this.onSearch(t)"
+                onGroupBy="(g) => this.onGroupByChange(g)"
+                onSavePreset="(n) => this.savePreset(n)"
+                onLoadPreset="(p) => this.loadPreset(p)"
+                onDeletePreset="(id) => this.deletePreset(id)"
+            />
+
+            <!-- Active Filter Chips -->
+            <div class="o_gl_chips px-4 py-1 d-flex flex-wrap gap-1"
+                 t-if="activeFilters.length">
+                <t t-foreach="activeFilters" t-as="chip" t-key="chip.id">
+                    <span class="o_gl_chip badge bg-light text-dark border d-inline-flex align-items-center gap-1">
+                        <t t-esc="chip.label"/>
+                        <i class="fa fa-times" t-on-click="chip.onRemove"
+                           style="cursor:pointer;font-size:10px;"/>
+                    </span>
+                </t>
+            </div>
+
+            <!-- Summary Cards -->
+            <SummaryCards
+                data="state.data"
+                loading="state.loading"
+                t-if="state.data &amp;&amp; !state.loading"
+            />
+
+            <!-- Loading Skeleton -->
+            <div t-if="state.loading" class="o_gl_loading px-4 py-4">
+                <div class="d-flex gap-4 mb-3">
+                    <div class="o_gl_skeleton_card"/>
+                    <div class="o_gl_skeleton_card"/>
+                    <div class="o_gl_skeleton_card"/>
+                    <div class="o_gl_skeleton_card"/>
+                    <div class="o_gl_skeleton_card"/>
+                </div>
+                <div class="o_gl_skeleton_table"/>
+            </div>
+
+            <!-- Empty State -->
+            <EmptyState
+                t-if="!state.loading &amp;&amp; !state.data"
+                onReset="() => this.resetFilters()"
+            />
+
+            <!-- Error State -->
+            <div t-if="state.error" class="o_gl_error px-4 py-3">
+                <div class="alert alert-danger mb-0">
+                    <i class="fa fa-exclamation-triangle me-2"/>
+                    <t t-esc="state.error"/>
+                </div>
+            </div>
+
+            <!-- Ledger Table -->
+            <LedgerTable
+                t-if="state.data &amp;&amp; !state.loading &amp;&amp; !state.error"
+                data="state.data"
+                columns="visibleColumns"
+                allColumns="state.columns"
+                expandedRows="state.expandedRows"
+                filters="state.filters"
+                totalRecords="state.totalRecords"
+                currentPage="state.currentPage"
+                totalPages="totalPages"
+                onSort="(f) => this.onSort(f)"
+                onPageChange="(p) => this.onPageChange(p)"
+                onPageSizeChange="(s) => this.onPageSizeChange(s)"
+                onToggleRow="(id) => this.toggleRowExpand(id)"
+                onColumnResize="(id, w) => this.onColumnResize(id, w)"
+                onOpenMove="(id) => this.openJournalEntry(id)"
+                onOpenPartner="(id) => this.openPartner(id)"
+            />
+
+            <!-- Column Chooser Modal -->
+            <ColumnChooser
+                t-if="state.columnChooserOpen"
+                columns="state.columns"
+                onToggle="(id) => this.onColumnToggle(id)"
+                onClose="() => this.state.columnChooserOpen = false"
+            />
+
+            <!-- Export Dialog Modal -->
+            <ExportDialog
+                t-if="state.exportDialogOpen"
+                exporting="state.exporting"
+                totalRecords="state.totalRecords"
+                onExport="(f) => this.exportReport(f)"
+                onClose="() => this.state.exportDialogOpen = false"
+            />
+
+            <!-- Mobile Filters Slide-over -->
+            <MobileFilters
+                t-if="state.mobileFiltersOpen"
+                filters="state.filters"
+                onApply="(f) => { this.applyFilters(f); this.state.mobileFiltersOpen = false; }"
+                onClose="() => this.state.mobileFiltersOpen = false"
+            />
+        </div>
+    </t>
+
+</templates>

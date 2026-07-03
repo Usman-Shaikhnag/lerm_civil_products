@@ -1527,12 +1527,6 @@ class CreateSampleWizard(models.TransientModel):
             store=False
         )
 
-        allowed_technician_domain_ids = fields.Many2many(
-            'res.users',
-            compute='_compute_allowed_technician_domain_ids',
-            store=False
-        )
-        
         sample_id = fields.Many2one('lerm.srf.sample', string='Sample')   # optional
         line_ids = fields.One2many('sample.allot.line', 'wizard_id', string='Parameters')
 
@@ -1548,6 +1542,7 @@ class CreateSampleWizard(models.TransientModel):
                     wizard.allowed_technician_domain_ids = [(6, 0, employee_user_ids)]
                 else:
                     wizard.allowed_technician_domain_ids = [(5,)]
+
 
         @api.model
         def default_get(self, fields):
@@ -1641,6 +1636,8 @@ class CreateSampleWizard(models.TransientModel):
                 # Prepare variables
                 parameters_result = []
                 eln_tech_ids = []
+                technician_parameters = {}
+
 
                 if self.allocation_type == 'parameter':
                     # enforce single-sample mode (recommended)
@@ -1698,6 +1695,9 @@ class CreateSampleWizard(models.TransientModel):
                         }))
                         if line.technician:
                             tech_ids_from_lines.add(line.technician.id)
+                            if line.technician.id not in technician_parameters:
+                                technician_parameters[line.technician.id] = []
+                            technician_parameters[line.technician.id].append(line.parameter_id.parameter_name)
 
                     # Prefer user-edited union (tag field). If not present, use line assignments union.
                     eln_tech_ids = self.technician_ids.ids if self.technician_ids else list(tech_ids_from_lines)
@@ -1718,7 +1718,11 @@ class CreateSampleWizard(models.TransientModel):
 
                 else:
                     # Sample mode: single technician applies to all parameters
-                    parameters_result = []
+                    if not self.technicians:
+                        raise UserError(_("Please choose a technician for Sample mode."))
+                        
+                    technician_parameters[self.technicians.id] = []
+
                     for parameter in sample.parameters:
                         parameters_result.append((0, 0, {
                             'parameter': parameter.id,
@@ -1726,6 +1730,7 @@ class CreateSampleWizard(models.TransientModel):
                             'test_method': parameter.test_method.id if parameter.test_method else False,
                             'technician': self.technicians.id
                         }))
+                        technician_parameters[self.technicians.id].append(parameter.parameter_name)
 
                     if not self.technicians:
                         raise UserError(_("Please choose a technician for Sample mode."))
@@ -1814,6 +1819,20 @@ class CreateSampleWizard(models.TransientModel):
                 sample_vals = {'state': new_state, 'eln_id': eln.id}
                 sample.write(sample_vals)
 
+                # Create Tasks for assigned technicians
+                for tech_id, params in technician_parameters.items():
+                    param_list_str = ', '.join(params)
+                    action_word = "Reallocation" if is_reallocation else "Allocation"
+                    action_verb = "re-allocated" if is_reallocation else "allocated"
+                    task_name = f"Sample {action_word}: {sample.kes_no or 'Unknown'}"
+                    task_description = f"**Sample ID:** {sample.kes_no or 'Unknown'}\n\nSample has been {action_verb} to you.\n\n**Parameters:** {param_list_str}"
+                    self.env['project.task'].sudo().create({
+                        'name': task_name,
+                        'user_ids': [(4, tech_id)],
+                        'date_deadline': sample.report_due_date,
+                        'description': task_description,
+                    })
+
             return {'type': 'ir.actions.act_window_close'}
 
 
@@ -1830,6 +1849,7 @@ class CreateSampleWizard(models.TransientModel):
                 summary='Your activity summary here'
             )
             return True
+
 
 
 class SampleAllotLine(models.TransientModel):

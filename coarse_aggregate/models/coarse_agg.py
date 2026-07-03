@@ -1699,13 +1699,13 @@ class CoarseAggregateMechanical(models.Model):
                  lab_max = line.lab_max_value
                  mu_value = line.mu_value
             
-                lower = record.total_weighted_avg - record.total_weighted_avg*mu_value
-                upper = record.total_weighted_avg + record.total_weighted_avg*mu_value
-                if lower >= lab_min and upper <= lab_max:
+                 lower = record.total_weighted_avg - record.total_weighted_avg*mu_value
+                 upper = record.total_weighted_avg + record.total_weighted_avg*mu_value
+                 if lower >= lab_min and upper <= lab_max:
                    record.total_weighted_avg_nabl = 'pass'
                    break
-                else:
-                   record.total_weighted_avg_nabl = 'fail'
+                 else:
+                    record.total_weighted_avg_nabl = 'fail'
 
 
     # SOUNDNESS (MAGNESIUM SULPHATE TEST)
@@ -2764,7 +2764,7 @@ class ElongationFlakinessLine(models.Model):
 
     total_weight = fields.Float("Total Wt of Aggregate Retained (gm)")
     wt_passing_flakiness = fields.Float("Wt Passing Flakiness Gauge (gm)")
-    wt_retained_flakiness = fields.Float("Total (Wt. Retained on Flakiness gauge (gm) = [(Total Wt of aggregate Retained (gm)) - (Wt. Passing on Flakiness gauge (gm)]")
+    wt_retained_flakiness = fields.Float("Wt. Retained on Flakiness gauge (gm) = [(Total Wt of aggregate Retained (gm)) - (Wt. Passing on Flakiness gauge (gm)]")
     wt_retained_elongation = fields.Float("Wt Retained Elongation Gauge (gm)")
 
 
