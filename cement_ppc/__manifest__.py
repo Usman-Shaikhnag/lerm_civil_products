@@ -14,7 +14,8 @@ This module contains all the common features of Sales Management and eCommerce.
     'data': [
                 'security/ir.model.access.csv',
                 'views/ppc.xml',
-                'reports/ppc_ds_report.xml'
+                'reports/ppc_datasheet.xml',
+                'reports/ppc_report.xml'
     ],    
 
     'installable': True,

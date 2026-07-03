@@ -479,10 +479,10 @@ class CementNormalConsistency(models.Model):
     @api.depends('compressive_lines.days', 'compressive_lines.compressive_strength')
     def _compute_avg_strengths(self):
         for rec in self:
-            strengths_3 = [line.compressive_strength for line in rec.compressive_lines if line.days == 3 and line.compressive_strength]
-            strengths_7 = [line.compressive_strength for line in rec.compressive_lines if line.days == 7 and line.compressive_strength]
-            strengths_14 = [line.compressive_strength for line in rec.compressive_lines if line.days == 14 and line.compressive_strength]
-            strengths_28 = [line.compressive_strength for line in rec.compressive_lines if line.days == 28 and line.compressive_strength]
+            strengths_3 = [line.compressive_strength for line in rec.compressive_lines if line.days == '3 Days' and line.compressive_strength]
+            strengths_7 = [line.compressive_strength for line in rec.compressive_lines if line.days == '7 Days' and line.compressive_strength]
+            strengths_14 = [line.compressive_strength for line in rec.compressive_lines if line.days == '14 Days' and line.compressive_strength]
+            strengths_28 = [line.compressive_strength for line in rec.compressive_lines if line.days == '28 Days' and line.compressive_strength]
 
             rec.avg_3_days = mean(strengths_3) if strengths_3 else 0.0
             rec.avg_7_days = mean(strengths_7) if strengths_7 else 0.0
@@ -1576,7 +1576,7 @@ class CompressiveCementLine(models.Model):
    
     
     dt_of_casting = fields.Date(string="Date of Casting ")
-    days = fields.Integer(string="Age in Days")
+    days = fields.Char(string="Age in Days")
     dt_of_testing = fields.Date(string="Date of Testing")
     wt_of_cube = fields.Float(string="Weight (g)")
     density = fields.Float(string="Density (g/cc)",compute="_compute_density",store=True)
