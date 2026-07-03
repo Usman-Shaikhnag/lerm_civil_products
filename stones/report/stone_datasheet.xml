@@ -364,7 +364,7 @@
 
                         
 
-					<div t-if="data.compressive_dry_visible" class="signatureContainer girdgird">
+					<div t-if="data.compressive_wet_visible" class="signatureContainer girdgird">
 							<div>
 								<div><b>Prepared By</b></div>
 								<t t-set="prep_result" t-value="eln.parameters_result.filtered(lambda r: r.parameter.internal_id == '547896rg-41c5-4cb5-843a-e09590c7c57878tt')[:1]"/>
@@ -494,7 +494,7 @@
 											</tr>
 										</table>
 
-							<div t-if="data.water_absorption_visible" class="signatureContainer girdgird">
+							<div t-if="data.app_specific_visible" class="signatureContainer girdgird">
 							<div>
 								<div><b>Prepared By</b></div>
 								<t t-set="prep_result" t-value="eln.parameters_result.filtered(lambda r: r.parameter.internal_id == '57r7896rg-41c5-4cb5-843a-e09590c7789rte143q')[:1]"/>
@@ -518,7 +518,7 @@
 						</div>
 
 
-                        <!-- True Specific Gravity -->
+                <!-- True Specific Gravity -->
 
                         <div t-if="data.true_specific_visible" style = "page-break-before: always;margin-top:20px;">
 							<div style="text-align:center;font-size:18px;margin-bottom:10px;">
@@ -571,6 +571,26 @@
 
 							
 									
+						<div t-if="data.true_specific_visible" class="signatureContainer girdgird">
+							<div>
+								<div><b>Prepared By</b></div>
+								<t t-set="prep_result" t-value="eln.parameters_result.filtered(lambda r: r.parameter.internal_id == '57r7896rg-41c5-4cb5-843a-e09590c77832547ewrv')[:1]"/>
+								<t t-if="prep_result and prep_result[0].technician">
+									<div style="height:40px">
+										<div t-if="prep_result[0].technician.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,' + prep_result[0].technician.employee_id.signature.decode('utf-8')" style="max-width:200px;max-height:35px;margin-top:1px;z-index:-10;"/>
+										</div>
+									</div>
+									<div><b><span t-esc="prep_result[0].technician.name"/></b></div>
+									<div><b>(<span t-esc="prep_result[0].technician.employee_id.job_title"/>)</b></div>
+								</t>
+							</div>
+							<div style="margin-left:600px">
+								<div><b>Checked By</b></div>
+								<div><b><span t-esc="eln.sample_id.approved_by.name"/></b></div>
+								<div><b>(<span t-esc="eln.sample_id.approved_by.job_title"/>)</b></div>
+							</div>
+						</div>
 						</div>
 
 

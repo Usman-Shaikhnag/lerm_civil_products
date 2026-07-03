@@ -588,11 +588,7 @@
 									<td style="text-align: center;"><span t-field="data.compressive_strength_of_sample" t-options='{"widget": "float", "precision": 2}'/></td>
 								</tr>
 							</table>
-						</div>
-
-
-
-							<div class="signatureContainer girdgird">
+							<div t-if="data.compressive_visible" class="signatureContainer girdgird">
 							<div>
 								<div><b>Prepared By</b></div>
 								<t t-set="prep_result" t-value="eln.parameters_result.filtered(lambda r: r.parameter.internal_id == '3201vfg-98f0-419e-94cd-1844af4393f5')[:1]"/>
@@ -608,7 +604,7 @@
 							</div>
                         
                         <div style="margin-left:600px">
-                                    
+                                     
                             <div>
                                 <b>
                                     Checked By
@@ -889,12 +885,7 @@
 
 							
 						</table>
-					</div>
-
-
-
-
-					<div class="signatureContainer girdgird">
+							<div t-if="data.initial_setting_time_visible" class="signatureContainer girdgird">
 							<div>
 								<div><b>Prepared By</b></div>
 								<t t-set="prep_result" t-value="eln.parameters_result.filtered(lambda r: r.parameter.internal_id == '2014fgr32-6bbe-4fdf-9571-a5a099be0293')[:1]"/>
@@ -910,7 +901,7 @@
 							</div>
                         
                         <div style="margin-left:600px">
-                                    
+                                     
                             <div>
                                 <b>
                                     Checked By
@@ -931,6 +922,7 @@
 								
 							
 						</div>
+					</div>
 					</div>
 
 					
@@ -1243,12 +1235,7 @@
 									</td>
 								</tr>
 							</table>
-						</div>
-
-
-
-
-							<div class="signatureContainer girdgird">
+							<div t-if="data.particles_retained_visible" class="signatureContainer girdgird">
 							<div>
 								<div><b>Prepared By</b></div>
 								<t t-set="prep_result" t-value="eln.parameters_result.filtered(lambda r: r.parameter.internal_id == '3214vbfsd-0da6-4ec4-a91e-d41c44f5edb5')[:1]"/>
@@ -1264,7 +1251,7 @@
 							</div>
                         
                         <div style="margin-left:600px">
-                                    
+                                     
                             <div>
                                 <b>
                                     Checked By
@@ -1286,11 +1273,11 @@
 							
 						</div>
 					</div>
-
-
+						</div>
 
 
 						
+
 
 					
 					
@@ -1535,6 +1522,7 @@
 						  <!-- authorizeRowDataSheet -->
                     
 
+				</div>
 				</div>
 			</t>
 		</t>

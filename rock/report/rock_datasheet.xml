@@ -258,9 +258,8 @@
 												<td colspan="3" style="text-align: center;"><span t-field="data.avg_water_content" t-options='{"widget": "float", "precision": 2}'/></td>
 											</tr>
 										</table>
-						</div>
 
-						<div class="signatureContainer girdgird">
+							<div t-if="data.water_content_visible" class="signatureContainer girdgird">
 							<div>
 								<div><b>Prepared By</b></div>
 								<t t-set="prep_result" t-value="eln.parameters_result.filtered(lambda r: r.parameter.internal_id == 'a1f9c5d0-0bc7-41a6-a2bb-0fe9d898008d')[:1]"/>
@@ -276,7 +275,7 @@
 							</div>
                         
                         <div style="margin-left:600px">
-                                     
+                                      
                             <div>
                                 <b>
                                     Checked By
@@ -306,6 +305,7 @@
 						</div>
                     
 					</div>
+						</div>
 						
 						
 					</div>
