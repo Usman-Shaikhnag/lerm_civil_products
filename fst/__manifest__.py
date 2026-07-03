@@ -21,6 +21,7 @@
                  'views/initial_pullout_pile_load_views.xml',
                  'views/routine_pullout_pile_load_views.xml',
                  'views/routine_pile_load_test_views.xml',
+                 'reports/routine_pile_load_report.xml',
                  'views/routine_lateral_pile_load_views.xml',
                  'views/temp_monitoring.xml',
                  'data/sequence.xml',
@@ -31,6 +32,7 @@
     'assets': {
         'web.assets_backend': [
             'fst/static/src/css/custom_style.css',
+            # 'fst/static/src/css/pile_load.css',
         ],
     },
   

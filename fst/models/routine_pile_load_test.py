@@ -1,5 +1,6 @@
 from odoo import api, fields, models
 from datetime import timedelta
+from odoo.modules.module import get_module_resource
 from odoo.exceptions import UserError, ValidationError
 import base64
 import io
@@ -358,6 +359,7 @@ class RoutinePileLoadTest(models.Model):
 
     def print_report(self):
         self.ensure_one()
+        # return self.env.ref('fst.action_routine_pile_load_report').report_action(self)
         report = self.env.ref('fst.routine_pile_load_test_report_py3o')
         filename = f"{self.name or 'Routine Pile Load Test Report'}"
         return report.report_action(self, config={'report_name': filename})
@@ -407,7 +409,18 @@ class RoutinePileLoadTest(models.Model):
     def action_delete_line(self):
         self.unlink()
 
+    def action_generate_analysis(self):
+        for rec in self:
 
+            gross = rec.gross_settlement or 0.0
+
+            rec.analysis_text = (
+                f"Maximum settlement observed for pile dia ____ mm "
+                f"is {gross:.2f} mm for test load is ____ Tonne.\n\n"
+                f"Maximum Settlement is {gross:.2f} mm which is "
+                f"lesser than 12 mm and Hence, Estimated Safe Load "
+                f"i.e. ____ Tonne may be accepted for design."
+            )
 # =========================================================
 # CHILD MODELS (CLONES)
 # =========================================================
@@ -662,3 +675,30 @@ class RoutinePileImage(models.Model):
     sequence = fields.Integer(default=1)
     image = fields.Binary(required=True)
     caption = fields.Char()
+
+class RoutinePileLoadReport(models.AbstractModel):
+    _name = "report.fst.routine_pile_load_report"
+    _description = "Routine Pile Load Report"
+
+    @api.model
+    def _get_report_values(self, docids, data=None):
+
+        docs = self.env["routine.pile.load.test"].browse(docids)
+        def img_to_base64(filename):
+            path = get_module_resource(
+                        'fst',
+                        'static',
+                        'src',
+                        'img',
+                        filename
+                    )
+            with open(path, 'rb') as f:
+                return 'data:image/png;base64,' + base64.b64encode(f.read()).decode()
+        return {
+            "doc_ids": docs.ids,
+            "doc_model": "routine.pile.load.test",
+            "docs": docs,
+            "cover_image": img_to_base64('cover_bg.png'),
+            "footer_image": img_to_base64('footer.png'),
+            "header_image": img_to_base64('header_watermark.png'),
+        }

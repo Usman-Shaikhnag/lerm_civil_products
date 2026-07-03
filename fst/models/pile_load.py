@@ -3,12 +3,15 @@ from datetime import timedelta
 from odoo.exceptions import UserError, ValidationError
 import base64
 import io
+from io import BytesIO
 import math
 import re
 import matplotlib.pyplot as plt
 import xlsxwriter
 from openpyxl import load_workbook
 from pytz import timezone
+import qrcode
+
 
 india_tz = timezone('Asia/Kolkata')
 
@@ -128,6 +131,133 @@ class PileLoadTestParent(models.Model):
     )
 
     analysis_text = fields.Text("Analysis of Test Results")
+    dial_gauge_count = fields.Integer(string="No. of Dial Gauges",default=4)
+    incremental_load = fields.Float(string="Incremental Load (Tonne)")
+    test_load = fields.Integer(string="Test Load (Tonne)")
+    diameter = fields.Float(string="Diameter of pile (mm)")
+    qr_code = fields.Binary(
+        "QR Code",
+        attachment=True,
+    )
+    @api.model
+    def create(self, vals):
+        rec = super().create(vals)
+
+        if not rec.introduction:
+            rec.introduction = rec._default_introduction()
+
+        if not rec.objective:
+            rec.objective = rec._default_objective()
+
+        if not rec.test_procedure:
+            rec.test_procedure = rec._default_test_procedure()
+
+        rec.basic_data_ids = [
+                (0, 0, {
+                    'sr_no': 1,
+                    'parameter': 'Test Pile No.',
+                    'value': rec.pile_no or '',
+                }),
+                (0, 0, {
+                    'sr_no': 2,
+                    'parameter': 'Diameter of pile',
+                    'value': f'{rec.diameter:.0f} mm' if rec.diameter else '',
+                }),
+                (0, 0, {
+                    'sr_no': 3,
+                    'parameter': 'Date of Casting',
+                    'value': '',
+                }),
+                (0, 0, {
+                    'sr_no': 4,
+                    'parameter': 'Date of Test',
+                    'value': '',
+                }),
+                (0, 0, {
+                    'sr_no': 5,
+                    'parameter': 'Type of Test',
+                    'value': '',
+                }),
+                (0, 0, {
+                    'sr_no': 6,
+                    'parameter': 'Type of  Pile',
+                    'value': '',
+                }),
+                (0, 0, {
+                    'sr_no': 7,
+                    'parameter': 'Length of Pile',
+                    'value': '',
+                }),
+                (0, 0, {
+                    'sr_no': 8,
+                    'parameter': 'Estimated safe load',
+                    'value': '',
+                }),
+                (0, 0, {
+                    'sr_no': 9,
+                    'parameter': 'Test Load',
+                    'value': f'{rec.test_load} Tonne' if rec.test_load else '',
+                }),
+                (0, 0, {
+                    'sr_no': 10,
+                    'parameter': 'Material of Pile',
+                    'value': '',
+                }),
+            ]
+
+        return rec
+    def _default_introduction(self):
+        return (
+            f"The Initial Vertical Pile Load Test was conducted on behalf of "
+            f"{self.contractor.partner_id.name if self.contractor else ''} "
+            f"for the project {self.work_name or ''}."
+        )
+
+    def _default_test_procedure(self):
+        return (
+            f"""Vertical load test (compression) was done as per IS 2911 (PART -IV) 2013 in which 
+                compression load was applied to the pile top (after preparation of the pile top) by means of a hydraulic jack against rolled steel
+                joist capable of providing reaction and the settlement was recorded by {self.dial_gauge_count} dial gauges of 0.01 mm
+                sensitivity, each positioned at equal distance around the pile and held by datum bars resting on immovable
+                supports at minimum distance of 3D from the edge of the pile, Where D is the pile stem diameter of circular
+                pile.
+                The reaction for the jack was obtained from a kentledge placed on a plateform supported clear of the test
+                pile. The center of gravity of the kentledge was tried to be kept on the axis of the pile and the load applied
+                by the jack was also made co-axial with this pile.
+                The test was carried out by applying a series of vertical downward incremental
+                each load of {self.incremental_load:.2f} Tons."""
+        )
+
+    def _default_objective(self):
+        return ("""The main objective of the test was to determine the ultimate load capacity 
+                    and a safe load by application of factor of safety and also to get an idea of suitability of piling system.
+                    This test will also provide guide lines for setting up the limits of acceptance for routine test.""")
+
+
+    def _compute_qr_code(self):
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+
+        for rec in self:
+            if not rec.id:
+                rec.qr_code = False
+                continue
+
+            url = f"{base_url}/pile_load/pdf/{rec.id}"
+
+            qr = qrcode.QRCode(
+                version=1,
+                box_size=8,
+                border=2,
+            )
+            qr.add_data(url)
+            qr.make(fit=True)
+
+            img = qr.make_image(fill_color="black", back_color="white")
+
+            buffer = BytesIO()
+            img.save(buffer, format="PNG")
+
+            rec.qr_code = base64.b64encode(buffer.getvalue())
 
     def action_generate_report_no(self):
         for rec in self:
@@ -371,6 +501,7 @@ class PileLoadTestParent(models.Model):
             # 3️⃣ Force recompute of parent computed fields
             rec._compute_settlement_values()
             rec._compute_max_settlement()
+            rec._compute_qr_code()
 
 
 
@@ -628,17 +759,17 @@ class PileLoadTestParent(models.Model):
                     f"1) Settlement upto 12 mm is not achieved during the test. "
                     f"Gross Settlement is evaluated {gross:.2f} mm.\n"
                     f"2) 50 percent of the final load at 10 % of the pile diameter "
-                    f"i.e. ____ mm not reached.\n"
+                    f"i.e.{rec.diameter / 10:.2f} mm not reached.\n"
                     f"Hence allowable load is considered as two third of test load "
-                    f"i.e. ⅔ × ____ Tonne or say ____ Tonne."
+                    f"i.e. ⅔ × {rec.test_load} Tonne or say {round(rec.test_load * 2 / 3, 2)} Tonne."
                 )
             else:
                 rec.analysis_text = (
                     f"1) Two-thirds of the final load at 12 mm settlement = "
-                    f"⅔ × ____ Tonne or say ____ Tonne.\n"
+                    f"⅔ × {rec.test_load} Tonne or say {rec.test_load / 2:.2f} Tonne.\n"
                     f"2) 50 percent of the final load at 10 % of the pile diameter "
-                    f"i.e. ____ mm = 50 % of ____ Tonne or say ____ Tonne.\n"
-                    f"Hence allowable load is considered ____ Tonne."
+                    f"i.e. {rec.diameter / 10:.2f} mm = 50 % of {rec.test_load} Tonne or say {rec.test_load / 2:.2f} Tonne.\n"
+                    f"Hence allowable load is considered {rec.test_load / 2:.2f} Tonne."
                 )
 
     def action_reset_readings(self):
