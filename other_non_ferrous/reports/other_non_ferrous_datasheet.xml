@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="other_non_ferrous_datasheet">
+    <t t-call="web.html_container">
+	<t t-call="lerm_civil.mechanical_data_sheet_header">
+		<div style="text-align:center;font-size:18px;font-weight: bold">
+		Other Non Ferrous Material
+		</div>
+		<div class="container_eln" style="margin-top:5px">
+            <table style="margin-top:20px">
+				<tr cols="12">
+					
+					<td colspan="6">Job No :
+                        <![CDATA[&nbsp;]]>
+                         <span t-field="eln.kes_no"></span>
+                    </td>
+					<td colspan="6">Test Start Date: 
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.start_date"></span>
+                    </td>
+
+				</tr>
+                <tr>
+                  <td colspan="6">Material: <span t-field="eln.material"></span>
+                </td>
+                    <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
+                    </td>
+                </tr>
+                <tr style="height:50px" cols="12">
+                    <td colspan="4">Performed By :
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.technician.name"/>
+                    </td>
+                    <td colspan="4">Witness Name :
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.witness_description"/>
+                    </td>
+                    <td colspan="4">Witness Signature :
+                        <![CDATA[&nbsp;]]>
+                        <span style='padding:20px'></span>
+                    </td>
+                </tr>
+			</table>
+
+
+
+      
+
+
+
+        
+
+
+
+                <!-- Water Absorption 					 -->
+
+             <div t-if="data.reduction_area_visible" >
+                        
+
+                        <table style="margin-top:10px">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight: bold">% Reduction in Area :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align: center">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.reduction_in_area_percent" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    
+
+                    </div>
+
+                <div t-if="data.proof_stress_visible" >
+                        <table style="margin-top:10px">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight: bold">0.2 % Proof Stress :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align: center">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.proof_stress_0_2_percent" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+
+                     <div t-if="data.brinell_hardness_hbw_2_5_250_visible" >
+                        <table style="margin-top:10px">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight: bold">Brinell Hardness 2.5/250 :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align: center">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.brinell_hardness_hbw_2_5_250" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+
+
+                     <div t-if="data.brinell_hardness_hbw_2_5_250_visible1">
+                        <table style="margin-top:10px">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight: bold">Brinell Hardness 2.5/250 :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align: center">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.brinell_hardness_hbw_2_5_2501" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+
+                    <div t-if="data.brinell_hardness_hbw_5_250_visible">
+                        <table style="margin-top:10px">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight: bold">Brinell hardness 5/250 :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align: center">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.brinell_hardness_hbw_5_250" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+
+                     <div t-if="data.brinell_hardness_hbw_5_250_visible1">
+                        <table style="margin-top:10px">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight: bold">Brinell Hardness 5/250:
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align: center">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.brinell_hardness_hbw_5_2501" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+
+                      <div t-if="data.elongation_percent_visible">
+                        <table style="margin-top:10px">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight: bold">Elongation % :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align: center">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.elongation_percent" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+
+                    <div t-if="data.rockwell_hardness_hrbw_visible">
+                        <table style="margin-top:10px">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight: bold">Rockwell Hardness HRBW  :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align: center">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.rockwell_hardness_hrbw" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+
+                    <div t-if="data.rockwell_hardness_hrbw_visible1">
+                        <table style="margin-top:10px">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight: bold">Rockwell Hardness HRBW  :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align: center">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.rockwell_hardness_hrbw1" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+
+
+                    <div t-if="data.tensile_strength_uts_visible">
+                        <table style="margin-top:10px">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight: bold">Tensile strength (UTS)  :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align: center">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.tensile_strength_uts" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+
+                     <div t-if="data.yield_strength_visible">
+                        <table style="margin-top:10px">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight: bold">Yield Strength  :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align: center">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.yield_strength" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+
+
+                      <div t-if="data.vickers_hardness_hv30_visible">
+                        <table style="margin-top:10px">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight: bold">Vickers Hardness (HV 30)  :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align: center">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.vickers_hardness_hv30" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+
+                     <div t-if="data.vickers_hardness_hv30_visible1">
+                        <table style="margin-top:10px">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight: bold">Vickers Hardness (HV 30)  :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align: center">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.vickers_hardness_hv301" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+
+
+				<!-- authorizeRowDataSheet -->
+				
+			
+            <div class="authorizeRowDataSheet">
+                <div>
+                    <div>
+                        <b>
+                            Tested By 
+                        </b>
+                        
+                    </div>
+                   <div style="height: 40px;">
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+						</div>
+                    <div>
+                        <b>
+                        <span t-esc="eln.sample_id.filled_by.name"/>
+                        </b>
+                    </div>
+                    <div>
+                        <b>
+                            (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                        </b>
+                    </div>
+                </div>
+                <div style="margin-left:500px">
+                    
+                    <div>
+                        <b>
+                            Checked By
+                        </b>
+                    </div>
+                   <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+                    <div>
+                        <b>
+                        <span t-esc="eln.sample_id.check_by.name"/>
+                        </b>
+                    </div>
+                    
+                    <div>
+                        <b>
+                            (<span t-esc="eln.sample_id.check_by.job_title"/>)
+                        </b>
+                    </div>
+                </div>
+            </div>
+
+		</div>
+
+	</t>
+</t>
+</template>
+</odoo>

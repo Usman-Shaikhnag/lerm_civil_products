@@ -1,0 +1,726 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mech_other_non_ferrous_form" model="ir.ui.view">
+        <field name="name">mechanical.other.non.ferrous.form</field>
+        <field name="model">mechanical.other.non.ferrous</field>
+        <field name="arch" type="xml">
+            <form string="Your Form View" create="false">
+
+             
+                <sheet>
+                                  
+                <div>
+                    <h1>
+                        <field name="name2" readonly="1" nolabel="1"/>
+                    </h1>
+                </div>
+                <group>
+                        <field name="srf_id"  invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                        <field name="eln_state" />
+                </group>
+                    <div class="custom_table_borders">
+                      <field name="sample_parameters" nolabel="1">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </div>
+
+                     <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="temprature"></label></td>
+                                    <td><field name="temprature" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="humidity"></label></td>
+                                    <td><field  name="humidity" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+                     <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="week_no"></label></td>
+                                    <td><field name="week_no" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="other_details"></label></td>
+                                    <td><field  name="other_details" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="condition"></label></td>
+                                    <td><field name="condition" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="description_work"></label></td>
+                                    <td><field  name="description_work" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+
+
+                    <!-- ph at 1% -->
+                    <div invisible="not reduction_area_visible">
+
+                        <h1 class="text-center">
+                            <field name="reduction_area_name" readonly="1" />
+                            <field name="reduction_area_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="d-flex gap-2" invisible="not reduction_area_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="reduction_in_area_percent"></label></td>
+                                    <td style="width:50%;"><field name="reduction_in_area_percent"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                      </div>
+                      <table invisible="reduction_area_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                        <tbody>
+                          <tr>
+                                <td><label class="fw-bold" for="reduction_in_area_percent_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="reduction_in_area_percent_conformity"
+                                        decoration-success="reduction_in_area_percent_conformity == 'pass'"
+                                        decoration-danger="reduction_in_area_percent_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="reduction_in_area_percent_nabl">NABL</label></td>
+                                <td><field name="reduction_in_area_percent_nabl"
+                                            decoration-success="reduction_in_area_percent_nabl == 'pass'"
+                                            decoration-danger="reduction_in_area_percent_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                      <div invisible="not proof_stress_visible">
+
+                        <h1 class="text-center">
+                            <field name="proof_stress_name" readonly="1" />
+                            <field name="proof_stress_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="d-flex gap-2" invisible="not proof_stress_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="proof_stress_0_2_percent"></label></td>
+                                    <td style="width:50%;"><field name="proof_stress_0_2_percent"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                      </div>
+
+                       <table invisible="proof_stress_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                        <tbody>
+                          <tr>
+                                <td><label class="fw-bold" for="proof_stress_0_2_percent_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="proof_stress_0_2_percent_conformity"
+                                        decoration-success="proof_stress_0_2_percent_conformity == 'pass'"
+                                        decoration-danger="proof_stress_0_2_percent_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="proof_stress_0_2_percent_nabl">NABL</label></td>
+                                <td><field name="proof_stress_0_2_percent_nabl"
+                                            decoration-success="proof_stress_0_2_percent_nabl == 'pass'"
+                                            decoration-danger="proof_stress_0_2_percent_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                      <div invisible="not brinell_hardness_hbw_2_5_250_visible">
+
+                        <h1 class="text-center">
+                            <field name="brinell_hardness_hbw_2_5_250_name" readonly="1" />
+                            <field name="brinell_hardness_hbw_2_5_250_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="d-flex gap-2" invisible="not brinell_hardness_hbw_2_5_250_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="brinell_hardness_hbw_2_5_250"></label></td>
+                                    <td style="width:50%;"><field name="brinell_hardness_hbw_2_5_250"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                      </div>
+
+                       <table invisible="brinell_hardness_hbw_2_5_250_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                        <tbody>
+                          <tr>
+                                <td><label class="fw-bold" for="brinell_hardness_hbw_2_5_250_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="brinell_hardness_hbw_2_5_250_conformity"
+                                        decoration-success="brinell_hardness_hbw_2_5_250_conformity == 'pass'"
+                                        decoration-danger="brinell_hardness_hbw_2_5_250_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="brinell_hardness_hbw_2_5_250_nabl">NABL</label></td>
+                                <td><field name="brinell_hardness_hbw_2_5_250_nabl"
+                                            decoration-success="brinell_hardness_hbw_2_5_250_nabl == 'pass'"
+                                            decoration-danger="brinell_hardness_hbw_2_5_250_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                       <div invisible="not brinell_hardness_hbw_2_5_250_visible1">
+
+                        <h1 class="text-center">
+                            <field name="brinell_hardness_hbw_2_5_250_name1" readonly="1" />
+                            <field name="brinell_hardness_hbw_2_5_250_visible1" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="d-flex gap-2" invisible="not brinell_hardness_hbw_2_5_250_visible1">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="brinell_hardness_hbw_2_5_2501"></label></td>
+                                    <td style="width:50%;"><field name="brinell_hardness_hbw_2_5_2501"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                      </div>
+
+                       <table invisible="brinell_hardness_hbw_2_5_250_visible1 == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                        <tbody>
+                          <tr>
+                                <td><label class="fw-bold" for="brinell_hardness_hbw_2_5_2501_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="brinell_hardness_hbw_2_5_2501_conformity"
+                                        decoration-success="brinell_hardness_hbw_2_5_2501_conformity == 'pass'"
+                                        decoration-danger="brinell_hardness_hbw_2_5_2501_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="brinell_hardness_hbw_2_5_2501_nabl">NABL</label></td>
+                                <td><field name="brinell_hardness_hbw_2_5_2501_nabl"
+                                            decoration-success="brinell_hardness_hbw_2_5_2501_nabl == 'pass'"
+                                            decoration-danger="brinell_hardness_hbw_2_5_2501_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+
+                      
+
+                       <div invisible="not brinell_hardness_hbw_5_250_visible">
+
+                        <h1 class="text-center">
+                            <field name="brinell_hardness_hbw_5_250_name" readonly="1" />
+                            <field name="brinell_hardness_hbw_5_250_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="d-flex gap-2" invisible="not brinell_hardness_hbw_5_250_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="brinell_hardness_hbw_5_250"></label></td>
+                                    <td style="width:50%;"><field name="brinell_hardness_hbw_5_250"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                      </div>
+
+                       <table invisible="brinell_hardness_hbw_5_250_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                        <tbody>
+                          <tr>
+                                <td><label class="fw-bold" for="brinell_hardness_hbw_5_250_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="brinell_hardness_hbw_5_250_conformity"
+                                        decoration-success="brinell_hardness_hbw_5_250_conformity == 'pass'"
+                                        decoration-danger="brinell_hardness_hbw_5_250_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="brinell_hardness_hbw_5_250_nabl">NABL</label></td>
+                                <td><field name="brinell_hardness_hbw_5_250_nabl"
+                                            decoration-success="brinell_hardness_hbw_5_250_nabl == 'pass'"
+                                            decoration-danger="brinell_hardness_hbw_5_250_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                      <div invisible="not brinell_hardness_hbw_5_250_visible1">
+
+                        <h1 class="text-center">
+                            <field name="brinell_hardness_hbw_5_250_name1" readonly="1" />
+                            <field name="brinell_hardness_hbw_5_250_visible1" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="d-flex gap-2" invisible="not brinell_hardness_hbw_5_250_visible1">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="brinell_hardness_hbw_5_2501"></label></td>
+                                    <td style="width:50%;"><field name="brinell_hardness_hbw_5_2501"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                      </div>
+
+                      <table invisible="brinell_hardness_hbw_5_250_visible1 == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                        <tbody>
+                          <tr>
+                                <td><label class="fw-bold" for="brinell_hardness_hbw_5_2501_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="brinell_hardness_hbw_5_2501_conformity"
+                                        decoration-success="brinell_hardness_hbw_5_2501_conformity == 'pass'"
+                                        decoration-danger="brinell_hardness_hbw_5_2501_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="brinell_hardness_hbw_5_2501_nabl">NABL</label></td>
+                                <td><field name="brinell_hardness_hbw_5_2501_nabl"
+                                            decoration-success="brinell_hardness_hbw_5_2501_nabl == 'pass'"
+                                            decoration-danger="brinell_hardness_hbw_5_2501_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                      <div invisible="not elongation_percent_visible">
+
+                        <h1 class="text-center">
+                            <field name="elongation_percent_name" readonly="1" />
+                            <field name="elongation_percent_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="d-flex gap-2" invisible="not elongation_percent_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="elongation_percent"></label></td>
+                                    <td style="width:50%;"><field name="elongation_percent"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                      </div>
+
+                       <table invisible="elongation_percent_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                        <tbody>
+                          <tr>
+                                <td><label class="fw-bold" for="elongation_percent_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="elongation_percent_conformity"
+                                        decoration-success="elongation_percent_conformity == 'pass'"
+                                        decoration-danger="elongation_percent_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="elongation_percent_nabl">NABL</label></td>
+                                <td><field name="elongation_percent_nabl"
+                                            decoration-success="elongation_percent_nabl == 'pass'"
+                                            decoration-danger="elongation_percent_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                       <div invisible="not rockwell_hardness_hrbw_visible">
+
+                        <h1 class="text-center">
+                            <field name="rockwell_hardness_hrbw_name" readonly="1" />
+                            <field name="rockwell_hardness_hrbw_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="d-flex gap-2" invisible="not rockwell_hardness_hrbw_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="rockwell_hardness_hrbw"></label></td>
+                                    <td style="width:50%;"><field name="rockwell_hardness_hrbw"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                      </div>
+
+                        <table invisible="rockwell_hardness_hrbw_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                        <tbody>
+                          <tr>
+                                <td><label class="fw-bold" for="rockwell_hardness_hrbw_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="rockwell_hardness_hrbw_conformity"
+                                        decoration-success="rockwell_hardness_hrbw_conformity == 'pass'"
+                                        decoration-danger="rockwell_hardness_hrbw_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="rockwell_hardness_hrbw_nabl">NABL</label></td>
+                                <td><field name="rockwell_hardness_hrbw_nabl"
+                                            decoration-success="rockwell_hardness_hrbw_nabl == 'pass'"
+                                            decoration-danger="rockwell_hardness_hrbw_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+
+                      <div invisible="not rockwell_hardness_hrbw_visible1">
+
+                        <h1 class="text-center">
+                            <field name="rockwell_hardness_hrbw_name1" readonly="1" />
+                            <field name="rockwell_hardness_hrbw_visible1" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="d-flex gap-2" invisible="not rockwell_hardness_hrbw_visible1">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="rockwell_hardness_hrbw1"></label></td>
+                                    <td style="width:50%;"><field name="rockwell_hardness_hrbw1"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                      </div>
+
+                       <table invisible="rockwell_hardness_hrbw_visible1 == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                        <tbody>
+                          <tr>
+                                <td><label class="fw-bold" for="rockwell_hardness_hrbw1_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="rockwell_hardness_hrbw1_conformity"
+                                        decoration-success="rockwell_hardness_hrbw1_conformity == 'pass'"
+                                        decoration-danger="rockwell_hardness_hrbw1_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="rockwell_hardness_hrbw1_nabl">NABL</label></td>
+                                <td><field name="rockwell_hardness_hrbw1_nabl"
+                                            decoration-success="rockwell_hardness_hrbw1_nabl == 'pass'"
+                                            decoration-danger="rockwell_hardness_hrbw1_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                       <div invisible="not tensile_strength_uts_visible">
+
+                        <h1 class="text-center">
+                            <field name="tensile_strength_uts_name" readonly="1" />
+                            <field name="tensile_strength_uts_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="d-flex gap-2" invisible="not tensile_strength_uts_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="tensile_strength_uts"></label></td>
+                                    <td style="width:50%;"><field name="tensile_strength_uts"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                      </div>
+
+                       <table invisible="tensile_strength_uts_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                        <tbody>
+                          <tr>
+                                <td><label class="fw-bold" for="tensile_strength_uts_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="tensile_strength_uts_conformity"
+                                        decoration-success="tensile_strength_uts_conformity == 'pass'"
+                                        decoration-danger="tensile_strength_uts_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="tensile_strength_uts_nabl">NABL</label></td>
+                                <td><field name="tensile_strength_uts_nabl"
+                                            decoration-success="tensile_strength_uts_nabl == 'pass'"
+                                            decoration-danger="tensile_strength_uts_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                       <div invisible="not yield_strength_visible">
+
+                        <h1 class="text-center">
+                            <field name="yield_strength_name" readonly="1" />
+                            <field name="yield_strength_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="d-flex gap-2" invisible="not yield_strength_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="yield_strength"></label></td>
+                                    <td style="width:50%;"><field name="yield_strength"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                      </div>
+
+
+                       <table invisible="yield_strength_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                        <tbody>
+                          <tr>
+                                <td><label class="fw-bold" for="yield_strength_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="yield_strength_conformity"
+                                        decoration-success="yield_strength_conformity == 'pass'"
+                                        decoration-danger="yield_strength_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="yield_strength_nabl">NABL</label></td>
+                                <td><field name="yield_strength_nabl"
+                                            decoration-success="yield_strength_nabl == 'pass'"
+                                            decoration-danger="yield_strength_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+
+                       <div invisible="not vickers_hardness_hv30_visible">
+
+                        <h1 class="text-center">
+                            <field name="vickers_hardness_hv30_name" readonly="1" />
+                            <field name="vickers_hardness_hv30_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="d-flex gap-2" invisible="not vickers_hardness_hv30_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="vickers_hardness_hv30"></label></td>
+                                    <td style="width:50%;"><field name="vickers_hardness_hv30"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                      </div>
+
+
+                       <table invisible="vickers_hardness_hv30_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                        <tbody>
+                          <tr>
+                                <td><label class="fw-bold" for="vickers_hardness_hv30_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="vickers_hardness_hv30_conformity"
+                                        decoration-success="vickers_hardness_hv30_conformity == 'pass'"
+                                        decoration-danger="vickers_hardness_hv30_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="vickers_hardness_hv30_nabl">NABL</label></td>
+                                <td><field name="vickers_hardness_hv30_nabl"
+                                            decoration-success="vickers_hardness_hv30_nabl == 'pass'"
+                                            decoration-danger="vickers_hardness_hv30_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                       <div invisible="not vickers_hardness_hv30_visible1">
+
+                        <h1 class="text-center">
+                            <field name="vickers_hardness_hv30_name1" readonly="1" />
+                            <field name="vickers_hardness_hv30_visible1" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="d-flex gap-2" invisible="not vickers_hardness_hv30_visible1">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="vickers_hardness_hv301"></label></td>
+                                    <td style="width:50%;"><field name="vickers_hardness_hv301"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                      </div>
+
+
+                      <table invisible="vickers_hardness_hv30_visible1 == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                        <tbody>
+                          <tr>
+                                <td><label class="fw-bold" for="vickers_hardness_hv301_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="vickers_hardness_hv301_conformity"
+                                        decoration-success="vickers_hardness_hv301_conformity == 'pass'"
+                                        decoration-danger="vickers_hardness_hv301_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="vickers_hardness_hv301_nabl">NABL</label></td>
+                                <td><field name="vickers_hardness_hv301_nabl"
+                                            decoration-success="vickers_hardness_hv301_nabl == 'pass'"
+                                            decoration-danger="vickers_hardness_hv301_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+
+
+
+                       
+
+                    
+                     <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+
+
+                        </page>
+
+                    </notebook>
+
+
+
+                         <button
+                                type="object"
+                                class="oe_highlight"
+                                name="open_eln_page"
+                                string="Submit"
+                            />
+                   
+                   
+                    
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+
+
+       
+    </data>
+</odoo>
