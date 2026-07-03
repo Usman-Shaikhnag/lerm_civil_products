@@ -283,7 +283,7 @@
 						</table>
 					</div>
 					<div class="authorizeRowDataSheet">
-						<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
+						<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','254187-47c9-4662-9298-3095ac900ffc')], limit=1).technician"/>
 						<div>
 							<div>
 									<b>
@@ -424,7 +424,7 @@
 								</td>
 							</tr>
 						</table>
-						<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
+						<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','02145jj-eba3-4f15-b33d-679b39f73301')], limit=1).technician"/>
 						<div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -555,7 +555,7 @@
 								
 							</table>
 
-							<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
+							<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','30214uy-0268-46ef-ba88-9c04532103012t')], limit=1).technician"/>
 							<div class="signatureContainer girdgird">
 							<div>
 								<div>

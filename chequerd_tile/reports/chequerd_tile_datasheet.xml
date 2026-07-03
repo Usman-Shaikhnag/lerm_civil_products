@@ -105,7 +105,7 @@
 						</table>
                     
 
-					<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
+					<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','ff2e1110-a492-40e9-959a-c989ce4c1903')], limit=1).technician"/>
 					<div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -291,7 +291,7 @@
 						</table>
                     
 
-					<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
+					<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','ff34a8e8-1e82-4f93-8a1d-dd0de56fc290')], limit=1).technician"/>
 					<div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -396,7 +396,7 @@
 						</table>
                     
 
-					<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
+					<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','4ee01855-218f-48da-9729-82a54306a6c4')], limit=1).technician"/>
 					<div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -506,7 +506,7 @@
 						</table>
                     
 
-					<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
+					<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','983a2d9a-3305-4adb-8a79-8842dd64103f')], limit=1).technician"/>
 					<div class="signatureContainer girdgird">
 							<div>
 								<div>

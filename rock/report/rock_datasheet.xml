@@ -97,7 +97,7 @@
 											</tr>
 										</table>
 
-							<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
+							<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','bf5d3d97-9a52-4242-9a36-2e40e5fc8247')], limit=1).technician"/>
 							<div t-if="data.specific_gravity_visible" class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -146,7 +146,6 @@
 						
 
 
-
                         <!-- Water Absorption -->
 
                         <div t-if="data.water_absorption_visible" style = "page-break-before: always;margin-top:20px;">
@@ -186,7 +185,7 @@
 											</tr>
 										</table>
 
-							<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
+							<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','71e24ae1-b9a9-41cb-86a5-89d87312f3d6')], limit=1).technician"/>
 							<div t-if="data.water_absorption_visible" class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -272,7 +271,7 @@
 										</table>
 						</div>
 
-						<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
+						<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','a1f9c5d0-0bc7-41a6-a2bb-0fe9d898008d')], limit=1).technician"/>
 						<div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -338,7 +337,6 @@
 						
 
                     
-            
 
             </t>
         </t>

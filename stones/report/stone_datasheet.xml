@@ -195,7 +195,7 @@
                         </table>
                 
 
-                    <t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
+                    <t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','5478ttr5-41c5-4cb5-843a-e09590c7c5789hh')], limit=1).technician"/>
                     <div t-if="data.compressive_dry_visible" class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -388,7 +388,7 @@
 
                         
 
-					<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
+					<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','547896rg-41c5-4cb5-843a-e09590c7c57878tt')], limit=1).technician"/>
 					<div t-if="data.compressive_dry_visible" class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -473,7 +473,7 @@
 											</tr>
 										</table>
 
-							<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
+							<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','57r7896rg-41c5-4cb5-843a-e09590c74578trew8')], limit=1).technician"/>
 							<div t-if="data.water_absorption_visible" class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -566,7 +566,7 @@
 											</tr>
 										</table>
 
-							<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
+							<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','57r7896rg-41c5-4cb5-843a-e09590c7789rte143q')], limit=1).technician"/>
 							<div t-if="data.water_absorption_visible" class="signatureContainer girdgird">
 							<div>
 								<div>
