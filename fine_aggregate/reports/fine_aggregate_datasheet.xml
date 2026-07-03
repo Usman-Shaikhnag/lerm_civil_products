@@ -968,11 +968,46 @@
 							</tr>
 						</table>
 
+						<div class="signatureContainer girdgird">
+							<div>
+								<div><b>Prepared By</b></div>
+								<t t-set="prep_result" t-value="eln.parameters_result.filtered(lambda r: r.parameter.internal_id == 'ace97d80-fdf8-45ed-8762-8ec73805ea68')[:1]"/>
+								<t t-if="prep_result and prep_result[0].technician">
+									<div style="height:40px">
+										<div t-if="prep_result[0].technician.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,' + prep_result[0].technician.employee_id.signature.decode('utf-8')" style="max-width:200px;max-height:35px;margin-top:1px;z-index:-10;"/>
+										</div>
+									</div>
+									<div><b><span t-esc="prep_result[0].technician.name"/></b></div>
+									<div><b>(<span t-esc="prep_result[0].technician.employee_id.job_title"/>)</b></div>
+								</t>
+							</div>
+                        
+                        	<div style="margin-left:600px">
+                                     
+                            	<div>
+                                	<b>
+                                    	Checked By
+                                	</b>
+                            	</div>
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+						</div>
+					</div>
 					</div>
 					
 
 
-
+				
 
 				
 
@@ -1386,13 +1421,7 @@
                           
                         </table>
 
-                       
-                    </div>
-
-
-
-
-                    <div class="signatureContainer girdgird">
+                        <div class="signatureContainer girdgird">
 							<div>
 								<div><b>Prepared By</b></div>
 								<t t-set="prep_result" t-value="eln.parameters_result.filtered(lambda r: r.parameter.internal_id == '1457htyu1245-3fa3-4b83-ae31-9d281457457hy')[:1]"/>
@@ -1408,7 +1437,7 @@
 							</div>
                         
                         <div style="margin-left:600px">
-                                    
+                                     
                             <div>
                                 <b>
                                     Checked By
@@ -1430,6 +1459,7 @@
 							
 						</div>
 					</div>
+                    </div>
 
 					<!--Deleterious Material - Soft Particles-->
                     
@@ -1503,13 +1533,7 @@
                           
                         </table>
 
-                       
-                    </div>
-
-
-
-
-                    <div class="signatureContainer girdgird">
+                        <div class="signatureContainer girdgird">
 							<div>
 								<div><b>Prepared By</b></div>
 								<t t-set="prep_result" t-value="eln.parameters_result.filtered(lambda r: r.parameter.internal_id == '03d66a05-767f-4e4f-9f09-b1a3af00af76')[:1]"/>
@@ -1525,7 +1549,7 @@
 							</div>
                         
                         <div style="margin-left:600px">
-                                    
+                                     
                             <div>
                                 <b>
                                     Checked By
@@ -1547,8 +1571,7 @@
 							
 						</div>
 					</div>
-
-
+                    </div>
 
 
                         <!-- 4. Bulking of Sand -->
