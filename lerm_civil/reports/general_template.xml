@@ -12,7 +12,7 @@
                         Report No. <![CDATA[&nbsp;]]> <span t-esc="eln.kes_no"/>
                     </span>
 					<span style="text-align:left;margin-left:20%;">	
-                        Date <![CDATA[&nbsp;]]> <span t-esc="eln.end_date"/>
+                        Date <![CDATA[&nbsp;]]> <span t-esc="eln.end_date.strftime('%d/%m/%Y')"/>
                     </span>
 				</div> -->
 				<div style="margin-top:1.5rem;height:1rem;">
@@ -33,7 +33,7 @@
 							</td>
 							<td colspan="4" style="border:none;">
 								<span style="text-align:left;margin-left:20%;">	
-									Date <![CDATA[&nbsp;]]> <span t-esc="eln.end_date"/>
+									Date <![CDATA[&nbsp;]]> <span t-esc="eln.end_date.strftime('%d/%m/%Y')"/>
 								</span>
 							</td>
 						</tr>
@@ -42,7 +42,7 @@
 
 				</div>
                     <div style="text-align:center;margin-top:12px">	
-                        MAKE INFRACON
+                        <span t-esc="eln.sample_id.lab_location.lab_name"/>
                     </div>
                     <div style="text-align:center;">
                         TEST DATA SHEET

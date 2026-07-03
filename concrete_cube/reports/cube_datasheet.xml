@@ -161,13 +161,13 @@
 									<span t-esc="r.wt_sample"/>
 								</td>
 								<td style="text-align: center;">
-									<span t-esc="r.dt_of_casting"/>
+									<span t-esc="r.dt_of_casting.strftime('%d/%m/%Y')"/>
 								</td>
 								<td style="text-align: center;">
 									<span t-esc="r.days" />
 								</td>
 								<td style="text-align: center;">
-									<span t-esc="r.dt_of_testing1"/>
+									<span t-esc="r.dt_of_testing1.strftime('%d/%m/%Y')"/>
 								</td>
 								<td style="text-align: center;">
 									<span t-esc="r.load"/>
@@ -190,7 +190,7 @@
 					</table>
 
 
-					         <table style="width: 100%; border-collapse: collapse;margin-top:10px">
+					         <!-- <table style="width: 100%; border-collapse: collapse;margin-top:10px">
                                 <thead>
                                     <tr>
                                         <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
@@ -232,7 +232,7 @@
                                     </tr>
                                     
                                 </tbody>
-                            </table>
+                            </table> -->
 					<div class="authorizeRowDataSheet">
 						<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
 						<div>
