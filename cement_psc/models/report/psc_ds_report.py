@@ -70,7 +70,7 @@ class CementReportPSC43(models.AbstractModel):
         
         return {
             'eln': eln,
-            'cement' : general_data,
+            'data' : general_data,
             'qrcode': qr_code,
             'nabl' : nabl,
             'qrcode_static': qr_static_b64,

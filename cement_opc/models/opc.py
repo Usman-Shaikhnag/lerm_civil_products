@@ -862,7 +862,7 @@ class CementNormalConsistency(models.Model):
     density_cement_name = fields.Char("Name",default="Density of Cement")
     density_cement_visible = fields.Boolean("Density of Cement Visible",compute="_compute_visible")
 
-    density_cement_lines = fields.One2many('density.cement.line','parent_id',string="Fineness density")
+    
 
     density_line_ids = fields.One2many(
         "density.cement.line",
