@@ -148,7 +148,7 @@ class ConcreteBeamReport(models.AbstractModel):
         
         return {
             'eln': eln,
-            'concrete_beam' : general_data,
+            'data' : general_data,
             'qrcode': qr_code,
             'nabl' : nabl,
             'qrcode_static': qr_static_b64,

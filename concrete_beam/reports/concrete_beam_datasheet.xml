@@ -41,128 +41,144 @@
 				</tr>
 			</table>
 			
-                <!-- Flexural Strength of Concrete Beam -->
+                <!-- Flexural Strength -->
 
-			
-                    <div>
-						 <!-- <div style="text-align:center;font-size:18px;font-weight: bold">
-							Flexural Strength of Concrete Beam										
-						</div>  -->
-						<!-- added -->
-						<div style="text-align:center;font-size:18px">
-							Flexural Strength of Concrete Beam	
-							<!-- <span t-field="env['lerm.parameter.master'].search([('internal_id','=','19edc74f-c7b2-45b6-8696-e97c19e81993')]).parameter_name"/>
-							<span style="font-weight: bold;" t-esc="eln.material.test_parameter"/> -->
-							<span>
-							<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','19edc74f-c7b2-45b6-8696-e97c19e81993')]).parameter_table" t-as="parameter">
-								<t t-if="parameter.grade.id == eln.grade_id.id">
-									<span t-field="parameter.specification"/>
-								</t>
+					<div  t-if="data.flexural_strength_visible">
+					<div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;margin-top: 15px">
+							Flexural Strength
+						</div>
+
+						<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+							<thead>
+								<tr style="background-color: #f0f0f0;">
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Age Of Beam.</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Weight (Kg)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Volume (cm³)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Failure At Point</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Density (g/cc)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Test Area (mm²)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Load Observed (kN)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Flexural Strength (N/mm²)</th>
+								</tr>		
+
+							</thead>
+							<tbody>
+								<t t-set="k" t-value="0"/>
+								<tr t-foreach="data.flexural_strength_line_ids" t-as="r" style="text-align: center;">
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['age']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['weight']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['volume']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['fail_point']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['density']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['test_area']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['load_kn']" />
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['flexural_strength']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									
+								</tr>
+							</tbody>
+						</table>
+
+						<table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;">
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Average 3 Days Flexural Strength :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+									<span t-field="data.avg_3_days_flexural" t-options='{"widget": "float", "precision": 3}'/>
+								</td>
+							</tr>
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Average 7 Days Flexural Strength :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+									<span t-field="data.avg_7_days_flexural" t-options='{"widget": "float", "precision": 3}'/>
+								</td>
+							</tr>
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Average 14 Days Flexural Strength :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+									<span t-field="data.avg_14_days_flexural" t-options='{"widget": "float", "precision": 3}'/>
+								</td>
+							</tr>
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Average 28 Days Flexural Strength :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+									<span t-field="data.avg_28_days_flexural" t-options='{"widget": "float", "precision": 3}'/>
+								</td>
+							</tr>
+						</table>
+
+						<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<!-- <div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
 								
 							</t>
-						</span>
-						</div>
-						<table style="margin-top:20px">
-				
-							
-							<tr>
-								<td colspan="6">Date of Casting  :  <span t-field="data.date_of_casting"></span>
-								</td>
-								<!-- <td colspan="6">Date of Testing  :  <span t-field="data.date_of_testing"></span>
-								</td> -->
-								<td colspan="6">Age of Test, Days :  <span t-field="data.age_of_test"></span>
-								</td>
-							</tr>
-							<!-- <tr cols="12">
-								<td colspan="6">Age of Test, Days :
-									<![CDATA[&nbsp;]]>
-									<span t-field="data.age_of_test"/>
-								</td>
-							</tr> -->
-						</table>
-						<div>
-						</div>
-						<table>
-							<tr cols="12">
-                                <td colspan="2" style="text-align: center;font-weight: bold;">Sr No.
-                                </td>
-                                <td colspan="2" style="text-align: center;font-weight: bold;">ID MARK/ Location
-								</td>
-								<td colspan="2" style="text-align: center;font-weight: bold;">Grade
-								</td>
-								<td colspan="2" style="text-align: center;font-weight: bold;">Length
-								</td>
-                                <td colspan="2" style="text-align: center;font-weight: bold;">Depth in mm
-								</td>
-                                <td colspan="2" style="text-align: center;font-weight: bold;">Width in mm
-								</td>
-                                <td colspan="2" style="text-align: center;font-weight: bold;">Weight of Sample in kgs
-								</td>
-                                <td colspan="2" style="text-align: center;font-weight: bold;">Fracture Distance from near support in Cm
-								</td>
-								<td colspan="2" style="text-align: center;font-weight: bold;">Crushing Load in kN
-								</td>
-								
-								<td colspan="2" style="text-align: center;font-weight: bold;">Flexural Strength in N/mm2
-								</td> 
-                            </tr>
-                            
-							<t t-set="k" t-value="0"/>
-							<tr t-foreach="data.child_lines" t-as="r">
-								<td colspan="2" style="text-align: center;">
-									<div>
-										<span t-esc="k + 1" />
-										<t t-set="k" t-value="k+1"/>
+						</div> -->
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<!-- <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
 									</div>
-                  				</td>
-								<td colspan="2" style="text-align: center;">
-									<span t-esc="r['id_mark']"/>
-								</td>
-								<td colspan="2" style="text-align: center;">
-									<span t-field="data.grade"></span>
-								</td>
-								 
-								<td colspan="2" style="text-align: center;">
-									<span t-esc="r['length']"/>
-								</td>
-								<td colspan="2" style="text-align: center;">
-									<span t-esc="r['depth']"/>
-								</td>
-								<td colspan="2" style="text-align: center;">
-									<span t-esc="r['width']"/>
-								</td>
-                                <td colspan="2" style="text-align: center;">
-									<span t-esc="r['wt_of_sample']" t-options='{"widget": "float", "precision": 2}'/>
-								</td>
-								<td colspan="2" style="text-align: center;">
-									<span t-esc="r['fracture_distance']"/>
-								</td>
-								<td colspan="2" style="text-align: center;">
-									<span t-esc="r['failure_load']" t-options='{"widget": "float", "precision": 2}'/>
-								</td>
-								<td colspan="2" style="text-align: center;">
-									<span t-esc="r['flexural_strength']" t-options='{"widget": "float", "precision": 2}'/>
-								</td>
-								
-							</tr>
-						</table>
-                        <table style="margin-top:20px">
-                            <tr cols="12">
-                                    <td colspan="6">Result - Avg Flexural Strength in N/mm2 
-                                        <![CDATA[&nbsp;]]> : 
-										<span t-field="data.average_flexural_strength" t-options='{"widget": "float", "precision": 2}'/>
-
-                                    </td>
-                                    <!-- <td colspan="6" style="text-align: center;">
-                                        <![CDATA[&nbsp;]]>
-                                        <span t-field="data.average_flexural_strength" t-options='{"widget": "float", "precision": 2}'/>
-                                    </td> -->
 									
-									
-                            </tr>
+								</t>
+							</div> -->
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
 							
-                        </table>
-						
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
 					</div>
 
             

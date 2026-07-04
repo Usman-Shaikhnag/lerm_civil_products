@@ -433,7 +433,7 @@
 								<!-- Flexural Strength -->
                             <t t-set="fshow_3days" t-value="data.avg_3_days_flexural_nabl == 'pass' and nabl or (data.avg_3_days_flexural_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
 
-							<t t-set="fshow_7days" t-value="data.avg_7_days_flexural == 'pass' and nabl or (data.avg_7_days_flexural == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+							<t t-set="fshow_7days" t-value="data.avg_7_days_flexural_nabl == 'pass' and nabl or (data.avg_7_days_flexural_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
 
 							<t t-set="fshow_14days" t-value="data.avg_14_days_flexural_nabl == 'pass' and nabl or (data.avg_14_days_flexural_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
 
@@ -540,6 +540,7 @@
 									</td>
 									
 								</tr>
+
 
 							<!-- 14 Days -->
 							<tr t-if="data.flexural_strength_visible and fshow_14days">

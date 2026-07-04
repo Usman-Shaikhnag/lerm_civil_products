@@ -15,7 +15,7 @@ This module contains all the common features of Sales Management and eCommerce.
                  'security/ir.model.access.csv',
                  'views/concret_cylinder.xml',
                  'reports/cylinder_datasheet.xml',
-                #  'reports/cube_report.xml'
+                 'reports/cylinder_report.xml'
     ],
     'assets': {
         'web.assets_backend': [
