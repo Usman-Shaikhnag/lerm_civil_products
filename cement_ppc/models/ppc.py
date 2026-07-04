@@ -828,7 +828,7 @@ class CementPPC(models.Model):
     density_cement_name = fields.Char("Name",default="Density of Cement")
     density_cement_visible = fields.Boolean("Density of Cement Visible",compute="_compute_visible")
 
-    density_cement_lines = fields.One2many('density.cement.ppc.line','parent_id',string="Fineness density")
+    
 
     density_line_ids = fields.One2many(
         "density.cement.line",
@@ -1515,7 +1515,7 @@ class CementPPCSettingTimeInitialLine(models.Model):
     _name = 'cement.ppc.setting.time.initial.line'
     _description = 'Initial Setting Reading'
 
-    parent_id = fields.Many2one('cement.opc',string="Parent Id")
+    parent_id = fields.Many2one('cement.ppc',string="Parent Id")
 
     time = fields.Float("Time")
     elapsed_time = fields.Float("Elapsed Time (Min)")
@@ -1526,7 +1526,7 @@ class CemenPPCSettingTimeFinalLine(models.Model):
     _name = 'cement.ppc.setting.time.final.line'
     _description = 'Final Setting Reading'
 
-    parent_id = fields.Many2one('cement.opc',string="Parent Id")
+    parent_id = fields.Many2one('cement.ppc',string="Parent Id")
 
     time = fields.Float("Time")
     elapsed_time = fields.Float("Elapsed Time (Min)")
@@ -1655,7 +1655,7 @@ class CementSpecificGravityPPCLine(models.Model):
     _name = "cement.ppc.specific.gravity.line"
     _description = "Specific Gravity Trial"
 
-    parent_id = fields.Many2one('cement.opc',string="Parent Id")
+    parent_id = fields.Many2one('cement.ppc',string="Parent Id")
 
     serial_no = fields.Integer(string="Trail No.", readonly=True, copy=False, default=1)
 
