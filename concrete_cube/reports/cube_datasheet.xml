@@ -331,7 +331,7 @@
                                     <span t-esc="r['maximum_depth']"/>
                                 </td>
                                 <td colspan="2" style="text-align: center;border: 1px solid #ccc; padding: 6px;">
-                                    <span t-esc="r['average_depth']"/>
+                                    <span t-esc="r['average_depth']" />
                                 </td>
                             </tr>
                        </tbody>
@@ -463,10 +463,10 @@
                                     <span t-esc="r['loaded_area']"/>
                                 </td>
 								<td colspan="2" style="text-align: center;border: 1px solid #ccc; padding: 6px;">
-                                    <span t-esc="r['ra']"/>
+                                    <span t-esc="r['ra']" t-options='{"widget": "float", "precision": 3}'/>
                                 </td>
 								<td colspan="2" style="text-align: center;border: 1px solid #ccc; padding: 6px;">
-                                    <span t-esc="r['strength_28']"/>
+                                    <span t-esc="r['strength_28']" t-options='{"widget": "float", "precision": 3}'/>
                                 </td>
                             </tr>
                        </tbody>
