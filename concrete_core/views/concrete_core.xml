@@ -20,7 +20,7 @@
                         <field name="parameter_id" invisible="1"/>
                         <field name="eln_state" />
                         <field name="grade"/>
-                          <field name="thickness2"  string="Diameter of Core"/>
+                         
 
                     </group>
                     <!-- <group class="custom_table_borders"> -->
@@ -50,327 +50,128 @@
                             }
                     </style>
 
+
+                    <!-- Water Permeability -->
+
+                    <div invisible="water_permeability_visible == False" style="text-align:center">
+                      <h1>
+                          <field name="water_permeability_name" readonly="1" nolabel="1"/>
+                          <field name="water_permeability_visible" invisible='1'/>
+                      </h1>
+                    </div>
+
+                    <div invisible="water_permeability_visible == False" class="custom_table_borders">
+                        <field name="water_permeability_table" nolabel="1">
+                            <tree editable="bottom">
+                                <field name='serial_no' width="120"/>
+                                <field name='pressure' class="blue-input" decoration-info="pressure != 0" width="120"/>
+                                <field name='duration' class="blue-input" decoration-info="duration != 0" width="120"/>
+                                <field name='maximum_depth' class="blue-input" decoration-info="maximum_depth" width="120"/>
+                                <field name='average_depth' class="blue-input" decoration-info="average_depth"  width="120"/>
+                            </tree>
+                        </field>
+                    </div>
+                    
+                    
+
+                    <table class="table o_form_table w-50 mt-2 custom_table_borders" invisible="not water_permeability_visible">
+                        <tbody>
+                            <tr>
+                                <td><strong>Average Depth of Penetration (mm)</strong></td>
+                                <td>
+                                    <field name="average_depth"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Conformity</strong></td>
+                                <td>
+                                    <field name="average_depth_confirmity"
+                                        decoration-success="average_depth_confirmity == 'pass'"
+                                        decoration-danger="average_depth_confirmity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong for="average_depth_nabl">NABL</strong></td>
+                                <td>
+                                    <field name="average_depth_nabl"
+                                        decoration-success="average_depth_nabl == 'pass'"
+                                        decoration-danger="average_depth_nabl == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                    <!-- compressive Strength -->
+
+                    <div invisible="compressive_strength_visible == False" style="text-align:center">
+                      <h1>
+                          <field name="compressive_strength_name" readonly="1" nolabel="1"/>
+                          <field name="compressive_strength_visible" invisible='1'/>
+                      </h1>
+                    </div>
+
+                    <div invisible="compressive_strength_visible == False" class="custom_table_borders">
+                        <field name="compressive_strength_table" nolabel="1">
+                            <tree editable="bottom">
+                                <field name='serial_no' width="120"/>
+                                <field name='age' class="blue-input" decoration-info="age != 0" width="120"/>
+                                <field name='height' class="blue-input" decoration-info="height != 0" width="120"/>
+                                <field name='diameter' class="blue-input" decoration-info="diameter" width="120"/>
+                                <field name='hd_ratio' readonly="1" width="120"/>
+                                <field name='correction_factor' readonly="1" width="120"/>
+                                <field name='area' readonly="1" width="120"/>
+                                <field name='volume' readonly="1" width="120"/>
+                                <field name='weight'  class="blue-input" decoration-info="weight" width="120"/>
+                                <field name='density' readonly="1" width="120"/>
+                                <field name='load'  class="blue-input" decoration-info="load" width="120"/>
+                                
+                                <field name='compressive_strength' readonly="1" width="120"/>
+                            </tree>
+                        </field>
+                    </div>
+                    
+                    
+
+                    <table class="table o_form_table w-50 mt-2 custom_table_borders" invisible="not compressive_strength_visible">
+                        <tbody>
+                            <tr>
+                                <td><strong>Average Compressive Strength</strong></td>
+                                <td>
+                                    <field name="avg_compressive_strength"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Conformity</strong></td>
+                                <td>
+                                    <field name="avg_compressive_strength_confirmity"
+                                        decoration-success="avg_compressive_strength_confirmity == 'pass'"
+                                        decoration-danger="avg_compressive_strength_confirmity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong for="avg_compressive_strength_nabl">NABL</strong></td>
+                                <td>
+                                    <field name="avg_compressive_strength_nabl"
+                                        decoration-success="avg_compressive_strength_nabl == 'pass'"
+                                        decoration-danger="avg_compressive_strength_nabl == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
               
 
 
                   
-                   <field name="dia_lines" mode="tree" invisible="1">
-                    <tree editable="bottom" class="custom_table_borders" >
-                        <field name="serial_no" />
-                        <field name="dia_core" />
-                        <field name="correction_dia" />
-                    </tree>
-                </field>
-
-                <div class="d-flex gap-2">
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders">
-                        <tbody>
-                            <tr>
-                                <td><label for="date_of_casting">Date of Casting</label></td>
-                                <td><field name="date_of_casting"/></td>
-                            </tr>
-                            <tr>
-                                <td><label for="date_of_testing">Date of Testing</label></td>
-                                <td><field name="date_of_testing"/></td>
-                            </tr>
-                            <tr>
-                                <td><label for="age_of_test">Age of Test, days</label></td>
-                                <td><field name="age_of_test"/></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders">
-                        <tbody>
-                            <tr>
-                                <td><label for="age_of_days">Age of Cubes</label></td>
-                                <td><field name="age_of_days"/></td>
-                            </tr>
-                            <tr>
-                                <td><label for="area_core">Area of Core mm²</label></td>
-                                <td><field name="area_core"/></td>
-                            </tr>
-                            <tr>
-                                <td><label for="difference">Difference</label></td>
-                                <td><field name="difference"/></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-
-
-                <div>
-                    <field name="child_lines"  mode="tree" nolabel="1">
-                            <tree editable="bottom" class="custom_table_borders" >
-                                <field name="serial_no"  />
-                                <field name="location" class="blue-input" decoration-info="location != 0"/>
-                                <!-- <field name="grade_con" /> -->
-                                <field name="actual_depth"  class="blue-input" decoration-info="actual_depth != 0"/>
-                                <field name="depth"  class="blue-input" decoration-info="depth != 0"/>
-                                <field name="load" class="blue-input" decoration-info="load != 0"/>
-                                <field name="ld_ratio" />
-                                <field name="load_n" />
-                                <field name="core_comp" />
-                                <field name="correction_factor_ld" />
-                                <!-- <field name="correction_factor_dia"/> -->
-                                <field name="correct_comp" />
-                                <field name="equivalent_cube"/>
-                            </tree>
-                    </field>
-
-                    </div>
-
-
-                    <!-- <table class="table table-sm o_form_table table-bordered w-50 mt-2 custom_table_borders">
-                        <tbody>
-                            <tr>
-                                <td><label for="dia_core" class="text-bold">Diameter of Core</label></td>
-                                <td><field name="dia_core" class="text-bold"/></td>
-                            </tr>
-                            <tr>
-                                <td><label for="area_core" class="text-bold">Area</label></td>
-                                <td><field name="area_core" class="text-bold"/><span> mm²</span></td>
-                            </tr>
-                        </tbody>
-                    </table> -->
-                      
-                  
-
-                    <table class="custom_table_borders"  style="white-space: nowrap; width:100%;">
-                        <thead>
-                            <tr>
-                                <th>Parameter Name</th>
-                                <th>Result</th>
-                                <th>Unit</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><label for="area_equvalent_cube" class="text-bold">Diameter of Core</label></td>
-                                <td><field name="area_equvalent_cube" class="text-bold"/></td>
-                                <td> N/mm²</td>
-                            </tr>
-                            <tr>
-                                <td><label for="any_individual_cube" class="text-bold">Area</label></td>
-                                <td><field name="any_individual_cube" class="text-bold"/></td>
-                                   <td> N/mm²</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-
-                    <group  invisible="wpt_visible == False" style="white-space: nowrap; width:80%;margin-top: 15px;">
-                        <h1>
-                            <field name="wpt_name" readonly="1" nolabel="1"/>
-                            <field name="wpt_visible" invisible="1"/>
-                        </h1>
-                    </group>
-                    <div invisible="wpt_visible == False">
-                        <div style="display:flex;">
-                    <div style="width:50%;">
-                      <table style="border: 2px solid black; border-collapse: collapse; width: 99%;">
-                         <tbody>
-                            <tr>
-                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Temperature °c</span></td>
-                              <td style="border: 1px solid black; padding: 8px;"><field name="temp_wpt" class="blue-input"/></td>
-                            </tr>
-                            <tr>
-                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Humidity %</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field name="humidity_percent_wpt" class="blue-input"/></td>
-                            </tr>
-                                 
-                         </tbody>
-                      </table>
-                    </div>
-
-
-                    <div style="width:50%;">
-                      <table style="border: 2px solid black; border-collapse: collapse; width: 100%;">
-                         <tbody>
-                            <tr>
-                              <td style="border: 1px solid black; padding: 12px; font-weight: bold;"><span>Quantity</span></td>
-                              <td style="border: 1px solid black; padding: 8px;width:200px;"><field name="quantity"  exception="quantity" identity="extra" class="blue-input"/></td>
-                            </tr>
-                            <!-- <tr>
-                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Specimen Size (mm)</span></td>
-                            <td style="border: 1px solid black; padding: 8px;width:200px;"><field name="size" exception="size" identity="extra"/></td>
-                            </tr> -->
-                            
-                         </tbody>
-                      </table>
-                    </div>
-
-                    </div>
-                    <group/>
-
-                    <group/>
-                    <!-- <div style="display:flex;">
-                    <div style="width:50%;">
-                      <table style="border: 2px solid black; border-collapse: collapse; width: 99%;">
-                         <tbody>
-                            <tr>
-                              <td style="border: 1px solid black; padding: 12px; font-weight: bold;"><span>Date of Casting</span></td>
-                              <td style="border: 1px solid black; padding: 12px;width:200px;"><field name="date_of_casting" identity="extra"/></td>
-                            </tr>                                 
-                         </tbody>
-                      </table>
-                    </div>
-                  
-                    <div style="width:50%;">
-                      <table style="border: 2px solid black; border-collapse: collapse; width: 100%;">
-                         <tbody>
-                            <tr>
-                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span> Date of Testing</span></td>
-                              <td style="border: 1px solid black; padding: 8px;"><field name="date_of_testing"  identity="extra"/></td>
-                            </tr>                            
-                         </tbody>
-                      </table>
-                    </div>
-
-                    </div>
-                    <group/>
-
-                    <div>
-                      <table class="table table-bordered sm-table" style="width: 100%;font-size: 15px; margin:0px;">
-                         <tbody>
-                         <tr>
-                             <td><span>Age</span></td>
-                             <td><field name="age_of_days" identity="extra"/></td>
-                           </tr>
-                           <tr>
-                             <td><span>Age of Test, days</span></td>
-                             <td><field name="age_of_test" identity="extra"/></td>
-                           </tr>
-                           <tr>
-                             <td><span>Difference</span></td>
-                             <td><field name="difference" identity="extra"/></td>
-                           </tr>
-                         </tbody>
-                      </table>
-                    </div>
-                    <group/> -->
-
-
-
-
-
-
                    
-                    <!-- <group/> -->
-                    <group>
-                      
-                        <field name="wpt_child_lines" colspan="2" nolabel="1">
-                        <tree editable="bottom" class="custom_table_borders">
-                            <field name="sample" string="Sample" class="blue-input" decoration-info="sample != 0"/>
-                            <field name="depth1" string="1" class="blue-input" decoration-info="depth1 != 0"/>
-                            <field name="depth2" string="2" class="blue-input" decoration-info="depth2 != 0"/>
-                            <field name="depth3" string="3" class="blue-input" decoration-info="depth3 != 0"/>
-                            <field name="average" string="Average"/>
-                        </tree>
-                        </field>
-                    </group>
-
-                     <div>
-                          <table style="border: 2px solid black; width: 50%; margin-top:10px;">
-                           <tr>
-                             <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>Average of WPT</span></td>
-                              <td style="padding: 8px; width:248px;"><field name="average_of_wpt" identity="extra"/></td>
-                           </tr>                     
-                          </table>
-                        </div>
-                    <group/>
-
-
-                    <div>
-                          <table style="width: 50%; margin-top:10px;">
-                           <tr>
-                             <td style="border: 2px solid black;padding: 8px;font-weight: bold;"><span>Conformity</span></td>
-                              <td style="border: 2px solid black;padding: 8px;"><field name="wpt_conformity"
-                               decoration-success="wpt_conformity == 'pass'" 
-                               decoration-danger="wpt_conformity == 'fail'" 
-                               readonly="1"
-                               identity="extra"/></td>
-                           </tr>
-                           <tr>
-                            <td style="border: 2px solid black;padding: 5px;font-weight: bold;"><span>NABL</span></td>
-                            <td style="border: 2px solid black;padding: 5px;"><field name="wpt_nabl"
-                               decoration-success="wpt_nabl == 'pass'" 
-                                decoration-danger="wpt_nabl == 'fail'" 
-                               readonly="1"
-                               identity="extra"/></td>
-                           </tr>
-                          </table>
-                        </div>
-                        </div>
-
-                        <group invisible = "water_absorption_visible == False"  style="white-space: nowrap; width:80%;margin-top: 15px;">
-                        <h1>
-                            <field name="water_absorption_name" readonly="1" nolabel="1"/>
-                            <field name="water_absorption_visible" invisible="1"/>
-                        </h1>
-                    </group>
-
-
-                  
-
-
-                            <div class="custom_table_borders" style="width: 100%;"  invisible="water_absorption_visible == False">
-                                <field name="water_absorption_child_lines" mode="tree" nolabel="1">
-                                    <tree editable="bottom" class="custom_table_borders" style="width: 100%; border-collapse: collapse;">
-                                        <field name="serial_no" />
-                                        <field name="sample_identification" class="blue-input" decoration-info="sample_identification != 0"/>
-                                        <field name="dry_wt_w1"  class="blue-input" decoration-info="dry_wt_w1 != 0"/>
-                                        <field name="wet_w2"  class="blue-input" decoration-info="wet_w2 != 0"/>
-                                        <field name="water_absorption"/>
-                                    </tree>
-                                </field>
-                            </div>
-
-                     <!-- <group invisible = "water_absorption_visible == False" string="Result" colspan="4"  style="white-space: nowrap; width:70%; margin-top: 10px">
-                     
-                        <field name="avg_water_absorption" readonly="1"/>
-                        
-                  
-                    </group> -->
-
-                    
-                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "water_absorption_visible == False">
-                        <tbody>
-                          
-                             <tr>
-                                <td><label class="fw-bold" for="avg_water_absorption">Avg. Water Absorption</label></td>
-                                <td><field name="avg_water_absorption"/> <span> %</span></td>
-                            </tr>
-                           
-                        </tbody>
-                    </table>
-
-                   
-                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "water_absorption_visible == False">
-                        <tbody>
-                          
-                             <tr>
-                                <td><label class="fw-bold" for="avg_water_absorption_conformity">NABL</label></td>
-                                <td><field name="avg_water_absorption_conformity"
-                                            decoration-success="avg_water_absorption_conformity == 'pass'"
-                                            decoration-danger="avg_water_absorption_conformity == 'fail'"
-                                             readonly="1"/></td>
-                            </tr>
-                             <tr>
-                                <td><label class="fw-bold" for="avg_water_absorption_nabl">NABL</label></td>
-                                <td><field name="avg_water_absorption_nabl"
-                                            decoration-success="avg_water_absorption_nabl == 'pass'"
-                                            decoration-danger="avg_water_absorption_nabl == 'fail'"
-                                             readonly="1"/></td>
-                            </tr>
-                        </tbody>
-                    </table>
                     
 
                     <div style="margin-top:10px;">
-
-
                     <notebook>
                         <page string="Notes">
                             <div class="custom_table_borders" style="margin-top: 15px;">

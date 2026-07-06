@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
- <template id="concrete_core_report_ssl">
+ <template id="concrete_cylinder_report">
 		<t t-call="web.html_container">
 			 <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
 				
@@ -229,7 +229,7 @@
 
 							<!-- Compressive Strength -->
 							<tr t-if="data.compressive_strength_visible and (data.avg_compressive_strength_nabl == 'pass' and nabl or (data.avg_compressive_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="compressive" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','254187-47c9-4662-9298-3095ac900ffc')])"/>
+									<t t-set="compressive" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','301hjtre-17c1-48ac-8462-9671e4d3d09f')])"/>
 									
 									<td style="text-align: center;">
 										<span t-esc="i + 1" />
@@ -275,7 +275,7 @@
 
 								<!-- Water Permeability -->
 							<tr t-if="data.water_permeability_visible and (data.average_depth_nabl == 'pass' and nabl or (data.average_depth_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="permeability" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','02145jj-eba3-4f15-b33d-679b39f73301')])"/>
+									<t t-set="permeability" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','1234jht-0268-46ef-ba88-9c0453210lkit1')])"/>
 									
 									<td style="text-align: center;">
 										<span t-esc="i + 1" />

@@ -1608,6 +1608,8 @@ class AdmixtureFlexuralStrengthLine(models.Model):
     volume = fields.Float(string='Volume (cm³)',compute='_compute_volume',
     store=True,digits=(16,0))
 
+    fail_point = fields.Char(string='Failure At Point')
+
     density = fields.Float(
         string='Density (g/cc)',
         compute='_compute_density',

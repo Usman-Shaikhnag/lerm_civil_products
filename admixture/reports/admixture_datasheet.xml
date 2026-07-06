@@ -449,6 +449,7 @@
 									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Age Of Beam.</th>
 									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Weight (Kg)</th>
 									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Volume (cm³)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Failure At Point</th>
 									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Density (g/cc)</th>
 									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Test Area (mm²)</th>
 									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Load Observed (kN)</th>
@@ -467,6 +468,9 @@
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
 										<span t-esc="r['volume']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['fail_point']"/>
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
 										<span t-esc="r['density']" t-options='{"widget": "float", "precision": 3}'/>
@@ -739,9 +743,6 @@
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
 										<span t-esc="r['flow_120']" />
-									</td>
-									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
-										<span t-esc="r['average_flow']" t-options='{"widget": "float", "precision": 1}'/>
 									</td>
 									
 								</tr>

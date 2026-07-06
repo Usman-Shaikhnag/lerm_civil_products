@@ -44,77 +44,158 @@
                             }
                     </style>
                         
-                    <group style="white-space: nowrap; width:70%;">
-                        <h1>
-                            <field name="name" readonly="1" nolabel="1"/>
+                    <!-- Flexural Strength -->
+                    <div invisible=" not flexural_strength_visible">
+                        <h1 class="text-center">
+                            <field name="flexural_strength_name" readonly="1" nolabel="1"/>
+                            <field name="flexural_strength_visible" invisible="1"/>
                         </h1>
-                    </group>
+                    </div>
 
-                   
-                    <div class="d-flex gap-2" 
-                    >
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not flexural_strength_visible">
                             <tbody>
                                 <tr>
-                                    <td><label for="date_of_casting"></label></td>
-                                    <td><field name="date_of_casting" /></td>
+                                    <td><label class="text-bold" for="span_length">Span Length</label></td>
+                                    <td><field name="span_length" class="blue-input"/><span>  mm</span></td>
                                 </tr>
-                                <tr>
-                                    <td><label for="date_of_testing"></label></td>
-                                    <td><field name="date_of_testing" /></td>
-                                </tr>
-                              
                             </tbody>
                         </table>
-                        
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+
+                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not flexural_strength_visible">
                             <tbody>
                                 <tr>
-                                    <td><label for="age_of_days"></label></td>
-                                    <td><field name="age_of_days" /></td>
+                                    <td><label class="text-bold" for="flex_size_id">Size</label></td>
+                                    <td><field name="flex_size_id" class="blue-input"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not flexural_strength_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="beam_depth">Depth of Specimen</label></td>
+                                    <td><field name="beam_depth" class="blue-input"/><span>  mm</span></td>
+                                </tr>
+                            </tbody>
+                        </table> -->
+                    </div>
+
+                    <div class="custom_table_borders" invisible="not flexural_strength_visible">
+                        <field name="flexural_strength_line_ids" nolabel="1" >
+                        <tree editable="bottom">
+                        <field name="age" width="200" readonly="id"/>
+
+                          <field name="weight" class="blue-input" decoration-info="weight != 0" width="200"/>
+
+                          <field name="volume" width="200"/>
+
+                          <field name="fail_point" class="blue-input" decoration-info="fail_point != 0" width="200"/>
+
+                          <field name="density" width="200"/>
+                          <field name="test_area" width="200"/>
+
+                          <field name="load_kn" class="blue-input" decoration-info="load_kn != 0" width="200"/>
+
+                          <field name="flexural_strength" width="200"/>
+                        </tree>
+                        </field>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not flexural_strength_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="avg_3_days_flexural">Average 3 Days Flexural Strength</label></td>
+                                    <td><field name="avg_3_days_flexural"/><span>  N/mm²</span></td>
                                 </tr>
                                 <tr>
-                                    <td><label for="age_of_test"></label></td>
-                                    <td><field name="age_of_test" /></td>
+                            <td><label for="avg_3_days_flexural_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="avg_3_days_flexural_confirmity"
+                                        decoration-success="avg_3_days_flexural_confirmity == 'pass'" 
+                                        decoration-danger="avg_3_days_flexural_confirmity == 'fail'" 
+                                        readonly="1"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="avg_3_days_flexural_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="avg_3_days_flexural_nabl"
+                                        decoration-success="avg_3_days_flexural_nabl == 'pass'" 
+                                        decoration-danger="avg_3_days_flexural_nabl == 'fail'" 
+                                        readonly="1"/></td>
+                          </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not flexural_strength_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="avg_7_days_flexural">Average 7 Days Flexural Strength</label></td>
+                                    <td><field name="avg_7_days_flexural"/><span>  N/mm²</span></td>
                                 </tr>
-                                
+                                <tr>
+                            <td><label for="avg_7_days_flexural_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="avg_7_days_flexural_confirmity"
+                                        decoration-success="avg_7_days_flexural_confirmity == 'pass'" 
+                                        decoration-danger="avg_7_days_flexural_confirmity == 'fail'" 
+                                        readonly="1"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="avg_7_days_flexural_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="avg_7_days_flexural_nabl"
+                                        decoration-success="avg_7_days_flexural_nabl == 'pass'" 
+                                        decoration-danger="avg_7_days_flexural_nabl == 'fail'" 
+                                        readonly="1"/></td>
+                          </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not flexural_strength_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="avg_14_days_flexural">Average 14 Days Flexural Strength</label></td>
+                                    <td><field name="avg_14_days_flexural"/><span>  N/mm²</span></td>
+                                </tr>
+                                <tr>
+                            <td><label for="avg_14_days_flexural_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="avg_14_days_flexural_confirmity"
+                                        decoration-success="avg_14_days_flexural_confirmity == 'pass'" 
+                                        decoration-danger="avg_14_days_flexural_confirmity == 'fail'" 
+                                        readonly="1"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="avg_14_days_flexural_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="avg_14_days_flexural_nabl"
+                                        decoration-success="avg_14_days_flexural_nabl == 'pass'" 
+                                        decoration-danger="avg_14_days_flexural_nabl == 'fail'" 
+                                        readonly="1"/></td>
+                          </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not flexural_strength_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="avg_28_days_flexural">Average 28 Days Flexural Strength</label></td>
+                                    <td><field name="avg_28_days_flexural"/><span>  N/mm²</span></td>
+                                </tr>
+                                <tr>
+                            <td><label for="avg_28_days_flexural_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="avg_28_days_flexural_confirmity"
+                                        decoration-success="avg_28_days_flexural_confirmity == 'pass'" 
+                                        decoration-danger="avg_28_days_flexural_confirmity == 'fail'" 
+                                        readonly="1"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="avg_28_days_flexural_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="avg_28_days_flexural_nabl"
+                                        decoration-success="avg_28_days_flexural_nabl == 'pass'" 
+                                        decoration-danger="avg_28_days_flexural_nabl == 'fail'" 
+                                        readonly="1"/></td>
+                          </tr>
                             </tbody>
                         </table>
                     </div>
 
-
-                    <field name="child_lines" class="custom_table_borders" nolabel="1" >
-                            <tree editable="bottom">
-                                <field name='sr_no'/>
-                                <field name='id_mark' class="blue-input" decoration-info="id_mark != 0"/>
-                                <field name='length' class="blue-input" decoration-info="length != 0"/>
-                                <field name='depth' class="blue-input" decoration-info="depth != 0"/>
-                                <field name='width' class="blue-input" decoration-info="width != 0"/>
-                                <field name='wt_of_sample' class="blue-input" decoration-info="wt_of_sample != 0"/>
-                                <field name='fracture_distance' class="blue-input" decoration-info="fracture_distance != 0"/>
-                                <field name='failure_load' class="blue-input" decoration-info="failure_load != 0"/>
-                                <field name='flexural_strength'/>
-                                
-                            </tree>
-                    </field>
-                    <!-- <group style="white-space: nowrap; width:70%;">
-                        <field name='average_flexural_strength'/>
-                    </group> -->
-
-                     <div class="d-flex gap-2" 
-                     >
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                    <td><label for="average_flexural_strength"></label></td>
-                                    <td><field name="average_flexural_strength" /></td>
-                                </tr>
-                              
-                            </tbody>
-                        </table>
-                        
-                       
-                    </div>
                     
 
                     <notebook>

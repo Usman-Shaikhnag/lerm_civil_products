@@ -7,7 +7,7 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
-class MechanicalConcreteCube(models.Model):
+class MechanicalConcreteCylinder(models.Model):
     _name = "mechanical.concrete.cylinder"
     _inherit = "lerm.eln"
     _description = 'mechanical.concrete.cylinder'
@@ -16,7 +16,6 @@ class MechanicalConcreteCube(models.Model):
     name = fields.Char("Name",default="Compressive Strength of Concrete Cube")
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
-    child_lines = fields.One2many('mechanical.concrete.cylinder.line','parent_id',string="Parameter")
     
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
@@ -25,29 +24,36 @@ class MechanicalConcreteCube(models.Model):
 
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
-
-    cube_name = fields.Char("Name",default=" Concrete Cylinder")
-    cube_visible = fields.Boolean("Chequered Visible",compute="_compute_visible")   
-
-    def action_calculate_avg_strength(self):
-        for rec in self:
-            lines = rec.child_lines.sorted(key=lambda l: l.sr_no)  # sr_no ने sort करायचं
-            group_size = 3
-
-            for i in range(0, len(lines), group_size):
-                group = lines[i:i + group_size]
-                strengths = [l.compressive_strength for l in group if l.compressive_strength > 0]
-                avg = sum(strengths) / len(strengths) if strengths else 0.0
-
-                if group:
-                    group[0].avg_compressive_strength = avg
-
-            for line in lines:
-                if line not in [lines[i] for i in range(0, len(lines), group_size)]:
-                    line.avg_compressive_strength = 0.0
+    @api.depends('eln_ref')
+    def _compute_size_id(self):
+        if self.eln_ref:
+            self.size_id = self.eln_ref.size_id.id
 
 
-    average_strength = fields.Float(string="Average Compressive Strength in N/mm2",compute="_compute_average_strength",digits=(12,2))
+    date_of_casting = fields.Date(string="Date of Casting",compute="compute_date_of_casting")
+    date_of_testing = fields.Date(string="Date of Testing",compute="_compute_date_testing")
+
+    @api.depends('eln_ref')
+    def _compute_date_testing(self):
+        if self.eln_ref:
+            self.date_of_testing = self.eln_ref.date_testing
+
+    @api.onchange('eln_ref')
+    def compute_date_of_casting(self):
+        for record in self:
+            if record.eln_ref.sample_id:
+                sample_record = self.env['lerm.srf.sample'].sudo().search([('id','=', record.eln_ref.sample_id.id)]).date_casting
+                record.date_of_casting = sample_record
+            else:
+                record.date_of_casting = None
+
+    @api.depends('eln_ref')
+    def _compute_grade_id(self):
+        if self.eln_ref:
+            self.grade = self.eln_ref.grade_id.id
+
+
+    
 
     def prefill_data(self):
         wizard_action = self.env.ref('concrete_cube.action_cube_prefill_data_wizard')
@@ -64,393 +70,186 @@ class MechanicalConcreteCube(models.Model):
                 },
         }
     
-    @api.depends('child_lines.compressive_strength')
-    def _compute_average_strength(self):
-        for rec in self:
-            strengths = [line.compressive_strength for line in rec.child_lines if line.compressive_strength]
-            rec.average_strength = sum(strengths) / len(strengths) if strengths else 0.0
 
-    @api.depends('eln_ref')
-    def _compute_size_id(self):
-        if self.eln_ref:
-            self.size_id = self.eln_ref.size_id.id
-
-    area_of_cube = fields.Float(string="Area of Cube",compute="_compute_area_cube",store=True)
-
-    @api.depends('size_id.size')
-    def _compute_area_cube(self):
-        import re
-        for record in self:
-            size_str = record.size_id.size
-            if size_str:
-                match = re.search(r'\d+', str(size_str))
-                if match:
-                    side = int(match.group())
-                    record.area_of_cube = side * side  # or whatever formula
-                else:
-                    record.area_of_cube = 0
-            else:
-                record.area_of_cube = 0
-
-
-
-    days_7_kmm = fields.Float(string="7 Days",compute="_compute_days_7_kmm")
-    days_7_n = fields.Float(string="7 Days",compute="_compute_days_7_n")
-
-    @api.depends('days_28_kmm')
-    def _compute_days_7_kmm(self):
-        for rec in self:
-            rec.days_7_kmm = rec.days_28_kmm * 0.67 if rec.days_28_kmm else 0.0
-
-    @api.depends('days_7_kmm')
-    def _compute_days_7_n(self):
-        for rec in self:
-            rec.days_7_n = rec.days_7_kmm * 22.5 if rec.days_7_kmm else 0.0
-
-    days_28_kmm = fields.Float(string="28 Days",compute="_compute_days_28_kmm",store=True)
-    days_28_n = fields.Float(string="28 Days",compute="_compute_days_28_n")
-
-    @api.depends('days_28_kmm')
-    def _compute_days_28_n(self):
-        for rec in self:
-            rec.days_28_n = rec.days_28_kmm * 22.5 if rec.days_28_kmm else 0.0
-
-
-  
-    @api.depends('grade.grade', 'grade_child_lines.grade1', 'grade_child_lines.sd')
-    def _compute_days_28_kmm(self):
-        for rec in self:
-            rec.days_28_kmm = 0.0
-
-            if not rec.grade2:
-                continue
-
-            grade2_str = rec.grade2.strip().lower()
-
-            # Match grade2 with grade1 in lines
-            matching_line = rec.grade_child_lines.filtered(
-                lambda l: l.grade1 and l.grade1.strip().lower() == grade2_str
-            )
-
-            if matching_line:
-                line = matching_line[0]
-                # Extract number from grade2 (e.g., from "M25" → 25)
-                number_part = ''.join(filter(str.isdigit, rec.grade2))
-                try:
-                    grade_val = float(number_part)
-                    rec.days_28_kmm = grade_val + (1.65 * line.sd)
-                except (ValueError, TypeError):
-                    rec.days_28_kmm = 0.0
-
-
-
-
-
-
-    grade2 = fields.Char(string="Grade",compute="_compute_grade2",store=True)
-
-    @api.depends('grade')
-    def _compute_grade2(self):
-        for rec in self:
-            rec.grade2 = rec.grade.grade if rec.grade and rec.grade.grade else ''
-
-
-    grade_child_lines = fields.One2many('mechanical.concrete.cylinder.grade.line','parent_id',string="Parameter",default=lambda self: self._default_grade_child_lines())
-
-    # @api.model
-    # def _default_grade_child_lines(self):
-    #     default_lines = [
-    #         (0, 0, {'grade1': M10, 'sd': 3.5}),
-    #         (0, 0, {'grade1': M15, 'sd': 3.5}),
-    #         (0, 0, {'grade1': M20, 'sd': 4}),
-    #         (0, 0, {'grade1': M25, 'sd': 4}),
-    #         (0, 0, {'grade1': M30, 'sd': 5}),
-    #         (0, 0, {'grade1': M35, 'sd': 5}),
-    #         (0, 0, {'grade1': M40, 'sd': 5}),
-    #         (0, 0, {'grade1': M45, 'sd': 5})
-    #     ]
-    #     return default_lines
+    notes_id = fields.One2many('mechanical.concrete.cylinder.notes', 'parent_id', string="Notes", default=lambda self: self._default_notes_lines())
 
     @api.model
-    def _default_grade_child_lines(self):
-
-        default_lines = [
-            (0, 0, {'grade1': 'M10', 'sd': 3.5}),
-            (0, 0, {'grade1': 'M15', 'sd': 3.5}),
-            (0, 0, {'grade1': 'M20', 'sd': 4}),
-            (0, 0, {'grade1': 'M25', 'sd': 4}),
-            (0, 0, {'grade1': 'M30', 'sd': 5}),
-            (0, 0, {'grade1': 'M35', 'sd': 5}),
-            (0, 0, {'grade1': 'M40', 'sd': 5}),
-            (0, 0, {'grade1': 'M45', 'sd': 5}),
+    def _default_notes_lines(self):
+        return [
+            (0, 0, {'sr_no': 'i', 'notes': 'The results stated in this report apply only to the tested sample(s) and are based on the conditions and parameters at the time of testing.'}),
+            (0, 0, {'sr_no': 'ii', 'notes': 'This report is invalid without the official paper seal of Make Infracon.'}),
+            (0, 0, {'sr_no': 'iii', 'notes': 'All test results are confidential and will not be disclosed to any third party without written consent of the client, except where required by law.'}),
+            (0, 0, {'sr_no': 'iv', 'notes': 'Any discrepancies or complaints regarding this report must be communicated in writing within 7 days from the date of issue.'}),
+            (0, 0, {'sr_no': 'v', 'notes': 'This report shall not be reproduced, except in full, without the prior written approval of Make Infracon.'}),
+            (0, 0, {'sr_no': 'vi', 'notes': 'The laboratory assumes no responsibility for the purpose for which the test results are used or for any subsequent actions taken based on these results.'}),
         ]
-        return default_lines
-
-
     
-    
-    age_of_days = fields.Selection([
-        ('3days', '3 Days'),
-        ('7days', '7 Days'),
-        ('14days', '14 Days'),
-        ('28days', '28 Days'),
-    ], string='Age', default='28days',required=True,compute="_compute_age_of_days")
-    date_of_casting = fields.Date(string="Date of Casting",compute="compute_date_of_casting")
-    date_of_testing = fields.Date(string="Date of Testing",compute="_compute_date_testing")
 
 
+    # Water Permeability 					
 
-    @api.depends('eln_ref')
-    def _compute_date_testing(self):
-        if self.eln_ref:
-            self.date_of_testing = self.eln_ref.date_testing
+    water_permeability_name = fields.Char(default="Water Permeability")
+    water_permeability_visible = fields.Boolean(compute="_compute_visible")
 
-    confirmity = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),
-        ('not_applicable', 'Not Applicable'),
-
-    ], string='Confirmity', default='fail',compute="_compute_confirmity")
-    age_of_test = fields.Integer("Age of Test, days",compute="compute_age_of_test")
-    difference = fields.Integer("Difference",compute="compute_difference")
-
-    # grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
-    nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),
-
-    ], string='NABL', default='fail',compute="_compute_nabl")
+    water_permeability_table = fields.One2many('cylinder.water.penetration','parent_id',string="Water Permeability")
 
 
-    @api.depends('age_of_test','age_of_days')
-    def compute_difference(self):
-        for record in self:
-            age_of_days = 0
-            if record.age_of_days == '3days':
-                age_of_days = 3
-            elif record.age_of_days == '7days':
-                age_of_days = 7
-            elif record.age_of_days == '14days':
-                age_of_days = 14
-            elif record.age_of_days == '21days':
-                age_of_days = 21
-            elif record.age_of_days == '28days':
-                age_of_days = 28
-            elif record.age_of_days == '45days':
-                age_of_days = 45
-            elif record.age_of_days == '56days':
-                age_of_days = 56
-            elif record.age_of_days == '112days':
-                age_of_days = 112
-            else:
-                age_of_days = 0
-            record.difference = record.age_of_test - age_of_days
-
-        
-
-
-    @api.depends('date_of_testing','date_of_casting')
-    def compute_age_of_test(self):
-        for record in self:
-            if record.date_of_casting and record.date_of_testing:
-                date1 = fields.Date.from_string(record.date_of_casting)
-                date2 = fields.Date.from_string(record.date_of_testing)
-                date_difference = (date2 - date1).days
-                record.age_of_test = date_difference
-            else:
-                record.age_of_test = 0
-
-    @api.onchange('eln_ref')
-    def compute_date_of_casting(self):
-        for record in self:
-            if record.eln_ref.sample_id:
-                sample_record = self.env['lerm.srf.sample'].sudo().search([('id','=', record.eln_ref.sample_id.id)]).date_casting
-                record.date_of_casting = sample_record
-            else:
-                record.date_of_casting = None
-
-
-
-    @api.onchange('eln_ref')
-    def _compute_age_of_days(self):
-        for record in self:
-            if record.eln_ref.sample_id:
-                sample_record = self.env['lerm.srf.sample'].sudo().search([('id','=', record.eln_ref.sample_id.id)]).days_casting
-                if sample_record == '3':
-                    record.age_of_days = '3days'
-                elif sample_record == '7':
-                    record.age_of_days = '7days'
-                elif sample_record == '14':
-                    record.age_of_days = '14days'
-                elif sample_record == '21':
-                    record.age_of_days = '21days'
-                elif sample_record == '28':
-                    record.age_of_days = '28days'
-                elif sample_record == '45':
-                    record.age_of_days = '45days'
-                elif sample_record == '56':
-                    record.age_of_days = '56days'
-                elif sample_record == '112':
-                    record.age_of_days = '112days'
-                else:
-                    record.age_of_days = None
-            else:
-                record.age_of_days = None
-
-
-    wpt_name = fields.Char("Name",default=" Water Permeability Test")
-    wpt_visible = fields.Boolean("WPT Visible",compute="_compute_visible") 
-
-    wpt_child_lines = fields.One2many('mechanical.cylinder.wpt.line','parent_id',string="Parameter")
-
-    average_of_wpt = fields.Float(string="Average of WPT", compute="_compute_average_of_averages")
-
-    @api.depends('wpt_child_lines.average')
-    def _compute_average_of_averages(self):
-        for record in self:
-            if record.wpt_child_lines:
-                record.average_of_wpt = round(sum(line.average for line in record.wpt_child_lines) / len(record.wpt_child_lines), 3)
-            else:
-                record.average_of_wpt = 0.0
-
-
-    wpt_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),
-    ('na', 'NA'),], string="Conformity", compute="_compute_wpt_conformity", store=True)
-
-    @api.depends('average_of_wpt','eln_ref','grade')
-    def _compute_wpt_conformity(self):
-        
-        for record in self:
-            if not record.eln_ref or not record.eln_ref.conformity:
-                record.wpt_conformity = 'na'
-                continue
-            record.wpt_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].search([('internal_id','=','1234jht-0268-46ef-ba88-9c0453210lkit1')])
-            materials = self.env['lerm.parameter.master'].search([('internal_id','=','1234jht-0268-46ef-ba88-9c0453210lkit1')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.average_of_wpt - record.average_of_wpt*mu_value
-                    upper = record.average_of_wpt + record.average_of_wpt*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.wpt_conformity = 'pass'
-                        break
-                    else:
-                        record.wpt_conformity = 'fail'
-
-
-    wpt_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'NON NABL')], string="NABL", default='fail',compute="_compute_wpt_nabl", store=True)
-
-    @api.depends('average_of_wpt','eln_ref','grade')
-    def _compute_wpt_nabl(self):
-        
-        for record in self:
-            record.wpt_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].search([('internal_id','=','1234jht-0268-46ef-ba88-9c0453210lkit1')])
-            materials = self.env['lerm.parameter.master'].search([('internal_id','=','1234jht-0268-46ef-ba88-9c0453210lkit1')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.average_of_wpt - record.average_of_wpt*mu_value
-            upper = record.average_of_wpt + record.average_of_wpt*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.wpt_nabl = 'pass'
-                break
-            else:
-                record.wpt_nabl = 'fail'
-
-
-
-    temp_wpt = fields.Float("Temperature °C")
-    humidity_percent_wpt = fields.Float("Humidity %")
-    quantity = fields.Char("Quantity")
-
-
-     # 3. Water Absorption
-
-    water_absorption_name = fields.Char("Name",default="Water Absorption ")
-    water_absorption_visible = fields.Boolean("Water Absorption Visible",compute="_compute_visible")
-
-    water_absorption_child_lines = fields.One2many('cylinder.water.absorption.line','parent_id',string="Water Line")
-
-    avg_water_absorption = fields.Float(
-        string="Avg. Water Absorption (%)",
-        compute="_compute_avg_water_absorption", store=True
+    average_depth = fields.Float(
+        string="Average Depth of Penetration (mm)",
+        compute="_compute_average",
+        store=True,
     )
 
-    @api.depends('water_absorption_child_lines.water_absorption')
-    def _compute_avg_water_absorption(self):
+    @api.depends("water_permeability_table.average_depth")
+    def _compute_average(self):
         for rec in self:
-            lines = rec.water_absorption_child_lines
-            if lines:
-                total = sum(line.water_absorption for line in lines)
-                rec.avg_water_absorption = round(total / len(lines), 2)
+            if rec.water_permeability_table:
+                rec.average_depth = sum(
+                    rec.water_permeability_table.mapped("average_depth")
+                ) / len(rec.water_permeability_table)
             else:
-                rec.avg_water_absorption = 0.0
+                rec.average_depth = 0.0
 
-    avg_water_absorption_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),
-    ('na', 'NA'),], string="Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
 
-    @api.depends('avg_water_absorption','eln_ref','grade')
-    def _compute_avg_water_absorption_conformity(self):
-        
+    average_depth_confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ('na', 'NA'),], string='Confirmity', compute="_compute_average_depth_confirmity")
+
+    average_depth_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')],string="NABL",compute="_compute_average_depth_nabl",store=True)
+
+
+    @api.depends('average_depth','eln_ref')
+    def _compute_average_depth_confirmity(self):
         for record in self:
             if not record.eln_ref or not record.eln_ref.conformity:
-                record.avg_water_absorption_conformity = 'na'
+                record.average_depth_confirmity = 'na'
                 continue
-            record.avg_water_absorption_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0124ytrg-eba3-4f15-b33d-679b39f73301')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0124ytrg-eba3-4f15-b33d-679b39f73301')]).parameter_table
+            record.average_depth_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1234jht-0268-46ef-ba88-9c0453210lkit1')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1234jht-0268-46ef-ba88-9c0453210lkit1')]).parameter_table
             for material in materials:
-                if material.grade.id == record.grade.id:
+                
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
                     
-                    lower = record.avg_water_absorption - record.avg_water_absorption*mu_value
-                    upper = record.avg_water_absorption + record.avg_water_absorption*mu_value
+                    lower = record.average_depth - record.average_depth*mu_value
+                    upper = record.average_depth + record.average_depth*mu_value
                     if lower >= req_min and upper <= req_max:
-                        record.avg_water_absorption_conformity = 'pass'
+                        record.average_depth_confirmity = 'pass'
                         break
                     else:
-                        record.avg_water_absorption_conformity = 'fail'
+                        record.average_depth_confirmity = 'fail'
 
-    avg_water_absorption_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_avg_water_absorption_nabl", store=True)
-
-    @api.depends('avg_water_absorption','eln_ref','grade')
-    def _compute_avg_water_absorption_nabl(self):
+    @api.depends('average_depth','eln_ref')
+    def _compute_average_depth_nabl(self):
         
         for record in self:
-            record.avg_water_absorption_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0124ytrg-eba3-4f15-b33d-679b39f73301')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0124ytrg-eba3-4f15-b33d-679b39f73301')]).parameter_table
+            record.average_depth_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1234jht-0268-46ef-ba88-9c0453210lkit1')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1234jht-0268-46ef-ba88-9c0453210lkit1')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
+                  lab_min = line.lab_min_value
+                  lab_max = line.lab_max_value
+                  mu_value = line.mu_value
+            
+                  lower = record.average_depth - record.average_depth*mu_value
+                  upper = record.average_depth + record.average_depth*mu_value
+                  if lower >= lab_min and upper <= lab_max:
+                      record.average_depth_nabl = 'pass'
+                      break
+                  else:
+                      record.average_depth_nabl = 'fail'
+
+
+
+    # Compressive Strength
+    compressive_strength_name = fields.Char(default="Compressive Strength")
+    compressive_strength_visible = fields.Boolean(compute="_compute_visible")
+
+    compressive_strength_table = fields.One2many('cylinder.compressive.line','parent_id', string="Compressive Strength")
+
+    avg_compressive_strength = fields.Float(string="Average Strength",compute="_compute_average_strength",store=True)
+
+    @api.depends('compressive_strength_table.compressive_strength')
+    def _compute_average_strength(self):
+     for rec in self:
+        values = rec.compressive_strength_table.mapped('compressive_strength')
+        rec.avg_compressive_strength = (
+            sum(values) / len(values) if values else 0.0
+        )
+
+
+    
+
+    avg_compressive_strength_confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ('na', 'NA'),], string='Confirmity', compute="_compute_avg_compressive_strength_confirmity")
+
+    avg_compressive_strength_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')],string="NABL",compute="_compute_avg_compressive_strength_nabl",store=True)
+
+
+    @api.depends('avg_compressive_strength','eln_ref')
+    def _compute_avg_compressive_strength_confirmity(self):
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_compressive_strength_confirmity = 'na'
+                continue
+            record.avg_compressive_strength_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','301hjtre-17c1-48ac-8462-9671e4d3d09f')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','301hjtre-17c1-48ac-8462-9671e4d3d09f')]).parameter_table
+            for material in materials:
+                
+                    req_min = material.req_min
+                    req_max = material.req_max
                     mu_value = line.mu_value
                     
-                    lower = record.avg_water_absorption - record.avg_water_absorption*mu_value
-                    upper = record.avg_water_absorption + record.avg_water_absorption*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.avg_water_absorption_nabl = 'pass'
+                    lower = record.avg_compressive_strength - record.avg_compressive_strength*mu_value
+                    upper = record.avg_compressive_strength + record.avg_compressive_strength*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.avg_compressive_strength_confirmity = 'pass'
                         break
                     else:
-                        record.avg_water_absorption_nabl = 'fail'
+                        record.avg_compressive_strength_confirmity = 'fail'
+
+    @api.depends('avg_compressive_strength','eln_ref')
+    def _compute_avg_compressive_strength_nabl(self):
+        
+        for record in self:
+            record.avg_compressive_strength_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','301hjtre-17c1-48ac-8462-9671e4d3d09f')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','301hjtre-17c1-48ac-8462-9671e4d3d09f')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                  lab_min = line.lab_min_value
+                  lab_max = line.lab_max_value
+                  mu_value = line.mu_value
+            
+                  lower = record.avg_compressive_strength - record.avg_compressive_strength*mu_value
+                  upper = record.avg_compressive_strength + record.avg_compressive_strength*mu_value
+                  if lower >= lab_min and upper <= lab_max:
+                      record.avg_compressive_strength_nabl = 'pass'
+                      break
+                  else:
+                      record.avg_compressive_strength_nabl = 'fail'
+    
+
+
+    
+
+    
+    
+
+
+
+    
 
 
     @api.depends('sample_parameters')
@@ -458,24 +257,18 @@ class MechanicalConcreteCube(models.Model):
         
         for record in self:
 
-            record.cube_visible = False
-            record.wpt_visible = False
-            record.water_absorption_visible = False
+            record.water_permeability_visible = False
+            record.compressive_strength_visible = False
             
             
             for sample in record.sample_parameters:
                 print("Internal Ids",sample.internal_id)
 
-               
-               
                 if sample.internal_id == "301hjtre-17c1-48ac-8462-9671e4d3d09f":
-                    record.cube_visible = True
+                    record.compressive_strength_visible = True
 
                 if sample.internal_id == "1234jht-0268-46ef-ba88-9c0453210lkit1":
-                    record.wpt_visible = True
-
-                if sample.internal_id == "0124ytrg-eba3-4f15-b33d-679b39f73301":
-                    record.water_absorption_visible = True
+                    record.water_permeability_visible = True
 
                 
     def open_eln_page(self):
@@ -487,30 +280,24 @@ class MechanicalConcreteCube(models.Model):
         )
 
         for result in technician_results:
-            if result.parameter.internal_id == '301hjtre-17c1-48ac-8462-9671e4d3d09f':
-                result.calculated = True
-                result.result_char = round(self.average_strength,2)
-                if self.nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
+            
+            
 
-        for result in self.eln_ref.parameters_result:
+            # Water Permeability
             if result.parameter.internal_id == '1234jht-0268-46ef-ba88-9c0453210lkit1':
+                result.result_char = round(self.average_depth,2)
                 result.calculated = True
-                result.result_char = round(self.average_of_wpt,2)
-                if self.nabl == 'pass':
+                if self.average_depth_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
 
-        for result in self.eln_ref.parameters_result:
-            if result.parameter.internal_id == '0124ytrg-eba3-4f15-b33d-679b39f73301':
+            # Compressive Strength
+            if result.parameter.internal_id == '301hjtre-17c1-48ac-8462-9671e4d3d09f':
+                result.result_char = round(self.avg_compressive_strength,2)
                 result.calculated = True
-                result.result_char = round(self.avg_water_absorption,2)
-                if self.nabl == 'pass':
+                if self.avg_compressive_strength_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -526,84 +313,11 @@ class MechanicalConcreteCube(models.Model):
             }
         # return {'type': 'ir.actions.client', 'tag': 'history_back'}
 
-            
-
-    @api.depends('eln_ref')
-    def _compute_grade_id(self):
-        if self.eln_ref:
-            self.grade = self.eln_ref.grade_id.id
-
-
-    @api.depends('average_strength','eln_ref','grade')
-    def _compute_nabl(self):
-        
-        for record in self:
-            record.nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','301hjtre-17c1-48ac-8462-9671e4d3d09f')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','301hjtre-17c1-48ac-8462-9671e4d3d09f')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.average_strength - record.average_strength*mu_value
-            upper = record.average_strength + record.average_strength*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.nabl = 'pass'
-                break
-            else:
-                record.nabl = 'fail'
-
-
-    @api.depends('average_strength','eln_ref','grade','age_of_days','difference')
-    def _compute_confirmity(self):
-        for record in self:
-            record.confirmity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','301hjtre-17c1-48ac-8462-9671e4d3d09f')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','301hjtre-17c1-48ac-8462-9671e4d3d09f')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    if record.age_of_days == "3days":
-                        req_min = req_min * 0.5
-                        req_max = req_max* 0.5
-                    if record.age_of_days == "7days":
-                        req_min = req_min * 0.7
-                        req_max = req_max* 0.7
-                    if record.age_of_days == "14days":
-                        req_min = req_min * 0.9
-                        req_max = req_max* 0.9
-                    if record.age_of_days == "28days":
-                        req_min = req_min
-                        req_max = req_max
-                    lower = record.average_strength - record.average_strength*mu_value
-                    upper = record.average_strength + record.average_strength*mu_value
-                    
-                    if record.difference == 0:
-                        if lower >= req_min and upper <= req_max :
-                            record.confirmity = 'pass'
-                            break
-                        else:
-                            record.confirmity = 'fail'
-                    else:
-                        record.confirmity = 'not_applicable'
-
-
-    
-    @api.depends('eln_ref')
-    def _compute_grade_id(self):
-        if self.eln_ref:
-            self.grade = self.eln_ref.grade_id.id
-
-
     
     @api.model
     def create(self, vals):
         # import wdb;wdb.set_trace()
-        record = super(MechanicalConcreteCube, self).create(vals)
+        record = super(MechanicalConcreteCylinder, self).create(vals)
         # record.get_all_fields()
         record.eln_ref.write({'model_id':record.id})
         return record
@@ -634,6 +348,8 @@ class MechanicalConcreteCube(models.Model):
                 parameter_ids = user_param_results.mapped('parameter').ids
 
             record.sample_parameters = [(6, 0, parameter_ids)]
+
+
     def get_all_fields(self):
         record = self.env['mechanical.concrete.cylinder'].browse(self.ids[0])
         field_values = {}
@@ -644,227 +360,34 @@ class MechanicalConcreteCube(models.Model):
         return field_values
 
 
-    notes_id = fields.One2many('mechanical.concrete.cylinder.notes', 'parent_id', string="Notes", default=lambda self: self._default_notes_lines())
+    
 
-    @api.model
-    def _default_notes_lines(self):
-        return [
-            (0, 0, {'sr_no': 'i', 'notes': 'The results stated in this report apply only to the tested sample(s) and are based on the conditions and parameters at the time of testing.'}),
-            (0, 0, {'sr_no': 'ii', 'notes': 'This report is invalid without the official paper seal of Make Infracon.'}),
-            (0, 0, {'sr_no': 'iii', 'notes': 'All test results are confidential and will not be disclosed to any third party without written consent of the client, except where required by law.'}),
-            (0, 0, {'sr_no': 'iv', 'notes': 'Any discrepancies or complaints regarding this report must be communicated in writing within 7 days from the date of issue.'}),
-            (0, 0, {'sr_no': 'v', 'notes': 'This report shall not be reproduced, except in full, without the prior written approval of Make Infracon.'}),
-            (0, 0, {'sr_no': 'vi', 'notes': 'The laboratory assumes no responsibility for the purpose for which the test results are used or for any subsequent actions taken based on these results.'}),
-        ]
+class CylinderWaterPenetration(models.Model):
+    _name = "cylinder.water.penetration"
+    _description = "Water Penetration Trial"
+
+    parent_id = fields.Many2one('mechanical.concrete.cylinder', string="Parent Id")
+
+    serial_no = fields.Integer(string="Trial.No", readonly=True, copy=False, default=1)
 
 
 
-class MechanicalConcreteCubeLine(models.Model):
-    _name = "mechanical.concrete.cylinder.line"
-    parent_id = fields.Many2one('mechanical.concrete.cylinder',string="Parent Id")
+    pressure = fields.Float(
+        string="Water Pressure Applied (bar/kg/cm²)"
+    )
 
-    sr_no = fields.Integer(string="Sr.No.",readonly=True, copy=False, default=1)
-  
-    id_mark = fields.Char(string="Sample Identification",store=True)
-    wt_sample = fields.Float(string="Weight of Cube (gms)",digits=(16,3))
+    duration = fields.Float(
+        string="Duration of Test (hrs)"
+    )
 
-    dt_of_casting = fields.Date(string="Date of casting",compute="_compute_dt_of_casting",store=True)
-    days = fields.Integer(string="No.of Days",compute="_compute_days",store=True)
-    dt_of_testing1 = fields.Date(string="Date of Testing",compute="_compute_dt_of_testing",store=True)
+    maximum_depth = fields.Float(
+        string="Maximum Depth of Water Penetration (mm)"
+    )
 
-    load = fields.Float(string="Load (kN)")
-    compressive_strength = fields.Float(string="Compressive Strength (N/mm2)",compute="_compute_strength",store=True)
+    average_depth = fields.Float(
+        string="Average Depth of Penetration (mm)"
+    )
 
-    avg_compressive_strength = fields.Float(string="Avg. Compressive Strength (N/mm2)")
-
-    # @api.depends('parent_id', 'parent_id.child_lines.compressive_strength')
-    # def _compute_avg_strength(self):
-    #     for rec in self:
-    #         if rec.parent_id and rec.parent_id.child_lines:
-    #             strengths = rec.parent_id.child_lines.mapped('compressive_strength')
-    #             values = [s for s in strengths if s > 0]
-    #             rec.avg_compressive_strength = sum(values) / len(values) if values else 0.0
-    #         else:
-    #             rec.avg_compressive_strength = 0.0
-
-    @api.depends('load', 'parent_id.area_of_cube')
-    def _compute_strength(self):
-        for record in self:
-            area = record.parent_id.area_of_cube
-            if area:
-                record.compressive_strength = (record.load * 1000) / area
-            else:
-                record.compressive_strength = 0.0
-
-
-    @api.depends('parent_id.date_of_casting')
-    def _compute_dt_of_casting(self):
-        for record in self:
-            record.dt_of_casting = record.parent_id.date_of_casting
-
-    @api.depends('parent_id.age_of_days')
-    def _compute_days(self):
-        for record in self:
-            if record.parent_id.age_of_days:
-                try:
-                    # Extract number from string like '3days', '28days'
-                    record.days = int(''.join(filter(str.isdigit, record.parent_id.age_of_days)))
-                except Exception:
-                    record.days = 0
-            else:
-                record.days = 0
-
-    @api.depends('dt_of_casting', 'days')
-    def _compute_dt_of_testing(self):
-        for record in self:
-            if record.dt_of_casting and record.days:
-                record.dt_of_testing1 = record.dt_of_casting + timedelta(days=record.days)
-            else:
-                record.dt_of_testing1 = False
-
-   
-    @api.onchange('parent_id')
-    def _onchange_parent_id(self):
-        for record in self:
-            client_sample_id = ""
-            if record.parent_id:
-                eln_ref = record.parent_id.eln_ref
-                if eln_ref:
-                    sample = eln_ref.sample_id
-                    if sample:
-                        client_sample_id = sample.client_sample_id
-            record.id_mark = client_sample_id or ""
-
-    # @api.onchange('id_mark')
-    # def _onchange_id_mark(self):
-    #     for record in self:
-    #         if record.id_mark:
-    #             if record.parent_id and record.parent_id.eln_ref and record.parent_id.eln_ref.sample_id:
-    #                 # Only update if client_sample_id is not set
-    #                 if not record.parent_id.eln_ref.sample_id.client_sample_id:
-    #                     record.parent_id.eln_ref.sample_id.client_sample_id = record.id_mark
-    #             else:
-    #                 _logger.info("Sample or references not set.")
-    #         else:
-    #             _logger.info("id_mark is empty.")
-
-    @api.depends('parent_id.eln_ref.sample_id.client_sample_id')
-    def _compute_id_mark(self):
-        for record in self:
-            record.id_mark = (
-                record.parent_id.eln_ref.sample_id.client_sample_id
-                if record.parent_id and record.parent_id.eln_ref and record.parent_id.eln_ref.sample_id
-                else ""
-            )
-
-
-
-
-
-
-  
-
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('sr_no'))
-                vals['sr_no'] = max_serial_no + 1
-
-        return super(MechanicalConcreteCubeLine, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.sr_no = index + 1
-
-
-
-
-class MechanicalConcreteCubeGradeLine(models.Model):
-    _name = "mechanical.concrete.cylinder.grade.line"
-    parent_id = fields.Many2one('mechanical.concrete.cylinder',string="Parent Id")
-
-    sr_no = fields.Integer(string="Sr.No.",readonly=True, copy=False, default=1)
-  
-    grade1 = fields.Char(string="Grade")
-    sd = fields.Float(string="SD")
-
-
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('sr_no'))
-                vals['sr_no'] = max_serial_no + 1
-
-        return super(MechanicalConcreteCubeGradeLine, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.sr_no = index + 1
-
-
-class WptMechanicalLine(models.Model):
-    _name = "mechanical.cylinder.wpt.line"
-    parent_id = fields.Many2one('mechanical.concrete.cylinder',string="Parent Id")
-
-    sample = fields.Char(string="Sample")
-    depth1 = fields.Float(string="Specimen 1")
-    depth2 = fields.Float(string="Specimen 2")
-    depth3 = fields.Float(string="Specimen 3")
-    average = fields.Float(string="Average",compute="_compute_average")
-
-    @api.depends('depth1','depth2','depth3')
-    def _compute_average(self):
-        for record in self:
-            average = round(((record.depth1 + record.depth2 + record.depth3)/3),2)
-            record.average = average
-
-
-    # @api.depends('parent_id')
-    # def _compute_sample_id(self):
-    #     for record in self:
-    #         try:
-    #             record.sample = record.parent_id.eln_ref.sample_id.client_sample_id
-    #         except:
-    #             record.sample = None
-
-    # @api.depends('parent_id')
-    # def _compute_sample_id(self):
-    #     for record in self:
-    #         try:
-    #             record.sample = record.parent_id.eln_ref.sample_id.client_sample_id
-    #         except:
-    #             record.sample = None
-
-
-class WaterLine(models.Model):
-    _name = "cylinder.water.absorption.line"
-    parent_id = fields.Many2one('mechanical.concrete.cylinder',string="Parent Id")
-
-    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
-    sample_identification = fields.Float(string="Sample Identification")
-    dry_wt_w1 = fields.Float(string="Dry wt (W1)")
-    wet_w2 = fields.Float(string="Wet wt (W2)")
-    water_absorption = fields.Float(string="  Water Absorption %",compute="_compute_water_absorption")
-
-    @api.depends('dry_wt_w1', 'wet_w2')
-    def _compute_water_absorption(self):
-        for rec in self:
-            if rec.dry_wt_w1:  # avoid division by zero
-                rec.water_absorption = round(((rec.wet_w2 - rec.dry_wt_w1) / rec.dry_wt_w1) * 100, 2)
-            else:
-                rec.water_absorption = 0.0
-
-   
 
     @api.model
     def create(self, vals):
@@ -875,7 +398,7 @@ class WaterLine(models.Model):
                 max_serial_no = max(existing_records.mapped('serial_no'))
                 vals['serial_no'] = max_serial_no + 1
 
-        return super(WaterLine, self).create(vals)
+        return super(CylinderWaterPenetration, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines
@@ -883,7 +406,118 @@ class WaterLine(models.Model):
         for index, record in enumerate(records):
             record.serial_no = index + 1
 
-class MechanicalConcreteCubeNotes(models.Model):
+
+class CylinderCompressiveLine(models.Model):
+    _name = "cylinder.compressive.line"
+    parent_id = fields.Many2one('mechanical.concrete.cylinder', string="Parent Id")
+
+    serial_no = fields.Integer(string="Sr.No", readonly=True, copy=False, default=1)
+
+
+    age = fields.Char(string="Age of Specimen")
+
+    height = fields.Float("Height (mm)")
+    diameter = fields.Float("Dia (mm)")
+
+    hd_ratio = fields.Float(string="H/D Ratio (n)",compute="_compute_values",store=True)
+
+    correction_factor = fields.Float(string="Correction factor f =0.11n+0.78 Where,  f= Correction factor,n= height to diameter ratio" , compute="_compute_values",store=True)
+
+    area = fields.Float(string="Area (mm²) π r² ",compute="_compute_values",store=True,digits=(16,3))
+
+    volume = fields.Float(string="Volume (cc) πr²h",compute="_compute_values",store=True)
+
+    weight = fields.Float("Weight (gm)")
+
+    density = fields.Float(
+        string="Density (gm/cc)",
+        compute="_compute_values",
+        store=True,digits=(16,3)
+    )
+
+    load = fields.Float("Load (kN)")
+
+    compressive_strength = fields.Float(
+        string="Compressive Strength (N/mm²)",
+        compute="_compute_values",
+        store=True
+    )
+
+    @api.depends(
+        'height',
+        'diameter',
+        'weight',
+        'load'
+    )
+    def _compute_values(self):
+
+        for rec in self:
+
+            # H/D Ratio
+            if rec.diameter:
+                rec.hd_ratio = rec.height / rec.diameter
+            else:
+                rec.hd_ratio = 0
+
+            # Correction Factor
+            # Use the formula if required
+            rec.correction_factor = round(
+                (0.11 * rec.hd_ratio) + 0.78,
+                2
+            )
+
+            # If you want exactly like Excel
+            # uncomment below and remove above
+            #
+            # if rec.hd_ratio <= 2:
+            #     rec.correction_factor = 1.00
+            # else:
+            #     rec.correction_factor = 1.01
+
+            # Area
+            if rec.diameter:
+                rec.area = 3.14 * rec.diameter * rec.diameter / 4
+            else:
+                rec.area = 0
+
+            # Volume
+            rec.volume = (rec.area * rec.height) / 100
+
+            # Density
+            if rec.volume:
+                rec.density = rec.weight / rec.volume
+            else:
+                rec.density = 0
+
+            # Compressive Strength
+            if rec.area:
+                rec.compressive_strength = (
+                    rec.load  / rec.area) * 1000
+            else:
+                rec.compressive_strength = 0
+
+    
+   
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(CylinderCompressiveLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+   
+
+
+class MechanicalConcreteCylinderNotes(models.Model):
     _name = "mechanical.concrete.cylinder.notes"
 
     parent_id = fields.Many2one('mechanical.concrete.cylinder', string="Parent Id")

@@ -46,67 +46,9 @@ class ConcreteCylinderCompresiveDatasheet1(models.AbstractModel):
 
 
 
-# class ConcreteCylinderCompresiveReport(models.AbstractModel):
-#     _name = 'report.concrete_cylinder.concrete_cylinder_report'
-#     _description = 'Cube Compresive Report'
-    
-#     @api.model
-#     def _get_report_values(self, docids, data):
-#         # eln = self.env['lerm.eln'].sudo().browse(docids)
-#         inreport_value = data.get('inreport', None)
-#         nabl = data.get('nabl')
-#         # print("CUBENABL",nabl)
-#         if data.get('report_wizard') == True:
-#             eln = self.env['lerm.eln'].sudo().search([('sample_id','=',data['sample'])])
-#         elif 'active_id' in data['context']:
-#             eln = self.env['lerm.eln'].sudo().search([('sample_id','=',data['context']['active_id'])])
-#         else:
-#             eln = self.env['lerm.eln'].sudo().browse(docids)
-
-#         qr_static = qrcode.QRCode(box_size=6, border=2)
-#         qr_static.add_data("https://www.lerm.in")
-#         qr_static.make(fit=True)
-#         buf_static = BytesIO()
-#         qr_static.make_image(fill_color="black", back_color="white").save(buf_static, format="PNG")
-#         qr_static_b64 = base64.b64encode(buf_static.getvalue()).decode()
-        
-
-
-#         qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
-#         qr.add_data(eln.kes_no)
-#         qr.make(fit=True)
-#         qr_image = qr.make_image()
-
-#         # Convert the QR code image to base64 string
-#         buffered = BytesIO()
-#         qr_image.save(buffered, format="PNG")
-#         qr_image_base64 = base64.b64encode(buffered.getvalue()).decode()
-
-#         # Assign the base64 string to a field in the 'srf' object
-#         qr_code = qr_image_base64
-#         model_id = eln.model_id
-#         # differnt location for product based
-#         model_name = eln.material.product_based_calculation[0].ir_model.name 
-#         if model_name:
-#             general_data = self.env[model_name].sudo().browse(model_id)
-#         else:
-#             general_data = self.env['lerm.eln'].sudo().browse(docids)
-#         # import wdb;wdb.set_trace()
-        
-#         return {
-#             'eln': eln,
-#             'data' : general_data,
-#             'qrcode': qr_code,
-#             'qrcode_static': qr_static_b64,
-#             'stamp' : inreport_value,
-#             'nabl' : nabl,
-            
-#         }
-
-
 class ConcreteCylinderCompresiveReport(models.AbstractModel):
     _name = 'report.concrete_cylinder.concrete_cylinder_report'
-    _description = 'Concrete Cylender'
+    _description = 'Concrete Cylinder'
     
     @api.model
     def _get_report_values(self, docids, data=None):
