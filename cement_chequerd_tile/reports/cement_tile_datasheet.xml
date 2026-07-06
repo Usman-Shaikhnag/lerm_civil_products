@@ -110,9 +110,11 @@
 								<t t-set="prep_result" t-value="eln.parameters_result.filtered(lambda r: r.parameter.internal_id == 'ff7acf76-50c7-4863-86e2-23b93e2cbfc3')[:1]"/>
 								<t t-if="prep_result and prep_result[0].technician">
 									<div style="height:40px">
-										<div t-if="prep_result[0].technician.employee_id.signature">
-											<img t-att-src="'data:image/png;base64,' + prep_result[0].technician.employee_id.signature.decode('utf-8')" style="max-width:200px;max-height:35px;margin-top:1px;z-index:-10;"/>
-										</div>
+										<t t-if="eln.tested_by_signature_datasheet">
+											<div t-if="prep_result[0].technician.employee_id.signature">
+												<img t-att-src="'data:image/png;base64,' + prep_result[0].technician.employee_id.signature.decode('utf-8')" style="max-width:200px;max-height:35px;margin-top:1px;z-index:-10;"/>
+											</div>
+										</t>
 									</div>
 									<div><b><span t-esc="prep_result[0].technician.name"/></b></div>
 									<div><b>(<span t-esc="prep_result[0].technician.employee_id.job_title"/>)</b></div>
@@ -290,9 +292,11 @@
 								<t t-set="prep_result" t-value="eln.parameters_result.filtered(lambda r: r.parameter.internal_id == '6812d5b4-4e99-4c08-aa50-d62041af9a43')[:1]"/>
 								<t t-if="prep_result and prep_result[0].technician">
 									<div style="height:40px">
-										<div t-if="prep_result[0].technician.employee_id.signature">
-											<img t-att-src="'data:image/png;base64,' + prep_result[0].technician.employee_id.signature.decode('utf-8')" style="max-width:200px;max-height:35px;margin-top:1px;z-index:-10;"/>
-										</div>
+										<t t-if="eln.tested_by_signature_datasheet">
+											<div t-if="prep_result[0].technician.employee_id.signature">
+												<img t-att-src="'data:image/png;base64,' + prep_result[0].technician.employee_id.signature.decode('utf-8')" style="max-width:200px;max-height:35px;margin-top:1px;z-index:-10;"/>
+											</div>
+										</t>
 									</div>
 									<div><b><span t-esc="prep_result[0].technician.name"/></b></div>
 									<div><b>(<span t-esc="prep_result[0].technician.employee_id.job_title"/>)</b></div>
@@ -389,9 +393,11 @@
 								<t t-set="prep_result" t-value="eln.parameters_result.filtered(lambda r: r.parameter.internal_id == '3fc2d248-89bd-47c4-846a-e734e1918817')[:1]"/>
 								<t t-if="prep_result and prep_result[0].technician">
 									<div style="height:40px">
-										<div t-if="prep_result[0].technician.employee_id.signature">
-											<img t-att-src="'data:image/png;base64,' + prep_result[0].technician.employee_id.signature.decode('utf-8')" style="max-width:200px;max-height:35px;margin-top:1px;z-index:-10;"/>
-										</div>
+										<t t-if="eln.tested_by_signature_datasheet">
+											<div t-if="prep_result[0].technician.employee_id.signature">
+												<img t-att-src="'data:image/png;base64,' + prep_result[0].technician.employee_id.signature.decode('utf-8')" style="max-width:200px;max-height:35px;margin-top:1px;z-index:-10;"/>
+											</div>
+										</t>
 									</div>
 									<div><b><span t-esc="prep_result[0].technician.name"/></b></div>
 									<div><b>(<span t-esc="prep_result[0].technician.employee_id.job_title"/>)</b></div>
@@ -493,9 +499,11 @@
 								<t t-set="prep_result" t-value="eln.parameters_result.filtered(lambda r: r.parameter.internal_id == 'b2fec3de-ae1e-499c-8191-1eff44a8bd63')[:1]"/>
 								<t t-if="prep_result and prep_result[0].technician">
 									<div style="height:40px">
-										<div t-if="prep_result[0].technician.employee_id.signature">
-											<img t-att-src="'data:image/png;base64,' + prep_result[0].technician.employee_id.signature.decode('utf-8')" style="max-width:200px;max-height:35px;margin-top:1px;z-index:-10;"/>
-										</div>
+										<t t-if="eln.tested_by_signature_datasheet">
+											<div t-if="prep_result[0].technician.employee_id.signature">
+												<img t-att-src="'data:image/png;base64,' + prep_result[0].technician.employee_id.signature.decode('utf-8')" style="max-width:200px;max-height:35px;margin-top:1px;z-index:-10;"/>
+											</div>
+										</t>
 									</div>
 									<div><b><span t-esc="prep_result[0].technician.name"/></b></div>
 									<div><b>(<span t-esc="prep_result[0].technician.employee_id.job_title"/>)</b></div>
@@ -585,9 +593,11 @@
 								<t t-set="prep_result" t-value="eln.parameters_result.filtered(lambda r: r.parameter.internal_id == '1d4b2168-dc52-42ef-bd64-a492d8bd1b28')[:1]"/>
 								<t t-if="prep_result and prep_result[0].technician">
 									<div style="height:40px">
-										<div t-if="prep_result[0].technician.employee_id.signature">
-											<img t-att-src="'data:image/png;base64,' + prep_result[0].technician.employee_id.signature.decode('utf-8')" style="max-width:200px;max-height:35px;margin-top:1px;z-index:-10;"/>
-										</div>
+										<t t-if="eln.tested_by_signature_datasheet">
+											<div t-if="prep_result[0].technician.employee_id.signature">
+												<img t-att-src="'data:image/png;base64,' + prep_result[0].technician.employee_id.signature.decode('utf-8')" style="max-width:200px;max-height:35px;margin-top:1px;z-index:-10;"/>
+											</div>
+										</t>
 									</div>
 									<div><b><span t-esc="prep_result[0].technician.name"/></b></div>
 									<div><b>(<span t-esc="prep_result[0].technician.employee_id.job_title"/>)</b></div>

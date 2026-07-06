@@ -334,9 +334,11 @@
 								<t t-set="prep_result" t-value="eln.parameters_result.filtered(lambda r: r.parameter.internal_id == '0124ytrg-eba3-4f15-b33d-679b39f73301')[:1]"/>
 								<t t-if="prep_result and prep_result[0].technician">
 									<div style="height:40px">
-										<div t-if="prep_result[0].technician.employee_id.signature">
-											<img t-att-src="'data:image/png;base64,' + prep_result[0].technician.employee_id.signature.decode('utf-8')" style="max-width:200px;max-height:35px;margin-top:1px;z-index:-10;"/>
-										</div>
+										<t t-if="eln.tested_by_signature_datasheet">
+											<div t-if="prep_result[0].technician.employee_id.signature">
+												<img t-att-src="'data:image/png;base64,' + prep_result[0].technician.employee_id.signature.decode('utf-8')" style="max-width:200px;max-height:35px;margin-top:1px;z-index:-10;"/>
+											</div>
+										</t>
 									</div>
 									<div><b><span t-esc="prep_result[0].technician.name"/></b></div>
 									<div><b>(<span t-esc="prep_result[0].technician.employee_id.job_title"/>)</b></div>
@@ -451,9 +453,11 @@
 								<t t-set="prep_result" t-value="eln.parameters_result.filtered(lambda r: r.parameter.internal_id == '1234jht-0268-46ef-ba88-9c0453210lkit1')[:1]"/>
 								<t t-if="prep_result and prep_result[0].technician">
 									<div style="height:40px">
-										<div t-if="prep_result[0].technician.employee_id.signature">
-											<img t-att-src="'data:image/png;base64,' + prep_result[0].technician.employee_id.signature.decode('utf-8')" style="max-width:200px;max-height:35px;margin-top:1px;z-index:-10;"/>
-										</div>
+										<t t-if="eln.tested_by_signature_datasheet">
+											<div t-if="prep_result[0].technician.employee_id.signature">
+												<img t-att-src="'data:image/png;base64,' + prep_result[0].technician.employee_id.signature.decode('utf-8')" style="max-width:200px;max-height:35px;margin-top:1px;z-index:-10;"/>
+											</div>
+										</t>
 									</div>
 									<div><b><span t-esc="prep_result[0].technician.name"/></b></div>
 									<div><b>(<span t-esc="prep_result[0].technician.employee_id.job_title"/>)</b></div>
