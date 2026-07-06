@@ -41,6 +41,11 @@
                              background-color: #d8ecff !important;
                              border-color: #3b82f6 !important;
                             }
+
+                        .no_column_sorting .o_list_table thead th {
+                            pointer-events: none !important;
+                            cursor: default !important;
+                           }
                     </style>
 
 
@@ -56,6 +61,7 @@
                     </div>
                   
                
+                    <!-- Sieve Analysis -->
                     <div invisible="sieve_visible == False" >
                         <h1 style="text-align: center;">
                             <field name="sieve_analysis_name" readonly="1" nolabel="1"/>
@@ -81,7 +87,7 @@
 
 
                     <div invisible="sieve_visible == False">
-                        <field name="sieve_analysis_child_lines" nolabel="1" >
+                        <field name="sieve_analysis_child_lines" nolabel="1" class="no_column_sorting" >
                             <tree editable="bottom"  class="custom_table_borders ">
                                 <field  name="serial_no" string="Sr.No"/>
                                 <field  name='sieve_size' string="IS Sieve Size"/>
@@ -625,10 +631,10 @@
                       
                       
                       <div invisible= "soundness_na2so4_visible == False" class="custom_table_borders">
-                        <field name="soundness_sod_line_ids" nolabel="1">
+                        <field name="soundness_sod_line_ids" nolabel="1" class="no_column_sorting">
                                 <tree editable="bottom">
-                                    <field name='passing_sieve'/>
-                                    <field name='retained_sieve'/>
+                                    <field name='passing_sieve' readonly= "1"/>
+                                    <field name='retained_sieve' readonly= "1"/>
                                     <field name='grading_percent' class="blue-input" decoration-info="grading_percent != 0"/>
                                     <field name='weight_before' class="blue-input" decoration-info="weight_before != 0"/>
                                     <field name='weight_after' class="blue-input" decoration-info="weight_after != 0"/>
@@ -702,10 +708,10 @@
                       
                       
                       <div invisible= "soundness_mgso4_visible == False" class="custom_table_borders">
-                        <field name="soundness_mag_line_ids" nolabel="1">
+                        <field name="soundness_mag_line_ids" nolabel="1" class="no_column_sorting">
                                 <tree editable="bottom">
-                                    <field name='passing_sieve'/>
-                                    <field name='retained_sieve'/>
+                                    <field name='passing_sieve' readonly= "1"/>
+                                    <field name='retained_sieve' readonly= "1"/>
                                     <field name='grading_percent' class="blue-input" decoration-info="grading_percent != 0"/>
                                     <field name='weight_before' class="blue-input" decoration-info="weight_before != 0"/>
                                     <field name='weight_after' class="blue-input" decoration-info="weight_after != 0"/>
