@@ -537,7 +537,7 @@ class CoarseAggregateMechanical(models.Model):
 
 
     # Flakiness and Elongation 
-    elongation_fl_name = fields.Char(default="FLAKINESS AND ELONGATION INDEX COARSE AGGREGATE")
+    elongation_fl_name = fields.Char(default="FLAKINESS AND ELONGATION INDEX")
     elongation_fl_visible = fields.Boolean("FLAKINESS AND ELONGATION INDEX",compute="_compute_visible")
 
 
@@ -1594,11 +1594,11 @@ class CoarseAggregateMechanical(models.Model):
     
 
 
-    total_grading = fields.Float("Total Grading %", compute="_compute_totaled")
-    total_weight_before = fields.Float("Total Weight Before", compute="_compute_totaled")
-    total_weight_after = fields.Float("Total Weight After", compute="_compute_totaled")
-    total_percent_loss = fields.Float("Total % Loss (Not Used)", compute="_compute_totaled")
-    total_weighted_avg = fields.Float("Final Result (Weighted Avg)", compute="_compute_totaled")
+    total_grading = fields.Float("Total (Grading of Original Sample (%))", compute="_compute_totaled")
+    total_weight_before = fields.Float("Total (Weight of Test Fraction Before Test (gm))", compute="_compute_totaled")
+    total_weight_after = fields.Float("Total (Weight of Test Fraction After Test (gm))", compute="_compute_totaled")
+    total_percent_loss = fields.Float("Total (Percentage Passing Finer Sieve After Test (Actual Percentage Loss))", compute="_compute_totaled")
+    total_weighted_avg = fields.Float("Final Result (Weighted Average  (Corrected Percent Loss))", compute="_compute_totaled")
 
     @api.depends(
         'soundness_sod_line_ids.grading_percent',
@@ -1633,11 +1633,11 @@ class CoarseAggregateMechanical(models.Model):
         ]
         return default_lines 
     
-    total1_grading = fields.Float("Total Grading %", compute="_compute_totally")
-    total1_weight_before = fields.Float("Total Weight Before", compute="_compute_totally")
-    total1_weight_after = fields.Float("Total Weight After", compute="_compute_totally")
-    total1_percent_loss = fields.Float("Total % Loss (Not Used)", compute="_compute_totally")
-    total1_weighted_avg = fields.Float("Final Result (Weighted Avg)", compute="_compute_totally")
+    total1_grading = fields.Float("Total (Grading of Original Sample (%)", compute="_compute_totally")
+    total1_weight_before = fields.Float("Total (Weight of Test Fraction Before Test (gm))", compute="_compute_totally")
+    total1_weight_after = fields.Float("Total (Weight of Test Fraction After Test (gm))", compute="_compute_totally")
+    total1_percent_loss = fields.Float("Total (Percentage Passing Finer Sieve After Test (Actual Percentage Loss))", compute="_compute_totally")
+    total1_weighted_avg = fields.Float("Final Result (Weighted Average  (Corrected Percent Loss))", compute="_compute_totally")
 
     @api.depends(
         'soundness_sodtwo_line_ids.grading_percent',
@@ -1730,11 +1730,11 @@ class CoarseAggregateMechanical(models.Model):
     
 
 
-    mag_total_grading = fields.Float("Total Grading %", compute="_compute_totalled")
-    mag_total_weight_before = fields.Float("Total Weight Before", compute="_compute_totalled")
-    mag_total_weight_after = fields.Float("Total Weight After", compute="_compute_totalled")
-    mag_total_percent_loss = fields.Float("Total % Loss (Not Used)", compute="_compute_totalled")
-    mag_total_weighted_avg = fields.Float("Final Result (Weighted Avg)", compute="_compute_totalled")
+    mag_total_grading = fields.Float("Total (Grading of Original Sample (%))", compute="_compute_totalled")
+    mag_total_weight_before = fields.Float("Total (Weight of Test Fraction Before Test (gm))", compute="_compute_totalled")
+    mag_total_weight_after = fields.Float("Total (Weight of Test Fraction After Test (gm))", compute="_compute_totalled")
+    mag_total_percent_loss = fields.Float("Total (Percentage Passing Finer Sieve After Test (Actual Percentage Loss))", compute="_compute_totalled")
+    mag_total_weighted_avg = fields.Float("Final Result (Weighted Average  (Corrected Percent Loss))", compute="_compute_totalled")
 
     @api.depends(
         'soundness_mag_line_ids.grading_percent',
@@ -1769,11 +1769,11 @@ class CoarseAggregateMechanical(models.Model):
         ]
         return default_lines 
     
-    mag_total1_grading = fields.Float("Total Grading %", compute="_compute_totallly")
-    mag_total1_weight_before = fields.Float("Total Weight Before", compute="_compute_totallly")
-    mag_total1_weight_after = fields.Float("Total Weight After", compute="_compute_totallly")
-    mag_total1_percent_loss = fields.Float("Total % Loss (Not Used)", compute="_compute_totallly")
-    mag_total1_weighted_avg = fields.Float("Final Result (Weighted Avg)", compute="_compute_totallly")
+    mag_total1_grading = fields.Float("Total (Grading of Original Sample (%))", compute="_compute_totallly")
+    mag_total1_weight_before = fields.Float("TTotal (Weight of Test Fraction Before Test (gm))", compute="_compute_totallly")
+    mag_total1_weight_after = fields.Float("Total (Weight of Test Fraction After Test (gm))", compute="_compute_totallly")
+    mag_total1_percent_loss = fields.Float("otal (Percentage Passing Finer Sieve After Test (Actual Percentage Loss))", compute="_compute_totallly")
+    mag_total1_weighted_avg = fields.Float("Final Result (Weighted Average  (Corrected Percent Loss))", compute="_compute_totallly")
 
     @api.depends(
         'soundness_magtwo_line_ids.grading_percent',
@@ -3266,19 +3266,19 @@ class SodiumSulphateLine(models.Model):
     passing_sieve = fields.Char("Passing Sieve Size")
     retained_sieve = fields.Char("Retained Sieve Size")
 
-    grading_percent = fields.Float("Grading of Original Sample (%)")
+    grading_percent = fields.Float("Grading of Orignal Sample Percent")
 
-    weight_before = fields.Float("Weight Before Test (gm)")
-    weight_after = fields.Float("Weight After Test (gm)")
+    weight_before = fields.Float("Weight of Test Fraction Before Test (gm)")
+    weight_after = fields.Float("Weight of Test Fraction After Test (gm)")
 
     percent_loss = fields.Float(
-        "Percent Loss",
+        "Percentage Passing Finer Sieve After Test (Actual Percentage Loss",
         compute="_compute_loss",
         store=True
     )
 
     weighted_avg = fields.Float(
-        "Weighted Average",
+        "Weighted Average  (Corrected Percent Loss)",
         compute="_compute_weighted_avg",
         store=True
     )
@@ -3289,7 +3289,6 @@ class SodiumSulphateLine(models.Model):
         if rec.weight_before > 0:
             rec.percent_loss = (
                 (rec.weight_before - rec.weight_after)
-                / rec.weight_before
             ) * 100
         else:
             rec.percent_loss = 0
@@ -3313,17 +3312,17 @@ class SodiumSulphateTwoLine(models.Model):
 
     grading_percent = fields.Float("Grading of Original Sample (%)")
 
-    weight_before = fields.Float("Weight Before Test (gm)")
-    weight_after = fields.Float("Weight After Test (gm)")
+    weight_before = fields.Float("Weight of Test Fraction Before Test (gm)")
+    weight_after = fields.Float("Weight of Test Fraction After Test (gm)")
 
     percent_loss = fields.Float(
-        "Percent Loss",
+        "Percentage Passing Finer Sieve After Test (Actual Percentage Loss)",
         compute="_compute_loss",
         store=True
     )
 
     weighted_avg = fields.Float(
-        "Weighted Average",
+        "Weighted Average  (Corrected Percent Loss)",
         compute="_compute_weighted_avg",
         store=True
     )
@@ -3334,7 +3333,6 @@ class SodiumSulphateTwoLine(models.Model):
         if rec.weight_before > 0:
             rec.percent_loss = (
                 (rec.weight_before - rec.weight_after)
-                / rec.weight_before
             ) * 100
         else:
             rec.percent_loss = 0
@@ -3356,19 +3354,16 @@ class MagnesiumSulphateLine(models.Model):
     passing_sieve = fields.Char("Passing Sieve Size")
     retained_sieve = fields.Char("Retained Sieve Size")
 
-    grading_percent = fields.Float("Grading of Original Sample (%)")
+    grading_percent = fields.Float("Grading of Orignal Sample Percent")
 
-    weight_before = fields.Float("Weight Before Test (gm)")
-    weight_after = fields.Float("Weight After Test (gm)")
+    weight_before = fields.Float("Weight of Test Fraction Before Test (gm)")
+    weight_after = fields.Float("Weight of Test Fraction After Test (gm)")
 
     percent_loss = fields.Float(
-        "Percent Loss",
-        compute="_compute_loss",
-        store=True
-    )
+        "Percentage Passing Finer Sieve After Test (Actual Percentage Loss",compute="_compute_loss",store=True)
 
     weighted_avg = fields.Float(
-        "Weighted Average",
+        "Weighted Average  (Corrected Percent Loss)",
         compute="_compute_weighted_avg",
         store=True
     )
@@ -3379,7 +3374,6 @@ class MagnesiumSulphateLine(models.Model):
         if rec.weight_before > 0:
             rec.percent_loss = (
                 (rec.weight_before - rec.weight_after)
-                / rec.weight_before
             ) * 100
         else:
             rec.percent_loss = 0
@@ -3403,17 +3397,14 @@ class MagnesiumSulphateTwoLine(models.Model):
 
     grading_percent = fields.Float("Grading of Original Sample (%)")
 
-    weight_before = fields.Float("Weight Before Test (gm)")
-    weight_after = fields.Float("Weight After Test (gm)")
+    weight_before = fields.Float("Weight of Test Fraction Before Test (gm)")
+    weight_after = fields.Float("Weight of Test Fraction After Test (gm)")
 
     percent_loss = fields.Float(
-        "Percent Loss",
-        compute="_compute_loss",
-        store=True
-    )
+        "Percentage Passing Finer Sieve After Test (Actual Percentage Loss)",compute="_compute_loss",store=True)
 
     weighted_avg = fields.Float(
-        "Weighted Average",
+        "Weighted Average  (Corrected Percent Loss)",
         compute="_compute_weighted_avg",
         store=True
     )
@@ -3424,7 +3415,6 @@ class MagnesiumSulphateTwoLine(models.Model):
         if rec.weight_before > 0:
             rec.percent_loss = (
                 (rec.weight_before - rec.weight_after)
-                / rec.weight_before
             ) * 100
         else:
             rec.percent_loss = 0
