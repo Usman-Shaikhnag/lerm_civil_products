@@ -3,6 +3,8 @@ from odoo.exceptions import UserError,ValidationError
 from datetime import timedelta
 import math
 from statistics import mean
+from statistics import mean
+from math import sqrt
 
 
 class CementPPC(models.Model):
@@ -924,48 +926,49 @@ class CementPPC(models.Model):
 
     fineness_blaine_ids = fields.One2many("fineness.blaine.ppc.line","parent_id",string="Trial Lines")
 
-    average_time = fields.Float(string="Average Time (t)",compute="_compute_result",store=True,)
+    average_time = fields.Float(string="Average Time (t)",compute="_compute_blaine_results")
 
-    sqrt_time = fields.Float(string="√t",compute="_compute_result",store=True,)
+    sqrt_time = fields.Float(string="√t",compute="_compute_blaine_results",)
 
-    specific_surface = fields.Float(string="Specific Surface (cm²/g)",compute="_compute_result",store=True,)
+    specific_surface = fields.Float(string="Specific Surface (cm²/g)",compute="_compute_blaine_results")
 
     @api.depends(
-        "fineness_blaine_ids.time",
-        "fineness_blaine_ids.mass",
-        "e",
-        "density",
-        "apparatus_constant",
-    )
-    def _compute_result(self):
-        for rec in self:
+    "fineness_blaine_ids.time",
+    "eta",
+    "e",
+    "density",
+    "apparatus_constant",
+)
+    def _compute_blaine_results(self):
+     for rec in self:
+        times = rec.fineness_blaine_ids.filtered(
+            lambda line: line.time > 0
+        ).mapped("time")
 
-            rec.average_time = 0.0
-            rec.sqrt_time = 0.0
-            rec.specific_surface = 0.0
+        rec.average_time = 0.0
+        rec.sqrt_time = 0.0
+        rec.specific_surface = 0.0
 
-            if not rec.fineness_blaine_ids:
-                continue
+        if not times:
+            continue
 
-            times = rec.fineness_blaine_ids.mapped("time")
-            masses = rec.fineness_blaine_ids.mapped("mass")
+        avg_time = sum(times) / len(times)
 
-            avg_time = sum(times) / len(times)
-            avg_mass = sum(masses) / len(masses)
+        rec.average_time = avg_time
+        rec.sqrt_time = sqrt(avg_time)
 
-            rec.average_time = avg_time
-            rec.sqrt_time = sqrt(avg_time)
-
-            if (
-                rec.density
-                and rec.eta
-                and (1 - rec.e)
-            ):
-                rec.specific_surface = (
-                    (rec.apparatus_constant / rec.density)
-                    * (sqrt(rec.e ** 3) / (1 - rec.e))
-                    * (rec.sqrt_time / sqrt(0.1 * rec.eta))
-                )
+        if (
+            rec.apparatus_constant > 0
+            and rec.density > 0
+            and rec.eta > 0
+            and 0 < rec.e < 1
+        ):
+            rec.specific_surface = (
+                (rec.apparatus_constant / rec.density)
+                * (sqrt(rec.e ** 3) / (1 - rec.e))
+                * (rec.sqrt_time / sqrt(0.1 * rec.eta))
+            )
+                
 
 
     specific_surface_confirmity = fields.Selection([
