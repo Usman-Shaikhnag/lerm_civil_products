@@ -131,7 +131,7 @@
 							</table>
 					</div>
 				
-					<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
+					<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','124fgrt3-1b3c-43ae-9c20-5421b6d6edf9')], limit=1).technician"/>
 					<div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -153,7 +153,7 @@
                         </div>
                         
                         <div style="margin-left:600px">
-                                    
+                                     
                             <div>
                                 <b>
                                     Checked By
@@ -176,11 +176,6 @@
 						</div>
 					</div>
 
-
-
-
-
-					
 
 
 
@@ -230,7 +225,7 @@
 																				
 										</table>
 
-							<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
+							<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','3214fgrt-1d2c-4d3b-9ebe-ecb0b5e1221e')], limit=1).technician"/>
 							<div t-if="data.specigic_gravity_visible" class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -252,7 +247,7 @@
                         </div>
                         
                         <div style="margin-left:600px">
-                                    
+                                     
                             <div>
                                 <b>
                                     Checked By
@@ -603,7 +598,7 @@
 
 
 
-							<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
+							<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','3201vfg-98f0-419e-94cd-1844af4393f5')], limit=1).technician"/>
 							<div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -625,7 +620,7 @@
                         </div>
                         
                         <div style="margin-left:600px">
-                                    
+                                     
                             <div>
                                 <b>
                                     Checked By
@@ -718,7 +713,7 @@
 
 
 
-					<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
+					<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','a475e70d-d1f5-4f63-9595-15c45e940da7')], limit=1).technician"/>
 					<div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -749,7 +744,7 @@
                         </div>
                         
                         <div style="margin-left:600px">
-                                    
+                                     
                             <div>
                                 <b>
                                     Checked By
@@ -932,7 +927,7 @@
 
 
 
-                      	<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
+                      	<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','2014fgr32-6bbe-4fdf-9571-a5a099be0293')], limit=1).technician"/>
                       	<div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -954,7 +949,7 @@
                         </div>
                         
                         <div style="margin-left:600px">
-                                    
+                                     
                             <div>
                                 <b>
                                     Checked By
@@ -1049,7 +1044,7 @@
 
 
 
-					<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
+					<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','3210ght7-91b0-4153-87ef-11b6954a9837')], limit=1).technician"/>
 					<div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -1080,7 +1075,7 @@
                         </div>
                         
                         <div style="margin-left:600px">
-                                    
+                                     
                             <div>
                                 <b>
                                     Checked By
@@ -1210,7 +1205,7 @@
 
 
 
-					<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
+					<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','b0e2437d-514b-4875-9f3a-203d5fad1d83')], limit=1).technician"/>
 					<div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -1241,7 +1236,7 @@
                         </div>
                         
                         <div style="margin-left:600px">
-                                    
+                                     
                             <div>
                                 <b>
                                     Checked By
@@ -1279,10 +1274,7 @@
                 
 
 
-
-
-
-						<!-- Particles Retained On 45 Micron IS Sieve (Wet Sieving) -->
+					<!-- Particles Retained On 45 Micron IS Sieve (Wet Sieving) -->
 						<div t-if="data.particles_retained_visible" style="margin-top:20px; page-break-before: always;">
 							<div style="text-align:center;font-size:18px">
 								Particles Retained On 45 Micron IS Sieve (Wet Sieving)
@@ -1338,7 +1330,7 @@
 
 
 
-							<t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
+							<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','3214vbfsd-0da6-4ec4-a91e-d41c44f5edb5')], limit=1).technician"/>
 							<div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -1360,7 +1352,7 @@
                         </div>
                         
                         <div style="margin-left:600px">
-                                    
+                                     
                             <div>
                                 <b>
                                     Checked By
@@ -1384,15 +1376,7 @@
 					</div>
 
 
-
-						
-
-					
-					
-
-
-					
-						<!-- Fineness By Blaine Air Permeability Method -->
+					<!-- Fineness By Blaine Air Permeability Method -->
 						<div style="margin-top:20px; page-break-before: always;">
 							<div style="text-align:center;font-size:18px">
 								Fineness By Blaine Air Permeability Method (m²/kg)

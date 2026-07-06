@@ -170,25 +170,25 @@
                                     <tbody>
                                         <tr>
                                             <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;font-weight: bold">
-                                        Binder content 
-                                            </td>
-                                          
-                                          
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 80px;">
-                                                      <span t-field="data.binder_content"/>
-                                                </div>
-                                            </td>
+Binder content 
+                                             </td>
+                                           
+                                           
+                                             <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
+                                                 <div style="display: inline-block; min-width: 80px;">
+                                                       <span t-field="data.binder_content"/>
+                                                 </div>
+                                             </td>
 
-                                              <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;font-weight: bold">
-                                              %
-                                            </td>
-                                          
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                               <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;font-weight: bold">
+                                               %
+                                             </td>
+                                           
+                                         </tr>
+                                     </tbody>
+                                 </table>
 
-                                <t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
+                                 <t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','32578999-7188-4086-b132-62b50e63f1247ui')], limit=1).technician"/>
                                 <div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -324,7 +324,7 @@
                             </tr>
                         </table> 
 
-                        <t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
+                        <t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','5487698-4587-4086-b132-62b50e63f1247ui')], limit=1).technician"/>
                         <div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -462,7 +462,7 @@
                             </tr>
                         </table> 
 
-                        <t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
+                        <t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','6587412-4587-4086-b132-62b50e63f124778')], limit=1).technician"/>
                         <div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -579,7 +579,7 @@
                             </tr>
                         </table> 
 
-                        <t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
+                        <t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','3587914-4587-4086-b132-62b50e63f124772')], limit=1).technician"/>
                         <div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -718,7 +718,7 @@
                             </tr>
                         </table> 
 
-                        <t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
+                        <t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','68574nht-4587-4086-b132-62b50e63f12474h')], limit=1).technician"/>
                         <div class="signatureContainer girdgird">
 							<div>
 								<div>

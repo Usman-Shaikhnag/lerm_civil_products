@@ -168,27 +168,7 @@
 							</tr>
 
                             <tr>
-									<td colspan="1">Temperature :-</td>
-										<td colspan="1" >
-											<!-- <t t-if="brick.brick_temperature is not None">
-											<span t-field="brick.brick_temperature"/>   °C
-										</t>
-									<t t-else="">-</t> -->
-										</td>
-
-									<td colspan="1">Humidity :-</td>
-										<td colspan="1" >
-											<!-- <t t-if="brick.brick_humidity is not None">
-											<span t-field="brick.brick_humidity"/>   °C
-										</t>
-									<t t-else="">-</t> -->
-										</td>
-								
-							</tr>
-							
-
-                            <tr>
-								<td colspan="1">Reference No.  :-</td>
+								<td colspan="1">Customer No.  :-</td>
 								<td colspan="3">
 									<t t-if="o.srf_id.client_refrence">
 											<span t-field="o.srf_id.client_refrence"/>
@@ -1204,14 +1184,18 @@
 
 				
 						<div style="margin-top:50px" class="noteContainer">
-							<table >
+							<table class="table table-bordered">
 								<tr>
-									<td style="padding: 5px; font-style: italic; ">
+									<td style="padding: 5px; font-style: italic; font-size: 12px;">
+										<t t-if="data.notes_id">
+											<b>Notes:-</b>
 
-										<b>Notes:-</b>
-											<t t-if="data.notes_id">
 											<t t-foreach="data.notes_id" t-as="n">
-												<span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span>
+												<span>
+													(<t t-esc="n.sr_no"/>) 
+													<t t-esc="n.notes"/>
+													&#160;&#160;
+												</span><br/>
 											</t>
 										</t>
 									</td>
@@ -1226,8 +1210,11 @@
 								Checked By
                                     </b>
                                 </div>
-                                <div style="height:40px">
-
+                                <div style="height: 50px;">
+                                    <t t-if="eln.sample_id.checkby_signature_required and eln.sample_id.check_by.employee_id.signature">
+                                        <img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')"
+                                            style="max-width: 200px; max-height: 45px; margin-top: 1px; z-index: -10;"/>
+                                    </t>
                                 </div>
                                 <div>
                                     <b>
@@ -1245,9 +1232,9 @@
 						<!-- <div>
 							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
 						</div> -->
-						<div style="padding-top:5px">
+						<!-- <div style="padding-top:5px">
 							Format No. <span t-esc="eln.material.test_format_no"/>
-						</div>
+						</div> -->
 					</div>
                             <div>
                                 <div>
@@ -1256,8 +1243,12 @@
                                     </b>
 
                                 </div>
-                                <div style="height:40px">
-
+                                <div style="height: 50px;">
+                                    <t t-if="eln.sample_id.approveby_signature_required">
+                                        <div t-if="eln.sample_id.approved_by.employee_id.signature">
+                                            <img t-att-src="'data:image/png;base64,%s' % eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 45px;margin-top:1px; z-index: -10;"/>
+                                        </div>
+                                    </t>
                                 </div>
                                 <div>
                                     <b>
