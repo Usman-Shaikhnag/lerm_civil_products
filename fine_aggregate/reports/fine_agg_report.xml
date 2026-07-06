@@ -399,14 +399,14 @@
 
 
 							<!-- Bulk Density -->
-                            <t t-set="show_loose_bulk_density" t-value="data.loose_density_nabl == 'pass' and nabl or (data.loose_density_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+                            <t t-set="show_loose_bulk_density" t-value="data.loose_avg_nabl == 'pass' and nabl or (data.loose_avg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
 
-                            <t t-set="show_rodded_bulk_density" t-value="data.compacted_density_nabl == 'pass' and nabl or (data.compacted_density_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+                            <t t-set="show_rodded_bulk_density" t-value="data.rodded_avg_nabl == 'pass' and nabl or (data.rodded_avg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
 
                             <!-- 🔹 Step 2: Rowspan calculation -->
 					      <t t-set="rowspan_count" t-value="1 + int(show_loose_bulk_density) + int(show_rodded_bulk_density)"/>
 
-                          <tr t-if="(data.loose_density_visible or compacted_density_visible) and (show_loose_bulk_density or show_rodded_bulk_density)">
+                          <tr t-if="(data.loose_bulk_density_visible or rodded_bulk_density_visible) and (show_loose_bulk_density or show_rodded_bulk_density)">
 
 									<t t-set="bulk" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','f2c6222e-e761-4b65-844a-fb882948c47f')])"/>
 									
@@ -421,7 +421,7 @@
 
 					
 							 <!-- Loose Bulk Density -->
-                             <tr t-if="data.loose_density_visible and show_loose_bulk_density">
+                             <tr t-if="data.loose_bulk_density_visible and show_loose_bulk_density">
 									<t t-set="loose_bulk_density" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','4587tyhloos-3fa3-4b83-ae31-9d281767188c')])"/>
 									
 									<td>
@@ -430,7 +430,7 @@
 
                                     <td style="text-align: center;">
 										<span>
-											<span t-field="data.loose_density" t-options='{"widget": "float", "precision": 2}'/>
+											<span t-field="data.loose_avg" t-options='{"widget": "float", "precision": 2}'/>
 										</span>
 									</td>
 
@@ -463,7 +463,7 @@
 								</tr>
 
 								<!-- Rodded Bulk Density -->
-							<tr t-if="data.compacted_density_visible and show_rodded_bulk_density">
+							<tr t-if="data.rodded_bulk_density_visible and show_rodded_bulk_density">
 									<t t-set="rodded_bulk_density" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','d961c78a-9f5c-4e7f-9f03-86ab65740161')])"/>
 									
 									<td>
@@ -472,7 +472,7 @@
 
                                     <td style="text-align: center;">
 										<span>
-											<span t-field="data.compacted_density" t-options='{"widget": "float", "precision": 2}'/>
+											<span t-field="data.rodded_avg" t-options='{"widget": "float", "precision": 2}'/>
 										</span>
 									</td>
 
@@ -504,7 +504,7 @@
 								</tr>
 
 								<!-- Specific Gravity -->
-								<tr t-if="data.specific_gravity_visible and (data.avg_specific_gravity_nabl == 'pass' and nabl or (data.avg_specific_gravity_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.specific_gravity_visible and (data.average_specific_gravity_nabl == 'pass' and nabl or (data.average_specific_gravity_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<t t-set="specific_gravity" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','45875ght-7188-4086-b132-62b50e63f1245gt')])"/>
 									
 									<td style="text-align: center;">
@@ -517,7 +517,7 @@
 
                                     <td style="text-align: center;">
 										<span>
-											<span t-field="data.avg_specific_gravity" t-options='{"widget": "float", "precision": 2}'/>
+											<span t-field="data.average_specific_gravity" t-options='{"widget": "float", "precision": 2}'/>
 										</span>
                                     </td>
 
@@ -551,7 +551,7 @@
 
 								<!-- water absorbtion -->
 
-								<tr t-if="data.specific_gravity_visible and (data.avg_water_absorption_nabl == 'pass' and nabl or (data.avg_water_absorption_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.specific_gravity_visible and (data.average_water_absorption_nabl == 'pass' and nabl or (data.average_water_absorption_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<t t-set="water_absorption" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','4dbde30b-0cdc-4641-abdd-68a574fd7e1f')])"/>
 									
 									<td style="text-align: center;">
@@ -565,7 +565,7 @@
 
                                     <td style="text-align: center;">
 										<span>
-											<span t-field="data.avg_water_absorption" t-options='{"widget": "float", "precision": 2}'/>
+											<span t-field="data.average_water_absorption" t-options='{"widget": "float", "precision": 2}'/>
 										</span>
 									</td>
 
@@ -598,7 +598,56 @@
 									
 								</tr>
 
-								<!-- DELETERIOUS MATERIAL (CLAY & LUMPS) -->
+
+								<!--Deleterious Material - Lightweight Pieces (Coal & Lignite) -->
+							<tr t-if="data.deleterious_coal_lignite_visible and (data.avg_deleterious_coal_lignite_nabl == 'pass' and nabl or (data.avg_deleterious_coal_lignite_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+									<t t-set="coal_lignite" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','efc370df-e45d-43a8-a4fa-e1139b59b134')])"/>
+									
+									<td style="text-align: center;">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td>
+										<span t-esc="coal_lignite.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="data.avg_deleterious_coal_lignite" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="coal_lignite.unit.name"/>
+										</span>
+									</td>
+									
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="coal_lignite.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="coal_lignite.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+
+									<!-- DELETERIOUS MATERIAL (CLAY & LUMPS) -->
 							<tr t-if="data.clay_lump_visible and (data.clay_lumps_percent_nabl == 'pass' and nabl or (data.clay_lumps_percent_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<t t-set="clay_lump" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','ee680f62-91d0-4ffd-bb0c-ecfcd75e13eb')])"/>
 									
@@ -644,35 +693,34 @@
 									
 								</tr>
 
-						<!--Deleterious Material - Lightweight Pieces (Coal & Lignite) -->
 
-							<tr t-if="data.deleterious_coal_lignite_visible and (data.avg_deleterious_coal_lignite_nabl == 'pass' and nabl or (data.avg_deleterious_coal_lignite_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="coal_lignite" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','efc370df-e45d-43a8-a4fa-e1139b59b134')])"/>
+									<!-- Deleterious Material (Soft Fragments) -->
+							<tr t-if="data.soft_fragments_visible and (data.soft_fragments_percent_nabl == 'pass' and nabl or (data.soft_fragments_percent_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+									<t t-set="soft_fragments" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','03d66a05-767f-4e4f-9f09-b1a3af00af76')])"/>
 									
 									<td style="text-align: center;">
 										<span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/>
 									</td>
 									<td>
-										<span t-esc="coal_lignite.parameter_name"/>
+										<span t-esc="soft_fragments.parameter_name"/>
 									</td>
 
                                     <td style="text-align: center;">
 										<span>
-											<span t-field="data.avg_deleterious_coal_lignite" t-options='{"widget": "float", "precision": 2}'/>
+											<span t-field="data.soft_fragments_percent" t-options='{"widget": "float", "precision": 2}'/>
 										</span>
-									</td>
 
 									<td style="text-align: center;">
 										<span>
-											<span t-esc="coal_lignite.unit.name"/>
+											<span t-esc="soft_fragments.unit.name"/>
 										</span>
 									</td>
 									
-									
+									</td>
 									<td style="text-align: center;">
 										<span>
-											<t t-foreach="coal_lignite.parameter_table" t-as="parameter">
+											<t t-foreach="soft_fragments.parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
 													<span t-field="parameter.permissable_limit"/>
 												</t>
@@ -682,7 +730,7 @@
 
                                     <td style="text-align: center;">
 										<span>
-											<t t-foreach="coal_lignite.parameter_table" t-as="parameter">
+											<t t-foreach="soft_fragments.parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
 													<span t-field="parameter.specification"/>
 												</t>
@@ -737,6 +785,104 @@
 									</td>
 									
 								</tr>
+
+
+
+								<!-- Moisture Content -->
+							<tr t-if="data.moisture_content_visible and (data.average_moisture_content_nabl == 'pass' and nabl or (data.average_moisture_content_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+									<t t-set="moisture_content" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','1457htyu1245-3fa3-4b83-ae31-9d281457457hy')])"/>
+									
+									<td style="text-align: center;">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td>
+										<span t-esc="moisture_content.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="data.average_moisture_content" t-options='{"widget": "float","precision": 2}'/>
+									</span>									
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="moisture_content.unit.name"/>
+										</span>
+									</td>
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="moisture_content.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="moisture_content.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+
+								<!-- Bulking Sand -->
+							<tr t-if="data.bulking_sand_visible and (data.average_bulking_nabl == 'pass' and nabl or (data.average_bulking_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+									<t t-set="bulking" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','45789bhgt25-3fa3-4b83-ae31-9d28176718457')])"/>
+									
+									<td style="text-align: center;">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td>
+										<span t-esc="bulking.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="data.average_bulking" t-options='{"widget": "float","precision": 2}'/>
+									</span>									
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="bulking.unit.name"/>
+										</span>
+									</td>
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="bulking.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="bulking.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+
+
 
 								
 
@@ -831,141 +977,7 @@
 									
 								</tr>
 
-									<!--  Moisture Content -->
-							<tr t-if="data.moisture_content_visible and (data.avg_moisture_nabl == 'pass' and nabl or (data.avg_moisture_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="moisture" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','1457htyu1245-3fa3-4b83-ae31-9d281457457hy')])"/>
-									
-									<td style="text-align: center;">
-										<span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/>
-									</td>
-									<td>
-										<span t-esc="moisture.parameter_name"/>
-									</td>
-
-                                    <td style="text-align: center;">
-										<span>
-											<span t-field="data.avg_moisture" t-options='{"widget": "float", "precision": 2}'/>
-										</span>
-
-									<td style="text-align: center;">
-										<span>
-											<span t-esc="moisture.unit.name"/>
-										</span>
-									</td>								
-									</td>
-									<td style="text-align: center;">
-										<span>
-											<t t-foreach="moisture.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.permissable_limit"/>
-												</t>
-											</t>
-										</span>
-									</td>
-
-                                    <td style="text-align: center;">
-										<span>
-											<t t-foreach="moisture.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-												</t>
-											</t>
-										</span>
-									</td>
-									
-								</tr>
-
-
-								<!--  Deleterious Material (Soft Fragments) -->
-							<tr t-if="data.deleterious_soft_par_visible and (data.avg_soft_particles_percent_nabl == 'pass' and nabl or (data.avg_soft_particles_percent_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="soft_particle" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','03d66a05-767f-4e4f-9f09-b1a3af00af76')])"/>
-									
-									<td style="text-align: center;">
-										<span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/>
-									</td>
-									<td>
-										<span t-esc="soft_particle.parameter_name"/>
-									</td>
-
-                                    <td style="text-align: center;">
-										<span>
-											<span t-field="data.avg_soft_particles_percent" t-options='{"widget": "float", "precision": 2}'/>
-										</span>
-
-									<td style="text-align: center;">
-										<span>
-											<span t-esc="soft_particle.unit.name"/>
-										</span>
-									</td>								
-									</td>
-									<td style="text-align: center;">
-										<span>
-											<t t-foreach="soft_particle.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.permissable_limit"/>
-												</t>
-											</t>
-										</span>
-									</td>
-
-                                    <td style="text-align: center;">
-										<span>
-											<t t-foreach="soft_particle.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-												</t>
-											</t>
-										</span>
-									</td>
-									
-								</tr>
-
-								<!--  Deleterious Material (Soft Fragments) -->
-							<tr t-if="data.bulking_sand_visible and (data.avg_bulking_of_sand_nabl == 'pass' and nabl or (data.avg_bulking_of_sand_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="bulking_sand" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','45789bhgt25-3fa3-4b83-ae31-9d28176718457')])"/>
-									
-									<td style="text-align: center;">
-										<span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/>
-									</td>
-									<td>
-										<span t-esc="bulking_sand.parameter_name"/>
-									</td>
-
-                                    <td style="text-align: center;">
-										<span>
-											<span t-field="data.avg_bulking_of_sand" t-options='{"widget": "float", "precision": 2}'/>
-										</span>
-
-									<td style="text-align: center;">
-										<span>
-											<span t-esc="bulking_sand.unit.name"/>
-										</span>
-									</td>								
-									</td>
-									<td style="text-align: center;">
-										<span>
-											<t t-foreach="bulking_sand.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.permissable_limit"/>
-												</t>
-											</t>
-										</span>
-									</td>
-
-                                    <td style="text-align: center;">
-										<span>
-											<t t-foreach="bulking_sand.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-												</t>
-											</t>
-										</span>
-									</td>
-									
-								</tr>
+								
 
 								</tbody>
 								</table>
