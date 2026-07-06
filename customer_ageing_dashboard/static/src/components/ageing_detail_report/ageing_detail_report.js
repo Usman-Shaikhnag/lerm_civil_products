@@ -56,15 +56,17 @@ class AgeingDetailReport extends Component {
 
     async _loadData() {
         const action = this.props.action || {};
+        const ctx = action.context || {};
         const params = action.params || {};
 
         this.state.bucketKey = params.bucket_key || null;
-        this.state.partnerName = params.partner_name || "";
+        this.state.partnerName = params.partner_name || ctx.partner_name || "";
         this.state.asOf = params.as_of || "";
 
         const payload = {};
         if (params.as_of) payload.as_of = params.as_of;
         if (params.partner_id) payload.partner_id = parseInt(params.partner_id, 10);
+        else if (ctx.partner_id) payload.partner_id = parseInt(ctx.partner_id, 10);
         if (params.bucket_key) payload.bucket_key = params.bucket_key;
         if (params.salesperson_ids) {
             try {

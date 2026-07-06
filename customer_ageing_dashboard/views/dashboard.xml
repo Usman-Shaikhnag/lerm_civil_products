@@ -8,11 +8,42 @@
             <field name="name">Aged Payables Detail Report</field>
             <field name="tag">customer_ageing_detail_report</field>
         </record>
-        <menuitem name="Customer Ageing Dashboard" id="menu_customer_ageing_dashboard_root"
-                  web_icon="customer_ageing_dashboard,static/description/icon.png"
-                  groups="customer_ageing_dashboard.group_ageing_dashboard">
-            <menuitem name="Ageing Dashboard" id="menu_ageing_dashboard"
-                      sequence="10" action="customer_ageing_dashboard_action"/>
-        </menuitem>
+
+        <record id="action_customer_ageing_detail_for_partner" model="ir.actions.client">
+            <field name="name">Ageing Detail Report</field>
+            <field name="tag">customer_ageing_detail_report</field>
+        </record>
+
+        <record id="partner_form_view_ageing_button" model="ir.ui.view">
+            <field name="name">res.partner.form.ageing.button</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="priority" eval="50"/>
+            <field name="arch" type="xml">
+                <div name="button_box" position="inside">
+                    <field name="ageing_invoice_count" invisible="1"/>
+                    <button type="object"
+                        class="oe_stat_button"
+                        icon="fa-clock-o"
+                        name="action_open_ageing_detail"
+                        groups="customer_ageing_dashboard.group_ageing_dashboard"
+                        invisible="ageing_invoice_count == 0">
+                        <div class="o_form_field o_stat_info">
+                            <span class="o_stat_value">
+                                <field name="currency_id" invisible="1"/>
+                                <field name="ageing_total_due" widget="monetary"
+                                    options="{'currency_field': 'currency_id'}"/>
+                            </span>
+                            <span class="o_stat_text">Overdue</span>
+                        </div>
+                    </button>
+                </div>
+            </field>
+        </record>
+
+        <menuitem name="Ageing Dashboard" id="menu_ageing_dashboard"
+                  parent="account.menu_finance_reports"
+                  sequence="50" action="customer_ageing_dashboard_action"
+                  groups="customer_ageing_dashboard.group_ageing_dashboard"/>
     </data>
 </odoo>

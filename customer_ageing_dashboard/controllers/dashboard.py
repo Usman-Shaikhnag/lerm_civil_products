@@ -229,10 +229,9 @@ class CustomerAgeingDashboard(http.Controller):
         as_of = (
             fields.Date.to_date(as_of_str) if as_of_str else fields.Date.today()
         )
-        resolved_ids = self._resolve_salesperson_ids(salesperson_ids)
         Invoice = request.env["account.move"].sudo()
         Partner = request.env["res.partner"].sudo()
-        inv_domain = self._build_invoice_domain(resolved_ids)
+        inv_domain = self._build_invoice_domain(None if partner_id else salesperson_ids)
         if partner_id:
             inv_domain.append(("partner_id", "=", partner_id))
             partner = Partner.browse(partner_id)

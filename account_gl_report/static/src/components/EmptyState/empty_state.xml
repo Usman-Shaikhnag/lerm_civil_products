@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+
+    <t t-name="gl_report.EmptyState">
+        <div class="o_gl_empty">
+            <div class="o_gl_empty_icon">
+                <i class="fa fa-table"/>
+            </div>
+            <h4>No transactions found</h4>
+            <p>Try adjusting your filters or select a different account to view results.</p>
+            <button class="btn btn-primary" t-on-click="props.onReset">
+                <i class="fa fa-undo me-1"/>Reset Filters
+            </button>
+        </div>
+    </t>
+
+</templates>
