@@ -1243,7 +1243,7 @@
 							</div>
 						</div>
 						<div t-if="stamp_image" style="text-align:center;margin-bottom:10px">
-							<img t-att-src="&apos;data:image/png;base64,&apos; + stamp_image" style="width:200px;"/>
+							<img t-att-src="&apos;data:image/png;base64,&apos; + stamp_image.decode(&apos;utf-8&apos;)" style="width:200px;"/>
 						</div>
 						<div style="text-align:center;margin-top:2px;margin-bottom:0;padding:0;">
 							......End of Report......
