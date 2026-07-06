@@ -41,10 +41,14 @@ class FineAggDatasheetSSL(models.AbstractModel):
             general_data = self.env[model_name].sudo().browse(model_id)
         else:
             general_data = self.env['lerm.eln'].sudo().browse(docids)
+        stamp_image = False
+        if eln.sample_id and eln.sample_id.lab_location:
+            stamp_image = eln.sample_id.lab_location.stamp_image
         return {
             'eln': eln,
             'data' : general_data,
-            'parameter' : parameter_data
+            'parameter' : parameter_data,
+            'stamp_image': stamp_image,
         }
 
 
@@ -166,12 +170,14 @@ class FineAggregateReportSSL(models.AbstractModel):
         else:
             general_data = self.env['lerm.eln'].sudo().browse(docids)
         
+        stamp_image = False
+        if eln.sample_id and eln.sample_id.lab_location:
+            stamp_image = eln.sample_id.lab_location.stamp_image
         return {
             'eln': eln,
             'data' : general_data,
             'qrcode': qr_code,
             'nabl' : nabl,
             'qrcode_static': qr_static_b64,
-            # 'stamp' : inreport_value,
-            'nabl' : nabl
+            'stamp_image': stamp_image,
         }

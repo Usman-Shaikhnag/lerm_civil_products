@@ -426,6 +426,9 @@
 					</div>
 				</div>
 
+				<div t-if="stamp_image" style="text-align:center;margin-bottom:10px">
+					<img t-att-src="'data:image/png;base64,%s' % stamp_image" style="width:200px;"/>
+				</div>
 				<!-- <div style="margin-top: 50px; text-align: center;">
 					<p style="border-top: 1px dashed #000; padding-top: 10px;">
 						...... End Of Report......

@@ -57,14 +57,16 @@ class StainlessSteelTmtBar(models.AbstractModel):
 
         # Convert to list of tuples for sorted access in QWeb
         grouped_bar_lines = sorted(grouped_lines.items(), key=lambda x: x[0])  # sort by dia_of_bar
-        # import wdb; wdb.set_trace()
+        stamp_image = False
+        if eln.sample_id and eln.sample_id.lab_location:
+            stamp_image = eln.sample_id.lab_location.stamp_image
         return {
             'eln': eln,
             'data' : general_data,
             'qrcode': qr_code,
             'qrcode_static': qr_static_b64,
-            # 'stamp' : inreport_value,
             'nabl' : nabl,
+            'stamp_image': stamp_image,
             'grouped_bar_lines': grouped_bar_lines,
 
         }
@@ -94,7 +96,11 @@ class StainlessSteelTmtBarDataSheet(models.AbstractModel):
             general_data = self.env[model_name].sudo().browse(model_id)
         else:
             general_data = self.env['lerm.eln'].sudo().browse(docids)
+        stamp_image = False
+        if eln.sample_id and eln.sample_id.lab_location:
+            stamp_image = eln.sample_id.lab_location.stamp_image
         return {
             'eln': eln,
-            'data' : general_data
+            'data' : general_data,
+            'stamp_image': stamp_image,
         }

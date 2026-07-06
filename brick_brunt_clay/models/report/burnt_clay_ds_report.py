@@ -31,9 +31,13 @@ class BrickDatasheet1(models.AbstractModel):
             general_data = self.env[model_name].sudo().browse(model_id)
         else:
             general_data = self.env['lerm.eln'].sudo().browse(docids)
+        stamp_image = False
+        if eln.sample_id and eln.sample_id.lab_location:
+            stamp_image = eln.sample_id.lab_location.stamp_image
         return {
             'eln': eln,
-            'data' : general_data
+            'data' : general_data,
+            'stamp_image': stamp_image,
         }
     
 
@@ -80,10 +84,14 @@ class BrickReportSsl(models.AbstractModel):
         }
         model = eln.get_product_base_calc_line(data).ir_model.model
         brick_data = self.env[model].search([("id","=",eln.model_id)])
+        stamp_image = False
+        if eln.sample_id and eln.sample_id.lab_location:
+            stamp_image = eln.sample_id.lab_location.stamp_image
         return {
             'eln': eln,
             'brick': brick_data,
             'qrcode': qr_code,
             'qrcode_static': qr_static_b64,
+            'stamp_image': stamp_image,
             'nabl':nabl
         }

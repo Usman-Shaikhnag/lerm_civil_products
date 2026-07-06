@@ -489,16 +489,16 @@ class PileIntegrityReport(models.AbstractModel):
         else:
             general_data = self.env['lerm.eln'].sudo().browse(docids)
 
-
+        stamp_image = False
+        if eln.sample_id and eln.sample_id.lab_location:
+            stamp_image = eln.sample_id.lab_location.stamp_image
 
         return {
             'eln': eln,
             'data': general_data,
             'qrcode': qr_image_base64,
-            # 'graph': graph_image_base64,
-            'stamp': inreport_value,
+            'stamp_image': stamp_image,
             'nabl': nabl,
-           
         }
     
 class PileIntegrityNotes(models.Model):

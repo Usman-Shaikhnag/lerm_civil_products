@@ -32,6 +32,9 @@ class LabMaster(models.Model):
     footer_image = fields.Binary('Footer Image')
     footer_filename = fields.Char("Footer filename")
 
+    stamp_image = fields.Binary(string="Stamp Image")
+    stamp_image_filename = fields.Char("Stamp Filename")
+
     lab_location_line = fields.One2many('lerm.lab.location.master','parent_id',string="Lab Location")
     nabl_scope_link = fields.Char(string="NABL Scope Link")
 

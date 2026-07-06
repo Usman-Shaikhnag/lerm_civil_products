@@ -48,10 +48,14 @@ class AdmixturekReport(models.AbstractModel):
         }
         model = eln.get_product_base_calc_line(data).ir_model.model
         admixture_data = self.env[model].search([("id","=",eln.model_id)])
+        stamp_image = False
+        if eln.sample_id and eln.sample_id.lab_location:
+            stamp_image = eln.sample_id.lab_location.stamp_image
         return {
             'eln': eln,
             'data': admixture_data,
             'qrcode': qr_code,
+            'stamp_image': stamp_image,
             'nabl':nabl
         }
 
@@ -79,7 +83,11 @@ class AdmixtureDatasheet(models.AbstractModel):
             general_data = self.env[model_name].sudo().browse(model_id)
         else:
             general_data = self.env['lerm.eln'].sudo().browse(docids)
+        stamp_image = False
+        if eln.sample_id and eln.sample_id.lab_location:
+            stamp_image = eln.sample_id.lab_location.stamp_image
         return {
             'eln': eln,
-            'data' : general_data
+            'data' : general_data,
+            'stamp_image': stamp_image,
         }
