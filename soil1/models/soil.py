@@ -1729,6 +1729,8 @@ class Soil(models.Model):
 
     light_comp_name = fields.Char("Name",default="Light Compaction Test ")
     light_comp_visible = fields.Boolean("Light Compaction Test",compute="_compute_visible")
+    light_comp_omc_visible = fields.Boolean("Light Compaction Test",compute="_compute_visible")
+    light_comp_mdd_visible = fields.Boolean("Light Compaction Test",compute="_compute_visible")
 
 
     
@@ -2102,8 +2104,10 @@ class Soil(models.Model):
 
     # Heavy Compaction Test
 
-    heavy_name = fields.Char("Name",default="DETERMINATION OF MDD & OMC BY PROCTOR TEST ")
+    heavy_name1 = fields.Char("Name",default="Heavy Compaction Test ")
     heavy_visible = fields.Boolean("Heavy Compaction-MDD Visible",compute="_compute_visible")
+    heavy_omc_visible = fields.Boolean("Heavy Compaction-MDD Visible",compute="_compute_visible")
+    heavy_mdd_visible = fields.Boolean("Heavy Compaction-MDD Visible",compute="_compute_visible")
 
 
     heavy_mould_weight = fields.Float(string="Weight of Mould (w1)", required=True)
@@ -3863,6 +3867,10 @@ class Soil(models.Model):
             record.atterberg_visible = False
             record.plastic_limit_visible = False
             record.light_comp_visible = False
+            record.light_comp_omc_visible = False
+            record.light_comp_mdd_visible = False
+            record.heavy_omc_visible = False
+            record.heavy_mdd_visible = False
             record.heavy_visible = False
             record.cbr_visible = False
             record.constant_head_visible = False
@@ -3903,9 +3911,21 @@ class Soil(models.Model):
 
                 if sample.internal_id == '3210vbf-20fb-4843-aa0e-142578bgtyu':
                     record.light_comp_visible = True
+                
+                if sample.internal_id == '7606fd1e-91b2-4433-a4df-c717bd8283be':
+                    record.light_comp_omc_visible = True
+
+                if sample.internal_id == '90c1d609-0e28-4989-b840-9604bcfbfac2':
+                    record.light_comp_mdd_visible = True
 
                 if sample.internal_id == '3210vbf-20fb-4843-aa0e-2ee981be0d7c':
                     record.heavy_visible = True
+
+                if sample.internal_id == 'dc97b59a-3514-4e1b-8754-5ecfc43bd1a5':
+                    record.heavy_omc_visible = True
+                
+                if sample.internal_id == '7fdc8311-213d-4f77-9bc0-9095a7ff265c':
+                    record.heavy_mdd_visible = True
 
                 if sample.internal_id == '15247gtr-2065-4532-814a-3a4c1e884305':
                     record.cbr_visible = True

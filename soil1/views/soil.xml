@@ -663,16 +663,18 @@
 
                          <!-- Light Compaction Test -->
 
-                     <div invisible = "light_comp_visible == False">
+                     <div invisible="not (light_comp_visible or light_comp_omc_visible or light_comp_mdd_visible)">
                         <h1 class="text-center">
                             <field name="light_comp_name" readonly="1" nolabel="1"/>
                             <field name="light_comp_visible" invisible="1"/>
+                            <field name="light_comp_omc_visible" invisible="1"/>
+                            <field name="light_comp_mdd_visible" invisible="1"/>
                         </h1>
                     </div>
 
 
                     <div class="d-flex gap-2">
-                        <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not light_comp_visible">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not (light_comp_visible or light_comp_omc_visible or light_comp_mdd_visible)">
                             <tbody>
                                 <tr>
                                     <td><label for="mould_weight">Weight of Mould (gm)</label></td>
@@ -686,7 +688,7 @@
                             </tbody>
                         </table>
 
-                        <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not light_comp_visible">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not (light_comp_visible or light_comp_omc_visible or light_comp_mdd_visible)">
                             <tbody>
                                 
                                     <tr>
@@ -705,7 +707,7 @@
 
 
 
-                    <div invisible = "light_comp_visible == False">
+                    <div invisible="not (light_comp_visible or light_comp_omc_visible or light_comp_mdd_visible)">
 
                     <field name="light_line_ids" >
                         <tree editable="bottom" class="custom_table_borders">
@@ -735,7 +737,7 @@
 
                     </div>
 
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not light_comp_visible">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not (light_comp_visible or light_comp_omc_visible or light_comp_mdd_visible)">
                         <tbody>
                             
                             <tr>
@@ -745,13 +747,13 @@
                        </tbody>
                     </table>
 
-                    <button name="action_generate_graph1" string="Generate Graph" type="object" class="btn-primary" invisible = "light_comp_visible == False"/>
+                    <button name="action_generate_graph1" string="Generate Graph" type="object" class="btn-primary" invisible="not (light_comp_visible or light_comp_omc_visible or light_comp_mdd_visible)"/>
 
-                    <div invisible = "light_comp_visible == False" class="custom_table_borders text-center">
+                    <div invisible="not (light_comp_visible or light_comp_omc_visible or light_comp_mdd_visible)" class="custom_table_borders text-center">
                         <field name="light_graph_image" widget="image" readonly="1"/>
                     </div>
 
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not light_comp_visible">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not (light_comp_visible or light_comp_omc_visible or light_comp_mdd_visible)">
                         <tbody>
                             
                             <tr>
@@ -762,14 +764,14 @@
                     </table>
 
 
-                    <button name="action_generate_light1_graph_image" string="Generate Graph" type="object" class="btn-primary" invisible = "light_comp_visible == False"/>
+                    <button name="action_generate_light1_graph_image" string="Generate Graph" type="object" class="btn-primary" invisible="not (light_comp_visible or light_comp_omc_visible or light_comp_mdd_visible)"/>
 
-                    <div invisible = "light_comp_visible == False" class="custom_table_borders text-center">
+                    <div invisible="not (light_comp_visible or light_comp_omc_visible or light_comp_mdd_visible)" class="custom_table_borders text-center">
                         <field name="light1_graph_image" widget="image" readonly="1"/>
                     </div>
 
                     <div class="d-flex gap-2">
-                        <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not light_comp_visible">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not (light_comp_visible or light_comp_omc_visible or light_comp_mdd_visible)">
                             <tbody>
                                 <tr>
                                     <td><label for="light_optimum_moisture">Optimum Moisture Content</label></td>
@@ -795,7 +797,7 @@
                             </tbody>
                         </table>
 
-                        <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not light_comp_visible">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not (light_comp_visible or light_comp_omc_visible or light_comp_mdd_visible)">
                             <tbody>
                                  <tr>
                                     <td><label for="light_max_dry_density">Maximum Dry Density</label></td>
@@ -826,16 +828,18 @@
 
                      <!-- Heavy Compaction Test -->
 
-                     <div invisible = "heavy_visible == False">
+                     <div invisible="not (heavy_visible or heavy_omc_visible or heavy_mdd_visible)">
                         <h1 class="text-center">
-                            <field name="heavy_name" readonly="1" nolabel="1"/>
+                            <field name="heavy_name1" readonly="1" nolabel="1"/>
                             <field name="heavy_visible" invisible="1"/>
+                            <field name="heavy_omc_visible" invisible="1"/>
+                            <field name="heavy_mdd_visible" invisible="1"/>
                         </h1>
                     </div>
 
 
                     <div class="d-flex gap-2">
-                        <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not heavy_visible">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not (heavy_visible or heavy_omc_visible or heavy_mdd_visible)">
                             <tbody>
                                 <tr>
                                     <td><label for="heavy_mould_weight">Weight of Mould (gm)</label></td>
@@ -845,7 +849,7 @@
                             </tbody>
                         </table>
 
-                        <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not heavy_visible">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not (heavy_visible or heavy_omc_visible or heavy_mdd_visible)">
                             <tbody>
                                  <tr>
                                     <td><label for="heavy_mould_volume">Volume of Mould (cc)</label></td>
@@ -859,7 +863,7 @@
 
 
 
-                    <div invisible = "heavy_visible == False">
+                    <div invisible="not (heavy_visible or heavy_omc_visible or heavy_mdd_visible)">
 
                     <field name="heavy_line_ids" >
                         <tree editable="bottom" class="custom_table_borders">
@@ -890,7 +894,7 @@
 
                     </div>
 
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not heavy_visible">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not (heavy_visible or heavy_omc_visible or heavy_mdd_visible)">
                         <tbody>
                             
                             <tr>
@@ -900,14 +904,14 @@
                        </tbody>
                     </table>
 
-                     <button name="generate_line_chart_light_omc" string="Generate Graph" type="object" class="btn-primary" invisible = "heavy_visible == False"/>
+                     <button name="generate_line_chart_light_omc" string="Generate Graph" type="object" class="btn-primary" invisible="not (heavy_visible or heavy_omc_visible or heavy_mdd_visible)"/>
 
-                    <div invisible = "heavy_visible == False" class="custom_table_borders text-center">
+                    <div invisible="not (heavy_visible or heavy_omc_visible or heavy_mdd_visible)" class="custom_table_borders text-center">
                         <field name="heavy_graph_image" widget="image" readonly="1"/>
                     </div>
 
                     <div class="d-flex gap-2">
-                        <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not heavy_visible">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not (heavy_visible or heavy_omc_visible or heavy_mdd_visible)">
                             <tbody>
                                 <tr>
                                     <td><label for="optimum_moisture">Optimum Moisture Content</label></td>
@@ -933,7 +937,7 @@
                             </tbody>
                         </table>
 
-                        <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not heavy_visible">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not (heavy_visible or heavy_omc_visible or heavy_mdd_visible)">
                             <tbody>
                                  <tr>
                                     <td><label for="max_dry_density">Maximum Dry Density</label></td>

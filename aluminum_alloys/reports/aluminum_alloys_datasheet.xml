@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="aluminum_alloys_datasheet">
+    <t t-call="web.html_container">
+	<t t-call="lerm_civil.mechanical_data_sheet_header">
+		<div style="text-align:center;font-size:18px;font-weight: bold">
+		Aluminum Alloys
+		</div>
+		<div class="container_eln" style="margin-top:5px">
+            <table style="margin-top:20px">
+				<tr cols="12">
+					
+					<td colspan="6">Job No :
+                        <![CDATA[&nbsp;]]>
+                         <span t-field="eln.kes_no"></span>
+                    </td>
+					<td colspan="6">Test Start Date: 
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.start_date"></span>
+                    </td>
+
+				</tr>
+                <tr>
+                  <td colspan="6">Material: <span t-field="eln.material"></span>
+                </td>
+                    <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
+                    </td>
+                </tr>
+                <tr style="height:50px" cols="12">
+                    <td colspan="4">Performed By :
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.technician.name"/>
+                    </td>
+                    <td colspan="4">Witness Name :
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.witness_description"/>
+                    </td>
+                    <td colspan="4">Witness Signature :
+                        <![CDATA[&nbsp;]]>
+                        <span style='padding:20px'></span>
+                    </td>
+                </tr>
+			</table>
+
+
+
+
+
+                <!-- Water Absorption 					 -->
+
+             <div t-if="data.reduction_area_visible" >
+                        
+
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;">% Reduction in Area - (ASTM B557:2015: 2023):
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.reduction_in_area_percent" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','poi56784-107d-4e30-9d3d-2a096785432g')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    
+
+                    </div>
+                    <div t-if="data.reduction_area_visible1" >
+                        
+
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;">% Reduction in Area - (ISO 6892 (Part 1): 2019: 2019):
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.reduction_in_area_percent1" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','654rt4325-107d-4e30-9d3d-2aiu45634237')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    
+
+                    </div>
+
+                    <div t-if="data.reduction_area_visible2" >
+                        
+
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;">% Reduction in Area - (ASTM E8/E8M: 2022) :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.reduction_in_area_percent2" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','5754ert342-107d-4e30-9d3d-2a9864532345')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    
+
+                    </div>
+
+                <div t-if="data.proof_stress_visible" >
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;">0.2% Proof Stress - (ASTM B557:2015: 2023) :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.proof_stress_0_2_percent" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','murt4563-107d-4e30-9d3d-2a9p0456321we')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+                    <div t-if="data.proof_stress_visible1" >
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;">0.2% Proof Stress - (ISO 6892 (Part 1): 2019: 2019) :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.proof_stress_0_2_percent1" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','port54321d-107d-4e30-9d3d-2a9o456tyr345')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+                    <div t-if="data.proof_stress_visible2" >
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;">0.2% Proof Stress - (ASTM E8/E8M: 2022) :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.proof_stress_0_2_percent2" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','poit56745-107d-4e30-9d3d-2a94567432erth6')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+
+                  
+                      <div t-if="data.elongation_percent_visible">
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;">Elongation (%) - (ASTM B557:2015: 2023) :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.elongation_percent" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','pp7654tp-107d-4e30-9d3d-2a9009uuu6554327')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+
+                    <div t-if="data.elongation_percent_visible1">
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;">Elongation (%) - (ISO 6892 (Part 1): 2019: 2019) :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.elongation_percent1" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','irtmyjrfrt-107d-4e30-9d3d-2a9009uoiuty45321')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+
+                    <div t-if="data.elongation_percent_visible2">
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;">Elongation (%) - (ASTM E8/E8M: 2022) :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.elongation_percent2" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','096543ert-107d-4e30-9d3d-2a90099iuyhn456y')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+
+                  
+
+                    <div t-if="data.tensile_strength_uts_visible">
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;">Tensile Strength (UTS) - (ASTM B557:2015: 2023)  :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.tensile_strength_uts" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','tre433567y-107d-4e30-9d3d-2a9009904567ytg')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+                     <div t-if="data.tensile_strength_uts_visible1">
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;">Tensile Strength (UTS) - (ISO 6892 (Part 1): 2019: 2019) :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.tensile_strength_uts1" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','rtgfvbtre43-107d-4e30-9d3d-2a900123456789r')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+
+                    <div t-if="data.tensile_strength_uts_visible2">
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;">Tensile Strength (UTS) - (ASTM E8/E8M: 2022)  :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.tensile_strength_uts2" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','bgnhyt543-107d-4e30-9d3d-2a900321wertfvgd')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+
+                     <div t-if="data.yield_strength_visible">
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;">Yield Strength - (ASTM B557:2015: 2023)  :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.yield_strength" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','ujhgty654-107d-4e30-9d3d-2a9009rr5tgbvcfder')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+
+                     <div t-if="data.yield_strength_visible1">
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;">Yield Strength - (ISO 6892 (Part 1): 2019: 2019)  :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.yield_strength1" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','oiujnhtr4-107d-4e30-9d3d-2a9009rr09876543e')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+
+                      <div t-if="data.yield_strength_visible2">
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;">Yield Strength - (ASTM E8/E8M: 2022)  :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.yield_strength2" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','oikmnhbgt45-107d-4e30-9d3d-2a9009rrthnbgtr45')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+
+                     
+
+				<!-- authorizeRowDataSheet -->
+				
+			
+            <div class="authorizeRowDataSheet">
+                <div>
+                    <div>
+                        <b>
+                            Tested By 
+                        </b>
+                        
+                    </div>
+                   <div style="height: 40px;">
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+						</div>
+                    <div>
+                        <b>
+                        <span t-esc="eln.sample_id.filled_by.name"/>
+                        </b>
+                    </div>
+                    <div>
+                        <b>
+                            (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                        </b>
+                    </div>
+                </div>
+                <div style="margin-left:500px">
+                    
+                    <div>
+                        <b>
+                            Checked By
+                        </b>
+                    </div>
+                   <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+                    <div>
+                        <b>
+                        <span t-esc="eln.sample_id.check_by.name"/>
+                        </b>
+                    </div>
+                    
+                    <div>
+                        <b>
+                            (<span t-esc="eln.sample_id.check_by.job_title"/>)
+                        </b>
+                    </div>
+                </div>
+            </div>
+
+		</div>
+
+	</t>
+</t>
+</template>
+</odoo>
