@@ -24,7 +24,7 @@
 				</t>
 				
 			</div>
-			<div t-if="eln.sample_id.lab_location and eln.sample_id.lab_location.watermark_image" style="position: fixed;top: 450px;left:250px ;transform: translate(-50%, -50%);z-index: -99;opacity: 0.1;pointer-events: none;">
+			<div t-if="eln.sample_id.show_watermark and eln.sample_id.lab_location.watermark_image" style="position: fixed;top: 450px;left:250px ;transform: translate(-50%, -50%);z-index: -99;opacity: 0.1;pointer-events: none;">
 				<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.watermark_image.decode('utf-8')" style="max-width: 400px;" />
 			</div>
 			

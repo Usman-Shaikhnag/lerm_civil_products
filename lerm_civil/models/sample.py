@@ -176,6 +176,8 @@ class LermSampleForm(models.Model):
 
     display_report_portal = fields.Boolean("Display on Portal")
     customer_portal_sample = fields.Many2one('customer.sample.line',string="Customer Portal Sample", readonly=True)
+    show_stamp = fields.Boolean("Show Stamp in Report", default=True)
+    show_watermark = fields.Boolean("Show Watermark in Report", default=True)
 
     @api.depends('quantity_received', 'quantity_consumed','quantity_discarded')
     def compute_quantity_balance(self):
