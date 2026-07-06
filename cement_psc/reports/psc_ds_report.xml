@@ -2150,7 +2150,7 @@
 							</div>
 						</div>
 						<div t-if="stamp_image" style="text-align:center;margin-bottom:10px">
-							<img t-att-src="'data:image/png;base64,%s' % stamp_image" style="width:200px;"/>
+							<img t-attf-src="data:image/png;base64,{{stamp_image}}" style="width:200px;"/>
 						</div>
 						<div style="text-align:center;margin-top:2px">
 							......End of Report......

@@ -201,6 +201,41 @@ Every test parameter is identified by a UUID (`lerm.parameter.master.internal_id
 - `py3o.template` / `py3o.formats` + LibreOffice — required by `report_py3o`
 - `matplotlib` — used by ELN charting in `lerm_civil`
 
+## Test Server
+
+| Detail | Value |
+|--------|-------|
+| Host | `173.249.5.45` |
+| User | `root` |
+| Password | `henrydsa1963` |
+| Project path | `/root/lerm_infra` |
+| Addons path | `/root/lerm_infra/practice-addon17` |
+| Docker container | `lerm_infra-web-1` |
+| Docker database | `lerm_infra-db-1` |
+| DB container hostname | `db` |
+| DB user | `odoo` |
+| DB password | `odoo` |
+
+### Git push to server
+
+```bash
+sshpass -p 'henrydsa1963' ssh -o StrictHostKeyChecking=no root@173.249.5.45 "cd /root/lerm_infra/practice-addon17 && git pull origin infra_demo"
+```
+
+### Upgrade all material testing modules
+
+```bash
+sshpass -p 'henrydsa1963' ssh -o StrictHostKeyChecking=no root@173.249.5.45 "docker exec lerm_infra-web-1 odoo -d <database> --addons-path=/mnt/extra-addons --db_host=db --db_user=odoo --db_password=odoo -u aac_block,admixture,ballast,bitumen,bitumen_concrete,bitumen_mix,brick,brick_brunt_clay,cement_chequerd_tile,cement_opc,cement_ppc,cement_psc,chequerd_tile,coarse_aggregate,concrete_beam,concrete_core,concrete_cube,concrete_cylinder,concrete_mix_design,concrete_paving_blocks,crushed_sand_chemical,crusher_run_macadam,fine_aggregate,fine_aggrigate_chemical,fly_ash,fly_ash_chemical,fst,ggbs,gsb,gypsum_chemical,hardent_concrete_chemical,isat,kerb_stone,microsilica,ndt,paver_block,pile_integrity,plate_load,rcmt,rcpt,rock,soil,soil_resistivity,ss_tmt_bar,stones,tile,tmt_bar,wbm,wmm,wpt --stop-after-init"
+```
+
+Replace `<database>` with the target database name (e.g., `infra`).
+
+### Upgrade a single module
+
+```bash
+docker exec lerm_infra-web-1 odoo -d <database> --addons-path=/mnt/extra-addons --db_host=db --db_user=odoo --db_password=odoo -u <module_name> --stop-after-init
+```
+
 ## Commands
 
 No build/test/lint tooling is configured. There is no CI, no Makefile, no pre-commit, no testing framework setup.
