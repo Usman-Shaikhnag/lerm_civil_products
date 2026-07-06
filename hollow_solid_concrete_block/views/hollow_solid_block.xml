@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="hollow_solid_concrete_block_form" model="ir.ui.view">
+        <field name="name">hollow.solid.concrete.block.form</field>
+        <field name="model">hollow.solid.concrete.block</field>
+        <field name="arch" type="xml">
+            <form string="Your Form View" create="false">
+                <sheet>
+
+                <div>
+                    <h1>
+                        <field name="name" readonly="1" nolabel="1"/>
+                    </h1>
+                    <button type="object" class="oe_highlight" name="prefill_data" string="Prefill Data"/>
+                </div>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                        <field name="grade"/>
+                        <field name="eln_state" />
+
+                    </group>
+                    <div class="custom_table_borders">
+                      <field name="sample_parameters" nolabel="1">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </div>
+                    <group/>
+
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+                    <div class="d-flex gap-2"> 
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="hollow_solid_temp"></label>
+                                    </td>
+                                    <td>
+                                        <field name="hollow_solid_temp" class="blue-input"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="hollow_solid_humidity" ></label>
+                                    </td>
+                                    <td>
+                                        <field name="hollow_solid_humidity" class="blue-input"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <!-- Dimension Length -->
+
+                    <div invisible="not length_dimen_visible">
+                        <h1 class="text-center">
+                            <field name="length_dimen_name" readonly="1" nolabel="1"/>
+                            <field name="length_dimen_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <div class="custom_table_borders" invisible="not length_dimen_visible">
+                        <field name="length_dimen_line_ids" nolabel="1" >
+                        <tree editable="bottom">
+                        <field name="sample_no" width="200"/>
+                          <field name="nominal_length" class="blue-input" decoration-info="nominal_length != 0" width="200"/>
+                          <field name="measured_length" class="blue-input" decoration-info="measured_length != 0" width="200"/>
+                          <field name="deviation" width="200"/>
+                          <field name="result" width="200"/>
+                          <field name="remark" class="blue-input" decoration-info="remark != 0" width="200"/>
+                        </tree>
+                        </field>
+                    </div>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not length_dimen_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="avg_measured_length">Average Measured Length</label></td>
+                                    <td><field name="avg_measured_length"/></td>
+                                </tr>
+                                <tr>
+                            <td><label for="avg_measured_length_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="avg_measured_length_confirmity"
+                                        decoration-success="avg_measured_length_confirmity == 'pass'" 
+                                        decoration-danger="avg_measured_length_confirmity == 'fail'" 
+                                        readonly="1"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="avg_measured_length_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="avg_measured_length_nabl"
+                                        decoration-success="avg_measured_length_nabl == 'pass'" 
+                                        decoration-danger="avg_measured_length_nabl == 'fail'" 
+                                        readonly="1"/></td>
+                          </tr>
+                            </tbody>
+                        </table>
+
+
+                        <!-- Dimension Height -->
+
+                    <div invisible="not height_dimen_visible">
+                        <h1 class="text-center">
+                            <field name="height_dimen_name" readonly="1" nolabel="1"/>
+                            <field name="height_dimen_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <div class="custom_table_borders" invisible="not height_dimen_visible">
+                        <field name="height_dimen_line_ids" nolabel="1" >
+                        <tree editable="bottom">
+                        <field name="sample_no" width="200"/>
+                          <field name="nominal_height" class="blue-input" decoration-info="nominal_height != 0" width="200"/>
+                          <field name="measured_height" class="blue-input" decoration-info="measured_height != 0" width="200"/>
+                          <field name="deviation" width="200"/>
+                          <field name="result" width="200"/>
+                          <field name="remark" class="blue-input" decoration-info="remark != 0" width="200"/>
+                        </tree>
+                        </field>
+                    </div>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not height_dimen_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="avg_measured_height">Average Measured Height</label></td>
+                                    <td><field name="avg_measured_height"/></td>
+                                </tr>
+                                <tr>
+                            <td><label for="avg_measured_height_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="avg_measured_height_confirmity"
+                                        decoration-success="avg_measured_height_confirmity == 'pass'" 
+                                        decoration-danger="avg_measured_height_confirmity == 'fail'" 
+                                        readonly="1"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="avg_measured_height_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="avg_measured_height_nabl"
+                                        decoration-success="avg_measured_height_nabl == 'pass'" 
+                                        decoration-danger="avg_measured_height_nabl == 'fail'" 
+                                        readonly="1"/></td>
+                          </tr>
+                            </tbody>
+                        </table>
+
+
+
+                 <!-- Dimension Width -->
+
+                    <div invisible="not width_dimen_visible">
+                        <h1 class="text-center">
+                            <field name="width_dimen_name" readonly="1" nolabel="1"/>
+                            <field name="width_dimen_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <div class="custom_table_borders" invisible="not width_dimen_visible">
+                        <field name="width_dimen_line_ids" nolabel="1" >
+                        <tree editable="bottom">
+                        <field name="sample_no" width="200"/>
+                          <field name="nominal_width" class="blue-input" decoration-info="nominal_width != 0" width="200"/>
+                          <field name="measured_width" class="blue-input" decoration-info="measured_width != 0" width="200"/>
+                          <field name="deviation" width="200"/>
+                          <field name="result" width="200"/>
+                          <field name="remark" class="blue-input" decoration-info="remark != 0" width="200"/>
+                        </tree>
+                        </field>
+                    </div>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not width_dimen_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="avg_measured_width">Average Measured Width</label></td>
+                                    <td><field name="avg_measured_width"/></td>
+                                </tr>
+                                <tr>
+                            <td><label for="avg_measured_width_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="avg_measured_width_confirmity"
+                                        decoration-success="avg_measured_width_confirmity == 'pass'" 
+                                        decoration-danger="avg_measured_width_confirmity == 'fail'" 
+                                        readonly="1"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="avg_measured_width_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="avg_measured_width_nabl"
+                                        decoration-success="avg_measured_width_nabl == 'pass'" 
+                                        decoration-danger="avg_measured_width_nabl == 'fail'" 
+                                        readonly="1"/></td>
+                          </tr>
+                            </tbody>
+                        </table>
+
+
+                <!-- Block Density -->
+
+                    <div invisible="not block_density_visible">
+                        <h1 class="text-center">
+                            <field name="block_density_name" readonly="1" nolabel="1"/>
+                            <field name="block_density_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <div class="custom_table_borders" invisible="not block_density_visible">
+                        <field name="block_density_ids" nolabel="1" >
+                        <tree editable="bottom">
+                        <field name="sample_no" width="200"/>
+                          <field name="dry_weight" class="blue-input" decoration-info="dry_weight != 0" width="200"/>
+                          <field name="volume" class="blue-input" decoration-info="volume != 0" width="200"/>
+                          <field name="block_density" width="200"/>
+                        </tree>
+                        </field>
+                    </div>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not block_density_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="mean_block_density">Mean Block Density</label></td>
+                                    <td><field name="mean_block_density"/>
+                                    <span>  g/cm³</span></td>
+                                </tr>
+                                <tr>
+                            <td><label for="mean_block_density_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="mean_block_density_confirmity"
+                                        decoration-success="mean_block_density_confirmity == 'pass'" 
+                                        decoration-danger="mean_block_density_confirmity == 'fail'" 
+                                        readonly="1"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="mean_block_density_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="mean_block_density_nabl"
+                                        decoration-success="mean_block_density_nabl == 'pass'" 
+                                        decoration-danger="mean_block_density_nabl == 'fail'" 
+                                        readonly="1"/></td>
+                          </tr>
+                            </tbody>
+                        </table>
+
+
+
+                   
+                        <!-- Compressive Strength -->
+
+                    <div invisible="not compressive_strength_visible">
+                        <h1 class="text-center">
+                            <field name="compressive_strength_name" readonly="1" nolabel="1"/>
+                            <field name="compressive_strength_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <div class="custom_table_borders" invisible="not compressive_strength_visible">
+                        <field name="compressive_strength_line_ids" nolabel="1" >
+                        <tree editable="bottom">
+                        <field name="sample_no" width="200"/>
+                          <field name="dimension"  width="200"/>
+                          <!-- <field name="breadth" class="blue-input" decoration-info="breadth != 0" width="200"/> -->
+                          <field name="area_pressure_face" width="200"/>
+                          <field name="weight_before_test" class="blue-input" decoration-info="weight_before_test != 0" width="200"/>
+                          <field name="max_load_failure" class="blue-input" decoration-info="max_load_failure != 0" width="200"/>
+                          <field name="compressive_strength" width="200"/>
+                        </tree>
+                        </field>
+                    </div>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not compressive_strength_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="average_compressive_strength">Average Compressive Strength (MPa)</label></td>
+                                    <td><field name="average_compressive_strength"/></td>
+                                </tr>
+                                <tr>
+                            <td><label for="compressive_strength_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="compressive_strength_confirmity"
+                                        decoration-success="compressive_strength_confirmity == 'pass'" 
+                                        decoration-danger="compressive_strength_confirmity == 'fail'" 
+                                        readonly="1"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="compressive_strength_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="compressive_strength_nabl"
+                                        decoration-success="compressive_strength_nabl == 'pass'" 
+                                        decoration-danger="compressive_strength_nabl == 'fail'" 
+                                        readonly="1"/></td>
+                          </tr>
+                            </tbody>
+                        </table>
+
+
+
+
+                        
+
+
+
+                        <!-- Water Absorption -->
+
+                    <div invisible="not water_absorbtion_visible">
+                        <h1 class="text-center">
+                            <field name="wt_absorption_name" readonly="1" nolabel="1"/>
+                            <field name="water_absorbtion_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <div class="custom_table_borders" invisible="not water_absorbtion_visible">
+                        <field name="water_absorption_line_ids" nolabel="1" >
+                        <tree editable="bottom">
+                        <field name="sample_no" width="200"/>
+                          <field name="wet_mass" class="blue-input" decoration-info="wet_mass != 0" width="200"/>
+                          <field name="dry_mass" class="blue-input" decoration-info="dry_mass != 0" width="200"/>
+                          <field name="suspended_mass" class="blue-input" decoration-info="suspended_mass != 0" width="200"/>
+                          <field name="water_absorption" width="200"/>
+                        </tree>
+                        </field>
+                    </div>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not water_absorbtion_visible">
+                            <tbody>
+                                <tr>
+                                    <td><label class="text-bold" for="mean_water_absorption">Mean Water Absorption (%)</label></td>
+                                    <td><field name="mean_water_absorption"/>
+                                    <span>  %</span></td>
+                                </tr>
+                                <tr>
+                            <td><label for="mean_water_absorption_confirmity" class="text-bold">Conformity</label></td>
+                             <td><field name="mean_water_absorption_confirmity"
+                                        decoration-success="mean_water_absorption_confirmity == 'pass'" 
+                                        decoration-danger="mean_water_absorption_confirmity == 'fail'" 
+                                        readonly="1"/></td>
+                           </tr>
+                           <tr>
+                           <td><label for="mean_water_absorption_nabl" class="text-bold">NABL</label></td>
+                           <td><field name="mean_water_absorption_nabl"
+                                        decoration-success="mean_water_absorption_nabl == 'pass'" 
+                                        decoration-danger="mean_water_absorption_nabl == 'fail'" 
+                                        readonly="1"/></td>
+                          </tr>
+                            </tbody>
+                        </table>
+                    
+            
+
+                     
+
+                    
+                
+
+                    <notebook>
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes" />
+                                    </tree>
+                                </field>
+                            </div>
+                        </page>
+                    </notebook>
+
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+        <record id="view_aac_block_prefill_data_form" model="ir.ui.view">
+            <field name="name">aac.block.prefill.data.form</field>
+            <field name="model">aac.block.prefill.data</field>
+            <field name="arch" type="xml">
+                <form string="Prefill Data">
+                    <group>
+                        <field name="product_id" readonly="1"/>
+                        <field name="sample_id"/>
+
+                    </group>
+                    <footer>
+                        <button name="prefill_data" string="Prefill Data" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_aac_block_prefill_data_wizard" model="ir.actions.act_window">
+            <field name="name">Prefill Data</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">aac.block.prefill.data</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_aac_block_prefill_data_form"/>
+            <field name="target">new</field>
+        </record>
+
+
+       
+    </data>
+</odoo>

@@ -8,60 +8,9 @@ from lxml import etree
 
 
 
-# class AacBlockReport1(models.AbstractModel):
-#     _name = 'report.aac_block.aac_block_mech_report'
-#     _description = 'AAC Block Report'
-    
-#     @api.model
-#     def _get_report_values(self, docids, data):
-#         # eln = self.env['lerm.eln'].sudo().browse(docids)
-#         nabl = data.get('nabl')
-#         if data.get('report_wizard') == True:
-#             eln = self.env['lerm.eln'].sudo().search([('sample_id','=',data['sample'])])
-#         elif 'active_id' in data['context']:
-#             eln = self.env['lerm.eln'].sudo().search([('sample_id','=',data['context']['active_id'])])
-#         else:
-#             eln = self.env['lerm.eln'].sudo().browse(docids)
-
-#          # Static QR
-#         qr_static = qrcode.QRCode(box_size=6, border=2)
-#         qr_static.add_data("https://www.lerm.in")
-#         qr_static.make(fit=True)
-#         buf_static = BytesIO()
-#         qr_static.make_image(fill_color="black", back_color="white").save(buf_static, format="PNG")
-#         qr_static_b64 = base64.b64encode(buf_static.getvalue()).decode()
-        
-        
-#         qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
-#         # qr.add_data(eln.kes_no)
-#         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-#         report_url = f"{base_url}/download_report/aac/{'nabl' if nabl else 'nonnabl'}/{eln.id}"
-
-#         qr.add_data(report_url)
-#         qr.make(fit=True)
-#         qr_image = qr.make_image()
-#         buffered = BytesIO()
-#         qr_image.save(buffered, format="PNG")
-#         qr_code = base64.b64encode(buffered.getvalue()).decode()
-            
-#         data = {
-#             "material_id":eln.material.id,
-#             "grade_id":eln.grade_id.id
-#         }
-#         model = eln.get_product_base_calc_line(data).ir_model.model
-#         aac_data = self.env[model].search([("id","=",eln.model_id)])
-#         return {
-#             'eln': eln,
-#             'data': aac_data,
-#             'qrcode': qr_code,
-#             'qrcode_static': qr_static_b64,
-#             'nabl' : nabl
-#         }
-
-
-class AacBlockReport1(models.AbstractModel):
-    _name = 'report.aac_block.aac_block_mech_report'
-    _description = 'AAC Block Report'
+class HollowSolidConcreteBlockReport(models.AbstractModel):
+    _name = 'report.hollow_solid_concrete_block.hollow_solid_block_report'
+    _description = 'Hollow And Solid Concrete Block Report'
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -95,7 +44,7 @@ class AacBlockReport1(models.AbstractModel):
             border=4,
         )
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        report_url = f"{base_url}/download_report/aac/{'nabl' if nabl else 'nonnabl'}/{eln.id}"
+        report_url = f"{base_url}/download_report/hollowsolid/{'nabl' if nabl else 'nonnabl'}/{eln.id}"
 
         qr.add_data(report_url)
         qr.make(fit=True)
@@ -125,9 +74,9 @@ class AacBlockReport1(models.AbstractModel):
             'nabl' : nabl
         }
 
-class AacDatasheet(models.AbstractModel):
-    _name = 'report.aac_block.aac_block_datasheet'
-    _description = 'AAC Block DataSheet'
+class HollowSolidConcreteBlockDatasheet(models.AbstractModel):
+    _name = 'report.hollow_solid_concrete_block.hollow_solid_block_datasheet'
+    _description = 'Hollow And Solid Concrete Block Datasheet'
     
     @api.model
     def _get_report_values(self, docids, data):
