@@ -607,21 +607,22 @@ class MicrosilicaCompressiveStrengthLine(models.Model):
         ('28', '28 Days'),
     ], string="Age in Days", default='7')
     weight_g = fields.Float("Weight (g)")
-    density_g_cc = fields.Float("Density (g/cc)", compute="_compute_density")
+    density_g_cc = fields.Float("Density (g/cc)", compute="_compute_density", store=True)
     load_kN = fields.Float("Load at Failure (kN)")
-    comp_strength = fields.Float("Compressive Strength (N/mm²)", compute="_compute_comp_strength")
+    comp_strength = fields.Float("Compressive Strength (N/mm²)", compute="_compute_comp_strength", store=True)
 
-    CUBE_DIM = 70.6
+    CUBE_DIM_CM = 7.06
+    CUBE_DIM_MM = 70.6
 
     @api.depends('weight_g')
     def _compute_density(self):
-        vol = self.CUBE_DIM ** 3
+        vol = self.CUBE_DIM_CM ** 3
         for rec in self:
             rec.density_g_cc = rec.weight_g / vol if vol else 0.0
 
     @api.depends('load_kN')
     def _compute_comp_strength(self):
-        area = self.CUBE_DIM ** 2
+        area = self.CUBE_DIM_MM ** 2
         for rec in self:
             rec.comp_strength = (rec.load_kN * 1000.0) / area if area else 0.0
 
