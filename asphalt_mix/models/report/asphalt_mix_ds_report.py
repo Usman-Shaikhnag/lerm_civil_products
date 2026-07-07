@@ -8,9 +8,9 @@ from lxml import etree
 
 
 
-class AdmixturekReport(models.AbstractModel):
-    _name = 'report.admixture.admixture_mech_report'
-    _description = 'Admixture Report'
+class AsphaltMixReport(models.AbstractModel):
+    _name = 'report.asphalt_mix.asphalt_mix_report'
+    _description = 'Asphalt Mix Report'
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -74,10 +74,9 @@ class AdmixturekReport(models.AbstractModel):
             'nabl' : nabl
         }
 
-
-class AdmixtureDatasheet(models.AbstractModel):
-    _name = 'report.admixture.admixture_mech_datasheet'
-    _description = 'Admixture DataSheet'
+class AsphaltMixDatasheet(models.AbstractModel):
+    _name = 'report.asphalt_mix.asphalt_mix_datasheet'
+    _description = 'Asphalt Mix DataSheet'
     
     @api.model
     def _get_report_values(self, docids, data):
