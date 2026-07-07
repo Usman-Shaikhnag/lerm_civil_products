@@ -12,8 +12,8 @@
 				</div>
 				
 			</div>
-			<div class="row backgroundimage" style="opacity:0.3; font-size:100px; width:85%; text-align:center;top:500px; right:100px; position: fixed; z-index:99;">
-				<img src="/lerm_civil/static/src/img/watermark.png" style="width:100%;"/>
+			<div t-if="eln.sample_id.show_watermark and eln.sample_id.lab_location and eln.sample_id.lab_location.watermark_image" class="row backgroundimage" style="opacity:0.3; font-size:100px; width:85%; text-align:center;top:500px; right:100px; position: fixed; z-index:99;">
+				<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.watermark_image.decode('utf-8')" style="width:100%;"/>
 			</div>
 
 			
@@ -633,12 +633,12 @@
 										</tr>
 									</tbody>
 						</table>
-						<div t-if="stamp and stamp == '4-in_report'" style="margin-top:20px;">
-							<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.stamp_image.decode('utf-8')" alt="Stamp"/>
+						<!-- <div t-if="stamp and stamp == '4-in_report'" style="margin-top:20px;">
+							<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
 						</div>
 						<div style="padding-top:5px">
 							FORMAT No. <![CDATA[&nbsp;]]> <span t-esc="eln.parameters_result[0].parameter.report_format_no"/>
-						</div>
+						</div> -->
 						<div style="page-break-before: always;"></div>
 						<table style="margin-top:15px;">
 								<thead>
@@ -785,11 +785,14 @@
 								</div>
 								
 							</div>
-							<div>
+							<!-- <div>
 								<div t-if="stamp and stamp == '4-in_report'">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.stamp_image.decode('utf-8')" alt="Stamp"/>
+									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
 								</div>
-							</div>
+								<div style="padding-top:5px">
+									FORMAT No. <![CDATA[&nbsp;]]> <span t-esc="eln.parameters_result[0].parameter.report_format_no"/>
+								</div>
+							</div> -->
 							<div>
 								<div>
 									<b>

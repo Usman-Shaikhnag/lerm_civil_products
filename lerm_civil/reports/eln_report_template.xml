@@ -24,7 +24,7 @@
 				</t>
 				
 			</div>
-			<div style="position: fixed;top: 450px;left:250px ;transform: translate(-50%, -50%);z-index: -99;opacity: 0.1;pointer-events: none;">
+			<div t-if="eln.sample_id.show_watermark and eln.sample_id.lab_location and eln.sample_id.lab_location.watermark_image" style="position: fixed;top: 450px;left:250px ;transform: translate(-50%, -50%);z-index: -99;opacity: 0.1;pointer-events: none;">
 				<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.watermark_image.decode('utf-8')" style="max-width: 400px;" />
 			</div>
 			
@@ -515,9 +515,11 @@
 												<span t-esc="parameter['parameter'].parameter_name"/>
 											</td>
 											<td t-if="parameter['result_type'] == 'number'">
+												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
 												<span t-esc="'{:.{}f}'.format(parameter['result'], parameter['parameter'].decimal)"/>
 											</td>
 											<td t-if="parameter['result_type'] == 'char'">
+												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
 												<span t-esc="parameter['result_char']"/>
 											</td>
 											<td>
@@ -526,9 +528,15 @@
 											<td style="max-width: 250px;">
 												<span t-esc="parameter['specification_permissible_limit']"/>
 											</td>
+											<!-- <td style="max-width: 250px;">
+												<span t-esc="parameter['test_method'].test_method"/>
+											</td> -->
 											<td style="max-width: 250px;">
 												<span t-esc="parameter['specification']"/>
 											</td>
+											<!-- <td>
+												<span t-esc="parameter['nabl_status']"/>
+											</td> -->
 											<td t-if="eln.conformity">
 												<span t-esc="parameter['conformity_status']"/>
 											</td>
@@ -538,14 +546,14 @@
 							</table>
 							<div style="margin-top:10px; page-break-inside: avoid; text-align: center;">
 								<div class="signatureContainer girdgird" style="display: inline-block;">
-									<div>
+									<!-- <div>
 										<div t-if="stamp and stamp == '4-in_report'">
-											<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.stamp_image.decode('utf-8')" alt="Stamp"/>
+											<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
 										</div>
-									</div>
-									<div style="padding-top:5px">
-										Format No. <span t-esc="eln.material.test_format_no"/>
-									</div>
+										<div style="padding-top:5px">
+											Format No. <span t-esc="eln.material.test_format_no"/>
+										</div>
+									</div> -->
 								</div>
 							</div>
 							<div style="page-break-before: always;"></div>
@@ -796,9 +804,12 @@
 												<span t-esc="parameter['parameter'].parameter_name"/>
 											</td>
 											<td t-if="parameter['result_type'] == 'number'">
+												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
 												<span t-esc="'{:.{}f}'.format(parameter['result'], parameter['parameter'].decimal)"/>
+												<!-- <span t-esc="str(parameter['result'])"/> -->
 											</td>
 											<td t-if="parameter['result_type'] == 'char'">
+												<!-- <span t-esc="round(parameter['result'], parameter['parameter'].decimal)"/> -->
 												<span t-esc="parameter['result_char']"/>
 											</td>
 											<td>
@@ -807,9 +818,15 @@
 											<td style="max-width: 250px;">
 												<span t-esc="parameter['specification_permissible_limit']"/>
 											</td>
+											<!-- <td style="max-width: 250px;">
+												<span t-esc="parameter['test_method'].test_method"/>
+											</td> -->
 											<td style="max-width: 250px;">
 												<span t-esc="parameter['specification']"/>
 											</td>
+											<!-- <td>
+												<span t-esc="parameter['nabl_status']"/>
+											</td> -->
 											<td t-if="eln.conformity">
 												<span t-esc="parameter['conformity_status']"/>
 											</td>
@@ -819,14 +836,14 @@
 							</table>
 							<div style="margin-top:10px; page-break-inside: avoid; text-align: center;">
 								<div class="signatureContainer girdgird" style="display: inline-block;">
-									<div>
+									<!-- <div>
 										<div t-if="stamp and stamp == '4-in_report'">
-											<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.stamp_image.decode('utf-8')" alt="Stamp"/>
+											<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
 										</div>
-									</div>
-									<div style="padding-top:5px">
-										Format No. <span t-esc="eln.material.test_format_no"/>
-									</div>
+										<div style="padding-top:5px">
+											Format No. <span t-esc="eln.material.test_format_no"/>
+										</div>
+									</div> -->
 								</div>
 							</div>
 							<div style="page-break-before: always;"></div>
@@ -977,11 +994,14 @@
 									</b>
 								</div>
 							</div>
-							<div>
+							<!-- <div>
 								<div t-if="stamp and stamp == '4-in_report'">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.stamp_image.decode('utf-8')" alt="Stamp"/>
+									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
 								</div>
-							</div>
+								<div style="padding-top:5px">
+									Format No. <span t-esc="eln.material.test_format_no"/>
+								</div>
+							</div> -->
 							<div>
 								<div>
 									<b>
