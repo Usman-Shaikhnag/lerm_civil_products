@@ -29,6 +29,9 @@ class LabMaster(models.Model):
     watermark_image = fields.Binary('Watermark Image')
     watermark_filename = fields.Char("Watermark filename")
 
+    stamp_image = fields.Binary('Stamp Image')
+    stamp_filename = fields.Char("Stamp filename")
+
     footer_image = fields.Binary('Footer Image')
     footer_filename = fields.Char("Footer filename")
 
