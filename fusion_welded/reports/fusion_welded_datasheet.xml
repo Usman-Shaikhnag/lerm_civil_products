@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="fusion_welded_datasheet">
+    <t t-call="web.html_container">
+	<t t-call="lerm_civil.mechanical_data_sheet_header">
+		<div style="text-align:center;font-size:18px;font-weight: bold">
+		Fusion welded Ferrous Materials
+		</div>
+		<div class="container_eln" style="margin-top:5px">
+            <table style="margin-top:20px">
+				<tr cols="12">
+					
+					<td colspan="6">Job No :
+                        <![CDATA[&nbsp;]]>
+                         <span t-field="eln.kes_no"></span>
+                    </td>
+					<td colspan="6">Test Start Date: 
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.start_date"></span>
+                    </td>
+
+				</tr>
+                <tr>
+                  <td colspan="6">Material: <span t-field="eln.material"></span>
+                </td>
+                    <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
+                    </td>
+                </tr>
+                <tr style="height:50px" cols="12">
+                    <td colspan="4">Performed By :
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.technician.name"/>
+                    </td>
+                    <td colspan="4">Witness Name :
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.witness_description"/>
+                    </td>
+                    <td colspan="4">Witness Signature :
+                        <![CDATA[&nbsp;]]>
+                        <span style='padding:20px'></span>
+                    </td>
+                </tr>
+			</table>
+
+
+
+
+
+                <!-- Water Absorption 					 -->
+
+             <div t-if="data.yield_strength_visible" >
+                        
+
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.yield_strength_name" t-options='{"widget": "float", "precision": 2}'/>:
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.yield_strength" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','98765nhbgt45-107d-4e30-9d3d-2a9009r9078654567')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    
+
+                    </div>
+
+                    <div t-if="data.face_bend_test_visible" >
+                   
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.face_bend_test_name"/> :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.face_bend_test" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','98567ut5-107d-4e30-9d3d-2a8975yh5643j')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+
+                    <!-- RRR -->
+                    <div t-if="data.root_bend_test_visible" >
+                   
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.root_bend_test_name"/> :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.root_bend_test" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','0956yhgrt-107d-4e30-9d3d-2a80867453456')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+                    <div t-if="data.side_bend_test_visible" >
+                   
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.side_bend_test_name"/> :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.side_bend_test" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','0oiuy43rfg-107d-4e30-9d3d-2a85678409876')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+                    <div t-if="data.face_bend_test_visible1" >
+                   
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.face_bend_test_name1"/> :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.face_bend_test1" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','jmnhbgyr-107d-4e30-9d3d-2a8975yh09tyrfg')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+                    <div t-if="data.root_bend_test_visible1" >
+                   
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.root_bend_test_name1"/> :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.root_bend_test1" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','fhfbubfhui-107d-4e30-9d3d-2a808674kjnmbh')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+                    <div t-if="data.side_bend_test_visible1" >
+                   
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.side_bend_test_name1"/> :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.side_bend_test1" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','7889045gh-107d-4e30-9d3d-2a85678586jfnnh')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+                    <div t-if="data.transverse_bend_test_visible" >
+                   
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.transverse_bend_test_name"/> :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.transverse_bend_test" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','9898555nhgyt-107d-4e30-9d3d-2a9009r09775yhgtb')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+                    <div t-if="data.fillet_weld_visible" >
+                   
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.fillet_weld_name"/> :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.fillet_weld" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','io567455nhgyt-107d-4e30-9d3d-2a9009r8967453456')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+                    <div t-if="data.fillet_weld_visible1" >
+                   
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.fillet_weld_name1"/> :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.fillet_weld1" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','kljuytre453rtg-107d-4e30-9d3d-2a9009r9897645324')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+                    
+
+				<!-- authorizeRowDataSheet -->
+				
+			
+            <div class="authorizeRowDataSheet">
+                <div>
+                    <div>
+                        <b>
+                            Tested By 
+                        </b>
+                        
+                    </div>
+                   <div style="height: 40px;">
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+						</div>
+                    <div>
+                        <b>
+                        <span t-esc="eln.sample_id.filled_by.name"/>
+                        </b>
+                    </div>
+                    <div>
+                        <b>
+                            (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                        </b>
+                    </div>
+                </div>
+                <div style="margin-left:500px">
+                    
+                    <div>
+                        <b>
+                            Checked By
+                        </b>
+                    </div>
+                   <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+                    <div>
+                        <b>
+                        <span t-esc="eln.sample_id.check_by.name"/>
+                        </b>
+                    </div>
+                    
+                    <div>
+                        <b>
+                            (<span t-esc="eln.sample_id.check_by.job_title"/>)
+                        </b>
+                    </div>
+                </div>
+            </div>
+
+		</div>
+
+	</t>
+</t>
+</template>
+</odoo>

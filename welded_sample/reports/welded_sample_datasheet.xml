@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="welded_sample_datasheet">
+    <t t-call="web.html_container">
+	<t t-call="lerm_civil.mechanical_data_sheet_header">
+		<div style="text-align:center;font-size:18px;font-weight: bold">
+		Welded Sample
+		</div>
+		<div class="container_eln" style="margin-top:5px">
+            <table style="margin-top:20px">
+				<tr cols="12">
+					
+					<td colspan="6">Job No :
+                        <![CDATA[&nbsp;]]>
+                         <span t-field="eln.kes_no"></span>
+                    </td>
+					<td colspan="6">Test Start Date: 
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.start_date"></span>
+                    </td>
+
+				</tr>
+                <tr>
+                  <td colspan="6">Material: <span t-field="eln.material"></span>
+                </td>
+                    <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
+                    </td>
+                </tr>
+                <tr style="height:50px" cols="12">
+                    <td colspan="4">Performed By :
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.technician.name"/>
+                    </td>
+                    <td colspan="4">Witness Name :
+                        <![CDATA[&nbsp;]]>
+                        <span t-field="eln.witness_description"/>
+                    </td>
+                    <td colspan="4">Witness Signature :
+                        <![CDATA[&nbsp;]]>
+                        <span style='padding:20px'></span>
+                    </td>
+                </tr>
+			</table>
+
+
+
+
+
+                <!-- Water Absorption 					 -->
+
+             <div t-if="data.tensile_strength_visible" >
+                     
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.tensile_strength_name" />:
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.tensile_strength" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','d96a5e06-7d28-425e-ad2e-cd425cbfb8d5')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+
+                    <div t-if="data.elongation_visible" >
+                   
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.elongation_name"/> :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.elongation"  t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','03d3e787-c3f3-4d98-b2af-8a25cf5fa837')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+
+                    <div t-if="data.tensile_strength_visible1" >
+                   
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.tensile_strength_name1"/> :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.tensile_strength1"  t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','9bb2ac9c-5a6e-4e4d-bb2d-07ebb3c42089')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+
+                    <div t-if="data.tensile_test_visible" >
+                   
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.tensile_test_name"/> :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.tensile_test"  t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','dcfe8664-3cf9-4e4b-be3f-2bff8f2397d6')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+
+                    <!-- RRR -->
+                    <div t-if="data.face_bend_visible" >
+                   
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.face_bend_name"/> :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.face_bend" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','346b9bc7-6e36-4d50-852d-4a8fe4d3d1fa')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+                    <div t-if="data.root_bend_visible" >
+                   
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.root_bend_name"/> :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.root_bend" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','998eec27-af5c-4eef-97f4-7b48e2fe3e9b')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+                    <div t-if="data.fillet_weld_fracture_visible" >
+                   
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.fillet_weld_fracture_name"/> :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.fillet_weld_fracture" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','6e6c60db-2e99-45f4-95a1-1eab96544bd5')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+                    <div t-if="data.fracture_test_visible1" >
+                   
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.fracture_test_name1"/> :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.fracture_test1" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','0247b05a-5fc4-4c7f-82f4-99d10320b5ac')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+                    <div t-if="data.fracture_visible2" >
+                   
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.fracture_name2"/> :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.fracture2" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','2ba6a0d0-5d39-40b8-ab3f-483eb94c5b5f')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+                    <div t-if="data.weld_fracture_test_visible" >
+                   
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.weld_fracture_test_name"/> :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.weld_fracture_test" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','5657ef7f-9583-470f-9048-0a091dcefc38')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+                    <div t-if="data.fillet_weld_fracture_test_visible" >
+                   
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.fillet_weld_fracture_test_name"/> :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.fillet_weld_fracture_test" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','f2ae5a34-2945-47e5-a2a3-49196e776431')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+                    <div t-if="data.fracture_test_visible3" >
+                   
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.fracture_test_name3"/> :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.fracture_test3" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','5d65cd1a-3964-4c9f-a236-bc19ef817beb')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+                    
+
+				<!-- authorizeRowDataSheet -->
+				
+			
+            <div class="authorizeRowDataSheet">
+                <div>
+                    <div>
+                        <b>
+                            Tested By 
+                        </b>
+                        
+                    </div>
+                   <div style="height: 40px;">
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+						</div>
+                    <div>
+                        <b>
+                        <span t-esc="eln.sample_id.filled_by.name"/>
+                        </b>
+                    </div>
+                    <div>
+                        <b>
+                            (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                        </b>
+                    </div>
+                </div>
+                <div style="margin-left:500px">
+                    
+                    <div>
+                        <b>
+                            Checked By
+                        </b>
+                    </div>
+                   <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+                    <div>
+                        <b>
+                        <span t-esc="eln.sample_id.check_by.name"/>
+                        </b>
+                    </div>
+                    
+                    <div>
+                        <b>
+                            (<span t-esc="eln.sample_id.check_by.job_title"/>)
+                        </b>
+                    </div>
+                </div>
+            </div>
+
+		</div>
+
+	</t>
+</t>
+</template>
+</odoo>
