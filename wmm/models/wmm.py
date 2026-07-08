@@ -4047,10 +4047,9 @@ class WmmSodiumSulphateLine(models.Model):
     @api.depends('weight_before', 'weight_after')
     def _compute_loss(self):
      for rec in self:
-        if rec.weight_before > 0:
+        if rec.weight_before:
             rec.percent_loss = (
-                (rec.weight_before - rec.weight_after)
-                / rec.weight_before
+                (rec.weight_after / rec.weight_before)
             ) * 100
         else:
             rec.percent_loss = 0
@@ -4092,10 +4091,9 @@ class WmmSodiumSulphateTwoLine(models.Model):
     @api.depends('weight_before', 'weight_after')
     def _compute_loss(self):
      for rec in self:
-        if rec.weight_before > 0:
+        if rec.weight_before:
             rec.percent_loss = (
-                (rec.weight_before - rec.weight_after)
-                / rec.weight_before
+                (rec.weight_after / rec.weight_before)
             ) * 100
         else:
             rec.percent_loss = 0
@@ -4137,10 +4135,9 @@ class WmmMagnesiumSulphateLine(models.Model):
     @api.depends('weight_before', 'weight_after')
     def _compute_loss(self):
      for rec in self:
-        if rec.weight_before > 0:
+        if rec.weight_before:
             rec.percent_loss = (
-                (rec.weight_before - rec.weight_after)
-                / rec.weight_before
+                (rec.weight_after / rec.weight_before)
             ) * 100
         else:
             rec.percent_loss = 0
@@ -4182,10 +4179,9 @@ class WmmMagnesiumSulphateTwoLine(models.Model):
     @api.depends('weight_before', 'weight_after')
     def _compute_loss(self):
      for rec in self:
-        if rec.weight_before > 0:
+        if rec.weight_before:
             rec.percent_loss = (
-                (rec.weight_before - rec.weight_after)
-                / rec.weight_before
+                (rec.weight_after / rec.weight_before)
             ) * 100
         else:
             rec.percent_loss = 0

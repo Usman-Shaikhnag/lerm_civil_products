@@ -544,11 +544,11 @@ class GsbMechanical(models.Model):
     elongation_fl_visible = fields.Boolean("FLAKINESS AND ELONGATION INDEX",compute="_compute_visible")
 
 
-    elongation_fl_table = fields.One2many('gsb.elongation.flakiness.line','parent_id',string="Elongation Flakiness Index",default=lambda self: self.elongation_fl_table_sizes())
+    elongation_fl_table = fields.One2many('gsb.elongation.flakiness.line','parent_id',string="Elongation Flakiness Index",default=lambda self: self.elongation_fl_table_sizess())
 
 
     @api.model
-    def elongation_fl_table_sizes(self):
+    def elongation_fl_table_sizess(self):
         default_lines = [
             (0, 0, {'passing_sieve': '63.0','retained_sieve': '50.0'}),
             (0, 0, {'passing_sieve': '50.0','retained_sieve': '40.0'}),
@@ -4095,10 +4095,9 @@ class GsbSodiumSulphateLine(models.Model):
     @api.depends('weight_before', 'weight_after')
     def _compute_loss(self):
      for rec in self:
-        if rec.weight_before > 0:
+        if rec.weight_before:
             rec.percent_loss = (
-                (rec.weight_before - rec.weight_after)
-                / rec.weight_before
+                (rec.weight_after / rec.weight_before)
             ) * 100
         else:
             rec.percent_loss = 0
@@ -4140,10 +4139,9 @@ class GsbMagnesiumSulphateLine(models.Model):
     @api.depends('weight_before', 'weight_after')
     def _compute_loss(self):
      for rec in self:
-        if rec.weight_before > 0:
+        if rec.weight_before:
             rec.percent_loss = (
-                (rec.weight_before - rec.weight_after)
-                / rec.weight_before
+                (rec.weight_after / rec.weight_before)
             ) * 100
         else:
             rec.percent_loss = 0
