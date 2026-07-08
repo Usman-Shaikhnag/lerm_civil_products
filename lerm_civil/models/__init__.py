@@ -26,3 +26,4 @@ from . import enviroment_register
 from . import sample_register
 from . import customer_sample_request
 from . import partner_document
+from . import sale_order

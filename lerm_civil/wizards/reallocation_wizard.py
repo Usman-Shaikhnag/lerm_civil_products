@@ -111,6 +111,12 @@ class ReallocationWizard(models.TransientModel):
         required=True,
     )
 
+    reallocation_mode = fields.Selection(
+        [('partial','Partial'), ('full','Full')],
+        default='full',
+        required=True,
+    )
+
     technicians = fields.Many2one("res.users", string="Technician")
     technician_ids = fields.Many2many('res.users', string='Technicians')
     line_ids = fields.One2many(
@@ -166,9 +172,28 @@ class ReallocationWizard(models.TransientModel):
         active_ids = self.env.context.get('active_ids') or []
         if not active_ids:
             raise UserError(_("No sample selected."))
+
+        #full reallocation    
+        sample = self.env['lerm.srf.sample'].browse(active_ids[0])
+        if self.reallocation_mode == 'full':
+            eln = sample.eln_id
+            if eln:
+                # 1. Fetch calculation form model
+                model_record = eln.material.product_based_calculation.filtered(lambda r: r.grade.id == eln.grade_id.id)
+                model_name = model_record.ir_model.model if model_record and model_record.ir_model else False
+                
+                # 2. Delete calculation form if it exists
+                if model_name and eln.model_id:
+                    calc_record = self.env[model_name].sudo().browse(eln.model_id)
+                    if calc_record.exists():
+                        calc_record.unlink()
+                
+                # 3. Disconnect and delete ELN
+                sample.write({'eln_id': False})
+                eln.unlink()
         
         # 🔑 Pass context flag to indicate this is a reallocation
-        allot_wizard = self.env['sample.allotment.wizard'].with_context(
+        allot_wizard = self.env['sample.allotment.wizard'].sudo().with_context(
             is_reallocation=True  # 🔑 ADD THIS CONTEXT FLAG
         ).create({
             'allocation_type': self.allocation_type,
@@ -187,6 +212,8 @@ class ReallocationWizard(models.TransientModel):
         allot_wizard.with_context(active_ids=active_ids, is_reallocation=True).allot_sample()
 
         return {'type': 'ir.actions.act_window_close'}
+
+
 
 class SampleReallocationLine(models.TransientModel):
     _name = 'sample.reallocation.line'
