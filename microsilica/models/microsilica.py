@@ -126,6 +126,31 @@ class Microsilica(models.Model):
     avg_14_strength = fields.Float("Avg Compressive Strength 14 Days (N/mm²)", compute="_compute_avg_strength_by_age", store=True)
     avg_28_strength = fields.Float("Avg Compressive Strength 28 Days (N/mm²)", compute="_compute_avg_strength_by_age", store=True)
 
+    comp_str_group_info = fields.Text("Compressive Strength Group Info", compute="_compute_comp_str_group_info")
+
+    @api.depends('comp_str_line_ids')
+    def _compute_comp_str_group_info(self):
+        import json
+        for rec in self:
+            groups = {}
+            for line in rec.comp_str_line_ids.sorted(lambda l: int(l.age_days)):
+                age = line.age_days
+                if age not in groups:
+                    groups[age] = {'age': age, 'count': 0, 'lines': [], 'avg': 0.0}
+                groups[age]['count'] += 1
+                groups[age]['lines'].append({
+                    'id': line.id,
+                    'sr_no': line.sr_no,
+                    'weight_g': line.weight_g,
+                    'density_g_cc': line.density_g_cc,
+                    'load_kN': line.load_kN,
+                    'comp_strength': line.comp_strength,
+                })
+            for age_key, g in groups.items():
+                vals = [l['comp_strength'] for l in g['lines'] if l['comp_strength']]
+                g['avg'] = sum(vals) / len(vals) if vals else 0.0
+            rec.comp_str_group_info = json.dumps(list(groups.values()))
+
     @api.depends('comp_str_line_ids.comp_strength', 'comp_str_line_ids.age_days')
     def _compute_avg_strength_by_age(self):
         for rec in self:

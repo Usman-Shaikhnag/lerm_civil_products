@@ -159,21 +159,18 @@ class CementPSC(models.Model):
     consistency_cement_lines = fields.One2many('consistensy.cement.psc.line','parent_id',string="Consistency")
 
     average_consistency = fields.Float(
-        string="Average Consistency (%)",
+        string="Final Consistency (%)",
         compute="_compute_average_consistency",
         store=True
     )
 
     @api.depends('consistency_cement_lines.consistency')
     def _compute_average_consistency(self):
-        for rec in self:
-            if rec.consistency_cement_lines:
-                rec.average_consistency = round(
-                    sum(rec.consistency_cement_lines.mapped('consistency')) / len(rec.consistency_cement_lines),
-                    2
-                )
-            else:
-                rec.average_consistency = 0.0
+     for rec in self:
+        if rec.consistency_cement_lines:
+            rec.average_consistency = rec.consistency_cement_lines[-1].consistency
+        else:
+            rec.average_consistency = 0.0
 
     average_consistency_confirmity = fields.Selection([
         ('pass', 'Pass'),
