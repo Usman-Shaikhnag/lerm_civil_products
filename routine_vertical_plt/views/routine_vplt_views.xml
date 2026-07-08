@@ -323,8 +323,7 @@
         <field name="model">lerm.ert.dashboard</field>
         <field name="inherit_id" ref="fst.view_ert_dashboard"/>
         <field name="arch" type="xml">
-            <xpath expr="//div[hasclass('o_kanban_dashboard')]//t" position="inside">
-                <!-- Routine VPLT -->
+            <xpath expr="//div[hasclass('card-box')][last()]" position="after">
                 <div class="card-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
                     <h3 class="title">Routine Vertical PLT</h3>
                     <a type="action"
