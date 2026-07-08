@@ -588,19 +588,22 @@
 								</tr>
 							</table>
 						</div>
-						<div class="signatureContainer girdgird">
+						<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
 							<div>
 								<div>
 									<b>
-										Checked By
+										Reviewed By
 									</b>
 								</div>
-								<div style="height:20px">
-
+								<div style="height: 50px;">
+									<t t-if="eln.sample_id.checkby_signature_required and eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')"
+											style="max-width: 200px; max-height: 45px; margin-top: 1px; z-index: -10;"/>
+									</t>
 								</div>
 								<div>
 									<b>
-										<span t-esc="eln.technician.name"/>
+										<span t-esc="eln.sample_id.check_by.name"/>
 									</b>
 								</div>
 								<div>
@@ -611,53 +614,35 @@
 							</div>
 
 							<div>
-						<!-- <div>
-							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
-						</div> -->
-						<div style="padding-top:5px">
-							Format No. <span t-esc="eln.material.test_format_no"/>
-						</div>
-					</div>
+							</div>
 							
 							<div>
 								<div>
 									<b>
-										Approved By 
+										Per pro GEONYMS INDIA PRIVATE LIMITED.
 									</b>
-									
 								</div>
-								<!-- <div style="height:20px">
-
-								</div> -->
-								<div style="height: 40px;">
-											<t t-if="eln.sample_id.approveby_signature_required">
-												<div t-if="eln.sample_id.approved_by.employee_id.signature">
-													<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-												</div>
-												
-											</t>
+								<div style="height: 50px;">
+									<t t-if="eln.sample_id.approveby_signature_required">
+										<div t-if="eln.sample_id.approved_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 45px;margin-top:1px; z-index: -10;"/>
 										</div>
+									</t>
+								</div>
 								<div>
 									<b>
 									<span t-esc="eln.sample_id.approved_by.name"/>
 									</b>
 								</div>
-							
 								<div>
 									<b>
 										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
 									</b>
 								</div>
-								
-								<!-- <div>
-									<b>
-										(Authorized Signatory)
-									</b>
-								</div> -->
 							</div>
 						</div>
-						<div style="text-align:center;margin-top:25px">
-							......End of Report......
+						<div style="margin-top: 5px; text-align: center;">
+							<p style="font-weight:800;">...... End Of Report......</p>
 						</div>
 					</div>
 
