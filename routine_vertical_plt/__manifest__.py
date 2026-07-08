@@ -4,7 +4,7 @@
     'version': '1.2',
     'category': 'Lerm Civil',
     'summary': 'Routine Vertical Pile Load Test with T1L, T1U, and F1 analysis per IS 2911',
-    'depends': ['base', 'lerm_civil'],
+    'depends': ['base', 'lerm_civil', 'fst'],
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
