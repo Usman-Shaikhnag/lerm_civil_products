@@ -7,7 +7,7 @@ from lxml import etree
 
 
 class FerrousProductDatasheet1(models.AbstractModel):
-    _name = 'report.ferrous_product.ferrous_product_datasheet'
+    _name = 'report.ferrous_products.ferrous_product_datasheet'
     _description = 'Fastner Bolts DataSheet'
     
     @api.model
@@ -37,7 +37,7 @@ class FerrousProductDatasheet1(models.AbstractModel):
         }
 
 class FerrousProductReport(models.AbstractModel):
-    _name = 'report.ferrous_product.ferrous_product_report'
+    _name = 'report.ferrous_products.ferrous_product_report'
     _description = 'Fastner Bolts Report'
     
     @api.model
