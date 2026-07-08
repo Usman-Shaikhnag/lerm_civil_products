@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<template id="fastener_bolts_datasheet">
+<template id="ferrous_product_datasheet">
     <t t-call="web.html_container">
 	<t t-call="lerm_civil.mechanical_data_sheet_header">
 		<div style="text-align:center;font-size:18px;font-weight: bold">
-		Fastener / Bolts &amp; Studs
+		Ferrous Materials, Alloys &amp; Products
 		</div>
 		<div class="container_eln" style="margin-top:5px">
             <table style="margin-top:20px">
@@ -48,17 +48,17 @@
 
                 <!-- Water Absorption 					 -->
 
-             <div t-if="data.proof_load_test_visible" >
+             <div t-if="data.double_shear_strength_visible" >
                         
 
                         <table style="margin-top:10px; width:100%;">
                             <tr cols="12">
-                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.proof_load_test_name" />:
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.double_shear_strength_name" />:
                               <![CDATA[&nbsp;]]>
                                 </td>
                                   <td colspan="6" style="text-align:center; width:50%;">
                                     <![CDATA[&nbsp;]]>
-                                    <span t-field="data.proof_load_test" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','mnbghtrbgt45-107d-4e30-9d3d-2a9009r1209764565')]).unit.name"/>
+                                    <span t-field="data.double_shear_strength" t-options='{"widget": "float", "precision": 2}'/>  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','0okjui67c-107d-4e30-9d3d-2a9009r98jhnbhy45')]).unit.name"/>
                                 </td>
                             </tr>
                         </table> 
@@ -67,16 +67,16 @@
 
                     </div>
 
-                    <div t-if="data.proof_load_test_visible1" >
+                    <div t-if="data.yield_strength_visible" >
                    
                         <table style="margin-top:10px; width:100%;">
                             <tr cols="12">
-                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.proof_load_test_name1"/> :
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.yield_strength_name"/> :
                               <![CDATA[&nbsp;]]>
                                 </td>
                                   <td colspan="6" style="text-align:center; width:50%;">
                                     <![CDATA[&nbsp;]]>
-                                    <span t-field="data.proof_load_test1" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','poknm5643rgt-107d-4e30-9d3d-2a9009riotyhnb545')]).unit.name"/>
+                                    <span t-field="data.yield_strength" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','8iu76y643rgt-107d-4e30-9d3d-2a9009roiu890nh')]).unit.name"/>
                                 </td>
                             </tr>
                         </table> 
@@ -84,137 +84,215 @@
                     </div>
 
                     <!-- RRR -->
-                    <div t-if="data.proof_load_test_visible2" >
+                    <div t-if="data.elongation_visible" >
                    
                         <table style="margin-top:10px; width:100%;">
                             <tr cols="12">
-                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.proof_load_test_name2"/> :
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.elongation_name"/> :
                               <![CDATA[&nbsp;]]>
                                 </td>
                                   <td colspan="6" style="text-align:center; width:50%;">
                                     <![CDATA[&nbsp;]]>
-                                    <span t-field="data.proof_load_test2" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','yoknfvfvrgt-107d-4e30-2a9009rioty9687jknb')]).unit.name"/>
+                                    <span t-field="data.elongation" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','f19a8f44-6ebe-4039-87f5-303a861b5032')]).unit.name"/>
                                 </td>
                             </tr>
                         </table> 
                       
                     </div>
-                    <div t-if="data.shear_strength_visible" >
+                    <div t-if="data.elongation_visible1" >
                    
                         <table style="margin-top:10px; width:100%;">
                             <tr cols="12">
-                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.shear_strength_name"/> :
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.elongation_name1"/> :
                               <![CDATA[&nbsp;]]>
                                 </td>
                                   <td colspan="6" style="text-align:center; width:50%;">
                                     <![CDATA[&nbsp;]]>
-                                    <span t-field="data.shear_strength" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','e8ffec21-b2c6-4273-8831-e4a5f046390c')]).unit.name"/>
+                                    <span t-field="data.elongation1" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','ed2b93b9-d941-4897-8d28-34b58f9d3c14')]).unit.name"/>
                                 </td>
                             </tr>
                         </table> 
                       
                     </div>
-                    <div t-if="data.tensile_load_bolt_visible" >
+                    <div t-if="data.reduction_area_visible" >
                    
                         <table style="margin-top:10px; width:100%;">
                             <tr cols="12">
-                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.tensile_load_bolt_name"/> :
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.reduction_area_name"/> :
                               <![CDATA[&nbsp;]]>
                                 </td>
                                   <td colspan="6" style="text-align:center; width:50%;">
                                     <![CDATA[&nbsp;]]>
-                                    <span t-field="data.tensile_load_bolt" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','d5f51845-1bf1-431c-b261-ccfd9ccc4ce7')]).unit.name"/>
+                                    <span t-field="data.reduction_area" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','0519d498-037d-4ef5-a8c1-00865a94b76c')]).unit.name"/>
                                 </td>
                             </tr>
                         </table> 
                       
                     </div>
-                    <div t-if="data.tensile_load_wedge_visible" >
+                    <div t-if="data.proof_strss_visible" >
                    
                         <table style="margin-top:10px; width:100%;">
                             <tr cols="12">
-                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.tensile_load_wedge_name"/> :
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.proof_strss_name"/> :
                               <![CDATA[&nbsp;]]>
                                 </td>
                                   <td colspan="6" style="text-align:center; width:50%;">
                                     <![CDATA[&nbsp;]]>
-                                    <span t-field="data.tensile_load_wedge" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','a95594db-fe52-4a37-bae8-149d0615ca2f')]).unit.name"/>
+                                    <span t-field="data.proof_strss" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','43e5c105-5285-4540-bdda-eceb731c6944')]).unit.name"/>
                                 </td>
                             </tr>
                         </table> 
                       
                     </div>
-                    <div t-if="data.tensile_testing_visible" >
+                    <div t-if="data.proof_stress_visible1" >
                    
                         <table style="margin-top:10px; width:100%;">
                             <tr cols="12">
-                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.tensile_testing_name"/> :
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.proof_stress_name1"/> :
                               <![CDATA[&nbsp;]]>
                                 </td>
                                   <td colspan="6" style="text-align:center; width:50%;">
                                     <![CDATA[&nbsp;]]>
-                                    <span t-field="data.tensile_testing" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','8e5b7556-f936-40f0-b7f2-1d023303871b')]).unit.name"/>
+                                    <span t-field="data.proof_stress1" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','7ff3ff7f-8f2b-49d8-96e1-1069f6139462')]).unit.name"/>
                                 </td>
                             </tr>
                         </table> 
                       
                     </div>
-                    <div t-if="data.proof_load_bolt_visible" >
+                    <div t-if="data.brinell_2_5_250_visible" >
                    
                         <table style="margin-top:10px; width:100%;">
                             <tr cols="12">
-                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.proof_load_bolt_name"/> :
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.brinell_2_5_250_name"/> :
                               <![CDATA[&nbsp;]]>
                                 </td>
                                   <td colspan="6" style="text-align:center; width:50%;">
                                     <![CDATA[&nbsp;]]>
-                                    <span t-field="data.proof_load_bolt" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','e9a7ac26-34cf-4859-983c-bec14b8894cb')]).unit.name"/>
+                                    <span t-field="data.brinell_2_5_250" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','618e99db-7d15-40d2-a03e-98457e778315')]).unit.name"/>
                                 </td>
                             </tr>
                         </table> 
                       
                     </div>
-                    <div t-if="data.tensile_test_wedge_visible" >
+                    <div t-if="data.brinell_2_5_250_visible1" >
                    
                         <table style="margin-top:10px; width:100%;">
                             <tr cols="12">
-                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.tensile_test_wedge_name"/> :
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.brinell_2_5_250_name1"/> :
                               <![CDATA[&nbsp;]]>
                                 </td>
                                   <td colspan="6" style="text-align:center; width:50%;">
                                     <![CDATA[&nbsp;]]>
-                                    <span t-field="data.tensile_test_wedge" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','5f5c20e7-a493-4fee-a2bc-4b2376c80fe8')]).unit.name"/>
+                                    <span t-field="data.brinell_2_5_2501" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','cb2bd2ab-2986-44b7-bde6-330be8149816')]).unit.name"/>
                                 </td>
                             </tr>
                         </table> 
                       
                     </div>
-                    <div t-if="data.proof_loaad_test_nut1_visible" >
+                    <div t-if="data.brinell_5_250_visible" >
                    
                         <table style="margin-top:10px; width:100%;">
                             <tr cols="12">
-                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.proof_loaad_test_nut1_name"/> :
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.brinell_5_250_name"/> :
                               <![CDATA[&nbsp;]]>
                                 </td>
                                   <td colspan="6" style="text-align:center; width:50%;">
                                     <![CDATA[&nbsp;]]>
-                                    <span t-field="data.proof_loaad_test_nut1" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','d39a11e6-b9f6-49cd-8715-e2b35f9b00c0')]).unit.name"/>
+                                    <span t-field="data.brinell_5_250" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','724610c7-9359-498c-9e29-029d1f44ab93')]).unit.name"/>
                                 </td>
                             </tr>
                         </table> 
                       
                     </div>
 
-                     <div t-if="data.proof_loaad_test_nut2_visible" >
+                     <div t-if="data.brinell_5_250_visible1" >
                    
                         <table style="margin-top:10px; width:100%;">
                             <tr cols="12">
-                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.proof_loaad_test_nut2_name"/> :
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.brinell_5_250_name1"/> :
                               <![CDATA[&nbsp;]]>
                                 </td>
                                   <td colspan="6" style="text-align:center; width:50%;">
                                     <![CDATA[&nbsp;]]>
-                                    <span t-field="data.proof_loaad_test_nut2" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','88f412c0-4222-4b4d-803b-6d9789c4d113')]).unit.name"/>
+                                    <span t-field="data.brinell_5_2501" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','92865cd2-4a1c-496c-948f-f3ec9e7ec05a3')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+
+                    <!-- RRR -->
+                      <div t-if="data.rockwell_hrbw_visible" >
+                   
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.rockwell_hrbw_name"/> :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.rockwell_hrbw" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','ef7334ab-c781-4f43-88f8-ddd262b2bdd9')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+                      <div t-if="data.rockwell_hrc_visible" >
+                   
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.rockwell_hrc_name"/> :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.rockwell_hrc" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','05445bfa-79d6-4acd-ab0b-4de192f38427')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+                      <div t-if="data.tensile_strength_visible1" >
+                   
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.tensile_strength_name1"/> :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.tensile_strength1" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','ae131ed1-5258-49f9-b04a-44be4680f35c')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+                      <div t-if="data.yield_strength_visible1" >
+                   
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.yield_strength_name1"/> :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.yield_strength1" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','899aaab4-f013-49e3-b5b2-9daf72233bb8')]).unit.name"/>
+                                </td>
+                            </tr>
+                        </table> 
+                      
+                    </div>
+
+                    <div t-if="data.charpy_impact_visible" >
+                   
+                        <table style="margin-top:10px; width:100%;">
+                            <tr cols="12">
+                                <td colspan="6" style="font-weight:bold; width:50%;"><span t-field="data.charpy_impact_name"/> :
+                              <![CDATA[&nbsp;]]>
+                                </td>
+                                  <td colspan="6" style="text-align:center; width:50%;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="data.charpy_impact" />  <span t-field="env['lerm.parameter.master'].search([('internal_id','=','8fb31161-2670-4987-9f53-2c96dee66b12')]).unit.name"/>
                                 </td>
                             </tr>
                         </table> 

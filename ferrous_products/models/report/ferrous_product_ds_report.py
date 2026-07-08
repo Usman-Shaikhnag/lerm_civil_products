@@ -6,8 +6,8 @@ from io import BytesIO
 from lxml import etree
 
 
-class FastenerBoltsDatasheet1(models.AbstractModel):
-    _name = 'report.fastener_bolts.fastener_bolts_datasheet'
+class FerrousProductDatasheet1(models.AbstractModel):
+    _name = 'report.ferrous_product.ferrous_product_datasheet'
     _description = 'Fastner Bolts DataSheet'
     
     @api.model
@@ -36,8 +36,8 @@ class FastenerBoltsDatasheet1(models.AbstractModel):
             'data' : general_data
         }
 
-class FastnerBoltsReport(models.AbstractModel):
-    _name = 'report.fastener_bolts.fastener_bolts_report'
+class FerrousProductReport(models.AbstractModel):
+    _name = 'report.ferrous_product.ferrous_product_report'
     _description = 'Fastner Bolts Report'
     
     @api.model
