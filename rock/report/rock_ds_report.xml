@@ -1878,7 +1878,7 @@
 
 					</div>
 				
-					<table>
+				<table>
 					<t t-set="i" t-value="0"/>
 						<thead>
 							<tr>
@@ -2466,17 +2466,7 @@
 						
 					</tbody>
 				</table>
-	
-
-					<div style="text-align:center;margin-top:2px">
-						......End of Report......
-					</div>
 							
-
-
-					
-
-
 						<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -2484,7 +2474,7 @@
 										Checked By
 									</b>
 								</div>
-							<div style="height: 40px;">
+								<div style="height: 40px;">
 									<t t-if="eln.sample_id.checkby_signature_required">
 										<div t-if="eln.sample_id.check_by.employee_id.signature">
 											<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
@@ -2502,17 +2492,17 @@
 										(<span t-esc="eln.sample_id.check_by.job_title"/>)
 									</b>
 								</div>
-							</div>
+						</div>
 							<!-- QR Code -->
 							
 
-								<t t-if="o.sample_id.stamp_attached">
+						<!-- <t t-if="o.sample_id.stamp_attached">
 							<div >
 								<div>
 								<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
 							</div>
 							</div>
-						</t>
+						</t> -->
 							<!-- <div>
 								<div t-if="stamp and stamp == '4-in_report'">
 									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
@@ -2535,7 +2525,7 @@
 												</div>
 												
 											</t>
-										</div>
+								</div>
 								<div>
 									<b>
 										(<span t-esc="eln.sample_id.approved_by.job_title"/>)
@@ -2543,6 +2533,10 @@
 								</div>
 								
 							</div>
+
+						</div>
+						<div style="text-align:center;margin-top:2px">
+							......End of Report......
 						</div>
 						
 					</div>
