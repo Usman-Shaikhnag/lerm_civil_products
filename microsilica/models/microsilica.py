@@ -138,33 +138,6 @@ class Microsilica(models.Model):
                 if vals:
                     setattr(rec, field, sum(vals) / len(vals))
 
-    comp_str_grouped_data = fields.Text(
-        string="Grouped Compressive Strength Data",
-        compute="_compute_comp_str_grouped_data"
-    )
-
-    @api.depends('comp_str_line_ids')
-    def _compute_comp_str_grouped_data(self):
-        import json
-        for rec in self:
-            groups = {}
-            for line in rec.comp_str_line_ids:
-                age = line.age_days
-                if age not in groups:
-                    groups[age] = {'age_days': age, 'lines': [], 'avg_strength': 0.0}
-                groups[age]['lines'].append({
-                    'sr_no': line.sr_no,
-                    'weight_g': line.weight_g,
-                    'density_g_cc': line.density_g_cc,
-                    'load_kN': line.load_kN,
-                    'comp_strength': line.comp_strength,
-                })
-            for age_key in ('7', '14', '28'):
-                if age_key in groups:
-                    vals = [l['comp_strength'] for l in groups[age_key]['lines'] if l['comp_strength']]
-                    groups[age_key]['avg_strength'] = sum(vals) / len(vals) if vals else 0.0
-            rec.comp_str_grouped_data = json.dumps(list(groups.values()))
-
     compressive_strength_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),

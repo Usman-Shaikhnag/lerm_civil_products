@@ -37,7 +37,6 @@ class MicrosilicaDatasheet(models.AbstractModel):
             return {
                 'eln': eln,
                 'data' : general_data,
-                'json': json,
             }
 
 
@@ -177,5 +176,6 @@ class MicrosilicaReport(models.AbstractModel):
             'qrcode': qr_code,
             'nabl' : nabl,
             'qrcode_static': qr_static_b64,
-            'json': json,
+            # 'stamp' : inreport_value,
+            'nabl' : nabl
         }
