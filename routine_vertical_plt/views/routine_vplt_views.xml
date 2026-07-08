@@ -307,12 +307,35 @@
     </record>
 
     <!-- =========================================================
-         MENU
+         MENU under FST
     ========================================================== -->
     <menuitem id="routine_vplt_root"
         name="Routine Vertical PLT"
         sequence="12"
         parent="fst.fst_root"
         action="action_routine_vplt_test"/>
+
+    <!-- =========================================================
+         Add card to FST Dashboard
+    ========================================================== -->
+    <record id="view_ert_dashboard_inherit_routine_vplt" model="ir.ui.view">
+        <field name="name">lerm.ert.dashboard.inherit.routine.vplt</field>
+        <field name="model">lerm.ert.dashboard</field>
+        <field name="inherit_id" ref="fst.view_ert_dashboard"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('o_kanban_dashboard')]//t" position="inside">
+                <!-- Routine VPLT -->
+                <div class="card-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+                    <h3 class="title">Routine Vertical PLT</h3>
+                    <a type="action"
+                    name="%(action_routine_vplt_test)d"
+                    class="btn btn-lg"
+                    style="background:#e91e63; color:#fff;">
+                        Records
+                    </a>
+                </div>
+            </xpath>
+        </field>
+    </record>
 
 </odoo>
