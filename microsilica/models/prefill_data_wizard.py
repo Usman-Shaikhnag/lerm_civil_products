@@ -9,8 +9,6 @@ class MicrosilicaPrefillWizard(models.TransientModel):
 
     product_id = fields.Many2one('product.template',string="Product")
     sample_id = fields.Many2one('lerm.srf.sample',domain="[('material_id', '=', product_id), ('id', '!=', context.get('exclude_sample_id'))]", string="Sample")
-    
-
 
     def prefill_data(self):
         current_product = self.env['mechanical.microsilica'].sudo().browse(self._context['active_id'])
@@ -19,65 +17,47 @@ class MicrosilicaPrefillWizard(models.TransientModel):
         ], limit=1)
 
         normal_fields = [
-            'temp_percent_compressive',
-            'humidity_percent_compressive',
-            'start_date_compressive',
-            'end_date_compressive',
-            'high_range_compressive',
-            'wt_of_microsilica',
-            'wt_of_cement_compressive',
-            'wt_of_standerd_comp1',
-            'wt_of_standerd_comp2',
-            'wt_of_standerd_comp3',
-            'quantity_water',
-            'measured_value1',
-            'measured_value2',
-            'measured_value3',
-            'measured_value4',
-            'high_range_control_comp',
-            'wt_of_cement',
-            'wt_of_sand1',
-            'wt_of_sand2',
-            'wt_of_sand3',
-            'quanity_of_water',
-            'sample_measured_value1',
-            'sample_measured_value2',
-            'sample_measured_value3',
-            'sample_measured_value4',
-            'control_compressive_strength_7_days',
-            'n_is',
-            'microsilica_wt',
-            'cement_wt',
-            'wt_of_standerd_sand1',
-            'wt_of_standerd_sand2',
-            'wt_of_standerd_sand3',
-            'water_quantity',
-            'comp_measured_value1',
-            'comp_measured_value2',
-            'comp_measured_value3',
-            'comp_measured_value4',
-            'comp_average_casting_7days',
-            'comp_control_cement_wt',
-            'comp_control_wt_of_standerd_sand1',
-            'comp_control_wt_standerd_sand2',
-            'comp_control_wt_standerd_sand3',
-            'comp_control_total_wt',
-            'comp_control_water_quantity',
-            'comp_control_measured_value1',
-            'comp_control_measured_value2',
-            'comp_control_measured_value3',
-            'comp_control_measured_value4'
+            'sample_weight_ws',
+            'temp_cs',
+            'humidity_cs',
+            'start_date_cs',
+            'end_date_cs',
+            'wt_of_sand_cs',
+            'wt_of_cement_silica_cs',
+            'std_consistency_p',
+            'temp_pozzolanic',
+            'humidity_pozzolanic',
+            'start_date_pozzolanic',
+            'end_date_pozzolanic',
+            'tm_high_range_water',
+            'tm_wt_microsilica',
+            'tm_wt_cement',
+            'tm_wt_sand_grade1',
+            'tm_wt_sand_grade2',
+            'tm_wt_sand_grade3',
+            'tm_quantity_water',
+            'tm_measured_val1',
+            'tm_measured_val2',
+            'tm_measured_val3',
+            'tm_measured_val4',
+            'cs_high_range_water',
+            'cs_wt_cement',
+            'cs_wt_sand_grade1',
+            'cs_wt_sand_grade2',
+            'cs_wt_sand_grade3',
+            'cs_quantity_water',
+            'cs_measured_val1',
+            'cs_measured_val2',
+            'cs_measured_val3',
+            'cs_measured_val4',
         ]
 
         one2many_fields = [
-            'casting_7_days_tables',
-            'control_casting_7_days_tables',
-            'oversize_retained_tables',
+            'wet_sieving_line_ids',
+            'comp_str_line_ids',
             'specific_gravity_tables',
-            'comp_casting_7_days_tables',
-            'comp_control_casting_7days_tables',
-            'oversize_percent_tables',
-            'bulk_density_tables'
+            'tm_casting_line_ids',
+            'cs_casting_line_ids',
         ]
 
         update_vals = {}
@@ -91,19 +71,18 @@ class MicrosilicaPrefillWizard(models.TransientModel):
             if lines:
                 update_vals[field] = [(0, 0, vals) for vals in (line.copy_data()[0] for line in lines)]
 
+        if not current_product.wet_sieving_visible:
+            update_vals.pop('wet_sieving_line_ids', None)
 
-        if not current_product.oversize_retain_visible:
-            update_vals.pop('oversize_retained_tables', None)
+        if not current_product.compressive_strength_visible:
+            update_vals.pop('comp_str_line_ids', None)
 
         if not current_product.specific_gravity_visible:
             update_vals.pop('specific_gravity_tables', None)
 
-        if not current_product.oversize_percent_retain_visible:
-            update_vals.pop('oversize_percent_tables', None)
-
-        if not current_product.bulk_density_visible:
-            update_vals.pop('bulk_density_tables', None)
-
+        if not current_product.pozzolanic_visible:
+            update_vals.pop('tm_casting_line_ids', None)
+            update_vals.pop('cs_casting_line_ids', None)
 
         if update_vals:
             current_product.sudo().write(update_vals)

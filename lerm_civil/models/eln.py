@@ -580,7 +580,7 @@ class ELN(models.Model):
             'report_type': 'qweb-html',
             'report_name': template_name,
             'report_file': template_name,
-            'data' : {'fromsample' : False,'eln_id':self.id,'report_wizard':False}
+            'data' : {'fromsample' : False, 'eln_id': self.id, 'report_wizard': False, 'inreport': self.sample_id.state}
             
         }
         
@@ -610,7 +610,7 @@ class ELN(models.Model):
             'report_type': 'qweb-html',
             'report_name': template_name,
             'report_file': template_name,
-            'data' : {'fromsample' : False , 'inreport' : self , 'nabl' : False,'fromEln':True}
+            'data' : {'fromsample' : False , 'inreport' : self.sample_id.state , 'nabl' : False,'fromEln':True}
 
         }
     def print_nabl_report(self):
@@ -626,7 +626,7 @@ class ELN(models.Model):
             'report_type': 'qweb-pdf',
             'report_name': template_name,
             'report_file': template_name,
-            'data' : {'nabl' : True}
+            'data' : {'nabl' : True, 'inreport' : self.sample_id.state}
         }
     def print_non_nabl_report(self):
         eln = self
@@ -640,7 +640,7 @@ class ELN(models.Model):
             'report_type': 'qweb-pdf',
             'report_name': template_name,
             'report_file': template_name,
-            'data' : {'nabl' : False}
+            'data' : {'nabl' : False, 'inreport' : self.sample_id.state}
         }
 
     @api.model

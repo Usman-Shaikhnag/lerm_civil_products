@@ -12,8 +12,8 @@
 				</div>
 				
 			</div>
-			<div class="row backgroundimage" style="opacity:0.3; font-size:100px; width:85%; text-align:center;top:500px; right:100px; position: fixed; z-index:99;">
-				<img src="/lerm_civil/static/src/img/watermark.png" style="width:100%;"/>
+			<div t-if="eln.sample_id.show_watermark and eln.sample_id.lab_location and eln.sample_id.lab_location.watermark_image" class="row backgroundimage" style="opacity:0.3; font-size:100px; width:85%; text-align:center;top:500px; right:100px; position: fixed; z-index:99;">
+				<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.watermark_image.decode('utf-8')" style="width:100%;"/>
 			</div>
 
 			

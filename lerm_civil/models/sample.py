@@ -145,6 +145,8 @@ class LermSampleForm(models.Model):
         
     ], string='State',default='1-allotment_pending')
     conformity = fields.Boolean(string="Conformity")
+    show_watermark = fields.Boolean(string="Show Watermark in Report", default=True)
+    show_stamp = fields.Boolean(string="Show Stamp in Report", default=True)
     parameters_result = fields.One2many('sample.parameters.result','sample_id',string="Parameters Result")
     volume = fields.Char(string="Volume")
     product_name = fields.Many2one('product.template',string="Product Name")
@@ -521,7 +523,7 @@ class LermSampleForm(models.Model):
             'report_type': 'qweb-pdf',
             'report_name': template_name,
             'report_file': template_name,
-            'data' : {'fromsample' : True}
+            'data' : {'fromsample' : True, 'inreport' : self.state}
         }
         
     def print_nabl_report(self):
