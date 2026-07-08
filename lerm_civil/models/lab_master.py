@@ -29,11 +29,11 @@ class LabMaster(models.Model):
     watermark_image = fields.Binary('Watermark Image')
     watermark_filename = fields.Char("Watermark filename")
 
-    stamp_image = fields.Binary('Stamp Image')
-    stamp_filename = fields.Char("Stamp filename")
-
     footer_image = fields.Binary('Footer Image')
     footer_filename = fields.Char("Footer filename")
+
+    stamp_image = fields.Binary(string="Stamp Image")
+    stamp_image_filename = fields.Char("Stamp Filename")
 
     lab_location_line = fields.One2many('lerm.lab.location.master','parent_id',string="Lab Location")
     nabl_scope_link = fields.Char(string="NABL Scope Link")

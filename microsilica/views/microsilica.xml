@@ -28,11 +28,11 @@
                         </tree>
                       </field>
                     </div>
-                     
+
                      <style>
                         .blue-input input {
-                            background-color: #d8ecff !important;   /* हलका Blue background */
-                            border-color: #3b82f6 !important;        /* Blue border */ 
+                            background-color: #d8ecff !important;
+                            border-color: #3b82f6 !important;
                         }
 
                         .o_list_view .o_data_cell.blue-input {
@@ -40,7 +40,6 @@
                              border-color: #3b82f6 !important;
                              }
 
-                        /* Input when the cell goes into edit mode */
                         .o_list_view .o_data_cell.blue-input input {
                              background-color: #d8ecff !important;
                              border-color: #3b82f6 !important;
@@ -48,401 +47,186 @@
                     </style>
 
 
-                    <group/>
-                    <div style="display:flex;">
-                    <div style="width:50%;">
-                      <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:98%;">
-                         <tbody>
-                            <tr>
-                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Temperature °c</span></td>
-                              <td style="border: 1px solid black; padding: 8px;"><field name="temp_percent_compressive" class="blue-input"/></td>
-                            </tr>
-                            <tr>
-                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Humidity %</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field name="humidity_percent_compressive" class="blue-input"/></td>
-                            </tr>  
-                         </tbody>
-                      </table>
-                    </div>
+                    <!-- 1 — Fineness by Wet Sieving (45 Micron) -->
 
-
-                    <div style="width:50%;">
-                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                         <tbody>
-                            <tr>
-                              <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>Start Date</span></td>
-                              <td style="border: 1px solid black; padding: 8px;"><field name="start_date_compressive" class="blue-input"/></td>
-                            </tr>
-                            <tr>
-                            <td style="border: 1px solid black; padding: 8px; font-weight: bold;"><span>End Date</span></td>
-                            <td style="border: 1px solid black; padding: 8px;"><field name="end_date_compressive" class="blue-input"/></td>
-                            </tr>
-                            
-                         </tbody>
-                      </table>
-                    </div>
-
-                    </div>
-                    <group/>
-
-                    <!-- <group >
-                    <group>
-                      <field name="temp_percent_compressive"/>
-                      <field name="humidity_percent_compressive"/>
-                    </group>
-                    <group>
-                      <field name="start_date_compressive"/>
-                      <field name="end_date_compressive"/>
-                    </group>
-                    </group> -->
-
-                     <!-- compressive strength -->
-                    <div invisible=" not compressive_visible">
+                    <div invisible="not wet_sieving_visible">
                         <h1>
-                            <field name="compressive_name" readonly="1" nolabel="1"/>
-                            <field name="compressive_visible" invisible="1"/>
+                            <field name="wet_sieving_name" readonly="1" nolabel="1"/>
+                            <field name="wet_sieving_visible" invisible="1"/>
                         </h1>
                     </div>
-                    <group/>
+                    <group invisible="not wet_sieving_visible"/>
+                    <div invisible="not wet_sieving_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td style="font-weight: bold;">Sample Weight (Ws) (g)</td>
+                                    <td><field name="sample_weight_ws" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: bold;">Sieve Size Used</td>
+                                    <td><field name="sieve_size_ws" class="blue-input"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
+                    <div class="custom_table_borders" invisible="not wet_sieving_visible">
+                        <field name="wet_sieving_line_ids" nolabel="1" colspan="2">
+                            <tree editable="bottom">
+                                <field name="sr_no"/>
+                                <field name="sample_weight" class="blue-input"/>
+                                <field name="weight_retained" class="blue-input"/>
+                                <field name="weight_passing"/>
+                                <field name="percent_passing"/>
+                            </tree>
+                        </field>
+                    </div>
 
-                    <div style="display:flex;">
-                    <div style="width:50%">
-                    <h3 class="center-heading"  style="white-space: nowrap;">Compressive Strength of Test Mixture</h3>
-                    <group/>
-                      <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:98%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not wet_sieving_visible">
                         <tbody>
-                          <tr>
-                            <td><span>High Range water reducer (g)</span></td>
-                            <td><field  name="high_range_compressive"  colspan="1" class="blue-input" /></td>
-                          </tr>
-                          <tr>
-                            <td><span>Weight of Microsilica (g)</span></td>
-                            <td><field  name="wt_of_microsilica"  colspan="1"  class="blue-input" /></td>
+                            <tr>
+                                <td><span>Average % Material Passing</span></td>
+                                <td><field name="avg_percent_passing"/></td>
                             </tr>
-                          <tr>
-                            <td><span>Weight of Cement (g)</span></td>
-                            <td><field  name="wt_of_cement_compressive"  colspan="1" class="blue-input" /></td>
-                          </tr>
-                          <tr>
-                            <td><span>Weight of Standard Sand (g)Grade-I</span></td>
-                            <td><field  name="wt_of_standerd_comp1"  colspan="1" class="blue-input" /></td>
-                          </tr>
-                          <tr>
-                            <td><span>Weight of Standard Sand (g)Grade-II</span></td>
-                            <td><field  name="wt_of_standerd_comp2"  colspan="1"  class="blue-input" /></td>
-                          </tr>
-                          <tr>
-                            <td><span>Weight of Standard Sand (g)Grade-III</span></td>
-                            <td><field  name="wt_of_standerd_comp3"  colspan="1" class="blue-input" /></td>
-                          </tr>
-                          <tr>
-                            <td><span>Quantity of Water (g)</span></td>
-                            <td><field  name="quantity_water"  colspan="1" class="blue-input" /></td>
-                          </tr>
+                            <tr>
+                                <td><span>Conformity</span></td>
+                                <td><field name="wet_sieving_conformity"
+                                    decoration-success="wet_sieving_conformity == 'pass'"
+                                    decoration-danger="wet_sieving_conformity == 'fail'"
+                                    readonly="1"/></td>
+                            </tr>
+                            <tr>
+                                <td><span>NABL</span></td>
+                                <td><field name="wet_sieving_nabl"/></td>
+                            </tr>
                         </tbody>
-                      </table>
-                      </div>
-                      
-                      <div style="width:50%">
-                      <h3 class="center-heading" style="white-space: nowrap;">Calculation of Flow (Acceptable : 100 to 115 %) : Measured Values</h3>
-                      <group/>
-                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                      <tbody>
-                        <tr>
-                          <td><field  name="measured_value1"  colspan="3"  nolabel="1" class="blue-input"/></td>
-                          <td><field  name="measured_value2"  colspan="3"  nolabel="1" class="blue-input"/></td>
-                        </tr>
-                        <tr>
-                          <td><field  name="measured_value3"  colspan="3"  nolabel="1" class="blue-input"/></td>
-                          <td><field  name="measured_value4"  colspan="3"  nolabel="1" class="blue-input"/></td>
-                        </tr>
-                        </tbody>
-                      </table>
+                    </table>
+                    <group invisible="not wet_sieving_visible"/>
+                    <group invisible="not wet_sieving_visible"/>
 
-                         <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                         <tbody>
-                          <tr>
-                            <td><span>Average</span></td>
-                            <td><field name="average_measured" />
-                            </td>
-                           </tr>
-                           <tr>
-                            <td><span>% Flow</span></td>
-                            <td><field name="percent_flow"/></td>
-                           </tr>
-                           </tbody>                     
-                          </table>
-                      
-                      </div>
-                    </div>
-                    <group/>
 
-                    
-                  
+                    <!-- 2 — Compressive Strength of Micro Silica -->
 
-                     <!-- 7 Days Casting  -->
-                    <div invisible="not compressive_visible">
+                    <div invisible="not compressive_strength_visible">
                         <h1>
-                            <field name="casting_7_name" readonly="1" nolabel="1"/>
-
-                           
+                            <field name="compressive_strength_name" readonly="1" nolabel="1"/>
+                            <field name="compressive_strength_visible" invisible="1"/>
                         </h1>
                     </div>
-                    <group/>
+                    <group invisible="not compressive_strength_visible"/>
 
-                    <div>
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                    <tbody>
-                      <tr>
-                        <td><span>Done</span></td>
-                        <td> <field name="status_7days"/></td>
-                      </tr>
-                      <tr>
-                        <td><span>Date of Casting</span></td>
-                        <td><field name="casting_date_7days" class="blue-input"/></td>
-                      </tr>
-                      <tr>
-                        <td><span>Date of Testing</span></td>
-                        <td><field name="testing_date_7days"/></td>
-                      </tr>
-                      </tbody>
-                    </table>
+                    <div style="display:flex;" invisible="not compressive_strength_visible">
+                        <div style="width:50%;">
+                            <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
+                                <tbody>
+                                    <tr>
+                                        <td style="border: 1px solid black; padding: 8px; font-weight: bold;">Temperature °c</td>
+                                        <td style="border: 1px solid black; padding: 8px;"><field name="temp_cs" class="blue-input"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border: 1px solid black; padding: 8px; font-weight: bold;">Humidity %</td>
+                                        <td style="border: 1px solid black; padding: 8px;"><field name="humidity_cs" class="blue-input"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div style="width:50%;">
+                            <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                                <tbody>
+                                    <tr>
+                                        <td style="border: 1px solid black; padding: 8px; font-weight: bold;">Start Date</td>
+                                        <td style="border: 1px solid black; padding: 8px;"><field name="start_date_cs" class="blue-input"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border: 1px solid black; padding: 8px; font-weight: bold;">End Date</td>
+                                        <td style="border: 1px solid black; padding: 8px;"><field name="end_date_cs" class="blue-input"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
-                    <div class="custom_table_borders" style="margin-top:20px;">
-                    <h3 style="white-space: nowrap;">7 Days</h3><br/>
-                    <field name="casting_7_days_tables" nolabel="1" colspan="2">
-                        <tree editable="bottom">
-                          <field name="length" class="blue-input" decoration-info="length != 0"/>
-                          <field name="width" class="blue-input" decoration-info="width != 0"/>
-                          <field name="crosssectional_area"/>
-                          <field name="wt_of_cement_cube" class="blue-input" decoration-info="wt_of_cement_cube != 0"/>
-                          <field name="crushing_load" class="blue-input" decoration-info="crushing_load != 0" />
-                          <field name="compressive_strength" />
-                        </tree>
-                      </field>
+                    <div style="display:flex;" invisible="not compressive_strength_visible">
+                        <div style="width:50%">
+                            <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
+                                <tbody>
+                                    <tr>
+                                        <td><span>Weight of Sand (g)</span></td>
+                                        <td><field name="wt_of_sand_cs" class="blue-input"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span>Weight of Cement + Silica (g)</span></td>
+                                        <td><field name="wt_of_cement_silica_cs" class="blue-input"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span>Standard Consistency P (%)</span></td>
+                                        <td><field name="std_consistency_p" class="blue-input"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span>Weight of Water (g) (P/4+3.0)</span></td>
+                                        <td><field name="water_weight_cs"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div style="width:50%">
+                            <div style="text-align: center; font-weight: bold;">Size of Cube : 70.6 x 70.6 x 70.6</div>
+                        </div>
                     </div>
 
-                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                         <tbody>
-                          <tr>
-                            <td style="padding: 5px;font-weight: bold;"><span>Average</span></td>
-                            <td style="padding: 5px;"><field name="average_casting_7days"/></td>
-                           </tr>
-                           </tbody>
-                          </table>
-                    <group/>
-                    <group/>
+                    <div class="custom_table_borders" invisible="not compressive_strength_visible">
+                        <field name="comp_str_line_ids" nolabel="1" colspan="2">
+                            <tree editable="bottom">
+                                <field name="sr_no"/>
+                                <field name="age_days" class="blue-input"/>
+                                <field name="weight_g" class="blue-input"/>
+                                <field name="density_g_cc"/>
+                                <field name="load_kN" class="blue-input"/>
+                                <field name="comp_strength"/>
+                            </tree>
+                        </field>
+                    </div>
 
+                    <div style="display:flex;" invisible="not compressive_strength_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><span>Avg Compressive Strength 7 Days (N/mm²)</span></td>
+                                    <td><field name="avg_7_strength"/></td>
+                                </tr>
+                                <tr>
+                                    <td><span>Avg Compressive Strength 14 Days (N/mm²)</span></td>
+                                    <td><field name="avg_14_strength"/></td>
+                                </tr>
+                                <tr>
+                                    <td><span>Avg Compressive Strength 28 Days (N/mm²)</span></td>
+                                    <td><field name="avg_28_strength"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
-                     <!-- Compressive Strength of control Sample -->
-                    <div style="display:flex;">
-                    <div style="width:50%">
-                    <h3 class="center-heading"  style="white-space: nowrap;">Compressive Strength of control Sample</h3>
-                      <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not compressive_strength_visible">
                         <tbody>
-                          <tr>
-                            <td><span>High Range water reducer (g)</span></td>
-                            <td><field  name="high_range_control_comp"  colspan="1" class="blue-input" /></td>
-                          </tr>
-                          <tr>
-                            <td><span>Weight of Cement (g)</span></td>
-                            <td><field  name="wt_of_cement"  colspan="1" class="blue-input" /></td>
-                          </tr>
-                          <tr>
-                            <td><span>Weight of Standard Sand (g)Grade-I</span></td>
-                            <td><field  name="wt_of_sand1"  colspan="1" class="blue-input" /></td>
-                          </tr>
-                          <tr>
-                            <td><span>Weight of Standard Sand (g)Grade-II</span></td>
-                            <td><field  name="wt_of_sand2"  colspan="1" class="blue-input" /></td>
-                          </tr>
-                          <tr>
-                            <td><span>Weight of Standard Sand (g)Grade-III</span></td>
-                            <td><field  name="wt_of_sand3"  colspan="1" class="blue-input" /></td>
-                          </tr>
-                          <tr>
-                            <td><span>Quantity of Water (g)</span></td>
-                            <td><field  name="quanity_of_water"  colspan="1" class="blue-input"/></td>
-                          </tr>
+                            <tr>
+                                <td><span>Conformity</span></td>
+                                <td><field name="compressive_strength_conformity"
+                                    decoration-success="compressive_strength_conformity == 'pass'"
+                                    decoration-danger="compressive_strength_conformity == 'fail'"
+                                    readonly="1"/></td>
+                            </tr>
+                            <tr>
+                                <td><span>NABL</span></td>
+                                <td><field name="compressive_strength_nabl"/></td>
+                            </tr>
                         </tbody>
-                      </table>
-                      </div>
-                      
-                      <div style="width:50%">
-                      <h3 class="center-heading" style="white-space: nowrap;">Calculation of Flow (Acceptable : 100 to 115 %) : Measured Values</h3>
-                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                      <tbody>
-                        <tr>
-                          <td><field  name="sample_measured_value1"  colspan="3"  nolabel="1" class="blue-input"/></td>
-                          <td><field  name="sample_measured_value2"  colspan="3"  nolabel="1" class="blue-input"/></td>
-                        </tr>
-                        <tr>
-                          <td><field  name="sample_measured_value3"  colspan="3"  nolabel="1" class="blue-input"/></td>
-                          <td><field  name="sample_measured_value4"  colspan="3"  nolabel="1" class="blue-input"/></td>
-                        </tr>
-                        </tbody>
-                      </table>
-
-                         <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                         <tbody>
-                          <tr>
-                            <td><span>Average</span></td>
-                            <td><field name="sample_average_measured"/>
-                            </td>
-                           </tr>
-                           <tr>
-                            <td><span>% Flow</span></td>
-                            <td><field name="sample_percent_flow"/></td>
-                           </tr>
-                           </tbody>                     
-                          </table>
-                      
-                      </div>
-                    </div>
-                    <group/>
-
-                   
-
-
-                    <div invisible="not compressive_visible">
-                        <h1>
-                            <field name="control_casting_7_name" readonly="1" nolabel="1"/>
-
-                            <!-- <field name="dry_sieving_visible" invisible="1"/> -->
-                        </h1>
-                    </div>
-                    <group/>
-
-                    <div>
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                    <tbody>
-                      <tr>
-                        <td><span>Done</span></td>
-                        <td><field name="control_status_7days"/></td>
-                      </tr>
-                      <tr>
-                        <td><span>Date of Casting</span></td>
-                        <td><field name="control_casting_date_7days" class="blue-input"/></td>
-                      </tr>
-                      <tr>
-                        <td><span>Date of Testing</span></td>
-                        <td><field name="control_testing_date_7days"/></td>
-                      </tr>
-                      </tbody>
                     </table>
-                    </div>
-
-                    <div class="custom_table_borders" style="margin-top:20px;">
-                    <h4 style="white-space: nowrap;">7 Days</h4><br/>
-                    <field name="control_casting_7_days_tables" nolabel="1" colspan="2">
-                        <tree editable="bottom">
-                          <field name="control_length" class="blue-input" decoration-info="control_length != 0"/>
-                          <field name="control_width" class="blue-input" decoration-info="control_width != 0"/>
-                          <field name="control_crosssectional_area"/>
-                          <field name="control_wt_of_cement_cube" class="blue-input" decoration-info="control_wt_of_cement_cube != 0"/>
-                          <field name="control_crushing_load" class="blue-input" decoration-info="control_crushing_load != 0" />
-                          <field name="control_compressive_strength" />
-                        </tree>
-                      </field>
-                    </div>
-
-                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                         <tbody>
-                          <tr>
-                            <td><span>Average</span></td>
-                            <td><field name="control_average_casting_7days"/></td>
-                           </tr>
-                           <tr>
-                            <td><span>Accelerated pozzolanic activity index with portland cement , 7 Days in %?</span></td>
-                            <td><field name="control_compressive_strength_7_days"/></td>
-                           </tr>
-                           </tbody>
-                          </table>
-                          <group/>
-
-                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                          <tbody>
-                          <tr>
-                            <td><span>Conformity</span></td>
-                            <td><field name="accelerated_pozzolanic_conformity" 
-                                  decoration-success="accelerated_pozzolanic_conformity == 'pass'" 
-                                  decoration-danger="accelerated_pozzolanic_conformity == 'fail'" 
-                                  readonly="1" /></td>
-                           </tr>
-                           <tr>
-                            <td><span>NABL</span></td>
-                            <td><field name="accelerated_pozzolanic_nabl"/></td>
-                           </tr>
-                           </tbody>
-                          </table>
-                          <group/>
-                          <group/>
-
-                  
-
-                     <!--Start  Oversize % Retained on 45 Micron IS sieve -->
-
-                    <div invisible="not oversize_retain_visible">
-                        <h1>
-                            <field name="oversize_name" readonly="1" nolabel="1"/>
-                            <field name="oversize_retain_visible" invisible="1"/>
-                        </h1>
-                    </div>
-                    <group/>
-                                        
-                    
-                    
-                    <div class="custom_table_borders" invisible="not oversize_retain_visible">
-                    <!-- <group> -->
-                    <field name="oversize_retained_tables" colspan="2" nolabel="1" >
-                        <tree editable="bottom" >
-                                <field name='sr_no'/>
-                                <field name='wt_sample' class="blue-input" decoration-info="wt_sample != 0"/>
-                                <field name='wt_retain' class="blue-input" decoration-info="wt_retain != 0"/>
-                                <field name='retained_percent_wt'/>
-                            </tree>      
-                    </field>
-                    </div>
-                    <group/>
+                    <group invisible="not compressive_strength_visible"/>
+                    <group invisible="not compressive_strength_visible"/>
 
 
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                    <tbody>
-                          <tr>
-                            <td><span>Average</span></td>
-                            <td><field name='retain_wt_avrg'/></td>
-                           </tr>
-                           <tr>
-                            <td><span>% Weight Retained</span></td>
-                            <td><field name='retain_wt_rounded'/></td>
-                           </tr>
-                           </tbody>
-                          </table>
-                          <group/>
-
-                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                          <tbody>
-                          <tr>
-                            <td><span>Conformity</span></td>
-                            <td><field name='oversize_retained_conformity'
-                            decoration-success="oversize_retained_conformity == 'pass'" 
-                            decoration-danger="oversize_retained_conformity == 'fail'" 
-                            readonly="1" 
-                            /></td>
-                           </tr>
-                           <tr>
-                            <td><span>NABL</span></td>
-                            <td><field name='oversize_retained_nabl'/></td>
-                           </tr>
-                           </tbody>
-                          </table>
-                          <group/>
-                          <group/>
-
-                       
-                     <!-- specific Gravity Start -->
+                    <!-- 3 — Specific Gravity -->
 
                     <div invisible="not specific_gravity_visible">
                         <h1>
@@ -450,472 +234,328 @@
                             <field name="specific_gravity_visible" invisible="1"/>
                         </h1>
                     </div>
-
-                    
+                    <group invisible="not specific_gravity_visible"/>
 
                     <div class="custom_table_borders" invisible="not specific_gravity_visible">
-                    <field name="specific_gravity_tables" nolabel="1" colspan="2">
-                        <tree editable="bottom"  >
-                                <field name='sr_no'/>
-                                <field name='mass_of_microsilica' class="blue-input" decoration-info="mass_of_microsilica != 0"/>
-                                <field name='initial_vol_kerosine' class="blue-input" decoration-info="initial_vol_kerosine != 0"/>
-                                <field name='final_vol_kero_cement' class="blue-input" decoration-info="final_vol_kero_cement != 0"/>
-                                <field name='displaced_volume'/>
-                                <field name='spe_gravt_microsilica'/>
-                            </tree>       
-                    </field>
-                    </div>
-
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                    <tbody>
-                          <tr>
-                            <td><span>Average</span></td>
-                            <td><field name='specific_gravity_avrg'/></td>
-                           </tr>
-                           <tr>
-                            <td><span>Conformity</span></td>
-                            <td><field name='specific_gravity_conformity'
-                            decoration-success="specific_gravity_conformity == 'pass'" 
-                            decoration-danger="specific_gravity_conformity == 'fail'" 
-                            readonly="1"
-                            /></td>
-                           </tr>
-                           <tr>
-                            <td><span>NABL</span></td>
-                            <td><field name='specific_gravity_nabl'/></td>
-                           </tr>
-                           </tbody>
-                          </table>
-                          <group/>
-                          <group/>
-
-                        
-                    
-                       
-                     <!-- Start Compressive Strength Test -->
-                    <div invisible="not compressive_strength_visible">
-                        <h1>
-                            <field name="compressive_strength_name" readonly="1" nolabel="1"/>
-                            <field name="compressive_strength_visible" invisible="1"/>
-                        </h1>
-                    </div>
-                    <group/>
-                   
-
-                    <div style="display:flex;">
-                    <div style="width:50%">
-                    <h3 class="center-heading"  style="white-space: nowrap;">Compressive Strength of Test Mortar</h3>
-                    <group/>
-                      <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:98%;">
-                        <tbody>
-                          <tr>
-                            <td><span>N (as per IS 15388)</span></td>
-                            <td><field  name="n_is"  colspan="1" class="blue-input"/></td>
-                          </tr>
-                          <tr>
-                            <td><span>Weight of Microsilica (100*N)</span></td>
-                            <td><field  name="microsilica_wt"  colspan="1" class="blue-input"/></td>
-                            </tr>
-                          <tr>
-                            <td><span>Weight of Cement (g)</span></td>
-                            <td><field  name="cement_wt"  colspan="1" class="blue-input"/></td>
-                          </tr>
-                          <tr>
-                            <td><span>Weight of Standard Sand (g)Grade-I</span></td>
-                            <td><field  name="wt_of_standerd_sand1"  colspan="1" class="blue-input"/></td>
-                          </tr>
-                          <tr>
-                            <td><span>Weight of Standard Sand (g)Grade-II</span></td>
-                            <td><field  name="wt_of_standerd_sand2"  colspan="1" class="blue-input"/></td>
-                          </tr>
-                          <tr>
-                            <td><span>Weight of Standard Sand (g)Grade-III</span></td>
-                            <td><field  name="wt_of_standerd_sand3"  colspan="1" class="blue-input"/></td>
-                          </tr>
-                          <tr>
-                            <td><span>Quantity of Water (g)</span></td>
-                            <td><field  name="water_quantity"  colspan="1" class="blue-input"/></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                      </div>
-                      
-                      <div style="width:50%">
-                      <h3 class="center-heading" style="white-space: nowrap;">Calculation of Flow (Acceptable : 100 to 110 %):Measured Values</h3>
-                      <group/>
-                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                      <tbody>
-                        <tr>
-                          <td><field  name="comp_measured_value1"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                          <td><field  name="comp_measured_value2"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                        </tr>
-                        <tr>
-                          <td><field  name="comp_measured_value3"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                          <td><field  name="comp_measured_value4"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                        </tr>
-                        </tbody>
-                      </table>
-
-                         <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                         <tbody>
-                          <tr>
-                            <td><span>Average</span></td>
-                            <td><field name="comp_average_measured"/>
-                            </td>
-                           </tr>
-                           <tr>
-                            <td><span>% Flow</span></td>
-                            <td><field name="comp_percent_flow" /></td>
-                           </tr>
-                           </tbody>                     
-                          </table>
-                      </div>
-                    </div>
-                    <group/>
-
-                  
-                     <!-- 7Days comp strngth -->
-
-                    <div invisible="not compressive_strength_visible">
-                        <h1>
-                            <field name="comp_casting_7_name" readonly="1" nolabel="1"/>
-
-                            <!-- <field name="dry_sieving_visible" invisible="1"/> -->
-                        </h1>
-                    </div>
-                    <group/>
-
-                    <div>
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                    <tbody>
-                      <tr>
-                        <td><span>Done</span></td>
-                        <td><field name="comp_status_7days"/></td>
-                      </tr>
-                      <tr>
-                        <td><span>Date of Casting</span></td>
-                        <td><field name="comp_casting_date_7days" class="blue-input"/></td>
-                      </tr>
-                      <tr>
-                        <td><span>Date of Testing</span></td>
-                        <td><field name="comp_testing_date_7days"/></td>
-                      </tr>
-                      </tbody>
-                    </table>
-                    </div>
-
-                    <div class="custom_table_borders" style="margin-top:20px;">
-                    <h4 style="white-space: nowrap;">7 Days</h4><br/>
-                     <field name="comp_casting_7_days_tables" colspan="2" nolabel="1">
-                        <tree editable="bottom">
-                          <field name="compressive_length" class="blue-input" decoration-info="compressive_length != 0"/>
-                          <field name="compressive_width" class="blue-input" decoration-info="compressive_width != 0"/>
-                          <field name="compressive_crosssectional_area"/>
-                          <field name="compressive_wt_of_cement_cube" class="blue-input" decoration-info="compressive_wt_of_cement_cube != 0"/>
-                          <field name="compressive_crushing_load" class="blue-input" decoration-info="compressive_crushing_load != 0"/>
-                          <field name="comp_strength" />
-                        </tree>
-                      </field>
-                    </div>
-
-                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                         <tbody>
-                          <tr>
-                            <td><span>Average</span></td>
-                            <td><field name="comp_average_casting_7days"/></td>
-                           </tr>
-                           </tbody>
-                          </table>
-                          <group/>
-
-                     
-                      <!-- Compressive Strength of control Sample -->
-
-                    <div style="display:flex;">
-                    <div style="width:50%">
-                    <h3 class="center-heading"  style="white-space: nowrap;">Compressive Strength of Control Sample</h3>
-                    <group/>
-                      <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:98%;">
-                        <tbody>
-                          <tr>
-                            <td><span>Weight of Cement (g)</span></td>
-                            <td> <field  name="comp_control_cement_wt"  colspan="1" class="blue-input"/></td>
-                          </tr>
-                          <tr>
-                            <td><span>Weight of Standard Sand (g)Grade-I</span></td>
-                            <td><field  name="comp_control_wt_of_standerd_sand1"  colspan="1" class="blue-input"/></td>
-                          </tr>
-                          <tr>
-                            <td><span>Weight of Standard Sand (g)Grade-II</span></td>
-                            <td><field  name="comp_control_wt_standerd_sand2"  colspan="1" class="blue-input"/></td>
-                            </tr>
-                          <tr>
-                            <td><span>Weight of Standard Sand (g)Grade-III</span></td>
-                            <td><field  name="comp_control_wt_standerd_sand3"  colspan="1" class="blue-input"/></td>
-                          </tr>
-                          <tr>
-                            <td><span>Total Weight (g)</span></td>
-                            <td><field  name="comp_control_total_wt"  colspan="1" class="blue-input"/></td>
-                          </tr>
-                          <tr>
-                            <td><span>Quantity of Water (g)</span></td>
-                            <td><field  name="comp_control_water_quantity"  colspan="1" class="blue-input"/></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                      </div>
-                      
-                      <div style="width:50%">
-                      <h3 class="center-heading" style="white-space: nowrap;">Calculation of Flow (Acceptable : 100 to 110 %) : Measured Values</h3>
-                      <group/>
-                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                      <tbody>
-                        <tr>
-                          <td><field  name="comp_control_measured_value1"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                          <td><field  name="comp_control_measured_value2"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                        </tr>
-                        <tr>
-                          <td> <field  name="comp_control_measured_value3"  colspan="1"  nolabel="1"/></td>
-                          <td><field  name="comp_control_measured_value4"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                        </tr>
-                        </tbody>
-                      </table>
-
-                         <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                         <tbody>
-                          <tr>
-                            <td><span>Average</span></td>
-                            <td><field name="comp_control_average_measured"/>
-                            </td>
-                           </tr>
-                           <tr>
-                            <td><span>% Flow</span></td>
-                            <td><field name="comp_control_percent_flow"/></td>
-                           </tr>
-                           </tbody>
-                          </table>
-                      
-                      </div>
-                    </div>
-                    <group/>
-
-                    <!-- 7Days comp strngth -->
-
-                    <div invisible="not compressive_strength_visible">
-                        <h1>
-                            <field name="comp_control_casting_7name" readonly="1" nolabel="1"/>
-
-                            <!-- <field name="dry_sieving_visible" invisible="1"/> -->
-                        </h1>
-                    </div>
-                    <group/>
-
-                    <div>
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                    <tbody>
-                      <tr>
-                        <td><span>Done</span></td>
-                        <td><field name="comp_control_status_7days"/></td>
-                      </tr>
-                      <tr>
-                        <td><span>Date of Casting</span></td>
-                        <td><field name="comp_control_castingdate_7days" class="blue-input"/></td>
-                      </tr>
-                      <tr>
-                        <td><span>Date of Testing</span></td>
-                        <td><field name="comp_control_testingdate_7days"/></td>
-                      </tr>
-                      </tbody>
-                    </table>
-                    </div>
-
-                    <div class="custom_table_borders" style="margin-top:20px;">
-                    <h4 style="white-space: nowrap;">7 Days</h4><br/>
-                    <field name="comp_control_casting_7days_tables" nolabel="1" colspan="2">
-                        <tree editable="bottom">
-                          <field name="comp_control_length" class="blue-input" decoration-info="comp_control_length != 0"/>
-                          <field name="comp_control_width" class="blue-input" decoration-info="comp_control_width != 0"/>
-                          <field name="comp_control_crosssectional_area"/>
-                          <field name="comp_control_wt_cement_cube" class="blue-input" decoration-info="comp_control_wt_cement_cube != 0"/>
-                          <field name="comp_control_crushing_load" class="blue-input" decoration-info="comp_control_crushing_load != 0"/>
-                          <field name="comp_control_strength" />
-                        </tree>
-                      </field>
-                    </div>
-
-
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                    <tbody>
-                          <tr>
-                            <td><span>Average</span></td>
-                            <td><field name="comp_control_average_casting_7days"/></td>
-                           </tr>
-                           <tr>
-                            <td><span>Compressive Strength of Sample (%)</span></td>
-                            <td><field name="comp_control_strngth_7_days"/></td>
-                           </tr>
-                           </tbody>
-                          </table>
-                          <group/>
-
-                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                          <tbody>
-                          <tr>
-                            <td><span>Conformity</span></td>
-                            <td><field name="comp_strngth_7_days_conformity"
-                            decoration-success="comp_strngth_7_days_conformity == 'pass'" 
-                            decoration-danger="comp_strngth_7_days_conformity == 'fail'" 
-                            readonly="1"
-                            /></td>
-                           </tr>
-                           <tr>
-                            <td><span>NABL</span></td>
-                            <td><field name="comp_strngth_7_days_nabl"/></td>
-                           </tr>
-                           </tbody>
-                          </table>
-                          <group/>
-                          <group/>
-
-                    
-
-                    <!-- Oversize Percent Retained on 45 Micron IS sieve variation from Avg. % -->
-
-                    <div invisible="not oversize_percent_retain_visible">
-                        <h1>
-                            <field name="oversize_percent_name" readonly="1" nolabel="1"/>
-                            <field name="oversize_percent_retain_visible" invisible="1"/>
-                        </h1>
-                    </div>
-                    <group/>
-                   
-                    <div class="custom_table_borders" invisible="not oversize_percent_retain_visible">
-                    <!-- <group> -->
-                    <field name="oversize_percent_tables" nolabel="1" colspan="2">
-                        <tree editable="bottom">
-                                <field name='sr_no'/>
-                                <field name='sample_wt_g' class="blue-input" decoration-info="sample_wt_g != 0"/>
-                                <field name='retain_wt_45micron' class="blue-input" decoration-info="retain_wt_45micron != 0"/>
-                                <field name='retain_wt_percent'/>
-                                <field name='variation_from_avrg'/>
-                            </tree>    
-                    </field>
-                    </div>
-
-
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                    <tbody>
-                          <tr>
-                            <td ><span>Average</span></td>
-                            <td><field name='avrg_oversize_percent'/></td>
-                           </tr>
-                           <tr>
-                            <td><span>Conformity</span></td>
-                            <td><field name='oversize_retained_conformity'
-                            decoration-success="oversize_retained_conformity == 'pass'" 
-                            decoration-danger="oversize_retained_conformity == 'fail'" 
-                            readonly="1"
-                            /></td>
-                           </tr>
-                           <tr>
-                            <td><span>NABL</span></td>
-                            <td><field name='oversize_retained_nabl'/></td>
-                           </tr>
-                           </tbody>
-                          </table>
-                          <group/>
-                          <group/>
-
-                       
-
-
-                    <!-- Dry Loose Bulk Density -->
-
-                    <div invisible="not bulk_density_visible">
-                        <h1>
-                            <field name="bulk_density_name" readonly="1" nolabel="1"/>
-                            <field name="bulk_density_visible" invisible="1"/>
-                        </h1>
-                    </div>
-                    <group/>
-                   
-
-                    <div class="custom_table_borders" invisible="not bulk_density_visible">
-                    <!-- <group> -->
-                    <field name="bulk_density_tables" nolabel="1" colspan="2">
-                        <tree editable="bottom">
-                                <field name='sr_no'/>
-                                <field name='wt_empty_cylinder_dry_density' class="blue-input" decoration-info="wt_empty_cylinder_dry_density != 0" />
-                                <field name='wt_cylinder_microsilica_dry_density' class="blue-input" decoration-info="wt_cylinder_microsilica_dry_density != 0" />
-                                <field name='wt_microsilica_dry_density'/>
-                                <field name='vlm_of_cylinder' class="blue-input" decoration-info="vlm_of_cylinder != 0"/>
-                                <field name='dryloose_bulk_density'/>
+                        <field name="specific_gravity_tables" nolabel="1" colspan="2">
+                            <tree editable="bottom">
+                                <field name="sr_no"/>
+                                <field name="w1_microsilica" class="blue-input"/>
+                                <field name="v1_initial" class="blue-input"/>
+                                <field name="v2_final" class="blue-input"/>
+                                <field name="volume_silica"/>
+                                <field name="wt_equal_vol_water"/>
+                                <field name="spe_gravt_microsilica"/>
                             </tree>
-                           
-                    </field>
+                        </field>
                     </div>
 
-
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                    <tbody>
-                          <tr>
-                            <td><span>Average Dry Loose Bulk Density (kg/m³)</span></td>
-                            <td><field name='avrg_bulk_density'/></td>
-                           </tr>
-                           <tr>
-                            <td><span>Conformity</span></td>
-                            <td><field name='bulk_density_conformity'
-                            decoration-success="bulk_density_conformity == 'pass'" 
-                            decoration-danger="bulk_density_conformity == 'fail'" 
-                            readonly="1"
-                            /></td>
-                           </tr>
-                           <tr>
-                            <td><span>NABL</span></td>
-                            <td><field name='bulk_density_nabl'/></td>
-                           </tr>
-                           </tbody>
-                          </table>
-                          <group/>
-                          <group/>
-
-                        <!-- Moisture Content -->
-
-                     <div invisible="moisture_visible == False" style="text-align:center">
-                      <h1>
-                          <field name="moisture_name" readonly="1" nolabel="1"/>
-                          <field name="moisture_visible" invisible='1'/>
-                      </h1>
-                    </div>
-                    
-                   
-                     <div invisible = "moisture_visible == False"  >
-                    <field name="moisture_line_ids" nolabel="1" >
-                            <tree editable="bottom"  class="custom_table_borders">
-                                <field name="sr_no" />
-                                <field name="w1" class="blue-input" decoration-info="w1 != 0"/>
-                                <field name='w2' class="blue-input" decoration-info="w2 != 0"/>
-                                <field name='w3' class="blue-input" decoration-info="w3 != 0"/>
-                                <field name='sample_weight'/>
-                                <field name='water_loss'/>
-                                <field name='moisture_content' />
-                                
-                            </tree>
-                    </field>
-                    </div>
-
-                    <table class="table o_form_table w-50 mt-2 custom_table_borders" invisible="not moisture_visible">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not specific_gravity_visible">
                         <tbody>
                             <tr>
-                                <td><strong>Average Moisture Content</strong></td>
-                                <td>
-                                    <field name="avg_moisture" readonly="1" nolabel="1"/>
-                                </td>
+                                <td><span>Average</span></td>
+                                <td><field name="specific_gravity_avrg"/></td>
+                            </tr>
+                            <tr>
+                                <td><span>Conformity</span></td>
+                                <td><field name="specific_gravity_conformity"
+                                    decoration-success="specific_gravity_conformity == 'pass'"
+                                    decoration-danger="specific_gravity_conformity == 'fail'"
+                                    readonly="1"/></td>
+                            </tr>
+                            <tr>
+                                <td><span>NABL</span></td>
+                                <td><field name="specific_gravity_nabl"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <group invisible="not specific_gravity_visible"/>
+                    <group invisible="not specific_gravity_visible"/>
+
+
+                    <!-- 4 — Accelerated Pozzolanic Activity Index -->
+
+                    <div invisible="not pozzolanic_visible">
+                        <h1>
+                            <field name="pozzolanic_name" readonly="1" nolabel="1"/>
+                            <field name="pozzolanic_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <group invisible="not pozzolanic_visible"/>
+
+                    <div style="display:flex;" invisible="not pozzolanic_visible">
+                        <div style="width:50%;">
+                            <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
+                                <tbody>
+                                    <tr>
+                                        <td style="border: 1px solid black; padding: 8px; font-weight: bold;">Temperature °c</td>
+                                        <td style="border: 1px solid black; padding: 8px;"><field name="temp_pozzolanic" class="blue-input"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border: 1px solid black; padding: 8px; font-weight: bold;">Humidity %</td>
+                                        <td style="border: 1px solid black; padding: 8px;"><field name="humidity_pozzolanic" class="blue-input"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div style="width:50%;">
+                            <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                                <tbody>
+                                    <tr>
+                                        <td style="border: 1px solid black; padding: 8px; font-weight: bold;">Start Date</td>
+                                        <td style="border: 1px solid black; padding: 8px;"><field name="start_date_pozzolanic" class="blue-input"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="border: 1px solid black; padding: 8px; font-weight: bold;">End Date</td>
+                                        <td style="border: 1px solid black; padding: 8px;"><field name="end_date_pozzolanic" class="blue-input"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div style="display:flex;" invisible="not pozzolanic_visible">
+                        <div style="width:50%">
+                            <h3 style="white-space: nowrap;">Compressive Strength of Test Mixture</h3>
+                            <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
+                                <tbody>
+                                    <tr>
+                                        <td><span>High Range water reducer (g)</span></td>
+                                        <td><field name="tm_high_range_water" class="blue-input"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span>Weight of Microsilica (g)</span></td>
+                                        <td><field name="tm_wt_microsilica" class="blue-input"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span>Weight of Cement (g)</span></td>
+                                        <td><field name="tm_wt_cement" class="blue-input"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span>Weight of Standard Sand (g) Grade-I</span></td>
+                                        <td><field name="tm_wt_sand_grade1" class="blue-input"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span>Weight of Standard Sand (g) Grade-II</span></td>
+                                        <td><field name="tm_wt_sand_grade2" class="blue-input"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span>Weight of Standard Sand (g) Grade-III</span></td>
+                                        <td><field name="tm_wt_sand_grade3" class="blue-input"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span>Quantity of Water (g)</span></td>
+                                        <td><field name="tm_quantity_water" class="blue-input"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div style="width:50%">
+                            <h3 style="white-space: nowrap;">Calculation of Flow (Acceptable : 100 to 115 %) : Measured Values</h3>
+                            <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                                <tbody>
+                                    <tr>
+                                        <td><field name="tm_measured_val1" colspan="3" nolabel="1" class="blue-input"/></td>
+                                        <td><field name="tm_measured_val2" colspan="3" nolabel="1" class="blue-input"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><field name="tm_measured_val3" colspan="3" nolabel="1" class="blue-input"/></td>
+                                        <td><field name="tm_measured_val4" colspan="3" nolabel="1" class="blue-input"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                                <tbody>
+                                    <tr>
+                                        <td><span>Average</span></td>
+                                        <td><field name="tm_avg_measured"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span>% Flow</span></td>
+                                        <td><field name="tm_percent_flow"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <group invisible="not pozzolanic_visible"/>
+
+                    <!-- 7 Days Casting — Test Mixture -->
+                    <div invisible="not pozzolanic_visible">
+                        <h1><field name="tm_casting_date" readonly="1" nolabel="1"/></h1>
+                    </div>
+                    <group invisible="not pozzolanic_visible"/>
+
+                    <div invisible="not pozzolanic_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><span>Date of Casting</span></td>
+                                    <td><field name="tm_casting_date" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><span>Date of Testing</span></td>
+                                    <td><field name="tm_testing_date"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="custom_table_borders" style="margin-top:20px;" invisible="not pozzolanic_visible">
+                        <h3 style="white-space: nowrap;">7 Days — Test Mixture</h3>
+                        <field name="tm_casting_line_ids" nolabel="1" colspan="2">
+                            <tree editable="bottom">
+                                <field name="length" class="blue-input"/>
+                                <field name="width" class="blue-input"/>
+                                <field name="crosssectional_area"/>
+                                <field name="wt_cube" class="blue-input"/>
+                                <field name="crushing_load" class="blue-input"/>
+                                <field name="compressive_strength"/>
+                            </tree>
+                        </field>
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not pozzolanic_visible">
+                        <tbody>
+                            <tr>
+                                <td><span>Average</span></td>
+                                <td><field name="tm_avg_7days"/></td>
+                            </tr>
+                            <tr>
+                                <td><span>Compressive Strength</span></td>
+                                <td><field name="tm_comp_strength_7"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <group invisible="not pozzolanic_visible"/>
+                    <group invisible="not pozzolanic_visible"/>
+
+                    <!-- Compressive Strength of Control Sample -->
+                    <div style="display:flex;" invisible="not pozzolanic_visible">
+                        <div style="width:50%">
+                            <h3 style="white-space: nowrap;">Compressive Strength of Control Sample</h3>
+                            <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
+                                <tbody>
+                                    <tr>
+                                        <td><span>High Range water reducer (g)</span></td>
+                                        <td><field name="cs_high_range_water" class="blue-input"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span>Weight of Cement (g)</span></td>
+                                        <td><field name="cs_wt_cement" class="blue-input"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span>Weight of Standard Sand (g) Grade-I</span></td>
+                                        <td><field name="cs_wt_sand_grade1" class="blue-input"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span>Weight of Standard Sand (g) Grade-II</span></td>
+                                        <td><field name="cs_wt_sand_grade2" class="blue-input"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span>Weight of Standard Sand (g) Grade-III</span></td>
+                                        <td><field name="cs_wt_sand_grade3" class="blue-input"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span>Quantity of Water (g)</span></td>
+                                        <td><field name="cs_quantity_water" class="blue-input"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div style="width:50%">
+                            <h3 style="white-space: nowrap;">Calculation of Flow (Acceptable : 100 to 115 %) : Measured Values</h3>
+                            <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                                <tbody>
+                                    <tr>
+                                        <td><field name="cs_measured_val1" colspan="3" nolabel="1" class="blue-input"/></td>
+                                        <td><field name="cs_measured_val2" colspan="3" nolabel="1" class="blue-input"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><field name="cs_measured_val3" colspan="3" nolabel="1" class="blue-input"/></td>
+                                        <td><field name="cs_measured_val4" colspan="3" nolabel="1" class="blue-input"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                                <tbody>
+                                    <tr>
+                                        <td><span>Average</span></td>
+                                        <td><field name="cs_avg_measured"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span>% Flow</span></td>
+                                        <td><field name="cs_percent_flow"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <group invisible="not pozzolanic_visible"/>
+
+                    <!-- 7 Days — Control Sample -->
+                    <div invisible="not pozzolanic_visible">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><span>Date of Casting</span></td>
+                                    <td><field name="cs_casting_date" class="blue-input"/></td>
+                                </tr>
+                                <tr>
+                                    <td><span>Date of Testing</span></td>
+                                    <td><field name="cs_testing_date"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="custom_table_borders" style="margin-top:20px;" invisible="not pozzolanic_visible">
+                        <h3 style="white-space: nowrap;">7 Days — Control Sample</h3>
+                        <field name="cs_casting_line_ids" nolabel="1" colspan="2">
+                            <tree editable="bottom">
+                                <field name="cs_length" class="blue-input"/>
+                                <field name="cs_width" class="blue-input"/>
+                                <field name="cs_crosssectional_area"/>
+                                <field name="cs_wt_cube" class="blue-input"/>
+                                <field name="cs_crushing_load" class="blue-input"/>
+                                <field name="cs_compressive_strength"/>
+                            </tree>
+                        </field>
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not pozzolanic_visible">
+                        <tbody>
+                            <tr>
+                                <td><span>Average</span></td>
+                                <td><field name="cs_avg_7days"/></td>
+                            </tr>
+                            <tr>
+                                <td><span>Accelerated Pozzolanic Activity Index 7 Days (%)</span></td>
+                                <td><field name="pozzolanic_index"/></td>
                             </tr>
                         </tbody>
                     </table>
 
-                    
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not pozzolanic_visible">
+                        <tbody>
+                            <tr>
+                                <td><span>Conformity</span></td>
+                                <td><field name="pozzolanic_conformity"
+                                    decoration-success="pozzolanic_conformity == 'pass'"
+                                    decoration-danger="pozzolanic_conformity == 'fail'"
+                                    readonly="1"/></td>
+                            </tr>
+                            <tr>
+                                <td><span>NABL</span></td>
+                                <td><field name="pozzolanic_nabl"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <group invisible="not pozzolanic_visible"/>
+                    <group invisible="not pozzolanic_visible"/>
+
 
                     <notebook>
                         <page string="Notes">
@@ -932,11 +572,11 @@
 
                      <button
                             type="object"
-                            class="oe_highlight" 
+                            class="oe_highlight"
                             name="open_eln_page"
                             string="Submit"
                             />
-               
+
                 </sheet>
             </form>
             </field>
@@ -950,7 +590,6 @@
                     <group>
                         <field name="product_id" readonly="1"/>
                         <field name="sample_id"/>
-
                     </group>
                     <footer>
                         <button name="prefill_data" string="Prefill Data" type="object" class="btn-primary"/>
@@ -969,9 +608,5 @@
             <field name="target">new</field>
         </record>
 
-
     </data>
 </odoo>
-
-
-
