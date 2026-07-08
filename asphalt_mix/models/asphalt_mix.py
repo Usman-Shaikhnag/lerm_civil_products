@@ -2,6 +2,12 @@ from odoo import api, fields, models
 from odoo.exceptions import UserError,ValidationError
 from datetime import datetime , timedelta
 import math
+from odoo.tools.float_utils import float_round
+import io
+import numpy as np
+import logging
+_logger = logging.getLogger(__name__)
+import base64
 
 
 
@@ -18,6 +24,7 @@ class AsphaltMixMechanical(models.Model):
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     tests = fields.Many2many("mechanical.gypsum.test",string="Tests")
+    size_id = fields.Many2one('lerm.size.line',compute="_compute_size_id")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
@@ -49,8 +56,8 @@ class AsphaltMixMechanical(models.Model):
 
 
 
-    # Sieve Analysis
-    dry_gradation_name = fields.Char(default="Sieve Analysis")
+    # GRADATION OF EXTRACTED SAMPLE
+    dry_gradation_name = fields.Char(default="GRADATION OF EXTRACTED SAMPLE	")
     dry_gradation_visible = fields.Boolean(compute="_compute_visible")
 
     weight_of_sample = fields.Float(string="Weight of Sample in gms")
@@ -96,50 +103,50 @@ class AsphaltMixMechanical(models.Model):
 
         # Grade wise limits
         specific_limits_mapping = {
-            'BM': [
+            'bm': [
                 '100',
                 '90-100',
-                '75–100',
-                '–',
-                '35–61',
-                '–',
-                '13–22',
-                '4–19',
-                '–',
-                '–',
-                '2–10',
-                '–',
-                '0–8',
+                '75-100',
+                '-',
+                '35-61',
+                '-',
+                '13-22',
+                '4-19',
+                '-',
+                '-',
+                '2-10',
+                '-',
+                '0-8',
             ],
-            'DBM': [
+            'dbm': [
                 '-',
                 '100',
                 '90-100',
-                '71–95',
-                '56–80',
-                '–',
-                '38–54',
-                '28–42',
-                '–',
-                '–',
-                '7–21',
-                '–',
-                '2–8',
-            ],
-            'BC': [
+                '71-95',
+                '56-80',
                 '-',
-                '–',
-                '–',
+                '38-54',
+                '28-42',
+                '-',
+                '-',
+                '7-21',
+                '-',
+                '2-8',
+            ],
+            'bc': [
+                '-',
+                '-',
+                '-',
                 '100',
-                '90–100',
-                '70–88',
-                '53–71',
-                '42–58',
-                '34–48',
-                '26–38',
-                '18–28',
-                '12–20',
-                '4–10',
+                '90-100',
+                '70-88',
+                '53-71',
+                '42-58',
+                '34-48',
+                '26-38',
+                '18-28',
+                '12-20',
+                '4-10',
             ],
         }
 
@@ -164,50 +171,50 @@ class AsphaltMixMechanical(models.Model):
         grade = (self.eln_ref.grade_id.grade or '').strip().lower()
 
         specific_limits_mapping = {
-            'BM': [
+            'bm': [
                 '100',
                 '90-100',
-                '75–100',
-                '–',
-                '35–61',
-                '–',
-                '13–22',
-                '4–19',
-                '–',
-                '–',
-                '2–10',
-                '–',
-                '0–8',
+                '75-100',
+                '-',
+                '35-61',
+                '-',
+                '13-22',
+                '4-19',
+                '-',
+                '-',
+                '2-10',
+                '-',
+                '0-8',
             ],
-            'DBM': [
+            'dbm': [
                 '-',
                 '100',
                 '90-100',
-                '71–95',
-                '56–80',
-                '–',
-                '38–54',
-                '28–42',
-                '–',
-                '–',
-                '7–21',
-                '–',
-                '2–8',
-            ],
-            'BC': [
+                '71-95',
+                '56-80',
                 '-',
-                '–',
-                '–',
+                '38-54',
+                '28-42',
+                '-',
+                '-',
+                '7-21',
+                '-',
+                '2-8',
+            ],
+            'bc': [
+                '-',
+                '-',
+                '-',
                 '100',
-                '90–100',
-                '70–88',
-                '53–71',
-                '42–58',
-                '34–48',
-                '26–38',
-                '18–28',
-                '12–20',
-                '4–10',
+                '90-100',
+                '70-88',
+                '53-71',
+                '42-58',
+                '34-48',
+                '26-38',
+                '18-28',
+                '12-20',
+                '4-10',
             ],
         }
 
@@ -217,28 +224,69 @@ class AsphaltMixMechanical(models.Model):
             line.specific_limits = limit
 
 
-    
-    def calculate_sieve(self): 
-        for record in self:
-            # import wdb; wdb.set_trace()
-            record.populate_sieve_analysis_lines()  # replace default_get call
-            for line in record.sieve_analysis_child_lines:
-                # print("Rows",str(line.percent_retained))
-                previous_line = line.serial_no - 1
-                if previous_line == 0:
-                    if line.percent_retained == 0:
-                        line.write({'cumulative_retained': round(line.percent_retained + line.percent_retained,2),
-                                    'passing_percent': 100 ,})
-                    else:
-                        line.write({'cumulative_retained': round(line.percent_retained + line.percent_retained,2),
-                                    'passing_percent': round(100 -line.percent_retained - line.percent_retained,2),})
-                else:
-                    previous_line_record = self.env['mech.gsb.dry.gradation.line'].sudo().search([("serial_no", "=", previous_line),("parent_id","=",self.id)]).cumulative_retained
-                    line.write({'cumulative_retained': previous_line_record + line.percent_retained,
-                                'passing_percent': round(100-(previous_line_record + line.percent_retained),2),})
-                    
-                    # print("Previous Cumulative",previous_line_record)
-                    
+    # def calculate_sieve(self):
+    #  for record in self:
+    #     record.populate_sieve_analysis_lines()
+
+    #     for line in record.sieve_analysis_child_lines.sorted(key=lambda l: l.serial_no):
+
+    #         previous_line = line.serial_no - 1
+
+    #         if previous_line == 0:
+    #             cumulative = float_round(
+    #                 line.percent_retained,
+    #                 precision_digits=2,
+    #                 rounding_method='HALF-UP'
+    #             )
+
+    #         else:
+    #             previous_line_record = self.env['asphalt.gradation.line'].search([
+    #                 ('serial_no', '=', previous_line),
+    #                 ('parent_id', '=', record.id)
+    #             ], limit=1)
+
+    #             cumulative = float_round(
+    #                 previous_line_record.cumulative_retained + line.percent_retained,
+    #                 precision_digits=2,
+    #                 rounding_method='HALF-UP'
+    #             )
+
+    #         passing = float_round(
+    #             100 - cumulative,
+    #             precision_digits=2,
+    #             rounding_method='HALF-UP'
+    #         )
+
+    #         line.write({
+    #             'cumulative_retained': cumulative,
+    #             'passing_percent': passing,
+    #         })
+
+    def calculate_sieve(self):
+     for record in self:
+
+        record.populate_sieve_analysis_lines()
+
+        cumulative_weight = 0.0
+
+        for line in record.sieve_analysis_child_lines.sorted('serial_no'):
+
+            cumulative_weight += line.wt_retained or 0
+
+            if record.weight_of_sample:
+                cumulative = (cumulative_weight / record.weight_of_sample) * 100
+                passing = 100 - cumulative
+            else:
+                cumulative = 0
+                passing = 100
+
+            line.write({
+                'cumulative_percent': cumulative_weight,
+                'cumulative_retained': round(cumulative, 2),
+                'passing_percent': round(passing, 2),
+            })
+
+
 
     
     @api.depends('sieve_analysis_child_lines.wt_retained')
@@ -278,6 +326,86 @@ class AsphaltMixMechanical(models.Model):
 
 
 
+    # Binder Content
+    binder_content_name = fields.Char("Name",default="Binder Content")
+    binder_content_visible = fields.Boolean("Binder Content Visible",compute="_compute_visible")
+
+    binder_content_line_ids = fields.One2many(
+        'mechanical.asphalt.extraction.line',
+        'parent_id',
+        string="Binder Content"
+    )
+
+
+    avg_binder_content = fields.Float(
+        string="Average Binder Content (BC) =W5/W1*100 (%)",
+        compute="_compute_avg_binder_content",
+        store=True,digits=(10,3)
+    )
+
+    @api.depends('binder_content_line_ids.binder_content')
+    def _compute_avg_binder_content(self):
+        for rec in self:
+            values = rec.binder_content_line_ids.mapped('binder_content')
+            rec.avg_binder_content = sum(values) / len(values) if values else 0.0
+
+
+    avg_binder_content_confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),('na', 'NA'),], string='Confirmity',compute="_compute_avg_binder_content_confirmity")
+    
+    @api.depends('avg_binder_content','eln_ref','grade')
+    def _compute_avg_binder_content_confirmity(self):
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_binder_content_confirmity = 'na'
+                continue
+            record.avg_binder_content_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ae96765d-e7ab-4c7d-b67e-5815f4788b03')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ae96765d-e7ab-4c7d-b67e-5815f4788b03')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    lower = record.avg_binder_content - record.avg_binder_content*mu_value
+                    upper = record.avg_binder_content + record.avg_binder_content*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.avg_binder_content_confirmity = 'pass'
+                        break
+                    else:
+                        record.avg_binder_content_confirmity = 'fail'
+
+    avg_binder_content_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string='NABL', compute="_compute_avg_binder_content_nabl",store=True)
+
+    @api.depends('avg_binder_content','eln_ref','grade')
+    def _compute_avg_binder_content_nabl(self):
+        
+        for record in self:
+            record.avg_binder_content_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ae96765d-e7ab-4c7d-b67e-5815f4788b03')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ae96765d-e7ab-4c7d-b67e-5815f4788b03')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_binder_content - record.avg_binder_content*mu_value
+                    upper = record.avg_binder_content + record.avg_binder_content*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.avg_binder_content_nabl = 'pass'
+                        break
+                    else:
+                        record.avg_binder_content_nabl = 'fail'
+
+
+
+
+
+
 
 
     
@@ -308,6 +436,7 @@ class AsphaltMixMechanical(models.Model):
     def _compute_visible(self):
         for record in self:
             record.dry_gradation_visible = False
+            record.binder_content_visible = False
             
 
             for sample in record.sample_parameters:
@@ -315,6 +444,9 @@ class AsphaltMixMechanical(models.Model):
                 
                 if sample.internal_id == '1c05c0b0-c623-474c-918c-259f427eb9a0':
                     record.dry_gradation_visible = True
+
+                if sample.internal_id == 'ae96765d-e7ab-4c7d-b67e-5815f4788b03':
+                    record.binder_content_visible = True
 
                 
 
@@ -329,18 +461,18 @@ class AsphaltMixMechanical(models.Model):
         for result in technician_results:
             
             # Dry Gradation
-            if result.parameter.internal_id == '12478fdr3w-ac79-4102-aeda-622dc0f973f6':
+            if result.parameter.internal_id == '1c05c0b0-c623-474c-918c-259f427eb9a0':
                 result.calculated = True
 
-            # # Length
-            # if result.parameter.internal_id == '1c05c0b0-c623-474c-918c-259f427eb9a0':
-            #     result.result_char = round(self.avg_measured_length,2)
-            #     result.calculated = True
-            #     if self.avg_measured_length_nabl == 'pass':
-            #         result.nabl_status = 'nabl'
-            #     else:
-            #         result.nabl_status = 'non-nabl'
-            #     continue
+            # Binder Content
+            if result.parameter.internal_id == 'ae96765d-e7ab-4c7d-b67e-5815f4788b03':
+                result.result_char = round(self.avg_binder_content,2)
+                result.calculated = True
+                if self.avg_binder_content_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
 
             
 
@@ -362,6 +494,8 @@ class AsphaltMixMechanical(models.Model):
         # record.get_all_fields()
         record.eln_ref.write({'model_id':record.id})
         return record
+    
+    
 
     # @api.depends('eln_ref')
     # def _compute_sample_parameters(self):
@@ -539,6 +673,78 @@ class AsphaltGradationLine(models.Model):
 
 
 
+class AsphaltExtractionLine(models.Model):
+    _name = "mechanical.asphalt.extraction.line"
+    _description = "Asphalt Extraction Line"
+
+    parent_id = fields.Many2one('mechanical.asphalt.mix', string="Parent Id")
+
+    sample_no = fields.Integer(string="Sample", readonly=True, copy=False, default=1)
+
+    w1 = fields.Float(string="Weight of Mix (W1)")
+    w2 = fields.Float(string="Weight of Aggregate After Extraction (W2)")
+    initial_filter_weight = fields.Float(
+        string="Initial Weight of Filter Paper"
+    )
+    filter_after_extraction = fields.Float(
+        string="Weight of Filter Paper After Extraction With Fine Materials (W3)"
+    )
+
+    w4 = fields.Float(
+        string="Increased Weight of Filter Paper",
+        compute="_compute_w4",
+        store=True,
+    )
+
+    w5 = fields.Float(
+        string="Weight of Binder (W5) =W1-(W2+W4)",
+        compute="_compute_w5",
+        store=True,
+    )
+
+    binder_content = fields.Float(
+        string="Binder Content (BC) =W5/W1*100 (%)",
+        compute="_compute_binder_content",
+        store=True,
+        digits=(16, 2),
+    )
+
+    @api.depends("filter_after_extraction", "initial_filter_weight")
+    def _compute_w4(self):
+        for rec in self:
+            rec.w4 = rec.filter_after_extraction - rec.initial_filter_weight
+
+    @api.depends("w1", "w2", "w4")
+    def _compute_w5(self):
+        for rec in self:
+            rec.w5 = rec.w1 - (rec.w2 + rec.w4)
+
+    @api.depends("w1", "w5")
+    def _compute_binder_content(self):
+        for rec in self:
+            rec.binder_content = (
+                (rec.w5 / rec.w1) * 100
+                if rec.w1
+                else 0.0
+            )
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sample_no'))
+                vals['sample_no'] = max_serial_no + 1
+
+        return super(AsphaltExtractionLine, self).create(vals)
+
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.sample_no = index + 1
 
 
 class AsphaltMixMechanicalNotes(models.Model):
