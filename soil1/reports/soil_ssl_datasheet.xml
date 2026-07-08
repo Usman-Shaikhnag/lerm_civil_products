@@ -860,7 +860,7 @@
 					 <table style="width: 50%;border-collapse: collapse; font-size: 14px;">
 						<tr>
 							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;text-align: center;">
-								Preconsolidation Pressure
+								Preconsolidation Pressure (Pc) kg/cm²
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;">
 								<span t-field="line.pc_y" t-options='{"widget": "float", "precision": 2}'/>
@@ -884,10 +884,10 @@
 						</tr>
 						<tr>
 							<td colspan="6" style="border: 1px solid black; padding: 6px; font-weight: bold;text-align: center;">
-								PC
+								Preconsolidation Pressure (Pc) kg/cm²
 							</td>
 							<td colspan="6" style="border: 1px solid black; padding: 6px; text-align: center;">
-								<span t-field="line.PC_final" t-options='{"widget": "float", "precision": 2}'/>
+								<span t-field="line.pc_final" t-options='{"widget": "float", "precision": 2}'/>
 							</td>
 						</tr>
 						<tr>
@@ -4024,7 +4024,7 @@
                             <tr t-foreach="data.bulk_line_ids" t-as="r"> 
                             
                                  <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-                                    <span t-esc="r['date']" t-options='{"widget": "float", "precision": 2}'/>
+                                    <span t-esc="r['date']" />
                                 </td>
                                 <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
                                     <span t-esc="r['wt_empty_uds']" t-options='{"widget": "float", "precision": 2}'/>
@@ -4096,7 +4096,7 @@
                             <tr t-foreach="data.moisture_ids" t-as="r">
                                
                                 <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-                                    <span t-esc="r['date']" t-options='{"widget": "float", "precision": 2}'/>
+                                    <span t-esc="r['date']" />
                                 </td>
                                 <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
                                     <span t-esc="r['wet_soil_container']" t-options='{"widget": "float", "precision": 2}'/>
@@ -4180,7 +4180,7 @@
                             <tr t-foreach="data.gravity_line_ids" t-as="r"> 
                              
                                  <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
-                                    <span t-esc="r['date']" t-options='{"widget": "float", "precision": 2}'/>
+                                    <span t-esc="r['date']" />
                                 </td>
                                 <td style="border: 1px solid black; padding: 6px;text-align: center;" colspan="2">
                                     <span t-esc="r['room_temp']" t-options='{"widget": "float", "precision": 2}'/>
