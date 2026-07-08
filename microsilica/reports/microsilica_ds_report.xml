@@ -615,11 +615,11 @@
 						<td style="text-align: center;">IS 1727-1967</td>
 					</tr>
 					<tr>
-						<td style="font-weight: bold;">Weight of Sand (g)</td>
+						<td style="font-weight: bold;">Wt of sand (g)</td>
 						<td style="text-align: center;"><span t-field="data.wt_of_sand_cs"/></td>
 					</tr>
 					<tr>
-						<td style="font-weight: bold;">Weight of Cement + Silica (g)</td>
+						<td style="font-weight: bold;">Wt of cement + Silica (g)</td>
 						<td style="text-align: center;"><span t-field="data.wt_of_cement_silica_cs"/></td>
 					</tr>
 					<tr>
@@ -627,47 +627,50 @@
 						<td style="text-align: center;"><span t-field="data.std_consistency_p"/></td>
 					</tr>
 					<tr>
-						<td style="font-weight: bold;">Weight of Water (g) (P/4+3.0)</td>
+						<td style="font-weight: bold;">Size of Cube</td>
+						<td style="text-align: center;">70.6 x 70.6 x 70.6 mm</td>
+					</tr>
+					<tr>
+						<td style="font-weight: bold;">Wt of Water (P/4+3.0) (g)</td>
 						<td style="text-align: center;"><span t-field="data.water_weight_cs" t-options='{"widget": "float", "precision": 2}'/></td>
 					</tr>
 				</table>
 
-				<div style="font-weight: bold; text-align: center; margin-top: 10px;">
-					Size of Cube : 70.6 x 70.6 x 70.6 mm
-				</div>
-
 				<table style="margin-top: 20px">
-					<tr>
-						<td style="font-weight: bold;">Sr. No</td>
-						<td style="font-weight: bold;">Age in Days</td>
-						<td style="font-weight: bold;">Weight (g)</td>
-						<td style="font-weight: bold;">Density (g/cc)</td>
-						<td style="font-weight: bold;">Load at Failure (kN)</td>
-						<td style="font-weight: bold;">Compressive Strength (N/mm²)</td>
-					</tr>
-					<t t-set="k" t-value="0"/>
-					<tr t-foreach="data.comp_str_line_ids" t-as="r">
-						<td style="text-align: center;"><span t-esc="k + 1"/><t t-set="k" t-value="k+1"/></td>
-						<td style="text-align: center;"><span t-esc="r['age_days']"/></td>
-						<td style="text-align: center;"><span t-esc="r['weight_g']"/></td>
-						<td style="text-align: center;"><span t-esc="r['density_g_cc']" t-options='{"widget": "float", "precision": 2}'/></td>
-						<td style="text-align: center;"><span t-esc="r['load_kN']"/></td>
-						<td style="text-align: center;"><span t-esc="r['comp_strength']" t-options='{"widget": "float", "precision": 2}'/></td>
-					</tr>
-				</table>
-				<table style="margin-top: 20px">
-					<tr>
-						<td style="font-weight: bold;">Average Compressive Strength 7 Days (N/mm²)</td>
-						<td style="text-align: center;"><span t-field="data.avg_7_strength" t-options='{"widget": "float", "precision": 2}'/></td>
-					</tr>
-					<tr>
-						<td style="font-weight: bold;">Average Compressive Strength 14 Days (N/mm²)</td>
-						<td style="text-align: center;"><span t-field="data.avg_14_strength" t-options='{"widget": "float", "precision": 2}'/></td>
-					</tr>
-					<tr>
-						<td style="font-weight: bold;">Average Compressive Strength 28 Days (N/mm²)</td>
-						<td style="text-align: center;"><span t-field="data.avg_28_strength" t-options='{"widget": "float", "precision": 2}'/></td>
-					</tr>
+					<thead>
+						<tr>
+							<th style="font-weight: bold; text-align: center; border: 1px solid black; padding: 5px;">Sr. No</th>
+							<th style="font-weight: bold; text-align: center; border: 1px solid black; padding: 5px;">Age in Days</th>
+							<th style="font-weight: bold; text-align: center; border: 1px solid black; padding: 5px;">Weight (g)</th>
+							<th style="font-weight: bold; text-align: center; border: 1px solid black; padding: 5px;">Density (g/cc)</th>
+							<th style="font-weight: bold; text-align: center; border: 1px solid black; padding: 5px;">Load at Failure (kN)</th>
+							<th style="font-weight: bold; text-align: center; border: 1px solid black; padding: 5px;">Compressive Strength of Individual Sample (f1) (N/mm²)</th>
+							<th style="font-weight: bold; text-align: center; border: 1px solid black; padding: 5px;">Average Compressive Strength (favg) (N/mm²)</th>
+						</tr>
+					</thead>
+					<tbody>
+						<t t-set="groups" t-value="json.loads(data.comp_str_group_info or '[]')"/>
+						<t t-set="global_idx" t-value="0"/>
+						<t t-foreach="groups" t-as="g">
+							<t t-set="age_lines" t-value="g['lines']"/>
+							<t t-set="line_count" t-value="g['count']"/>
+							<t t-foreach="age_lines" t-as="line">
+							<tr>
+								<td style="text-align: center; vertical-align: middle; border: 1px solid black; padding: 5px;"><t t-esc="global_idx + 1"/><t t-set="global_idx" t-value="global_idx + 1"/></td>
+								<td style="text-align: center; vertical-align: middle; border: 1px solid black; padding: 5px;"><t t-esc="g['age']"/></td>
+								<td style="text-align: center; vertical-align: middle; border: 1px solid black; padding: 5px;"><t t-esc="line['weight_g']"/></td>
+								<td style="text-align: center; vertical-align: middle; border: 1px solid black; padding: 5px;"><t t-esc="line['density_g_cc']" t-options='{"widget": "float", "precision": 2}'/></td>
+								<td style="text-align: center; vertical-align: middle; border: 1px solid black; padding: 5px;"><t t-esc="line['load_kN']"/></td>
+								<td style="text-align: center; vertical-align: middle; border: 1px solid black; padding: 5px;"><t t-esc="line['comp_strength']" t-options='{"widget": "float", "precision": 2}'/></td>
+								<t t-if="line_index == 0">
+									<td t-att-rowspan="line_count" style="text-align: center; vertical-align: middle; border: 1px solid black; padding: 5px;">
+										<t t-esc="g['avg']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</t>
+							</tr>
+							</t>
+						</t>
+					</tbody>
 				</table>
 
 				<div class="signatureContainer girdgird">
