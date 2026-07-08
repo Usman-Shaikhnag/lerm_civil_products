@@ -647,54 +647,25 @@
 						<td style="font-weight: bold;">Average Compressive Strength (favg) (N/mm²)</td>
 					</tr>
 
-					<t t-set="seven_lines" t-value="data.comp_str_line_ids.filtered(lambda l: l.age_days == '7')"/>
-					<t t-set="fourteen_lines" t-value="data.comp_str_line_ids.filtered(lambda l: l.age_days == '14')"/>
-					<t t-set="twentyeight_lines" t-value="data.comp_str_line_ids.filtered(lambda l: l.age_days == '28')"/>
-
-					<!-- 7 Days -->
-					<t t-set="s_count" t-value="0"/>
-					<tr t-foreach="seven_lines" t-as="r">
-						<td style="text-align: center; vertical-align: middle;"><span t-esc="s_count + 1"/><t t-set="s_count" t-value="s_count+1"/></td>
-						<td style="text-align: center; vertical-align: middle;">7</td>
-						<td style="text-align: center; vertical-align: middle;"><span t-esc="r['weight_g']"/></td>
-						<td style="text-align: center; vertical-align: middle;"><span t-esc="r['density_g_cc']" t-options='{"widget": "float", "precision": 2}'/></td>
-						<td style="text-align: center; vertical-align: middle;"><span t-esc="r['load_kN']"/></td>
-						<td style="text-align: center; vertical-align: middle;"><span t-esc="r['comp_strength']" t-options='{"widget": "float", "precision": 2}'/></td>
-						<td t-if="s_count == 1" rowspan="3" style="text-align: center; vertical-align: middle;">
-							<span t-esc="data.avg_7_strength" t-options='{"widget": "float", "precision": 2}'/>
-						</td>
-					</tr>
-					<t t-set="s_count" t-value="0"/>
-
-					<!-- 14 Days -->
-					<t t-set="f_count" t-value="0"/>
-					<tr t-foreach="fourteen_lines" t-as="r">
-						<td style="text-align: center; vertical-align: middle;"><span t-esc="f_count + 1 + len(seven_lines)"/><t t-set="f_count" t-value="f_count+1"/></td>
-						<td style="text-align: center; vertical-align: middle;">14</td>
-						<td style="text-align: center; vertical-align: middle;"><span t-esc="r['weight_g']"/></td>
-						<td style="text-align: center; vertical-align: middle;"><span t-esc="r['density_g_cc']" t-options='{"widget": "float", "precision": 2}'/></td>
-						<td style="text-align: center; vertical-align: middle;"><span t-esc="r['load_kN']"/></td>
-						<td style="text-align: center; vertical-align: middle;"><span t-esc="r['comp_strength']" t-options='{"widget": "float", "precision": 2}'/></td>
-						<td t-if="f_count == 1" rowspan="3" style="text-align: center; vertical-align: middle;">
-							<span t-esc="data.avg_14_strength" t-options='{"widget": "float", "precision": 2}'/>
-						</td>
-					</tr>
-					<t t-set="f_count" t-value="0"/>
-
-					<!-- 28 Days -->
-					<t t-set="t_count" t-value="0"/>
-					<tr t-foreach="twentyeight_lines" t-as="r">
-						<td style="text-align: center; vertical-align: middle;"><span t-esc="t_count + 1 + len(seven_lines) + len(fourteen_lines)"/><t t-set="t_count" t-value="t_count+1"/></td>
-						<td style="text-align: center; vertical-align: middle;">28</td>
-						<td style="text-align: center; vertical-align: middle;"><span t-esc="r['weight_g']"/></td>
-						<td style="text-align: center; vertical-align: middle;"><span t-esc="r['density_g_cc']" t-options='{"widget": "float", "precision": 2}'/></td>
-						<td style="text-align: center; vertical-align: middle;"><span t-esc="r['load_kN']"/></td>
-						<td style="text-align: center; vertical-align: middle;"><span t-esc="r['comp_strength']" t-options='{"widget": "float", "precision": 2}'/></td>
-						<td t-if="t_count == 1" rowspan="3" style="text-align: center; vertical-align: middle;">
-							<span t-esc="data.avg_28_strength" t-options='{"widget": "float", "precision": 2}'/>
-						</td>
-					</tr>
-					<t t-set="t_count" t-value="0"/>
+					<t t-set="grouped" t-value="json.loads(data.comp_str_grouped_data or '[]')"/>
+					<t t-set="global_idx" t-value="0"/>
+					<t t-foreach="grouped" t-as="group">
+						<t t-set="lines" t-value="group['lines']"/>
+						<t t-set="line_count" t-value="len(lines)"/>
+						<t t-foreach="lines" t-as="line">
+							<tr>
+								<td style="text-align: center; vertical-align: middle;"><t t-esc="global_idx + 1"/><t t-set="global_idx" t-value="global_idx + 1"/></td>
+								<td style="text-align: center; vertical-align: middle;"><t t-esc="group['age_days']"/></td>
+								<td style="text-align: center; vertical-align: middle;"><t t-esc="line['weight_g']"/></td>
+								<td style="text-align: center; vertical-align: middle;"><t t-esc="line['density_g_cc']" t-options='{"widget": "float", "precision": 2}'/></td>
+								<td style="text-align: center; vertical-align: middle;"><t t-esc="line['load_kN']"/></td>
+								<td style="text-align: center; vertical-align: middle;"><t t-esc="line['comp_strength']" t-options='{"widget": "float", "precision": 2}'/></td>
+								<t t-if="line_index == 0" t-att-rowspan="line_count" style="text-align: center; vertical-align: middle;">
+									<t t-esc="group['avg_strength']" t-options='{"widget": "float", "precision": 2}'/>
+								</t>
+							</tr>
+						</t>
+					</t>
 				</table>
 
 				<div class="signatureContainer girdgird">
