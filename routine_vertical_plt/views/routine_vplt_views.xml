@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- =========================================================
+         TREE VIEW
+    ========================================================== -->
+    <record id="view_routine_vplt_tree" model="ir.ui.view">
+        <field name="name">routine.vplt.test.tree</field>
+        <field name="model">routine.vplt.test</field>
+        <field name="arch" type="xml">
+            <tree string="Routine Vertical Pile Load Test Reports">
+                <field name="name"/>
+                <field name="pile_no"/>
+                <field name="rec_date"/>
+                <field name="report_no"/>
+                <field name="ulr"/>
+                <button
+                    name="action_duplicate_parent"
+                    type="object"
+                    string="Duplicate"
+                    icon="fa-copy"
+                    class="btn-secondary"
+                />
+                <button
+                    name="action_delete_line"
+                    string="Delete"
+                    type="object"
+                    icon="fa-trash"
+                    class="btn-danger"
+                    confirm="Are you sure you want to delete this line?"
+                />
+            </tree>
+        </field>
+    </record>
+
+    <!-- =========================================================
+         FORM VIEW
+    ========================================================== -->
+    <record id="view_routine_vplt_form" model="ir.ui.view">
+        <field name="name">routine.vplt.test.form</field>
+        <field name="model">routine.vplt.test</field>
+        <field name="arch" type="xml">
+
+            <form string="Routine Vertical Pile Load Test Report">
+
+                <header>
+                    <button name="action_generate_ulr_no" string="Generate ULR No" type="object" class="btn-primary"/>
+                    <button name="action_generate_report_no" string="Generate Report No" type="object" class="btn-primary"/>
+                </header>
+
+                <sheet>
+
+                    <!-- ================= COVER ================= -->
+                    <div style="text-align:center; margin-top:30px; margin-bottom:40px;">
+                        <h1 style="font-size:26px; letter-spacing:1px;">
+                            <field name="name"
+                                   style="width:100%; display:block; text-align:center; font-size:26px; letter-spacing:1px;"/>
+                        </h1>
+                        <h2 style="margin-top:15px;">
+                            ROUTINE VERTICAL PILE LOAD TEST
+                        </h2>
+                        <h2 style="margin-top:10px;">
+                            OF PILE NO -
+                            <field name="pile_no" nolabel="1"/>
+                        </h2>
+                    </div>
+
+                    <!-- ================= HEADER DETAILS ================= -->
+                    <group col="2" style="margin-bottom:30px;">
+                        <field name="work_name"/>
+                        <field name="client"/>
+                        <field name="contractor"/>
+                        <field name="report_no"/>
+                        <field name="ulr"/>
+                        <field name="rec_date"/>
+                        <field name="test_standard"/>
+                        <field name="site_location" colspan="2"/>
+                    </group>
+
+                    <group col="2" string="Pile Details">
+                        <field name="pile_diameter"/>
+                        <field name="safe_load"/>
+                        <field name="test_load"/>
+                    </group>
+
+                    <!-- ================= CONTENTS ================= -->
+                    <div style="margin-top:30px;">
+                        <h3 style="border-bottom:2px solid #000;">CONTENTS</h3>
+                    </div>
+
+                    <field name="content_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="sequence"/>
+                            <field name="description"/>
+                            <field name="page_no"/>
+                        </tree>
+                    </field>
+
+                    <!-- ================= INTRODUCTION ================= -->
+                    <div style="margin-top:30px;">
+                        <h3 style="border-bottom:2px solid #000;">INTRODUCTION</h3>
+                    </div>
+
+                    <div style="border:1px solid #bdbdbd; padding:12px; background-color:#fafafa;">
+                        <field name="introduction" widget="text" nolabel="1"/>
+                    </div>
+
+                    <!-- ================= OBJECTIVE ================= -->
+                    <div style="margin-top:30px;">
+                        <h3 style="border-bottom:2px solid #000;">OBJECTIVE</h3>
+                    </div>
+
+                    <div style="border:1px solid #bdbdbd; padding:12px; background-color:#fafafa;">
+                        <field name="objective" widget="text" nolabel="1"/>
+                    </div>
+
+                    <!-- ================= TESTING EQUIPMENT ================= -->
+                    <div style="margin-top:30px;">
+                        <h3 style="border-bottom:2px solid #000;">TESTING EQUIPMENTS</h3>
+                    </div>
+
+                    <div style="border:1px solid #ccc; padding:12px;">
+                        <field name="test_equipment" widget="text" nolabel="1"/>
+                    </div>
+
+                    <!-- ================= PROCEDURE ================= -->
+                    <div style="margin-top:30px;">
+                        <h3 style="border-bottom:2px solid #000;">TEST PROCEDURE</h3>
+                    </div>
+
+                    <div style="border:1px solid #bdbdbd; padding:12px; background-color:#fafafa;">
+                        <field name="test_procedure" widget="text" nolabel="1"/>
+                    </div>
+
+                    <!-- ================= TABLE 1 ================= -->
+                    <div style="margin-top:35px;">
+                        <h3 style="border-bottom:2px solid #000;">TABLE 1 : BASIC DATA</h3>
+                    </div>
+
+                    <field name="basic_data_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="sr_no"/>
+                            <field name="parameter"/>
+                            <field name="value"/>
+                        </tree>
+                    </field>
+
+                    <!-- ================= INTERPRETATION ================= -->
+                    <div style="margin-top:35px;">
+                        <h3 style="border-bottom:2px solid #000;">INTERPRETATION</h3>
+                    </div>
+
+                    <div style="border:1px solid #ccc; padding:12px;">
+                        <field name="interpretation" widget="text" nolabel="1"/>
+                    </div>
+
+                    <!-- ================= TABLE 2A ================= -->
+                    <div style="margin-top:35px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            TABLE 2A : DIAL GAUGE READING CORRESPONDING TO LOADING
+                        </h3>
+                    </div>
+
+                    <field name="last_reading_datetime" invisible="1"/>
+                    <field name="loading_reading_ids"
+                            nolabel="1"
+                            context="{'default_parent_id': id}">
+                        <tree editable="bottom" limit="50" default_order="id">
+                            <field name="reading_datetime"
+                                    widget="datetime"
+                                    options="{'format': 'dd/MM/yy HH:mm'}"/>
+                            <field name="load_tonne"/>
+                            <field name="dial_a"/>
+                            <field name="dial_b"/>
+                            <field name="dial_c"/>
+                            <field name="dial_d"/>
+                            <field name="mean_mm" readonly="1"/>
+                        </tree>
+                    </field>
+
+                    <!-- ================= TABLE 2B ================= -->
+                    <div style="margin-top:35px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            TABLE 2B : DIAL GAUGE READING CORRESPONDING TO UNLOADING
+                        </h3>
+                    </div>
+
+                    <field name="unloading_reading_ids"
+                            nolabel="1"
+                            context="{'default_parent_id': id}">
+                        <tree editable="bottom" limit="50" default_order="id">
+                            <field name="reading_datetime"
+                                    widget="datetime"
+                                    options="{'format': 'dd/MM/yy HH:mm'}"/>
+                            <field name="load_tonne"/>
+                            <field name="dial_a"/>
+                            <field name="dial_b"/>
+                            <field name="dial_c"/>
+                            <field name="dial_d"/>
+                            <field name="mean_mm" readonly="1"/>
+                        </tree>
+                    </field>
+
+                    <!-- ================= LOADING MEANS (F1 Graph Data) ================= -->
+                    <div style="margin-top:35px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            FIG 1 : LOAD SETTLEMENT GRAPH DATA - LOADING MEANS
+                        </h3>
+                    </div>
+
+                    <field name="loading_mean_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="seq"/>
+                            <field name="load_number"/>
+                            <field name="loading_mean"/>
+                            <field name="load_value_tonne"/>
+                        </tree>
+                    </field>
+
+                    <!-- ================= UNLOADING MEANS (F1 Graph Data) ================= -->
+                    <div style="margin-top:35px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            FIG 1 : LOAD SETTLEMENT GRAPH DATA - UNLOADING MEANS
+                        </h3>
+                    </div>
+
+                    <field name="unloading_mean_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="seq"/>
+                            <field name="unload_number"/>
+                            <field name="unloading_mean"/>
+                            <field name="load_value_tonne"/>
+                        </tree>
+                    </field>
+
+                    <!-- ================= GRAPH ================= -->
+                    <button name="action_generate_graph"
+                            type="object"
+                            string="Generate Graph"
+                            class="btn-primary"/>
+
+                    <div style="margin-top:35px;">
+                        <h3 style="border-bottom:2px solid #000;">LOAD SETTLEMENT GRAPH</h3>
+                    </div>
+
+                    <field name="graph_image" widget="image"/>
+
+                    <!-- ================= ANALYSIS ================= -->
+                    <div style="margin-top:35px;">
+                        <h3 style="font-weight:bold;">2.06 : ANALYSIS OF TEST RESULTS</h3>
+                    </div>
+
+                    <div style="border:1px solid #000; padding:12px;">
+                        <field name="analysis_text" widget="text" nolabel="1"/>
+                    </div>
+
+                    <!-- ================= SETTLEMENT SUMMARY ================= -->
+                    <div style="margin-top:15px;">
+                        <group col="4">
+                            <field name="gross_settlement" readonly="1"/>
+                            <field name="net_settlement" readonly="1"/>
+                            <field name="rebound" readonly="1"/>
+                            <field name="percent_rebound" readonly="1"/>
+                        </group>
+                    </div>
+
+                    <!-- ================= IS 2911 CRITERIA ================= -->
+                    <div style="margin-top:25px;">
+                        <h3 style="border-bottom:2px solid #000;">IS 2911 SETTLEMENT CRITERIA</h3>
+                    </div>
+
+                    <group col="2">
+                        <field name="two_percent_dia" readonly="1"/>
+                        <field name="criterion_18_or_12" readonly="1"/>
+                        <field name="min_a_b" readonly="1"/>
+                        <field name="settlement_15mm_interpolated" readonly="1"/>
+                        <field name="settlement_18mm_interpolated" readonly="1"/>
+                    </group>
+
+                    <!-- ================= PHOTOS ================= -->
+                    <div style="margin-top:40px;">
+                        <h3 style="border-bottom:2px solid #000;">SITE PHOTOGRAPHS</h3>
+                    </div>
+
+                    <field name="site_image_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="sequence"/>
+                            <field name="image" widget="image" options="{'size': [80, 80]}"/>
+                            <field name="caption"/>
+                        </tree>
+                    </field>
+
+                </sheet>
+
+            </form>
+
+        </field>
+    </record>
+
+    <!-- =========================================================
+         ACTION WINDOW
+    ========================================================== -->
+    <record id="action_routine_vplt_test" model="ir.actions.act_window">
+        <field name="name">Routine Vertical Pile Load Test</field>
+        <field name="res_model">routine.vplt.test</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- =========================================================
+         MENU
+    ========================================================== -->
+    <menuitem id="routine_vplt_root"
+        name="Routine Vertical PLT"
+        sequence="12"
+        action="action_routine_vplt_test"/>
+
+</odoo>
