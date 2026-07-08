@@ -615,11 +615,11 @@
 						<td style="text-align: center;">IS 1727-1967</td>
 					</tr>
 					<tr>
-						<td style="font-weight: bold;">Weight of Sand (g)</td>
+						<td style="font-weight: bold;">Wt of sand (g)</td>
 						<td style="text-align: center;"><span t-field="data.wt_of_sand_cs"/></td>
 					</tr>
 					<tr>
-						<td style="font-weight: bold;">Weight of Cement + Silica (g)</td>
+						<td style="font-weight: bold;">Wt of cement + Silica (g)</td>
 						<td style="text-align: center;"><span t-field="data.wt_of_cement_silica_cs"/></td>
 					</tr>
 					<tr>
@@ -627,14 +627,14 @@
 						<td style="text-align: center;"><span t-field="data.std_consistency_p"/></td>
 					</tr>
 					<tr>
-						<td style="font-weight: bold;">Weight of Water (g) (P/4+3.0)</td>
+						<td style="font-weight: bold;">Size of Cube</td>
+						<td style="text-align: center;">70.6 x 70.6 x 70.6 mm</td>
+					</tr>
+					<tr>
+						<td style="font-weight: bold;">Wt of Water (P/4+3.0) (g)</td>
 						<td style="text-align: center;"><span t-field="data.water_weight_cs" t-options='{"widget": "float", "precision": 2}'/></td>
 					</tr>
 				</table>
-
-				<div style="font-weight: bold; text-align: center; margin-top: 10px;">
-					Size of Cube : 70.6 x 70.6 x 70.6 mm
-				</div>
 
 				<table style="margin-top: 20px">
 					<tr>
@@ -643,30 +643,30 @@
 						<td style="font-weight: bold;">Weight (g)</td>
 						<td style="font-weight: bold;">Density (g/cc)</td>
 						<td style="font-weight: bold;">Load at Failure (kN)</td>
-						<td style="font-weight: bold;">Compressive Strength (N/mm²)</td>
+						<td style="font-weight: bold;">Compressive Strength of Individual Sample (f1) (N/mm²)</td>
+						<td style="font-weight: bold;">Average Compressive Strength (favg) (N/mm²)</td>
 					</tr>
 					<t t-set="k" t-value="0"/>
+					<t t-set="prev_age" t-value="''"/>
 					<tr t-foreach="data.comp_str_line_ids" t-as="r">
 						<td style="text-align: center;"><span t-esc="k + 1"/><t t-set="k" t-value="k+1"/></td>
-						<td style="text-align: center;"><span t-esc="r['age_days']"/></td>
+						<td style="text-align: center;">
+							<t t-if="r['age_days'] == '7'">7</t>
+							<t t-if="r['age_days'] == '14'">14</t>
+							<t t-if="r['age_days'] == '28'">28</t>
+						</td>
 						<td style="text-align: center;"><span t-esc="r['weight_g']"/></td>
 						<td style="text-align: center;"><span t-esc="r['density_g_cc']" t-options='{"widget": "float", "precision": 2}'/></td>
 						<td style="text-align: center;"><span t-esc="r['load_kN']"/></td>
 						<td style="text-align: center;"><span t-esc="r['comp_strength']" t-options='{"widget": "float", "precision": 2}'/></td>
-					</tr>
-				</table>
-				<table style="margin-top: 20px">
-					<tr>
-						<td style="font-weight: bold;">Average Compressive Strength 7 Days (N/mm²)</td>
-						<td style="text-align: center;"><span t-field="data.avg_7_strength" t-options='{"widget": "float", "precision": 2}'/></td>
-					</tr>
-					<tr>
-						<td style="font-weight: bold;">Average Compressive Strength 14 Days (N/mm²)</td>
-						<td style="text-align: center;"><span t-field="data.avg_14_strength" t-options='{"widget": "float", "precision": 2}'/></td>
-					</tr>
-					<tr>
-						<td style="font-weight: bold;">Average Compressive Strength 28 Days (N/mm²)</td>
-						<td style="text-align: center;"><span t-field="data.avg_28_strength" t-options='{"widget": "float", "precision": 2}'/></td>
+						<td style="text-align: center;">
+							<t t-if="r['age_days'] != prev_age">
+								<t t-if="r['age_days'] == '7'"><span t-esc="data.avg_7_strength" t-options='{"widget": "float", "precision": 2}'/></t>
+								<t t-if="r['age_days'] == '14'"><span t-esc="data.avg_14_strength" t-options='{"widget": "float", "precision": 2}'/></t>
+								<t t-if="r['age_days'] == '28'"><span t-esc="data.avg_28_strength" t-options='{"widget": "float", "precision": 2}'/></t>
+								<t t-set="prev_age" t-value="r['age_days']"/>
+							</t>
+						</td>
 					</tr>
 				</table>
 
