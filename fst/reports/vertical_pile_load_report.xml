@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="pile_load_header">
+    <!-- <img t-att-src="header_image" style="width:100%; display:block;"/> -->
+    <img t-att-src="header_image" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:-1;"/>
+
+</template>
+<template id="vertical_pile_load_report">
+  <t t-call="web.html_container">
+    <link rel="stylesheet" href="/fst/static/src/css/pile_load.css"/>
+    <t t-foreach="docs" t-as="o">
+
+      <div class="container-fluid" style="position:relative; width:100%; height:100%; margin:0; padding:0;">
+
+          <!-- Background image, full bleed -->
+          <img t-att-src="cover_image" style="position:absolute; top:0; left:-2px; width:101%; height:100%; object-fit:cover; z-index:-2;"/>
+          
+          <h1 style="position:absolute;
+            top:280px;
+            left:80px;
+            width:500px;
+            z-index:1; font-size:24pt; font-weight:900;color:white;font-family:Poppins-Bold;">INITIAL VERTICAL <br/> 
+          PILE LOAD TEST </h1>
+
+          <!-- Foreground content -->
+          <div style="position:absolute;
+            top:500px;
+            left:80px;
+            width:500px;
+            z-index:1;">
+            <table style="width:100%; border-collapse:collapse; font-family:Poppins-Regular; font-size:14pt; line-height:1.5;">
+                <tr>
+                    <td style="width:140px; vertical-align:top;font-weight:600;">NAME OF THE WORK:</td>
+                </tr>
+                <tr>
+                    <td><strong>Construction of Residential Building</strong></td>
+                </tr>
+                <tr>
+                    <td style="height:20px;"></td>
+                </tr>
+                <tr>
+                    <td style="padding-top:12px;font-weight:600;">ULR No:</td>
+                </tr>
+                <tr>
+                    <td style="padding-top:12px;"><strong>TC1724I2600000018F</strong></td>
+                </tr>
+                <tr>
+                    <td style="height:20px;"></td>
+                </tr>
+                <tr>
+                    <td style="padding-top:12px;font-weight:600;">LOCATION:</td>
+                </tr>
+                <tr>
+                    <td style="padding-top:12px;"><strong>Jalukbari, Guwahati, Assam</strong></td>
+                </tr>
+                <tr>
+                    <td style="height:20px;"></td>
+                </tr>
+                <tr>
+                    <td style="padding-top:12px;font-weight:600;">CLIENT:</td>
+                </tr>
+                <tr>
+                    <td style="padding-top:12px;"><strong>PWD BUILDING DIVISION</strong></td>
+                </tr>
+                <tr>
+                    <td style="height:20px;"></td>
+                </tr>
+                <tr>
+                    <td style="padding-top:12px;font-weight:600;">CONTRACTOR:</td>
+                </tr>
+                <tr>
+                    <td style="padding-top:12px;"><strong>Hi Tech</strong></td>
+                </tr>
+            </table>
+          </div>
+          <div style="
+              position:absolute;
+              bottom:100px;
+              font-family:Poppins-Regular;    
+              left:5%;
+              width:90%;
+              text-align:center;
+              z-index:2;">
+
+              <div style="font-size:17pt; font-weight:700; color:#0d2d72;">
+                  PREPARED BY :
+              </div>
+
+              <div style="font-size:9pt; font-style:italic;">
+                  NABL ACCREDITED LABORATORY (ISO/IEC 17025:2017 Certificate No: TC-1724)
+              </div>
+
+              <div style="font-size:11pt; font-style:italic;">
+                  Northeast Research Laboratory &amp; Testing Private Limited
+              </div>
+
+              <div style="margin-top:6px; font-size:10pt;">
+                  <strong>Office:</strong> Room No.50, G.M.C. Market Complex, Chandmari, Guwahati-781003
+              </div>
+
+              <div style="font-size:10pt;">
+                  <strong>Laboratory:</strong> House No. 4, Salbari - Noonmati Road, Noonmati, Guwahati, Assam 781020
+              </div>
+
+              <div style="margin-top:6px; font-size:10pt;">
+                  <span><strong style="color:#b22222;">Report / Certificate No.:</strong> SSL260410001</span>
+                  <span style="display:inline-block; width:40px;"></span>
+                  <span style="color:#b22222;"><strong>Date of report issue:</strong></span>
+              </div>
+
+          </div>
+          <!-- Footer image -->
+          <img t-att-src="footer_image" style="position:absolute;bottom:20; width:100%;z-index:-1"/>
+
+      </div>
+        <div class="page" style="position:relative; width:100%; height:100%; margin:0; padding:0;">
+      <t t-call="fst.pile_load_header">
+          <div style="padding-top:230px;">
+              <table style="width:80%; margin:auto; border-collapse:collapse; font-size:10pt;">
+                <thead>
+                    <tr>
+                        <th style="border:1px solid #000; padding:6px;">SL. No</th>
+                        <th style="border:1px solid #000; padding:6px;">Description</th>
+                        <th style="border:1px solid #000; padding:6px;">Page No.</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="o.content_ids" t-as="line">
+                        <td style="border:1px solid #000; padding:5px; text-align:center;">
+                            <span t-field="line.sequence"/>
+                        </td>
+                        <td style="border:1px solid #000; padding:5px; text-align:center;">
+                            <span t-field="line.description"/>
+                        </td>
+                        <td style="border:1px solid #000; padding:5px; text-align:center;">
+                            <span t-field="line.page_no"/>
+                        </td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+            <h3>1.01 INTRODUCTION:</h3>
+            <p t-field="o.introduction"/>
+
+            <h3>1.02 OBJECTIVE:</h3>
+            <p t-field="o.objective"/>
+
+            <h3>1.03 TEST PROCEDURE:</h3>
+            <p t-field="o.test_procedure"/>
+
+            <h3>2.02 INTERPRETATION:</h3>
+            <p t-field="o.interpretation"/>
+
+            <h3>2.06 CONCLUSION:</h3>
+            <p t-field="o.conclusion"/>
+
+      </t>
+        </div>
+
+    </t>
+  </t>
+</template>
+</odoo>

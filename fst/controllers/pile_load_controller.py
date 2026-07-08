@@ -3,34 +3,86 @@ import os
 import shutil
 import subprocess
 import tempfile
-
+from ..serializers.pile_load import PileLoadSerializer
+import json
+import base64
+import hmac
+import hashlib
 from odoo import http
 from odoo.http import request
-
+import logging
+_logger = logging.getLogger(__name__)
 
 class PileLoadReportController(http.Controller):
+    
+    def _get_secret_key(self):
+        return request.env['ir.config_parameter'].sudo().get_param('pile_load_report_secret_key')
 
-    @http.route("/pile_load/pdf/<int:record_id>",type="http",auth="user",)
-    def download_pdf(self, record_id, **kw):
+    def _verify_token(self, token):
+        secret_key = self._get_secret_key()
+        try:
+            decoded = json.loads(base64.urlsafe_b64decode(token))
+            data = decoded["data"]
+            sig = decoded["sig"]
 
-        report = request.env.ref("fst.vertical_pile_load_report_py3o_pdf")
+            expected_sig = hmac.new(
+                secret_key.encode(),
+                json.dumps(data, separators=(',', ':')).encode(),
+                hashlib.sha256
+            ).hexdigest()
 
-        pdf_content, filetype = report._render_py3o(
-            report.report_name,
-            [record_id],
-        )
+            if not hmac.compare_digest(sig, expected_sig):
+                return None
+            return data
+        except:
+            return None
+        
+    # @http.route("/api/report/pile/<int:record_id>", type='json', methods=['POST', 'OPTIONS'], auth='public', csrf=False, cors='*')
+    # def pile_report(self, record_id):
 
-        # import wdb;wdb.set_trace()
+    #     rec = request.env["pile.load.test.parent"].browse(record_id)
 
-        assert filetype == "pdf"
+    #     return {
+    #         "report_no": rec.name,
+    #         "project": rec.project_name,
+    #         "client": rec.client_name,
+    #         "location": rec.location,
+    #         "test_date": str(rec.test_date),
+    #     }
 
-        return request.make_response(
-            pdf_content,
-            headers=[
-                ("Content-Type", "application/pdf"),
-                (
-                    "Content-Disposition",
-                    'attachment; filename="Vertical_Pile_Load_Report.pdf"',
-                ),
-            ],
-        )
+    @http.route("/api/report/verify",type="json",auth="public",methods=["POST", "OPTIONS"],csrf=False,cors="*",)
+    def verify_report(self, **post):
+
+        if request.httprequest.method == "OPTIONS":
+            return {}
+        try:
+
+            # Read token
+            if not request.params:
+                data = json.loads(request.httprequest.get_data())
+            else:
+                data = request.params
+
+            # print("DATA:", data)
+            token = data.get("token")
+
+            # Verify token
+            verified = self._verify_token(token)
+            # import wdb;wdb.set_trace()
+            if not verified:
+                return {"error": "Invalid token"}
+            model = verified.get("model")
+            record_id = verified.get("record_id")
+
+            record = request.env[model].sudo().browse(record_id)
+            # print("RECORD:", record)
+            if not record.exists():
+                return {"error": "Record not found"}
+
+            serializer = PileLoadSerializer(record)
+            data = serializer.serialize()
+            _logger.info(data)
+            return data
+            
+        except Exception as e:
+            return {"error": str(e)}

@@ -185,12 +185,10 @@
         <field name="name">Pile Load A4</field>
         <field name="format">A4</field>
         <field name="orientation">Portrait</field>
-
         <field name="margin_top">0</field>
         <field name="margin_bottom">0</field>
         <field name="margin_left">0</field>
         <field name="margin_right">0</field>
-
         <field name="header_line" eval="False"/>
         <field name="header_spacing">0</field>
         <field name="dpi">96</field>
@@ -206,6 +204,17 @@
             ref="model_routine_pile_load_test"/>
         <field name="binding_type">report</field>
         <!-- <field name="paperformat_id" ref="fst.paperformat_pile_load"/> -->
+    </record>
+
+    <record id="action_vertical_pile_load_report" model="ir.actions.report">
+        <field name="name">Vertical Pile Load Test</field>
+        <field name="model">pile.load.test.parent</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">fst.vertical_pile_load_report</field>
+        <field name="report_file">fst.vertical_pile_load_report</field>
+        <field name="binding_model_id" ref="model_pile_load_test_parent"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="fst.paperformat_pile_load"/>
     </record>
 
 </odoo>

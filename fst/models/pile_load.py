@@ -1,7 +1,11 @@
 from odoo import api, fields, models
+from odoo.modules.module import get_module_resource
 from datetime import timedelta
 from odoo.exceptions import UserError, ValidationError
 import base64
+import json
+import hmac
+import hashlib
 import io
 from io import BytesIO
 import math
@@ -152,16 +156,79 @@ class PileLoadTestParent(models.Model):
         if not rec.test_procedure:
             rec.test_procedure = rec._default_test_procedure()
 
-        rec.basic_data_ids = [
+        rec.generate_ids()
+
+        return rec
+    def _default_introduction(self):
+        return (
+            f"The Initial Vertical Pile Load Test was conducted on behalf of "
+            f"{self.contractor.partner_id.name if self.contractor else ''} "
+            f"for the project {self.work_name or ''}."
+        )
+
+    def _default_test_procedure(self):
+        return (
+            f"""Vertical load test (compression) was done as per IS 2911 (PART -IV) 2013 in which compression load was applied to the pile top (after preparation of the pile top) by means of a hydraulic jack against rolled steel joist capable of providing reaction and the settlement was recorded by {self.dial_gauge_count} dial gauges of 0.01 mm sensitivity, each positioned at equal distance around the pile and held by datum bars resting on immovable supports at minimum distance of 3D from the edge of the pile, Where D is the pile stem diameter of circular pile. The reaction for the jack was obtained from a kentledge placed on a plateform supported clear of the test pile. The center of gravity of the kentledge was tried to be kept on the axis of the pile and the load applied by the jack was also made co-axial with this pile. The test was carried out by applying a series of vertical downward incremental each load of {self.incremental_load:.2f} Tons."""
+        )
+
+    def _default_objective(self):
+        return ("""The main objective of the test was to determine the ultimate load capacity and a safe load by application of factor of safety and also to get an idea of suitability of piling system. This test will also provide guide lines for setting up the limits of acceptance for routine test.""")
+
+    def generate_ids(self):
+        self.content_ids = [
+                (0, 0, {
+                    'sequence': 1.01,
+                    'description': 'INTRODUCTION',
+                }),
+                (0, 0, {
+                    'sequence': 1.02,
+                    'description': 'OBJECTIVE',
+                }),
+                (0, 0, {
+                    'sequence': 1.03,
+                    'description': 'TEST EQUIPMENTS',
+                }),
+                (0, 0, {
+                    'sequence': 1.04,
+                    'description': 'TEST PROCEDURE',
+                }),
+                (0, 0, {
+                    'sequence': 2.01,
+                    'description': 'TABLE 1 : BASIC DATA',
+                }),
+                (0, 0, {
+                    'sequence': 2.02,
+                    'description': 'INTERPRETATION',
+                }),
+                (0, 0, {
+                    'sequence': 2.03,
+                    'description': 'TABLE 2 A : DIAL GAUSE READING CORRESPONDING TO LOADING',
+                }),
+                (0, 0, {
+                    'sequence': 2.04,
+                    'description': 'TABLE 2 B : DIAL GAUSE READING CORRESPONDING TO UNLOADING',
+                }),
+                (0, 0, {
+                    'sequence': 2.05,
+                    'description': 'FIG 1 : LOAD SETTLEMENT GRAPH FROM FIELD DATA',
+                }),
+                (0, 0, {
+                    'sequence': 2.06,
+                    'description': 'ANALYSIS OF TEST RESULTS',
+                }),
+            ]
+
+
+        self.basic_data_ids = [
                 (0, 0, {
                     'sr_no': 1,
                     'parameter': 'Test Pile No.',
-                    'value': rec.pile_no or '',
+                    'value': self.pile_no or '',
                 }),
                 (0, 0, {
                     'sr_no': 2,
                     'parameter': 'Diameter of pile',
-                    'value': f'{rec.diameter:.0f} mm' if rec.diameter else '',
+                    'value': f'{self.diameter:.0f} mm' if self.diameter else '',
                 }),
                 (0, 0, {
                     'sr_no': 3,
@@ -196,7 +263,7 @@ class PileLoadTestParent(models.Model):
                 (0, 0, {
                     'sr_no': 9,
                     'parameter': 'Test Load',
-                    'value': f'{rec.test_load} Tonne' if rec.test_load else '',
+                    'value': f'{self.test_load} Tonne' if self.test_load else '',
                 }),
                 (0, 0, {
                     'sr_no': 10,
@@ -205,44 +272,42 @@ class PileLoadTestParent(models.Model):
                 }),
             ]
 
-        return rec
-    def _default_introduction(self):
-        return (
-            f"The Initial Vertical Pile Load Test was conducted on behalf of "
-            f"{self.contractor.partner_id.name if self.contractor else ''} "
-            f"for the project {self.work_name or ''}."
-        )
-
-    def _default_test_procedure(self):
-        return (
-            f"""Vertical load test (compression) was done as per IS 2911 (PART -IV) 2013 in which 
-                compression load was applied to the pile top (after preparation of the pile top) by means of a hydraulic jack against rolled steel
-                joist capable of providing reaction and the settlement was recorded by {self.dial_gauge_count} dial gauges of 0.01 mm
-                sensitivity, each positioned at equal distance around the pile and held by datum bars resting on immovable
-                supports at minimum distance of 3D from the edge of the pile, Where D is the pile stem diameter of circular
-                pile.
-                The reaction for the jack was obtained from a kentledge placed on a plateform supported clear of the test
-                pile. The center of gravity of the kentledge was tried to be kept on the axis of the pile and the load applied
-                by the jack was also made co-axial with this pile.
-                The test was carried out by applying a series of vertical downward incremental
-                each load of {self.incremental_load:.2f} Tons."""
-        )
-
-    def _default_objective(self):
-        return ("""The main objective of the test was to determine the ultimate load capacity 
-                    and a safe load by application of factor of safety and also to get an idea of suitability of piling system.
-                    This test will also provide guide lines for setting up the limits of acceptance for routine test.""")
-
-
     def _compute_qr_code(self):
-        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        self.ensure_one()
+        secret_key = self._get_secret_key()
+
+        data = {
+            "model": self._name,
+            "record_id": self.id,
+            "uid": self.env.user.id,
+        }
+
+        payload = json.dumps(data, separators=(',', ':'))
+        signature = hmac.new(
+            secret_key.encode(),
+            payload.encode(),
+            hashlib.sha256
+        ).hexdigest()
+
+        token = base64.urlsafe_b64encode(
+            json.dumps({"data": data, "sig": signature}).encode()
+        ).decode()
+
+        base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
+
+        # return {
+        #     "type": "ir.actions.act_url",
+        #     "url": f"{base_url}/react/report?token={token}",
+        #     "target": "new",
+        # }
+        # base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
 
         for rec in self:
             if not rec.id:
                 rec.qr_code = False
                 continue
 
-            url = f"{base_url}/pile_load/pdf/{rec.id}"
+            url = f"{base_url}/react/report?token={token}"
 
             qr = qrcode.QRCode(
                 version=1,
@@ -780,6 +845,43 @@ class PileLoadTestParent(models.Model):
                 'graph_image': False,
             })
 
+    def _get_secret_key(self):
+        key = self.env['ir.config_parameter'].sudo().get_param('pile_load_report_secret_key')
+        if not key:
+            raise ValueError("Set 'pile_load_report_secret_key' in system parameters.")
+        return key
+
+    def print_react_report(self):
+        self.ensure_one()
+        secret_key = self._get_secret_key()
+
+        data = {
+            "model": self._name,
+            "record_id": self.id,
+            "uid": self.env.user.id,
+        }
+
+        payload = json.dumps(data, separators=(',', ':'))
+        signature = hmac.new(
+            secret_key.encode(),
+            payload.encode(),
+            hashlib.sha256
+        ).hexdigest()
+
+        token = base64.urlsafe_b64encode(
+            json.dumps({"data": data, "sig": signature}).encode()
+        ).decode()
+
+        base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
+
+        return {
+            "type": "ir.actions.act_url",
+            "url": f"{base_url}/react/report?token={token}",
+            "target": "new",
+        }
+
+
+
 # NEW: Separate Loading Model
 class PileLoadReadingLoading(models.Model):
     _name = "pile.load.reading.loading"
@@ -1077,3 +1179,30 @@ class PileLoadTestImage(models.Model):
     sequence = fields.Integer("Sr No", default=1)
     image = fields.Binary("Site Photograph", required=True)
     caption = fields.Char("Caption / Description")
+
+class VerticalPileLoadReport(models.AbstractModel):
+    _name = "report.fst.vertical_pile_load_report"
+    _description = "Vertical Pile Load Report"
+
+    @api.model
+    def _get_report_values(self, docids, data=None):
+
+        docs = self.env["pile.load.test.parent"].browse(docids)
+        def img_to_base64(filename):
+            path = get_module_resource(
+                        'fst',
+                        'static',
+                        'src',
+                        'img',
+                        filename
+                    )
+            with open(path, 'rb') as f:
+                return 'data:image/png;base64,' + base64.b64encode(f.read()).decode()
+        return {
+            "doc_ids": docs.ids,
+            "doc_model": "pile.load.test.parent",
+            "docs": docs,
+            "cover_image": img_to_base64('cover_bg.png'),
+            "footer_image": img_to_base64('footer.png'),
+            "header_image": img_to_base64('header_watermark.png'),
+        }
