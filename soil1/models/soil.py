@@ -3899,6 +3899,10 @@ class Soil(models.Model):
                 if sample.internal_id == '21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr':
                     record.direct_shear_visible = True
 
+                if sample.internal_id == '321456ki8hhhllly1-ca64-44dd-b0ae-3214654lk':
+                    record.direct_shear_visible = True
+
+
                 if sample.internal_id == 't4y57888hhhllly1-ca64-44dd-b0ae-1234567rt':
                     record.ucs_visible = True
                 
