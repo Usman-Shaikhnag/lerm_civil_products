@@ -521,6 +521,83 @@ class MechanicalConcreteCube(models.Model):
                         record.avg_water_absorption_nabl = 'fail'
 
 
+    # Compressive Strength By ACT									
+					
+
+    act_compressive_name = fields.Char(default="Compressive Strength By ACT")
+    act_compressive_visible = fields.Boolean(compute="_compute_visible")
+
+    act_compressive_line_ids = fields.One2many('compressive.by.act.line','parent_id',string="Compressive Strength By ACT")
+
+
+    average_act_compressive = fields.Float(
+        string="Average 28-Day Strength (N/mm²)",
+        compute="_compute_average_act_compressive",
+        store=True
+    )
+
+    @api.depends('act_compressive_line_ids.strength_28')
+    def _compute_average_act_compressive(self):
+        for rec in self:
+            strengths = rec.act_compressive_line_ids.mapped('strength_28')
+            rec.average_act_compressive = sum(strengths) / len(strengths) if strengths else 0.0
+
+
+    average_act_compressive_confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ('na', 'NA'),], string='Confirmity', compute="_compute_average_act_compressive_confirmity")
+
+    average_act_compressive_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')],string="NABL",compute="_compute_average_act_compressive_nabl",store=True)
+
+
+    @api.depends('average_act_compressive','eln_ref')
+    def _compute_average_act_compressive_confirmity(self):
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_act_compressive_confirmity = 'na'
+                continue
+            record.average_act_compressive_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','61255da6-3fdb-40f1-97b0-d7c8e23989df')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','61255da6-3fdb-40f1-97b0-d7c8e23989df')]).parameter_table
+            for material in materials:
+                
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.average_act_compressive - record.average_act_compressive*mu_value
+                    upper = record.average_act_compressive + record.average_act_compressive*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.average_act_compressive_confirmity = 'pass'
+                        break
+                    else:
+                        record.average_act_compressive_confirmity = 'fail'
+
+    @api.depends('average_act_compressive','eln_ref')
+    def _compute_average_act_compressive_nabl(self):
+        
+        for record in self:
+            record.average_act_compressive_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','61255da6-3fdb-40f1-97b0-d7c8e23989df')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','61255da6-3fdb-40f1-97b0-d7c8e23989df')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                  lab_min = line.lab_min_value
+                  lab_max = line.lab_max_value
+                  mu_value = line.mu_value
+            
+                  lower = record.average_act_compressive - record.average_act_compressive*mu_value
+                  upper = record.average_act_compressive + record.average_act_compressive*mu_value
+                  if lower >= lab_min and upper <= lab_max:
+                      record.average_act_compressive_nabl = 'pass'
+                      break
+                  else:
+                      record.average_act_compressive_nabl = 'fail'
+
+
     @api.depends('sample_parameters')
     def _compute_visible(self):
         
@@ -529,6 +606,7 @@ class MechanicalConcreteCube(models.Model):
             record.cube_visible = False
             record.wpt_visible = False
             record.water_absorption_visible = False
+            record.act_compressive_visible = False
             
             
             for sample in record.sample_parameters:
@@ -544,6 +622,9 @@ class MechanicalConcreteCube(models.Model):
 
                 if sample.internal_id == "30214iu-eba3-4f15-b33d-679b39f73301":
                     record.water_absorption_visible = True
+
+                if sample.internal_id == "61255da6-3fdb-40f1-97b0-d7c8e23989df":
+                    record.act_compressive_visible = True
 
 
 
@@ -586,6 +667,16 @@ class MechanicalConcreteCube(models.Model):
             if result.parameter.internal_id == '1023457-0268-46ef-ba88-9c0453210lkit1':
                 result.calculated = True
                 result.result_char = round(self.average_of_wpt,2)
+                if self.nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+        for result in self.eln_ref.parameters_result:
+            if result.parameter.internal_id == '61255da6-3fdb-40f1-97b0-d7c8e23989df':
+                result.calculated = True
+                result.result_char = round(self.average_act_compressive,2)
                 if self.nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -958,6 +1049,101 @@ class WaterLine(models.Model):
                 vals['serial_no'] = max_serial_no + 1
 
         return super(WaterLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+
+class CompressiveByACTLine(models.Model):
+    _name = 'compressive.by.act.line'
+    _description = 'Accelerated Test Line'
+
+    parent_id = fields.Many2one('mechanical.concrete.cube',string="Parent Id")
+
+    serial_no = fields.Integer(string="Trial.No", readonly=True, copy=False, default=1)
+    length = fields.Float(string="Length (mm)")
+    width = fields.Float(string="Width (mm)")
+    height = fields.Float(string="Height (mm)")
+
+    age_start = fields.Float(
+        string="Age at Start of Accelerated Curing (23 ± 0.25 hrs)"
+    )
+
+    boiling_duration = fields.Float(
+        string="Boiling Water Curing Duration (3.5 ± 0.08 hrs)"
+    )
+
+    cooling_period = fields.Float(
+        string="Cooling Period at 27 ± 2°C (Minimum 1 hr)"
+    )
+
+    failure_load = fields.Float(string="Failure Load (kN)")
+
+    loaded_area = fields.Float(
+        string="Loaded Area (mm²)",compute="_compute_loaded_area",
+        store=True
+    )
+
+    ra = fields.Float(
+        string="Accelerated Compressive Strength, Ra (N/mm²)",
+        compute="_compute_ra",
+        store=True
+    )
+
+    strength_28 = fields.Float(
+        string="Estimated 28-Day Strength, (N/mm²) =(8.09+1.64Ra)",
+        compute="_compute_strength",
+        store=True
+    )
+
+    @api.depends('length', 'width')
+    def _compute_loaded_area(self):
+        for rec in self:
+            rec.loaded_area = rec.length * rec.width
+
+    # @api.depends('parent_id.size_id.size')
+    # def _loaded_area(self):
+    #     import re
+    #     for record in self:
+    #         size_str = record.parent_id.size_id.size
+    #         if size_str:
+    #             match = re.search(r'\d+', str(size_str))
+    #             if match:
+    #                 side = int(match.group())
+    #                 record.loaded_area = side * side  # or whatever formula
+    #             else:
+    #                 record.loaded_area = 0
+    #         else:
+    #             record.loaded_area = 0
+
+    @api.depends('failure_load', 'loaded_area')
+    def _compute_ra(self):
+        for rec in self:
+            if rec.loaded_area:
+                rec.ra = (rec.failure_load * 1000) / rec.loaded_area
+            else:
+                rec.ra = 0
+
+    @api.depends('ra')
+    def _compute_strength(self):
+        for rec in self:
+            rec.strength_28 = 8.09 + (1.64 * rec.ra)
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(CompressiveByACTLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines

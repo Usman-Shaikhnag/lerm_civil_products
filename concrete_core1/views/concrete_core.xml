@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="concrete_core1_view" model="ir.ui.view">
+        <field name="name">mechanical.concrete.core1.form</field>
+        <field name="model">mechanical.concrete.core1</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <sheet>
+                   <div class="text-center">
+                    <h1>
+                        <field name="concrete_core_name" readonly="1" nolabel="1"/>
+                    </h1>
+                </div>
+                    
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                        <field name="grade"/>
+                        <field name="eln_state" />
+
+                    </group>
+                    <!-- <group class="custom_table_borders"> -->
+                      <field name="sample_parameters" nolabel="1" class="custom_table_borders">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    <!-- </group> -->
+
+                     <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="temprature"></label></td>
+                                    <td><field name="temprature" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="humidity"></label></td>
+                                    <td><field  name="humidity" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+                     <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="week_no"></label></td>
+                                    <td><field name="week_no" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="other_details"></label></td>
+                                    <td><field  name="other_details" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders" >
+                            <tbody>
+                                <tr>
+                                    <td><label for="condition"></label></td>
+                                    <td><field name="condition" class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders">
+                            <tbody>
+                                
+                                    <tr>
+                                    <td><label for="description_work"></label></td>
+                                    <td><field  name="description_work" class="blue-input" /></td>
+                                </tr>
+                              
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+              
+
+
+                     <group invisible = "concrete_core_visible == False"  style="white-space: nowrap; width:80%;margin-top: 15px;" class="text-center">
+                        <h1>
+                            <!-- <field name="concrete_core_name" readonly="1" nolabel="1"/> -->
+                            <field name="concrete_core_visible" invisible="1"/>
+                        </h1>
+                    </group>
+                 
+              
+
+                <div>
+                    <field name="concrete_core_table"  mode="tree" nolabel="1">
+                            <tree editable="bottom" class="custom_table_borders" >
+                                <field name="serial_no"  />
+                                <field name="location" class="blue-input" decoration-info="location != 0" width="120"/>
+                                <field name="grade" width="120"/>
+                                <field name="characteristic_strength"  class="blue-input" decoration-info="characteristic_strength != 0" width="120"/>
+                                <field name="dia_core"  class="blue-input" decoration-info="dia_core != 0"/>
+                                <field name="height_core" class="blue-input" decoration-info="height_core != 0"/>
+                                <field name="weight_core" class="blue-input" decoration-info="weight_core != 0"/>
+                                <field name="area" />
+                                <field name="load"  class="blue-input" decoration-info="load != 0"/>
+                                <field name="core_strength" />
+                                <field name="ratio_n"/>
+                                <field name="correction_factor" />
+                                <field name="corrected_core_strength"/>
+
+                                <field name="final_compressive_strength"/>
+                                
+                            </tree>
+                    </field>
+
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "concrete_core_visible == False">
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="average_of_core"></label></td>
+                                <td><field name="average_of_core"/> </td>
+                            </tr>
+                           
+                        </tbody>
+                    </table>
+
+                   
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "concrete_core_visible == False">
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="average_of_core_conformity">NABL</label></td>
+                                <td><field name="average_of_core_conformity"
+                                            decoration-success="average_of_core_conformity == 'pass'"
+                                            decoration-danger="average_of_core_conformity == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                             <tr>
+                                <td><label class="fw-bold" for="average_of_core_nabl">NABL</label></td>
+                                <td><field name="average_of_core_nabl"
+                                            decoration-success="average_of_core_nabl == 'pass'"
+                                            decoration-danger="average_of_core_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+
+               
+                  
+
+                    
+                    
+                      
+                   
+
+
+                    
+                           <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
+
+
+
+
+                    
+                    
+
+                    <div style="margin-top:10px;">
+
+                    <button type="object" class="oe_highlight" name="open_eln_page" string="Submit" />
+                    </div>
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+
+
+    </data>
+</odoo>

@@ -498,6 +498,65 @@
                         </tbody>
                     </table>
 
+                    <!-- Compressive Strength By ACT -->
+
+                    <div invisible="act_compressive_visible == False" style="text-align:center">
+                      <h1>
+                          <field name="act_compressive_name" readonly="1" nolabel="1"/>
+                          <field name="act_compressive_visible" invisible='1'/>
+                      </h1>
+                    </div>
+
+                    <div invisible="act_compressive_visible == False" class="custom_table_borders">
+                        <field name="act_compressive_line_ids" nolabel="1">
+                            <tree editable="bottom">
+                                <field name='serial_no' width="120"/>
+                                <field name='length' width="120" class="blue-input" decoration-info="length != 0" />
+                                <field name='width' width="120" class="blue-input" decoration-info="width != 0" />
+                                <field name='height' width="120" class="blue-input" decoration-info="height != 0" />
+                                <field name='age_start' class="blue-input" decoration-info="age_start != 0" width="120"/>
+                                <field name='boiling_duration' class="blue-input" decoration-info="boiling_duration != 0" width="120"/>
+                                <field name='cooling_period' class="blue-input" decoration-info="cooling_period" width="120"/>
+                                <field name='failure_load' class="blue-input" decoration-info="failure_load"  width="120"/>
+                                <field name='loaded_area' />
+                                <field name='ra' width="120"/>
+                                <field name='strength_28'  width="120"/>
+                            </tree>
+                        </field>
+                    </div>
+                    
+                    
+
+                    <table class="table o_form_table w-50 mt-2 custom_table_borders" invisible="not act_compressive_visible">
+                        <tbody>
+                            <tr>
+                                <td><strong>Average 28-Day Strength (N/mm²)</strong></td>
+                                <td>
+                                    <field name="average_act_compressive"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Conformity</strong></td>
+                                <td>
+                                    <field name="average_act_compressive_confirmity"
+                                        decoration-success="average_act_compressive_confirmity == 'pass'"
+                                        decoration-danger="average_act_compressive_confirmity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong for="average_act_compressive_nabl">NABL</strong></td>
+                                <td>
+                                    <field name="average_act_compressive_nabl"
+                                        decoration-success="average_act_compressive_nabl == 'pass'"
+                                        decoration-danger="average_act_compressive_nabl == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
 
 
 
