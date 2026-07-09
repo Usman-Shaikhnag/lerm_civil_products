@@ -243,7 +243,7 @@ class CementPSC(models.Model):
     )
 
     weight_of_water = fields.Float(
-        string="Weight of Water Added (0.85 x Normal Consistency)",
+        string="Weight of Water Added = 0.85 * Normal Consistency x Weight of Cement Sample in Initial & Final Setting Time",
         compute="_compute_weight_of_water",
         store=True,
         readonly=True,
@@ -1553,7 +1553,7 @@ class CompressiveCementPSCLine(models.Model):
     @api.depends('parent_id')
     def _compute_area(self):
         for rec in self:
-            rec.area = 7.06 * 7.06
+            rec.area = 70.6 * 70.6
 
     
 
@@ -1568,7 +1568,7 @@ class CompressiveCementPSCLine(models.Model):
     def _compute_strength(self):
         for rec in self:
             if rec.area:
-                rec.compressive_strength = (rec.load / rec.area)
+                rec.compressive_strength = (rec.load * 1000) / rec.area
             else:
                 rec.compressive_strength = 0.0
 
