@@ -99,7 +99,7 @@ class CarbonationnLine(models.Model):
     f9 = fields.Integer(string="9")
     # f10 = fields.Integer(string="10")
     avg = fields.Float(string="Average" ,compute="_compute_average")
-    mpa = fields.Float(string="Mpa")
+    mpa = fields.Float(string="Mpa",compute="_compute_mpa", store=True)
     direction = fields.Selection([
         ('horizontal', 'Horizontal'),
         ('vertical_up', 'Vertical Up'), 
@@ -183,6 +183,21 @@ class CarbonationnLine(models.Model):
             filtered_array = [x for x in values if lower_bound <= x <= upper_bound]
 
             record.avg = sum(filtered_array) / len(filtered_array)
+
+    @api.depends('avg')
+    def _compute_mpa(self):
+        for record in self:
+            if record.avg > 0:
+                # Standard Horizontal (0°) Hammer sathi standard polynomial regression formula:
+                # Formula: MPa = 0.023 * (Avg^2) - 0.22 * Avg - 3.1
+                # (Ha formula average chart chya trends varun banavla ahe)
+                
+                calculated_mpa = (0.023 * (record.avg ** 2)) - (0.22 * record.avg) - 3.1
+                
+                # Compressive strength negative madhye nahi jau shakat, mhanun check thevla ahe
+                record.mpa = max(calculated_mpa, 0.0)
+            else:
+                record.mpa = 0.0
                 
 
 
