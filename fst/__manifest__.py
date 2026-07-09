@@ -26,7 +26,7 @@
                  'data/sequence.xml',
                  'reports/soil_resistivity_report_docx.xml',
                  'security/ir.model.access.csv',
-                 'views/pile_load_import_wizard_views.xml',
+                 'views/pile_load_import_wizard_view.xml',
 
     ],
     'assets': {
