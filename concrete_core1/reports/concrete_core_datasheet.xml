@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="concrete_core1_datasheet">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			 <!-- <t t-call="lerm_civil.mechanical_data_sheet_header"> -->
+			 <t t-call="lerm_civil.mechanical_data_sheet_header">
+				<!-- <div style="text-align:center;">
+					<p style="font-size:15px"><b>Test Data Sheet</b></p>
+				</div> -->
+				<div style="text-align:center;font-size:18px">
+                    <!-- Concrete Core -->
+					<!-- <span t-field="env['lerm.parameter.master'].search([('internal_id','=','254187-47c9-4662-9298-3095ac900ffc')]).parameter_name"/> -->
+                </div>
+				<div class="container_eln" style="margin-top:5px">
+					
+					<div t-foreach="eln" t-as="o">
+						<table>
+							<tr cols="12">
+								<td colspan="6">Job no :
+									<![CDATA[&nbsp;]]>
+									<span t-field="eln.kes_no"/>
+								</td>
+								<td colspan="6">Test Start Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.start_date"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Material :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.material.name"/>
+								</td>
+								<td colspan="6">Test End Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.end_date"/>
+								</td>
+							</tr>
+							<tr style="height:50px" cols="12">
+								<td colspan="4">Performed By :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.technician.name"/>
+								</td>
+								<!-- <td colspan="4">Witness Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.witness_name"/>
+								</td> -->
+								<td colspan="4">Witness Name :
+									<![CDATA[&nbsp;]]>
+									<span t-field="eln.witness_name"/>
+								</td>
+								<td colspan="4">Witness Signature :
+									<![CDATA[&nbsp;]]>
+									<span style='padding:20px'></span>
+								</td>
+							</tr>
+						</table>
+						<div style="text-align:center;font-size:18px;margin-top:10px">
+						<!-- Concrete Cube -->
+							<span t-field="env['lerm.parameter.master'].search([('internal_id','=','54b64e2d-1f6f-47e0-b5ce-5a19384bb093')]).parameter_name"/>
+							<span>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','54b64e2d-1f6f-47e0-b5ce-5a19384bb093')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+						</div>
+					</div>
+                   
+
+					
+						<table style="margin-top:10px;">
+						<thead>
+							<tr>
+								<th rowspan="2" style="text-align: center;"> 
+									<span>
+										Sr. No
+									</span>
+								</th>
+								<th rowspan="2"	style="text-align: center;">
+									<span>
+									Location
+									</span>
+								</th>
+
+								<th rowspan="2" style="text-align: center;font-weight: bold;">
+									<span>
+									Grade of Concrete
+									</span>
+								</th>
+								
+								<th rowspan="2" style="text-align: center;">
+									<span>
+									Characteristic Compressive Strength of Cube   (N/mm2)
+									</span>
+								</th>
+
+								<th rowspan="2" style="text-align: center;">
+									<span>
+									Dia of core  (mm)
+									</span>
+								</th>
+								<th rowspan="2" style="text-align: center;">
+									<span>
+									Ht. of Core   (mm)
+									</span>
+								</th>
+								
+								<th rowspan="2" style="text-align: center;">
+									<span>
+									Wt. of Core  (gm)
+									</span>
+								</th>
+
+								<th rowspan="2" style="text-align: center;">
+									<span>
+								Area (mm2)
+									</span>
+								</th>
+								<th rowspan="2" style="text-align: center;">
+									<span>
+								Load  (KN)
+									</span>
+								</th>
+                                	<th rowspan="2" style="text-align: center;">
+									<span>
+									Core Strength (N/mm2)
+									</span>
+								</th>
+                                	<th colspan="2" style="text-align: center;">
+									<span>
+									Correction factor
+									</span>
+								</th>
+
+                                	<th rowspan="2" style="text-align: center;">
+									<span>
+									Corrected Core Strength  (N/mm2)
+									</span>
+								</th>
+                                	<th rowspan="2" style="text-align: center;">
+									<span>
+									Final Compressive Strength (N/mm2)
+									</span>
+								</th>
+							</tr>
+                              <tr>
+                              	<th colspan="1" style="text-align: center;">
+									<span>
+								    L/D
+
+									</span>
+								</th>
+                                	<th colspan="1" style="text-align: center;">
+									<span>
+									(f=0.11n+0.78)
+									</span>
+								</th>
+                            </tr>
+						</thead>
+						<tbody>
+							<tr t-foreach="data.concrete_core_table" t-as="r">
+								<td colspan="1" style="text-align: center;">
+									<span t-esc="r.serial_no"/>
+								</td>
+								<td colspan="1" style="text-align: center;">
+									<span t-esc="r.location"/>
+								</td>
+								<td colspan="1" style="text-align: center;">
+                                    <span t-esc="r.grade"/>
+								</td>
+								<td colspan="1" style="text-align: center;">
+									<span t-esc="r.characteristic_strength"/>
+								</td>
+								<td colspan="1" style="text-align: center;">
+									<span t-esc="r.dia_core" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td colspan="1" style="text-align: center;">
+									<span t-esc="r.height_core" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td colspan="1" style="text-align: center;">
+									<span t-esc="r.weight_core"/>
+								</td>
+								<td colspan="1" style="text-align: center;">
+									<span t-esc="r.area" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td colspan="1" style="text-align: center;">
+									<span t-esc="r.load" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+                                
+                                <td colspan="1" style="text-align: center;">
+									<span t-esc="r.core_strength" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+                                <td colspan="1" style="text-align: center;">
+									<span t-esc="r.ratio_n" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+
+
+
+                                <td colspan="1" style="text-align: center;">
+									<span t-esc="r.correction_factor" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+
+                                <td colspan="1" style="text-align: center;">
+									<span t-esc="r.corrected_core_strength" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+                                <td colspan="1" style="text-align: center;">
+									<span t-esc="r.final_compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+                               
+							</tr>
+
+                          
+						</tbody>
+					</table>
+
+						<table style="margin-top:20px">
+								<tr cols="12">
+									<td colspan="6">Average Of  Core N/mm2:
+										<![CDATA[&nbsp;]]>
+									</td>
+									<td colspan="6">
+										<span t-field="data.average_of_core"/>
+									</td>
+									
+								</tr>
+								
+							</table>
+
+					
+					<div class="authorizeRowDataSheet">
+						<div>
+							<div>
+								<b>
+									Tested By 
+								</b>
+								
+							</div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+						</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.filled_by.name"/>
+								</b>
+							</div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.filled_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+						
+						<div style="margin-left:500px">
+									
+							<div>
+								<b>
+									Checked By
+								</b>
+							</div>
+							 <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+							<div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+					</div>
+
+
+
+					
+					
+					 
+                        </div>
+
+					<!-- <div style="text-align:center;margin-top:25px">
+						......End of Report......
+					</div> -->
+
+					
+				<!-- </div> -->
+			</t>
+		</t>
+	</template>
+    </odoo>

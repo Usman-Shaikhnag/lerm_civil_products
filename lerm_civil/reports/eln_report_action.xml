@@ -412,7 +412,7 @@
 </record>
 
 <record id="concrete_core_ssl_action" model="ir.actions.report">
-    <field name="name">Concrete Core Datasheet </field>
+    <field name="name">Concrete Core Datasheet 1</field>
     <field name="model">lerm.eln</field>
     <field name="report_type">qweb-pdf</field>
     <field name="report_name">concrete_core.concrete_core_ssl</field>
@@ -422,7 +422,7 @@
 </record>
 
 <record id="concrete_core_report_ssl_action" model="ir.actions.report">
-    <field name="name">Concrete Core Report </field>
+    <field name="name">Concrete Core Report 1</field>
     <field name="model">lerm.eln</field>
     <field name="report_type">qweb-pdf</field>
     <field name="report_name">concrete_core.concrete_core_report_ssl</field>
@@ -1741,6 +1741,28 @@
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">ferrous_products.ferrous_product_report</field>
         <field name="report_file">ferrous_products.ferrous_product_report</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+
+     <record id="lerm_concrete_core1_datasheet_action" model="ir.actions.report">
+        <field name="name">Concrete Core Datasheet</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">concrete_core1.concrete_core1_datasheet</field>
+        <field name="report_file">concrete_core1.concrete_core1_datasheet</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="binding_type">report</field>
+    </record>
+
+
+    <record id="concrete_core1_report_action" model="ir.actions.report">
+        <field name="name">Concrete Core Report</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">concrete_core1.concrete_core1_report</field>
+        <field name="report_file">concrete_core1.concrete_core1_report</field>
         <field name="binding_model_id" ref="model_lerm_eln"/>
         <field name="binding_type">report</field>
     </record>
