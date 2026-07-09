@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
+
+        <record id="lerm_sample_department_rule" model="ir.rule">
+            <field name="name">Sample: Department Filter</field>
+            <field name="model_id" ref="model_lerm_srf_sample"/>
+            <field name="domain_force">['|', ('department_id', '=', False), ('department_id', 'in', user.department_ids.mapped('name'))]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        
         <record id="view_employee_form_inherit" model="ir.ui.view">
             <field name="name">hr.employee.form.inherit</field>
             <field name="model">hr.employee</field>
@@ -12,11 +25,39 @@
                                 <field name='signature' widget="image" class="oe_avatar" style="height: 50px; width: 200px;"/>
                             </group>
                     </page>
+                    <page name="lerm_access_rights" string="LERM Access Rights"
+                          groups="lerm_civil.kes_admin_access_group">
+                        <group>
+                            <group string="Security Groups">
+                                <field name="lerm_group_ids" widget="many2many_tags"
+                                       nolabel="1" colspan="2"
+                                       options="{'color_field': 'color', 'no_create': True}"
+                                       invisible="not user_id"/>
+                                <div invisible="user_id"
+                                     colspan="2">
+                                    <p class="text-muted">
+                                        <i class="fa fa-info-circle"/>
+                                        This employee has no linked user account.
+                                        Please set the <b>Related User</b> field
+                                        in the HR Settings tab first.
+                                    </p>
+                                </div>
+                            </group>
+                        </group>
+                    </page>
                     
                 </xpath>
+                
                 <xpath expr="//field[@name='work_email']" position="after">
                     <field name="lab_ids" widget="many2many_tags"/>
                     <field name="company_ids" widget="many2many_tags"/>
+                </xpath>
+
+                <xpath expr="//field[@name='department_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='department_id']" position="after">
+                    <field name="department_ids" widget="many2many_tags"/>
                 </xpath>
             </field>
         </record>

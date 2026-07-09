@@ -206,5 +206,55 @@
             <!-- limit to technician group if desired, else use base.group_user -->
             <field name="groups" eval="[(4, ref('kes_technician_access_group'))]"/>
         </record>
+
+        <record id="lerm_approval_sample_department_rule" model="ir.rule">
+            <field name="name">Sample: Department Filter</field>
+            <field name="model_id" ref="model_lerm_srf_sample"/>
+            <field name="domain_force">
+                ['|',
+                    ('department_id', '=', False),
+                    ('department_id', 'in', user.department_ids.mapped('name'))
+                ]
+            </field>
+            <field name="groups" eval="[(4, ref('lerm_civil.lerm_sample_approval'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="lerm_verification_sample_department_rule" model="ir.rule">
+            <field name="name">Sample: Department Filter</field>
+            <field name="model_id" ref="model_lerm_srf_sample"/>
+            <field name="domain_force">
+                ['|',
+                    ('department_id', '=', False),
+                    ('department_id', 'in', user.department_ids.mapped('name'))
+                ]
+            </field>
+            <field name="groups" eval="[(4, ref('lerm_civil.lerm_sample_verification'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="lerm_allocation_sample_department_rule" model="ir.rule">
+            <field name="name">Sample: Department Filter</field>
+            <field name="model_id" ref="model_lerm_srf_sample"/>
+            <field name="domain_force">
+                ['|',
+                    ('department_id', '=', False),
+                    ('department_id', 'in', user.department_ids.mapped('name'))
+                ]
+            </field>
+            <field name="groups" eval="[(4, ref('lerm_civil.lerm_job_allocation'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+
     </data>
 </odoo>
