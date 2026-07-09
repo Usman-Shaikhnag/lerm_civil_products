@@ -136,9 +136,8 @@
                         <field name="loose_line_ids" nolabel="1">
                             <tree editable="bottom">
                                 <field name='serial_no'/>
-                                <field name='empty_container_weight'  class="blue-input" decoration-info="empty_container_weight != 0" />
+                                
                                 <field name='container_with_material' class="blue-input" decoration-info="container_with_material != 0"/>
-                                <field name='loose_weight'  />
                                 <field name='volume_of_cont' class="blue-input" decoration-info="volume_of_cont != 0"/>
                                 <field name='loose_bulk_density'/>
                             </tree>
@@ -186,9 +185,8 @@
                         <field name="rodded_line_ids" nolabel="1">
                             <tree editable="bottom">
                                 <field name='serial_no'/>
-                                <field name='empty_container_weight'  class="blue-input" decoration-info="empty_container_weight != 0" />
+                               
                                 <field name='container_with_material' class="blue-input" decoration-info="container_with_material != 0"/>
-                                <field name='rodded_weight'/>
                                 <field name='volume_of_cont' class="blue-input" decoration-info="volume_of_cont != 0"/>
                                 <field name='rodded_bulk_density'/>
                             </tree>
@@ -284,8 +282,8 @@
                     <div invisible="not elongation_fl_visible " class="custom_table_borders">
                         <field name="elongation_fl_table" class="no_column_sorting" nolabel="1">
                             <tree editable="bottom">
-                                <field name="passing_sieve" readonly="1" />
-                                <field name="retained_sieve"  readonly="1" />
+                                <field name="passing_sieve"  readonly="id"/>
+                                <field name="retained_sieve"   readonly="id"/>
                                 <field name="total_weight" class="blue-input" decoration-info="total_weight != 0"/>
                                 <field name="wt_passing_flakiness" class="blue-input" decoration-info="wt_passing_flakiness != 0"/>
                                 <field name="wt_retained_flakiness" class="blue-input" decoration-info="wt_retained_flakiness != 0"/>
@@ -989,8 +987,8 @@
                       <div invisible= "soundness_na2so4_visible == False" class="custom_table_borders">
                         <field name="soundness_sod_line_ids" nolabel="1" class="no_column_sorting">
                                 <tree editable="bottom">
-                                    <field name='passing_sieve' readonly="1" sortable="false"/>
-                                    <field name='retained_sieve' readonly="1" sortable="false"/>
+                                    <field name='passing_sieve'  readonly="id"/>
+                                    <field name='retained_sieve' readonly="id"/>
                                     <field name='grading_percent' class="blue-input" decoration-info="grading_percent != 0" sortable="false"/>
                                     <field name='weight_before' class="blue-input" decoration-info="weight_before != 0" sortable="false"/>
                                     <field name='weight_after' class="blue-input" decoration-info="weight_after != 0" sortable="false"/>
@@ -1031,8 +1029,8 @@
                     <div invisible= "soundness_na2so4_visible == False" class="custom_table_borders">
                         <field name="soundness_sodtwo_line_ids" class="no_column_sorting" nolabel="1">
                                 <tree editable="bottom">
-                                    <field name='passing_sieve' readonly="1" />
-                                    <field name='retained_sieve' readonly="1"/>
+                                    <field name='passing_sieve'  readonly="id"/>
+                                    <field name='retained_sieve' readonly="id"/>
                                     <field name='grading_percent' class="blue-input" decoration-info="grading_percent != 0"/>
                                     <field name='weight_before' class="blue-input" decoration-info="weight_before != 0"/>
                                     <field name='weight_after' class="blue-input" decoration-info="weight_after != 0"/>
@@ -1108,8 +1106,8 @@
                       <div invisible= "soundness_mgso4_visible == False" class="custom_table_borders">
                         <field name="soundness_mag_line_ids" class="no_column_sorting" nolabel="1">
                                 <tree editable="bottom">
-                                    <field name='passing_sieve' readonly="1"/>
-                                    <field name='retained_sieve' readonly="1"/>
+                                    <field name='passing_sieve' readonly="id"/>
+                                    <field name='retained_sieve' readonly="id"/>
                                     <field name='grading_percent' class="blue-input" decoration-info="grading_percent != 0"/>
                                     <field name='weight_before' class="blue-input" decoration-info="weight_before != 0"/>
                                     <field name='weight_after' class="blue-input" decoration-info="weight_after != 0"/>
@@ -1150,8 +1148,8 @@
                     <div invisible= "soundness_mgso4_visible == False" class="custom_table_borders">
                         <field name="soundness_magtwo_line_ids" class="no_column_sorting" nolabel="1">
                                 <tree editable="bottom">
-                                    <field name='passing_sieve' readonly="1"/>
-                                    <field name='retained_sieve' readonly="1"/>
+                                    <field name='passing_sieve' readonly="id"/>
+                                    <field name='retained_sieve' readonly="id" />
                                     <field name='grading_percent' class="blue-input" decoration-info="grading_percent != 0"/>
                                     <field name='weight_before' class="blue-input" decoration-info="weight_before != 0"/>
                                     <field name='weight_after' class="blue-input" decoration-info="weight_after != 0"/>

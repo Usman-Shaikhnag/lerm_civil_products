@@ -2457,6 +2457,7 @@ class CoarseAggregateMechanical(models.Model):
 
     @api.model
     def create(self, vals):
+        
         # import wdb;wdb.set_trace()
         record = super(CoarseAggregateMechanical, self).create(vals)
         # record.get_all_fields()
@@ -2467,7 +2468,7 @@ class CoarseAggregateMechanical(models.Model):
 
         self._compute_sample_parameters()
         self._compute_visible()
-        self.default_get(fields)
+        # self.default_get(fields)
 
         return super(CoarseAggregateMechanical, self).read(fields=fields, load=load)
 
@@ -2504,6 +2505,8 @@ class CoarseAggregateMechanical(models.Model):
                 parameter_ids = user_param_results.mapped('parameter').ids
 
             record.sample_parameters = [(6, 0, parameter_ids)]
+
+
     def get_all_fields(self):
         record = self.env['mechanical.coarse.aggregate'].browse(self.ids[0])
         field_values = {}
@@ -2600,28 +2603,18 @@ class LooseBulkDensityLine(models.Model):
    
     serial_no = fields.Integer(string="Sr.No.", readonly=True, copy=False, default=1)
 
-    empty_container_weight = fields.Float("Empty Container Weight (Kg)")
     container_with_material = fields.Float("Weight of Material in Container after pouring, W  (Kg)")
 
-    # AUTO CALCULATED W
-    loose_weight = fields.Float(
-        "Weight of Material (W)",
-        compute="_compute_weight",
-        store=True
-    )
     volume_of_cont = fields.Float(string="Volume of calibrating container ,V (Lit)")
     loose_bulk_density = fields.Float(string="Loose Bulk Density of Material,W/V (Kg/Lit)",compute="_compute_loose_bulk_density")
 
-    @api.depends('empty_container_weight', 'container_with_material')
-    def _compute_weight(self):
-        for rec in self:
-            rec.loose_weight = rec.container_with_material - rec.empty_container_weight
+ 
 
-    @api.depends('loose_weight', 'volume_of_cont')
+    @api.depends('container_with_material', 'volume_of_cont')
     def _compute_loose_bulk_density(self):
         for record in self:
             if record.volume_of_cont:
-                record.loose_bulk_density = record.loose_weight / record.volume_of_cont
+                record.loose_bulk_density = record.container_with_material / record.volume_of_cont
             else:
                 record.loose_bulk_density = 0.0
 
@@ -2650,29 +2643,19 @@ class RoddedBulkDensityLine(models.Model):
    
     serial_no = fields.Integer(string="Sr.No.", readonly=True, copy=False, default=1)
 
-    empty_container_weight = fields.Float("Empty Container Weight (Kg)")
+    
     container_with_material = fields.Float("Weight of Material in Container after pouring, W  (Kg)")
 
-    # AUTO CALCULATED W
-    rodded_weight = fields.Float(
-        "Weight of Material (W)",
-        compute="_compute_weight",
-        store=True
-    )
+    
     volume_of_cont = fields.Float(string="Volume of calibrating container ,V (Lit)")
     rodded_bulk_density = fields.Float(string="Rodded Bulk Density of Material,W/V (Kg/Lit)",compute="_compute_rodded_bulk_density")
 
-    @api.depends('empty_container_weight', 'container_with_material')
-    def _compute_weight(self):
-        for rec in self:
-            rec.rodded_weight = rec.container_with_material - rec.empty_container_weight
-
-
-    @api.depends('rodded_weight', 'volume_of_cont')
+   
+    @api.depends('container_with_material', 'volume_of_cont')
     def _compute_rodded_bulk_density(self):
         for record in self:
             if record.volume_of_cont:
-                record.rodded_bulk_density = record.rodded_weight / record.volume_of_cont
+                record.rodded_bulk_density = record.container_with_material / record.volume_of_cont
             else:
                 record.rodded_bulk_density = 0.0
 
@@ -2759,8 +2742,8 @@ class ElongationFlakinessLine(models.Model):
     parent_id = fields.Many2one('mechanical.coarse.aggregate', string="Parent Id")
 
 
-    passing_sieve = fields.Float("Passing IS Sieve (mm)")
-    retained_sieve = fields.Float("Retained IS Sieve (mm)")
+    passing_sieve = fields.Float("Passing IS Sieve (mm)" )
+    retained_sieve = fields.Float("Retained IS Sieve (mm)" )
 
     total_weight = fields.Float("Total Wt of Aggregate Retained (gm)")
     wt_passing_flakiness = fields.Float("Wt Passing Flakiness Gauge (gm)")
@@ -3232,7 +3215,7 @@ class WetImpactValueLine(models.Model):
     def _compute_values(self):
         for rec in self:
             # Retained (optional calculation)
-            rec.retained = rec.w1 - rec.w2
+            rec.retained = rec.w_ssd - rec.w2
 
             # Impact Value
             rec.impact_value = (rec.w2 / rec.w1) * 100 if rec.w1 else 0.0
@@ -3263,7 +3246,7 @@ class SodiumSulphateLine(models.Model):
 
     sample_no = fields.Integer(string="Trial No", readonly=True, copy=False, default=1)
 
-    passing_sieve = fields.Char("Passing Sieve Size")
+    passing_sieve = fields.Char("Passing Sieve Size" )
     retained_sieve = fields.Char("Retained Sieve Size")
 
     grading_percent = fields.Float("Grading of Orignal Sample Percent")
@@ -3286,9 +3269,9 @@ class SodiumSulphateLine(models.Model):
     @api.depends('weight_before', 'weight_after')
     def _compute_loss(self):
      for rec in self:
-        if rec.weight_before > 0:
+        if rec.weight_before:
             rec.percent_loss = (
-                (rec.weight_before - rec.weight_after)
+                (rec.weight_after / rec.weight_before)
             ) * 100
         else:
             rec.percent_loss = 0
@@ -3307,8 +3290,8 @@ class SodiumSulphateTwoLine(models.Model):
 
     sample_no = fields.Integer(string="Trial No", readonly=True, copy=False, default=1)
 
-    passing_sieve = fields.Char("Passing Sieve Size")
-    retained_sieve = fields.Char("Retained Sieve Size")
+    passing_sieve = fields.Char("Passing Sieve Size" )
+    retained_sieve = fields.Char("Retained Sieve Size" )
 
     grading_percent = fields.Float("Grading of Original Sample (%)")
 
@@ -3330,9 +3313,9 @@ class SodiumSulphateTwoLine(models.Model):
     @api.depends('weight_before', 'weight_after')
     def _compute_loss(self):
      for rec in self:
-        if rec.weight_before > 0:
+        if rec.weight_before:
             rec.percent_loss = (
-                (rec.weight_before - rec.weight_after)
+                (rec.weight_after / rec.weight_before)
             ) * 100
         else:
             rec.percent_loss = 0
@@ -3351,8 +3334,8 @@ class MagnesiumSulphateLine(models.Model):
 
     sample_no = fields.Integer(string="Trial No", readonly=True, copy=False, default=1)
 
-    passing_sieve = fields.Char("Passing Sieve Size")
-    retained_sieve = fields.Char("Retained Sieve Size")
+    passing_sieve = fields.Char("Passing Sieve Size" )
+    retained_sieve = fields.Char("Retained Sieve Size" )
 
     grading_percent = fields.Float("Grading of Orignal Sample Percent")
 
@@ -3371,9 +3354,9 @@ class MagnesiumSulphateLine(models.Model):
     @api.depends('weight_before', 'weight_after')
     def _compute_loss(self):
      for rec in self:
-        if rec.weight_before > 0:
+        if rec.weight_before:
             rec.percent_loss = (
-                (rec.weight_before - rec.weight_after)
+               (rec.weight_after / rec.weight_before)
             ) * 100
         else:
             rec.percent_loss = 0
@@ -3392,8 +3375,8 @@ class MagnesiumSulphateTwoLine(models.Model):
 
     sample_no = fields.Integer(string="Trial No", readonly=True, copy=False, default=1)
 
-    passing_sieve = fields.Char("Passing Sieve Size")
-    retained_sieve = fields.Char("Retained Sieve Size")
+    passing_sieve = fields.Char("Passing Sieve Size" )
+    retained_sieve = fields.Char("Retained Sieve Size" )
 
     grading_percent = fields.Float("Grading of Original Sample (%)")
 
@@ -3412,9 +3395,9 @@ class MagnesiumSulphateTwoLine(models.Model):
     @api.depends('weight_before', 'weight_after')
     def _compute_loss(self):
      for rec in self:
-        if rec.weight_before > 0:
+        if rec.weight_before:
             rec.percent_loss = (
-                (rec.weight_before - rec.weight_after)
+                (rec.weight_after / rec.weight_before)
             ) * 100
         else:
             rec.percent_loss = 0
