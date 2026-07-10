@@ -39,7 +39,7 @@
 								</tr>
 								<tr>
 									<td><strong># Description &amp; Grade of Concrete</strong></td>
-									<td colspan="2"><span t-field="o.grade_id.grade"/> <span t-field="o.material.name"/></td>
+									<td colspan="2"> <span t-field="o.material.name"/> <![CDATA[&nbsp;]]>  <span t-field="o.grade_id.grade"/><![CDATA[&nbsp;]]> Grade</td>
 									<td colspan="2"><strong>Received Date</strong></td>
 									<td><span t-field="o.sample_id.sample_received_date"/></td>
 								</tr>
@@ -85,7 +85,7 @@
 						</table>
 					</div>
 					<div style="">
-						<table class="custom_table_borders">
+						<table class="custom_table_borders" t-if="data.cube_visible and (data.avg_compressive_strength_nabl == 'pass' and nabl or (data.avg_compressive_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 							<thead>
 								<tr>
 									<th style="text-align: center; font-weight: bold; width: 4%;">Sr. No</th>

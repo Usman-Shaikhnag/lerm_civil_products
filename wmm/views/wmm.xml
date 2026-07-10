@@ -363,9 +363,7 @@
                         <field name="loose_line_ids" nolabel="1">
                             <tree editable="bottom">
                                 <field name='serial_no'/>
-                                <field name='empty_container_weight'  class="blue-input" decoration-info="empty_container_weight != 0" />
                                 <field name='container_with_material' class="blue-input" decoration-info="container_with_material != 0"/>
-                                <field name='loose_weight'  />
                                 <field name='volume_of_cont' class="blue-input" decoration-info="volume_of_cont != 0"/>
                                 <field name='loose_bulk_density'/>
                             </tree>
@@ -376,7 +374,7 @@
                         <tbody>
                             <tr>
                                 <td><label class="fw-bold" for="loose_avg">Average Loose Bulk Density</label></td>
-                                <td><field name="loose_avg"/><span>kg/cu.m</span></td>
+                                <td><field name="loose_avg"/><span>Kg/Lit</span></td>
                             </tr>
                             <tr>
                                 <td><label class="fw-bold" for="loose_avg_confirmity">Conformity</label></td>
@@ -413,9 +411,7 @@
                         <field name="rodded_line_ids" nolabel="1">
                             <tree editable="bottom">
                                 <field name='serial_no'/>
-                                <field name='empty_container_weight'  class="blue-input" decoration-info="empty_container_weight != 0" />
                                 <field name='container_with_material' class="blue-input" decoration-info="container_with_material != 0"/>
-                                <field name='rodded_weight'/>
                                 <field name='volume_of_cont' class="blue-input" decoration-info="volume_of_cont != 0"/>
                                 <field name='rodded_bulk_density'/>
                             </tree>
@@ -426,7 +422,7 @@
                         <tbody>
                             <tr>
                                 <td><label class="fw-bold" for="rodded_avg">Average Rodded Bulk Density</label></td>
-                                <td><field name="rodded_avg"/><span>kg/cu.m</span></td>
+                                <td><field name="rodded_avg"/><span>Kg/Lit</span></td>
                             </tr>
                             <tr>
                                 <td><label class="fw-bold" for="rodded_avg_confirmity">Conformity</label></td>
@@ -1015,7 +1011,7 @@
                                 <field name="retained_sieve"  />
                                 <field name="total_weight" class="blue-input" decoration-info="total_weight != 0"/>
                                 <field name="wt_passing_flakiness" class="blue-input" decoration-info="wt_passing_flakiness != 0"/>
-                                <field name="wt_retained_flakiness" class="blue-input" decoration-info="wt_retained_flakiness != 0"/>
+                                <field name="wt_retained_flakiness" />
                                 <field name="wt_retained_elongation" class="blue-input" decoration-info="wt_retained_elongation != 0"/>
                                 
                             </tree>

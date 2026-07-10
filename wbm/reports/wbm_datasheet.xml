@@ -418,9 +418,7 @@
 							<thead>
 								<tr style="background-color: #f0f0f0; text-align: center;">
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Sr No.</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Empty Container Weight (Kg)</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Weight of Material in Container after pouring, W  (Kg)</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Weight of Material (W)</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Volume of calibrating container ,V (Lit)</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Loose Bulk Density of Material,W/V (Kg/Lit)</th>
 								</tr>
@@ -433,13 +431,7 @@
 										<t t-set="k" t-value="k+1"/>
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r['empty_container_weight']"/>
-									</td>
-									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
 										<span t-esc="r['container_with_material']"/>
-									</td>
-									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r['loose_weight']" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
 										<span t-esc="r['volume_of_cont']" />
@@ -533,9 +525,7 @@
 							<thead>
 								<tr style="background-color: #f0f0f0; text-align: center;">
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Sr No.</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Empty Container Weight (Kg)</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Weight of Material in Container after pouring, W  (Kg)</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Weight of Material (W)</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Volume of calibrating container ,V (Lit)</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Rodded Bulk Density of Material,W/V (Kg/Lit)</th>
 								</tr>
@@ -548,13 +538,7 @@
 										<t t-set="k" t-value="k+1"/>
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r['empty_container_weight']"/>
-									</td>
-									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
 										<span t-esc="r['container_with_material']"/>
-									</td>
-									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r['rodded_weight']" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
 										<span t-esc="r['volume_of_cont']" />
