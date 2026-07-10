@@ -8,27 +8,27 @@
                  	Fine Aggregate DataSheet 
                 </div>
 
-                <div class="container_eln" style="margin-top:5px">
-                    <table style="margin-top:20px">
-                        <tr cols="12">
-                            
-                            <td colspan="6">Job No :
-                                <![CDATA[&nbsp;]]>
-                                <span t-field="eln.kes_no"></span>
-                            </td>
-                            <td colspan="6">Test Start Date: 
-                                <![CDATA[&nbsp;]]>
-                                <span t-field="eln.start_date"></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="6">Material: <span t-field="eln.material"></span>
-                            </td>
-                            <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
-                            </td>
-                        </tr>
+				<div class="container_eln" style="margin-top:5px">
+					<table style="margin-top:20px">
+						<tr cols="12">
+							
+							<td colspan="6">Job No :
+								<![CDATA[&nbsp;]]>
+								<span t-field="eln.kes_no"></span>
+							</td>
+							<td colspan="6">Test Start Date: 
+								<![CDATA[&nbsp;]]>
+								<span t-field="eln.start_date"></span>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6">Material: <span t-field="eln.material"></span>
+							</td>
+							<td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
+							</td>
+						</tr>
 
-                          <tr style="height:50px" cols="12">
+							<tr style="height:50px" cols="12">
 								<td colspan="4">Performed By :
 									<![CDATA[&nbsp;]]>
 									<span t-field="eln.technician.name"/>
@@ -42,10 +42,12 @@
 									<span style='padding:20px'></span>
 								</td>
 							</tr>
-                    </table>
+					</table>
+				</div>
 
+                <div class="container_eln pageSeperater" style="margin-top:5px">
                     <!-- Sieve Analysis  -->
-                    <div t-if="data.sieve_visible" style="margin-top:20px ; page-break-before: always;" >
+                    <div t-if="data.sieve_visible" style="margin-top:20px ; " >
                         <div style="text-align:center;font-size:18px">
                             Sieve Analysis
                             <!-- added -->
@@ -135,7 +137,7 @@
 
 
 					<!-- Specific Gravity And Water Absorption -->
-                    <div t-if="data.specific_gravity_visible or data.water_absorption_visible" style="margin-top:20px; page-break-before: always;">
+                    <div t-if="data.specific_gravity_visible or data.water_absorption_visible" style="margin-top:20px; ">
 						<div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
 							Specific Gravity And Water Absorption
 						</div>
@@ -248,7 +250,6 @@
 
 
                 	</div>
-				</div>
                		<!--Compacted Density  -->
 
 					<div t-if="data.compacted_density_visible" style="margin-top:20px;">
@@ -302,7 +303,7 @@
                 	</div>
 
 					<!--Loose density  -->
-					<div t-if="data.loose_density_visible" style="margin-top:20px; page-break-before: always;">
+					<div t-if="data.loose_density_visible" style="margin-top:20px; ">
 						<div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
 							Loose density
 						</div>
@@ -353,7 +354,7 @@
                 	</div>
 
 					<!--Void In Compacted And Loose Density  -->
-					<div t-if="data.voids_compacted_density_visible or data.voids_loose_density_visible" style="margin-top:20px; page-break-before: always;">
+					<div t-if="data.voids_compacted_density_visible or data.voids_loose_density_visible" style="margin-top:20px; ">
 						<div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
 							Void In Compacted And Loose Density
 						</div>
@@ -389,7 +390,7 @@
 
                     <!-- Soundness Na2So4 -->
 
-					<div t-if="data.soundness_na2so4_visible " style="margin-top:20px; page-break-before: always;">
+					<div t-if="data.soundness_na2so4_visible " style="margin-top:20px; ">
 						<div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;">
 								Soundness Na2So4
 						</div>
@@ -549,7 +550,7 @@
 
 					<!-- Soundness Mgso4 -->
 
-					<div t-if="data.soundness_mgso4_visible " style="margin-top:20px; page-break-before: always;">
+					<div t-if="data.soundness_mgso4_visible " style="margin-top:20px; ">
 
 						<div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;">
 								Soundness Mgso4
@@ -710,7 +711,7 @@
 
                     <!--  Material Finer than 75 Micron -->
 
-					<div t-if="data.finer75_visible " style="margin-top:20px; page-break-before: always;">
+					<div t-if="data.finer75_visible " style="margin-top:20px; ">
 						<div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;">
 								Material Finer than 75 Micron
 						</div>
@@ -763,7 +764,7 @@
 
                     <!--  Determination of Clay Lumps -->
 
-					<div t-if="data.clay_lump_visible " style="margin-top:20px; page-break-before: always;">
+					<div t-if="data.clay_lump_visible " style="margin-top:20px; ">
 						<div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;">
 								Determination of Clay Lumps
 						</div>
@@ -812,7 +813,7 @@
 
                     <!-- DELETERIOUS MATERIAL (COAL & LIGNITE) -->
 
-					<div t-if="data.deleterious_coal_lignite_visible " style="margin-top:20px; page-break-before: always;">
+					<div t-if="data.deleterious_coal_lignite_visible " style="margin-top:20px; ">
 						<div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;">
 								DELETERIOUS MATERIAL (COAL And LIGNITE)
 						</div>
@@ -861,7 +862,7 @@
 
                      <!-- Moisture Content-->
                     
-                    <div t-if="data.moisture_content_visible" style="margin-top:20px; page-break-before: always;">
+                    <div t-if="data.moisture_content_visible" style="margin-top:20px; ">
                         <div style="text-align:center;font-size:18px">
                               <span t-field="env['lerm.parameter.master'].search([('internal_id','=','1457htyu1245-3fa3-4b83-ae31-9d281457457hy')]).parameter_name"/>
                             <span>
@@ -935,7 +936,7 @@
 
 					<!--Deleterious Material - Soft Particles-->
                     
-                    <div t-if="data.deleterious_soft_par_visible" style="margin-top:20px; page-break-before: always;">
+                    <div t-if="data.deleterious_soft_par_visible" style="margin-top:20px; ">
                         <div style="text-align:center;font-size:18px">
                               <span t-field="env['lerm.parameter.master'].search([('internal_id','=','03d66a05-767f-4e4f-9f09-b1a3af00af76')]).parameter_name"/>
                             <span>
@@ -1007,9 +1008,9 @@
 
                     </div>
 
-                        <!-- 4. Bulking of Sand -->
+                    <!-- 4. Bulking of Sand -->
                     
-                    <div t-if="data.bulking_sand_visible" style="margin-top:20px; page-break-before: always;">
+                    <div t-if="data.bulking_sand_visible" style="margin-top:20px; ">
                         <div style="text-align:center;font-size:18px">
                               <span t-field="env['lerm.parameter.master'].search([('internal_id','=','45789bhgt25-3fa3-4b83-ae31-9d28176718457')]).parameter_name"/>
                             <span>
@@ -1078,7 +1079,7 @@
 						</table>
 
 					</div>
-
+				</div>
 
             </t>
         </t>
