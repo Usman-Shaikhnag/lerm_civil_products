@@ -4,20 +4,20 @@
       <div class="d-flex align-items-center justify-content-between gap-2">
         
         <!-- Mobile Sidebar Toggle -->
-        <button class="btn btn-ghost d-md-none p-2" t-on-click="props.toggleSidebar">
+        <button class="btn btn-ghost d-md-none p-2" t-on-click="props.toggleSidebar" aria-label="Toggle sidebar">
           <i t-att-class="props.isSidebarOpen ? 'fa fa-times' : 'fa fa-bars'" />
         </button>
         
         <!-- Title -->
-        <div class="flex-1">
-          <h1 class="text-2xl fw-semibold text-foreground" t-esc="props.folderName"/>
-          <p class="text-sm text-muted-foreground mt-1">Manage your files and folders</p>
+        <div class="flex-1" style="min-width:0;">
+          <h1 class="text-2xl fw-semibold text-foreground mb-0" t-esc="props.folderName"/>
+          <p class="text-sm text-muted-foreground mt-1 mb-0 d-none d-md-block">Manage your files and folders</p>
         </div>
 
         <!-- Right Controls -->
-        <div class="d-flex align-items-center gap-2">
+        <div class="d-flex align-items-center gap-2 flex-shrink-0">
 
-          <!-- Search -->
+          <!-- Search (desktop only) -->
           <div class="position-relative d-none d-md-flex">
             <i class="fa fa-search position-absolute" style="left:12px; top:50%; transform:translateY(-50%);"/>
             <input
@@ -34,18 +34,14 @@
             t-if="props.onCreateFolder"
             t-on-click="handleCreateFolder"
             class="btn btn-outline-secondary gap-2"
+            title="New Folder"
           >
-            <i class="fa fa-folder-plus"/> <span>New Folder</span>
+            <i class="fa fa-folder-plus"/><span class="d-none d-sm-inline">New Folder</span>
           </button>
 
           <!-- Upload -->
-          <button t-on-click="handleUploadClick" class="btn btn-primary gap-2">
-            <i class="fa fa-upload"/> <span>Upload</span>
-          </button>
-
-          <!-- Help -->
-          <button class="btn btn-ghost" title="Help">
-            <i class="fa fa-question-circle"/>
+          <button t-on-click="handleUploadClick" class="btn btn-primary gap-2" title="Upload">
+            <i class="fa fa-upload"/><span class="d-none d-sm-inline">Upload</span>
           </button>
 
         </div>
