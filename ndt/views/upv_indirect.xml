@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="upv_indirect_view" model="ir.ui.view">
+        <field name="name">ndt.upv.indirect.form</field>
+        <field name="model">ndt.upv.indirect</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <sheet>
+                    <group>
+                        <field name="srf_id" readonly="1"/>
+                        <field name="sample_id"  readonly="1"/>
+                        <field name="parameter_id" readonly="1"/>
+                        <field name="eln_ref"  readonly="1"/>
+                         <field name="grade_id"  />
+                        
+                    </group>
+
+                    <div>
+                        <h1 style="text-align:center">
+                            <field name="name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </div>
+
+
+                    <div class="d-flex gap-3"> 
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="temperature"></label>
+                                    </td>
+                                    <td>
+                                        <field name="temperature"  string="Concrete Temperature °C" identity="extra"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="structure" ></label>
+                                    </td>
+                                    <td>
+                                        <field name="structure" string="Structure Age" identity="extra"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="instrument" ></label>
+                                    </td>
+                                    <td>
+                                        <field name="instrument" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div> 
+
+                     <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="date_of_casting" ></label>
+                                    </td>
+                                    <td>
+                                        <field name="date_of_casting" string="Date of Casting" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+                    <div>
+                       <field name="child_lines" nolabel="1" >
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name="is_editable_line" column_invisible="True"/>
+                                <field name="serial_no" string="Sr NO." />
+                                <field name="level_id" width="200" string="LOCATION" readonly="not is_editable_line"/>
+                                <field name="casting_date" width="200" string="DATE OF CASTING"/>
+                                <field name="path" width="200" string="PATH" />
+                                <field name="dist" width="200" string="DISTANCE [MM]"/>
+                                <field name="time" width="200" string="TIME [µs]"/>
+                                <field name="slope"  width="200" string="SLOPE"/>
+                                <field name="actual_velocity" width="200" string="ACTUAL VELOCITY [Km/s]"/>
+                                <field name="corrected_velocity"  width="200" string="CORRECTED VELOCITY [Km/s]"/>
+                                <field name="quality"  width="200" string="QUALITY OF CONCRETE"/>
+                            </tree>
+                        </field>
+                     </div> 
+
+                     <!-- <table class="table o_form_table w-50 mt-2 custom_table_borders" >
+                        <tbody>
+                            <tr>
+                                <td><strong>Average km/s</strong></td>
+                                <td>
+                                    <field name="average" string="Average km/s" identity="result"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Min Value km/s</strong></td>
+                                <td>
+                                    <field name="minimum" string="Min Value km/s" identity="result" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Max Value km/s</strong></td>
+                                <td>
+                                    <field name="maximum" string="Max Value km/s" identity="result"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table> -->
+                    <group/>
+
+                  <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+
+
+                        </page>
+
+                    </notebook>
+
+
+                      <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>

@@ -23,6 +23,9 @@ This module contains all the common features of Sales Management and eCommerce.
                'views/half_cell.xml',
                'views/rebound_hammer.xml',
                'views/upv.xml',
+               'views/upv_direct.xml',
+               'views/upv_indirect.xml',
+               'views/upv_combiend.xml'
     ],
   
     'installable': True,
