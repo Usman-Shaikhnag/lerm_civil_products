@@ -88,14 +88,22 @@
 							</tr>
 						</table>
 
-						<div class="signatureContainer girdgird">
+						  <div class="signatureContainer girdgird">
 							<div>
 								<div>
 									<b>
-										Prepared By
+										Tested By
 									</b>
 								</div>
-						
+                                <div style="height: 40px;">
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+								
                             <div>
                                 <b>
                                 <span t-esc="eln.sample_id.filled_by.name"/>
@@ -115,7 +123,15 @@
                                     Checked By
                                 </b>
                             </div>
-							
+                            <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+						
 								<div>
 									<b>
 									<span t-esc="eln.sample_id.approved_by.name"/>
@@ -131,7 +147,9 @@
 							
 						</div>
 					</div>
-					</div>
+
+                       
+                    </div>
 
                     <!-- Density of Cement (Le-Chatlier Flask) -->
 
@@ -184,13 +202,21 @@
 							</tr>
 						
 						</table>
-						<div class="signatureContainer girdgird">
+						  <div class="signatureContainer girdgird">
 							<div>
 								<div>
 									<b>
-										Prepared By
+										Tested By
 									</b>
 								</div>
+                                <div style="height: 40px;">
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
 								
                             <div>
                                 <b>
@@ -211,7 +237,15 @@
                                     Checked By
                                 </b>
                             </div>
-							
+                            <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+						
 								<div>
 									<b>
 									<span t-esc="eln.sample_id.approved_by.name"/>
@@ -227,7 +261,9 @@
 							
 						</div>
 					</div>
-					</div>
+
+                       
+                    </div>
 
 
 					<!-- Fineness by Blaine's Air Permeability  -->
@@ -302,13 +338,21 @@
 								
 							</tr>
 						</table>
-						<div class="signatureContainer girdgird">
+						  <div class="signatureContainer girdgird">
 							<div>
 								<div>
 									<b>
-										Prepared By
+										Tested By
 									</b>
 								</div>
+                                <div style="height: 40px;">
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
 								
                             <div>
                                 <b>
@@ -329,7 +373,15 @@
                                     Checked By
                                 </b>
                             </div>
-							
+                            <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+						
 								<div>
 									<b>
 									<span t-esc="eln.sample_id.approved_by.name"/>
@@ -345,7 +397,9 @@
 							
 						</div>
 					</div>
-					</div>
+
+                       
+                    </div>
 	
 
 					<!-- Soundness  -->
@@ -526,23 +580,22 @@
 							</tr>
 						</table>
 
-						<div class="signatureContainer girdgird">
+						  <div class="signatureContainer girdgird">
 							<div>
 								<div>
 									<b>
-										Prepared By
+										Tested By
 									</b>
 								</div>
-								<div style="height: 40px;">
-						<!-- <t t-if="eln.sample_id.testedby_signature_required"> -->
-							<t t-if="eln.tested_by_signature_datasheet">
-
-								<div t-if="eln.sample_id.filled_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
+                                <div style="height: 40px;">
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
 								
-							</t>
-						</div>
                             <div>
                                 <b>
                                 <span t-esc="eln.sample_id.filled_by.name"/>
@@ -562,7 +615,7 @@
                                     Checked By
                                 </b>
                             </div>
-							<div style="height: 40px;">
+                            <div style="height: 40px;">
 								<t t-if="eln.sample_id.checked_by_signature_datasheet">
 									<div t-if="eln.sample_id.check_by.employee_id.signature">
 										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
@@ -570,6 +623,7 @@
 									
 								</t>
 							</div>
+						
 								<div>
 									<b>
 									<span t-esc="eln.sample_id.approved_by.name"/>
@@ -582,17 +636,12 @@
 									</b>
 								</div>
 								
-								<!-- <div>
-									<b>
-										(Authorized Signatory)
-									</b>
-								</div> -->
-							<!-- </div> -->
+							
 						</div>
-                    
-                </div>
-
 					</div>
+
+                       
+                    </div>
 
 
 				<div t-if="data.soundness_le_method_visible" style="margin-top:20px; page-break-before: always;">
@@ -694,23 +743,22 @@
 						</table>
 
 
-						<div class="signatureContainer girdgird">
+						  <div class="signatureContainer girdgird">
 							<div>
 								<div>
 									<b>
-										Prepared By
+										Tested By
 									</b>
 								</div>
-								<div style="height: 40px;">
-						<!-- <t t-if="eln.sample_id.testedby_signature_required"> -->
-							<t t-if="eln.tested_by_signature_datasheet">
-
-								<div t-if="eln.sample_id.filled_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
+                                <div style="height: 40px;">
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
 								
-							</t>
-						</div>
                             <div>
                                 <b>
                                 <span t-esc="eln.sample_id.filled_by.name"/>
@@ -730,7 +778,7 @@
                                     Checked By
                                 </b>
                             </div>
-							<div style="height: 40px;">
+                            <div style="height: 40px;">
 								<t t-if="eln.sample_id.checked_by_signature_datasheet">
 									<div t-if="eln.sample_id.check_by.employee_id.signature">
 										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
@@ -738,6 +786,7 @@
 									
 								</t>
 							</div>
+						
 								<div>
 									<b>
 									<span t-esc="eln.sample_id.approved_by.name"/>
@@ -750,18 +799,12 @@
 									</b>
 								</div>
 								
-								<!-- <div>
-									<b>
-										(Authorized Signatory)
-									</b>
-								</div> -->
-							<!-- </div> -->
+							
 						</div>
-                    
-                </div>
-					
-
 					</div>
+
+                       
+                    </div>
 
              <!-- Consistency of cement -->
 
@@ -812,13 +855,21 @@
 							</tr>
 						</table>
 
-						<div class="signatureContainer girdgird">
+						  <div class="signatureContainer girdgird">
 							<div>
 								<div>
 									<b>
-										Prepared By
+										Tested By
 									</b>
 								</div>
+                                <div style="height: 40px;">
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
 								
                             <div>
                                 <b>
@@ -839,7 +890,15 @@
                                     Checked By
                                 </b>
                             </div>
-							
+                            <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+						
 								<div>
 									<b>
 									<span t-esc="eln.sample_id.approved_by.name"/>
@@ -855,12 +914,12 @@
 							
 						</div>
 					</div>
-						
-					</div>
 
+                       
+                    </div>
                          <!-- Setting Time -->
 
-					<div  style="margin-top:10px;page-break-before: always;">
+					<div  style="margin-top:10px;page-break-before: always;" t-if="data.initial_setting_time_visible or final_setting_time_visible">
         
 							
 							   <div style="text-align:center;font-size:18px" t-if="data.initial_setting_time_visible or final_setting_time_visible" >
@@ -871,7 +930,7 @@
 						      <div class="d-flex" style="gap:10px; margin-bottom:20px; align-items:stretch;"  invisible="not initial_setting_time_visible or not final_setting_time_visible">
 
                         <!-- Left side -->
-							     	<div style="width:50%; text-align:center;" class="equal-box">
+							     	<div style="width:50%; text-align:center;" class="equal-box" t-if="data.initial_setting_time_visible">
 										<div class="o_form_label"
 											style="font-weight:bold; background:#f0f0f0; padding:6px; margin-bottom:0; border:1px solid #ccc; border-bottom:0;">
 											Initial Setting Time
@@ -882,6 +941,8 @@
 											<td colspan="3">Sr.No
 											</td>
 											<td colspan="3">Date &amp;  Time
+											</td>
+											<td colspan="3">Time In minutes
 											</td>
 											<td colspan="3">Penetration Of Needle
 											</td>
@@ -900,6 +961,9 @@
 												<span t-esc="r['clock_time']"/>
 											</td>
 											<td colspan="3">
+												<span t-esc="r['time_in_minutes']"/>
+											</td>
+											<td colspan="3">
 												<span t-esc="r['penetration_intial']"/>
 											</td>
 											
@@ -913,7 +977,7 @@
 
                         <!-- Right side -->
 
-                         <div style="width:50%; text-align:center;" class="equal-box">
+                         <div style="width:50%; text-align:center;" class="equal-box" t-if="data. final_setting_time_visible">
                             <div class="o_form_label"
                                 style="font-weight:bold; background:#f0f0f0; padding:6px; margin-bottom:0; border:1px solid #ccc; border-bottom:0;">
                               Final Setting Time
@@ -924,6 +988,8 @@
 											<td colspan="3">Sr.No
 											</td>
 											<td colspan="3">Date &amp;  Time
+											</td>
+											<td colspan="3">Time In minutes
 											</td>
 											<td colspan="3">Impression Of Needle
 											</td>
@@ -940,6 +1006,9 @@
 											</td>
 											<td colspan="3">
 												<span t-esc="r['clock_time1']"/>
+											</td>
+											<td colspan="3">
+												<span t-esc="r['time_in_minutes1']"/>
 											</td>
 											<td colspan="3">
 												<span t-esc="r['impression_intial1']"/>
@@ -1014,13 +1083,21 @@
 									</tr>
 								</tbody>
 							</table>
-							<div class="signatureContainer girdgird">
+							  <div class="signatureContainer girdgird">
 							<div>
 								<div>
 									<b>
-										Prepared By
+										Tested By
 									</b>
 								</div>
+                                <div style="height: 40px;">
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
 								
                             <div>
                                 <b>
@@ -1041,7 +1118,15 @@
                                     Checked By
                                 </b>
                             </div>
-							
+                            <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+						
 								<div>
 									<b>
 									<span t-esc="eln.sample_id.approved_by.name"/>
@@ -1057,7 +1142,9 @@
 							
 						</div>
 					</div>
-						</div>
+
+                       
+                    </div>
 
 
 
@@ -1134,13 +1221,21 @@
 								
 							</tr>
 						</table>
-						<div class="signatureContainer girdgird">
+						  <div class="signatureContainer girdgird">
 							<div>
 								<div>
 									<b>
-										Prepared By
+										Tested By
 									</b>
 								</div>
+                                <div style="height: 40px;">
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
 								
                             <div>
                                 <b>
@@ -1161,7 +1256,15 @@
                                     Checked By
                                 </b>
                             </div>
-							
+                            <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+						
 								<div>
 									<b>
 									<span t-esc="eln.sample_id.approved_by.name"/>
@@ -1178,13 +1281,14 @@
 						</div>
 					</div>
 
-					</div>
+                       
+                    </div>
 
 					
 
 					<!-- Compressive Strength  -->
 
-					<div t-if="data.compressive_visible" style="margin-top:10px;page-break-before: always;">
+					<div t-if="data.days_3_visible or data.days_7_visible or data.days_28_visible" style="margin-top:10px;page-break-before: always;">
 						<div style="text-align:center;font-size:18px">
 							Compressive Strength
 						</div>
@@ -1241,7 +1345,7 @@
 								</td>
 							</tr>
 						</table>
-						<table style="margin-top:10px">
+						<table style="margin-top:10px" t-if="data.days_3_visible">
 							<tr cols="12">
 								
 								<td colspan="6">Compressive Strength (3 Days) :
@@ -1253,7 +1357,7 @@
 							</tr>
 						</table>
 
-						<table style="margin-top:10px">
+						<table style="margin-top:10px" t-if="data.days_7_visible">
 							<tr cols="12">
 								
 								<td colspan="6">Compressive Strength (7 Days) :
@@ -1265,7 +1369,7 @@
 							</tr>
 						</table>
 
-						<table style="margin-top:10px">
+						<table style="margin-top:10px" t-if="data.days_28_visible">
 							<tr cols="12">
 								
 								<td colspan="6">Compressive Strength (28 Days) :
@@ -1276,26 +1380,22 @@
 								</td>
 							</tr>
 						</table>
-					</div>
-
-
-
-
-					
-
-	
-	
-
-
-					<div class="authorizeRowDataSheet">
-
-                        <div>
-                            <div>
-                                <b>
-                                    Tested By 
-                                </b>
-                                
-                            </div>
+						  <div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Tested By
+									</b>
+								</div>
+                                <div style="height: 40px;">
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+								
                             <div>
                                 <b>
                                 <span t-esc="eln.sample_id.filled_by.name"/>
@@ -1315,30 +1415,45 @@
                                     Checked By
                                 </b>
                             </div>
-							<div style="height: 40px;">
-								<t t-if="eln.sample_id.checkby_signature_required">
+                            <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
 									<div t-if="eln.sample_id.check_by.employee_id.signature">
-										<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
 									</div>
 									
 								</t>
 							</div>
-
-                            <div>
-                                <b>
-                                <span t-esc="eln.sample_id.check_by.name"/>
-                                </b>
-                            </div>
-                            
-                            <div>
-                                <b>
-                                    (<span t-esc="eln.sample_id.check_by.job_title"/>)
-                                </b>
-                            </div>
-                        </div>
 						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
 					</div>
-				</div>
+
+                       
+                    </div>
+					</div>
+
+
+
+
+					
+
+	
+	
+
+
+					
 			</t>
 		</t>
 	</template>
@@ -2129,51 +2244,12 @@
 								</tr>
 
 
-								<tr t-if="cement.initial_setting_time_visible and cement.final_setting_time_visible and ((nabl and cement.initial_setting_nabl != 'fail' and cement.final_setting_nabl != 'fail') or (not nabl and (cement.initial_setting_nabl == 'fail' or cement.final_setting_nabl == 'fail')))">
-									<td style="text-align: center;">
-										<span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/>
-										
-									</td>
-									<td >
-										<span>
-											Setting Time, Minutes
-										</span>
-									</td>
-
-									<td>
-										<span>
-										</span>									
-									</td>
-									
-									<td rowspan="3" style="text-align: center; vertical-align: middle;">
-										<span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','6987456-30fe-4043-b518-015f5c60d916')]).parameter_table" t-as="parameter">
-											<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-											</t>
-										</t>
-										</span>
-									</td>
-									
-									
-									<td>
-										<span>
-										</span>
-									</td>
-									<td>
-										<span>
-										</span>
-									</td>
-									<td t-if="eln.conformity">
-										
-									</td>
-								</tr>
+								
 
 								<tr t-if="cement.initial_setting_time_visible and (cement.initial_setting_nabl == 'pass' and nabl or (cement.initial_setting_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<td style="text-align: center;">
-										<!-- <span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/> -->
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
 										
 									</td>
 									<td >
@@ -2188,7 +2264,7 @@
 											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','6987456-30fe-4043-b518-015f5c60d916')]).unit.name"/>
 										</span>
 									</td>
-									<!-- <td style="text-align: center;">
+									<td style="text-align: center;">
 										<span>
 										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','6987456-30fe-4043-b518-015f5c60d916')]).parameter_table" t-as="parameter">
 											<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -2196,7 +2272,7 @@
 											</t>
 										</t>
 										</span>
-									</td> -->
+									</td>
 
 									
 									
@@ -2225,9 +2301,9 @@
 
 								<tr t-if="cement.final_setting_time_visible and (cement.final_setting_nabl == 'pass' and nabl or (cement.final_setting_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<td style="text-align: center;">
-										<!-- <span t-esc="i + 1" />
+										<span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/>
-										 -->
+										
 									</td>
 									<td >
 										
@@ -2241,7 +2317,7 @@
 											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','3214ght-5e9c-4335-9ea2-2d87624c3061')]).unit.name"/>
 										</span>
 									</td>
-									<!-- <td style="text-align: center;">
+									<td style="text-align: center;">
 										<span>
 										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','3214ght-5e9c-4335-9ea2-2d87624c3061')]).parameter_table" t-as="parameter">
 											<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -2249,7 +2325,7 @@
 											</t>
 										</t>
 										</span>
-									</td> -->
+									</td>
 
 										
 									
@@ -2278,53 +2354,13 @@
 
 
 
-						<tr t-if="cement.soundness_autoclave_visible and cement.soundness_le_method_visible and ((nabl and cement.avg_expantion_nabl != 'fail' and cement.avg_expantion1_nabl != 'fail') or (not nabl and (cement.avg_expantion_nabl == 'fail' or cement.avg_expantion1_nabl == 'fail')))">
+						
+
+								<tr t-if="cement.soundness_autoclave_visible and (cement.avg_expantion_nabl == 'pass' and nabl or (cement.avg_expantion_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<td style="text-align: center;">
 										<span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/>
 										
-									</td>
-									<td >
-										<span>
-											Soundness
-										</span>
-									</td>
-
-									<td>
-										<span>
-										</span>									
-									</td>
-									
-									<td rowspan="3" style="text-align: center; vertical-align: middle;">
-										<span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','300011447gh-372f-4775-9bcb-e9dd3355789658')]).parameter_table" t-as="parameter">
-											<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-											</t>
-										</t>
-										</span>
-									</td>
-									
-									
-									<td>
-										<span>
-										</span>
-									</td>
-									<td>
-										<span>
-										</span>
-									</td>
-									<td t-if="eln.conformity">
-										
-									</td>
-								</tr>
-
-
-								<tr t-if="cement.soundness_autoclave_visible and (cement.avg_expantion_nabl == 'pass' and nabl or (cement.avg_expantion_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<td style="text-align: center;">
-										<!-- <span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/>
-										 -->
 									</td>
 									<td >
 										
@@ -2338,7 +2374,7 @@
 											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','300011447gh-372f-4775-9bcb-e9dd3355789658')]).unit.name"/>
 										</span>
 									</td>
-									<!-- <td style="text-align: center;">
+									<td style="text-align: center;">
 										<span>
 										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','300011447gh-372f-4775-9bcb-e9dd3355789658')]).parameter_table" t-as="parameter">
 											<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -2346,7 +2382,7 @@
 											</t>
 										</t>
 										</span>
-									</td> -->
+									</td>
 									
 									
 									
@@ -2376,10 +2412,10 @@
 
 								<tr t-if="cement.soundness_le_method_visible and (cement.avg_expantion1_nabl == 'pass' and nabl or (cement.avg_expantion1_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 
-								   <td>
+								   <td style="text-align: center;">
 								
-										<!-- <span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/> -->
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
 										
 									</td>
 									<td >
@@ -2394,7 +2430,7 @@
 											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','999887ggtr-372f-4775-9bcb-e9dd723001478h')]).unit.name"/>
 										</span>
 									</td>
-									<!-- <td style="text-align: center;">
+									<td style="text-align: center;">
 										<span>
 										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','999887ggtr-372f-4775-9bcb-e9dd723001478h')]).parameter_table" t-as="parameter">
 											<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -2402,7 +2438,7 @@
 											</t>
 										</t>
 										</span>
-									</td> -->
+									</td>
 									
 									
 									
@@ -2430,61 +2466,12 @@
 
 
 							
-						<!-- Compressive Strength  --> 
 						
-							<tr t-if="cement.compressive_visible and ((nabl and cement.avg_3_days_nabl != 'fail' and cement.avg_7_days_nabl != 'fail' and cement.avg_28_days_nabl != 'fail') or (not nabl and (cement.avg_3_days_nabl == 'fail' or cement.avg_7_days_nabl == 'fail' or cement.avg_28_days_nabl == 'fail')))">
+
+							<tr t-if="cement.days_3_visible and (cement.avg_3_days_nabl == 'pass' and nabl or (cement.avg_3_days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 								<td style="text-align: center;">
 									<span t-esc="i + 1" />
 									<t t-set="i" t-value="i+1"/>
-									
-								</td>
-								<td >
-									<span>
-										Compressive Strength
-									</span>
-								</td>
-								
-									<!-- <td rowspan="4" style="text-align: center; vertical-align: middle;">
-									<span>
-									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','32014587frt-372f-4775-9bcb-e9dd723547htui" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-									</span>
-								</td> -->
-								<td>
-									<span>
-									</span>									
-								</td>
-								<td rowspan="4" style="text-align: center; vertical-align: middle;">
-									<span>
-									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','32014587frt-372f-4775-9bcb-e9dd723547htui')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-									</span>
-								</td>
-								
-								
-								<td>
-									<span>
-									</span>
-								</td>
-								<td>
-									<span>
-									</span>
-								</td>
-								<td t-if="eln.conformity">
-									
-								</td>
-							</tr>
-
-							<tr t-if="cement.compressive_visible and (cement.avg_3_days_nabl == 'pass' and nabl or (cement.avg_3_days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-								<td>
-									<!-- <span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/> -->
 									
 								</td>
 								<td >
@@ -2525,10 +2512,10 @@
 							</tr>
 
 
-							<tr t-if="cement.compressive_visible and (cement.avg_7_days_nabl == 'pass' and nabl or (cement.avg_7_days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-								<td>
-									<!-- <span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/> -->
+							<tr t-if="cement.days_7_visible and (cement.avg_7_days_nabl == 'pass' and nabl or (cement.avg_7_days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<td style="text-align: center;">
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
 									
 								</td>
 								<td >
@@ -2542,6 +2529,16 @@
 								<td style="text-align: center;">
 									<span>
 										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','1236547ffv-372f-4775-9bcb-e9dd723547htui')]).unit.name"/>
+									</span>
+								</td>
+
+								<td >
+									<span>
+									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','1236547ffv-372f-4775-9bcb-e9dd723547htui')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
 									</span>
 								</td>
 								
@@ -2562,24 +2559,16 @@
 									</span>
 								</td>
 								
-								<!-- <td>
-									<span>
-									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','1236547ffv-372f-4775-9bcb-e9dd723547htui')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-									</span>
-								</td> -->
+								
 								<td t-if="eln.conformity" style="text-align: center;">
 									<span t-field="cement.avg_7_days_conformity"/>
 								</td>
 							</tr>
 
-							<tr t-if="cement.compressive_visible and (cement.avg_28_days_nabl == 'pass' and nabl or (cement.avg_28_days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-								<td>
-									<!-- <span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/> -->
+							<tr t-if="cement.days_28_visible and (cement.avg_28_days_nabl == 'pass' and nabl or (cement.avg_28_days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<td style="text-align: center;">
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
 									
 								</td>
 								<td >
@@ -2593,6 +2582,16 @@
 								<td style="text-align: center;">
 									<span>
 										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','00rrrttt887-372f-4775-9bcb-e9dd723547htui')]).unit.name"/>
+									</span>
+								</td>
+
+								<td>
+									<span>
+									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','00rrrttt887-372f-4775-9bcb-e9dd723547htui')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
 									</span>
 								</td>
 								
@@ -2613,15 +2612,7 @@
 									</span>
 								</td>
 								
-								<!-- <td>
-									<span>
-									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','00rrrttt887-372f-4775-9bcb-e9dd723547htui')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-									</span>
-								</td> -->
+								
 								<td t-if="eln.conformity" style="text-align: center;">
 									<span t-field="cement.avg_28_days_conformity"/>
 								</td>

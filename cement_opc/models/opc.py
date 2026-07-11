@@ -520,7 +520,7 @@ class CementNormalConsistency(models.Model):
 
 
 
-     ### setting Time,Final Setting Time	
+    ### setting Time,Final Setting Time	
 
     setting_time_name = fields.Char("Name", default="Setting Time")
 
@@ -638,7 +638,7 @@ class CementNormalConsistency(models.Model):
                 if time_difference_minutes % 5 == 0:
                     record.initial_setting_time_minutes = time_difference_minutes
                 else:
-                    record.initial_setting_time_minutes = round(time_difference_minutes / 5) * 5
+                    record.initial_setting_time_minutes = (time_difference_minutes / 5) * 5
 
                 record.initial_setting_time_minutes_unrounded = time_difference_minutes
 
@@ -739,12 +739,15 @@ class CementNormalConsistency(models.Model):
                 if final_setting_time % 5 == 0:
                     record.final_setting_time_minutes = final_setting_time
                 else:
-                    record.final_setting_time_minutes =  round(final_setting_time / 5) * 5
+                    record.final_setting_time_minutes =  (final_setting_time / 5) * 5
                 record.final_setting_time_minutes_unrounded = final_setting_time
             else:
                 record.final_setting_time_hours = False
                 record.final_setting_time_minutes = False
                 record.final_setting_time_minutes_unrounded = False
+
+
+
 
        # Specific gravity of Cement
 
@@ -867,7 +870,10 @@ class CementNormalConsistency(models.Model):
                 ## Cement Compressive Strength
 
     compressive_name = fields.Char("Name",default="Cement Compressive Strength")
-    compressive_visible = fields.Boolean("Cement Compressive Strength Visible",compute="_compute_visible")
+
+    days_3_visible = fields.Boolean("Cement Compressive Strength Visible",compute="_compute_visible")
+    days_7_visible = fields.Boolean("Cement Compressive Strength Visible",compute="_compute_visible")
+    days_28_visible = fields.Boolean("Cement Compressive Strength Visible",compute="_compute_visible")
 
     compressive_lines = fields.One2many('compressive.line','parent_id',string="Compressive")
 
@@ -876,6 +882,8 @@ class CementNormalConsistency(models.Model):
         for line in self.compressive_lines:
             if not line.dt_of_casting:  
                 line.dt_of_casting = self.start_date
+
+
 
     avg_3_days = fields.Float(string="Avg Strength (3 Days)", compute="_compute_avg_strengths", store=True)
 
@@ -1261,7 +1269,9 @@ class CementNormalConsistency(models.Model):
             record.soundness_le_method_visible = False
             record.consistency_cement_visible = False
             record.final_setting_time_visible = False
-            record.compressive_visible = False
+            record.days_3_visible = False
+            record.days_7_visible = False
+            record.days_28_visible = False
             record.initial_setting_time_visible = False
             record.specific_gravity_visible = False
          
@@ -1289,15 +1299,21 @@ class CementNormalConsistency(models.Model):
                     record.consistency_cement_visible = True
 
                 if sample.internal_id == 'd339933c-5e9c-4335-9ea2-2d87624c3061':
-                    record.consistency_cement_visible = True
                     record.final_setting_time_visible = True
 
                 if sample.internal_id == '40ce7425-30fe-4043-b518-015f5c60d916':
-                    record.consistency_cement_visible = True
                     record.initial_setting_time_visible = True
 
-                if sample.internal_id == '2014587ghty1-372f-4775-9bcb-e9dd723547htui':
-                    record.compressive_visible = True
+                
+
+                if sample.internal_id == '0124578hgggt-372f-4775-9bcb-e9dd723547htui':
+                    record.days_3_visible = True
+
+                if sample.internal_id == '30124587hhhy-372f-4775-9bcb-e9dd723547htui':
+                    record.days_7_visible = True
+
+                if sample.internal_id == '3012456998ffff-372f-4775-9bcb-e9dd723547htui':
+                    record.days_28_visible = True
 
                 if sample.internal_id == '63254170yt0-372f-4775-9bcb-e9dd723547htui':
                     record.specific_gravity_visible = True
@@ -1831,7 +1847,22 @@ class InitialTimeLine(models.Model):
    
     
     clock_time = fields.Datetime(string="Date & Time")
+    time_in_minutes = fields.Char("Time In minutes",compute="_compute_time_in_minutes",store=True)
     penetration_intial = fields.Float(string="Penetration Of Needle")
+
+
+    @api.depends('clock_time', 'parent_id.intial_time_lines.clock_time')
+    def _compute_time_in_minutes(self):
+      
+        for rec in self:
+            rec.time_in_minutes = 0.0
+            if rec.parent_id:
+                first_line = rec.parent_id.intial_time_lines.sorted('serial_no')[:1]
+                if first_line and first_line.clock_time and rec.clock_time:
+                    diff = (rec.clock_time - first_line.clock_time).total_seconds() / 60.0
+                    rec.time_in_minutes = round(diff, 2)
+
+    
 
     
 
@@ -1868,7 +1899,19 @@ class FinalTimeLine(models.Model):
    
     
     clock_time1 = fields.Datetime(string="Date & Time")
+    time_in_minutes1 = fields.Char("Time In minutes",compute="_compute_time_in_minutes1",store=True)
     impression_intial1 = fields.Float(string="Impression Of Needle")
+
+    @api.depends('clock_time1', 'parent_id.intial_time_lines.clock_time')
+    def _compute_time_in_minutes1(self):
+      
+        for rec in self:
+            rec.time_in_minutes1 = 0.0
+            if rec.parent_id:
+                init_first = rec.parent_id.intial_time_lines.sorted('serial_no')[:1]
+                if init_first and init_first.clock_time and rec.clock_time1:
+                    diff = (rec.clock_time1 - init_first.clock_time).total_seconds() / 60.0
+                    rec.time_in_minutes1 = round(diff, 2)
 
     
 
@@ -1894,6 +1937,8 @@ class FinalTimeLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+    
+
 
 
 

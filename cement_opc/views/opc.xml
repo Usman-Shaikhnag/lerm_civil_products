@@ -387,7 +387,7 @@
 
                
 
-                        <div class="d-flex custom_table_borders" style="display:flex; margin-left:120px; margin-bottom:1px;">
+                        <div class="d-flex custom_table_borders" style="display:flex; margin-left:120px; margin-bottom:1px;" invisible = "soundness_autoclave_visible == False">
                         <table style="width:41%; border-collapse:collapse; text-align:center; margin:0; padding:0;">
                             <thead>
                                 <tr>
@@ -606,6 +606,7 @@
                                 <tree editable="bottom">
                                     <field name="serial_no"/>
                                     <field name="clock_time" class="blue-input" decoration-info="clock_time != 0"/>
+                                    <field name="time_in_minutes" />
                                     <field name="penetration_intial" class="blue-input" decoration-info="penetration_intial != 0"/>
                                 </tree>
                             </field>
@@ -626,6 +627,7 @@
                                 <tree editable="bottom">
                                     <field name="serial_no"/>
                                     <field name="clock_time1" class="blue-input" decoration-info="clock_time1 != 0"/>
+                                    <field name="time_in_minutes1" />
                                     <field name="impression_intial1" class="blue-input" decoration-info="impression_intial1 != 0"/>
                                 </tree>
                             </field>
@@ -860,15 +862,17 @@
                     <!-- Cement Compressive Strength -->
                     
 
-                    <div invisible = "compressive_visible == False" >
+                    <div invisible="not (days_3_visible or days_7_visible or days_28_visible)">
                         <h1 class="text-center">
                             <field name="compressive_name" readonly="1" nolabel="1"/>
-                            <field name="compressive_visible" invisible="1"/>
+                            <field name="days_3_visible" invisible="1"/>
+                            <field name="days_7_visible" invisible="1"/>
+                            <field name="days_28_visible" invisible="1"/>
                         </h1>
                     </div>
 
 
-                    <div invisible = "compressive_visible == False">
+                    <div invisible="not (days_3_visible or days_7_visible or days_28_visible)">
                         <field name="compressive_lines">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name="serial_no"/>
@@ -883,7 +887,7 @@
                         </field>
                     </div>
 
-                    <table invisible="compressive_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                    <table invisible="days_3_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
                         <thead>
                             <tr>
                                 <th style="text-align:center;">Result (3 Days)</th>
@@ -918,7 +922,7 @@
                         </tbody>
                     </table>
 
-                    <table invisible="compressive_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                    <table invisible="days_7_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
                         <thead>
                             <tr>
                                 <th style="text-align:center;">Result (7 Days)</th>
@@ -953,7 +957,7 @@
                         </tbody>
                     </table>
 
-                    <table invisible="compressive_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
+                    <table invisible="days_28_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
                         <thead>
                             <tr>
                                 <th style="text-align:center;">Result (28 Days)</th>
