@@ -1286,7 +1286,6 @@ class CementNormalConsistency(models.Model):
                     record.density_cement_visible = True
 
                 if sample.internal_id == '32457fg-372f-4775-9bcb-e9dd70214578r':
-                    record.density_cement_visible = True
                     record.fineness_blaine_visible = True
 
                 if sample.internal_id == '3555668877t-372f-4775-9bcb-e9dd723547htui':

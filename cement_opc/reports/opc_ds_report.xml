@@ -11,9 +11,17 @@
 
               		<!-- Fineness of Cement by Dry Sieving -->
 				<div t-if="data.fineness_cement_visible" style="margin-top:10px">
+						
 						<div style="text-align:center;font-size:18px">
-							Fineness of Cement by Dry Sieving
+							<span t-field="env['lerm.parameter.master'].search([('internal_id','=','a9e97cea-372f-4775-9bcb-e9dd70e6e6df')]).parameter_name"/>
 						</div>
+						<div style="text-align: center;">
+							<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','a9e97cea-372f-4775-9bcb-e9dd70e6e6df')]).parameter_table" t-as="parameter">
+								<t t-if="parameter.grade.id == eln.grade_id.id">
+									<span t-field="parameter.specification"/>
+								</t>
+							</t>
+						</div>	
 						
 						
 					
@@ -106,7 +114,13 @@
 							</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == 'a9e97cea-372f-4775-9bcb-e9dd70e6e6df')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+								
                                 </b>
                             </div>
                             <div>
@@ -152,9 +166,19 @@
                     <!-- Density of Cement (Le-Chatlier Flask) -->
 
 					<div t-if="data.density_cement_visible" style="margin-top:10px;page-break-before: always;">
-						<div style="text-align:center;font-size:18px">
+						<!-- <div style="text-align:center;font-size:18px">
 							Density of Cement (Le-Chatlier Flask)
+						</div> -->
+							<div style="text-align:center;font-size:18px">
+							<span t-field="env['lerm.parameter.master'].search([('internal_id','=','254gt2547-372f-4775-9bcb-e9dd70e3587g')]).parameter_name"/>
 						</div>
+						<div style="text-align: center;">
+							<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','254gt2547-372f-4775-9bcb-e9dd70e3587g')]).parameter_table" t-as="parameter">
+								<t t-if="parameter.grade.id == eln.grade_id.id">
+									<span t-field="parameter.specification"/>
+								</t>
+							</t>
+						</div>	
 						
 						
 						<table style="margin-top:10px">
@@ -217,7 +241,13 @@
 							</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								
+							    <t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '254gt2547-372f-4775-9bcb-e9dd70e3587g')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
                                 </b>
                             </div>
                             <div>
@@ -263,9 +293,19 @@
 					<!-- Fineness by Blaine's Air Permeability  -->
 
 					<div t-if="data.fineness_blaine_visible" style="margin-top:10px;page-break-before: always;">
-						<div style="text-align:center;font-size:18px">
+						<!-- <div style="text-align:center;font-size:18px">
 							Fineness by Blaine's Air Permeability
+						</div> -->
+						<div style="text-align:center;font-size:18px">
+							<span t-field="env['lerm.parameter.master'].search([('internal_id','=','32457fg-372f-4775-9bcb-e9dd70214578r')]).parameter_name"/>
 						</div>
+						<div style="text-align: center;">
+							<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','32457fg-372f-4775-9bcb-e9dd70214578r')]).parameter_table" t-as="parameter">
+								<t t-if="parameter.grade.id == eln.grade_id.id">
+									<span t-field="parameter.specification"/>
+								</t>
+							</t>
+						</div>	
 
 						<table style="margin-top:20px">
 							<tr cols="12">
@@ -349,7 +389,12 @@
 							</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '32457fg-372f-4775-9bcb-e9dd70214578r')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
                                 </b>
                             </div>
                             <div>
@@ -493,7 +538,12 @@
 							</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '3555668877t-372f-4775-9bcb-e9dd723547htui')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
                                 </b>
                             </div>
                             <div>
@@ -652,7 +702,12 @@
 							</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '44455yutr1-372f-4775-9bcb-e9dd723001478h')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
                                 </b>
                             </div>
                             <div>
@@ -698,9 +753,19 @@
              <!-- Consistency of cement -->
 
 					<div t-if="data.consistency_cement_visible" style="margin-top:10px;page-break-before: always;">
-						<div style="text-align:center;font-size:18px">
+						<!-- <div style="text-align:center;font-size:18px">
 							Consistency of cement
+						</div> -->
+						<div style="text-align:center;font-size:18px">
+							<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3214578nbhgt2-372f-4775-9bcb-e9dd723547htui')]).parameter_name"/>
 						</div>
+						<div style="text-align: center;">
+							<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3214578nbhgt2-372f-4775-9bcb-e9dd723547htui')]).parameter_table" t-as="parameter">
+								<t t-if="parameter.grade.id == eln.grade_id.id">
+									<span t-field="parameter.specification"/>
+								</t>
+							</t>
+						</div>	
 						
 						
 						<table style="margin-top:10px">
@@ -763,7 +828,12 @@
 							</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '3214578nbhgt2-372f-4775-9bcb-e9dd723547htui')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
                                 </b>
                             </div>
                             <div>
@@ -808,7 +878,7 @@
 
                          <!-- Setting Time -->
 
-					<div  style="margin-top:10px;page-break-before: always;">
+					<div t-if="data.initial_setting_time_visible or final_setting_time_visible"  style="margin-top:10px;page-break-before: always;">
         
 							
 							   <div style="text-align:center;font-size:18px" t-if="data.initial_setting_time_visible or final_setting_time_visible" >
@@ -816,7 +886,7 @@
 								</div>
 
 						
-						      <div class="d-flex" style="gap:10px; margin-bottom:20px; align-items:stretch;"  invisible="not initial_setting_time_visible or not final_setting_time_visible">
+						      <div class="d-flex" style="gap:10px; margin-bottom:20px; align-items:stretch;"  t-if="data.initial_setting_time_visible or final_setting_time_visible">
 
                         <!-- Left side -->
 							     	<div style="width:50%; text-align:center;" class="equal-box">
@@ -906,10 +976,11 @@
 										</tr>
 									</table>
                         </div>
+						  </div>
 
                        
 
-                    </div>
+                   
 
 							<table style="width:100%; border-collapse: collapse; border:1px solid black;margin-top:10px" t-if="data.initial_setting_time_visible">
 								<thead>
@@ -989,7 +1060,12 @@
 							</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '40ce7425-30fe-4043-b518-015f5c60d916')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
                                 </b>
                             </div>
                             <div>
@@ -1030,14 +1106,26 @@
 						</div>
 					</div>
 					</div>
+					 <!-- </div> -->
 
 
 
 						<!--  -->
 						<div t-if="data.specific_gravity_visible" style="margin-top:10px;page-break-before: always;">
-						<div style="text-align:center;font-size:18px">
+						<!-- <div style="text-align:center;font-size:18px">
 							Specific Gravity of Cement
+						</div> -->
+						<div style="text-align:center;font-size:18px">
+							<span t-field="env['lerm.parameter.master'].search([('internal_id','=','63254170yt0-372f-4775-9bcb-e9dd723547htui')]).parameter_name"/>
 						</div>
+						<div style="text-align: center;">
+							<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','63254170yt0-372f-4775-9bcb-e9dd723547htui')]).parameter_table" t-as="parameter">
+								<t t-if="parameter.grade.id == eln.grade_id.id">
+									<span t-field="parameter.specification"/>
+								</t>
+							</t>
+						</div>	
+						
 
 						<table class="table table-sm table-bordered custom_table_borders" invisible="not specific_gravity_visible" style="white-space:nowrap;">
                         <thead>
@@ -1123,7 +1211,12 @@
 							</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '63254170yt0-372f-4775-9bcb-e9dd723547htui')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
                                 </b>
                             </div>
                             <div>
@@ -1262,12 +1355,7 @@
 								</td>
 							</tr>
 						</table>
-					</div>
-
-
-
-
-					<div class="signatureContainer girdgird">
+						<div class="signatureContainer girdgird">
 							<div>
 								<div>
 									<b>
@@ -1284,7 +1372,12 @@
 							</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '0124578hgggt-372f-4775-9bcb-e9dd723547htui')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
                                 </b>
                             </div>
                             <div>
@@ -1325,6 +1418,13 @@
 						</div>
 					</div>
 					</div>
+
+
+
+
+					
+					</div>
+					<!-- </div> -->
 
 			</t>
 		</t>
