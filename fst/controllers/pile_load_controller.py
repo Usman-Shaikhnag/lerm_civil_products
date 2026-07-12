@@ -68,7 +68,6 @@ class PileLoadReportController(http.Controller):
 
             # Verify token
             verified = self._verify_token(token)
-            # import wdb;wdb.set_trace()
             if not verified:
                 return {"error": "Invalid token"}
             model = verified.get("model")
@@ -81,7 +80,8 @@ class PileLoadReportController(http.Controller):
 
             serializer = PileLoadSerializer(record)
             data = serializer.serialize()
-            _logger.info(data)
+            # import wdb;wdb.set_trace()
+            # _logger.info(data)
             return data
             
         except Exception as e:

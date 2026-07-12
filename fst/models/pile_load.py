@@ -139,10 +139,8 @@ class PileLoadTestParent(models.Model):
     incremental_load = fields.Float(string="Incremental Load (Tonne)")
     test_load = fields.Integer(string="Test Load (Tonne)")
     diameter = fields.Float(string="Diameter of pile (mm)")
-    qr_code = fields.Binary(
-        "QR Code",
-        attachment=True,
-    )
+    qr_code = fields.Binary("QR Code",attachment=True,)
+
     @api.model
     def create(self, vals):
         rec = super().create(vals)
@@ -655,6 +653,7 @@ class PileLoadTestParent(models.Model):
             'view_mode': 'form',
             'target': 'new',
             'context': {
+                'default_parent_model': self._name,
                 'default_parent_id': self.id,
             }
         }

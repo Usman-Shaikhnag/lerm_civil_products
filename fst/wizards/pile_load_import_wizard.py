@@ -9,6 +9,39 @@ import pytz
 
 india_tz = timezone('Asia/Kolkata')
 
+MODEL_CONFIG = {
+    "pile.load.test.parent": {
+        "loading": "pile.load.reading.loading",
+        "unloading": "pile.load.reading.unloading",
+        "dials": 4,
+    },
+    "routine.pile.load.test": {
+        "loading": "routine.pile.reading.loading",
+        "unloading": "routine.pile.reading.unloading",
+        "dials": 4,
+    },
+    "pullout.pile.load.test.parent": {
+        "loading": "pullout.pile.load.reading.loading",
+        "unloading": "pullout.pile.load.reading.unloading",
+        "dials": 2,
+    },
+    "routine.pullout.pile.load.test.parent": {
+        "loading": "routine.pullout.pile.load.reading.loading",
+        "unloading": "routine.pullout.pile.load.reading.unloading",
+        "dials": 2,
+    },
+    "lateral.pile.load.test.parent": {
+        "loading": "lateral.pile.load.reading.loading",
+        "unloading": "lateral.pile.load.reading.unloading",
+        "dials": 2,
+    },
+    "routine.lateral.pile.load.test.parent": {
+        "loading": "routine.lateral.pile.load.reading.loading",
+        "unloading": "routine.lateral.pile.load.reading.unloading",
+        "dials": 2,
+    },
+}
+
 class PileLoadImportWizard(models.TransientModel):
     _name = 'pile.load.import.wizard'
     _description = 'Pile Load Excel Import Wizard'
@@ -16,14 +49,13 @@ class PileLoadImportWizard(models.TransientModel):
     file = fields.Binary(required=True)
     filename = fields.Char()
 
-    parent_id = fields.Many2one(
-        'pile.load.test.parent',
-        required=True
-    )
+    parent_model = fields.Char()
+    parent_id = fields.Integer()
 
     def action_import_excel(self):
 
         self.ensure_one()
+        # import wdb;wdb.set_trace()
 
         if not self.file:
             raise ValidationError("Please upload an Excel file.")
@@ -43,52 +75,80 @@ class PileLoadImportWizard(models.TransientModel):
                     f"Sheet '{sheet_name}' not found in Excel."
                 )
 
+        config = MODEL_CONFIG.get(self.parent_model)
+        parent = self.env[self.parent_model].browse(self.parent_id)
+
+        if not parent.exists():
+            raise ValidationError("Parent record not found.")
+
+        if not config:
+            raise ValidationError("Unsupported parent model.")
+
         self._process_sheet(
             workbook['Loading'],
-            'pile.load.reading.loading'
+            config["loading"],
+            config["dials"]
         )
 
         self._process_sheet(
             workbook['Unloading'],
-            'pile.load.reading.unloading'
+            config["unloading"],
+            config["dials"],
         )
 
-        self.parent_id.action_recompute_all()
-        self.parent_id.action_generate_graph()
-        self.parent_id.action_generate_analysis()
-        self.parent_id._compute_qr_code()
+        for method in (
+            "action_recompute_all",
+            "action_generate_graph",
+            "action_generate_analysis",
+            "_compute_qr_code",
+        ):
+            if hasattr(parent, method):
+                getattr(parent, method)()
+            
 
-    def _process_sheet(self, sheet, model_name):
+    def _process_sheet(self, sheet, model_name,dials):
 
         Model = self.env[model_name]
 
-        headers = [
-            'Date',
-            'Time',
-            'Load',
-            'Dial A',
-            'Dial B',
-            'Dial C',
-            'Dial D',
-        ]
+        headers = []
+        if dials == 4:
+            headers = [
+                'Date',
+                'Time',
+                'Load',
+                'Dial A',
+                'Dial B',
+                'Dial C',
+                'Dial D',
+            ]
+        else:
+            headers = [
+                'Date',
+                'Time',
+                'Load',
+                'Dial A',
+                'Dial B',
+            ]
 
         for index, row in enumerate(
             sheet.iter_rows(min_row=2, values_only=True),
             start=2
         ):
-
+            row_data = dict(zip(headers, row))
             # Skip fully empty rows
             # if not any(row):
             #     continue
 
-            row_data = dict(zip(headers, row))
-            if (
-                row_data['Load'] in (None, '')
-                and row_data['Dial A'] in (None, '')
-                and row_data['Dial B'] in (None, '')
-                and row_data['Dial C'] in (None, '')
-                and row_data['Dial D'] in (None, '')
-            ):
+            required = [
+                "Load",
+                "Dial A",
+                "Dial B",
+            ]
+
+            if dials == 4:
+                required.extend(["Dial C", "Dial D"])
+
+            if all(row_data[h] in (None, "") for h in required):
                 continue
 
             for field_name, value in row_data.items():
@@ -138,32 +198,31 @@ class PileLoadImportWizard(models.TransientModel):
                 microsecond=0
             )
 
-            existing = Model.search([
-                ('parent_id', '=', self.parent_id.id)
-            ])
+            # existing = Model.search([
+            #     ("parent_id", "=", self.parent_id)
+            # ])
 
-            matched_record = existing.filtered(
-                lambda r:
-                    r.reading_datetime and
-                    r.reading_datetime.replace(
-                        second=0,
-                        microsecond=0
-                    ) == normalized_dt
-                    and r.load_tonne == row_data['Load']
-            )
+            matched_record = Model.search([
+                ("parent_id", "=", self.parent_id),
+                ("load_tonne", "=", row_data["Load"]),
+                ("reading_datetime", "=", normalized_dt),
+            ], limit=1)
 
             vals = {
-                'parent_id': self.parent_id.id,
+                'parent_id': self.parent_id,
                 'reading_datetime': normalized_dt,
                 'load_tonne': row_data['Load'],
                 'dial_a': row_data['Dial A'],
                 'dial_b': row_data['Dial B'],
-                'dial_c': row_data['Dial C'],
-                'dial_d': row_data['Dial D'],
             }
+            if dials == 4:
+                vals.update({
+                    "dial_c": row_data["Dial C"],
+                    "dial_d": row_data["Dial D"],
+                })
 
             if matched_record:
-                matched_record[0].write(vals)
+                matched_record.write(vals)
             else:
                 Model.create(vals)
 

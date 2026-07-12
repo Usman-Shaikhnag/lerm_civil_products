@@ -48,11 +48,11 @@ class PileLoadSerializer(BaseReportSerializer):
             "max_settlement": rec.max_settlement,
 
             # signatory
-            "signatory_name": rec.signatory_name,
-            "signatory_designation": rec.signatory_designation,
+            # "signatory_name": rec.signatory_name,
+            # "signatory_designation": rec.signatory_designation,
 
             # images
-            "cover_image": rec.cover_image,
+            # "cover_image": rec.cover_image,
             "graph_image": rec.graph_image,
             "qr_code": rec.qr_code,
 
@@ -76,14 +76,14 @@ class PileLoadSerializer(BaseReportSerializer):
                 "load": line.load_tonne,
                 "dial_a": line.dial_a,
                 "dial_b": line.dial_b,
-                "dial_c": line.dial_c,
-                "dial_d": line.dial_d,
                 "mean": line.mean_mm,
             }
 
-            # if self.record.dial_gauge_count >= 4:
-            #     row["dial_c"] = line.dial_c
-            #     row["dial_d"] = line.dial_d
+            if hasattr(line, "dial_c"):
+                row["dial_c"] = line.dial_c
+
+            if hasattr(line, "dial_d"):
+                row["dial_d"] = line.dial_d
 
             rows.append(row)
 
