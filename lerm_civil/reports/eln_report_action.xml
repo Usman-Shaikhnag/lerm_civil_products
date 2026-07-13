@@ -149,6 +149,28 @@
 </record>
 
 
+<record id="pqc_datasheet_action" model="ir.actions.report">
+    <field name="name">Pavement Quality Concrete DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">pavement_quality_concrete.pqc_datasheet</field>
+    <field name="report_file">pavement_quality_concrete.pqc_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="pqc_report_action" model="ir.actions.report">
+    <field name="name">Pavement Quality Concrete Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">pavement_quality_concrete.pqc_report</field>
+    <field name="report_file">pavement_quality_concrete.pqc_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="paperformat_id" ref="paperformat_makeinfra_report"/>
+    <field name="binding_type">report</field>
+</record>
+
+
 <record id="ballast_datasheet_action" model="ir.actions.report">
     <field name="name">Ballast DataSheet</field>
     <field name="model">lerm.eln</field>
