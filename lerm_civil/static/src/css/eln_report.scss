@@ -204,8 +204,9 @@
   }
 
   .pageSeperater{
-    div:not(:first-child) {
-      page-break-before: always;
+
+    > div:not(:first-child):not(.noPageBreak) {
+    page-break-before: always;
     }
   }
 
