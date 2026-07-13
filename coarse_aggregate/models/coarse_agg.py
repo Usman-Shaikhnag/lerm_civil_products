@@ -799,25 +799,73 @@ class CoarseAggregateMechanical(models.Model):
     specific_gravity_name = fields.Char("Name",default="Specific Gravity & Water Absorption")
     specific_gravity_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
 
+    
+
+    show_pycnometer = fields.Boolean(
+    compute="_compute_show_pycnometer",
+    store=False,
+)
+
+    @api.depends('eln_ref.size_id')
+    def _compute_show_pycnometer(self):
+     for rec in self:
+        size = (rec.eln_ref.size_id.size or "").replace(" ", "").lower()
+
+        print("SIZE =", size)
+
+        rec.show_pycnometer = size in ('6mm', '10mm')
+
+        print("SHOW =", rec.show_pycnometer)
+
+    specific_gravity_line_ids = fields.One2many(
+        "pycnometer.specific.gravity.line",
+        "parent_id",
+        string="Tests")
+
+    
+
     specific_water_line_ids = fields.One2many('specific.gravity.water.absorption.line', 'parent_id', string="Observations")
 
     avg_specific_gravity = fields.Float("Average Specific Gravity", compute="_compute_avg_specific_water", store=True)
     avg_water_absorption = fields.Float("Average Water Absorption (%)", compute="_compute_avg_specific_water", store=True)
 
-    @api.depends('specific_water_line_ids.specific_gravity', 'specific_water_line_ids.water_absorption')
+
+    @api.depends(
+    'eln_ref.size_id',
+    'specific_water_line_ids.specific_gravity',
+    'specific_water_line_ids.water_absorption',
+    'specific_gravity_line_ids.specific_gravity',
+    'specific_gravity_line_ids.water_absorption',
+)
     def _compute_avg_specific_water(self):
      for rec in self:
-        lines = rec.specific_water_line_ids
+        size = (rec.size_id.size or "").replace(" ", "").lower() if rec.size_id else ""
 
-        if lines:
-            sg_list = lines.mapped('specific_gravity')
-            wa_list = lines.mapped('water_absorption')
-
-            rec.avg_specific_gravity = sum(sg_list) / len(sg_list) if sg_list else 0.0
-            rec.avg_water_absorption = sum(wa_list) / len(wa_list) if wa_list else 0.0
+        if size in ('6mm', '10mm'):
+            lines = rec.specific_gravity_line_ids
         else:
-            rec.avg_specific_gravity = 0.0
-            rec.avg_water_absorption = 0.0
+            lines = rec.specific_water_line_ids
+
+        sg = lines.mapped('specific_gravity')
+        wa = lines.mapped('water_absorption')
+
+        rec.avg_specific_gravity = sum(sg) / len(sg) if sg else 0.0
+        rec.avg_water_absorption = sum(wa) / len(wa) if wa else 0.0
+
+    # @api.depends('specific_water_line_ids.specific_gravity', 'specific_water_line_ids.water_absorption')
+    # def _compute_avg_specific_water(self):
+    #  for rec in self:
+    #     lines = rec.specific_water_line_ids
+
+    #     if lines:
+    #         sg_list = lines.mapped('specific_gravity')
+    #         wa_list = lines.mapped('water_absorption')
+
+    #         rec.avg_specific_gravity = sum(sg_list) / len(sg_list) if sg_list else 0.0
+    #         rec.avg_water_absorption = sum(wa_list) / len(wa_list) if wa_list else 0.0
+    #     else:
+    #         rec.avg_specific_gravity = 0.0
+    #         rec.avg_water_absorption = 0.0
 
 
     avg_specific_gravity_conformity = fields.Selection([
@@ -2809,6 +2857,137 @@ class ImpactValueLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.sample_no = index + 1
+
+
+class PycnometerSpecificGravityLine(models.Model):
+    _name = "pycnometer.specific.gravity.line"
+    parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
+
+    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
+
+    temperature = fields.Float(
+        string="Temperature of Water (°C)",
+        digits=(16, 2),
+    )
+
+    pycnometer_bottle_number = fields.Integer(
+        string="Pycnometer Bottle Number",
+    )
+
+    # W1 = Weight of Saturated Surface Dry Sample
+
+    w1 = fields.Float(
+        string="Weight of Saturated Surface Dry Sample, W1 (gm)",
+        digits=(16, 2),
+    )
+
+    # W2 = Weight of Pycnometer Bottle + Water + Sample
+
+    w2 = fields.Float(
+        string="Weight of Pycnometer Bottle + Water + Sample, W2 (gm)",
+        digits=(16, 2),
+    )
+
+    # W3 = Weight of Pycnometer Bottle + Water
+
+    w3 = fields.Float(
+        string="Weight of Pycnometer Bottle + Water, W3 (gm)",
+        digits=(16, 2),
+    )
+
+    # W4 = Weight of Oven Dry Sample
+
+    w4 = fields.Float(
+        string="Weight of Oven Dry Sample, W4 (gm)",
+        digits=(16, 2),
+    )
+
+    specific_gravity = fields.Float(
+        string="Specific Gravity = W4/[W1-(W2-W3)]",
+        compute="_compute_test_results",
+        store=True,
+        digits=(16, 3),
+    )
+
+    apparent_specific_gravity = fields.Float(
+        string="Apparent Specific Gravity = W4/[W4-(W2-W3)]",
+        compute="_compute_test_results",
+        store=True,
+        digits=(16, 3),
+    )
+
+    water_absorption = fields.Float(
+        string="Water Absorption (%) = 100 x (W1 - W4)/W4",
+        compute="_compute_test_results",
+        store=True,
+        digits=(16, 3),
+    )
+
+    @api.depends("w1", "w2", "w3", "w4")
+    def _compute_test_results(self):
+        for line in self:
+            line.specific_gravity = 0.0
+            line.apparent_specific_gravity = 0.0
+            line.water_absorption = 0.0
+
+            # ------------------------------------------------
+            # Specific Gravity
+            #
+            # W4 / [W1 - (W2 - W3)]
+            # ------------------------------------------------
+
+            specific_gravity_denominator = (
+                line.w1 - (line.w2 - line.w3)
+            )
+
+            if specific_gravity_denominator != 0:
+                line.specific_gravity = (
+                    line.w4 / specific_gravity_denominator
+                )
+
+            # ------------------------------------------------
+            # Apparent Specific Gravity
+            #
+            # W4 / [W4 - (W2 - W3)]
+            # ------------------------------------------------
+
+            apparent_gravity_denominator = (
+                line.w4 - (line.w2 - line.w3)
+            )
+
+            if apparent_gravity_denominator != 0:
+                line.apparent_specific_gravity = (
+                    line.w4 / apparent_gravity_denominator
+                )
+
+            # ------------------------------------------------
+            # Water Absorption
+            #
+            # 100 × (W1 - W4) / W4
+            # ------------------------------------------------
+
+            if line.w4 > 0:
+                line.water_absorption = (
+                    100.0 * (line.w1 - line.w4) / line.w4
+                )
+    
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(PycnometerSpecificGravityLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
 
 
 

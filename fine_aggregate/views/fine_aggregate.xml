@@ -455,7 +455,7 @@
                             <tree editable="bottom"  class="custom_table_borders">
                                 <field name="serial_no"/>
                                 <field name="temperature" class="blue-input" decoration-info="temperature != 0"/>
-                                <field name="pycnometer_bottle_number" class="blue-input" decoration-info="pycnometer_bottle_number != 0"/>
+                                <field name="pycnometer_bottle_number" class="blue-input" decoration-info="pycnometer_bottle_number != 0" width="100"/>
                                 <field name="w1" class="blue-input" decoration-info="w1 != 0"/>
                                 <field name="w2" class="blue-input" decoration-info="w2 != 0"/>
                                 <field name="w3" class="blue-input" decoration-info="w3 != 0"/>
@@ -783,34 +783,51 @@
 
                     <div class="text-center" invisible="organic_impurities_visible == False">
                         <h1>
-                           <field name="organic_impurities_name" readonly="1" nolabel="1"/>
-                           <field name="organic_impurities_visible" invisible="1"/>
+                            <field name="organic_impurities_name" readonly="1" nolabel="1"/>
+                            <field name="organic_impurities_visible" invisible="1"/>
+
                         </h1>
-                     </div>
+                    </div>
 
-                <table class="table table-sm table-bordered custom_table_borders" invisible="not organic_impurities_visible" style="white-space:nowrap;">
-                 <tbody>
+                    <div invisible = "organic_impurities_visible == False" class="custom_table_borders">
+                        <field name="organic_impurities_line_ids" nolabel="1">
+                            <tree editable="bottom">
+                                <field name='serial_no'/>
+                                <field name='total_weight' class="blue-input" decoration-info="total_weight != 0"/>
+                                <field name='weight_after_removing' class="blue-input" decoration-info="weight_after_removing != 0"/>
+                                <field name='clay_percentage'/>
+                            </tree>
+                        </field> 
+                    </div>
 
-                     <tr>
-                       <td>
-                         <span class="fw-bold">Sample Color</span>
-                      </td>
-                      <td>
-                         <field name="sample_color" class="blue-input" decoration-info="sample_color != 0"/>
-                     </td>
-                   </tr>
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not organic_impurities_visible" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_clay_percentage">Average Percentage of Clay (%); (L = (W-R)/(W) x 100)</label></td>
+                                <td><field name="avg_clay_percentage"/></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_clay_percentage_confirmity">Conformity</label></td>
+                                <td>
+                                    <field name="avg_clay_percentage_confirmity"
+                                        decoration-success="avg_clay_percentage_confirmity == 'pass'" 
+                                        decoration-danger="avg_clay_percentage_confirmity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_clay_percentage_nabl">NABL</label></td>
+                                <td>
+                                    <field name="avg_clay_percentage_nabl"
+                                        decoration-success="avg_clay_percentage_nabl == 'pass'" 
+                                        decoration-danger="avg_clay_percentage_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-                   <tr>
-                      <td>
-                         <span class="fw-bold">Result</span>
-                      </td>
-                      <td>
-                         <field name="organic_impurities_result" />
-                      </td>
-                  </tr>
- 
-                  </tbody>
-               </table>
+
+                    
 
 
 
