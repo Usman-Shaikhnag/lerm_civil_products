@@ -3647,28 +3647,18 @@ class WmmLooseBulkDensityLine(models.Model):
    
     serial_no = fields.Integer(string="Sr.No.", readonly=True, copy=False, default=1)
 
-    empty_container_weight = fields.Float("Empty Container Weight (Kg)")
     container_with_material = fields.Float("Weight of Material in Container after pouring, W  (Kg)")
 
-    # AUTO CALCULATED W
-    loose_weight = fields.Float(
-        "Weight of Material (W)",
-        compute="_compute_weight",
-        store=True
-    )
     volume_of_cont = fields.Float(string="Volume of calibrating container ,V (Lit)")
     loose_bulk_density = fields.Float(string="Loose Bulk Density of Material,W/V (Kg/Lit)",compute="_compute_loose_bulk_density")
 
-    @api.depends('empty_container_weight', 'container_with_material')
-    def _compute_weight(self):
-        for rec in self:
-            rec.loose_weight = rec.container_with_material - rec.empty_container_weight
+ 
 
-    @api.depends('loose_weight', 'volume_of_cont')
+    @api.depends('container_with_material', 'volume_of_cont')
     def _compute_loose_bulk_density(self):
         for record in self:
             if record.volume_of_cont:
-                record.loose_bulk_density = record.loose_weight / record.volume_of_cont
+                record.loose_bulk_density = record.container_with_material / record.volume_of_cont
             else:
                 record.loose_bulk_density = 0.0
 
@@ -3697,29 +3687,18 @@ class WmmRoddedBulkDensityLine(models.Model):
    
     serial_no = fields.Integer(string="Sr.No.", readonly=True, copy=False, default=1)
 
-    empty_container_weight = fields.Float("Empty Container Weight (Kg)")
     container_with_material = fields.Float("Weight of Material in Container after pouring, W  (Kg)")
 
-    # AUTO CALCULATED W
-    rodded_weight = fields.Float(
-        "Weight of Material (W)",
-        compute="_compute_weight",
-        store=True
-    )
+    
     volume_of_cont = fields.Float(string="Volume of calibrating container ,V (Lit)")
     rodded_bulk_density = fields.Float(string="Rodded Bulk Density of Material,W/V (Kg/Lit)",compute="_compute_rodded_bulk_density")
 
-    @api.depends('empty_container_weight', 'container_with_material')
-    def _compute_weight(self):
-        for rec in self:
-            rec.rodded_weight = rec.container_with_material - rec.empty_container_weight
-
-
-    @api.depends('rodded_weight', 'volume_of_cont')
+   
+    @api.depends('container_with_material', 'volume_of_cont')
     def _compute_rodded_bulk_density(self):
         for record in self:
             if record.volume_of_cont:
-                record.rodded_bulk_density = record.rodded_weight / record.volume_of_cont
+                record.rodded_bulk_density = record.container_with_material / record.volume_of_cont
             else:
                 record.rodded_bulk_density = 0.0
 
@@ -4523,8 +4502,15 @@ class ElongationLine(models.Model):
 
     total_weight = fields.Float("Total Wt of Aggregate Retained (gm)")
     wt_passing_flakiness = fields.Float("Wt Passing Flakiness Gauge (gm)")
-    wt_retained_flakiness = fields.Float("Wt. Retained on Flakiness gauge (gm) = [(Total Wt of aggregate Retained (gm)) - (Wt. Passing on Flakiness gauge (gm)]")
+    wt_retained_flakiness = fields.Float("Wt. Retained on Flakiness gauge (gm) = [(Total Wt of aggregate Retained (gm)) - (Wt. Passing on Flakiness gauge (gm)]",compute="_compute_wt_retained_flakiness",store=True,)
     wt_retained_elongation = fields.Float("Wt Retained Elongation Gauge (gm)")
+
+    @api.depends("total_weight", "wt_passing_flakiness")
+    def _compute_wt_retained_flakiness(self):
+        for rec in self:
+            rec.wt_retained_flakiness = (
+                rec.total_weight - rec.wt_passing_flakiness
+            )
 
 
 

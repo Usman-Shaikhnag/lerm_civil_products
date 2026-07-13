@@ -2747,8 +2747,15 @@ class ElongationFlakinessLine(models.Model):
 
     total_weight = fields.Float("Total Wt of Aggregate Retained (gm)")
     wt_passing_flakiness = fields.Float("Wt Passing Flakiness Gauge (gm)")
-    wt_retained_flakiness = fields.Float("Wt. Retained on Flakiness gauge (gm) = [(Total Wt of aggregate Retained (gm)) - (Wt. Passing on Flakiness gauge (gm)]")
+    wt_retained_flakiness = fields.Float("Wt. Retained on Flakiness gauge (gm) = [(Total Wt of aggregate Retained (gm)) - (Wt. Passing on Flakiness gauge (gm)]",compute="_compute_wt_retained_flakiness",store=True,)
     wt_retained_elongation = fields.Float("Wt Retained Elongation Gauge (gm)")
+
+    @api.depends("total_weight", "wt_passing_flakiness")
+    def _compute_wt_retained_flakiness(self):
+        for rec in self:
+            rec.wt_retained_flakiness = (
+                rec.total_weight - rec.wt_passing_flakiness
+            )
 
 
 
