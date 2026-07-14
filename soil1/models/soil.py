@@ -3164,6 +3164,8 @@ class Soil(models.Model):
 
     direct_shear_name = fields.Char("Name",default="Direct Shear Test")
     direct_shear_visible = fields.Boolean("Direct Shear Test Visible",compute="_compute_visible")
+    direct_shear_phi_visible = fields.Boolean("Direct Shear Test Visible",compute="_compute_visible")
+    direct_shear_cohesion_visible = fields.Boolean("Direct Shear Test Visible",compute="_compute_visible")
 
     proving_ring_least = fields.Float(string="Proving Ring Least Count", digits=(12,3),default=0.002)
 
@@ -3879,6 +3881,8 @@ class Soil(models.Model):
             record.core_cutter_visible = False
             record.consolidation_visible  = False
             record.direct_shear_visible  = False
+            record.direct_shear_phi_visible  = False
+            record.direct_shear_cohesion_visible  = False
             
             
 
@@ -3947,6 +3951,12 @@ class Soil(models.Model):
 
                 if sample.internal_id == '21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr':
                     record.direct_shear_visible = True
+
+                if sample.internal_id == '946ba303-bb07-48c6-981e-dcd4d7a6b1eb':
+                    record.direct_shear_phi_visible = True
+
+                if sample.internal_id == '91fabf52-7b42-4544-9125-495d98fe4d6a':
+                    record.direct_shear_cohesion_visible = True
 
                 if sample.internal_id == '582ac73a-3f86-4c7a-8dda-04357ade5617':
                     record.atterberg_visible = True

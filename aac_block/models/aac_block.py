@@ -54,12 +54,7 @@ class AacBlockMechanical(models.Model):
         }
 
 
-    # @api.depends('eln_ref')
-    # def _compute_sample_parameters(self):
-    #     for record in self:
-    #         records = record.eln_ref.parameters_result.parameter.ids
-    #         record.sample_parameters = records
-    #         print("Records",records)
+    
 
     @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
     def _compute_sample_parameters(self):
@@ -231,13 +226,7 @@ class AacBlockMechanical(models.Model):
         record.eln_ref.write({'model_id':record.id})
         return record
 
-    @api.depends('eln_ref')
-    def _compute_sample_parameters(self):
-        for record in self:
-            records = record.eln_ref.parameters_result.parameter.ids
-            record.sample_parameters = records
-            print("Records",records)
-
+  
     def get_all_fields(self):
         record = self.env['mechanical.aac.block'].browse(self.ids[0])
         field_values = {}
@@ -252,34 +241,9 @@ class AacBlockMechanical(models.Model):
         if self.eln_ref:
             self.grade = self.eln_ref.grade_id.id
 
-    # @api.depends('eln_ref')
-    # def _compute_sample_parameters(self):
-        
-    #     for record in self:
-    #         records = record.eln_ref.parameters_result.parameter.ids
-    #         record.sample_parameters = records
-    #         print("Records",records)
+ 
 
-    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
-    def _compute_sample_parameters(self):
-        # parameter_based_assignment
-        current_user = self.env.user
-        for record in self:
-            if not record.eln_ref:
-                record.sample_parameters = [(6, 0, [])]
-                continue
-
-            # filter parameter results by current user
-            user_param_results = record.eln_ref.parameters_result.filtered(
-                lambda r: r.technician and r.technician.id == current_user.id
-            )
-
-            # map to parameter master IDs
-            parameter_ids = user_param_results.mapped('parameter').ids
-
-            record.sample_parameters = [(6, 0, parameter_ids)]
-
-
+    
 
 
 

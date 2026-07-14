@@ -1539,15 +1539,17 @@
                     </div>
 
                       <!-- Direct Shear Test -->
-                          <div invisible = "direct_shear_visible == False">
+                          <div invisible="not (direct_shear_phi_visible or direct_shear_cohesion_visible)">
                         <h1 class="text-center">
                             <field name="direct_shear_name" readonly="1" nolabel="1"/>
                             <field name="direct_shear_visible" invisible="1"/>
+                            <field name="direct_shear_phi_visible" invisible="1"/>
+                            <field name="direct_shear_cohesion_visible" invisible="1"/>
                         </h1>
                     </div>
 
                     <div class="d-flex gap-2">
-                      <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
+                      <table class="table table-sm o_form_table table-bordered custom_table_borders w-50"  invisible="not (direct_shear_phi_visible or direct_shear_cohesion_visible)">
                         <tbody>
                             <tr>
                                 <td><label for="proving_ring_least"></label></td>
@@ -1566,7 +1568,7 @@
                         </tbody>
                     </table>
                         
-                      <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
+                      <table class="table table-sm o_form_table table-bordered custom_table_borders w-50"  invisible="not (direct_shear_phi_visible or direct_shear_cohesion_visible)">
                         <tbody>
                             <tr>
                                 <td><label for="direct_cp_proving_ring"></label></td>
@@ -1589,7 +1591,7 @@
 
                     
 
-                     <div invisible = "direct_shear_visible == False">
+                     <div  invisible="not (direct_shear_phi_visible or direct_shear_cohesion_visible)">
                         <field name="direct_shear_ids">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='serial_no'/>
@@ -1610,7 +1612,7 @@
                         </field>
                     </div>
 
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-100" invisible="not direct_shear_visible">
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-100"  invisible="not (direct_shear_phi_visible or direct_shear_cohesion_visible)">
                         <tbody>
                             <tr>
                                 <td><span>Normal Stress (Kg/cm2)</span></td>
@@ -1643,7 +1645,7 @@
 
                     <div class="d-flex gap-3">
 
-                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50"  invisible="not (direct_shear_phi_visible or direct_shear_cohesion_visible)">
                             <tbody>
                                 <tr>
                                     <td><label for="angle_phi"/></td>
@@ -1657,7 +1659,7 @@
                             </tbody>
                         </table>
 
-                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50"  invisible="not (direct_shear_phi_visible or direct_shear_cohesion_visible)">
                             <tbody>
                                 <tr>
                                     <td><label for="cohesion"/></td>
@@ -1675,7 +1677,7 @@
 
                     <div class="d-flex gap-3">
 
-                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50"  invisible="not (direct_shear_phi_visible or direct_shear_cohesion_visible)">
                             <tbody>
                                 <tr>
                                     <td><label for="angle_phi_kg_cm2"/></td>
@@ -1689,7 +1691,7 @@
                             </tbody>
                         </table>
 
-                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50"  invisible="not (direct_shear_phi_visible or direct_shear_cohesion_visible)">
                             <tbody>
                                 <tr>
                                     <td><label for="cohesion_kg_cm2"/></td>
@@ -1705,7 +1707,7 @@
 
                     </div>
 
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not direct_shear_visible">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  invisible="not (direct_shear_phi_visible or direct_shear_cohesion_visible)">
                         <tbody>
                             
                             <tr>
@@ -1718,18 +1720,18 @@
                      
                   
 
-                    <button name="action_generate_direct_graph" invisible = "direct_shear_visible == False"
+                    <button name="action_generate_direct_graph"  invisible="not (direct_shear_phi_visible or direct_shear_cohesion_visible)"
                     string="Generate Graph"
                     type="object"
                     class="btn-primary"/>
 
-                     <div invisible = "direct_shear_visible == False" class="custom_table_borders text-center">
+                     <div  invisible="not (direct_shear_phi_visible or direct_shear_cohesion_visible)" class="custom_table_borders text-center">
                         <field name="direct_graph_image" widget="image" readonly="1"/>
                     </div>
 
                     <div class="d-flex gap-2">
                         
-                     <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
+                     <table class="table table-sm o_form_table table-bordered custom_table_borders w-50"  invisible="not (direct_shear_phi_visible or direct_shear_cohesion_visible)">
                         <tbody>
                             <tr>
                                 <td><label for="angle_phi"></label></td>
@@ -1753,7 +1755,7 @@
                         </tbody>
                     </table>
 
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50"  invisible="not (direct_shear_phi_visible or direct_shear_cohesion_visible)">
                         <tbody>
                             <tr>
                                 <td><label for="cohesion"></label></td>

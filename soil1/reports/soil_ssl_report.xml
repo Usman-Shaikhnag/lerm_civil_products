@@ -1163,7 +1163,7 @@
 					<t t-set="rowspan_count" t-value="1 + int(show_angle_phi) + int(show_cohesion)"/>
 
 
-					<tr t-if="data.direct_shear_visible and (show_angle_phi or show_cohesion)">
+					<tr t-if="(data.direct_shear_phi_visible or data.direct_shear_cohesion_visible) and (show_angle_phi or show_cohesion)">
 
 						<t t-set="direct_shear" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')])"/>
 
@@ -1178,7 +1178,7 @@
 									
 					</tr>
 
-					<tr t-if="data.direct_shear_visible and show_angle_phi">
+					<tr t-if="(data.direct_shear_phi_visible or data.direct_shear_cohesion_visible) and show_angle_phi">
 				   	    <t t-set="angle_phi" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','946ba303-bb07-48c6-981e-dcd4d7a6b1eb')])"/>
 					 <td>
 					    <span t-esc="angle_phi.parameter_name"/>
@@ -1210,7 +1210,7 @@
 
                     </tr>
 
-					<tr t-if="data.direct_shear_visible and show_cohesion">
+					<tr t-if="(data.direct_shear_phi_visible or data.direct_shear_cohesion_visible) and show_cohesion">
 				   	    <t t-set="cohesion" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','91fabf52-7b42-4544-9125-495d98fe4d6a')])"/>
 					 <td>
 					    <span t-esc="cohesion.parameter_name"/>
@@ -1668,14 +1668,14 @@
 
 
 
-				<t t-if="data.direct_shear_visible and (show_angle_phi or show_cohesion)">
+				<t t-if="(data.direct_shear_phi_visible or data.direct_shear_cohesion_visible) and (show_angle_phi or show_cohesion)">
                    <div style="text-align:center; margin-top:20px;">
                    <img t-att-src="'data:image/png;base64,%s' % graph_direct_shear" style="max-width:100%; height:auto;"/>
                   </div>
 				</t>
 
 
-                 <t t-if="data.direct_shear_visible and (show_angle_phi or show_cohesion)">
+                 <t t-if="(data.direct_shear_phi_visible or data.direct_shear_cohesion_visible) and (show_angle_phi or show_cohesion)">
 				  <!-- <div class="d-flex gap-3" > -->
 
                         <table class="table table-sm o_form_table table-bordered w-100"
