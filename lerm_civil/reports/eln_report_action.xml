@@ -1330,6 +1330,26 @@
     </record>
 
 
+    <record id="hollow_solid_block_datasheet_action" model="ir.actions.report">
+        <field name="name">Hollow And Solid Concrete Block Datasheet</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hollow_solid_concrete_block.hollow_solid_block_datasheet</field>
+        <field name="report_file">hollow_solid_concrete_block.hollow_solid_block_datasheet</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <!--  <field name="binding_model_id" eval="False"/>  -->
+        <field name="binding_type">report</field>
+    </record>
 
+    <record id="hollow_solid_block_report_action" model="ir.actions.report">
+        <field name="name">Hollow And Solid Concrete Block Report</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hollow_solid_concrete_block.hollow_solid_block_report</field>
+        <field name="report_file">hollow_solid_concrete_block.hollow_solid_block_report</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="paperformat_id" ref="paperformat_makeinfra_report"/>
+        <field name="binding_type">report</field>
+    </record>
 
 </odoo>

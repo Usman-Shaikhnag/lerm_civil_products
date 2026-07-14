@@ -360,36 +360,33 @@
 								</td>
 							</tr>
 						</table>
-						</div>
-						<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
+					</div>
+					<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
+						<div>
 							<div>
-								<div>
-									<b>
-										Reviewed By
-									</b>
-								</div>
-								<div style="height: 50px;">
-									<t t-if="eln.sample_id.checkby_signature_required and eln.sample_id.check_by.employee_id.signature">
-										<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')"
-											style="max-width: 200px; max-height: 45px; margin-top: 1px; z-index: -10;"/>
-									</t>
-								</div>
-
-								
-
-								<div>
-									<b>
-										<span t-esc="eln.sample_id.check_by.name"/>
-									</b>
-								</div>
-								<div>
-									<b>
-										(<span t-esc="eln.sample_id.check_by.job_title"/>)
-									</b>
-								</div>
+								<b>
+									Reviewed By
+								</b>
 							</div>
-
+							<div style="height: 50px;">
+								<t t-if="eln.sample_id.checkby_signature_required and eln.sample_id.check_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')"
+										style="max-width: 200px; max-height: 45px; margin-top: 1px; z-index: -10;"/>
+								</t>
+							</div>
 							<div>
+								<b>
+									<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+
+					<div>
 						<!-- <div>
 							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
 						</div> -->
@@ -402,7 +399,6 @@
 							<b>
 								Per pro GEONYMS INDIA PRIVATE LIMITED.
 							</b>
-							
 						</div>
 						<div style="height: 50px;">
 							<t t-if="eln.sample_id.approveby_signature_required">
@@ -412,13 +408,11 @@
 								
 							</t>
 						</div>
-						
 						<div>
 							<b>
 							<span t-esc="eln.sample_id.approved_by.name"/>
 							</b>
 						</div>
-						
 						<div>
 							<b>
 								(<span t-esc="eln.sample_id.approved_by.job_title"/>)
@@ -432,7 +426,7 @@
 						<div style="margin-top: 5px; text-align: center;">
 							<p style="font-weight:800;">...... End Of Report......</p>
 						</div>
-					</div>
+				</div>
 				<!-- </div> -->
 			</t>
 		</t>
