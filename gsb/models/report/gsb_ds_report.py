@@ -20,6 +20,14 @@ from scipy.interpolate import CubicSpline , interp1d , Akima1DInterpolator
 from matplotlib.ticker import MultipleLocator, StrMethodFormatter
 
 
+from scipy.optimize import curve_fit
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.ticker import MultipleLocator
+import io
+import base64
+
+
 
 class GsbReport1(models.AbstractModel):
     _name = 'report.gsb.gsb_mec_report'
@@ -352,53 +360,63 @@ class GsbReport1(models.AbstractModel):
 #     round(float(omc), 2),
 #     round(float(mdd), 3)
 # )
+
+
     def generate_line_chart_light_omc(self, data):
 
-      x = []
-      y = []
+       x = []
+       y = []
 
-      for line in data.heavy_table:
-        if line.water_content and line.dry_density:
-            x.append(float(line.water_content))
-            y.append(float(line.dry_density))
+       for line in data.heavy_table:
+           if line.water_content and line.dry_density:
+               x.append(float(line.water_content))
+               y.append(float(line.dry_density))
 
-      if len(x) < 3:
-        return False
+       if len(x) < 3:
+           return False
 
-    # -------------------------------
+    # -------------------------
     # Sort Data
-    # -------------------------------
-      data_points = sorted(zip(x, y))
-      x = np.array([i[0] for i in data_points])
-      y = np.array([i[1] for i in data_points])
+    # -------------------------
+       data_points = sorted(zip(x, y))
+       x = np.array([i[0] for i in data_points])
+       y = np.array([i[1] for i in data_points])
 
-    # -------------------------------
-    # Smooth Curve
-    # -------------------------------
-      coeff = np.polyfit(x, y, 2)
-      poly = np.poly1d(coeff)
+    # -------------------------
+    # Report Values
+    # -------------------------
+       omc = float(data.omc)
+       mdd = float(data.max_dry_density)
 
-      x_smooth = np.linspace(x.min(), x.max(), 500)
-      y_smooth = poly(x_smooth)
+    # -------------------------
+    # Constrained parabola
+    # y = a(x-omc)^2 + mdd
+    # -------------------------
+       def compaction_curve(x, a):
+           return a * (x - omc) ** 2 + mdd
 
-    # -------------------------------
-    # USE REPORT VALUES
-    # -------------------------------
-      omc = float(data.omc)
-      mdd = float(data.max_dry_density)
+       popt, _ = curve_fit(compaction_curve, x, y)
 
-      fig, ax = plt.subplots(figsize=(15, 5))
+       a = popt[0]
+
+       x_smooth = np.linspace(x.min(), x.max(), 500)
+       y_smooth = compaction_curve(x_smooth, a)
+
+    # -------------------------
+    # Plot
+    # -------------------------
+       fig, ax = plt.subplots(figsize=(15, 5))
 
     # Blue Curve
-      ax.plot(
+       ax.plot(
         x_smooth,
         y_smooth,
         color="blue",
         linewidth=2.8,
     )
 
-    # Actual Test Points
-      ax.scatter(
+    # Test Points
+       ax.scatter(
         x,
         y,
         color="red",
@@ -407,23 +425,23 @@ class GsbReport1(models.AbstractModel):
     )
 
     # Peak Point
-      ax.scatter(
+       ax.scatter(
         omc,
         mdd,
         color="red",
-        s=140,
+        s=150,
         zorder=10,
     )
 
     # Guide Lines
-      ax.axhline(
+       ax.axhline(
         y=mdd,
         color="red",
         linestyle="--",
         linewidth=1,
     )
 
-      ax.axvline(
+       ax.axvline(
         x=omc,
         color="red",
         linestyle="--",
@@ -431,7 +449,7 @@ class GsbReport1(models.AbstractModel):
     )
 
     # Annotation
-      ax.text(
+       ax.text(
         omc + 0.15,
         mdd + 0.002,
         f"OMC: {omc:.2f}%\nMDD: {mdd:.2f}",
@@ -441,39 +459,50 @@ class GsbReport1(models.AbstractModel):
     )
 
     # Labels
-      ax.set_xlabel("Water Content (%)", fontsize=16)
-      ax.set_ylabel("Dry Density (g/cc)", fontsize=16)
-      ax.set_title("DETERMINATION OF COMPACTION OMC / MDD", fontsize=22)
+       ax.set_xlabel(
+        "Water Content (%)",
+        fontsize=16,
+    )
 
-      ax.set_xlim(
+       ax.set_ylabel(
+        "Dry Density (g/cc)",
+        fontsize=16,
+    )
+
+       ax.set_title(
+        "DETERMINATION OF COMPACTION OMC / MDD",
+        fontsize=22,
+    )
+
+       ax.set_xlim(
         left=0,
         right=max(x) + 2,
     )
 
-      ax.set_ylim(
+       ax.set_ylim(
         bottom=min(y) - 0.04,
-        top=max(mdd, max(y_smooth)) + 0.03,
+        top=max(mdd, max(y)) + 0.03,
     )
 
-    # -------------------------------
+    # -------------------------
     # Graph Paper Background
-    # -------------------------------
-      ax.set_facecolor("#f8fff8")
+    # -------------------------
+       ax.set_facecolor("#f8fff8")
 
-      ax.xaxis.set_major_locator(MultipleLocator(1))
-      ax.xaxis.set_minor_locator(MultipleLocator(0.1))
+       ax.xaxis.set_major_locator(MultipleLocator(1))
+       ax.xaxis.set_minor_locator(MultipleLocator(0.1))
 
-      ax.yaxis.set_major_locator(MultipleLocator(0.05))
-      ax.yaxis.set_minor_locator(MultipleLocator(0.005))
+       ax.yaxis.set_major_locator(MultipleLocator(0.05))
+       ax.yaxis.set_minor_locator(MultipleLocator(0.005))
 
-      ax.grid(
+       ax.grid(
         which="major",
         color="green",
         linewidth=0.5,
         alpha=0.45,
     )
 
-      ax.grid(
+       ax.grid(
         which="minor",
         color="green",
         linestyle=":",
@@ -481,26 +510,26 @@ class GsbReport1(models.AbstractModel):
         alpha=0.35,
     )
 
-      plt.tight_layout()
+       plt.tight_layout()
 
-      buffer = io.BytesIO()
+       buffer = io.BytesIO()
 
-      plt.savefig(
+       plt.savefig(
         buffer,
         format="png",
         dpi=100,
         bbox_inches="tight",
     )
 
-      plt.close(fig)
+       plt.close(fig)
 
-      buffer.seek(0)
+       buffer.seek(0)
 
-      image_data = base64.b64encode(
+       image_data = base64.b64encode(
         buffer.read()
     ).decode("utf-8")
 
-      return (
+       return (
         image_data,
         round(omc, 2),
         round(mdd, 2),
@@ -509,51 +538,59 @@ class GsbReport1(models.AbstractModel):
 
     def generate_line_chart_light_omc1(self, data):
 
-      x = []
-      y = []
+       x = []
+       y = []
 
-      for line in data.omc_table:
-        if line.water_content1 and line.dry_density1:
-            x.append(float(line.water_content1))
-            y.append(float(line.dry_density1))
+       for line in data.omc_table:
+           if line.water_content1 and line.dry_density1:
+               x.append(float(line.water_content1))
+               y.append(float(line.dry_density1))
 
-      if len(x) < 3:
-        return False
+       if len(x) < 3:
+           return False
 
-    # -------------------------------
+    # -------------------------
     # Sort Data
-    # -------------------------------
-      data_points = sorted(zip(x, y))
-      x = np.array([i[0] for i in data_points])
-      y = np.array([i[1] for i in data_points])
+    # -------------------------
+       data_points = sorted(zip(x, y))
+       x = np.array([i[0] for i in data_points])
+       y = np.array([i[1] for i in data_points])
 
-    # -------------------------------
-    # Smooth Curve
-    # -------------------------------
-      coeff = np.polyfit(x, y, 2)
-      poly = np.poly1d(coeff)
+    # -------------------------
+    # Report Values
+    # -------------------------
+       omc = float(data.omc)
+       mdd = float(data.max_dry_density)
 
-      x_smooth = np.linspace(x.min(), x.max(), 500)
-      y_smooth = poly(x_smooth)
+    # -------------------------
+    # Constrained parabola
+    # y = a(x-omc)^2 + mdd
+    # -------------------------
+       def compaction_curve(x, a):
+           return a * (x - omc) ** 2 + mdd
 
-    # -------------------------------
-    # USE REPORT VALUES
-    # -------------------------------
-      omc = float(data.omc)
-      mdd = float(data.max_dry_density)
+       popt, _ = curve_fit(compaction_curve, x, y)
 
-      fig, ax = plt.subplots(figsize=(15, 5))
+       a = popt[0]
+
+       x_smooth = np.linspace(x.min(), x.max(), 500)
+       y_smooth = compaction_curve(x_smooth, a)
+
+    # -------------------------
+    # Plot
+    # -------------------------
+       fig, ax = plt.subplots(figsize=(15, 5))
 
     # Blue Curve
-      ax.plot(
+       ax.plot(
         x_smooth,
         y_smooth,
         color="blue",
         linewidth=2.8,
     )
 
-    # Actual Test Points
-      ax.scatter(
+    # Test Points
+       ax.scatter(
         x,
         y,
         color="red",
@@ -562,23 +599,23 @@ class GsbReport1(models.AbstractModel):
     )
 
     # Peak Point
-      ax.scatter(
+       ax.scatter(
         omc,
         mdd,
         color="red",
-        s=140,
+        s=150,
         zorder=10,
     )
 
     # Guide Lines
-      ax.axhline(
+       ax.axhline(
         y=mdd,
         color="red",
         linestyle="--",
         linewidth=1,
     )
 
-      ax.axvline(
+       ax.axvline(
         x=omc,
         color="red",
         linestyle="--",
@@ -586,7 +623,7 @@ class GsbReport1(models.AbstractModel):
     )
 
     # Annotation
-      ax.text(
+       ax.text(
         omc + 0.15,
         mdd + 0.002,
         f"OMC: {omc:.2f}%\nMDD: {mdd:.2f}",
@@ -596,39 +633,50 @@ class GsbReport1(models.AbstractModel):
     )
 
     # Labels
-      ax.set_xlabel("Water Content (%)", fontsize=16)
-      ax.set_ylabel("Dry Density (g/cc)", fontsize=16)
-      ax.set_title("DETERMINATION OF COMPACTION OMC / MDD", fontsize=22)
+       ax.set_xlabel(
+        "Water Content (%)",
+        fontsize=16,
+    )
 
-      ax.set_xlim(
+       ax.set_ylabel(
+        "Dry Density (g/cc)",
+        fontsize=16,
+    )
+
+       ax.set_title(
+        "DETERMINATION OF COMPACTION OMC / MDD",
+        fontsize=22,
+    )
+
+       ax.set_xlim(
         left=0,
         right=max(x) + 2,
     )
 
-      ax.set_ylim(
+       ax.set_ylim(
         bottom=min(y) - 0.04,
-        top=max(mdd, max(y_smooth)) + 0.03,
+        top=max(mdd, max(y)) + 0.03,
     )
 
-    # -------------------------------
+    # -------------------------
     # Graph Paper Background
-    # -------------------------------
-      ax.set_facecolor("#f8fff8")
+    # -------------------------
+       ax.set_facecolor("#f8fff8")
 
-      ax.xaxis.set_major_locator(MultipleLocator(1))
-      ax.xaxis.set_minor_locator(MultipleLocator(0.1))
+       ax.xaxis.set_major_locator(MultipleLocator(1))
+       ax.xaxis.set_minor_locator(MultipleLocator(0.1))
 
-      ax.yaxis.set_major_locator(MultipleLocator(0.05))
-      ax.yaxis.set_minor_locator(MultipleLocator(0.005))
+       ax.yaxis.set_major_locator(MultipleLocator(0.05))
+       ax.yaxis.set_minor_locator(MultipleLocator(0.005))
 
-      ax.grid(
+       ax.grid(
         which="major",
         color="green",
         linewidth=0.5,
         alpha=0.45,
     )
 
-      ax.grid(
+       ax.grid(
         which="minor",
         color="green",
         linestyle=":",
@@ -636,26 +684,26 @@ class GsbReport1(models.AbstractModel):
         alpha=0.35,
     )
 
-      plt.tight_layout()
+       plt.tight_layout()
 
-      buffer = io.BytesIO()
+       buffer = io.BytesIO()
 
-      plt.savefig(
+       plt.savefig(
         buffer,
         format="png",
         dpi=100,
         bbox_inches="tight",
     )
 
-      plt.close(fig)
+       plt.close(fig)
 
-      buffer.seek(0)
+       buffer.seek(0)
 
-      image_data = base64.b64encode(
+       image_data = base64.b64encode(
         buffer.read()
     ).decode("utf-8")
 
-      return (
+       return (
         image_data,
         round(omc, 2),
         round(mdd, 2),
