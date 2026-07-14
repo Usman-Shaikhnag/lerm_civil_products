@@ -1077,8 +1077,8 @@ class FineAggregate(models.Model):
                 record.loose_avg_confirmity = 'na'
                 continue
             record.loose_avg_confirmity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65a41d1f-d557-438e-8fd1-2c619a334d02')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65a41d1f-d557-438e-8fd1-2c619a334d02')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4587tyhloos-3fa3-4b83-ae31-9d281767188c')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4587tyhloos-3fa3-4b83-ae31-9d281767188c')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
@@ -1092,17 +1092,20 @@ class FineAggregate(models.Model):
                     else:
                         record.loose_avg_confirmity = 'fail'
 
+
+
+
     loose_avg_nabl = fields.Selection([
         ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string='NABL', compute="_compute_loose_avg_nabl",store=True)
+        ('fail', 'Non-NABL')], string='NABL', compute="_compute_loose_avg_nabl" ,store=True)
 
     @api.depends('loose_avg','eln_ref','grade')
     def _compute_loose_avg_nabl(self):
         
         for record in self:
             record.loose_avg_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65a41d1f-d557-438e-8fd1-2c619a334d02')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65a41d1f-d557-438e-8fd1-2c619a334d02')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4587tyhloos-3fa3-4b83-ae31-9d281767188c')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4587tyhloos-3fa3-4b83-ae31-9d281767188c')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -1117,6 +1120,7 @@ class FineAggregate(models.Model):
                     else:
                         record.loose_avg_nabl = 'fail'
 
+    
 
 
     # Rodded Bulk Density
@@ -1153,8 +1157,8 @@ class FineAggregate(models.Model):
                 record.rodded_avg_confirmity = 'na'
                 continue
             record.rodded_avg_confirmity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','155935d1-24d9-4276-9e4f-453803342e8c')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','155935d1-24d9-4276-9e4f-453803342e8c')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d961c78a-9f5c-4e7f-9f03-86ab65740161')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d961c78a-9f5c-4e7f-9f03-86ab65740161')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
@@ -1177,8 +1181,8 @@ class FineAggregate(models.Model):
         
         for record in self:
             record.rodded_avg_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','155935d1-24d9-4276-9e4f-453803342e8c')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','155935d1-24d9-4276-9e4f-453803342e8c')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d961c78a-9f5c-4e7f-9f03-86ab65740161')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d961c78a-9f5c-4e7f-9f03-86ab65740161')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
