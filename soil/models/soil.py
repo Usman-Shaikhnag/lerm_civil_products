@@ -62,6 +62,17 @@ class Soil(models.Model):
     # Grain Sieve Analysis
     sieve_name = fields.Char("Name",default="Grain Sieve Analysis")
     sieve_visible = fields.Boolean("Grain Sieve Analysis Visible",compute="_compute_visible")
+
+
+    report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="Report Type",
+        default='nabl',
+        required=True,
+    )
  
     sieve_analysis_child_lines = fields.One2many('mechanical.soil.sieve.analysis.line','parent_id',string="Sieve Analysis",default=lambda self: self._default_sieve_analysis_child_lines())
 
@@ -206,18 +217,17 @@ class Soil(models.Model):
      sieve = str(sieve).strip().replace('µ', 'μ')
 
      mapping = {
-        '80mm': 80.0,
         '40mm': 40.0,
-        '20mm': 20.0,
-        '16mm': 16.0,
+        '25mm': 25.0,
+        '19mm': 19.0,
+        '12.5mm': 12.5,
         '10mm': 10.0,
+        '6.3mm': 6.3,
         '4.75mm': 4.75,
-        '2.00mm': 2.00,
+        '2.36mm': 2.36,
         '1.18mm': 1.18,
         '600μ': 0.600,
-        '425μ': 0.425,
         '300μ': 0.300,
-        '212μ': 0.212,
         '150μ': 0.150,
         '75μ': 0.075,
     }
@@ -408,18 +418,17 @@ class Soil(models.Model):
     @api.model
     def _default_sieve_analysis_child_lines(self):
         default_lines = [
-            (0, 0, {'sieve_size': '80mm'}),
             (0, 0, {'sieve_size': '40mm '}),
-            (0, 0, {'sieve_size': '20mm'}),
-            (0, 0, {'sieve_size': '16mm'}),
+            (0, 0, {'sieve_size': '25mm'}),
+            (0, 0, {'sieve_size': '19mm'}),
+            (0, 0, {'sieve_size': '12.5mm'}),
             (0, 0, {'sieve_size': '10mm'}),
+            (0, 0, {'sieve_size': '6.3mm'}),
             (0, 0, {'sieve_size': '4.75mm'}),
-            (0, 0, {'sieve_size': ' 2.00mm'}),
+            (0, 0, {'sieve_size': ' 2.36mm'}),
             (0, 0, {'sieve_size': '1.18mm'}),
             (0, 0, {'sieve_size': '600µ'}),
-            (0, 0, {'sieve_size': '425µ'}),
             (0, 0, {'sieve_size': '300µ'}),
-            (0, 0, {'sieve_size': '212µ'}),
             (0, 0, {'sieve_size': '150µ'}),
             (0, 0, {'sieve_size': '75µ'}),
             (0, 0, {'sieve_size': 'Pan'})
@@ -432,7 +441,7 @@ class Soil(models.Model):
         for rec in self:
             pan_line = None
             total_retained = 0.0
-            target_sieves = ['80mm','40mm','20mm','16mm', '10mm', '4.75mm', '2.00mm','1.18mm','600µ','425µ','300µ','212µ','150µ','75µ']
+            target_sieves = ['40mm','25mm','19mm','12.5mm','10mm','6.3mm', '4.75mm', '2.36mm','1.18mm','600µ','300µ','150µ','75µ']
 
             for line in rec.sieve_analysis_child_lines:
                 if line.sieve_size and line.sieve_size.lower() == 'pan':
@@ -3335,9 +3344,15 @@ class SoilSieveAnalysisLine(models.Model):
     sieve_size = fields.Char(string="IS Sieve Size")
     particle_size = fields.Char(string="Particle Size  (mm)")
     wt_retained = fields.Float(string="Wt. Retained in gms")
+
+    cumulative_percent = fields.Float(string="Cum. Weight Retained (gm)",compute="_compute_cumulative_percent",
+    store=True,)
+
     percent_retained = fields.Float(string='% Retained', compute="_compute_percent_retained")
     cumulative_retained = fields.Float(string="Cum. Retained %",compute="_compute_cum_retained" , store=True)
     passing_percent = fields.Float(string="Cumulative % ")
+
+
 
     # @api.onchange('cumulative_retained')
     # def _compute_passing_percent(self):
@@ -3399,6 +3414,16 @@ class SoilSieveAnalysisLine(models.Model):
                 record.percent_retained = (record.wt_retained / record.parent_id.wt_of_sample) * 100 if record.parent_id.wt_of_sample else 0.0
             except ZeroDivisionError:
                 record.percent_retained = 0.0
+
+    @api.depends('wt_retained', 'parent_id.sieve_analysis_child_lines.wt_retained')
+    def _compute_cumulative_percent(self):
+        for parent in self.mapped('parent_id'):
+            total = 0
+            lines = parent.sieve_analysis_child_lines.sorted('serial_no')
+
+            for line in lines:
+                total += line.wt_retained or 0
+                line.cumulative_percent = total
 
 
 
@@ -3818,15 +3843,33 @@ class ShrinkagelimitLINE(models.Model):
     serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
 
     container_no = fields.Char(string="Container No.")
-    shrinkage_mass = fields.Float(string="Mass of container (m1) ",digits=(12,3))
-    shrinkage_wet = fields.Float(string="Wt. of Container + Wet Soil(m2)",digits=(12,3))
-    wt_dry = fields.Float(string="Wt. of Container + dry Soil (m3)",digits=(12,3))
-    mass_dry = fields.Float(string="mass of dry soil (Ms=m3-m1)",digits=(12,3),compute="_compute_mass_dry")
-    mass_water = fields.Float(string="mass of water (Mw=m2-m3)",digits=(12,3),compute="_compute_mass_water")
-    moisture_content_shri = fields.Float(string="Moisture Content %(Mw/Ms*100)",digits=(12,3),compute="_compute_moisture_content_shri")
-    volume_wet_shri = fields.Float(string="Volume of wet soil (V1)",digits=(12,3),compute="_compute_volume_wet_shri")
-    volume_dry_shir = fields.Float(string="Volume of dry Soil pat (V2)",digits=(12,3),compute="_compute_volume_dry_shir")
+    shrinkage_mass = fields.Float(string="Mass of container (M1) ",digits=(12,3))
+
+    shrinkage_wet = fields.Float(string="Mass of container + Wet soil (M2)",digits=(12,3))
+
+    wt_dry = fields.Float(string="Mass of container + Dry soil (M3)",digits=(12,3))
+
+    mass_dry = fields.Float(string="Mass of Dry soil (M3-M1),Ms",digits=(12,3),compute="_compute_mass_dry")
+    mass_water = fields.Float(string="Mass of Water( M2-M3) , Mw",digits=(12,3),compute="_compute_mass_water")
+
+
+    moisture_content_shri = fields.Float(string="Water Content %",digits=(12,3),compute="_compute_moisture_content_shri")
+
+    volume_wet_shri = fields.Float(string="Volume of Wet Soil ,V1 (CC)",digits=(12,3))
+
+    volume_dry_shir = fields.Float(string="Volume of Dry Soil ,V2 (CC)",digits=(12,3))
+
     shrinkage_limit = fields.Float(string="Shrinkage limit (%)",digits=(12,3),compute="_compute_shrinkage_limit")
+
+    shrinkage_ratio = fields.Float(string="Shrinkage ratio (Ms/V2)",digits=(12,3),compute="_compute_values")
+
+    @api.depends("mass_dry", "volume_dry_shir")
+    def _compute_values(self):
+        for rec in self:
+            if rec.volume_dry_shir:
+                rec.shrinkage_ratio = rec.mass_dry / rec.volume_dry_shir
+            else:
+                rec.shrinkage_ratio = 0.0
 
     @api.depends('wt_dry', 'shrinkage_mass')
     def _compute_mass_dry(self):
@@ -3852,27 +3895,7 @@ class ShrinkagelimitLINE(models.Model):
             else:
                 rec.moisture_content_shri = 0.0
 
-    @api.depends("parent_id")
-    def _compute_volume_wet_shri(self):
-        for rec in self:
-            volume = 0.0
-            if rec.parent_id:
-                # घेतो पहिला record volume wet lines मधून
-                wet_line = rec.parent_id.volume_wet_table[:1]  
-                if wet_line:
-                    volume = wet_line.volume_wet
-            rec.volume_wet_shri = volume
-
-    @api.depends("parent_id")
-    def _compute_volume_dry_shir(self):
-        for rec in self:
-            volume1 = 0.0
-            if rec.parent_id:
-                # घेतो पहिला record volume wet lines मधून
-                wet_line1 = rec.parent_id.volume_dry_table[:1]  
-                if wet_line1:
-                    volume1 = wet_line1.volume_dry
-            rec.volume_dry_shir = volume1
+    
 
     @api.depends('moisture_content_shri', 'volume_wet_shri', 'volume_dry_shir', 'mass_dry')
     def _compute_shrinkage_limit(self):
