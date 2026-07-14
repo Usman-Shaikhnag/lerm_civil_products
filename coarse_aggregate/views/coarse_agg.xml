@@ -481,12 +481,31 @@
                         <h1>
                             <field name="specific_gravity_name" readonly="1" nolabel="1"/>
                             <field name="specific_gravity_visible" invisible="1"/>
+                            <field name="show_pycnometer" invisible="1"/>
 
                         </h1>
                     </div>
 
+                    <div invisible="specific_gravity_visible == False">
+                        <field name="specific_gravity_line_ids" invisible="not show_pycnometer"  style="width:100%" nolabel="1">
+                            <tree editable="bottom"  class="custom_table_borders">
+                                <field name="serial_no"/>
+                                <field name="temperature" class="blue-input" decoration-info="temperature != 0"/>
+                                <field name="pycnometer_bottle_number" class="blue-input" decoration-info="pycnometer_bottle_number != 0" width="100"/>
+                                <field name="w1" class="blue-input" decoration-info="w1 != 0"/>
+                                <field name="w2" class="blue-input" decoration-info="w2 != 0"/>
+                                <field name="w3" class="blue-input" decoration-info="w3 != 0"/>
+                                <field name="w4" class="blue-input" decoration-info="w4 != 0"/>
+                                <field name="specific_gravity"/>
+                                <field name="apparent_specific_gravity"/>
+                                <field name="water_absorption"/>
+                            </tree>
+                        </field>
+                   
+                    </div>
+
                     <div invisible= "specific_gravity_visible == False" class="custom_table_borders">
-                        <field name="specific_water_line_ids" nolabel="1">
+                        <field name="specific_water_line_ids" invisible="show_pycnometer" nolabel="1">
                                 <tree editable="bottom">
                                     <field name='sample_no'/>
                                     <field name='w1' class="blue-input" decoration-info="w1 != 0"/>

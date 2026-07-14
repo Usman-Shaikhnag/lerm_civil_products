@@ -1209,10 +1209,11 @@ class FineAggregate(models.Model):
     @api.model
     def soundness_sod_line_ids_sizes(self):
         default_lines = [
-            (0, 0, {'passing_sieve': '60mm','retained_sieve': '40mm'}),
-            (0, 0, {'passing_sieve': '40mm','retained_sieve': '20mm'}),
-            (0, 0, {'passing_sieve': '20mm','retained_sieve': '10mm'}),
-            (0, 0, {'passing_sieve': '10mm','retained_sieve': '4.75mm'}),
+            (0, 0, {'passing_sieve': '10 mm','retained_sieve': '4.75 mm'}),
+            (0, 0, {'passing_sieve': '4.75 mm','retained_sieve': '2.36 mm'}),
+            (0, 0, {'passing_sieve': '2.36 mm','retained_sieve': '1.18 mm'}),
+            (0, 0, {'passing_sieve': '1.18 mm','retained_sieve': '600 µ'}),
+            (0, 0, {'passing_sieve': '600 µ','retained_sieve': '300 µ'}),
         ]
         return default_lines 
     
@@ -1406,34 +1407,84 @@ class FineAggregate(models.Model):
 
     # Deleterious Material - Organic Impurities
 
-    organic_impurities_name = fields.Char( "Name", default="Deleterious Material - Organic Impurities")
-    organic_impurities_visible = fields.Boolean( "Deleterious Material - Organic Impurities",compute="_compute_visible")
-
-    sample_color = fields.Selection([
-    ('lighter', 'Lighter than Standard'),
-    ('same', 'Same as Standard'),
-    ('darker', 'Darker than Standard')
-      ], string="Sample Color")
+    organic_impurities_name = fields.Char( "Name", default="Organic Impurities")
+    organic_impurities_visible = fields.Boolean( "Organic Impurities",compute="_compute_visible")
 
 
-    organic_impurities_result = fields.Selection([
-    ('pass', 'Pass'),
-    ('fail', 'Fail')
-        ], string="Organic Impurities Result",
-   compute="_compute_organic_impurities",
-   store=True
-         )
+    organic_impurities_line_ids = fields.One2many(
+        'organic.impurities.line',
+        'parent_id',
+        string="Organic Impurities Trial"
+    )
 
+    avg_clay_percentage = fields.Float(
+        string="Average Percentage of Clay (%); (L = (W-R)/(W) x 100",
+        compute="_compute_avg_clay_percentage",
+        store=True
+    )
 
-    @api.depends('sample_color')
-    def _compute_organic_impurities(self):
-      for rec in self:
-        if rec.sample_color in ['lighter', 'same']:
-            rec.organic_impurities_result = 'pass'
-        elif rec.sample_color == 'darker':
-            rec.organic_impurities_result = 'fail'
-        else:
-            rec.organic_impurities_result = False
+    @api.depends('organic_impurities_line_ids.clay_percentage')
+    def _compute_avg_clay_percentage(self):
+        for rec in self:
+            percentages = rec.organic_impurities_line_ids.mapped('clay_percentage')
+            rec.avg_clay_percentage = (
+                sum(percentages) / len(percentages)
+                if percentages else 0.0
+            )
+
+    
+    avg_clay_percentage_confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),('na', 'NA'),], string='Confirmity', compute="_compute_avg_clay_percentage_confirmity")
+    
+    @api.depends('avg_clay_percentage','eln_ref','grade')
+    def _compute_avg_clay_percentage_confirmity(self):
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_clay_percentage_confirmity = 'na'
+                continue
+            record.avg_clay_percentage_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0363075f-a3f2-440a-b634-76f469d220c7')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0363075f-a3f2-440a-b634-76f469d220c7')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    lower = record.avg_clay_percentage - record.avg_clay_percentage*mu_value
+                    upper = record.avg_clay_percentage + record.avg_clay_percentage*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.avg_clay_percentage_confirmity = 'pass'
+                        break
+                    else:
+                        record.avg_clay_percentage_confirmity = 'fail'
+
+    avg_clay_percentage_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string='NABL', compute="_compute_avg_clay_percentage_nabl" ,store=True)
+
+    @api.depends('avg_clay_percentage','eln_ref','grade')
+    def _compute_avg_clay_percentage_nabl(self):
+        
+        for record in self:
+            record.avg_clay_percentage_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0363075f-a3f2-440a-b634-76f469d220c7')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0363075f-a3f2-440a-b634-76f469d220c7')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_clay_percentage - record.avg_clay_percentage*mu_value
+                    upper = record.avg_clay_percentage + record.avg_clay_percentage*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.avg_clay_percentage_nabl = 'pass'
+                        break
+                    else:
+                        record.avg_clay_percentage_nabl = 'fail'
+
+    
 
 
 
@@ -1700,7 +1751,13 @@ class FineAggregate(models.Model):
 
             #  Deleterious Material - Organic Impurities
             if result.parameter.internal_id == '0363075f-a3f2-440a-b634-76f469d220c7':
+                result.result_char = round(self.avg_clay_percentage, 2)
                 result.calculated = True
+                if self.avg_clay_percentage_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
 
             
 
@@ -2559,6 +2616,62 @@ class FineMagnesiumSulphateLine(models.Model):
         rec.weighted_avg = (
             rec.grading_percent * rec.percent_loss
         ) / 100
+
+
+    
+    
+class OrganicImpuritiesLine(models.Model):
+    _name = "organic.impurities.line"
+    _description = "Organic Impurities Trial"
+
+    parent_id = fields.Many2one('mechanical.fine.aggregate', string="Parent Id")
+
+    serial_no = fields.Integer(string="Trial No", readonly=True, copy=False, default=1)
+
+
+    total_weight = fields.Float(
+        string="Total Weight of Sample (W)"
+    )
+
+    weight_after_removing = fields.Float(
+        string="Total Weight of Sample After Removing Clay Lumps (R) g"
+    )
+
+    clay_percentage = fields.Float(
+        string="Percentage of Clay (%); (L = (W-R)/(W) x 100)",
+        compute="_compute_percentage",
+        store=True,
+        digits=(16, 2)
+    )
+
+    @api.depends('total_weight', 'weight_after_removing')
+    def _compute_percentage(self):
+        for rec in self:
+            if rec.total_weight:
+                rec.clay_percentage = (
+                    (rec.total_weight - rec.weight_after_removing)
+                    / rec.total_weight
+                ) * 100
+            else:
+                rec.clay_percentage = 0.0
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(OrganicImpuritiesLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
 
 
 
