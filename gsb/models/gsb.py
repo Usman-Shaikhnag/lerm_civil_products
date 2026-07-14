@@ -2479,8 +2479,8 @@ class GsbMechanical(models.Model):
       x = np.array([i[0] for i in data])
       y = np.array([i[1] for i in data])
 
-      omc = float(self.omc1)
-      mdd = float(self.max_dry_density1)
+      omc = float(self.omc)
+      mdd = float(self.max_dry_density)
 
     # ------------------------------------------------
     # Constrained parabola with fixed peak (OMC, MDD)
