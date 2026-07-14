@@ -30,6 +30,9 @@
                 <xpath expr="//field[@name='work_email']" position="after">
                     <field name="lab_ids" widget="many2many_tags"/>
                     <field name="company_ids" widget="many2many_tags"/>
+                    <field name="is_support_team"
+                           groups="lerm_civil.lerm_software_support_group"
+                           widget="boolean_toggle"/>
                 </xpath>
 
                 <xpath expr="//field[@name='department_id']" position="attributes">

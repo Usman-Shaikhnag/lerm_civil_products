@@ -7,6 +7,14 @@ class EmployeeInherited(models.Model):
 
     signature = fields.Binary(string="Signature", attachment=True)
     signature_name = fields.Char(string="Signature Name")
+
+    is_support_team = fields.Boolean(
+        string="Support Team (Hidden from Client)",
+        default=False,
+        help="Check this to hide this employee from non-admin users. "
+             "Use this for admin, IT support, or software team members "
+             "that clients should not see in the employee list.",
+    )
     lab_ids = fields.Many2many('lerm.lab.master',string="Lab")
     company_ids = fields.Many2many('res.company', string='Companies')
     department_ids = fields.Many2many('hr.department', string='Departments')
