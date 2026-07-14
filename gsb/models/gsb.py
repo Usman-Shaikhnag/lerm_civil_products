@@ -11,6 +11,9 @@ import io
 import numpy as np
 import logging
 import base64
+from scipy.optimize import curve_fit
+
+from scipy.interpolate import PchipInterpolator
 from matplotlib.ticker import LogLocator, MultipleLocator
 from matplotlib.ticker import AutoMinorLocator
 from scipy.interpolate import CubicSpline , interp1d , Akima1DInterpolator
@@ -2456,7 +2459,6 @@ class GsbMechanical(models.Model):
 
   
 
-
     def generate_line_chart_light_omc(self):
 
       x = []
@@ -2470,30 +2472,36 @@ class GsbMechanical(models.Model):
       if len(x) < 3:
         return False
 
-    # Sort data
+    # -------------------------
+    # Sort Data
+    # -------------------------
       data = sorted(zip(x, y))
       x = np.array([i[0] for i in data])
       y = np.array([i[1] for i in data])
-    
-    # -------------------------------
-    # Smooth Compaction Curve
-    # -------------------------------
-      coeff = np.polyfit(x, y, 2)
-      poly = np.poly1d(coeff)
+
+      omc = float(self.omc1)
+      mdd = float(self.max_dry_density1)
+
+    # ------------------------------------------------
+    # Constrained parabola with fixed peak (OMC, MDD)
+    # y = a(x-omc)^2 + mdd
+    # ------------------------------------------------
+      def compaction_curve(x, a):
+        return a * (x - omc) ** 2 + mdd
+
+    # Fit only the coefficient 'a'
+      popt, _ = curve_fit(compaction_curve, x, y)
+
+      a = popt[0]
 
       x_smooth = np.linspace(x.min(), x.max(), 500)
-      y_smooth = poly(x_smooth)
+      y_smooth = compaction_curve(x_smooth, a)
 
-    # ---------------------------------
-    # USE REPORT VALUES (NOT POLYFIT)
-    # ---------------------------------
-    # Replace these with your Odoo fields if available
-      omc = self.omc 
-      mdd = self.max_dry_density 
-
+    # -------------------------
+    # Plot
+    # -------------------------
       plt.figure(figsize=(15, 5))
 
-    # Blue curve
       plt.plot(
         x_smooth,
         y_smooth,
@@ -2501,7 +2509,6 @@ class GsbMechanical(models.Model):
         linewidth=2.8,
     )
 
-    # Actual test points
       plt.scatter(
         x,
         y,
@@ -2510,16 +2517,14 @@ class GsbMechanical(models.Model):
         zorder=5,
     )
 
-    # Peak point
       plt.scatter(
         omc,
         mdd,
         color="red",
-        s=140,
+        s=150,
         zorder=10,
     )
 
-    # Guide lines
       plt.axhline(
         y=mdd,
         color="red",
@@ -2534,7 +2539,6 @@ class GsbMechanical(models.Model):
         linewidth=1,
     )
 
-    # Annotation
       plt.text(
         omc + 0.15,
         mdd + 0.002,
@@ -2562,9 +2566,9 @@ class GsbMechanical(models.Model):
       plt.xlim(0, max(x) + 2)
       plt.ylim(min(y) - 0.04, max(mdd, max(y)) + 0.03)
 
-    # --------------------------
-    # Graph Paper Background
-    # --------------------------
+    # -------------------------
+    # Graph paper background
+    # -------------------------
       ax = plt.gca()
 
       ax.set_facecolor("#f8fff8")
@@ -2575,8 +2579,20 @@ class GsbMechanical(models.Model):
       ax.yaxis.set_major_locator(MultipleLocator(0.05))
       ax.yaxis.set_minor_locator(MultipleLocator(0.005))
 
-      ax.grid(which="major", color="green", linewidth=0.5, alpha=0.45)
-      ax.grid(which="minor", color="green", linestyle=":", linewidth=0.3, alpha=0.35)
+      ax.grid(
+        which="major",
+        color="green",
+        linewidth=0.5,
+        alpha=0.45,
+    )
+
+      ax.grid(
+        which="minor",
+        color="green",
+        linestyle=":",
+        linewidth=0.3,
+        alpha=0.35,
+    )
 
       plt.tight_layout()
 
@@ -2594,8 +2610,6 @@ class GsbMechanical(models.Model):
       buffer.seek(0)
 
       return base64.b64encode(buffer.read()).decode("utf-8")
-
-
 
     @api.depends('heavy_table')
     def _compute_graph_image_density_omc_light(self):
@@ -2918,6 +2932,7 @@ class GsbMechanical(models.Model):
     # ).decode('utf-8')
 
     
+    
     def generate_line_chart_light_omc1(self):
 
       x = []
@@ -2931,30 +2946,36 @@ class GsbMechanical(models.Model):
       if len(x) < 3:
         return False
 
-    # Sort data
+    # -------------------------
+    # Sort Data
+    # -------------------------
       data = sorted(zip(x, y))
       x = np.array([i[0] for i in data])
       y = np.array([i[1] for i in data])
-    
-    # -------------------------------
-    # Smooth Compaction Curve
-    # -------------------------------
-      coeff = np.polyfit(x, y, 2)
-      poly = np.poly1d(coeff)
+
+      omc = float(self.omc1)
+      mdd = float(self.max_dry_density1)
+
+    # ------------------------------------------------
+    # Constrained parabola with fixed peak (OMC, MDD)
+    # y = a(x-omc)^2 + mdd
+    # ------------------------------------------------
+      def compaction_curve(x, a):
+        return a * (x - omc) ** 2 + mdd
+
+    # Fit only the coefficient 'a'
+      popt, _ = curve_fit(compaction_curve, x, y)
+
+      a = popt[0]
 
       x_smooth = np.linspace(x.min(), x.max(), 500)
-      y_smooth = poly(x_smooth)
+      y_smooth = compaction_curve(x_smooth, a)
 
-    # ---------------------------------
-    # USE REPORT VALUES (NOT POLYFIT)
-    # ---------------------------------
-    # Replace these with your Odoo fields if available
-      omc = self.omc1 
-      mdd = self.max_dry_density1 
-
+    # -------------------------
+    # Plot
+    # -------------------------
       plt.figure(figsize=(15, 5))
 
-    # Blue curve
       plt.plot(
         x_smooth,
         y_smooth,
@@ -2962,7 +2983,6 @@ class GsbMechanical(models.Model):
         linewidth=2.8,
     )
 
-    # Actual test points
       plt.scatter(
         x,
         y,
@@ -2971,16 +2991,14 @@ class GsbMechanical(models.Model):
         zorder=5,
     )
 
-    # Peak point
       plt.scatter(
         omc,
         mdd,
         color="red",
-        s=140,
+        s=150,
         zorder=10,
     )
 
-    # Guide lines
       plt.axhline(
         y=mdd,
         color="red",
@@ -2995,7 +3013,6 @@ class GsbMechanical(models.Model):
         linewidth=1,
     )
 
-    # Annotation
       plt.text(
         omc + 0.15,
         mdd + 0.002,
@@ -3023,9 +3040,9 @@ class GsbMechanical(models.Model):
       plt.xlim(0, max(x) + 2)
       plt.ylim(min(y) - 0.04, max(mdd, max(y)) + 0.03)
 
-    # --------------------------
-    # Graph Paper Background
-    # --------------------------
+    # -------------------------
+    # Graph paper background
+    # -------------------------
       ax = plt.gca()
 
       ax.set_facecolor("#f8fff8")
@@ -3036,8 +3053,20 @@ class GsbMechanical(models.Model):
       ax.yaxis.set_major_locator(MultipleLocator(0.05))
       ax.yaxis.set_minor_locator(MultipleLocator(0.005))
 
-      ax.grid(which="major", color="green", linewidth=0.5, alpha=0.45)
-      ax.grid(which="minor", color="green", linestyle=":", linewidth=0.3, alpha=0.35)
+      ax.grid(
+        which="major",
+        color="green",
+        linewidth=0.5,
+        alpha=0.45,
+    )
+
+      ax.grid(
+        which="minor",
+        color="green",
+        linestyle=":",
+        linewidth=0.3,
+        alpha=0.35,
+    )
 
       plt.tight_layout()
 
