@@ -2459,162 +2459,197 @@ class GsbMechanical(models.Model):
 
     def generate_line_chart_light_omc(self):
 
-       x = []
-       y = []
 
-       for line in self.heavy_table:
-          if line.water_content and line.dry_density:
+      x = []
+      y = []
+
+      for line in self.heavy_table:
+        if line.water_content and line.dry_density:
             x.append(float(line.water_content))
             y.append(float(line.dry_density))
 
-       if len(x) < 3:
-           return False
+      if len(x) < 3:
+        return False
 
-    # -------------------------
-    # Sort Data
-    # -------------------------
-       data = sorted(zip(x, y))
-       x = np.array([i[0] for i in data])
-       y = np.array([i[1] for i in data])
+    # ---------------------------------------
+    # Sort data
+    # ---------------------------------------
+      data = sorted(zip(x, y))
+      x = np.array([i[0] for i in data], dtype=float)
+      y = np.array([i[1] for i in data], dtype=float)
 
-       omc = float(self.omc)
-       mdd = float(self.max_dry_density)
+      omc = float(self.omc)
+      mdd = float(self.max_dry_density)
 
-    # ------------------------------------------------
-    # Calculate parabola passing through:
-    #   1. First data point
-    #   2. Vertex (OMC, MDD)
-    # ------------------------------------------------
+    # ---------------------------------------
+    # Create parabola through:
+    # First Point
+    # OMC/MDD
+    # Last Point
+    # ---------------------------------------
 
-       x1 = x[0]
-       y1 = y[0]
+      x1 = x[0]
+      y1 = y[0]
 
-    # Prevent division by zero
-       if abs(x1 - omc) < 1e-6:
-           x1 = x[1]
-           y1 = y[1]
+      x2 = omc
+      y2 = mdd
 
-       a = (y1 - mdd) / ((x1 - omc) ** 2)
+      x3 = x[-1]
+      y3 = y[-1]
 
-       def compaction_curve(x):
-           return a * (x - omc) ** 2 + mdd
+      A = np.array([
+        [x1**2, x1, 1],
+        [x2**2, x2, 1],
+        [x3**2, x3, 1]
+    ], dtype=float)
 
-       x_smooth = np.linspace(x.min(), x.max(), 500)
-       y_smooth = compaction_curve(x_smooth)
+      B = np.array([
+        y1,
+        y2,
+        y3
+    ], dtype=float)
 
-    # -------------------------
+      a, b, c = np.linalg.solve(A, B)
+
+      def curve(xx):
+          return a * xx**2 + b * xx + c
+
+      x_smooth = np.linspace(x1, x3, 500)
+      y_smooth = curve(x_smooth)
+
+    # ---------------------------------------
     # Plot
-    # -------------------------
-       plt.figure(figsize=(15, 5))
+    # ---------------------------------------
 
-       plt.plot(
+      plt.figure(figsize=(15, 5))
+
+      plt.plot(
         x_smooth,
         y_smooth,
         color="blue",
         linewidth=2.8,
+        zorder=2
     )
 
-       plt.scatter(
+      plt.scatter(
         x,
         y,
         color="red",
         s=45,
-        zorder=5,
+        zorder=5
     )
 
-       plt.scatter(
+      plt.scatter(
         omc,
         mdd,
         color="red",
-        s=150,
-        zorder=10,
+        s=160,
+        zorder=10
     )
 
-       plt.axhline(
+      plt.axhline(
         y=mdd,
         color="red",
         linestyle="--",
-        linewidth=1,
+        linewidth=1
     )
 
-       plt.axvline(
+      plt.axvline(
         x=omc,
         color="red",
         linestyle="--",
-        linewidth=1,
+        linewidth=1
     )
 
-       plt.text(
+      plt.text(
         omc + 0.15,
         mdd + 0.002,
         f"OMC: {omc:.2f}%\nMDD: {mdd:.2f}",
         fontsize=12,
         color="red",
-        fontweight="bold",
+        fontweight="bold"
     )
 
-       plt.xlabel(
+      plt.xlabel(
         "Water Content (%)",
-        fontsize=16,
+        fontsize=16
     )
 
-       plt.ylabel(
+      plt.ylabel(
         "Dry Density (g/cc)",
-        fontsize=16,
+        fontsize=16
     )
 
-       plt.title(
+      plt.title(
         "DETERMINATION OF COMPACTION OMC / MDD",
-        fontsize=22,
+        fontsize=22
     )
 
-       plt.xlim(0, max(x) + 2)
-       plt.ylim(min(y) - 0.04, max(mdd, max(y)) + 0.03)
+      plt.xlim(0, max(x) + 2)
 
-    # -------------------------
+      ymin = min(min(y), min(y_smooth))
+      ymax = max(max(y), max(y_smooth), mdd)
+
+      plt.ylim(
+        ymin - 0.02,
+        ymax + 0.03
+    )
+
+        # ---------------------------------------
     # Graph paper background
-    # -------------------------
-       ax = plt.gca()
+    # ---------------------------------------
 
-       ax.set_facecolor("#f8fff8")
+      ax = plt.gca()
 
-       ax.xaxis.set_major_locator(MultipleLocator(1))
-       ax.xaxis.set_minor_locator(MultipleLocator(0.1))
+      ax.set_facecolor("#f8fff8")
 
-       ax.yaxis.set_major_locator(MultipleLocator(0.05))
-       ax.yaxis.set_minor_locator(MultipleLocator(0.005))
+      ax.xaxis.set_major_locator(MultipleLocator(1))
+      ax.xaxis.set_minor_locator(MultipleLocator(0.1))
 
-       ax.grid(
+      ax.yaxis.set_major_locator(MultipleLocator(0.05))
+      ax.yaxis.set_minor_locator(MultipleLocator(0.005))
+
+      ax.grid(
         which="major",
         color="green",
         linewidth=0.5,
-        alpha=0.45,
+        alpha=0.45
     )
 
-       ax.grid(
+      ax.grid(
         which="minor",
         color="green",
         linestyle=":",
         linewidth=0.3,
-        alpha=0.35,
+        alpha=0.35
     )
 
-       plt.tight_layout()
+    # Make border thicker
+      for spine in ax.spines.values():
+        spine.set_linewidth(1.2)
 
-       buffer = io.BytesIO()
+      plt.tight_layout()
 
-       plt.savefig(
+    # ---------------------------------------
+    # Save Image
+    # ---------------------------------------
+
+      buffer = io.BytesIO()
+
+      plt.savefig(
         buffer,
         format="png",
         dpi=100,
-        bbox_inches="tight",
+        bbox_inches="tight"
     )
 
-       plt.close()
+      plt.close()
 
-       buffer.seek(0)
+      buffer.seek(0)
 
-       return base64.b64encode(buffer.read()).decode("utf-8")
+      return base64.b64encode(
+        buffer.read()
+    ).decode("utf-8")
 
 
 
@@ -2941,164 +2976,360 @@ class GsbMechanical(models.Model):
   
 
 
+    # def generate_line_chart_light_omc1(self):
+
+    #    x = []
+    #    y = []
+
+    #    for line in self.omc_table:
+    #       if line.water_content1 and line.dry_density1:
+    #         x.append(float(line.water_content1))
+    #         y.append(float(line.dry_density1))
+
+    #    if len(x) < 3:
+    #        return False
+
+    # # -------------------------
+    # # Sort Data
+    # # -------------------------
+    #    data = sorted(zip(x, y))
+    #    x = np.array([i[0] for i in data])
+    #    y = np.array([i[1] for i in data])
+
+    #    omc = float(self.omc1)
+    #    mdd = float(self.max_dry_density1)
+
+    # # ------------------------------------------------
+    # # Calculate parabola passing through:
+    # #   1. First data point
+    # #   2. Vertex (OMC, MDD)
+    # # ------------------------------------------------
+
+    #    x1 = x[0]
+    #    y1 = y[0]
+
+    # # Prevent division by zero
+    #    if abs(x1 - omc) < 1e-6:
+    #        x1 = x[1]
+    #        y1 = y[1]
+
+    #    a = (y1 - mdd) / ((x1 - omc) ** 2)
+
+    #    def compaction_curve(x):
+    #        return a * (x - omc) ** 2 + mdd
+
+    #    x_smooth = np.linspace(x.min(), x.max(), 500)
+    #    y_smooth = compaction_curve(x_smooth)
+
+    # # -------------------------
+    # # Plot
+    # # -------------------------
+    #    plt.figure(figsize=(15, 5))
+
+    #    plt.plot(
+    #     x_smooth,
+    #     y_smooth,
+    #     color="blue",
+    #     linewidth=2.8,
+    # )
+
+    #    plt.scatter(
+    #     x,
+    #     y,
+    #     color="red",
+    #     s=45,
+    #     zorder=5,
+    # )
+
+    #    plt.scatter(
+    #     omc,
+    #     mdd,
+    #     color="red",
+    #     s=150,
+    #     zorder=10,
+    # )
+
+    #    plt.axhline(
+    #     y=mdd,
+    #     color="red",
+    #     linestyle="--",
+    #     linewidth=1,
+    # )
+
+    #    plt.axvline(
+    #     x=omc,
+    #     color="red",
+    #     linestyle="--",
+    #     linewidth=1,
+    # )
+
+    #    plt.text(
+    #     omc + 0.15,
+    #     mdd + 0.002,
+    #     f"OMC: {omc:.2f}%\nMDD: {mdd:.2f}",
+    #     fontsize=12,
+    #     color="red",
+    #     fontweight="bold",
+    # )
+
+    #    plt.xlabel(
+    #     "Water Content (%)",
+    #     fontsize=16,
+    # )
+
+    #    plt.ylabel(
+    #     "Dry Density (g/cc)",
+    #     fontsize=16,
+    # )
+
+    #    plt.title(
+    #     "DETERMINATION OF COMPACTION OMC / MDD",
+    #     fontsize=22,
+    # )
+
+    #    plt.xlim(0, max(x) + 2)
+    #    plt.ylim(min(y) - 0.04, max(mdd, max(y)) + 0.03)
+
+    # # -------------------------
+    # # Graph paper background
+    # # -------------------------
+    #    ax = plt.gca()
+
+    #    ax.set_facecolor("#f8fff8")
+
+    #    ax.xaxis.set_major_locator(MultipleLocator(1))
+    #    ax.xaxis.set_minor_locator(MultipleLocator(0.1))
+
+    #    ax.yaxis.set_major_locator(MultipleLocator(0.05))
+    #    ax.yaxis.set_minor_locator(MultipleLocator(0.005))
+
+    #    ax.grid(
+    #     which="major",
+    #     color="green",
+    #     linewidth=0.5,
+    #     alpha=0.45,
+    # )
+
+    #    ax.grid(
+    #     which="minor",
+    #     color="green",
+    #     linestyle=":",
+    #     linewidth=0.3,
+    #     alpha=0.35,
+    # )
+
+    #    plt.tight_layout()
+
+    #    buffer = io.BytesIO()
+
+    #    plt.savefig(
+    #     buffer,
+    #     format="png",
+    #     dpi=100,
+    #     bbox_inches="tight",
+    # )
+
+    #    plt.close()
+
+    #    buffer.seek(0)
+
+    #    return base64.b64encode(buffer.read()).decode("utf-8")
+
+
     def generate_line_chart_light_omc1(self):
 
-       x = []
-       y = []
 
-       for line in self.omc_table:
-          if line.water_content1 and line.dry_density1:
+      x = []
+      y = []
+
+      for line in self.omc_table:
+        if line.water_content1 and line.dry_density1:
             x.append(float(line.water_content1))
             y.append(float(line.dry_density1))
 
-       if len(x) < 3:
-           return False
+      if len(x) < 3:
+        return False
 
-    # -------------------------
-    # Sort Data
-    # -------------------------
-       data = sorted(zip(x, y))
-       x = np.array([i[0] for i in data])
-       y = np.array([i[1] for i in data])
+    # ---------------------------------------
+    # Sort data
+    # ---------------------------------------
+      data = sorted(zip(x, y))
+      x = np.array([i[0] for i in data], dtype=float)
+      y = np.array([i[1] for i in data], dtype=float)
 
-       omc = float(self.omc1)
-       mdd = float(self.max_dry_density1)
+      omc = float(self.omc1)
+      mdd = float(self.max_dry_density1)
 
-    # ------------------------------------------------
-    # Calculate parabola passing through:
-    #   1. First data point
-    #   2. Vertex (OMC, MDD)
-    # ------------------------------------------------
+    # ---------------------------------------
+    # Create parabola through:
+    # First Point
+    # OMC/MDD
+    # Last Point
+    # ---------------------------------------
 
-       x1 = x[0]
-       y1 = y[0]
+      x1 = x[0]
+      y1 = y[0]
 
-    # Prevent division by zero
-       if abs(x1 - omc) < 1e-6:
-           x1 = x[1]
-           y1 = y[1]
+      x2 = omc
+      y2 = mdd
 
-       a = (y1 - mdd) / ((x1 - omc) ** 2)
+      x3 = x[-1]
+      y3 = y[-1]
 
-       def compaction_curve(x):
-           return a * (x - omc) ** 2 + mdd
+      A = np.array([
+        [x1**2, x1, 1],
+        [x2**2, x2, 1],
+        [x3**2, x3, 1]
+    ], dtype=float)
 
-       x_smooth = np.linspace(x.min(), x.max(), 500)
-       y_smooth = compaction_curve(x_smooth)
+      B = np.array([
+        y1,
+        y2,
+        y3
+    ], dtype=float)
 
-    # -------------------------
+      a, b, c = np.linalg.solve(A, B)
+
+      def curve(xx):
+          return a * xx**2 + b * xx + c
+
+      x_smooth = np.linspace(x1, x3, 500)
+      y_smooth = curve(x_smooth)
+
+    # ---------------------------------------
     # Plot
-    # -------------------------
-       plt.figure(figsize=(15, 5))
+    # ---------------------------------------
 
-       plt.plot(
+      plt.figure(figsize=(15, 5))
+
+      plt.plot(
         x_smooth,
         y_smooth,
         color="blue",
         linewidth=2.8,
+        zorder=2
     )
 
-       plt.scatter(
+      plt.scatter(
         x,
         y,
         color="red",
         s=45,
-        zorder=5,
+        zorder=5
     )
 
-       plt.scatter(
+      plt.scatter(
         omc,
         mdd,
         color="red",
-        s=150,
-        zorder=10,
+        s=160,
+        zorder=10
     )
 
-       plt.axhline(
+      plt.axhline(
         y=mdd,
         color="red",
         linestyle="--",
-        linewidth=1,
+        linewidth=1
     )
 
-       plt.axvline(
+      plt.axvline(
         x=omc,
         color="red",
         linestyle="--",
-        linewidth=1,
+        linewidth=1
     )
 
-       plt.text(
+      plt.text(
         omc + 0.15,
         mdd + 0.002,
         f"OMC: {omc:.2f}%\nMDD: {mdd:.2f}",
         fontsize=12,
         color="red",
-        fontweight="bold",
+        fontweight="bold"
     )
 
-       plt.xlabel(
+      plt.xlabel(
         "Water Content (%)",
-        fontsize=16,
+        fontsize=16
     )
 
-       plt.ylabel(
+      plt.ylabel(
         "Dry Density (g/cc)",
-        fontsize=16,
+        fontsize=16
     )
 
-       plt.title(
+      plt.title(
         "DETERMINATION OF COMPACTION OMC / MDD",
-        fontsize=22,
+        fontsize=22
     )
 
-       plt.xlim(0, max(x) + 2)
-       plt.ylim(min(y) - 0.04, max(mdd, max(y)) + 0.03)
+      plt.xlim(0, max(x) + 2)
 
-    # -------------------------
+      ymin = min(min(y), min(y_smooth))
+      ymax = max(max(y), max(y_smooth), mdd)
+
+      plt.ylim(
+        ymin - 0.02,
+        ymax + 0.03
+    )
+
+        # ---------------------------------------
     # Graph paper background
-    # -------------------------
-       ax = plt.gca()
+    # ---------------------------------------
 
-       ax.set_facecolor("#f8fff8")
+      ax = plt.gca()
 
-       ax.xaxis.set_major_locator(MultipleLocator(1))
-       ax.xaxis.set_minor_locator(MultipleLocator(0.1))
+      ax.set_facecolor("#f8fff8")
 
-       ax.yaxis.set_major_locator(MultipleLocator(0.05))
-       ax.yaxis.set_minor_locator(MultipleLocator(0.005))
+      ax.xaxis.set_major_locator(MultipleLocator(1))
+      ax.xaxis.set_minor_locator(MultipleLocator(0.1))
 
-       ax.grid(
+      ax.yaxis.set_major_locator(MultipleLocator(0.05))
+      ax.yaxis.set_minor_locator(MultipleLocator(0.005))
+
+      ax.grid(
         which="major",
         color="green",
         linewidth=0.5,
-        alpha=0.45,
+        alpha=0.45
     )
 
-       ax.grid(
+      ax.grid(
         which="minor",
         color="green",
         linestyle=":",
         linewidth=0.3,
-        alpha=0.35,
+        alpha=0.35
     )
 
-       plt.tight_layout()
+    # Make border thicker
+      for spine in ax.spines.values():
+        spine.set_linewidth(1.2)
 
-       buffer = io.BytesIO()
+      plt.tight_layout()
 
-       plt.savefig(
+    # ---------------------------------------
+    # Save Image
+    # ---------------------------------------
+
+      buffer = io.BytesIO()
+
+      plt.savefig(
         buffer,
         format="png",
         dpi=100,
-        bbox_inches="tight",
+        bbox_inches="tight"
     )
 
-       plt.close()
+      plt.close()
 
-       buffer.seek(0)
+      buffer.seek(0)
 
-       return base64.b64encode(buffer.read()).decode("utf-8")
+      return base64.b64encode(
+        buffer.read()
+    ).decode("utf-8")
+
 
 
 
