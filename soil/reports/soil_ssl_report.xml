@@ -230,14 +230,14 @@
 							<t t-set="i" t-value="0"/>
 							<tbody>
 
-							<t t-set="show_sieve" t-value="data.report_type == 'nabl'"/>
+							
 
-							 <t t-if="show_sieve">
+							<t t-if="data.sieve_visible and ((data.report_type == 'nabl' and nabl) or (data.report_type == 'non_nabl' and not nabl))">
 
 							<!-- 🔹 Step 1: Filter valid rows (exclude 'pan') -->
-								<t t-set="valid_sieve_lines" t-value="[r for r in data.sieve_analysis_child_lines if r['sieve_size'] and r['sieve_size'].lower() != 'pan']"/>
+								<!-- <t t-set="valid_sieve_lines" t-value="[r for r in data.sieve_analysis_child_lines if r['sieve_size'] and r['sieve_size'].lower() != 'pan']"/>
 								
-								<!-- 🔹 Step 2: Dynamic rowspan -->
+								
 								<t t-set="extra_rows" t-value="3"/>
 								 <t t-set="rowspan_counts" t-value="1 + len(valid_sieve_lines) + extra_rows"/>
 
@@ -297,10 +297,18 @@
 
 								</t>
 									
-								</tr>
+								</tr> -->
 								
 
-								<tr t-if="data.sieve_visible" >
+								<tr t-if="data.sieve_visible ">
+									<t t-set="sieve" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','12014fgr-5c56-475b-9a89-93a59c9ee3a2')])"/>
+
+									<td rowspan="3" style="text-align: center;" colspan="1">
+										<div>
+											<span t-esc="i + 1" />
+											<t t-set="i" t-value="i+1"/>
+										</div>
+									</td>
 									
 									<td>
 							     		<span>Gravel</span>
@@ -329,128 +337,8 @@
 											</t>
 										</span>
 									</td>
-									
-								</tr>
-								<tr t-if="data.sieve_visible" >
-									
-									<td>
-							     		<span>Sand</span>
-									</td>
 
-									<td style="text-align: center;">
-									 <span>
-											<span t-field="data.sand" t-options='{"widget": "float", "precision": 2}'/>
-										</span>	
-								   </td>
-
-
-									<td style="text-align: center;">
-										<span>
-											<span t-esc="sieve.unit.name"/>
-										</span>
-									</td>
-
-									
-									<td style="text-align: center;">
-										<span>
-											<t t-foreach="sieve.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.permissable_limit"/>
-												</t>
-											</t>
-										</span>
-									</td>
-									
-								</tr>
-								<tr t-if="data.sieve_visible" >
-									
-									<td>
-							     		<span>Silt and Clay</span>
-									</td>
-
-									<td style="text-align: center;">
-									 <span>
-											<span t-field="data.silt_clay_total" t-options='{"widget": "float", "precision": 2}'/>
-										</span>	
-								   </td>
-
-
-									<td style="text-align: center;">
-										<span>
-											<span t-esc="sieve.unit.name"/>
-										</span>
-									</td>
-
-									<td style="text-align: center;">
-										<span>
-											<t t-foreach="sieve.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.permissable_limit"/>
-												</t>
-											</t>
-										</span>
-									</td>
-									
-								</tr>
-
-							</t>
-
-
-
-							 <t t-if="not show_sieve">
-
-							<!-- 🔹 Step 1: Filter valid rows (exclude 'pan') -->
-								<t t-set="valid_sieve_lines" t-value="[r for r in data.sieve_analysis_child_lines if r['sieve_size'] and r['sieve_size'].lower() != 'pan']"/>
-								
-								<!-- 🔹 Step 2: Dynamic rowspan -->
-								<t t-set="extra_rows" t-value="3"/>
-								 <t t-set="rowspan_counts" t-value="1 + len(valid_sieve_lines) + extra_rows"/>
-
-								 <t t-set="rowspan_counts1" t-value="len(valid_sieve_lines) + extra_rows"/>
-								
-								<tr t-if="data.sieve_visible ">
-									<t t-set="sieve" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','12014fgr-5c56-475b-9a89-93a59c9ee3a2')])"/>
-									
-									<td t-att-rowspan="rowspan_counts" style="vertical-align:middle;text-align: center;">
-										<span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/>
-									</td>
-									<td colspan="5">  
-										<span t-esc="sieve.parameter_name"/>
-									</td>
-									
-								</tr>
-
-								<tr t-if="data.sieve_visible and r['sieve_size'] and r['sieve_size'].lower() != 'pan'" t-foreach="valid_sieve_lines" t-foreach-index="r_index" t-as="r">
-									
-									<td>
-							     		<span t-esc="r['sieve_size']"/>
-									</td>
-
-									<td style="text-align: center;">
-									  <span t-esc="r['passing_percent']" t-options='{"widget": "float", "precision": 2}'/>
-								   </td>
-
-
-									<td  style="text-align: center;">
-										<span>
-											<span t-esc="sieve.unit.name"/>
-										</span>
-									</td>
-									
-									<td style="text-align: center;">
-										<span>
-											<t t-foreach="sieve.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.permissable_limit"/>
-												</t>
-											</t>
-										</span>
-									</td>
-
-									<t t-if="r_index == 0">
-
-									<td t-att-rowspan="rowspan_counts1" style="text-align: center;vertical-align:middle;">
+									<td rowspan="3" style="text-align: center;vertical-align:middle;">
 										<span>
 											<t t-foreach="sieve.parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -459,44 +347,10 @@
 											</t>
 										</span>
 									</td>
-
-								</t>
 									
 								</tr>
-								
-
-								<tr t-if="data.sieve_visible" >
-									
-									<td>
-							     		<span>Gravel</span>
-									</td>
-
-									<td style="text-align: center;">
-									 <span>
-											<span t-field="data.gravel" t-options='{"widget": "float", "precision": 2}'/>
-										</span>	
-								   </td>
-
-
-									<td style="text-align: center;">
-										<span>
-											<span t-esc="sieve.unit.name"/>
-										</span>
-									</td>
-									
-									
-									<td style="text-align: center;">
-										<span>
-											<t t-foreach="sieve.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.permissable_limit"/>
-												</t>
-											</t>
-										</span>
-									</td>
-									
-								</tr>
-								<tr t-if="data.sieve_visible" >
+								<tr t-if="data.sieve_visible ">
+									<t t-set="sieve" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','12014fgr-5c56-475b-9a89-93a59c9ee3a2')])"/>
 									
 									<td>
 							     		<span>Sand</span>
@@ -527,7 +381,8 @@
 									</td>
 									
 								</tr>
-								<tr t-if="data.sieve_visible" >
+								<tr t-if="data.sieve_visible ">
+									<t t-set="sieve" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','12014fgr-5c56-475b-9a89-93a59c9ee3a2')])"/>
 									
 									<td>
 							     		<span>Silt and Clay</span>
@@ -558,13 +413,8 @@
 									
 								</tr>
 
-							</t>
+								</t>
 
-							</t>
-
-
-
-								
 						
 
 
@@ -1250,7 +1100,7 @@
 					
 
 					<t t-if="graphSieve">
-                   <div style="text-align:center; margin-top:20px;">
+                   <div style="text-align:center; margin-top:20px;" t-if="data.sieve_visible and ((data.report_type == 'nabl' and nabl) or (data.report_type == 'non_nabl' and not nabl))">
                    <img t-att-src="'data:image/png;base64,%s' % graphSieve" style="max-width:100%; height:auto;"/>
 
 				   <div style="margin-top:10px" t-if="data.sieve_visible">

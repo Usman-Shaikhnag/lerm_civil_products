@@ -73,6 +73,17 @@ class Soil(models.Model):
         default='nabl',
         required=True,
     )
+
+    sieve_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_sieve_nabl",
+    store=True
+)
+
+    @api.depends('report_type')
+    def _compute_sieve_nabl(self):
+     for rec in self:
+        rec.sieve_nabl = 'pass' if rec.report_type == 'nabl' else 'fail'
  
     sieve_analysis_child_lines = fields.One2many('mechanical.soil.sieve.analysis.line','parent_id',string="Sieve Analysis",default=lambda self: self._default_sieve_analysis_child_lines())
 
@@ -1565,247 +1576,164 @@ class Soil(models.Model):
 
 
 
-
-
-
-    # def generate_line_chart_light_omc(self):
-    #     x_value = []
-    #     y_value = []
-    #     for line in self.heavy_table:
-    #         if line.water_content and line.dry_density:
-    #             x_value.append(line.water_content)
-    #             y_value.append(line.dry_density)
-
-    #     if not x_value or not y_value:
-    #         return False
-
-    #     x = np.array(x_value)
-    #     y = np.array(y_value)
-
-    #     # Sort data
-    #     sorted_indices = np.argsort(x)
-    #     x = x[sorted_indices]
-    #     y = y[sorted_indices]
-
-    #     # Gentle smooth curve (quadratic)
-    #     x_smooth = np.linspace(x.min(), x.max(), 200)
-    #     spline = make_interp_spline(x, y, k=2)
-    #     y_smooth = spline(x_smooth)
-
-    #     # Find smooth curve peak (OMC/MDD)
-    #     smooth_max_index = np.argmax(y_smooth)
-    #     smooth_max_x = x_smooth[smooth_max_index]
-    #     smooth_max_y = y_smooth[smooth_max_index]
-
-    #     # Trim curve so it never goes above MDD
-    #     y_smooth = np.minimum(y_smooth, smooth_max_y)
-
-    #     # Figure size
-    #     plt.figure(figsize=(15, 5))
-
-    #     # Plot smooth curve
-    #     plt.plot(x_smooth, y_smooth, color='blue', linewidth=2)
-
-    #     # Plot points (smaller, subtle)
-    #     plt.scatter(x, y, color='red', edgecolors='none', s=40, zorder=5)
-
-    #     # Labels and title
-    #     plt.xlabel('Water Content (%)', fontsize=12)
-    #     plt.ylabel('Dry Density (g/cc)', fontsize=12)
-    #     plt.title('DETERMINATION OF COMPACTION OMC / MDD', fontsize=14)
-
-    #     # Extend y-axis
-    #     plt.xlim(left=0, right=max(x) + 2)
-    #     plt.ylim(bottom=min(y) - 0.03, top=smooth_max_y + 0.03)
-
-    #     # Grid
-    #     ax = plt.gca()
-    #     ax.xaxis.set_minor_locator(MultipleLocator(0.2))
-    #     ax.yaxis.set_minor_locator(MultipleLocator(0.005))
-    #     plt.grid(True, which='both', linestyle='--', linewidth=0.3, color='darkgreen', alpha=0.9)
-
-    #     # Highlight OMC/MDD (shifted peak)
-    #     plt.axhline(y=smooth_max_y, color='red', linestyle='--', linewidth=1)
-    #     plt.axvline(x=smooth_max_x, color='red', linestyle='--', linewidth=1)
-    #     plt.plot(smooth_max_x, smooth_max_y, marker='o', color='red', markersize=6)
-    #     plt.text(smooth_max_x + 0.2, smooth_max_y + 0.002,
-    #             f"OMC: {smooth_max_x:.2f}%\nMDD: {smooth_max_y:.2f}",
-    #             color='red', fontsize=10)
-
-    #     plt.tight_layout()
-
-    #     # Save to base64
-    #     buffer = io.BytesIO()
-    #     plt.savefig(buffer, format='png', dpi=150)
-    #     plt.close()
-    #     buffer.seek(0)
-    #     return base64.b64encode(buffer.read()).decode('utf-8')
-
     def generate_line_chart_light_omc(self):
 
-     x_value = []
-     y_value = []
+       x = []
+       y = []
 
-     for line in self.heavy_table:
-        if line.water_content and line.dry_density:
-            x_value.append(float(line.water_content))
-            y_value.append(float(line.dry_density))
+       for line in self.heavy_table:
+          if line.water_content and line.dry_density:
+            x.append(float(line.water_content))
+            y.append(float(line.dry_density))
 
-     if len(x_value) < 3:
-        return False
+       if len(x) < 3:
+           return False
 
-    # Sort data
-     data = sorted(zip(x_value, y_value))
-     x = np.array([d[0] for d in data])
-     y = np.array([d[1] for d in data])
+    # -------------------------
+    # Sort Data
+    # -------------------------
+       data = sorted(zip(x, y))
+       x = np.array([i[0] for i in data])
+       y = np.array([i[1] for i in data])
 
-    # ==========================
-    # Quadratic Compaction Curve
-    # ==========================
-     coeff = np.polyfit(x, y, 2)
-     poly = np.poly1d(coeff)
+       omc = float(self.omc)
+       mdd = float(self.max_dry_density)
 
-     x_smooth = np.linspace(x.min(), x.max(), 500)
-     y_smooth = poly(x_smooth)
+    # ------------------------------------------------
+    # Calculate parabola passing through:
+    #   1. First data point
+    #   2. Vertex (OMC, MDD)
+    # ------------------------------------------------
 
-    # OMC / MDD
-     omc = -coeff[1] / (2 * coeff[0])
-     mdd = poly(omc)
+       x1 = x[0]
+       y1 = y[0]
 
-     plt.figure(figsize=(15, 5))
+    # Prevent division by zero
+       if abs(x1 - omc) < 1e-6:
+           x1 = x[1]
+           y1 = y[1]
 
-    # Smooth blue curve
-     plt.plot(
+       a = (y1 - mdd) / ((x1 - omc) ** 2)
+
+       def compaction_curve(x):
+           return a * (x - omc) ** 2 + mdd
+
+       x_smooth = np.linspace(x.min(), x.max(), 500)
+       y_smooth = compaction_curve(x_smooth)
+
+    # -------------------------
+    # Plot
+    # -------------------------
+       plt.figure(figsize=(15, 5))
+
+       plt.plot(
         x_smooth,
         y_smooth,
-        color='blue',
-        linewidth=2.5
+        color="blue",
+        linewidth=2.8,
     )
 
-    # Show points ON CURVE only
-     y_curve_points = poly(x)
-  
-     plt.scatter(
+       plt.scatter(
         x,
-        y_curve_points,
-        color='red',
-        edgecolors='none',
-        s=40,
-        zorder=5
+        y,
+        color="red",
+        s=45,
+        zorder=5,
     )
 
-    # Peak point
-     plt.scatter(
+       plt.scatter(
         omc,
         mdd,
-        color='red',
-        s=120,
-        zorder=10
+        color="red",
+        s=150,
+        zorder=10,
     )
 
-    # OMC / MDD guide lines
-     plt.axhline(
+       plt.axhline(
         y=mdd,
-        color='red',
-        linestyle='--',
-        linewidth=1
+        color="red",
+        linestyle="--",
+        linewidth=1,
     )
 
-     plt.axvline(
+       plt.axvline(
         x=omc,
-        color='red',
-        linestyle='--',
-        linewidth=1
+        color="red",
+        linestyle="--",
+        linewidth=1,
     )
 
-    # Annotation
-     plt.text(
-        omc + 0.2,
+       plt.text(
+        omc + 0.15,
         mdd + 0.002,
         f"OMC: {omc:.2f}%\nMDD: {mdd:.2f}",
-        color='red',
-        fontsize=11,
-        fontweight='bold'
+        fontsize=12,
+        color="red",
+        fontweight="bold",
     )
 
-    # Labels
-     plt.xlabel(
-        'Water Content (%)',
-        fontsize=12
+       plt.xlabel(
+        "Water Content (%)",
+        fontsize=16,
     )
 
-     plt.ylabel(
-        'Dry Density (g/cc)',
-        fontsize=12
+       plt.ylabel(
+        "Dry Density (g/cc)",
+        fontsize=16,
     )
 
-     plt.title(
-        'DETERMINATION OF COMPACTION OMC / MDD',
-        fontsize=16
+       plt.title(
+        "DETERMINATION OF COMPACTION OMC / MDD",
+        fontsize=22,
     )
 
-    # Limits
-     plt.xlim(
-        left=0,
-        right=max(x) + 2
-    )
+       plt.xlim(0, max(x) + 2)
+       plt.ylim(min(y) - 0.04, max(mdd, max(y)) + 0.03)
 
-     plt.ylim(
-        bottom=min(y) - 0.03,
-        top=max(y_smooth) + 0.03
-    )
+    # -------------------------
+    # Graph paper background
+    # -------------------------
+       ax = plt.gca()
 
-    # ==========================
-    # Graph Paper Background
-    # ==========================
-     ax = plt.gca()
+       ax.set_facecolor("#f8fff8")
 
-    # X-axis grid
-     ax.xaxis.set_major_locator(MultipleLocator(1))
-     ax.xaxis.set_minor_locator(MultipleLocator(0.1))
+       ax.xaxis.set_major_locator(MultipleLocator(1))
+       ax.xaxis.set_minor_locator(MultipleLocator(0.1))
 
-    # Y-axis grid
-     ax.yaxis.set_major_locator(MultipleLocator(0.05))
-     ax.yaxis.set_minor_locator(MultipleLocator(0.001))
+       ax.yaxis.set_major_locator(MultipleLocator(0.05))
+       ax.yaxis.set_minor_locator(MultipleLocator(0.005))
 
-    # Major Grid
-     plt.grid(
-        which='major',
-        color='green',
-        linestyle='-',
+       ax.grid(
+        which="major",
+        color="green",
         linewidth=0.5,
-        alpha=0.55
+        alpha=0.45,
     )
 
-    # Minor Grid
-     plt.grid(
-        which='minor',
-        color='green',
-        linestyle=':',
+       ax.grid(
+        which="minor",
+        color="green",
+        linestyle=":",
         linewidth=0.3,
-        alpha=0.45
+        alpha=0.35,
     )
 
-     plt.tight_layout()
+       plt.tight_layout()
 
-    # Save Image
-     buffer = io.BytesIO()
+       buffer = io.BytesIO()
 
-     plt.savefig(
+       plt.savefig(
         buffer,
-        format='png',
-        dpi=150,
-        bbox_inches='tight'
+        format="png",
+        dpi=100,
+        bbox_inches="tight",
     )
 
-     plt.close()
+       plt.close()
 
-     buffer.seek(0)
+       buffer.seek(0)
 
-     return base64.b64encode(
-        buffer.read()
-    ).decode('utf-8')
-    
+       return base64.b64encode(buffer.read()).decode("utf-8")
 
 
     
@@ -1968,226 +1896,165 @@ class Soil(models.Model):
 
 
 
-
-    # def generate_line_chart_light_omc1(self):
-    # # Prepare data
-    #     x_value = []
-    #     y_value = []
-    #     for line in self.omc_table:
-    #         x_value.append(line.water_content1)
-    #         y_value.append(line.dry_density1)
-
-    #     if not x_value or not y_value:
-    #         return False
-
-    #     plt.figure(figsize=(10, 5))
-
-    #     # ✅ Blue curve with red points
-    #     plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
-    #     plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
-
-    #     # ✅ Axis labels and title
-    #     plt.xlabel('Water Content (%)', fontsize=12)
-    #     plt.ylabel('Dry Density (g/cc)', fontsize=12)
-    #     plt.title('DETERMINATION OF COMPACTION OMC / MDD', fontsize=14)
-
-    #     # ✅ Axis range
-    #     plt.xlim(left=0, right=max(x_value) + 2)
-    #     plt.ylim(bottom=min(y_value) - 0.02, top=max(y_value) + 0.02)
-
-    #     # ✅ Minor ticks for fine grid
-    #     ax = plt.gca()
-    #     ax.xaxis.set_minor_locator(MultipleLocator(0.5))
-    #     ax.yaxis.set_minor_locator(MultipleLocator(0.005))
-
-    #     # ✅ Fine grid (major + minor)
-    #     plt.grid(True, which='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
-
-    #     # ✅ Highlight max dry density
-    #     max_index = y_value.index(max(y_value))
-    #     max_x = x_value[max_index]
-    #     max_y = y_value[max_index]
-
-    #     plt.axhline(y=max_y, color='red', linestyle='--', linewidth=1)
-    #     plt.axvline(x=max_x, color='red', linestyle='--', linewidth=1)
-    #     plt.plot(max_x, max_y, marker='o', color='red', markersize=8)
-    #     plt.text(max_x + 0.3, max_y + 0.003, f"OMC: {max_x:.2f}%\nMDD: {max_y:.2f}", color='red')
-
-    #     # ✅ Save image
-    #     buffer = io.BytesIO()
-    #     plt.tight_layout()
-    #     plt.legend()
-    #     plt.savefig(buffer, format='png')
-    #     plt.close()
-    #     buffer.seek(0)
-
-    #     return base64.b64encode(buffer.read()).decode('utf-8')
-
-
     def generate_line_chart_light_omc1(self):
 
-     x_value = []
-     y_value = []
+       x = []
+       y = []
 
-     for line in self.omc_table:
-        if line.water_content1 and line.dry_density1:
-            x_value.append(float(line.water_content1))
-            y_value.append(float(line.dry_density1))
+       for line in self.omc_table:
+          if line.water_content1 and line.dry_density1:
+            x.append(float(line.water_content1))
+            y.append(float(line.dry_density1))
 
-     if len(x_value) < 3:
-        return False
+       if len(x) < 3:
+           return False
 
-    # Sort data
-     data = sorted(zip(x_value, y_value))
-     x = np.array([d[0] for d in data])
-     y = np.array([d[1] for d in data])
+    # -------------------------
+    # Sort Data
+    # -------------------------
+       data = sorted(zip(x, y))
+       x = np.array([i[0] for i in data])
+       y = np.array([i[1] for i in data])
 
-    # ==========================
-    # Quadratic Compaction Curve
-    # ==========================
-     coeff = np.polyfit(x, y, 2)
-     poly = np.poly1d(coeff)
+       omc = float(self.omc1)
+       mdd = float(self.max_dry_density1)
 
-     x_smooth = np.linspace(x.min(), x.max(), 500)
-     y_smooth = poly(x_smooth)
+    # ------------------------------------------------
+    # Calculate parabola passing through:
+    #   1. First data point
+    #   2. Vertex (OMC, MDD)
+    # ------------------------------------------------
 
-    # OMC / MDD
-     omc = -coeff[1] / (2 * coeff[0])
-     mdd = poly(omc)
+       x1 = x[0]
+       y1 = y[0]
 
-     plt.figure(figsize=(15, 5))
+    # Prevent division by zero
+       if abs(x1 - omc) < 1e-6:
+           x1 = x[1]
+           y1 = y[1]
 
-    # Smooth blue curve
-     plt.plot(
+       a = (y1 - mdd) / ((x1 - omc) ** 2)
+
+       def compaction_curve(x):
+           return a * (x - omc) ** 2 + mdd
+
+       x_smooth = np.linspace(x.min(), x.max(), 500)
+       y_smooth = compaction_curve(x_smooth)
+
+    # -------------------------
+    # Plot
+    # -------------------------
+       plt.figure(figsize=(15, 5))
+
+       plt.plot(
         x_smooth,
         y_smooth,
-        color='blue',
-        linewidth=2.5
+        color="blue",
+        linewidth=2.8,
     )
 
-    # Show points ON CURVE only
-     y_curve_points = poly(x)
-  
-     plt.scatter(
+       plt.scatter(
         x,
-        y_curve_points,
-        color='red',
-        edgecolors='none',
-        s=40,
-        zorder=5
+        y,
+        color="red",
+        s=45,
+        zorder=5,
     )
 
-    # Peak point
-     plt.scatter(
+       plt.scatter(
         omc,
         mdd,
-        color='red',
-        s=120,
-        zorder=10
+        color="red",
+        s=150,
+        zorder=10,
     )
 
-    # OMC / MDD guide lines
-     plt.axhline(
+       plt.axhline(
         y=mdd,
-        color='red',
-        linestyle='--',
-        linewidth=1
+        color="red",
+        linestyle="--",
+        linewidth=1,
     )
 
-     plt.axvline(
+       plt.axvline(
         x=omc,
-        color='red',
-        linestyle='--',
-        linewidth=1
+        color="red",
+        linestyle="--",
+        linewidth=1,
     )
 
-    # Annotation
-     plt.text(
-        omc + 0.2,
+       plt.text(
+        omc + 0.15,
         mdd + 0.002,
         f"OMC: {omc:.2f}%\nMDD: {mdd:.2f}",
-        color='red',
-        fontsize=11,
-        fontweight='bold'
+        fontsize=12,
+        color="red",
+        fontweight="bold",
     )
 
-    # Labels
-     plt.xlabel(
-        'Water Content (%)',
-        fontsize=12
+       plt.xlabel(
+        "Water Content (%)",
+        fontsize=16,
     )
 
-     plt.ylabel(
-        'Dry Density (g/cc)',
-        fontsize=12
+       plt.ylabel(
+        "Dry Density (g/cc)",
+        fontsize=16,
     )
 
-     plt.title(
-        'DETERMINATION OF COMPACTION OMC / MDD',
-        fontsize=16
+       plt.title(
+        "DETERMINATION OF COMPACTION OMC / MDD",
+        fontsize=22,
     )
 
-    # Limits
-     plt.xlim(
-        left=0,
-        right=max(x) + 2
-    )
+       plt.xlim(0, max(x) + 2)
+       plt.ylim(min(y) - 0.04, max(mdd, max(y)) + 0.03)
 
-     plt.ylim(
-        bottom=min(y) - 0.03,
-        top=max(y_smooth) + 0.03
-    )
+    # -------------------------
+    # Graph paper background
+    # -------------------------
+       ax = plt.gca()
 
-    # ==========================
-    # Graph Paper Background
-    # ==========================
-     ax = plt.gca()
+       ax.set_facecolor("#f8fff8")
 
-    # X-axis grid
-     ax.xaxis.set_major_locator(MultipleLocator(1))
-     ax.xaxis.set_minor_locator(MultipleLocator(0.1))
+       ax.xaxis.set_major_locator(MultipleLocator(1))
+       ax.xaxis.set_minor_locator(MultipleLocator(0.1))
 
-    # Y-axis grid
-     ax.yaxis.set_major_locator(MultipleLocator(0.05))
-     ax.yaxis.set_minor_locator(MultipleLocator(0.001))
+       ax.yaxis.set_major_locator(MultipleLocator(0.05))
+       ax.yaxis.set_minor_locator(MultipleLocator(0.005))
 
-    # Major Grid
-     plt.grid(
-        which='major',
-        color='green',
-        linestyle='-',
+       ax.grid(
+        which="major",
+        color="green",
         linewidth=0.5,
-        alpha=0.55
+        alpha=0.45,
     )
 
-    # Minor Grid
-     plt.grid(
-        which='minor',
-        color='green',
-        linestyle=':',
+       ax.grid(
+        which="minor",
+        color="green",
+        linestyle=":",
         linewidth=0.3,
-        alpha=0.45
+        alpha=0.35,
     )
 
-     plt.tight_layout()
+       plt.tight_layout()
 
-    # Save Image
-     buffer = io.BytesIO()
+       buffer = io.BytesIO()
 
-     plt.savefig(
+       plt.savefig(
         buffer,
-        format='png',
-        dpi=150,
-        bbox_inches='tight'
+        format="png",
+        dpi=100,
+        bbox_inches="tight",
     )
 
-     plt.close()
+       plt.close()
 
-     buffer.seek(0)
+       buffer.seek(0)
 
-     return base64.b64encode(
-        buffer.read()
-    ).decode('utf-8')
+       return base64.b64encode(buffer.read()).decode("utf-8")
+
 
         
 
