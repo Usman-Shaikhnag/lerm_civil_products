@@ -656,6 +656,7 @@ class FineAggregate(models.Model):
 
 
     water_absorption = fields.Float(string="Water Absorption % ",compute="_compute_water_absorption")
+    water_absorption_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
 
     @api.depends('avg_staurated_a', 'avg_oven_d')
     def _compute_water_absorption(self):
@@ -1904,6 +1905,7 @@ class FineAggregate(models.Model):
       
             record.sieve_visible = False
             record.specific_gravity_visible = False
+            record.water_absorption_visible = False
             record.loose_bulk_visible = False
             record.bulking_sand_visible = False
             record.site_content_visible = False
@@ -1935,6 +1937,9 @@ class FineAggregate(models.Model):
 
                 if sample.internal_id == "45875ght-7188-4086-b132-62b50e63f1245gt":
                     record.specific_gravity_visible = True
+
+                if sample.internal_id == "36666887952-372f-4775-9bcb-e9dd723547htui":
+                    record.water_absorption_visible = True
 
                 if sample.internal_id == "4587tyhloos-3fa3-4b83-ae31-9d281767188c":
                     record.loose_bulk_visible = True

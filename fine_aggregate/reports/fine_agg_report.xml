@@ -300,16 +300,7 @@
 					</div>
 
                      <div t-if="data.sieve_visible" style="margin-top:5px">
-						<!-- <div style="text-align:center;font-size:18px">
-							<span>Sieve Analysis </span>: <span>
-								<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','318d72a1-7188-4086-b132-62b50e63f5d1')]).parameter_table" t-as="parameter">
-									<t t-if="parameter.grade.id == eln.grade_id.id">
-										<span t-field="parameter.specification"/>
-									</t>
-								</t>
-							</span>
-							<span t-esc="o.material.test_parameter "/> 
-						</div> -->
+					
 						<table t-if="data.sieve_visible">
                             <tr cols="12">
                                 <th colspan="6">1. Sieve Analysis (Gradation) :-</th>
@@ -381,30 +372,30 @@
 						<table style="margin-top:5px">
 							<thead>
 								<tr style="height:10px;">
-									<th style="text-align: center;">Sr.No</th>
+									<b><th style="text-align: center;">Sr.No</th></b>
 
 									<th style="text-align: center;">
-									<span t-esc="eln.material.test_parameter"/>
+									<b><span t-esc="eln.material.test_parameter"/></b>
 									<!-- Test Parameters -->
 									</th>
 
 									<th style="text-align: center;">
-									<span t-esc="eln.material.unit"/>
+									<b><span t-esc="eln.material.unit"/></b>
 									<!-- Unit -->
 									</th>
 
-									<th style="text-align: center;"><span t-field="eln.material.method_reference"></span></th>
+									<th style="text-align: center;"><b><span t-field="eln.material.method_reference"></span></b></th>
 									
 									<th style="text-align: center;">
-									<span t-esc="eln.material.result_remark"/>
+									<b><span t-esc="eln.material.result_remark"/></b>
 									<!-- Test Result -->
 									</th>
-									<th style="text-align: center;"><span t-field="eln.material.specifications"></span></th>
+									<th style="text-align: center;"><b><span t-field="eln.material.specifications"></span></b></th>
 									<th style="text-align: center;" t-if="eln.conformity">Conformity</th>
 								</tr>
 							</thead>
 							
-							<t t-set="i" t-value="1"/>
+							<t t-set="i" t-value="0"/>
 							<tbody>
 								<tr t-if="data.specific_gravity_visible and (data.specific_gravity_nabl == 'pass' and nabl or (data.specific_gravity_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<td style="text-align: center;">
@@ -462,7 +453,7 @@
 
 
 
-								<tr t-if="data.specific_gravity_visible and (data.water_absorption_nabl == 'pass' and nabl or (data.water_absorption_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.water_absorption_visible and (data.water_absorption_nabl == 'pass' and nabl or (data.water_absorption_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<td style="text-align: center;">
 										<span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/>
@@ -794,53 +785,14 @@
 								</tr>
 
 
-							<tr t-if="data.finer75_visible and data.clay_lump_visible and data.light_weight_visible and ((nabl and data.material_finer75_nabl != 'fail' and data.clay_lumps_percent_nabl != 'fail' and data.light_weight_percent_nabl != 'fail') or (not nabl and (data.material_finer75_nabl == 'fail' or data.clay_lumps_percent_nabl == 'fail' or data.light_weight_percent_nabl == 'fail')))">
-									<td style="text-align: center;">
-										<span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/>
-										
-									</td>
-									<td >
-										<span>
-											Deleterious Material, % By Wt
-										</span>
-									</td>
-
-									<td>
-										<span>
-										</span>									
-									</td>
-									
-									<td rowspan="4" style="text-align: center; vertical-align: middle;">
-										<span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','2047739e-9941-4bc0-af9b-839767be6e1c')]).parameter_table" t-as="parameter">
-											<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-											</t>
-										</t>
-										</span>
-									</td>
-									
-									
-									<td>
-										<span>
-										</span>
-									</td>
-									<td>
-										<span>
-										</span>
-									</td>
-									<td t-if="eln.conformity">
-										
-									</td>
-								</tr>
+							
 
 
 								<tr t-if="data.finer75_visible and (data.material_finer75_nabl == 'pass' and nabl or (data.material_finer75_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<td style="text-align: center;">
-										<!-- <span t-esc="i + 1" />
+										<span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/>
-										 -->
+										
 									</td>
 									<td >
 										
@@ -854,7 +806,7 @@
 											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','2047739e-9941-4bc0-af9b-839767be6e1c')]).unit.name"/>
 										</span>
 									</td>
-									<!-- <td style="text-align: center;">
+									<td style="text-align: center;">
 										<span>
 										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','2047739e-9941-4bc0-af9b-839767be6e1c')]).parameter_table" t-as="parameter">
 											<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -862,7 +814,7 @@
 											</t>
 										</t>
 										</span>
-									</td> -->
+									</td>
 									
 									
 									
@@ -891,9 +843,9 @@
 
 								<tr t-if="data.clay_lump_visible and (data.clay_lumps_percent_nabl == 'pass' and nabl or (data.clay_lumps_percent_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<td style="text-align: center;">
-										<!-- <span t-esc="i + 1" />
+										<span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/>
-										 -->
+										
 									</td>
 									<td >
 										
@@ -907,7 +859,7 @@
 											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','6daf868e-c850-4c80-8cf2-c37941cfc075')]).unit.name"/>
 										</span>
 									</td>
-									<!-- <td style="text-align: center;">
+									<td style="text-align: center;">
 										<span>
 										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','6daf868e-c850-4c80-8cf2-c37941cfc075')]).parameter_table" t-as="parameter">
 											<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -915,7 +867,7 @@
 											</t>
 										</t>
 										</span>
-									</td> -->
+									</td>
 									
 									
 									
@@ -945,9 +897,9 @@
 
 								<tr t-if="data.light_weight_visible and (data.light_weight_percent_nabl == 'pass' and nabl or (data.light_weight_percent_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 									<td style="text-align: center;">
-										<!-- <span t-esc="i + 1" />
+										<span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/>
-										 -->
+										
 									</td>
 									<td >
 										
@@ -961,7 +913,7 @@
 											<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','6daf868e-c850-4c80-8cf2-c37941888888')]).unit.name"/>
 										</span>
 									</td>
-									<!-- <td style="text-align: center;">
+									<td style="text-align: center;">
 										<span>
 										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','6daf868e-c850-4c80-8cf2-c37941888888')]).parameter_table" t-as="parameter">
 											<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -969,7 +921,7 @@
 											</t>
 										</t>
 										</span>
-									</td> -->
+									</td>
 									
 									
 									
