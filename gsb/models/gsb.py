@@ -2455,61 +2455,66 @@ class GsbMechanical(models.Model):
     # ).decode('utf-8')
 
 
-    
 
-  
 
     def generate_line_chart_light_omc(self):
 
-      x = []
-      y = []
+       x = []
+       y = []
 
-      for line in self.heavy_table:
-        if line.water_content and line.dry_density:
+       for line in self.heavy_table:
+          if line.water_content and line.dry_density:
             x.append(float(line.water_content))
             y.append(float(line.dry_density))
 
-      if len(x) < 3:
-        return False
+       if len(x) < 3:
+           return False
 
     # -------------------------
     # Sort Data
     # -------------------------
-      data = sorted(zip(x, y))
-      x = np.array([i[0] for i in data])
-      y = np.array([i[1] for i in data])
+       data = sorted(zip(x, y))
+       x = np.array([i[0] for i in data])
+       y = np.array([i[1] for i in data])
 
-      omc = float(self.omc)
-      mdd = float(self.max_dry_density)
+       omc = float(self.omc)
+       mdd = float(self.max_dry_density)
 
     # ------------------------------------------------
-    # Constrained parabola with fixed peak (OMC, MDD)
-    # y = a(x-omc)^2 + mdd
+    # Calculate parabola passing through:
+    #   1. First data point
+    #   2. Vertex (OMC, MDD)
     # ------------------------------------------------
-      def compaction_curve(x, a):
-        return a * (x - omc) ** 2 + mdd
 
-    # Fit only the coefficient 'a'
-      popt, _ = curve_fit(compaction_curve, x, y)
+       x1 = x[0]
+       y1 = y[0]
 
-      a = popt[0]
+    # Prevent division by zero
+       if abs(x1 - omc) < 1e-6:
+           x1 = x[1]
+           y1 = y[1]
 
-      x_smooth = np.linspace(x.min(), x.max(), 500)
-      y_smooth = compaction_curve(x_smooth, a)
+       a = (y1 - mdd) / ((x1 - omc) ** 2)
+
+       def compaction_curve(x):
+           return a * (x - omc) ** 2 + mdd
+
+       x_smooth = np.linspace(x.min(), x.max(), 500)
+       y_smooth = compaction_curve(x_smooth)
 
     # -------------------------
     # Plot
     # -------------------------
-      plt.figure(figsize=(15, 5))
+       plt.figure(figsize=(15, 5))
 
-      plt.plot(
+       plt.plot(
         x_smooth,
         y_smooth,
         color="blue",
         linewidth=2.8,
     )
 
-      plt.scatter(
+       plt.scatter(
         x,
         y,
         color="red",
@@ -2517,7 +2522,7 @@ class GsbMechanical(models.Model):
         zorder=5,
     )
 
-      plt.scatter(
+       plt.scatter(
         omc,
         mdd,
         color="red",
@@ -2525,21 +2530,21 @@ class GsbMechanical(models.Model):
         zorder=10,
     )
 
-      plt.axhline(
+       plt.axhline(
         y=mdd,
         color="red",
         linestyle="--",
         linewidth=1,
     )
 
-      plt.axvline(
+       plt.axvline(
         x=omc,
         color="red",
         linestyle="--",
         linewidth=1,
     )
 
-      plt.text(
+       plt.text(
         omc + 0.15,
         mdd + 0.002,
         f"OMC: {omc:.2f}%\nMDD: {mdd:.2f}",
@@ -2548,45 +2553,45 @@ class GsbMechanical(models.Model):
         fontweight="bold",
     )
 
-      plt.xlabel(
+       plt.xlabel(
         "Water Content (%)",
         fontsize=16,
     )
 
-      plt.ylabel(
+       plt.ylabel(
         "Dry Density (g/cc)",
         fontsize=16,
     )
 
-      plt.title(
+       plt.title(
         "DETERMINATION OF COMPACTION OMC / MDD",
         fontsize=22,
     )
 
-      plt.xlim(0, max(x) + 2)
-      plt.ylim(min(y) - 0.04, max(mdd, max(y)) + 0.03)
+       plt.xlim(0, max(x) + 2)
+       plt.ylim(min(y) - 0.04, max(mdd, max(y)) + 0.03)
 
     # -------------------------
     # Graph paper background
     # -------------------------
-      ax = plt.gca()
+       ax = plt.gca()
 
-      ax.set_facecolor("#f8fff8")
+       ax.set_facecolor("#f8fff8")
 
-      ax.xaxis.set_major_locator(MultipleLocator(1))
-      ax.xaxis.set_minor_locator(MultipleLocator(0.1))
+       ax.xaxis.set_major_locator(MultipleLocator(1))
+       ax.xaxis.set_minor_locator(MultipleLocator(0.1))
 
-      ax.yaxis.set_major_locator(MultipleLocator(0.05))
-      ax.yaxis.set_minor_locator(MultipleLocator(0.005))
+       ax.yaxis.set_major_locator(MultipleLocator(0.05))
+       ax.yaxis.set_minor_locator(MultipleLocator(0.005))
 
-      ax.grid(
+       ax.grid(
         which="major",
         color="green",
         linewidth=0.5,
         alpha=0.45,
     )
 
-      ax.grid(
+       ax.grid(
         which="minor",
         color="green",
         linestyle=":",
@@ -2594,22 +2599,24 @@ class GsbMechanical(models.Model):
         alpha=0.35,
     )
 
-      plt.tight_layout()
+       plt.tight_layout()
 
-      buffer = io.BytesIO()
+       buffer = io.BytesIO()
 
-      plt.savefig(
+       plt.savefig(
         buffer,
         format="png",
         dpi=100,
         bbox_inches="tight",
     )
 
-      plt.close()
+       plt.close()
 
-      buffer.seek(0)
+       buffer.seek(0)
 
-      return base64.b64encode(buffer.read()).decode("utf-8")
+       return base64.b64encode(buffer.read()).decode("utf-8")
+
+
 
     @api.depends('heavy_table')
     def _compute_graph_image_density_omc_light(self):
@@ -2931,59 +2938,67 @@ class GsbMechanical(models.Model):
     #     buffer.read()
     # ).decode('utf-8')
 
-    
-    
+  
+
+
     def generate_line_chart_light_omc1(self):
 
-      x = []
-      y = []
+       x = []
+       y = []
 
-      for line in self.omc_table:
-        if line.water_content1 and line.dry_density1:
+       for line in self.omc_table:
+          if line.water_content1 and line.dry_density1:
             x.append(float(line.water_content1))
             y.append(float(line.dry_density1))
 
-      if len(x) < 3:
-        return False
+       if len(x) < 3:
+           return False
 
     # -------------------------
     # Sort Data
     # -------------------------
-      data = sorted(zip(x, y))
-      x = np.array([i[0] for i in data])
-      y = np.array([i[1] for i in data])
+       data = sorted(zip(x, y))
+       x = np.array([i[0] for i in data])
+       y = np.array([i[1] for i in data])
 
-      omc = float(self.omc1)
-      mdd = float(self.max_dry_density1)
+       omc = float(self.omc1)
+       mdd = float(self.max_dry_density1)
 
     # ------------------------------------------------
-    # Constrained parabola with fixed peak (OMC, MDD)
-    # y = a(x-omc)^2 + mdd
+    # Calculate parabola passing through:
+    #   1. First data point
+    #   2. Vertex (OMC, MDD)
     # ------------------------------------------------
-      def compaction_curve(x, a):
-        return a * (x - omc) ** 2 + mdd
 
-    # Fit only the coefficient 'a'
-      popt, _ = curve_fit(compaction_curve, x, y)
+       x1 = x[0]
+       y1 = y[0]
 
-      a = popt[0]
+    # Prevent division by zero
+       if abs(x1 - omc) < 1e-6:
+           x1 = x[1]
+           y1 = y[1]
 
-      x_smooth = np.linspace(x.min(), x.max(), 500)
-      y_smooth = compaction_curve(x_smooth, a)
+       a = (y1 - mdd) / ((x1 - omc) ** 2)
+
+       def compaction_curve(x):
+           return a * (x - omc) ** 2 + mdd
+
+       x_smooth = np.linspace(x.min(), x.max(), 500)
+       y_smooth = compaction_curve(x_smooth)
 
     # -------------------------
     # Plot
     # -------------------------
-      plt.figure(figsize=(15, 5))
+       plt.figure(figsize=(15, 5))
 
-      plt.plot(
+       plt.plot(
         x_smooth,
         y_smooth,
         color="blue",
         linewidth=2.8,
     )
 
-      plt.scatter(
+       plt.scatter(
         x,
         y,
         color="red",
@@ -2991,7 +3006,7 @@ class GsbMechanical(models.Model):
         zorder=5,
     )
 
-      plt.scatter(
+       plt.scatter(
         omc,
         mdd,
         color="red",
@@ -2999,21 +3014,21 @@ class GsbMechanical(models.Model):
         zorder=10,
     )
 
-      plt.axhline(
+       plt.axhline(
         y=mdd,
         color="red",
         linestyle="--",
         linewidth=1,
     )
 
-      plt.axvline(
+       plt.axvline(
         x=omc,
         color="red",
         linestyle="--",
         linewidth=1,
     )
 
-      plt.text(
+       plt.text(
         omc + 0.15,
         mdd + 0.002,
         f"OMC: {omc:.2f}%\nMDD: {mdd:.2f}",
@@ -3022,45 +3037,45 @@ class GsbMechanical(models.Model):
         fontweight="bold",
     )
 
-      plt.xlabel(
+       plt.xlabel(
         "Water Content (%)",
         fontsize=16,
     )
 
-      plt.ylabel(
+       plt.ylabel(
         "Dry Density (g/cc)",
         fontsize=16,
     )
 
-      plt.title(
+       plt.title(
         "DETERMINATION OF COMPACTION OMC / MDD",
         fontsize=22,
     )
 
-      plt.xlim(0, max(x) + 2)
-      plt.ylim(min(y) - 0.04, max(mdd, max(y)) + 0.03)
+       plt.xlim(0, max(x) + 2)
+       plt.ylim(min(y) - 0.04, max(mdd, max(y)) + 0.03)
 
     # -------------------------
     # Graph paper background
     # -------------------------
-      ax = plt.gca()
+       ax = plt.gca()
 
-      ax.set_facecolor("#f8fff8")
+       ax.set_facecolor("#f8fff8")
 
-      ax.xaxis.set_major_locator(MultipleLocator(1))
-      ax.xaxis.set_minor_locator(MultipleLocator(0.1))
+       ax.xaxis.set_major_locator(MultipleLocator(1))
+       ax.xaxis.set_minor_locator(MultipleLocator(0.1))
 
-      ax.yaxis.set_major_locator(MultipleLocator(0.05))
-      ax.yaxis.set_minor_locator(MultipleLocator(0.005))
+       ax.yaxis.set_major_locator(MultipleLocator(0.05))
+       ax.yaxis.set_minor_locator(MultipleLocator(0.005))
 
-      ax.grid(
+       ax.grid(
         which="major",
         color="green",
         linewidth=0.5,
         alpha=0.45,
     )
 
-      ax.grid(
+       ax.grid(
         which="minor",
         color="green",
         linestyle=":",
@@ -3068,23 +3083,22 @@ class GsbMechanical(models.Model):
         alpha=0.35,
     )
 
-      plt.tight_layout()
+       plt.tight_layout()
 
-      buffer = io.BytesIO()
+       buffer = io.BytesIO()
 
-      plt.savefig(
+       plt.savefig(
         buffer,
         format="png",
         dpi=100,
         bbox_inches="tight",
     )
 
-      plt.close()
+       plt.close()
 
-      buffer.seek(0)
+       buffer.seek(0)
 
-      return base64.b64encode(buffer.read()).decode("utf-8")
-
+       return base64.b64encode(buffer.read()).decode("utf-8")
 
 
 

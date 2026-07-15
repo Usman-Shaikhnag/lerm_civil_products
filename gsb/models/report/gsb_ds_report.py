@@ -375,39 +375,47 @@ class GsbReport1(models.AbstractModel):
        if len(x) < 3:
            return False
 
-    # -------------------------
-    # Sort Data
-    # -------------------------
+       # -------------------------
+       # Sort Data
+       # -------------------------
        data_points = sorted(zip(x, y))
        x = np.array([i[0] for i in data_points])
        y = np.array([i[1] for i in data_points])
 
-    # -------------------------
-    # Report Values
-    # -------------------------
+       # -------------------------
+       # Report Values
+       # -------------------------
        omc = float(data.omc)
        mdd = float(data.max_dry_density)
 
-    # -------------------------
-    # Constrained parabola
-    # y = a(x-omc)^2 + mdd
-    # -------------------------
-       def compaction_curve(x, a):
-           return a * (x - omc) ** 2 + mdd
+       # ------------------------------------------------
+       # Calculate parabola passing through:
+       #   1. First data point
+       #   2. Vertex (OMC, MDD)
+       # ------------------------------------------------
 
-       popt, _ = curve_fit(compaction_curve, x, y)
+       x1 = x[0]
+       y1 = y[0]
 
-       a = popt[0]
+       # Prevent division by zero
+       if abs(x1 - omc) < 1e-6:
+           x1 = x[1]
+           y1 = y[1]
+
+       a = (y1 - mdd) / ((x1 - omc) ** 2)
+
+       def compaction_curve(xx):
+           return a * (xx - omc) ** 2 + mdd
 
        x_smooth = np.linspace(x.min(), x.max(), 500)
-       y_smooth = compaction_curve(x_smooth, a)
+       y_smooth = compaction_curve(x_smooth)
 
-    # -------------------------
-    # Plot
-    # -------------------------
+       # -------------------------
+       # Plot
+       # -------------------------
        fig, ax = plt.subplots(figsize=(15, 5))
 
-    # Blue Curve
+       # Blue Curve
        ax.plot(
         x_smooth,
         y_smooth,
@@ -415,7 +423,7 @@ class GsbReport1(models.AbstractModel):
         linewidth=2.8,
     )
 
-    # Test Points
+       # Test Points
        ax.scatter(
         x,
         y,
@@ -424,7 +432,7 @@ class GsbReport1(models.AbstractModel):
         zorder=5,
     )
 
-    # Peak Point
+       # Peak Point
        ax.scatter(
         omc,
         mdd,
@@ -433,7 +441,7 @@ class GsbReport1(models.AbstractModel):
         zorder=10,
     )
 
-    # Guide Lines
+       # Guide Lines
        ax.axhline(
         y=mdd,
         color="red",
@@ -448,7 +456,7 @@ class GsbReport1(models.AbstractModel):
         linewidth=1,
     )
 
-    # Annotation
+       # Annotation
        ax.text(
         omc + 0.15,
         mdd + 0.002,
@@ -458,7 +466,7 @@ class GsbReport1(models.AbstractModel):
         fontweight="bold",
     )
 
-    # Labels
+       # Labels
        ax.set_xlabel(
         "Water Content (%)",
         fontsize=16,
@@ -484,9 +492,9 @@ class GsbReport1(models.AbstractModel):
         top=max(mdd, max(y)) + 0.03,
     )
 
-    # -------------------------
-    # Graph Paper Background
-    # -------------------------
+       # -------------------------
+       # Graph Paper Background
+       # -------------------------
        ax.set_facecolor("#f8fff8")
 
        ax.xaxis.set_major_locator(MultipleLocator(1))
@@ -536,6 +544,7 @@ class GsbReport1(models.AbstractModel):
     )
 
 
+
     def generate_line_chart_light_omc1(self, data):
 
        x = []
@@ -549,39 +558,47 @@ class GsbReport1(models.AbstractModel):
        if len(x) < 3:
            return False
 
-    # -------------------------
-    # Sort Data
-    # -------------------------
+       # -------------------------
+       # Sort Data
+       # -------------------------
        data_points = sorted(zip(x, y))
        x = np.array([i[0] for i in data_points])
        y = np.array([i[1] for i in data_points])
 
-    # -------------------------
-    # Report Values
-    # -------------------------
-       omc = float(data.omc)
-       mdd = float(data.max_dry_density)
+       # -------------------------
+       # Report Values
+       # -------------------------
+       omc = float(data.omc1)
+       mdd = float(data.max_dry_density1)
 
-    # -------------------------
-    # Constrained parabola
-    # y = a(x-omc)^2 + mdd
-    # -------------------------
-       def compaction_curve(x, a):
-           return a * (x - omc) ** 2 + mdd
+       # ------------------------------------------------
+       # Calculate parabola passing through:
+       #   1. First data point
+       #   2. Vertex (OMC, MDD)
+       # ------------------------------------------------
 
-       popt, _ = curve_fit(compaction_curve, x, y)
+       x1 = x[0]
+       y1 = y[0]
 
-       a = popt[0]
+       # Prevent division by zero
+       if abs(x1 - omc) < 1e-6:
+           x1 = x[1]
+           y1 = y[1]
+
+       a = (y1 - mdd) / ((x1 - omc) ** 2)
+
+       def compaction_curve(xx):
+           return a * (xx - omc) ** 2 + mdd
 
        x_smooth = np.linspace(x.min(), x.max(), 500)
-       y_smooth = compaction_curve(x_smooth, a)
+       y_smooth = compaction_curve(x_smooth)
 
-    # -------------------------
-    # Plot
-    # -------------------------
+       # -------------------------
+       # Plot
+       # -------------------------
        fig, ax = plt.subplots(figsize=(15, 5))
 
-    # Blue Curve
+       # Blue Curve
        ax.plot(
         x_smooth,
         y_smooth,
@@ -589,7 +606,7 @@ class GsbReport1(models.AbstractModel):
         linewidth=2.8,
     )
 
-    # Test Points
+       # Test Points
        ax.scatter(
         x,
         y,
@@ -598,7 +615,7 @@ class GsbReport1(models.AbstractModel):
         zorder=5,
     )
 
-    # Peak Point
+       # Peak Point
        ax.scatter(
         omc,
         mdd,
@@ -607,7 +624,7 @@ class GsbReport1(models.AbstractModel):
         zorder=10,
     )
 
-    # Guide Lines
+       # Guide Lines
        ax.axhline(
         y=mdd,
         color="red",
@@ -622,7 +639,7 @@ class GsbReport1(models.AbstractModel):
         linewidth=1,
     )
 
-    # Annotation
+       # Annotation
        ax.text(
         omc + 0.15,
         mdd + 0.002,
@@ -632,7 +649,7 @@ class GsbReport1(models.AbstractModel):
         fontweight="bold",
     )
 
-    # Labels
+       # Labels
        ax.set_xlabel(
         "Water Content (%)",
         fontsize=16,
@@ -658,9 +675,9 @@ class GsbReport1(models.AbstractModel):
         top=max(mdd, max(y)) + 0.03,
     )
 
-    # -------------------------
-    # Graph Paper Background
-    # -------------------------
+       # -------------------------
+       # Graph Paper Background
+       # -------------------------
        ax.set_facecolor("#f8fff8")
 
        ax.xaxis.set_major_locator(MultipleLocator(1))
