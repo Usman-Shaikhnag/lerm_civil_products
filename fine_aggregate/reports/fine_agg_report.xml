@@ -299,7 +299,7 @@
 						
 					</div>
 
-                     <div t-if="data.sieve_visible" style="margin-top:5px">
+                     <div t-if="data.sieve_visible and ((data.sieve_report_type == 'nabl' and nabl) or (data.sieve_report_type == 'non_nabl' and not nabl))" style="margin-top:5px">
 					
 						<table t-if="data.sieve_visible">
                             <tr cols="12">

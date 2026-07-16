@@ -168,6 +168,14 @@ class CoarseAggregateMechanical(models.Model):
     weight_of_sample = fields.Float(string="Weight of Sample in gms")
     sieve_analysis_name = fields.Char("Name",default="Sieve Analysis")
     sieve_visible = fields.Boolean("Sieve Analysis Visible",compute="_compute_visible")
+    sieve_report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),
+        ],
+        string="Test Type",
+        default='nabl',
+    )
 
     sieve_analysis_child_lines = fields.One2many('mechanical.coarse.aggregate.sieve.analysis.line','parent_id',string="Parameter")
     total_sieve_analysis = fields.Float(string="Total",compute="_compute_total_sieve")

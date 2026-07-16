@@ -351,7 +351,7 @@
 
 								 <t t-set="rowspan_count" t-value="2 + len(valid_sieve_lines) "/>
 								
-								<tr t-if="data.sieve_visible ">
+								<tr t-if="data.sieve_visible and ((data.sieve_report_type == 'nabl' and nabl) or (data.sieve_report_type == 'non_nabl' and not nabl))">
 									<t t-set="sieve" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','c2168fff-e47c-4155-99ff-9d7dc223e768')])"/>
 									
 									<td t-att-rowspan="rowspan_count" style="text-align: center;vertical-align:middle;">
@@ -364,7 +364,7 @@
 									
 								</tr>
 
-                                <tr t-if="data.sieve_visible">
+                                <tr t-if="data.sieve_visible and ((data.sieve_report_type == 'nabl' and nabl) or (data.sieve_report_type == 'non_nabl' and not nabl))">
                                     <td  style="text-align: center;">
 										<span>
 											IS Sieve Size
@@ -391,7 +391,7 @@
 									
 								</tr>
 
-                                <tr t-if="data.sieve_visible" t-foreach="valid_sieve_lines" t-as="r">
+                                <tr t-if="data.sieve_visible and ((data.sieve_report_type == 'nabl' and nabl) or (data.sieve_report_type == 'non_nabl' and not nabl))" t-foreach="valid_sieve_lines" t-as="r">
 									
 									<td>
 							     		<span t-esc="r['sieve_size']"/>

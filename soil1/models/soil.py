@@ -130,6 +130,14 @@ class Soil(models.Model):
     # Sieve Analysis
     sieve_name = fields.Char("Name",default="Sieve Analysis")
     sieve_visible = fields.Boolean("Sieve Analysis Visible",compute="_compute_visible")
+    sieve_report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),
+        ],
+        string="Test Type",
+        default='nabl',
+    )
  
     sieve_analysis_child_lines = fields.One2many('mechanical.soil.sieve.analysis.line','parent_id',string="Sieve Analysis",default=lambda self: self._default_sieve_analysis_child_lines())
 

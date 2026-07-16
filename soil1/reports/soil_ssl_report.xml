@@ -298,7 +298,7 @@
 
 								 <t t-set="rowspan_count1" t-value="len(valid_sieve_lines) + extra_rows"/>
 								
-								<tr t-if="data.sieve_visible ">
+								<tr t-if="data.sieve_visible and ((data.sieve_report_type == 'nabl' and nabl) or (data.sieve_report_type == 'non_nabl' and not nabl))">
 									<t t-set="sieve" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','12014fgr-5c56-475b-9a89-93a59c9ee3a2')])"/>
 									
 									<td t-att-rowspan="rowspan_count" style="text-align: center;vertical-align:middle;">
@@ -311,7 +311,7 @@
 									
 								</tr>
 
-								<tr t-if="data.sieve_visible and r['sieve_size'] and r['sieve_size'].lower() != 'pan'" t-foreach="valid_sieve_lines" t-foreach-index="r_index" t-as="r">
+								<tr t-if="data.sieve_visible and ((data.sieve_report_type == 'nabl' and nabl) or (data.sieve_report_type == 'non_nabl' and not nabl)) and r['sieve_size'] and r['sieve_size'].lower() != 'pan'" t-foreach="valid_sieve_lines" t-foreach-index="r_index" t-as="r">
 									
 									<td>
 							     		<span t-esc="r['sieve_size']"/>
@@ -356,7 +356,7 @@
 								</tr>
 								
 
-								<tr t-if="data.sieve_visible" >
+								<tr t-if="data.sieve_visible and ((data.sieve_report_type == 'nabl' and nabl) or (data.sieve_report_type == 'non_nabl' and not nabl))" >
 									
 									<td>
 							     		<span>Gravel</span>
@@ -389,7 +389,7 @@
 									</td>
 									
 								</tr>
-								<tr t-if="data.sieve_visible" >
+								<tr t-if="data.sieve_visible and ((data.sieve_report_type == 'nabl' and nabl) or (data.sieve_report_type == 'non_nabl' and not nabl))" >
 									
 									<td>
 							     		<span>Sand</span>
@@ -422,7 +422,7 @@
 									</td>
 									
 								</tr>
-								<tr t-if="data.sieve_visible" >
+								<tr t-if="data.sieve_visible and ((data.sieve_report_type == 'nabl' and nabl) or (data.sieve_report_type == 'non_nabl' and not nabl))" >
 									
 									<td>
 							     		<span>Silt and Clay</span>

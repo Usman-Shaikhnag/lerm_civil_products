@@ -101,8 +101,8 @@
                             <field name="sieve_visible" invisible="1"/>
                         </h1>
                     </div>
-
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not sieve_visible">
+                   <div class="d-flex gap-2" invisible="not sieve_visible">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
                         <tbody>
                             <tr>
                                 <td class="w-25"><label for="wt_of_sample"/></td>
@@ -113,6 +113,16 @@
                             </tr>
                         </tbody>
                     </table>
+                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="width:50%;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%;"><label for="sieve_report_type"></label></td>
+                                    <td style="width:50%;"><field name="sieve_report_type"/></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                    </div>
                     
                     <field name="sieve_analysis_child_lines" invisible = "sieve_visible == False">
                         <tree editable="bottom" class="custom_table_borders">
