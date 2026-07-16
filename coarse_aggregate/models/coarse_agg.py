@@ -138,6 +138,28 @@ class CoarseAggregateMechanical(models.Model):
     total_sieve_analysis = fields.Float(string="Total",compute="_compute_total_sieve")
 
 
+    report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="Report Type",
+        default='nabl',
+        required=True,
+    )
+
+    sieve_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_sieve_nabl",
+    store=True
+)
+
+    @api.depends('report_type')
+    def _compute_sieve_nabl(self):
+     for rec in self:
+        rec.sieve_nabl = 'pass' if rec.report_type == 'nabl' else 'fail'
+
+
     def default_get(self, fields):
         print("From Default Value")
         res = super(CoarseAggregateMechanical, self).default_get(fields)
@@ -253,26 +275,69 @@ class CoarseAggregateMechanical(models.Model):
 
 
 
-    def calculate_sieve(self): 
-        for record in self:
-            # import wdb; wdb.set_trace()
-            record.populate_sieve_analysis_lines()  # replace default_get call
-            for line in record.sieve_analysis_child_lines:
-                # print("Rows",str(line.percent_retained))
-                previous_line = line.serial_no - 1
-                if previous_line == 0:
-                    if line.percent_retained == 0:
-                        line.write({'cumulative_retained': round(line.percent_retained + line.percent_retained,2),
-                                    'passing_percent': 100 ,})
-                    else:
-                        line.write({'cumulative_retained': round(line.percent_retained + line.percent_retained,2),
-                                    'passing_percent': round(100 -line.percent_retained - line.percent_retained,2),})
-                else:
-                    previous_line_record = self.env['mechanical.coarse.aggregate.sieve.analysis.line'].sudo().search([("serial_no", "=", previous_line),("parent_id","=",self.id)]).cumulative_retained
-                    line.write({'cumulative_retained': previous_line_record + line.percent_retained,
-                                'passing_percent': round(100-(previous_line_record + line.percent_retained),2),})
+    # def calculate_sieve(self): 
+    #     for record in self:
+    #         # import wdb; wdb.set_trace()
+    #         record.populate_sieve_analysis_lines()  # replace default_get call
+    #         for line in record.sieve_analysis_child_lines:
+    #             # print("Rows",str(line.percent_retained))
+    #             previous_line = line.serial_no - 1
+    #             if previous_line == 0:
+    #                 if line.percent_retained == 0:
+    #                     line.write({'cumulative_retained': round(line.percent_retained + line.percent_retained,2),
+    #                                 'passing_percent': 100 ,})
+    #                 else:
+    #                     line.write({'cumulative_retained': round(line.percent_retained + line.percent_retained,2),
+    #                                 'passing_percent': round(100 -line.percent_retained - line.percent_retained,2),})
+    #             else:
+    #                 previous_line_record = self.env['mechanical.coarse.aggregate.sieve.analysis.line'].sudo().search([("serial_no", "=", previous_line),("parent_id","=",self.id)]).cumulative_retained
+    #                 line.write({'cumulative_retained': previous_line_record + line.percent_retained,
+    #                             'passing_percent': round(100-(previous_line_record + line.percent_retained),2),})
                     
                     # print("Previous Cumulative",previous_line_record)
+
+
+    def calculate_sieve(self): 
+        for record in self:
+            previous_cumulative = 0  
+            for line in record.sieve_analysis_child_lines:
+                print("Rows", str(line.percent_retained))
+                previous_line = line.serial_no - 1
+
+                # If this line is 'Pan', directly assign fixed values
+                if line.sieve_size and line.sieve_size.lower() == 'pan':
+                    line.write({
+                        'cumulative_retained': 100.00,
+                        'passing_percent': 0.00,
+                    })
+                    print("PAN LINE: cumulative_retained=100, passing_percent=0")
+                    continue  # skip rest of logic for pan
+
+                # Normal sieve calculation
+                if previous_line == 0:
+                    cumulative_retained = line.percent_retained
+                else:
+                    previous_line_record = self.env['mechanical.soil.sieve.analysis.line'].sudo().search([
+                        ("serial_no", "=", previous_line),
+                        ("parent_id", "=", record.id)
+                    ], limit=1)
+                    
+                    if previous_line_record:
+                        previous_cumulative = previous_line_record.cumulative_retained
+                    cumulative_retained = previous_cumulative + line.percent_retained
+
+                passing_percent = 100 - cumulative_retained
+
+                # Write updated values
+                line.write({
+                    'cumulative_retained': round(cumulative_retained, 2),
+                    'passing_percent': round(passing_percent, 2),
+                })
+
+                print("Updated Cumulative Retained:", cumulative_retained)
+                print("Updated Passing Percent:", passing_percent)
+
+                previous_cumulative = cumulative_retained
                     
 
     
@@ -2578,6 +2643,11 @@ class SieveAnalysisLine(models.Model):
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
     sieve_size = fields.Char(string="IS Sieve Size mm")
     wt_retained = fields.Float(string="Wt. Retained in gms")
+
+    cumulative_percent = fields.Float(string="Cum. Weight Retained (gm)",compute="_compute_cumulative_percent",
+    store=True,)
+
+
     percent_retained = fields.Float(string='% of Weight Retained', compute="_compute_percent_retained",digits=(16,2))
     cumulative_retained = fields.Float(string="% of Cumulative Wt. Retained ", store=True,digits=(16,2))
     passing_percent = fields.Float(string="% of wt passing",digits=(16,2))
@@ -2632,6 +2702,16 @@ class SieveAnalysisLine(models.Model):
                 record.percent_retained = (record.wt_retained / self.parent_id.weight_of_sample) * 100
             except ZeroDivisionError:
                 record.percent_retained = 0
+
+    @api.depends('wt_retained', 'parent_id.sieve_analysis_child_lines.wt_retained')
+    def _compute_cumulative_percent(self):
+        for parent in self.mapped('parent_id'):
+            total = 0
+            lines = parent.sieve_analysis_child_lines.sorted('serial_no')
+
+            for line in lines:
+                total += line.wt_retained or 0
+                line.cumulative_percent = total
 
 
     @api.depends('cumulative_retained')
