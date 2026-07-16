@@ -450,18 +450,38 @@ class Soil(models.Model):
     @api.onchange('sieve_analysis_child_lines')
     def _onchange_sieve_analysis_child_lines(self):
         for rec in self:
+            # pan_line = None
+            # total_retained = 0.0
+            # target_sieves = ['40mm','25mm','19mm','12.5mm','10mm','6.3mm', '4.75mm', '2.36mm','1.18mm','600µ','300µ','150µ','75µ']
+
+            # for line in rec.sieve_analysis_child_lines:
+            #     if line.sieve_size and line.sieve_size.lower() == 'pan':
+            #         pan_line = line
+            #     elif line.sieve_size in target_sieves:
+            #         total_retained += line.wt_retained or 0.0
+
+            # if pan_line:
+            #     pan_line.wt_retained = (rec.wt_of_sample or 0.0) - total_retained
+
+            target_sieves = [
+                '40mm', '25mm', '19mm', '12.5mm',
+                '10mm', '6.3mm', '4.75mm',
+                '2.36mm', '1.18mm',
+                '600µ', '300µ', '150µ', '75µ']
+
             pan_line = None
             total_retained = 0.0
-            target_sieves = ['40mm','25mm','19mm','12.5mm','10mm','6.3mm', '4.75mm', '2.36mm','1.18mm','600µ','300µ','150µ','75µ']
 
             for line in rec.sieve_analysis_child_lines:
-                if line.sieve_size and line.sieve_size.lower() == 'pan':
-                    pan_line = line
-                elif line.sieve_size in target_sieves:
-                    total_retained += line.wt_retained or 0.0
+               sieve = (line.sieve_size or '').strip().lower()
+ 
+               if sieve == 'pan':
+                 pan_line = line
+               elif sieve in [s.lower() for s in target_sieves]:
+                total_retained += line.wt_retained or 0.0
 
             if pan_line:
-                pan_line.wt_retained = (rec.wt_of_sample or 0.0) - total_retained
+              pan_line.wt_retained = (rec.wt_of_sample or 0.0) - total_retained
 
 
 
@@ -2257,7 +2277,7 @@ class Soil(models.Model):
         s3 = [l.sample3_load for l in lines]
 
         # ✅ Increase width only (width=12, height=5)
-        plt.figure(figsize=(12, 5))
+        plt.figure(figsize=(10, 7))
 
         plt.plot(penetration, s1, marker='o', label='Sample-1')
         plt.plot(penetration, s2, marker='o', label='Sample-2')
