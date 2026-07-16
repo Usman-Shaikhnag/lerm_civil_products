@@ -88,6 +88,18 @@
                             <field name="sieve_visible" invisible="1"/>
                         </h1>
                     </div>
+
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not sieve_visible">
+                        <tbody>
+                            <tr>
+                                <td class="w-25"><label for="report_type"/></td>
+                                <td  class="w-25">
+                                    <field name="report_type" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
                     
                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not sieve_visible">
                         <tbody>
@@ -106,7 +118,7 @@
                                 <!-- <field name="serial_no" string="Sr.No"/> -->
                                 <field name='sieve_size'/>
                                 <field name='wt_retained' class="blue-input" decoration-info="wt_retained != 0"/>
-                                <field name='percent_retained' readonly="1"/>
+                                <field name='cumulative_percent' readonly="1"/>
                                 <field name='cumulative_retained' context="{'default_cumulative_retained': cumulative_retained}" readonly="1"/>
                                 <field name='passing_percent' readonly="1"/>
                                 <field name='specific_limits' readonly="1"/>

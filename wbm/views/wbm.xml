@@ -53,36 +53,59 @@
                     
                     <!-- Dry Gradation Sieve Analysis (Sieve Size: 53 mm to 75 micron) -->
 
-                    <div class="text-center" invisible="dry_gradation_visible == False">
-                        <h1>
-                            <field name="dry_gradation_name" readonly="1" nolabel="1"/>
-                            <field name="dry_gradation_visible" invisible="1"/>
+                    <div invisible="sieve_visible == False">
+                        <h1 style="text-align: center;">
+                            <field name="sieve_analysis_name" readonly="1" nolabel="1"/>
+                            <field name="sieve_visible" invisible="1"/>
                         </h1>
                     </div>
-                    <group/>
 
-                     <div invisible="dry_gradation_visible == False" class="custom_table_borders">
-                        <field name="dry_gradation_table" colspan="2" nolabel="1">
-                        <tree editable="bottom" class="custom_table_borders" style="margin-top: 15px;">
-                          <field name="sieve_size" />
-                          <field name="wt_retained" class="blue-input" decoration-info="wt_retained != 0"/>
-                          <field name="percent_retained"/>
-                          <field name="cumulative_retained" readonly="1"/>
-                          <field name="passing_percent" readonly="1"/>
-                        </tree>
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not sieve_visible">
+                        <tbody>
+                            <tr>
+                                <td class="w-25"><label for="report_type"/></td>
+                                <td  class="w-25">
+                                    <field name="report_type" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not sieve_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="weight_of_sample">Weight of Sample in kg</label></td>
+                                <td>
+                                    <field name="weight_of_sample" class="blue-input" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div invisible="sieve_visible == False" class="custom_table_borders">
+                        <field name="sieve_analysis_child_lines" nolabel="1">
+                            <tree editable="bottom">
+                                <!-- <field name="serial_no" string="Sr.No"/> -->
+                                <field name='sieve_size'/>
+                                <field name='wt_retained' class="blue-input" decoration-info="wt_retained != 0"/>
+                                <field name='cumulative_percent' readonly="1"/>
+                                <field name='cumulative_retained' context="{'default_cumulative_retained': cumulative_retained}" readonly="1"/>
+                                <field name='passing_percent' readonly="1"/>
+                                <field name='specific_limits' readonly="1"/>
+                            </tree>
                         </field>
-                   </div>
-
-                   <div invisible="dry_gradation_visible == False">
+                    </div>
+                    
+                    
+                    <div invisible="sieve_visible == False">
                         <button type="object" name="calculate_sieve" class="btn btn-primary">
                             <i class="fa fa-calculator mr-1"/> Calculate
                         </button>
                     </div>
 
-                    
-
                     <!-- Table for Total Sieve Analysis -->
-                    <table class="table table-sm o_form_table table-bordered w-50 mt-2 custom_table_borders" invisible="not dry_gradation_visible">
+                    <table class="table table-sm o_form_table table-bordered w-50 mt-2 custom_table_borders" invisible="not sieve_visible">
                         <tbody>
                             <tr>
                                 <td><label for="total_sieve_analysis" class="text-bold">Total</label></td>
@@ -91,9 +114,7 @@
                         </tbody>
 
                     </table>
-                    <group/>
-
-                   
+                    
                     
 
                     <!-- Specific Gravity and Water Absorbtion  -->

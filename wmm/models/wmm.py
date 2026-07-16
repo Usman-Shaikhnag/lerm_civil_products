@@ -46,74 +46,129 @@ class WmmMechanical(models.Model):
 
 
     # Dry Gradation Sieve Analysis (Sieve Size: 53 mm to 75 micron)
-    dry_gradation_name = fields.Char(default="Sieve Analysis (Sieve Size: 53 mm to 75 micron)")
-    dry_gradation_visible = fields.Boolean(compute="_compute_visible")
+    
+    weight_of_sample = fields.Float(string="Weight of Sample in gms")
+    sieve_analysis_name = fields.Char("Name",default="Sieve Analysis")
+    sieve_visible = fields.Boolean("Sieve Analysis Visible",compute="_compute_visible")
 
-    dry_gradation_table = fields.One2many('mech.dry.gradation.line','parent_id',string="Dry Gradation")
-    total_sieve_analysis = fields.Integer(string="Total",compute="_compute_total_sieve")
+    sieve_analysis_child_lines = fields.One2many('mech.dry.gradation.line','parent_id',string="Parameter",default=lambda self: self._default_sieve_analysis_child_liness())
+    total_sieve_analysis = fields.Float(string="Total",compute="_compute_total_sieve")
+
+
+    report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="Report Type",
+        default='nabl',
+        required=True,
+    )
+
+    sieve_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_sieve_nabl",
+    store=True
+)
+
+    @api.depends('report_type')
+    def _compute_sieve_nabl(self):
+     for rec in self:
+        rec.sieve_nabl = 'pass' if rec.report_type == 'nabl' else 'fail'
+
+
+    @api.model
+    def _default_sieve_analysis_child_liness(self):
+     return [
+        (0, 0, {'sieve_size': '53mm',   'specific_limits': '100'}),
+        (0, 0, {'sieve_size': '45mm',   'specific_limits': '95-100'}),
+        (0, 0, {'sieve_size': '22.4mm',   'specific_limits': '60-80'}),
+        (0, 0, {'sieve_size': '11.2mm',   'specific_limits': '40-60'}),
+        (0, 0, {'sieve_size': '4.75mm', 'specific_limits': '25-40'}),
+        (0, 0, {'sieve_size': '2.36mm', 'specific_limits': '15-30'}),
+        (0, 0, {'sieve_size': '600micron',   'specific_limits': '8-22'}),
+        (0, 0, {'sieve_size': '70micron',   'specific_limits': '0-5'}),
+        (0, 0, {'sieve_size': 'Pan',    'specific_limits': ''}),
+    ]
+
+
     
 
+    def calculate_sieve(self):
+     for record in self:
+        cumulative_weight = 0.0
 
-    def calculate_sieve(self): 
-        for record in self:
-            for line in record.dry_gradation_table:
-                print("Rows",str(line.percent_retained))
-                previous_line = line.serial_no - 1
-                if previous_line == 0:
-                    if line.percent_retained == 0:
-                        # print("Percent retained 0",line.percent_retained)
-                        line.write({'cumulative_retained': round(line.percent_retained + line.percent_retained,2)})
-                        line.write({'passing_percent': 100 })
-                    else:
-                        # print("Percent retained else",line.percent_retained)
-                        line.write({'cumulative_retained': round(line.percent_retained + line.percent_retained,2)})
-                        line.write({'passing_percent': round(100 -line.percent_retained - line.percent_retained,2)})
-                else:
-                    previous_line_record = self.env['mech.dry.gradation.line'].sudo().search([("serial_no", "=", previous_line),("parent_id","=",self.id)]).cumulative_retained
-                    line.write({'cumulative_retained': round(previous_line_record + line.percent_retained,2)})
-                    line.write({'passing_percent': round(100-(previous_line_record + line.percent_retained),2)})
-                    print("Previous Cumulative",previous_line_record)
-                    
+        lines = record.sieve_analysis_child_lines.sorted(
+            key=lambda line: line.serial_no
+        )
 
+        sample_weight = record.weight_of_sample or 0.0
+
+        for line in lines:
+            cumulative_weight += line.wt_retained or 0.0
+
+            if sample_weight > 0:
+                cumulative_retained = (
+                    cumulative_weight / sample_weight
+                ) * 100.0
+
+                passing_percent = 100.0 - cumulative_retained
+
+            else:
+                cumulative_retained = 0.0
+                passing_percent = 0.0
+
+            line.write({
+                'cumulative_percent': round(
+                    cumulative_weight, 2
+                ),
+                'cumulative_retained': round(
+                    cumulative_retained, 2
+                ),
+                'passing_percent': round(
+                    passing_percent, 2
+                ),
+            })
+                 
     
-
-
-    @api.depends('dry_gradation_table.wt_retained')
+    @api.depends('sieve_analysis_child_lines.wt_retained')
     def _compute_total_sieve(self):
         for record in self:
             print("recordd",record)
-            record.total_sieve_analysis = sum(record.dry_gradation_table.mapped('wt_retained'))
+            record.total_sieve_analysis = sum(record.sieve_analysis_child_lines.mapped('wt_retained'))
 
-    def default_get(self, fields):
-        print("From Default Value")
-        res = super(WmmMechanical, self).default_get(fields)
+    @api.onchange('sieve_analysis_child_lines')
+    def _onchange_sieve_analysis_child_lines(self):
+        for rec in self:
+            pan_line = None
+            total_retained = 0.0            
+            # Find all unique sieve sizes except pan
+            all_sieves = set()
+            for line in rec.sieve_analysis_child_lines:
+                if line.sieve_size and line.sieve_size.lower() != 'pan':
+                    all_sieves.add(line.sieve_size.strip())
+            
+            # Calculate total retained for all non-pan sieves
+            for line in rec.sieve_analysis_child_lines:
+                if line.sieve_size and line.sieve_size.lower() == 'pan':
+                    pan_line = line
+                elif line.sieve_size in all_sieves:  # Include all non-pan sieves
+                    total_retained += line.wt_retained or 0.0
 
-        default_dry_sieve_sizes = []
-        # default_elongated_sieve_sizes = []
-        dry_sieve_sizes = ['53 mm', '45 mm','22.4 mm', '11.2 mm', '4.75 mm','2.36 mm','600 micron','75 micron','pan']
-        # elongation_sieve_sizes = ['63 mm', '50 mm', '40 mm', '31.5 mm', '25 mm','20 mm','16 mm','12.5 mm','10 mm','6.3 mm']
+            # Update pan weight if pan exists and we have a sample weight
+            if pan_line and rec.weight_of_sample:
+                pan_line.wt_retained = rec.weight_of_sample - total_retained
 
 
-        for i in range(9):  # You can change the number of default lines as needed
-            size = {
-                'sieve_size': dry_sieve_sizes[i] # Set the default product
-                # Set the default quantity
-            }
-            default_dry_sieve_sizes.append((0, 0, size))
-        res['dry_gradation_table'] = default_dry_sieve_sizes
-        # for i in range(10):  # You can change the number of default lines as needed
-        #     size = {
-        #         'sieve_size': elongation_sieve_sizes[i] # Set the default product
-        #         # Set the default quantity
-        #     }
-        #     default_elongated_sieve_sizes.append((0, 0, size))
-        res['dry_gradation_table'] = default_dry_sieve_sizes
-        # res['elongation_table'] = default_elongated_sieve_sizes
+    # @api.depends('sieve_analysis_child_lines.wt_retained')
+    # def _compute_cumulative_sieve(self):
+    #     for record in self:
+    #         print("recordd",record)
+    #         record.cumulative = sum(record.sieve_analysis_child_lines.mapped('wt_retained'))
 
-        return res
+
+
     
-
-
     # Water Absorbtion 
     water_absorbtion_name = fields.Char(default="Specific Gravity & Water Absorption")
     water_absorbtion_visible = fields.Boolean(compute="_compute_visible")
@@ -2949,7 +3004,7 @@ class WmmMechanical(models.Model):
     @api.depends('eln_ref','sample_parameters')
     def _compute_visible(self):
         for record in self:
-            record.dry_gradation_visible = False
+            record.sieve_visible = False
             record.water_absorbtion_visible  = False
             record.crushing_visible = False
             record.impact_visible = False
@@ -2981,7 +3036,7 @@ class WmmMechanical(models.Model):
 
 
                 if sample.internal_id == '32145ghty-6741-4817-95f4-5e53a0676c5f':
-                    record.dry_gradation_visible = True
+                    record.sieve_visible = True
 
                 if sample.internal_id == '1478578hgfr-6d14-468e-8488-6d100818e924':
                     record.water_absorbtion_visible  = True
@@ -3415,11 +3470,39 @@ class DryGradationLine(models.Model):
     parent_id = fields.Many2one('mechanical.wmm', string="Parent Id")
     
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
-    sieve_size = fields.Char(string="IS Sieve Size" )
+    sieve_size = fields.Char(string="IS Sieve Size mm")
     wt_retained = fields.Float(string="Wt. Retained in gms")
-    percent_retained = fields.Float(string='% Retained', compute="_compute_percent_retained")
-    cumulative_retained = fields.Float(string="Cum. Retained %", store=True)
-    passing_percent = fields.Float(string="Passing %")
+    cumulative_percent = fields.Float(string="Cum. Weight Retained (gm)",compute="_compute_cumulative_percent",
+    store=True,)
+
+    percent_retained = fields.Float(string='% of Weight Retained', compute="_compute_percent_retained",digits=(16,2))
+    cumulative_retained = fields.Float(string="% of Cumulative Wt. Retained ",compute="_compute_cum_retained", store=True,digits=(16,2))
+    passing_percent = fields.Float(string="% of wt passing",digits=(16,2))
+    specific_limits = fields.Char(
+    string="Specified Limits",
+    compute="_compute_specific_limits",
+    store=True
+)
+
+    @api.depends('sieve_size')
+    def _compute_specific_limits(self):
+
+     limits = {
+        '53mm': '100',
+        '45mm': '95-100',
+        '22.4mm': '60-80',
+        '11.2mm': '40-60',
+        '4.75mm': '25-40',
+        '2.36mm': '15-30',
+        '600micron': '8-22',
+        '70micron': '0-5',
+        'Pan': '',
+    }
+
+     for rec in self:
+        key = (rec.sieve_size or '').strip()
+        rec.specific_limits = limits.get(key, '')
+    
 
 
 
@@ -3445,36 +3528,71 @@ class DryGradationLine(models.Model):
         if 'parent_id' in vals or 'wt_retained' in vals:
             for record in self:
                 if record.parent_id and record.parent_id == vals.get('parent_id') and 'wt_retained' in vals:
-                    record.percent_retained = round((vals['wt_retained'] / record.parent_id.total * 100),2) if record.parent_id.total else 0
+                    record.percent_retained = vals['wt_retained'] / record.parent_id.total * 100 if record.parent_id.total else 0
 
             new_self = super(DryGradationLine, self).write(vals)
-
             if 'wt_retained' in vals:
                 for record in self:
-                    record.parent_id._compute_total_sieve()
-
+                    # record.parent_id._compute_total()
+                    pass
             return new_self
-
         return super(DryGradationLine, self).write(vals)
 
     def unlink(self):
         # Get the parent_id before the deletion
         parent_id = self[0].parent_id
-
         res = super(DryGradationLine, self).unlink()
-
-        
-
+        if parent_id:
+            parent_id.sieve_analysis_child_lines._reorder_serial_numbers()
         return res
 
-
-    @api.depends('wt_retained', 'parent_id.total_sieve_analysis')
+    @api.depends('wt_retained', 'parent_id.weight_of_sample')
     def _compute_percent_retained(self):
+     for record in self:
+        if record.parent_id and record.parent_id.weight_of_sample:
+            record.percent_retained = (
+                (record.wt_retained or 0.0) /
+                record.parent_id.weight_of_sample
+            ) * 100
+        else:
+            record.percent_retained = 0.0
+
+
+    # @api.depends('cumulative_retained')
+    # def _compute_cum_retained(self):
+    #     self.cumulative_retained=0
+
+    @api.depends('percent_retained', 'parent_id.sieve_analysis_child_lines.percent_retained')
+    def _compute_cum_retained(self):
         for record in self:
-            try:
-                record.percent_retained = record.wt_retained / self.parent_id.total_sieve_analysis * 100
-            except ZeroDivisionError:
-                record.percent_retained = 0
+            cumulative = 0.0
+            found = False
+
+            for line in sorted(record.parent_id.sieve_analysis_child_lines, key=lambda l: l.serial_no):
+                cumulative += line.percent_retained or 0.0
+                if line.id == record.id:
+                    found = True
+                    record.cumulative_retained = cumulative
+                    break
+
+            if not found:
+                record.cumulative_retained = 0.0
+
+    @api.depends('wt_retained', 'parent_id.sieve_analysis_child_lines.wt_retained')
+    def _compute_cumulative_percent(self):
+        for parent in self.mapped('parent_id'):
+            total = 0
+            lines = parent.sieve_analysis_child_lines.sorted('serial_no')
+
+            for line in lines:
+                total += line.wt_retained or 0
+                line.cumulative_percent = total
+        
+
+    def get_previous_record(self):
+        for record in self:
+            # import wdb; wdb.set_trace()
+            sorted_lines = sorted(record.parent_id.sieve_analysis_child_lines, key=lambda r: r.id)
 
 
 class WmmSpecificGravityWaterAbsorptionLine(models.Model):

@@ -232,7 +232,13 @@
 							</thead>
 							<tbody>
 
+
+
                             <!-- Sieve Analysis -->
+
+							<t t-if="data.sieve_visible and ((data.report_type == 'nabl' and nabl) or (data.report_type == 'non_nabl' and not nabl))">
+
+
                             <t t-set="valid_sieve_lines" t-value="[r for r in data.sieve_analysis_child_lines if r['sieve_size'] != 'pan']"/>
 
 								 <t t-set="rowspan_count" t-value="2 + len(valid_sieve_lines) "/>
@@ -330,6 +336,8 @@
 									</td> -->
 									
 								</tr>
+
+								</t>
 
 
 

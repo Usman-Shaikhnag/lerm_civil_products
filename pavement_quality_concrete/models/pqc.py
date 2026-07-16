@@ -142,6 +142,28 @@ class PavementQualityConcrete(models.Model):
     total_sieve_analysis = fields.Float(string="Total",compute="_compute_total_sieve")
 
 
+    report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="Report Type",
+        default='nabl',
+        required=True,
+    )
+
+    sieve_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_sieve_nabl",
+    store=True
+)
+
+    @api.depends('report_type')
+    def _compute_sieve_nabl(self):
+     for rec in self:
+        rec.sieve_nabl = 'pass' if rec.report_type == 'nabl' else 'fail'
+
+
     @api.model
     def default_get(self, fields_list):
         res = super().default_get(fields_list)

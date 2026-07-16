@@ -317,7 +317,7 @@ class CoarseAggregateMechanical(models.Model):
                 if previous_line == 0:
                     cumulative_retained = line.percent_retained
                 else:
-                    previous_line_record = self.env['mechanical.soil.sieve.analysis.line'].sudo().search([
+                    previous_line_record = self.env['mechanical.coarse.aggregate.sieve.analysis.line'].sudo().search([
                         ("serial_no", "=", previous_line),
                         ("parent_id", "=", record.id)
                     ], limit=1)

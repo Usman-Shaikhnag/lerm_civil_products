@@ -227,6 +227,8 @@
 							</thead>
 							<tbody>
 
+							<t t-if="data.dry_gradation_visible and ((data.report_type == 'nabl' and nabl) or (data.report_type == 'non_nabl' and not nabl))">
+
 							<!-- Sieve Analysis -->
                             <t t-set="valid_sieve_lines" t-value="[r for r in data.sieve_analysis_child_lines if r['sieve_size'] != 'pan']"/>
 
@@ -326,6 +328,8 @@
 									
 									
 								</tr>
+
+								</t>
 
 								<t t-set="show_liquid_limit" t-value="data.liquid_limit_nabl == 'pass' and nabl or (data.liquid_limit_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
 					

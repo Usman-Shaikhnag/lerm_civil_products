@@ -196,69 +196,8 @@
 							</table>
 					</div>
 
-
-
-					
-					<div style="text-align:center;">
-						<h4 class="mb-0" style="text-decoration: underline;">Results</h4>
-					</div>
-					 
-					<div t-if="data.sieve_visible" style="margin-top:5px">
-						<table>
-							<tr cols="12">
-                                <th colspan="6">1. Sieve Analysis (Gradation) :-</th>
-                                <th colspan="6"><span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','c2168fff-e47c-4155-99ff-9d7dc223e768')]).test_method.test_method"/></th>
-                            </tr>
-							<tr cols="12">
-                                <th colspan="2" style="text-align: center;">IS Sieve Size</th>
-                                <th colspan="2" style="text-align: center;">Weight Retained (gms)</th>
-                                <th colspan="2" style="text-align: center;">% of Weight Retained</th>
-                                <th colspan="2" style="text-align: center;">% of Cumulative Wt.  Retained</th>
-                                <th colspan="2" style="text-align: center;">% of wt passing</th>
-								<th colspan="2" style="text-align: center;">
-									<span>
-										<span t-esc="eln.material.specifications"/>
-									</span>
-								</th>
-                            </tr>
-							<t t-set="k" t-value="0"/>
-							<tr t-foreach="data.sieve_analysis_child_lines" t-as="r" t-if="'pan' != r['sieve_size']">
-								
-								<td colspan="2" style="text-align: center;">
-									<t t-set="k" t-value="k+1"/>
-									<t t-if="r['sieve_size']">
-										<span t-esc="r['sieve_size']"/>
-									</t>
-								</td>
-								<td colspan="2" style="text-align: center;">
-									<t t-if="r['sieve_size']">
-										<span t-esc="r['wt_retained']" />
-									</t>
-								</td>
-								<td colspan="2" style="text-align: center;">
-									<t t-if="r['sieve_size']">
-										<span t-esc="r['percent_retained']" />
-									</t>
-								</td>
-								<td colspan="2" style="text-align: center;">
-									<t t-if="r['sieve_size']">
-										<span t-esc="r['cumulative_retained']" t-options='{"widget": "float", "precision": 2}'/>
-									</t>
-								</td>
-								<td colspan="2" style="text-align: center;">
-									<t t-if="r['sieve_size']">
-										<span t-esc="r['passing_percent']" t-options='{"widget": "float", "precision": 2}'/>
-									</t>
-								</td>
-								<td colspan="2" style="text-align: center;">
-									<t t-if="r['sieve_size']">
-										<span t-esc="r['specific_limits']"/>
-									</t>
-								</td>
-							</tr>
-						</table>
                         
-					</div>
+					
 					<div style="">
 						<table style="margin-top:10px;">
 						<t t-set="i" t-value="1"/>
@@ -291,6 +230,112 @@
 								</tr>
 							</thead>
 							<tbody>
+
+							<t t-if="data.sieve_visible and ((data.report_type == 'nabl' and nabl) or (data.report_type == 'non_nabl' and not nabl))">
+
+                            <!-- Sieve Analysis -->
+                            <t t-set="valid_sieve_lines" t-value="[r for r in data.sieve_analysis_child_lines if r['sieve_size'] != 'pan']"/>
+
+								 <t t-set="rowspan_count" t-value="2 + len(valid_sieve_lines) "/>
+								
+								<tr t-if="data.sieve_visible ">
+									<t t-set="sieve" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','c2168fff-e47c-4155-99ff-9d7dc223e768')])"/>
+									
+									<td t-att-rowspan="rowspan_count" style="text-align: center;vertical-align:middle;">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td colspan="5">  
+										<span t-esc="sieve.parameter_name"/>
+									</td>
+									
+								</tr>
+
+                                <tr t-if="data.sieve_visible">
+                                    <td  style="text-align: center;">
+										<span>
+											IS Sieve Size
+										</span>
+									</td>
+
+                                    <td   style="text-align: center;">
+										<span>
+											% of wt passing
+										</span>
+									</td>
+
+                                    <td   style="text-align: center;">
+										<span>
+											
+										</span>
+									</td>
+
+                                    <td  style="text-align: center;">
+										<span>
+											Limit As per IS 383:2016
+										</span>
+									</td>
+
+                                    <td  style="text-align: center;">
+										<span>
+											
+										</span>
+									</td>
+									
+								</tr>
+
+                                <tr t-if="data.sieve_visible" t-foreach="valid_sieve_lines" t-as="r">
+									
+									<td>
+							     		<span t-esc="r['sieve_size']"/>
+									</td>
+
+                                    <td  style="text-align: center;font-weight:bold;">
+									  <span t-esc="r['passing_percent']" t-options='{"widget": "float", "precision": 2}'/>
+                                     </td>
+
+                                     <td style="text-align: center;">
+										<span>
+											<span t-esc="sieve.unit.name"/>
+										</span>
+									</td>
+
+                                    <td style="text-align: center;font-weight:bold;">
+									  <span t-esc="r['specific_limits']" />
+                                     </td>
+
+									<!-- <td  style="text-align: center;">
+										<span>
+											<span t-esc="sieve.unit.name"/>
+										</span>
+									</td> -->
+
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="sieve.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+								  
+									<!-- <td style="text-align: center;">
+										<span>
+											<t t-foreach="sieve.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td> -->
+									
+								</tr>
+
+								</t>
+
+
+
 							
 							<!--  -->
 							<tr t-if="data.specific_gravity_visible and (data.avg_water_absorption_nabl == 'pass' and nabl or (data.avg_water_absorption_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
