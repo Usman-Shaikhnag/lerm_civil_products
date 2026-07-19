@@ -228,24 +228,28 @@
 							<tbody>
 
 							<!-- Sieve Analysis -->
-                            <t t-set="valid_sieve_lines" t-value="[r for r in data.dry_gradation_table if r['sieve_size'] != 'pan']"/>
+
+							<t t-if="data.sieve_visible and ((data.report_type == 'nabl' and nabl) or (data.report_type == 'non_nabl' and not nabl))">
+
+                            <!-- Sieve Analysis -->
+                            <t t-set="valid_sieve_lines" t-value="[r for r in data.sieve_analysis_child_lines if r['sieve_size'] != 'pan']"/>
 
 								 <t t-set="rowspan_count" t-value="2 + len(valid_sieve_lines) "/>
 								
-								<tr t-if="data.dry_gradation_visible ">
+								<tr t-if="data.sieve_visible ">
 									<t t-set="sieve" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','4525465214-3497-4b7f-819a-a26f25c9848')])"/>
 									
 									<td t-att-rowspan="rowspan_count" style="text-align: center;vertical-align:middle;">
 										<span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/>
 									</td>
-									<td colspan="5">  
+									<td colspan="4">  
 										<span t-esc="sieve.parameter_name"/>
 									</td>
 									
 								</tr>
 
-                                <tr t-if="data.dry_gradation_visible">
+                                <tr t-if="data.sieve_visible">
                                     <td  style="text-align: center;">
 										<span>
 											IS Sieve Size
@@ -266,7 +270,7 @@
 
                                     <td  style="text-align: center;">
 										<span>
-											
+											Limit As per IS 383:2016
 										</span>
 									</td>
 
@@ -278,7 +282,7 @@
 									
 								</tr>
 
-                                <tr t-if="data.dry_gradation_visible" t-foreach="valid_sieve_lines" t-as="r">
+                                <tr t-if="data.sieve_visible" t-foreach="valid_sieve_lines" t-as="r">
 									
 									<td>
 							     		<span t-esc="r['sieve_size']"/>
@@ -294,24 +298,15 @@
 										</span>
 									</td>
 
-                                    <!-- <td style="text-align: center;font-weight:bold;">
+                                    <td style="text-align: center;font-weight:bold;">
 									  <span t-esc="r['specific_limits']" />
-                                     </td> -->
+                                     </td>
 
 									<!-- <td  style="text-align: center;">
 										<span>
 											<span t-esc="sieve.unit.name"/>
 										</span>
 									</td> -->
-									<td style="text-align: center;">
-										<span>
-											<t t-foreach="sieve.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.permissable_limit"/>
-												</t>
-											</t>
-										</span>
-									</td>
 
 									<td style="text-align: center;">
 										<span>
@@ -322,10 +317,21 @@
 											</t>
 										</span>
 									</td>
-								  
 									
+								  
+									<!-- <td style="text-align: center;">
+										<span>
+											<t t-foreach="sieve.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td> -->
 									
 								</tr>
+
+								</t>
 
 								<t t-set="show_liquid_limit" t-value="data.liquid_limit_nabl == 'pass' and nabl or (data.liquid_limit_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
 					

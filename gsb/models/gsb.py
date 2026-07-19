@@ -58,6 +58,27 @@ class GsbMechanical(models.Model):
 
     weight_of_sample = fields.Float(string="Weight of Sample in gms")
 
+    report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="Report Type",
+        default='nabl',
+        required=True,
+    )
+
+    sieve_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_sieve_nabl",
+    store=True
+)
+
+    @api.depends('report_type')
+    def _compute_sieve_nabl(self):
+     for rec in self:
+        rec.sieve_nabl = 'pass' if rec.report_type == 'nabl' else 'fail'
+
 
     sieve_analysis_child_lines = fields.One2many('mech.gsb.dry.gradation.line','parent_id',string="Parameter")
     total_sieve_analysis = fields.Float(string="Total",compute="_compute_total_sieve")
