@@ -15,6 +15,7 @@ from scipy.interpolate import make_interp_spline
 from matplotlib.ticker import LogLocator, MultipleLocator
 import re
 from matplotlib.ticker import AutoMinorLocator
+from scipy.interpolate import PchipInterpolator
 
 from matplotlib.ticker import MultipleLocator, StrMethodFormatter
 
@@ -2235,7 +2236,15 @@ class Soil(models.Model):
             rec.cbr_5_s3 = (l.sample3_load / 2055)*100 if l.sample3_load else 0
 
         # -------- AVERAGE --------
-        rec.cbr_25_avg = (rec.cbr_25_s1 + rec.cbr_25_s2 + rec.cbr_25_s3) / 3
+        # rec.cbr_25_avg = (rec.cbr_25_s1 + rec.cbr_25_s2 + rec.cbr_25_s3) / 3
+
+        # --------MAX 2.5 mm --------
+        rec.cbr_25_avg = max(rec.cbr_25_s1,rec.cbr_25_s2,rec.cbr_25_s3)
+
+        
+        # -------- 5 mm --------
+        # rec.cbr_5_avg = max(rec.cbr_5_s1,rec.cbr_5_s2,rec.cbr_5_s3)
+
         # rec.cbr_5_avg = (rec.cbr_5_s1 + rec.cbr_5_s2 + rec.cbr_5_s3) / 3
 
         # # -------- MAX --------
@@ -2264,50 +2273,288 @@ class Soil(models.Model):
     show_cbr = fields.Boolean(string="Show CBR Graph")
 
 
+    # def action_generate_cbr_chart(self):
+    #  for rec in self:
+    #     lines = self.env['mechanical.cbr.line'].search([
+    #         ('parent_id', '=', rec.id)
+    #     ], order='penetration asc')
+
+    #     penetration = [l.penetration for l in lines]
+
+    #     s1 = [l.sample1_load for l in lines]
+    #     s2 = [l.sample2_load for l in lines]
+    #     s3 = [l.sample3_load for l in lines]
+
+    #     # ✅ Increase width only (width=12, height=5)
+    #     plt.figure(figsize=(10, 7))
+
+    #     plt.plot(penetration, s1, marker='o', label='Sample-1')
+    #     plt.plot(penetration, s2, marker='o', label='Sample-2')
+    #     plt.plot(penetration, s3, marker='o', label='Sample-3')
+
+    #     plt.xlabel('Penetration (mm)')
+    #     plt.ylabel('Load (Kg/cm²)')
+    #     plt.title('CBR Test Graph')
+
+    #     # ✅ Major grid (big squares)
+    #     plt.grid(which='major', linestyle='-', linewidth=0.8)
+
+    #     # ✅ Minor grid (small squares inside)
+    #     ax = plt.gca()
+    #     ax.xaxis.set_minor_locator(AutoMinorLocator(5))
+    #     ax.yaxis.set_minor_locator(AutoMinorLocator(5))
+    #     plt.grid(which='minor', linestyle=':', linewidth=0.5)
+
+    #     plt.legend()
+
+    #     # Save image
+    #     buffer = io.BytesIO()
+    #     plt.savefig(buffer, format='png', bbox_inches='tight')
+    #     plt.close()
+
+    #     image = base64.b64encode(buffer.getvalue())
+    #     buffer.close()
+
+    #     rec.cbr_chart_image = image
+    #     rec.cbr_chart_filename = "cbr_chart.png"
+
     def action_generate_cbr_chart(self):
+
      for rec in self:
-        lines = self.env['mechanical.cbr.line'].search([
-            ('parent_id', '=', rec.id)
-        ], order='penetration asc')
 
-        penetration = [l.penetration for l in lines]
+        # --------------------------------------
+        # Read CBR Data
+        # --------------------------------------
 
-        s1 = [l.sample1_load for l in lines]
-        s2 = [l.sample2_load for l in lines]
-        s3 = [l.sample3_load for l in lines]
+        lines = self.env['mechanical.cbr.line'].search(
+            [('parent_id', '=', rec.id)],
+            order='penetration asc'
+        )
 
-        # ✅ Increase width only (width=12, height=5)
-        plt.figure(figsize=(10, 7))
+        if len(lines) < 2:
+            continue
 
-        plt.plot(penetration, s1, marker='o', label='Sample-1')
-        plt.plot(penetration, s2, marker='o', label='Sample-2')
-        plt.plot(penetration, s3, marker='o', label='Sample-3')
+        penetration = np.array(
+            [float(line.penetration or 0) for line in lines],
+            dtype=float
+        )
 
-        plt.xlabel('Penetration (mm)')
-        plt.ylabel('Load (Kg/cm²)')
-        plt.title('CBR Test Graph')
+        sample1 = np.array(
+            [float(line.sample1_load or 0) for line in lines],
+            dtype=float
+        )
 
-        # ✅ Major grid (big squares)
-        plt.grid(which='major', linestyle='-', linewidth=0.8)
+        sample2 = np.array(
+            [float(line.sample2_load or 0) for line in lines],
+            dtype=float
+        )
 
-        # ✅ Minor grid (small squares inside)
-        ax = plt.gca()
-        ax.xaxis.set_minor_locator(AutoMinorLocator(5))
-        ax.yaxis.set_minor_locator(AutoMinorLocator(5))
-        plt.grid(which='minor', linestyle=':', linewidth=0.5)
+        sample3 = np.array(
+            [float(line.sample3_load or 0) for line in lines],
+            dtype=float
+        )
 
-        plt.legend()
+        # --------------------------------------
+        # Smooth Curve (Excel Style)
+        # --------------------------------------
 
-        # Save image
+        x_new = np.linspace(
+            penetration.min(),
+            penetration.max(),
+            500
+        )
+
+        curve1 = PchipInterpolator(
+            penetration,
+            sample1
+        )
+
+        curve2 = PchipInterpolator(
+            penetration,
+            sample2
+        )
+
+        curve3 = PchipInterpolator(
+            penetration,
+            sample3
+        )
+
+        y1 = curve1(x_new)
+        y2 = curve2(x_new)
+        y3 = curve3(x_new)
+
+        # --------------------------------------
+        # Create Figure
+        # --------------------------------------
+
+        fig, ax = plt.subplots(
+            figsize=(10, 6)
+        )
+
+                # --------------------------------------
+        # Plot Smooth Curves
+        # --------------------------------------
+
+        ax.plot(
+            x_new,
+            y1,
+            color="#1f77b4",
+            linewidth=2.2,
+            label="Sample-1"
+        )
+
+        ax.plot(
+            x_new,
+            y2,
+            color="#ff7f0e",
+            linewidth=2.2,
+            label="Sample-2"
+        )
+
+        ax.plot(
+            x_new,
+            y3,
+            color="#2ca02c",
+            linewidth=2.2,
+            label="Sample-3"
+        )
+
+        # --------------------------------------
+        # Original Data Points
+        # --------------------------------------
+
+        ax.scatter(
+            penetration,
+            sample1,
+            color="#1f77b4",
+            s=30,
+            zorder=5
+        )
+
+        ax.scatter(
+            penetration,
+            sample2,
+            color="#ff7f0e",
+            s=30,
+            zorder=5
+        )
+
+        ax.scatter(
+            penetration,
+            sample3,
+            color="#2ca02c",
+            s=30,
+            zorder=5
+        )
+
+        # --------------------------------------
+        # Labels & Title
+        # --------------------------------------
+
+        ax.set_title(
+            "CBR Test Graph",
+            fontsize=20,
+            fontweight="bold"
+        )
+
+        ax.set_xlabel(
+            "Penetration (mm)",
+            fontsize=15
+        )
+
+        ax.set_ylabel(
+            "Load (Kg/cm²)",
+            fontsize=15
+        )
+
+        # --------------------------------------
+        # Excel Style Axes
+        # --------------------------------------
+
+        ax.set_xlim(0, 14)
+        ax.set_ylim(40, 320)
+
+        ax.xaxis.set_major_locator(
+            MultipleLocator(1)
+        )
+
+        ax.xaxis.set_minor_locator(
+            MultipleLocator(0.2)
+        )
+
+        ax.yaxis.set_major_locator(
+            MultipleLocator(20)
+        )
+
+        ax.yaxis.set_minor_locator(
+            MultipleLocator(5)
+        )
+
+        # --------------------------------------
+        # Graph Paper
+        # --------------------------------------
+
+        ax.set_facecolor("white")
+
+        ax.grid(
+            which="major",
+            color="#9a9a9a",
+            linewidth=0.7,
+            alpha=0.6
+        )
+
+        ax.grid(
+            which="minor",
+            color="#d8d8d8",
+            linestyle=":",
+            linewidth=0.45
+        )
+
+        ax.set_axisbelow(True)
+
+        # Border
+
+        for spine in ax.spines.values():
+            spine.set_linewidth(1.0)
+
+        # Legend
+
+        ax.legend(
+            loc="upper left",
+            fontsize=12
+        )
+
+        plt.tight_layout()
+
+                # --------------------------------------
+        # Save Image
+        # --------------------------------------
+
         buffer = io.BytesIO()
-        plt.savefig(buffer, format='png', bbox_inches='tight')
-        plt.close()
 
-        image = base64.b64encode(buffer.getvalue())
+        plt.savefig(
+            buffer,
+            format="png",
+            dpi=100,
+            bbox_inches="tight",
+            facecolor="white"
+        )
+
+        plt.close(fig)
+
+        buffer.seek(0)
+
+        image_data = base64.b64encode(
+            buffer.read()
+        )
+
         buffer.close()
 
-        rec.cbr_chart_image = image
-        rec.cbr_chart_filename = "cbr_chart.png"
+        rec.write({
+            'cbr_chart_image': image_data,
+            'cbr_chart_filename': 'cbr_chart.png',
+            'show_cbr': True,
+        })
 
 
     cbr_25_avg_conformity = fields.Selection([

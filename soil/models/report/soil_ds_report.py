@@ -12,6 +12,8 @@ from scipy.interpolate import CubicSpline , interp1d , Akima1DInterpolator
 from scipy.optimize import minimize_scalar
 from matplotlib.ticker import MultipleLocator, StrMethodFormatter
 import io
+from scipy.interpolate import PchipInterpolator
+from matplotlib.ticker import AutoMinorLocator
 from matplotlib.ticker import LogLocator, MultipleLocator
 
 
@@ -170,96 +172,209 @@ class SoilReport(models.AbstractModel):
 
     def generate_cbr_chart(self, data):
 
-      lines = self.env['mechanical.cbr.line'].search(
+        # --------------------------------------
+        # Read CBR Data
+        # --------------------------------------
+
+        lines = self.env['mechanical.cbr.line'].search(
         [('parent_id', '=', data.id)],
-        order='penetration asc'
-    )
+        order='penetration asc')
 
-      import io
-      import base64
-      import matplotlib.pyplot as plt
-      from matplotlib.ticker import AutoMinorLocator
+        if len(lines) < 2:
+            return False
 
-    #   lines = data.mechanical_cbr_line_ids.sorted(
-    #     key=lambda r: r.penetration or 0
-    # )
+        penetration = np.array(
+        [float(line.penetration or 0) for line in lines],
+        dtype=float)
 
-      penetration = [l.penetration for l in lines]
+        sample1 = np.array(
+        [float(line.sample1_load or 0) for line in lines],
+        dtype=float)
 
-      s1 = [l.sample1_load for l in lines]
-      s2 = [l.sample2_load for l in lines]
-      s3 = [l.sample3_load for l in lines]
+        sample2 = np.array(
+        [float(line.sample2_load or 0) for line in lines],
+        dtype=float)
 
-      if not penetration:
-        return False
+        sample3 = np.array(
+        [float(line.sample3_load or 0) for line in lines],
+        dtype=float)
 
-      fig, ax = plt.subplots(figsize=(12, 5))
+        # --------------------------------------
+        # Smooth Curve (Excel Style)
+        # --------------------------------------
 
-      ax.plot(
+        x_new = np.linspace(
+        penetration.min(),
+        penetration.max(),
+        500)
+
+        curve1 = PchipInterpolator(
         penetration,
-        s1,
-        marker='o',
-        label='Sample-1'
-    )
+        sample1)
 
-      ax.plot(
+        curve2 = PchipInterpolator(
         penetration,
-        s2,
-        marker='o',
-        label='Sample-2'
-    )
+        sample2)
 
-      ax.plot(
+        curve3 = PchipInterpolator(
         penetration,
-        s3,
-        marker='o',
-        label='Sample-3'
-    )
+        sample3)
 
-      ax.set_xlabel('Penetration (mm)')
-      ax.set_ylabel('Load (Kg/cm²)')
-      ax.set_title('CBR Test Graph')
+        y1 = curve1(x_new)
+        y2 = curve2(x_new)
+        y3 = curve3(x_new)
 
-      ax.grid(
-        which='major',
-        linestyle='-',
-        linewidth=0.8
-    )
+        # --------------------------------------
+        # Create Figure
+        # --------------------------------------
 
-      ax.xaxis.set_minor_locator(
-        AutoMinorLocator(5)
-    )
+        fig, ax = plt.subplots(
+        figsize=(10, 6))
 
-      ax.yaxis.set_minor_locator(
-        AutoMinorLocator(5)
-    )
+        # --------------------------------------
+        # Plot Smooth Curves
+        # --------------------------------------
 
-      ax.grid(
-        which='minor',
-        linestyle=':',
-        linewidth=0.5
-    )
+        ax.plot(
+        x_new,
+        y1,
+        color="#1f77b4",
+        linewidth=2.2,
+        label="Sample-1")
 
-      ax.legend()
+        ax.plot(
+        x_new,
+        y2,
+        color="#ff7f0e",
+        linewidth=2.2,
+        label="Sample-2")
 
-      plt.tight_layout()
+        ax.plot(
+        x_new,
+        y3,
+        color="#2ca02c",
+        linewidth=2.2,
+        label="Sample-3")
 
-      buffer = io.BytesIO()
+        # --------------------------------------
+        # Original Data Points
+        # --------------------------------------
 
-      plt.savefig(
+        ax.scatter(
+        penetration,
+        sample1,
+        color="#1f77b4",
+        s=30,
+        zorder=5)
+
+        ax.scatter(
+        penetration,
+        sample2,
+        color="#ff7f0e",
+        s=30,
+        zorder=5)
+
+        ax.scatter(
+        penetration,
+        sample3,
+        color="#2ca02c",
+        s=30,
+        zorder=5)
+
+    # --------------------------------------
+    # Labels
+    # --------------------------------------
+
+        ax.set_title(
+        "CBR Test Graph",
+        fontsize=20,
+        fontweight="bold")
+
+        ax.set_xlabel(
+        "Penetration (mm)",
+        fontsize=15)
+
+        ax.set_ylabel(
+        "Load (Kg/cm²)",
+        fontsize=15)
+
+        # --------------------------------------
+        # Axis Limits
+        # --------------------------------------
+
+        ax.set_xlim(0, 14)
+        ax.set_ylim(40, 320)
+
+        ax.xaxis.set_major_locator(
+        MultipleLocator(1))
+
+        ax.xaxis.set_minor_locator(
+        MultipleLocator(0.2))
+
+        ax.yaxis.set_major_locator(
+        MultipleLocator(20))
+
+        ax.yaxis.set_minor_locator(
+        MultipleLocator(5))
+
+        # --------------------------------------
+        # Graph Paper
+        # --------------------------------------
+
+        ax.set_facecolor("white")
+
+        ax.grid(
+        which="major",
+        color="#9a9a9a",
+        linewidth=0.7,
+        alpha=0.6)
+
+        ax.grid(
+        which="minor",
+        color="#d8d8d8",
+        linestyle=":",
+        linewidth=0.45)
+
+        ax.set_axisbelow(True)
+
+        # Border
+
+        for spine in ax.spines.values():
+            spine.set_linewidth(1.0)
+
+        # Legend
+
+        ax.legend(
+        loc="upper left",
+        fontsize=12)
+
+        plt.tight_layout()
+
+
+        # --------------------------------------
+        # Save Image
+        # --------------------------------------
+
+        buffer = io.BytesIO()
+
+        plt.savefig(
         buffer,
-        format='png',
-        dpi=150,
-        bbox_inches='tight'
-    )
+        format="png",
+        dpi=100,
+        bbox_inches="tight",
+        facecolor="white")
 
-      plt.close(fig)
+        plt.close(fig)
 
-      buffer.seek(0)
+        buffer.seek(0)
 
-      return base64.b64encode(
+        image_data = base64.b64encode(
         buffer.read()
-    ).decode('utf-8')
+    ).decode("utf-8")
+
+        buffer.close()
+
+        return image_data
     
 
     def generate_line_chart_light_omc(self, data):

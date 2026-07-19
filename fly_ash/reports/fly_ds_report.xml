@@ -23,32 +23,32 @@
 							<tr >
 								<td colspan="1" >#Customer Name	:</td>
 
-								<td colspan="1" style="font-weight:bold;">
+								<td colspan="3" style="font-weight:bold;">
 									<![CDATA[&nbsp;]]>
                                     <t t-if="o.srf_id.customer">
 									   <span t-field="o.srf_id.customer"/>
                                     </t>
-                                    <t t-else="">--</t>
+                                    <t t-else="">NA</t>
 								</td>
 
-                                <td colspan="1" >ULR NO:</td>
+                                <!-- <td colspan="1" >ULR NO:</td>
 
 								  <td colspan="1" style="font-weight:bold;">
 									<![CDATA[&nbsp;]]>
                                     
 									  <span t-field="o.sample_id.ulr_no"/>
                                    
-									</td>
+									</td> -->
 							</tr>
 
 							<tr>
 								<td colspan="1" >Address:</td>
-								  <td colspan="1" style="font-weight:bold;">
+								  <td colspan="3" style="font-weight:bold;">
 									<![CDATA[&nbsp;]]>
 									<!-- <t t-if="o.srf_id.customer.name">
 									  <span t-field="o.srf_id.customer.name"/>
 									 </t>
-        							<t t-else=""></t>
+        							<t t-else="">NA</t>
 		                            <br/> -->
 
 									<span t-field="o.srf_id.customer.street"/>
@@ -59,12 +59,12 @@
 											,
 									<span t-field="o.srf_id.customer.country_id"/>
 									</td>
-                                    <td colspan="1" >Test Report No :</td>
+                                    <!-- <td colspan="1" >Test Report No :</td>
 								  <td colspan="1" style="font-weight:bold;">
 									<![CDATA[&nbsp;]]>
 									<span t-field="o.sample_id.kes_no"/>
 
-									</td>
+									</td> -->
 							</tr>
 
                             <tr>
@@ -73,7 +73,7 @@
 								      <t t-if="o.sample_id.location_name">
 											 <span t-field="o.sample_id.location_name"/>
 										</t>
-									<t t-else="">--</t>
+									<t t-else="">NA</t>
 								</td>
 
                                 <td colspan="1">Sample ID  :-</td>
@@ -82,7 +82,7 @@
 								  <t t-if="o.sample_id.client_sample_id">
 											<span t-field="o.sample_id.client_sample_id"/>
 										</t>
-									<t t-else="">-</t>
+									<t t-else="">NA</t>
 								
 								</td>
                                 </tr>
@@ -92,9 +92,10 @@
 								<td colspan="1">Samples Description :-</td>
 								<td colspan="1">
 								      <t t-if="o.material and o.material.lab_name or o.sample_id.size_id">
-											<span t-field="o.sample_id.size_id"/> <![CDATA[&nbsp;]]> <![CDATA[&nbsp;]]> <span t-field="o.material.lab_name"/>
+									       <span t-field="o.material.lab_name"/> <![CDATA[&nbsp;]]>
+											<span t-field="o.sample_id.size_id"/>   
 										</t>
-									<t t-else="">--</t>
+									<t t-else="">NA</t>
 								</td>
 
                                 <td colspan="1">Date of Receipt :-</td>
@@ -103,7 +104,7 @@
 								  <t t-if="o.sample_id.sample_received_date">
 											<span t-field="o.sample_id.sample_received_date"/>
 										</t>
-									<t t-else="">--</t>
+									<t t-else="">NA</t>
 								
 								</td>
 							</tr>
@@ -114,7 +115,7 @@
 								<t t-if="o.material.source_sample">
 											<span t-field="o.material.source_sample"/>
 										</t>
-									<t t-else="">-</t>
+									<t t-else="">NA</t>
 								</td>
 
 								<td colspan="1">Date of Performance of Test :-</td>
@@ -122,7 +123,7 @@
 									<t t-if="o.start_date and o.end_date">
 											<span t-field="o.start_date"/><![CDATA[&nbsp;]]> to <![CDATA[&nbsp;]]> <span t-field="o.end_date"/>
 										</t>
-									<t t-else="">-</t>
+									<t t-else="">NA</t>
 								</td>
 							</tr>
 
@@ -132,7 +133,7 @@
 									<!-- <t t-if="o.sample_id.sample_received_date">
 											<span t-field="o.sample_id.sample_received_date"/>
 										</t>
-									<t t-else="">-</t> -->
+									<t t-else="">NA</t> -->
 								</td>
 
 									<td colspan="1">Date of Report Issue :-</td>
@@ -140,27 +141,27 @@
 											<t t-if="o.end_date">
 											<span t-field="o.end_date"/>
 										</t>
-									<t t-else="">-</t>
+									<t t-else="">NA</t>
 										</td>
 								
 							</tr>
 
                             <tr>
 								<td colspan="1">Discipline  :-</td>
-								<td colspan="1">
+								<td colspan="3">
 									<t t-if="o.sample_id.group_id">
 											<span t-field="o.sample_id.group_id"/>
 										</t>
-									<t t-else="">-</t>
+									<t t-else="">NA</t>
 								</td>
 
-									<td colspan="1">Test Method Followed :-</td>
+									<!-- <td colspan="1">Test Method Followed :-</td>
 										<td colspan="1" >
 											<t t-if="o.material.test_method_adopted">
 											<span t-field="o.material.test_method_adopted"/>
 										</t>
-									    <t t-else="">-</t>
-										</td>
+									    <t t-else="">NA</t>
+										</td> -->
 								
 							</tr>
 
@@ -170,7 +171,7 @@
 											<!-- <t t-if="brick.brick_temperature is not None">
 											<span t-field="brick.brick_temperature"/>   °C
 										</t>
-									<t t-else="">-</t> -->
+									<t t-else="">NA</t> -->
 										</td>
 
 									<td colspan="1">Humidity :-</td>
@@ -178,7 +179,7 @@
 											<!-- <t t-if="brick.brick_humidity is not None">
 											<span t-field="brick.brick_humidity"/>   °C
 										</t>
-									<t t-else="">-</t> -->
+									<t t-else="">NA</t> -->
 										</td>
 								
 							</tr>
@@ -190,7 +191,7 @@
 									<t t-if="o.srf_id.client_refrence">
 											<span t-field="o.srf_id.client_refrence"/>
 										</t>
-									<t t-else="">-</t>
+									<t t-else="">NA</t>
 								</td>
 								
 							</tr>
