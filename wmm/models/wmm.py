@@ -46,74 +46,129 @@ class WmmMechanical(models.Model):
 
 
     # Dry Gradation Sieve Analysis (Sieve Size: 53 mm to 75 micron)
-    dry_gradation_name = fields.Char(default="Sieve Analysis (Sieve Size: 53 mm to 75 micron)")
-    dry_gradation_visible = fields.Boolean(compute="_compute_visible")
+    
+    weight_of_sample = fields.Float(string="Weight of Sample in gms")
+    sieve_analysis_name = fields.Char("Name",default="Sieve Analysis")
+    sieve_visible = fields.Boolean("Sieve Analysis Visible",compute="_compute_visible")
 
-    dry_gradation_table = fields.One2many('mech.dry.gradation.line','parent_id',string="Dry Gradation")
-    total_sieve_analysis = fields.Integer(string="Total",compute="_compute_total_sieve")
+    sieve_analysis_child_lines = fields.One2many('mech.dry.gradation.line','parent_id',string="Parameter",default=lambda self: self._default_sieve_analysis_child_liness())
+    total_sieve_analysis = fields.Float(string="Total",compute="_compute_total_sieve")
+
+
+    report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="Report Type",
+        default='nabl',
+        required=True,
+    )
+
+    sieve_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_sieve_nabl",
+    store=True
+)
+
+    @api.depends('report_type')
+    def _compute_sieve_nabl(self):
+     for rec in self:
+        rec.sieve_nabl = 'pass' if rec.report_type == 'nabl' else 'fail'
+
+
+    @api.model
+    def _default_sieve_analysis_child_liness(self):
+     return [
+        (0, 0, {'sieve_size': '53mm',   'specific_limits': '100'}),
+        (0, 0, {'sieve_size': '45mm',   'specific_limits': '95-100'}),
+        (0, 0, {'sieve_size': '22.4mm',   'specific_limits': '60-80'}),
+        (0, 0, {'sieve_size': '11.2mm',   'specific_limits': '40-60'}),
+        (0, 0, {'sieve_size': '4.75mm', 'specific_limits': '25-40'}),
+        (0, 0, {'sieve_size': '2.36mm', 'specific_limits': '15-30'}),
+        (0, 0, {'sieve_size': '600micron',   'specific_limits': '8-22'}),
+        (0, 0, {'sieve_size': '70micron',   'specific_limits': '0-5'}),
+        (0, 0, {'sieve_size': 'Pan',    'specific_limits': ''}),
+    ]
+
+
     
 
+    def calculate_sieve(self):
+     for record in self:
+        cumulative_weight = 0.0
 
-    def calculate_sieve(self): 
-        for record in self:
-            for line in record.dry_gradation_table:
-                print("Rows",str(line.percent_retained))
-                previous_line = line.serial_no - 1
-                if previous_line == 0:
-                    if line.percent_retained == 0:
-                        # print("Percent retained 0",line.percent_retained)
-                        line.write({'cumulative_retained': round(line.percent_retained + line.percent_retained,2)})
-                        line.write({'passing_percent': 100 })
-                    else:
-                        # print("Percent retained else",line.percent_retained)
-                        line.write({'cumulative_retained': round(line.percent_retained + line.percent_retained,2)})
-                        line.write({'passing_percent': round(100 -line.percent_retained - line.percent_retained,2)})
-                else:
-                    previous_line_record = self.env['mech.dry.gradation.line'].sudo().search([("serial_no", "=", previous_line),("parent_id","=",self.id)]).cumulative_retained
-                    line.write({'cumulative_retained': round(previous_line_record + line.percent_retained,2)})
-                    line.write({'passing_percent': round(100-(previous_line_record + line.percent_retained),2)})
-                    print("Previous Cumulative",previous_line_record)
-                    
+        lines = record.sieve_analysis_child_lines.sorted(
+            key=lambda line: line.serial_no
+        )
 
+        sample_weight = record.weight_of_sample or 0.0
+
+        for line in lines:
+            cumulative_weight += line.wt_retained or 0.0
+
+            if sample_weight > 0:
+                cumulative_retained = (
+                    cumulative_weight / sample_weight
+                ) * 100.0
+
+                passing_percent = 100.0 - cumulative_retained
+
+            else:
+                cumulative_retained = 0.0
+                passing_percent = 0.0
+
+            line.write({
+                'cumulative_percent': round(
+                    cumulative_weight, 2
+                ),
+                'cumulative_retained': round(
+                    cumulative_retained, 2
+                ),
+                'passing_percent': round(
+                    passing_percent, 2
+                ),
+            })
+                 
     
-
-
-    @api.depends('dry_gradation_table.wt_retained')
+    @api.depends('sieve_analysis_child_lines.wt_retained')
     def _compute_total_sieve(self):
         for record in self:
             print("recordd",record)
-            record.total_sieve_analysis = sum(record.dry_gradation_table.mapped('wt_retained'))
+            record.total_sieve_analysis = sum(record.sieve_analysis_child_lines.mapped('wt_retained'))
 
-    def default_get(self, fields):
-        print("From Default Value")
-        res = super(WmmMechanical, self).default_get(fields)
+    @api.onchange('sieve_analysis_child_lines')
+    def _onchange_sieve_analysis_child_lines(self):
+        for rec in self:
+            pan_line = None
+            total_retained = 0.0            
+            # Find all unique sieve sizes except pan
+            all_sieves = set()
+            for line in rec.sieve_analysis_child_lines:
+                if line.sieve_size and line.sieve_size.lower() != 'pan':
+                    all_sieves.add(line.sieve_size.strip())
+            
+            # Calculate total retained for all non-pan sieves
+            for line in rec.sieve_analysis_child_lines:
+                if line.sieve_size and line.sieve_size.lower() == 'pan':
+                    pan_line = line
+                elif line.sieve_size in all_sieves:  # Include all non-pan sieves
+                    total_retained += line.wt_retained or 0.0
 
-        default_dry_sieve_sizes = []
-        # default_elongated_sieve_sizes = []
-        dry_sieve_sizes = ['53 mm', '45 mm','22.4 mm', '11.2 mm', '4.75 mm','2.36 mm','600 micron','75 micron','pan']
-        # elongation_sieve_sizes = ['63 mm', '50 mm', '40 mm', '31.5 mm', '25 mm','20 mm','16 mm','12.5 mm','10 mm','6.3 mm']
+            # Update pan weight if pan exists and we have a sample weight
+            if pan_line and rec.weight_of_sample:
+                pan_line.wt_retained = rec.weight_of_sample - total_retained
 
 
-        for i in range(9):  # You can change the number of default lines as needed
-            size = {
-                'sieve_size': dry_sieve_sizes[i] # Set the default product
-                # Set the default quantity
-            }
-            default_dry_sieve_sizes.append((0, 0, size))
-        res['dry_gradation_table'] = default_dry_sieve_sizes
-        # for i in range(10):  # You can change the number of default lines as needed
-        #     size = {
-        #         'sieve_size': elongation_sieve_sizes[i] # Set the default product
-        #         # Set the default quantity
-        #     }
-        #     default_elongated_sieve_sizes.append((0, 0, size))
-        res['dry_gradation_table'] = default_dry_sieve_sizes
-        # res['elongation_table'] = default_elongated_sieve_sizes
+    # @api.depends('sieve_analysis_child_lines.wt_retained')
+    # def _compute_cumulative_sieve(self):
+    #     for record in self:
+    #         print("recordd",record)
+    #         record.cumulative = sum(record.sieve_analysis_child_lines.mapped('wt_retained'))
 
-        return res
+
+
     
-
-
     # Water Absorbtion 
     water_absorbtion_name = fields.Char(default="Specific Gravity & Water Absorption")
     water_absorbtion_visible = fields.Boolean(compute="_compute_visible")
@@ -2168,172 +2223,198 @@ class WmmMechanical(models.Model):
 
     def generate_line_chart_light_omc(self):
 
-     x_value = []
-     y_value = []
 
-     for line in self.heavy_table:
+      x = []
+      y = []
+
+      for line in self.heavy_table:
         if line.water_content and line.dry_density:
-            x_value.append(float(line.water_content))
-            y_value.append(float(line.dry_density))
+            x.append(float(line.water_content))
+            y.append(float(line.dry_density))
 
-     if len(x_value) < 3:
+      if len(x) < 3:
         return False
 
+    # ---------------------------------------
     # Sort data
-     data = sorted(zip(x_value, y_value))
-     x = np.array([d[0] for d in data])
-     y = np.array([d[1] for d in data])
+    # ---------------------------------------
+      data = sorted(zip(x, y))
+      x = np.array([i[0] for i in data], dtype=float)
+      y = np.array([i[1] for i in data], dtype=float)
 
-    # ==========================
-    # Quadratic Compaction Curve
-    # ==========================
-     coeff = np.polyfit(x, y, 2)
-     poly = np.poly1d(coeff)
+      omc = float(self.omc)
+      mdd = float(self.max_dry_density)
 
-     x_smooth = np.linspace(x.min(), x.max(), 500)
-     y_smooth = poly(x_smooth)
+    # ---------------------------------------
+    # Create parabola through:
+    # First Point
+    # OMC/MDD
+    # Last Point
+    # ---------------------------------------
 
-    # OMC / MDD
-     omc = -coeff[1] / (2 * coeff[0])
-     mdd = poly(omc)
+      x1 = x[0]
+      y1 = y[0]
 
-     plt.figure(figsize=(15, 5))
+      x2 = omc
+      y2 = mdd
 
-    # Smooth blue curve
-     plt.plot(
+      x3 = x[-1]
+      y3 = y[-1]
+
+      A = np.array([
+        [x1**2, x1, 1],
+        [x2**2, x2, 1],
+        [x3**2, x3, 1]
+    ], dtype=float)
+
+      B = np.array([
+        y1,
+        y2,
+        y3
+    ], dtype=float)
+
+      a, b, c = np.linalg.solve(A, B)
+
+      def curve(xx):
+          return a * xx**2 + b * xx + c
+
+      x_smooth = np.linspace(x1, x3, 500)
+      y_smooth = curve(x_smooth)
+
+    # ---------------------------------------
+    # Plot
+    # ---------------------------------------
+
+      plt.figure(figsize=(15, 5))
+
+      plt.plot(
         x_smooth,
         y_smooth,
-        color='blue',
-        linewidth=2.5
+        color="blue",
+        linewidth=2.8,
+        zorder=2
     )
 
-    # Show points ON CURVE only
-     y_curve_points = poly(x)
-  
-     plt.scatter(
+      plt.scatter(
         x,
-        y_curve_points,
-        color='red',
-        edgecolors='none',
-        s=40,
+        y,
+        color="red",
+        s=45,
         zorder=5
     )
 
-    # Peak point
-     plt.scatter(
+      plt.scatter(
         omc,
         mdd,
-        color='red',
-        s=120,
+        color="red",
+        s=160,
         zorder=10
     )
 
-    # OMC / MDD guide lines
-     plt.axhline(
+      plt.axhline(
         y=mdd,
-        color='red',
-        linestyle='--',
+        color="red",
+        linestyle="--",
         linewidth=1
     )
 
-     plt.axvline(
+      plt.axvline(
         x=omc,
-        color='red',
-        linestyle='--',
+        color="red",
+        linestyle="--",
         linewidth=1
     )
 
-    # Annotation
-     plt.text(
-        omc + 0.2,
+      plt.text(
+        omc + 0.15,
         mdd + 0.002,
         f"OMC: {omc:.2f}%\nMDD: {mdd:.2f}",
-        color='red',
-        fontsize=11,
-        fontweight='bold'
+        fontsize=12,
+        color="red",
+        fontweight="bold"
     )
 
-    # Labels
-     plt.xlabel(
-        'Water Content (%)',
-        fontsize=12
-    )
-
-     plt.ylabel(
-        'Dry Density (g/cc)',
-        fontsize=12
-    )
-
-     plt.title(
-        'DETERMINATION OF COMPACTION OMC / MDD',
+      plt.xlabel(
+        "Water Content (%)",
         fontsize=16
     )
 
-    # Limits
-     plt.xlim(
-        left=0,
-        right=max(x) + 2
+      plt.ylabel(
+        "Dry Density (g/cc)",
+        fontsize=16
     )
 
-     plt.ylim(
-        bottom=min(y) - 0.03,
-        top=max(y_smooth) + 0.03
+      plt.title(
+        "DETERMINATION OF COMPACTION OMC / MDD",
+        fontsize=22
     )
 
-    # ==========================
-    # Graph Paper Background
-    # ==========================
-     ax = plt.gca()
+      plt.xlim(0, max(x) + 2)
 
-    # X-axis grid
-     ax.xaxis.set_major_locator(MultipleLocator(1))
-     ax.xaxis.set_minor_locator(MultipleLocator(0.1))
+      ymin = min(min(y), min(y_smooth))
+      ymax = max(max(y), max(y_smooth), mdd)
 
-    # Y-axis grid
-     ax.yaxis.set_major_locator(MultipleLocator(0.05))
-     ax.yaxis.set_minor_locator(MultipleLocator(0.001))
+      plt.ylim(
+        ymin - 0.02,
+        ymax + 0.03
+    )
 
-    # Major Grid
-     plt.grid(
-        which='major',
-        color='green',
-        linestyle='-',
+        # ---------------------------------------
+    # Graph paper background
+    # ---------------------------------------
+
+      ax = plt.gca()
+
+      ax.set_facecolor("#f8fff8")
+
+      ax.xaxis.set_major_locator(MultipleLocator(1))
+      ax.xaxis.set_minor_locator(MultipleLocator(0.1))
+
+      ax.yaxis.set_major_locator(MultipleLocator(0.05))
+      ax.yaxis.set_minor_locator(MultipleLocator(0.005))
+
+      ax.grid(
+        which="major",
+        color="green",
         linewidth=0.5,
-        alpha=0.55
-    )
-
-    # Minor Grid
-     plt.grid(
-        which='minor',
-        color='green',
-        linestyle=':',
-        linewidth=0.3,
         alpha=0.45
     )
 
-     plt.tight_layout()
-
-    # Save Image
-     buffer = io.BytesIO()
-
-     plt.savefig(
-        buffer,
-        format='png',
-        dpi=150,
-        bbox_inches='tight'
+      ax.grid(
+        which="minor",
+        color="green",
+        linestyle=":",
+        linewidth=0.3,
+        alpha=0.35
     )
 
-     plt.close()
+    # Make border thicker
+      for spine in ax.spines.values():
+        spine.set_linewidth(1.2)
 
-     buffer.seek(0)
+      plt.tight_layout()
 
-     return base64.b64encode(
+    # ---------------------------------------
+    # Save Image
+    # ---------------------------------------
+
+      buffer = io.BytesIO()
+
+      plt.savefig(
+        buffer,
+        format="png",
+        dpi=100,
+        bbox_inches="tight"
+    )
+
+      plt.close()
+
+      buffer.seek(0)
+
+      return base64.b64encode(
         buffer.read()
-    ).decode('utf-8')
-    
+    ).decode("utf-8")
 
-
-    
 
 
 
@@ -2494,168 +2575,199 @@ class WmmMechanical(models.Model):
 
     def generate_line_chart_light_omc1(self):
 
-     x_value = []
-     y_value = []
 
-     for line in self.omc_table:
+      x = []
+      y = []
+
+      for line in self.omc_table:
         if line.water_content1 and line.dry_density1:
-            x_value.append(float(line.water_content1))
-            y_value.append(float(line.dry_density1))
+            x.append(float(line.water_content1))
+            y.append(float(line.dry_density1))
 
-     if len(x_value) < 3:
+      if len(x) < 3:
         return False
 
+    # ---------------------------------------
     # Sort data
-     data = sorted(zip(x_value, y_value))
-     x = np.array([d[0] for d in data])
-     y = np.array([d[1] for d in data])
+    # ---------------------------------------
+      data = sorted(zip(x, y))
+      x = np.array([i[0] for i in data], dtype=float)
+      y = np.array([i[1] for i in data], dtype=float)
 
-    # ==========================
-    # Quadratic Compaction Curve
-    # ==========================
-     coeff = np.polyfit(x, y, 2)
-     poly = np.poly1d(coeff)
+      omc = float(self.omc1)
+      mdd = float(self.max_dry_density1)
 
-     x_smooth = np.linspace(x.min(), x.max(), 500)
-     y_smooth = poly(x_smooth)
+    # ---------------------------------------
+    # Create parabola through:
+    # First Point
+    # OMC/MDD
+    # Last Point
+    # ---------------------------------------
 
-    # OMC / MDD
-     omc = -coeff[1] / (2 * coeff[0])
-     mdd = poly(omc)
+      x1 = x[0]
+      y1 = y[0]
 
-     plt.figure(figsize=(15, 5))
+      x2 = omc
+      y2 = mdd
 
-    # Smooth blue curve
-     plt.plot(
+      x3 = x[-1]
+      y3 = y[-1]
+
+      A = np.array([
+        [x1**2, x1, 1],
+        [x2**2, x2, 1],
+        [x3**2, x3, 1]
+    ], dtype=float)
+
+      B = np.array([
+        y1,
+        y2,
+        y3
+    ], dtype=float)
+
+      a, b, c = np.linalg.solve(A, B)
+
+      def curve(xx):
+          return a * xx**2 + b * xx + c
+
+      x_smooth = np.linspace(x1, x3, 500)
+      y_smooth = curve(x_smooth)
+
+    # ---------------------------------------
+    # Plot
+    # ---------------------------------------
+
+      plt.figure(figsize=(15, 5))
+
+      plt.plot(
         x_smooth,
         y_smooth,
-        color='blue',
-        linewidth=2.5
+        color="blue",
+        linewidth=2.8,
+        zorder=2
     )
 
-    # Show points ON CURVE only
-     y_curve_points = poly(x)
-  
-     plt.scatter(
+      plt.scatter(
         x,
-        y_curve_points,
-        color='red',
-        edgecolors='none',
-        s=40,
+        y,
+        color="red",
+        s=45,
         zorder=5
     )
 
-    # Peak point
-     plt.scatter(
+      plt.scatter(
         omc,
         mdd,
-        color='red',
-        s=120,
+        color="red",
+        s=160,
         zorder=10
     )
 
-    # OMC / MDD guide lines
-     plt.axhline(
+      plt.axhline(
         y=mdd,
-        color='red',
-        linestyle='--',
+        color="red",
+        linestyle="--",
         linewidth=1
     )
 
-     plt.axvline(
+      plt.axvline(
         x=omc,
-        color='red',
-        linestyle='--',
+        color="red",
+        linestyle="--",
         linewidth=1
     )
 
-    # Annotation
-     plt.text(
-        omc + 0.2,
+      plt.text(
+        omc + 0.15,
         mdd + 0.002,
         f"OMC: {omc:.2f}%\nMDD: {mdd:.2f}",
-        color='red',
-        fontsize=11,
-        fontweight='bold'
+        fontsize=12,
+        color="red",
+        fontweight="bold"
     )
 
-    # Labels
-     plt.xlabel(
-        'Water Content (%)',
-        fontsize=12
-    )
-
-     plt.ylabel(
-        'Dry Density (g/cc)',
-        fontsize=12
-    )
-
-     plt.title(
-        'DETERMINATION OF COMPACTION OMC / MDD',
+      plt.xlabel(
+        "Water Content (%)",
         fontsize=16
     )
 
-    # Limits
-     plt.xlim(
-        left=0,
-        right=max(x) + 2
+      plt.ylabel(
+        "Dry Density (g/cc)",
+        fontsize=16
     )
 
-     plt.ylim(
-        bottom=min(y) - 0.03,
-        top=max(y_smooth) + 0.03
+      plt.title(
+        "DETERMINATION OF COMPACTION OMC / MDD",
+        fontsize=22
     )
 
-    # ==========================
-    # Graph Paper Background
-    # ==========================
-     ax = plt.gca()
+      plt.xlim(0, max(x) + 2)
 
-    # X-axis grid
-     ax.xaxis.set_major_locator(MultipleLocator(1))
-     ax.xaxis.set_minor_locator(MultipleLocator(0.1))
+      ymin = min(min(y), min(y_smooth))
+      ymax = max(max(y), max(y_smooth), mdd)
 
-    # Y-axis grid
-     ax.yaxis.set_major_locator(MultipleLocator(0.05))
-     ax.yaxis.set_minor_locator(MultipleLocator(0.001))
+      plt.ylim(
+        ymin - 0.02,
+        ymax + 0.03
+    )
 
-    # Major Grid
-     plt.grid(
-        which='major',
-        color='green',
-        linestyle='-',
+        # ---------------------------------------
+    # Graph paper background
+    # ---------------------------------------
+
+      ax = plt.gca()
+
+      ax.set_facecolor("#f8fff8")
+
+      ax.xaxis.set_major_locator(MultipleLocator(1))
+      ax.xaxis.set_minor_locator(MultipleLocator(0.1))
+
+      ax.yaxis.set_major_locator(MultipleLocator(0.05))
+      ax.yaxis.set_minor_locator(MultipleLocator(0.005))
+
+      ax.grid(
+        which="major",
+        color="green",
         linewidth=0.5,
-        alpha=0.55
-    )
-
-    # Minor Grid
-     plt.grid(
-        which='minor',
-        color='green',
-        linestyle=':',
-        linewidth=0.3,
         alpha=0.45
     )
 
-     plt.tight_layout()
-
-    # Save Image
-     buffer = io.BytesIO()
-
-     plt.savefig(
-        buffer,
-        format='png',
-        dpi=150,
-        bbox_inches='tight'
+      ax.grid(
+        which="minor",
+        color="green",
+        linestyle=":",
+        linewidth=0.3,
+        alpha=0.35
     )
 
-     plt.close()
+    # Make border thicker
+      for spine in ax.spines.values():
+        spine.set_linewidth(1.2)
 
-     buffer.seek(0)
+      plt.tight_layout()
 
-     return base64.b64encode(
+    # ---------------------------------------
+    # Save Image
+    # ---------------------------------------
+
+      buffer = io.BytesIO()
+
+      plt.savefig(
+        buffer,
+        format="png",
+        dpi=100,
+        bbox_inches="tight"
+    )
+
+      plt.close()
+
+      buffer.seek(0)
+
+      return base64.b64encode(
         buffer.read()
-    ).decode('utf-8')
+    ).decode("utf-8")
+
+
 
         
 
@@ -2892,7 +3004,7 @@ class WmmMechanical(models.Model):
     @api.depends('eln_ref','sample_parameters')
     def _compute_visible(self):
         for record in self:
-            record.dry_gradation_visible = False
+            record.sieve_visible = False
             record.water_absorbtion_visible  = False
             record.crushing_visible = False
             record.impact_visible = False
@@ -2924,7 +3036,7 @@ class WmmMechanical(models.Model):
 
 
                 if sample.internal_id == '32145ghty-6741-4817-95f4-5e53a0676c5f':
-                    record.dry_gradation_visible = True
+                    record.sieve_visible = True
 
                 if sample.internal_id == '1478578hgfr-6d14-468e-8488-6d100818e924':
                     record.water_absorbtion_visible  = True
@@ -3358,11 +3470,39 @@ class DryGradationLine(models.Model):
     parent_id = fields.Many2one('mechanical.wmm', string="Parent Id")
     
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
-    sieve_size = fields.Char(string="IS Sieve Size" )
+    sieve_size = fields.Char(string="IS Sieve Size mm")
     wt_retained = fields.Float(string="Wt. Retained in gms")
-    percent_retained = fields.Float(string='% Retained', compute="_compute_percent_retained")
-    cumulative_retained = fields.Float(string="Cum. Retained %", store=True)
-    passing_percent = fields.Float(string="Passing %")
+    cumulative_percent = fields.Float(string="Cum. Weight Retained (gm)",compute="_compute_cumulative_percent",
+    store=True,)
+
+    percent_retained = fields.Float(string='% of Weight Retained', compute="_compute_percent_retained",digits=(16,2))
+    cumulative_retained = fields.Float(string="% of Cumulative Wt. Retained ",compute="_compute_cum_retained", store=True,digits=(16,2))
+    passing_percent = fields.Float(string="% of wt passing",digits=(16,2))
+    specific_limits = fields.Char(
+    string="Specified Limits",
+    compute="_compute_specific_limits",
+    store=True
+)
+
+    @api.depends('sieve_size')
+    def _compute_specific_limits(self):
+
+     limits = {
+        '53mm': '100',
+        '45mm': '95-100',
+        '22.4mm': '60-80',
+        '11.2mm': '40-60',
+        '4.75mm': '25-40',
+        '2.36mm': '15-30',
+        '600micron': '8-22',
+        '70micron': '0-5',
+        'Pan': '',
+    }
+
+     for rec in self:
+        key = (rec.sieve_size or '').strip()
+        rec.specific_limits = limits.get(key, '')
+    
 
 
 
@@ -3388,36 +3528,71 @@ class DryGradationLine(models.Model):
         if 'parent_id' in vals or 'wt_retained' in vals:
             for record in self:
                 if record.parent_id and record.parent_id == vals.get('parent_id') and 'wt_retained' in vals:
-                    record.percent_retained = round((vals['wt_retained'] / record.parent_id.total * 100),2) if record.parent_id.total else 0
+                    record.percent_retained = vals['wt_retained'] / record.parent_id.total * 100 if record.parent_id.total else 0
 
             new_self = super(DryGradationLine, self).write(vals)
-
             if 'wt_retained' in vals:
                 for record in self:
-                    record.parent_id._compute_total_sieve()
-
+                    # record.parent_id._compute_total()
+                    pass
             return new_self
-
         return super(DryGradationLine, self).write(vals)
 
     def unlink(self):
         # Get the parent_id before the deletion
         parent_id = self[0].parent_id
-
         res = super(DryGradationLine, self).unlink()
-
-        
-
+        if parent_id:
+            parent_id.sieve_analysis_child_lines._reorder_serial_numbers()
         return res
 
-
-    @api.depends('wt_retained', 'parent_id.total_sieve_analysis')
+    @api.depends('wt_retained', 'parent_id.weight_of_sample')
     def _compute_percent_retained(self):
+     for record in self:
+        if record.parent_id and record.parent_id.weight_of_sample:
+            record.percent_retained = (
+                (record.wt_retained or 0.0) /
+                record.parent_id.weight_of_sample
+            ) * 100
+        else:
+            record.percent_retained = 0.0
+
+
+    # @api.depends('cumulative_retained')
+    # def _compute_cum_retained(self):
+    #     self.cumulative_retained=0
+
+    @api.depends('percent_retained', 'parent_id.sieve_analysis_child_lines.percent_retained')
+    def _compute_cum_retained(self):
         for record in self:
-            try:
-                record.percent_retained = record.wt_retained / self.parent_id.total_sieve_analysis * 100
-            except ZeroDivisionError:
-                record.percent_retained = 0
+            cumulative = 0.0
+            found = False
+
+            for line in sorted(record.parent_id.sieve_analysis_child_lines, key=lambda l: l.serial_no):
+                cumulative += line.percent_retained or 0.0
+                if line.id == record.id:
+                    found = True
+                    record.cumulative_retained = cumulative
+                    break
+
+            if not found:
+                record.cumulative_retained = 0.0
+
+    @api.depends('wt_retained', 'parent_id.sieve_analysis_child_lines.wt_retained')
+    def _compute_cumulative_percent(self):
+        for parent in self.mapped('parent_id'):
+            total = 0
+            lines = parent.sieve_analysis_child_lines.sorted('serial_no')
+
+            for line in lines:
+                total += line.wt_retained or 0
+                line.cumulative_percent = total
+        
+
+    def get_previous_record(self):
+        for record in self:
+            # import wdb; wdb.set_trace()
+            sorted_lines = sorted(record.parent_id.sieve_analysis_child_lines, key=lambda r: r.id)
 
 
 class WmmSpecificGravityWaterAbsorptionLine(models.Model):
@@ -3647,28 +3822,18 @@ class WmmLooseBulkDensityLine(models.Model):
    
     serial_no = fields.Integer(string="Sr.No.", readonly=True, copy=False, default=1)
 
-    empty_container_weight = fields.Float("Empty Container Weight (Kg)")
     container_with_material = fields.Float("Weight of Material in Container after pouring, W  (Kg)")
 
-    # AUTO CALCULATED W
-    loose_weight = fields.Float(
-        "Weight of Material (W)",
-        compute="_compute_weight",
-        store=True
-    )
     volume_of_cont = fields.Float(string="Volume of calibrating container ,V (Lit)")
     loose_bulk_density = fields.Float(string="Loose Bulk Density of Material,W/V (Kg/Lit)",compute="_compute_loose_bulk_density")
 
-    @api.depends('empty_container_weight', 'container_with_material')
-    def _compute_weight(self):
-        for rec in self:
-            rec.loose_weight = rec.container_with_material - rec.empty_container_weight
+ 
 
-    @api.depends('loose_weight', 'volume_of_cont')
+    @api.depends('container_with_material', 'volume_of_cont')
     def _compute_loose_bulk_density(self):
         for record in self:
             if record.volume_of_cont:
-                record.loose_bulk_density = record.loose_weight / record.volume_of_cont
+                record.loose_bulk_density = record.container_with_material / record.volume_of_cont
             else:
                 record.loose_bulk_density = 0.0
 
@@ -3697,29 +3862,18 @@ class WmmRoddedBulkDensityLine(models.Model):
    
     serial_no = fields.Integer(string="Sr.No.", readonly=True, copy=False, default=1)
 
-    empty_container_weight = fields.Float("Empty Container Weight (Kg)")
     container_with_material = fields.Float("Weight of Material in Container after pouring, W  (Kg)")
 
-    # AUTO CALCULATED W
-    rodded_weight = fields.Float(
-        "Weight of Material (W)",
-        compute="_compute_weight",
-        store=True
-    )
+    
     volume_of_cont = fields.Float(string="Volume of calibrating container ,V (Lit)")
     rodded_bulk_density = fields.Float(string="Rodded Bulk Density of Material,W/V (Kg/Lit)",compute="_compute_rodded_bulk_density")
 
-    @api.depends('empty_container_weight', 'container_with_material')
-    def _compute_weight(self):
-        for rec in self:
-            rec.rodded_weight = rec.container_with_material - rec.empty_container_weight
-
-
-    @api.depends('rodded_weight', 'volume_of_cont')
+   
+    @api.depends('container_with_material', 'volume_of_cont')
     def _compute_rodded_bulk_density(self):
         for record in self:
             if record.volume_of_cont:
-                record.rodded_bulk_density = record.rodded_weight / record.volume_of_cont
+                record.rodded_bulk_density = record.container_with_material / record.volume_of_cont
             else:
                 record.rodded_bulk_density = 0.0
 
@@ -4047,10 +4201,9 @@ class WmmSodiumSulphateLine(models.Model):
     @api.depends('weight_before', 'weight_after')
     def _compute_loss(self):
      for rec in self:
-        if rec.weight_before > 0:
+        if rec.weight_before:
             rec.percent_loss = (
-                (rec.weight_before - rec.weight_after)
-                / rec.weight_before
+                (rec.weight_after / rec.weight_before)
             ) * 100
         else:
             rec.percent_loss = 0
@@ -4092,10 +4245,9 @@ class WmmSodiumSulphateTwoLine(models.Model):
     @api.depends('weight_before', 'weight_after')
     def _compute_loss(self):
      for rec in self:
-        if rec.weight_before > 0:
+        if rec.weight_before:
             rec.percent_loss = (
-                (rec.weight_before - rec.weight_after)
-                / rec.weight_before
+                (rec.weight_after / rec.weight_before)
             ) * 100
         else:
             rec.percent_loss = 0
@@ -4137,10 +4289,9 @@ class WmmMagnesiumSulphateLine(models.Model):
     @api.depends('weight_before', 'weight_after')
     def _compute_loss(self):
      for rec in self:
-        if rec.weight_before > 0:
+        if rec.weight_before:
             rec.percent_loss = (
-                (rec.weight_before - rec.weight_after)
-                / rec.weight_before
+                (rec.weight_after / rec.weight_before)
             ) * 100
         else:
             rec.percent_loss = 0
@@ -4182,10 +4333,9 @@ class WmmMagnesiumSulphateTwoLine(models.Model):
     @api.depends('weight_before', 'weight_after')
     def _compute_loss(self):
      for rec in self:
-        if rec.weight_before > 0:
+        if rec.weight_before:
             rec.percent_loss = (
-                (rec.weight_before - rec.weight_after)
-                / rec.weight_before
+                (rec.weight_after / rec.weight_before)
             ) * 100
         else:
             rec.percent_loss = 0
@@ -4527,8 +4677,15 @@ class ElongationLine(models.Model):
 
     total_weight = fields.Float("Total Wt of Aggregate Retained (gm)")
     wt_passing_flakiness = fields.Float("Wt Passing Flakiness Gauge (gm)")
-    wt_retained_flakiness = fields.Float("Wt. Retained on Flakiness gauge (gm) = [(Total Wt of aggregate Retained (gm)) - (Wt. Passing on Flakiness gauge (gm)]")
+    wt_retained_flakiness = fields.Float("Wt. Retained on Flakiness gauge (gm) = [(Total Wt of aggregate Retained (gm)) - (Wt. Passing on Flakiness gauge (gm)]",compute="_compute_wt_retained_flakiness",store=True,)
     wt_retained_elongation = fields.Float("Wt Retained Elongation Gauge (gm)")
+
+    @api.depends("total_weight", "wt_passing_flakiness")
+    def _compute_wt_retained_flakiness(self):
+        for rec in self:
+            rec.wt_retained_flakiness = (
+                rec.total_weight - rec.wt_passing_flakiness
+            )
 
 
 

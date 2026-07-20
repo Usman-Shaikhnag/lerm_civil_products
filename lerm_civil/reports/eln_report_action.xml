@@ -149,6 +149,28 @@
 </record>
 
 
+<record id="pqc_datasheet_action" model="ir.actions.report">
+    <field name="name">Pavement Quality Concrete DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">pavement_quality_concrete.pqc_datasheet</field>
+    <field name="report_file">pavement_quality_concrete.pqc_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="pqc_report_action" model="ir.actions.report">
+    <field name="name">Pavement Quality Concrete Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">pavement_quality_concrete.pqc_report</field>
+    <field name="report_file">pavement_quality_concrete.pqc_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="paperformat_id" ref="paperformat_makeinfra_report"/>
+    <field name="binding_type">report</field>
+</record>
+
+
 <record id="ballast_datasheet_action" model="ir.actions.report">
     <field name="name">Ballast DataSheet</field>
     <field name="model">lerm.eln</field>
@@ -1184,6 +1206,30 @@
         <field name="binding_type">report</field>
     </record>
 
+
+
+    <record id="fresh_cement_concrete_datasheet_action" model="ir.actions.report">
+        <field name="name">Fresh Cement Concrete Datasheet</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">fresh_cement_concrete.fresh_cement_concrete_datasheet</field>
+        <field name="report_file">fresh_cement_concrete.fresh_cement_concrete_datasheet</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <!--  <field name="binding_model_id" eval="False"/>  -->
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="fresh_cement_concrete_report_action" model="ir.actions.report">
+        <field name="name">Fresh Cement Concrete Report</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">fresh_cement_concrete.fresh_cement_concrete_report</field>
+        <field name="report_file">fresh_cement_concrete.fresh_cement_concrete_report</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="paperformat_id" ref="paperformat_makeinfra_report"/>
+        <field name="binding_type">report</field>
+    </record>
+
     <record id="hollow_solid_block_datasheet_action" model="ir.actions.report">
         <field name="name">Hollow And Solid Concrete Block Datasheet</field>
         <field name="model">lerm.eln</field>
@@ -1201,6 +1247,29 @@
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">hollow_solid_concrete_block.hollow_solid_block_report</field>
         <field name="report_file">hollow_solid_concrete_block.hollow_solid_block_report</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <field name="paperformat_id" ref="paperformat_makeinfra_report"/>
+        <field name="binding_type">report</field>
+    </record>
+
+
+    <record id="asphalt_mix_datasheet_action" model="ir.actions.report">
+        <field name="name">Asphalt Mix Datasheet</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">asphalt_mix.asphalt_mix_datasheet</field>
+        <field name="report_file">asphalt_mix.asphalt_mix_datasheet</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <!--  <field name="binding_model_id" eval="False"/>  -->
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="rasphalt_mix_report_action" model="ir.actions.report">
+        <field name="name">Asphalt Mix Report</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">asphalt_mix.asphalt_mix_report</field>
+        <field name="report_file">asphalt_mix.asphalt_mix_report</field>
         <field name="binding_model_id" ref="model_lerm_eln"/>
         <field name="paperformat_id" ref="paperformat_makeinfra_report"/>
         <field name="binding_type">report</field>

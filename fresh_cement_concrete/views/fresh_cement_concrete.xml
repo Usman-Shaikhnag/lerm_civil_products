@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_fresh_cement_concrete_form" model="ir.ui.view">
+        <field name="name">mechanical.fresh.cement.concrete.form</field>
+        <field name="model">mechanical.fresh.cement.concrete</field>
+        <field name="arch" type="xml">
+            <form string="Your Form View" create="false">
+                <sheet>
+
+                <div>
+                    <h1>
+                        <field name="name" readonly="1" nolabel="1"/>
+                    </h1>
+                    <button type="object" class="oe_highlight" name="prefill_data" string="Prefill Data"/>
+                </div>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                        <field name="parameter_id" invisible="1"/>
+                        <field name="grade"/>
+                        <field name="eln_state" />
+
+                    </group>
+                    <div class="custom_table_borders">
+                      <field name="sample_parameters" nolabel="1">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </div>
+                    <group/>
+
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+                    <div class="d-flex gap-2"> 
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="aac_temp"></label>
+                                    </td>
+                                    <td>
+                                        <field name="aac_temp" class="blue-input"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="aac_humidity" ></label>
+                                    </td>
+                                    <td>
+                                        <field name="aac_humidity" class="blue-input"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <!-- Slump Test -->
+
+
+                    <div invisible="slump_test_visible == False">
+                        <h1 class="text-center">
+                            <field name="slump_test_name" readonly="1" nolabel="1"/>
+                            <field name="slump_test_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+
+                    <div class=" custom_table_borders" invisible="slump_test_visible == False">
+                        <field name="slump_test_line_ids" nolabel="1" colspan="2">
+                            <tree editable="bottom">
+                                <field name='sample_no' width="120"/>
+                                <field name="cone_height" class="blue-input" decoration-info="cone_height != 0" width="120"/>
+                                <field name="height_after_slump" class="blue-input" decoration-info="height_after_slump != 0" width="120"/>
+                                <field name="slump_value" width="120"/>
+                                <field name="slump_type" class="blue-input" decoration-info="slump_type != 0" width="120"/>
+                            </tree>
+                        </field>
+                    </div>
+
+                    <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" invisible="slump_test_visible == False" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_slump_value">Average Slump Value (mm)</label></td>
+                                  <td><field name="avg_slump_value"/></td>
+                            </tr>
+                             <tr>
+                                <td><label class="fw-bold" for="avg_slump_value_confirmity">Conformity</label></td>
+                                <td>
+                                    <field name="avg_slump_value_confirmity"
+                                        decoration-success="avg_slump_value_confirmity == 'pass'" 
+                                        decoration-danger="avg_slump_value_confirmity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                               <td><label class="fw-bold" for="avg_slump_value_nabl">NABL</label></td>
+                                <td>
+                                    <field name="avg_slump_value_nabl"
+                                        decoration-success="avg_slump_value_nabl == 'pass'" 
+                                        decoration-danger="avg_slump_value_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                    <!-- Density Test -->
+
+
+                    <div invisible="density_visible == False">
+                        <h1 class="text-center">
+                            <field name="density_name" readonly="1" nolabel="1"/>
+                            <field name="density_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+
+                    <div class=" custom_table_borders" invisible="density_visible == False">
+                        <field name="density_line_ids" nolabel="1" colspan="2">
+                            <tree editable="bottom">
+                                <field name='sample_no' width="120"/>
+                                <field name="weight_container" class="blue-input" decoration-info="weight_container != 0" width="120"/>
+                                <field name="weight_container_concrete" class="blue-input" decoration-info="weight_container_concrete != 0" width="120"/>
+                                <field name="net_weight" width="120"/>
+                                <field name="volume" class="blue-input" decoration-info="volume != 0" width="120"/>
+                                <field name="density" width="120"/>
+                                <field name="fresh_slump_value" class="blue-input" decoration-info="fresh_slump_value != 0" width="120"/>
+                                <field name="fresh_temp" class="blue-input" decoration-info="fresh_temp != 0" width="120"/>
+
+                            </tree>
+                        </field>
+                    </div>
+
+                    <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" invisible="density_visible == False" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_density">Average Density (kg/m³)</label></td>
+                                  <td><field name="avg_density"/></td>
+                            </tr>
+                             <tr>
+                                <td><label class="fw-bold" for="avg_density_confirmity">Conformity</label></td>
+                                <td>
+                                    <field name="avg_density_confirmity"
+                                        decoration-success="avg_density_confirmity == 'pass'" 
+                                        decoration-danger="avg_density_confirmity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                               <td><label class="fw-bold" for="avg_density_nabl">NABL</label></td>
+                                <td>
+                                    <field name="avg_density_nabl"
+                                        decoration-success="avg_density_nabl == 'pass'" 
+                                        decoration-danger="avg_density_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+
+                    <!-- Flow of Concrete of High Workability Test -->
+
+
+                    <div invisible="flow_high_work_visible == False">
+                        <h1 class="text-center">
+                            <field name="flow_high_work_name" readonly="1" nolabel="1"/>
+                            <field name="flow_high_work_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+
+                    <div class=" custom_table_borders" invisible="flow_high_work_visible == False">
+                        <field name="flow_high_work_line_ids" nolabel="1" colspan="2">
+                            <tree editable="bottom">
+                                <field name='sample_no' width="120"/>
+                                <field name="diameter_direction1" class="blue-input" decoration-info="diameter_direction1 != 0" width="120"/>
+                                <field name="diameter_direction2" class="blue-input" decoration-info="diameter_direction2 != 0" width="120"/>
+                                <field name="average_diameter" width="120"/>
+                                <field name="flow" width="120"/>
+
+                            </tree>
+                        </field>
+                    </div>
+
+                    <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" invisible="flow_high_work_visible == False" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_flow_high">Average Flow of Concrete of High Workability (%)</label></td>
+                                  <td><field name="avg_flow_high"/></td>
+                            </tr>
+                             <tr>
+                                <td><label class="fw-bold" for="avg_flow_high_confirmity">Conformity</label></td>
+                                <td>
+                                    <field name="avg_flow_high_confirmity"
+                                        decoration-success="avg_flow_high_confirmity == 'pass'" 
+                                        decoration-danger="avg_flow_high_confirmity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                               <td><label class="fw-bold" for="avg_flow_high_nabl">NABL</label></td>
+                                <td>
+                                    <field name="avg_flow_high_nabl"
+                                        decoration-success="avg_flow_high_nabl == 'pass'" 
+                                        decoration-danger="avg_flow_high_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+
+
+                    <!-- Wet Density -->
+
+
+                    <div invisible="wet_density_visible == False">
+                        <h1 class="text-center">
+                            <field name="wet_density_name" readonly="1" nolabel="1"/>
+                            <field name="wet_density_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+
+                    <div class=" custom_table_borders" invisible="wet_density_visible == False">
+                        <field name="wet_density_line_ids" nolabel="1" colspan="2">
+                            <tree editable="bottom">
+                                <field name='sample_no' width="120"/>
+                                <field name="volume" class="blue-input" decoration-info="volume != 0" width="120"/>
+                                <field name="weight_empty" class="blue-input" decoration-info="weight_empty != 0" width="120"/>
+                                <field name="weight_full" class="blue-input" decoration-info="weight_full != 0"  width="120"/>
+                                <field name="weight" width="120"/>
+                                <field name="wet_density" width="120"/>
+
+                            </tree>
+                        </field>
+                    </div>
+
+                    <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" invisible="wet_density_visible == False" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_wet_density">Average Wet Density (kg/m³)</label></td>
+                                  <td><field name="avg_wet_density"/></td>
+                            </tr>
+                             <tr>
+                                <td><label class="fw-bold" for="avg_wet_density_confirmity">Conformity</label></td>
+                                <td>
+                                    <field name="avg_wet_density_confirmity"
+                                        decoration-success="avg_wet_density_confirmity == 'pass'" 
+                                        decoration-danger="avg_wet_density_confirmity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                               <td><label class="fw-bold" for="avg_wet_density_nabl">NABL</label></td>
+                                <td>
+                                    <field name="avg_wet_density_nabl"
+                                        decoration-success="avg_wet_density_nabl == 'pass'" 
+                                        decoration-danger="avg_wet_density_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                    <!-- Flow Test of Fresh Cement Concrete  -->
+
+
+                    <div invisible="flow_test_visible == False">
+                        <h1 class="text-center">
+                            <field name="flow_test_name" readonly="1" nolabel="1"/>
+                            <field name="flow_test_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+
+                    <div class=" custom_table_borders" invisible="flow_test_visible == False">
+                        <field name="flow_test_line_ids" nolabel="1" colspan="2">
+                            <tree editable="bottom">
+                                <field name='sample_no' width="120"/>
+                                <field name="initial_d1" class="blue-input" decoration-info="initial_d1 != 0" width="120"/>
+                                <field name="initial_d2" class="blue-input" decoration-info="initial_d2 != 0" width="120"/>
+                                <field name="avg_initial" width="120"/>
+
+                                <field name="final_d1" class="blue-input" decoration-info="final_d1 != 0" width="120"/>
+                                
+                                <field name="final_d2" class="blue-input" decoration-info="final_d2 != 0" width="120"/>
+                                <field name="avg_final" width="120"/>
+                                <field name="drops" class="blue-input" decoration-info="drops != 0" width="120"/>
+                                <field name="duration" class="blue-input" decoration-info="duration != 0" width="120"/>
+                                <field name="flow" width="120"/>
+                                
+
+                            </tree>
+                        </field>
+                    </div>
+
+                    <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" invisible="flow_test_visible == False" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_flow_test">Average Flow (%)  (((B − A)/A) × 100)</label></td>
+                                  <td><field name="avg_flow_test"/></td>
+                            </tr>
+                             <tr>
+                                <td><label class="fw-bold" for="avg_flow_test_confirmity">Conformity</label></td>
+                                <td>
+                                    <field name="avg_flow_test_confirmity"
+                                        decoration-success="avg_flow_test_confirmity == 'pass'" 
+                                        decoration-danger="avg_flow_test_confirmity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                               <td><label class="fw-bold" for="avg_flow_test_nabl">NABL</label></td>
+                                <td>
+                                    <field name="avg_flow_test_nabl"
+                                        decoration-success="avg_flow_test_nabl == 'pass'" 
+                                        decoration-danger="avg_flow_test_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                
+
+                    <notebook>
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes" />
+                                    </tree>
+                                </field>
+                            </div>
+                        </page>
+                    </notebook>
+
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+        <record id="view_aac_block_prefill_data_form" model="ir.ui.view">
+            <field name="name">aac.block.prefill.data.form</field>
+            <field name="model">aac.block.prefill.data</field>
+            <field name="arch" type="xml">
+                <form string="Prefill Data">
+                    <group>
+                        <field name="product_id" readonly="1"/>
+                        <field name="sample_id"/>
+
+                    </group>
+                    <footer>
+                        <button name="prefill_data" string="Prefill Data" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_aac_block_prefill_data_wizard" model="ir.actions.act_window">
+            <field name="name">Prefill Data</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">aac.block.prefill.data</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_aac_block_prefill_data_form"/>
+            <field name="target">new</field>
+        </record>
+
+
+       
+    </data>
+</odoo>

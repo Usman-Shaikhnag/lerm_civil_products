@@ -1665,13 +1665,20 @@
 
 							<div style="margin-top:20px" t-if="data.direct_shear_visible">
 							<table>
-								
-								<tr cols="12">
-									<td colspan="6">Proving Ring Constant (k) :
-										<![CDATA[&nbsp;]]>
-										<span t-field="data.proving_ring_constant"  t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-								</tr>
+
+							<tr style="font-weight: bold;">
+								<td colspan="6" style="text-align: right; padding: 8px;">Cross Sectional Area cm2 :</td>
+								<td colspan="6" style="padding: 8px;">
+									<span t-field="data.direct_area"/>
+								</td>
+							</tr>
+
+							<tr style="font-weight: bold;">
+								<td colspan="6" style="text-align: right; padding: 8px;">Proving Ring Constant (k) :</td>
+								<td colspan="6" style="padding: 8px;">
+									<span t-field="data.direct_proving_ring_factor" />
+								</td>
+							</tr>
 								
 							</table>
 						</div>
@@ -1679,44 +1686,89 @@
 						<table style="margin-top:30px;">
 							<thead>
 								<tr>
-									<th>
+									<th rowspan="2" style="text-align:center;vertical-align:middle;">
 										<span>
 											Sr. No
 										</span>
 									</th>
-									<th>
-										<span>
-										Area of Sample (Ao) [cm²]
-										</span>
-									</th>
-									<th>
+									<th rowspan="2" style="text-align:center;vertical-align:middle;">
 										<span>
 									Horizontal Dial Gauge (δ) [mm]
 										</span>
 									</th>
-									<th>
+
+									<th rowspan="2" style="text-align:center;vertical-align:middle;">
 										<span>
-									Proving Ring Reading
+									Corrected Area sq.cm = A (1-δ/6)
 										</span>
 									</th>
-									<th>
+
+									<th colspan="3" style="text-align:center;">
 										<span>
-									Normal Stress [kg/cm²]
+									Normal Stress = 0.5 kg/cm2
 										</span>
 									</th>
-									<th>
+
+									<th colspan="3" style="text-align:center;">
 										<span>
-									Horizontal Load [kg]
+									Normal Stress = 1.0 kg/cm2
 										</span>
 									</th>
-									<th>
+
+									<th colspan="3" style="text-align:center;">
 										<span>
-									Corrected Area [cm²]
+									Normal Stress = 1.5 kg/cm2
 										</span>
 									</th>
-									<th>
+
+									
+
+								</tr>
+
+								<tr>
+									<th colspan="1" style="text-align:center;">
 										<span>
-									Shear Stress (τ) [kg/cm²]
+									Proving Ring Reading 0.5
+										</span>
+									</th>
+									<th colspan="1" style="text-align:center;">
+										<span>
+									Shear Force ,kg
+										</span>
+									</th>
+									<th colspan="1" style="text-align:center;">
+										<span>
+									Shear Stress kg/cm2
+										</span>
+									</th>
+									<th colspan="1" style="text-align:center;">
+										<span>
+									Proving Ring Reading 0.5
+										</span>
+									</th>
+									<th colspan="1" style="text-align:center;">
+										<span>
+									Shear Force ,kg
+										</span>
+									</th>
+									<th colspan="1" style="text-align:center;">
+										<span>
+									Shear Stress kg/cm2
+										</span>
+									</th>
+									<th colspan="1" style="text-align:center;">
+										<span>
+									Proving Ring Reading 0.5
+										</span>
+									</th>
+									<th colspan="1" style="text-align:center;">
+										<span>
+									Shear Force ,kg
+										</span>
+									</th>
+									<th colspan="1" style="text-align:center;">  
+										<span>
+									Shear Stress kg/cm2
 										</span>
 									</th>
 									
@@ -1724,46 +1776,115 @@
 							</thead>
 							<tbody>
 								<t t-set="n" t-value="0"/>
-								<tr t-foreach="data.direct_shear_ids" t-as="r">
+								<tr t-foreach="data.direct_line_ids" t-as="r">
 									<td>
 										<div>
 											<span t-esc="n + 1" />
 											<t t-set="n" t-value="n+1"/>
 										</div>
 									</td>
-									<td>
-										<span t-esc="r.ao"/>
+									<td style="text-align:center;">
+										<span t-esc="r.horizontal_dial" />
 									</td>
-									<td>
-										<span t-esc="r.delta" t-options='{"widget": "float", "precision": 3}'/>
+									<td style="text-align:center;">
+										<span t-esc="r.corrected_area" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
-									<td>
-										<span t-esc="r.proving_ring_reading" t-options='{"widget": "float", "precision": 3}'/>
+									<td style="text-align:center;">
+										<span t-esc="r.pr05" />
 									</td>
-									<td>
-										<span t-esc="r.normal_stress" t-options='{"widget": "float", "precision": 3}'/>
+									<td style="text-align:center;">
+										<span t-esc="r.sf05" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
-									<td>
-										<span t-esc="r.horizontal_load" t-options='{"widget": "float", "precision": 3}'/>
+									<td style="text-align:center;">
+										<span t-esc="r.ss05" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
-									<td>
-										<span t-esc="r.corrected_area" t-options='{"widget": "float", "precision": 3}'/>
+									<td style="text-align:center;">
+										<span t-esc="r.pr10" />
 									</td>
-									<td>
-										<span t-esc="r.shear_stress" t-options='{"widget": "float", "precision": 3}'/>
+									<td style="text-align:center;">
+										<span t-esc="r.sf10" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="text-align:center;">
+										<span t-esc="r.ss10" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="text-align:center;">
+										<span t-esc="r.pr15" />
+									</td>
+									<td style="text-align:center;">
+										<span t-esc="r.sf15" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="text-align:center;">
+										<span t-esc="r.ss15" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									
 								</tr>
 							</tbody>
 						</table>
+
+						<table style="margin-top:30px;" class="table table-sm o_form_table table-bordered custom_table_borders w-100" invisible="not direct_shear_visible " >
+                            <tbody>
+                                <tr>
+                                    <td style="text-align:center;"><span>Normal Stress (Kg/sq.cm)</span></td>
+                                    <td style="text-align:center;"><span>0.5</span></td>
+                                    <td  style="text-align:center;"><span>1.0</span></td>
+                                    <td style="text-align:center;"><span>1.5</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center;"><span>Horizontal Dial Gauge Reading At Failure (mm)</span></td>
+                                    <td style="text-align:center;"><span t-esc="data.failure_reading_05" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-esc="data.failure_reading_10" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-esc="data.failure_reading_15" t-options='{"widget": "float", "precision": 2}'/></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center;"><span>Proving Ring Reading at Failure (mm)</span></td>
+                                    <td style="text-align:center;"><span t-esc="data.proving_failure_05" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-esc="data.proving_failure_10" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-esc="data.proving_failure_15" t-options='{"widget": "float", "precision": 2}'/></td>
+                                </tr>
+								<tr>
+                                    <td style="text-align:center;"><span>Displacement (δ ) in cm</span></td>
+                                    <td style="text-align:center;"><span t-esc="data.displacement_05" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-esc="data.displacement_10" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-esc="data.displacement_15" t-options='{"widget": "float", "precision": 2}'/></td>
+                                </tr>
+								<tr>
+                                    <td style="text-align:center;"><span>Corrected Area sq.cm = A (1-δ/6)</span></td>
+                                    <td style="text-align:center;"><span t-esc="data.corrected_area_05" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-esc="data.corrected_area_10" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-esc="data.corrected_area_15" t-options='{"widget": "float", "precision": 2}'/></td>
+                                </tr>
+								<tr>
+                                    <td style="text-align:center;"><span>Shear Force (kg)</span></td>
+                                    <td style="text-align:center;"><span t-esc="data.shear_force_05" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-esc="data.shear_force_10" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-esc="data.shear_force_15" t-options='{"widget": "float", "precision": 2}'/></td>
+                                </tr>
+								<tr>
+                                    <td style="text-align:center;"><span>Shear Stress (Kg/cm2 )</span></td>
+                                    <td style="text-align:center;"><span t-esc="data.shear_stress_05" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-esc="data.shear_stress_10" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td style="text-align:center;"><span t-esc="data.shear_stress_15" t-options='{"widget": "float", "precision": 2}'/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+
 						<div style="margin-top:20px" t-if="data.direct_shear_visible">
 							<table>
-								<tr cols="12">
-									<td colspan="6">Average Shear Stress (τ_avg) :
-										<![CDATA[&nbsp;]]>
-										<span t-field="data.avg_shear_stress"  t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-								</tr>
+
+							<tr style="font-weight: bold;">
+								<td colspan="6" style="text-align: right; padding: 8px;">Cohesion (Kg/Sqcm) :</td>
+								<td colspan="6" style="padding: 8px;">
+									<span t-field="data.cohesion1" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+							<tr style="font-weight: bold;">
+								<td colspan="6" style="text-align: right; padding: 8px;">Internal Friction (°) :</td>
+								<td colspan="6" style="padding: 8px;">
+									<span t-field="data.internal_friction1" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
 							</table>
 						</div>
 						<div class="signatureContainer girdgird">
@@ -1829,139 +1950,6 @@
 
 
 
-
-					 
-					 <!--  -->
-					 <div t-if="data.angle_shear_visible" style="page-break-before: always;">
-				           	<div style="text-align:center;margin-top: 20px;">
-								<p style="font-size:15px"><b><span t-field="data.angle_shear_name"/></b></p>
-								<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr')]).parameter_table" t-as="parameter">
-										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
-											<span t-field="parameter.specification"/>
-										</t> -->
-									</t>
-								</span>
-							</div>
-
-						
-						<table style="margin-top:30px;">
-							<thead>
-								<tr>
-									<th>
-										<span>
-											Sr. No
-										</span>
-									</th>
-									<th>
-										<span>
-									Normal stress σ (kPa)
-										</span>
-									</th>
-									<th>
-										<span>
-									Shear stress τ (kPa)
-										</span>
-									</th>
-									
-								</tr>
-							</thead>
-							<tbody>
-								<t t-set="n" t-value="0"/>
-								<tr t-foreach="data.angleshear_line_ids" t-as="r">
-									<td>
-										<div>
-											<span t-esc="n + 1" />
-											<t t-set="n" t-value="n+1"/>
-										</div>
-									</td>
-									<td>
-										<span t-esc="r.normal_stress"/>
-									</td>
-									<td>
-										<span t-esc="r.shear_strength" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									
-								</tr>
-							</tbody>
-						</table>
-						<div style="margin-top:20px" t-if="data.angle_shear_visible">
-							<table>
-								<tr cols="12">
-									<td colspan="6">Angle of Internal Friction φ (°) :
-										<![CDATA[&nbsp;]]>
-										<span t-field="data.phi_deg"  t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-								</tr>
-								<tr cols="12">
-									<td colspan="6">Cohesion c (kPa) :
-										<![CDATA[&nbsp;]]>
-										<span t-field="data.cohesion"  t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-								</tr>
-							</table>
-						</div>
-
-						<div class="signatureContainer girdgird">
-							<div>
-								<div>
-									<b>
-										Prepared By
-									</b>
-								</div>
-								<!-- <div style="height: 40px;">
-							<t t-if="eln.tested_by_signature_datasheet">
-
-								<div t-if="eln.sample_id.filled_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
-								
-							</t>
-						</div> -->
-                            <div>
-                                <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
-                                </b>
-                            </div>
-                            <div>
-                                <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
-                                </b>
-                            </div>
-                        </div>
-                        
-                        <div style="margin-left:600px">
-                                    
-                            <div>
-                                <b>
-                                    Checked By
-                                </b>
-                            </div>
-							<!-- <div style="height: 40px;">
-								<t t-if="eln.sample_id.checked_by_signature_datasheet">
-									<div t-if="eln.sample_id.check_by.employee_id.signature">
-										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-									</div>
-									
-								</t>
-							</div> -->
-								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
-							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
-								
-							
-						</div>
-					</div>
-						
-					</div>
 
 
 					 <!--  -->

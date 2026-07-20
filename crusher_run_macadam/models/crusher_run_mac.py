@@ -585,8 +585,43 @@ class CrusherRunMacadamMechanical(models.Model):
     sieve_analysis_name = fields.Char("Name",default="Sieve Analysis")
     sieve_visible = fields.Boolean("Sieve Analysis Visible",compute="_compute_visible")
 
-    sieve_analysis_child_lines = fields.One2many('mechanical.crusher.run.macadam.sieve.analysis.line','parent_id',string="Parameter")
+    sieve_analysis_child_lines = fields.One2many('mechanical.crusher.run.macadam.sieve.analysis.line','parent_id',string="Parameter",default=lambda self: self._default_sieve_analysis_child_lines())
     total_sieve_analysis = fields.Float(string="Total",compute="_compute_total_sieve")
+
+    report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="Report Type",
+        default='nabl',
+        required=True,
+    )
+
+    sieve_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_sieve_nabl",
+    store=True
+)
+
+    @api.depends('report_type')
+    def _compute_sieve_nabl(self):
+     for rec in self:
+        rec.sieve_nabl = 'pass' if rec.report_type == 'nabl' else 'fail'
+
+
+    @api.model
+    def _default_sieve_analysis_child_lines(self):
+        default_lines = [
+            (0, 0, {'sieve_size': '63mm '}),
+            (0, 0, {'sieve_size': '45mm'}),
+            (0, 0, {'sieve_size': '22.4mm'}),
+            (0, 0, {'sieve_size': '5.6mm'}),
+            (0, 0, {'sieve_size': '710micron'}),
+            (0, 0, {'sieve_size': '90micron'}),
+            (0, 0, {'sieve_size': 'Pan'})
+        ]
+        return default_lines
 
 
     def default_get(self, fields):
@@ -606,42 +641,14 @@ class CrusherRunMacadamMechanical(models.Model):
             grade_str = (eln.grade_id.grade or '').lower()
             
             # Define mappings
-            # if grade_str == 'single sized aggregate':
             sieve_mapping = {
-                    # 63: ['80 mm', '63 mm', '40 mm', '20 mm', '10 mm', 'pan'],
-                    # 40: ['63 mm', '40 mm', '20 mm', '10 mm', 'pan'],
-                    # 20: ['40 mm', '20 mm', '10 mm', '4.75 mm', 'pan'],
-                    # 16: ['20 mm', '16 mm', '10 mm', '4.75 mm', 'pan'],
-                    # 12: ['16 mm', '12.5 mm', '10 mm', '4.75 mm', 'pan'],
-                    # 10: ['12.5 mm', '10 mm', '4.75 mm', '2.36 mm', 'pan'],
                     53: ['63 mm', '45 mm', '22.4 mm', '5.6 mm','710 micron','90 micron', 'pan'],
                     37.5: ['45 mm', '22.4 mm', '5.6 mm','710 micron','90 micron', 'pan'],
                 }
             specific_limits_mapping = {
-                    # 63: ['100', '85 - 100', '0 - 30', '0 - 5', '0 - 5', '0'],
-                    # 40: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
-                    # 20: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
-                    # 16: ['100', '85 - 100', '0 - 30', '0 - 5', '0'],
-                    # 12: ['100', '85 - 100', '0 - 45', '0 - 10', '0'],
-                    # 10: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
                     53: ['100', '87 - 100', '50 - 85', '25 - 45', '10.0 - 25', '2.0 - 5'],
                     37.5: ['100', '90 - 100', '35 - 55', '10.0 - 30', '2.0 - 5'],
                 }
-            # elif grade_str == 'graded aggregate':
-            #     sieve_mapping = {
-            #         40: ['80 mm', '40 mm', '20 mm', '10 mm','4.75 mm','pan'],
-            #         20: ['40 mm', '20 mm', '10 mm', '4.75 mm','pan'],
-            #         16: ['20 mm', '16 mm', '10 mm', '4.75 mm', 'pan'],
-            #         12: ['16 mm', '12.5 mm', '10 mm', '4.75 mm', 'pan'],
-            #     }
-            #     specific_limits_mapping = {
-            #         40: ['100', '95 - 100', '30 - 70', '10 - 35','0 - 5', '0'],
-            #         20: ['100', '95 - 100', '25 - 55', '0 - 10', '0'],
-            #         16: ['100', '90 - 100', '30 - 70', '0 - 10', '0'],
-            #         12: ['100', '90 - 100', '40 - 85', '0 - 10', '0'],
-            #     }
-            # else:
-            #     return res
 
             # Extract numeric part
             match = re.search(r'\d+', size_str)
@@ -650,10 +657,6 @@ class CrusherRunMacadamMechanical(models.Model):
                 sieve_list = sieve_mapping.get(number, [])
                 specific_limits = specific_limits_mapping.get(number, [])
                 
-                # Check if lists have same length
-                # if len(sieve_list) != len(specific_limits):
-                #     _logger.warning(f"Mismatch in sieve sizes and limits for size {number}")
-                #     return res
                     
                 # Create sieve analysis lines
                 for sieve_size, specific_limit in zip(sieve_list, specific_limits):
@@ -679,24 +682,10 @@ class CrusherRunMacadamMechanical(models.Model):
 
         # if grade_str == 'single sized aggregate':
         specific_limits_mapping = {
-                # 63: ['100', '85 - 100', '0 - 30', '0 - 5', '0 - 5', '0'],
-                # 40: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
-                # 20: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
-                # 16: ['100', '85 - 100', '0 - 30', '0 - 5', '0'],
-                # 12: ['100', '85 - 100', '0 - 45', '0 - 10', '0'],
-                # 10: ['100', '85 - 100', '0 - 20', '0 - 5', '0'],
                 53: ['100', '87 - 100', '50 - 85', '25 - 45', '10.0 - 25', '2.0 - 5', '0'],
                 37.5: ['100', '90 - 100', '35 - 55', '10.0 - 30', '2.0 - 5', '0'],
             }
-        # elif grade_str == 'graded aggregate':
-        #     specific_limits_mapping = {
-        #         40: ['100', '95 - 100', '30 - 70', '10 - 35', '0 - 5', '0'],
-        #         20: ['100', '95 - 100', '25 - 55', '0 - 10', '0'],
-        #         16: ['100', '90 - 100', '30 - 70', '0 - 10', '0'],
-        #         12: ['100', '90 - 100', '40 - 85', '0 - 10', '0'],
-        #     }
-        # else:
-        #     return
+        
 
         match = re.search(r'\d+', size_str)
         if match:
@@ -709,27 +698,47 @@ class CrusherRunMacadamMechanical(models.Model):
 
 
 
-
     def calculate_sieve(self): 
         for record in self:
-            # import wdb; wdb.set_trace()
-            record.populate_sieve_analysis_lines()  # replace default_get call
+            previous_cumulative = 0  
             for line in record.sieve_analysis_child_lines:
-                # print("Rows",str(line.percent_retained))
+                print("Rows", str(line.percent_retained))
                 previous_line = line.serial_no - 1
+
+                # If this line is 'Pan', directly assign fixed values
+                if line.sieve_size and line.sieve_size.lower() == 'pan':
+                    line.write({
+                        'cumulative_retained': 100.00,
+                        'passing_percent': 0.00,
+                    })
+                    print("PAN LINE: cumulative_retained=100, passing_percent=0")
+                    continue  # skip rest of logic for pan
+
+                # Normal sieve calculation
                 if previous_line == 0:
-                    if line.percent_retained == 0:
-                        line.write({'cumulative_retained': round(line.percent_retained + line.percent_retained,2),
-                                    'passing_percent': 100 ,})
-                    else:
-                        line.write({'cumulative_retained': round(line.percent_retained + line.percent_retained,2),
-                                    'passing_percent': round(100 -line.percent_retained - line.percent_retained,2),})
+                    cumulative_retained = line.percent_retained
                 else:
-                    previous_line_record = self.env['mechanical.crusher.run.macadam.sieve.analysis.line'].sudo().search([("serial_no", "=", previous_line),("parent_id","=",self.id)]).cumulative_retained
-                    line.write({'cumulative_retained': previous_line_record + line.percent_retained,
-                                'passing_percent': round(100-(previous_line_record + line.percent_retained),2),})
+                    previous_line_record = self.env['mechanical.crusher.run.macadam.sieve.analysis.line'].sudo().search([
+                        ("serial_no", "=", previous_line),
+                        ("parent_id", "=", record.id)
+                    ], limit=1)
                     
-                    # print("Previous Cumulative",previous_line_record)
+                    if previous_line_record:
+                        previous_cumulative = previous_line_record.cumulative_retained
+                    cumulative_retained = previous_cumulative + line.percent_retained
+
+                passing_percent = 100 - cumulative_retained
+
+                # Write updated values
+                line.write({
+                    'cumulative_retained': round(cumulative_retained, 2),
+                    'passing_percent': round(passing_percent, 2),
+                })
+
+                print("Updated Cumulative Retained:", cumulative_retained)
+                print("Updated Passing Percent:", passing_percent)
+
+                previous_cumulative = cumulative_retained
                     
 
     
@@ -1177,6 +1186,11 @@ class SieveAnalysisRunLine(models.Model):
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
     sieve_size = fields.Char(string="IS Sieve Size mm")
     wt_retained = fields.Float(string="Wt. Retained in gms")
+
+    cumulative_percent = fields.Float(string="Cum. Weight Retained (gm)",compute="_compute_cumulative_percent",
+    store=True,)
+
+
     percent_retained = fields.Float(string='% of Weight Retained', compute="_compute_percent_retained",digits=(16,2))
     cumulative_retained = fields.Float(string="% of Cumulative Wt. Retained ", store=True,digits=(16,2))
     passing_percent = fields.Float(string="% of wt passing",digits=(16,2))
@@ -1241,6 +1255,16 @@ class SieveAnalysisRunLine(models.Model):
                 record.percent_retained = (record.wt_retained / self.parent_id.weight_of_sample) * 100
             except ZeroDivisionError:
                 record.percent_retained = 0
+
+    @api.depends('wt_retained', 'parent_id.sieve_analysis_child_lines.wt_retained')
+    def _compute_cumulative_percent(self):
+        for parent in self.mapped('parent_id'):
+            total = 0
+            lines = parent.sieve_analysis_child_lines.sorted('serial_no')
+
+            for line in lines:
+                total += line.wt_retained or 0
+                line.cumulative_percent = total
 
 
     @api.depends('cumulative_retained')

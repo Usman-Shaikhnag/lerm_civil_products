@@ -61,6 +61,18 @@
                         </h1>
                     </div>
 
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not dry_gradation_visible">
+                        <tbody>
+                            <tr>
+                                <td class="w-25"><label for="report_type"/></td>
+                                <td  class="w-25">
+                                    <field name="report_type" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
+
                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not dry_gradation_visible">
                         <tbody>
                             <tr>
@@ -138,7 +150,7 @@
                         <tbody>
                             <tr>
                                 <td><label class="fw-bold" for="loose_avg">Average Loose Bulk Density</label></td>
-                                <td><field name="loose_avg"/><span>kg/cu.m</span></td>
+                                <td><field name="loose_avg"/><span>Kg/Lit</span></td>
                             </tr>
                             <tr>
                                 <td><label class="fw-bold" for="loose_avg_confirmity">Conformity</label></td>
@@ -186,7 +198,7 @@
                         <tbody>
                             <tr>
                                 <td><label class="fw-bold" for="rodded_avg">Average Rodded Bulk Density</label></td>
-                                <td><field name="rodded_avg"/><span>kg/cu.m</span></td>
+                                <td><field name="rodded_avg"/><span>Kg/Lit</span></td>
                             </tr>
                             <tr>
                                 <td><label class="fw-bold" for="rodded_avg_confirmity">Conformity</label></td>
@@ -269,11 +281,11 @@
                     <div invisible="not elongation_fl_visible " class="custom_table_borders">
                         <field name="elongation_fl_table" nolabel="1">
                             <tree editable="bottom">
-                                <field name="passing_sieve"  />
-                                <field name="retained_sieve"  />
+                                <field name="passing_sieve" readonly="id" />
+                                <field name="retained_sieve"  readonly="id"/>
                                 <field name="total_weight" class="blue-input" decoration-info="total_weight != 0"/>
                                 <field name="wt_passing_flakiness" class="blue-input" decoration-info="wt_passing_flakiness != 0"/>
-                                <field name="wt_retained_flakiness" class="blue-input" decoration-info="wt_retained_flakiness != 0"/>
+                                <field name="wt_retained_flakiness" />
                                 <field name="wt_retained_elongation" class="blue-input" decoration-info="wt_retained_elongation != 0"/>
                                 
                             </tree>

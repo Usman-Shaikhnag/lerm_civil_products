@@ -129,7 +129,7 @@
                     <table invisible="consistency_cement_visible == False" class="table table-sm table-bordered w-50 mt-2 custom_table_borders">
                         <tbody>
                             <tr>
-                                <td><label class="fw-bold" for="average_consistency"> Average Consistency of Cement (%)</label></td>
+                                <td><label class="fw-bold" for="average_consistency"> Final Consistency of Cement (%)</label></td>
                                 <td>
                                     <field name="average_consistency" nolabel="1"/>
                                 </td>
@@ -184,16 +184,18 @@
                         </tbody>
                       </table>
 
-                      <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not setting_time_visible" style="white-space:nowrap;">
+
+                    </div>
+
+                    
+                      <table class="table table-sm table-bordered custom_table_borders" invisible="not setting_time_visible" style="white-space:nowrap;width:70%">
                         <tbody>
                             <tr>
-                                <td><label class="fw-bold" for="weight_of_water">Weight of Water Added (0.85 x Normal Consistency)</label></td>
-                                <td><field name="weight_of_water"/></td>
+                                <td style="width:80%"><label class="fw-bold" for="weight_of_water">Weight of Water Added (0.85 x Normal Consistency)</label></td>
+                                <td style="width:200%"><field name="weight_of_water"/></td>
                             </tr>
                         </tbody>
                       </table>
-
-                    </div>
 
 
 
@@ -367,32 +369,6 @@
                                     <field name="avg_7_days_nabl"
                                         decoration-success="avg_7_days_nabl == 'pass'" 
                                         decoration-danger="avg_7_days_nabl == 'fail'"/>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not compressive_visible" style="white-space:nowrap;">
-                        <tbody>
-                            <tr>
-                                <td><label class="fw-bold" for="avg_14_days">Avg Compressive Strength (14 Days)</label></td>
-                                <td><field name="avg_14_days"/><span>N/mm²</span></td>
-                            </tr>
-                            <tr>
-                                <td><label class="fw-bold" for="avg_14_days_confirmity">Compressive Strength (14 Days) Conformity</label></td>
-                                <td>
-                                    <field name="avg_14_days_confirmity"
-                                        decoration-success="avg_14_days_confirmity == 'pass'" 
-                                        decoration-danger="avg_14_days_confirmity == 'fail'" 
-                                        readonly="1"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><label class="fw-bold" for="avg_14_days_nabl">Compressive Strength (14 Days) NABL</label></td>
-                                <td>
-                                    <field name="avg_14_days_nabl"
-                                        decoration-success="avg_14_days_nabl == 'pass'" 
-                                        decoration-danger="avg_14_days_nabl == 'fail'"/>
                                 </td>
                             </tr>
                         </tbody>

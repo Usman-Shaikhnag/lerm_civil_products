@@ -15,6 +15,7 @@ from scipy.interpolate import make_interp_spline
 from matplotlib.ticker import LogLocator, MultipleLocator
 import re
 from matplotlib.ticker import AutoMinorLocator
+from scipy.interpolate import PchipInterpolator
 
 from matplotlib.ticker import MultipleLocator, StrMethodFormatter
 
@@ -62,6 +63,28 @@ class Soil(models.Model):
     # Grain Sieve Analysis
     sieve_name = fields.Char("Name",default="Grain Sieve Analysis")
     sieve_visible = fields.Boolean("Grain Sieve Analysis Visible",compute="_compute_visible")
+
+
+    report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="Report Type",
+        default='nabl',
+        required=True,
+    )
+
+    sieve_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_sieve_nabl",
+    store=True
+)
+
+    @api.depends('report_type')
+    def _compute_sieve_nabl(self):
+     for rec in self:
+        rec.sieve_nabl = 'pass' if rec.report_type == 'nabl' else 'fail'
  
     sieve_analysis_child_lines = fields.One2many('mechanical.soil.sieve.analysis.line','parent_id',string="Sieve Analysis",default=lambda self: self._default_sieve_analysis_child_lines())
 
@@ -206,18 +229,17 @@ class Soil(models.Model):
      sieve = str(sieve).strip().replace('µ', 'μ')
 
      mapping = {
-        '80mm': 80.0,
         '40mm': 40.0,
-        '20mm': 20.0,
-        '16mm': 16.0,
+        '25mm': 25.0,
+        '19mm': 19.0,
+        '12.5mm': 12.5,
         '10mm': 10.0,
+        '6.3mm': 6.3,
         '4.75mm': 4.75,
-        '2.00mm': 2.00,
+        '2.36mm': 2.36,
         '1.18mm': 1.18,
         '600μ': 0.600,
-        '425μ': 0.425,
         '300μ': 0.300,
-        '212μ': 0.212,
         '150μ': 0.150,
         '75μ': 0.075,
     }
@@ -408,18 +430,17 @@ class Soil(models.Model):
     @api.model
     def _default_sieve_analysis_child_lines(self):
         default_lines = [
-            (0, 0, {'sieve_size': '80mm'}),
             (0, 0, {'sieve_size': '40mm '}),
-            (0, 0, {'sieve_size': '20mm'}),
-            (0, 0, {'sieve_size': '16mm'}),
+            (0, 0, {'sieve_size': '25mm'}),
+            (0, 0, {'sieve_size': '19mm'}),
+            (0, 0, {'sieve_size': '12.5mm'}),
             (0, 0, {'sieve_size': '10mm'}),
+            (0, 0, {'sieve_size': '6.3mm'}),
             (0, 0, {'sieve_size': '4.75mm'}),
-            (0, 0, {'sieve_size': ' 2.00mm'}),
+            (0, 0, {'sieve_size': ' 2.36mm'}),
             (0, 0, {'sieve_size': '1.18mm'}),
             (0, 0, {'sieve_size': '600µ'}),
-            (0, 0, {'sieve_size': '425µ'}),
             (0, 0, {'sieve_size': '300µ'}),
-            (0, 0, {'sieve_size': '212µ'}),
             (0, 0, {'sieve_size': '150µ'}),
             (0, 0, {'sieve_size': '75µ'}),
             (0, 0, {'sieve_size': 'Pan'})
@@ -430,18 +451,38 @@ class Soil(models.Model):
     @api.onchange('sieve_analysis_child_lines')
     def _onchange_sieve_analysis_child_lines(self):
         for rec in self:
+            # pan_line = None
+            # total_retained = 0.0
+            # target_sieves = ['40mm','25mm','19mm','12.5mm','10mm','6.3mm', '4.75mm', '2.36mm','1.18mm','600µ','300µ','150µ','75µ']
+
+            # for line in rec.sieve_analysis_child_lines:
+            #     if line.sieve_size and line.sieve_size.lower() == 'pan':
+            #         pan_line = line
+            #     elif line.sieve_size in target_sieves:
+            #         total_retained += line.wt_retained or 0.0
+
+            # if pan_line:
+            #     pan_line.wt_retained = (rec.wt_of_sample or 0.0) - total_retained
+
+            target_sieves = [
+                '40mm', '25mm', '19mm', '12.5mm',
+                '10mm', '6.3mm', '4.75mm',
+                '2.36mm', '1.18mm',
+                '600µ', '300µ', '150µ', '75µ']
+
             pan_line = None
             total_retained = 0.0
-            target_sieves = ['80mm','40mm','20mm','16mm', '10mm', '4.75mm', '2.00mm','1.18mm','600µ','425µ','300µ','212µ','150µ','75µ']
 
             for line in rec.sieve_analysis_child_lines:
-                if line.sieve_size and line.sieve_size.lower() == 'pan':
-                    pan_line = line
-                elif line.sieve_size in target_sieves:
-                    total_retained += line.wt_retained or 0.0
+               sieve = (line.sieve_size or '').strip().lower()
+ 
+               if sieve == 'pan':
+                 pan_line = line
+               elif sieve in [s.lower() for s in target_sieves]:
+                total_retained += line.wt_retained or 0.0
 
             if pan_line:
-                pan_line.wt_retained = (rec.wt_of_sample or 0.0) - total_retained
+              pan_line.wt_retained = (rec.wt_of_sample or 0.0) - total_retained
 
 
 
@@ -1556,250 +1597,200 @@ class Soil(models.Model):
 
 
 
-
-
-
-    # def generate_line_chart_light_omc(self):
-    #     x_value = []
-    #     y_value = []
-    #     for line in self.heavy_table:
-    #         if line.water_content and line.dry_density:
-    #             x_value.append(line.water_content)
-    #             y_value.append(line.dry_density)
-
-    #     if not x_value or not y_value:
-    #         return False
-
-    #     x = np.array(x_value)
-    #     y = np.array(y_value)
-
-    #     # Sort data
-    #     sorted_indices = np.argsort(x)
-    #     x = x[sorted_indices]
-    #     y = y[sorted_indices]
-
-    #     # Gentle smooth curve (quadratic)
-    #     x_smooth = np.linspace(x.min(), x.max(), 200)
-    #     spline = make_interp_spline(x, y, k=2)
-    #     y_smooth = spline(x_smooth)
-
-    #     # Find smooth curve peak (OMC/MDD)
-    #     smooth_max_index = np.argmax(y_smooth)
-    #     smooth_max_x = x_smooth[smooth_max_index]
-    #     smooth_max_y = y_smooth[smooth_max_index]
-
-    #     # Trim curve so it never goes above MDD
-    #     y_smooth = np.minimum(y_smooth, smooth_max_y)
-
-    #     # Figure size
-    #     plt.figure(figsize=(15, 5))
-
-    #     # Plot smooth curve
-    #     plt.plot(x_smooth, y_smooth, color='blue', linewidth=2)
-
-    #     # Plot points (smaller, subtle)
-    #     plt.scatter(x, y, color='red', edgecolors='none', s=40, zorder=5)
-
-    #     # Labels and title
-    #     plt.xlabel('Water Content (%)', fontsize=12)
-    #     plt.ylabel('Dry Density (g/cc)', fontsize=12)
-    #     plt.title('DETERMINATION OF COMPACTION OMC / MDD', fontsize=14)
-
-    #     # Extend y-axis
-    #     plt.xlim(left=0, right=max(x) + 2)
-    #     plt.ylim(bottom=min(y) - 0.03, top=smooth_max_y + 0.03)
-
-    #     # Grid
-    #     ax = plt.gca()
-    #     ax.xaxis.set_minor_locator(MultipleLocator(0.2))
-    #     ax.yaxis.set_minor_locator(MultipleLocator(0.005))
-    #     plt.grid(True, which='both', linestyle='--', linewidth=0.3, color='darkgreen', alpha=0.9)
-
-    #     # Highlight OMC/MDD (shifted peak)
-    #     plt.axhline(y=smooth_max_y, color='red', linestyle='--', linewidth=1)
-    #     plt.axvline(x=smooth_max_x, color='red', linestyle='--', linewidth=1)
-    #     plt.plot(smooth_max_x, smooth_max_y, marker='o', color='red', markersize=6)
-    #     plt.text(smooth_max_x + 0.2, smooth_max_y + 0.002,
-    #             f"OMC: {smooth_max_x:.2f}%\nMDD: {smooth_max_y:.2f}",
-    #             color='red', fontsize=10)
-
-    #     plt.tight_layout()
-
-    #     # Save to base64
-    #     buffer = io.BytesIO()
-    #     plt.savefig(buffer, format='png', dpi=150)
-    #     plt.close()
-    #     buffer.seek(0)
-    #     return base64.b64encode(buffer.read()).decode('utf-8')
-
     def generate_line_chart_light_omc(self):
 
-     x_value = []
-     y_value = []
 
-     for line in self.heavy_table:
+      x = []
+      y = []
+
+      for line in self.heavy_table:
         if line.water_content and line.dry_density:
-            x_value.append(float(line.water_content))
-            y_value.append(float(line.dry_density))
+            x.append(float(line.water_content))
+            y.append(float(line.dry_density))
 
-     if len(x_value) < 3:
+      if len(x) < 3:
         return False
 
+    # ---------------------------------------
     # Sort data
-     data = sorted(zip(x_value, y_value))
-     x = np.array([d[0] for d in data])
-     y = np.array([d[1] for d in data])
+    # ---------------------------------------
+      data = sorted(zip(x, y))
+      x = np.array([i[0] for i in data], dtype=float)
+      y = np.array([i[1] for i in data], dtype=float)
 
-    # ==========================
-    # Quadratic Compaction Curve
-    # ==========================
-     coeff = np.polyfit(x, y, 2)
-     poly = np.poly1d(coeff)
+      omc = float(self.omc)
+      mdd = float(self.max_dry_density)
 
-     x_smooth = np.linspace(x.min(), x.max(), 500)
-     y_smooth = poly(x_smooth)
+    # ---------------------------------------
+    # Create parabola through:
+    # First Point
+    # OMC/MDD
+    # Last Point
+    # ---------------------------------------
 
-    # OMC / MDD
-     omc = -coeff[1] / (2 * coeff[0])
-     mdd = poly(omc)
+      x1 = x[0]
+      y1 = y[0]
 
-     plt.figure(figsize=(15, 5))
+      x2 = omc
+      y2 = mdd
 
-    # Smooth blue curve
-     plt.plot(
+      x3 = x[-1]
+      y3 = y[-1]
+
+      A = np.array([
+        [x1**2, x1, 1],
+        [x2**2, x2, 1],
+        [x3**2, x3, 1]
+    ], dtype=float)
+
+      B = np.array([
+        y1,
+        y2,
+        y3
+    ], dtype=float)
+
+      a, b, c = np.linalg.solve(A, B)
+
+      def curve(xx):
+          return a * xx**2 + b * xx + c
+
+      x_smooth = np.linspace(x1, x3, 500)
+      y_smooth = curve(x_smooth)
+
+    # ---------------------------------------
+    # Plot
+    # ---------------------------------------
+
+      plt.figure(figsize=(15, 5))
+
+      plt.plot(
         x_smooth,
         y_smooth,
-        color='blue',
-        linewidth=2.5
+        color="blue",
+        linewidth=2.8,
+        zorder=2
     )
 
-    # Show points ON CURVE only
-     y_curve_points = poly(x)
-  
-     plt.scatter(
+      plt.scatter(
         x,
-        y_curve_points,
-        color='red',
-        edgecolors='none',
-        s=40,
+        y,
+        color="red",
+        s=45,
         zorder=5
     )
 
-    # Peak point
-     plt.scatter(
+      plt.scatter(
         omc,
         mdd,
-        color='red',
-        s=120,
+        color="red",
+        s=160,
         zorder=10
     )
 
-    # OMC / MDD guide lines
-     plt.axhline(
+      plt.axhline(
         y=mdd,
-        color='red',
-        linestyle='--',
+        color="red",
+        linestyle="--",
         linewidth=1
     )
 
-     plt.axvline(
+      plt.axvline(
         x=omc,
-        color='red',
-        linestyle='--',
+        color="red",
+        linestyle="--",
         linewidth=1
     )
 
-    # Annotation
-     plt.text(
-        omc + 0.2,
+      plt.text(
+        omc + 0.15,
         mdd + 0.002,
         f"OMC: {omc:.2f}%\nMDD: {mdd:.2f}",
-        color='red',
-        fontsize=11,
-        fontweight='bold'
+        fontsize=12,
+        color="red",
+        fontweight="bold"
     )
 
-    # Labels
-     plt.xlabel(
-        'Water Content (%)',
-        fontsize=12
-    )
-
-     plt.ylabel(
-        'Dry Density (g/cc)',
-        fontsize=12
-    )
-
-     plt.title(
-        'DETERMINATION OF COMPACTION OMC / MDD',
+      plt.xlabel(
+        "Water Content (%)",
         fontsize=16
     )
 
-    # Limits
-     plt.xlim(
-        left=0,
-        right=max(x) + 2
+      plt.ylabel(
+        "Dry Density (g/cc)",
+        fontsize=16
     )
 
-     plt.ylim(
-        bottom=min(y) - 0.03,
-        top=max(y_smooth) + 0.03
+      plt.title(
+        "DETERMINATION OF COMPACTION OMC / MDD",
+        fontsize=22
     )
 
-    # ==========================
-    # Graph Paper Background
-    # ==========================
-     ax = plt.gca()
+      plt.xlim(0, max(x) + 2)
 
-    # X-axis grid
-     ax.xaxis.set_major_locator(MultipleLocator(1))
-     ax.xaxis.set_minor_locator(MultipleLocator(0.1))
+      ymin = min(min(y), min(y_smooth))
+      ymax = max(max(y), max(y_smooth), mdd)
 
-    # Y-axis grid
-     ax.yaxis.set_major_locator(MultipleLocator(0.05))
-     ax.yaxis.set_minor_locator(MultipleLocator(0.001))
+      plt.ylim(
+        ymin - 0.02,
+        ymax + 0.03
+    )
 
-    # Major Grid
-     plt.grid(
-        which='major',
-        color='green',
-        linestyle='-',
+        # ---------------------------------------
+    # Graph paper background
+    # ---------------------------------------
+
+      ax = plt.gca()
+
+      ax.set_facecolor("#f8fff8")
+
+      ax.xaxis.set_major_locator(MultipleLocator(1))
+      ax.xaxis.set_minor_locator(MultipleLocator(0.1))
+
+      ax.yaxis.set_major_locator(MultipleLocator(0.05))
+      ax.yaxis.set_minor_locator(MultipleLocator(0.005))
+
+      ax.grid(
+        which="major",
+        color="green",
         linewidth=0.5,
-        alpha=0.55
-    )
-
-    # Minor Grid
-     plt.grid(
-        which='minor',
-        color='green',
-        linestyle=':',
-        linewidth=0.3,
         alpha=0.45
     )
 
-     plt.tight_layout()
-
-    # Save Image
-     buffer = io.BytesIO()
-
-     plt.savefig(
-        buffer,
-        format='png',
-        dpi=150,
-        bbox_inches='tight'
+      ax.grid(
+        which="minor",
+        color="green",
+        linestyle=":",
+        linewidth=0.3,
+        alpha=0.35
     )
 
-     plt.close()
+    # Make border thicker
+      for spine in ax.spines.values():
+        spine.set_linewidth(1.2)
 
-     buffer.seek(0)
+      plt.tight_layout()
 
-     return base64.b64encode(
+    # ---------------------------------------
+    # Save Image
+    # ---------------------------------------
+
+      buffer = io.BytesIO()
+
+      plt.savefig(
+        buffer,
+        format="png",
+        dpi=100,
+        bbox_inches="tight"
+    )
+
+      plt.close()
+
+      buffer.seek(0)
+
+      return base64.b64encode(
         buffer.read()
-    ).decode('utf-8')
-    
+    ).decode("utf-8")
 
-
-    
 
 
 
@@ -1959,226 +1950,200 @@ class Soil(models.Model):
 
 
 
-
-    # def generate_line_chart_light_omc1(self):
-    # # Prepare data
-    #     x_value = []
-    #     y_value = []
-    #     for line in self.omc_table:
-    #         x_value.append(line.water_content1)
-    #         y_value.append(line.dry_density1)
-
-    #     if not x_value or not y_value:
-    #         return False
-
-    #     plt.figure(figsize=(10, 5))
-
-    #     # ✅ Blue curve with red points
-    #     plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
-    #     plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
-
-    #     # ✅ Axis labels and title
-    #     plt.xlabel('Water Content (%)', fontsize=12)
-    #     plt.ylabel('Dry Density (g/cc)', fontsize=12)
-    #     plt.title('DETERMINATION OF COMPACTION OMC / MDD', fontsize=14)
-
-    #     # ✅ Axis range
-    #     plt.xlim(left=0, right=max(x_value) + 2)
-    #     plt.ylim(bottom=min(y_value) - 0.02, top=max(y_value) + 0.02)
-
-    #     # ✅ Minor ticks for fine grid
-    #     ax = plt.gca()
-    #     ax.xaxis.set_minor_locator(MultipleLocator(0.5))
-    #     ax.yaxis.set_minor_locator(MultipleLocator(0.005))
-
-    #     # ✅ Fine grid (major + minor)
-    #     plt.grid(True, which='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
-
-    #     # ✅ Highlight max dry density
-    #     max_index = y_value.index(max(y_value))
-    #     max_x = x_value[max_index]
-    #     max_y = y_value[max_index]
-
-    #     plt.axhline(y=max_y, color='red', linestyle='--', linewidth=1)
-    #     plt.axvline(x=max_x, color='red', linestyle='--', linewidth=1)
-    #     plt.plot(max_x, max_y, marker='o', color='red', markersize=8)
-    #     plt.text(max_x + 0.3, max_y + 0.003, f"OMC: {max_x:.2f}%\nMDD: {max_y:.2f}", color='red')
-
-    #     # ✅ Save image
-    #     buffer = io.BytesIO()
-    #     plt.tight_layout()
-    #     plt.legend()
-    #     plt.savefig(buffer, format='png')
-    #     plt.close()
-    #     buffer.seek(0)
-
-    #     return base64.b64encode(buffer.read()).decode('utf-8')
-
-
     def generate_line_chart_light_omc1(self):
 
-     x_value = []
-     y_value = []
 
-     for line in self.omc_table:
+      x = []
+      y = []
+
+      for line in self.omc_table:
         if line.water_content1 and line.dry_density1:
-            x_value.append(float(line.water_content1))
-            y_value.append(float(line.dry_density1))
+            x.append(float(line.water_content1))
+            y.append(float(line.dry_density1))
 
-     if len(x_value) < 3:
+      if len(x) < 3:
         return False
 
+    # ---------------------------------------
     # Sort data
-     data = sorted(zip(x_value, y_value))
-     x = np.array([d[0] for d in data])
-     y = np.array([d[1] for d in data])
+    # ---------------------------------------
+      data = sorted(zip(x, y))
+      x = np.array([i[0] for i in data], dtype=float)
+      y = np.array([i[1] for i in data], dtype=float)
 
-    # ==========================
-    # Quadratic Compaction Curve
-    # ==========================
-     coeff = np.polyfit(x, y, 2)
-     poly = np.poly1d(coeff)
+      omc = float(self.omc1)
+      mdd = float(self.max_dry_density1)
 
-     x_smooth = np.linspace(x.min(), x.max(), 500)
-     y_smooth = poly(x_smooth)
+    # ---------------------------------------
+    # Create parabola through:
+    # First Point
+    # OMC/MDD
+    # Last Point
+    # ---------------------------------------
 
-    # OMC / MDD
-     omc = -coeff[1] / (2 * coeff[0])
-     mdd = poly(omc)
+      x1 = x[0]
+      y1 = y[0]
 
-     plt.figure(figsize=(15, 5))
+      x2 = omc
+      y2 = mdd
 
-    # Smooth blue curve
-     plt.plot(
+      x3 = x[-1]
+      y3 = y[-1]
+
+      A = np.array([
+        [x1**2, x1, 1],
+        [x2**2, x2, 1],
+        [x3**2, x3, 1]
+    ], dtype=float)
+
+      B = np.array([
+        y1,
+        y2,
+        y3
+    ], dtype=float)
+
+      a, b, c = np.linalg.solve(A, B)
+
+      def curve(xx):
+          return a * xx**2 + b * xx + c
+
+      x_smooth = np.linspace(x1, x3, 500)
+      y_smooth = curve(x_smooth)
+
+    # ---------------------------------------
+    # Plot
+    # ---------------------------------------
+
+      plt.figure(figsize=(15, 5))
+
+      plt.plot(
         x_smooth,
         y_smooth,
-        color='blue',
-        linewidth=2.5
+        color="blue",
+        linewidth=2.8,
+        zorder=2
     )
 
-    # Show points ON CURVE only
-     y_curve_points = poly(x)
-  
-     plt.scatter(
+      plt.scatter(
         x,
-        y_curve_points,
-        color='red',
-        edgecolors='none',
-        s=40,
+        y,
+        color="red",
+        s=45,
         zorder=5
     )
 
-    # Peak point
-     plt.scatter(
+      plt.scatter(
         omc,
         mdd,
-        color='red',
-        s=120,
+        color="red",
+        s=160,
         zorder=10
     )
 
-    # OMC / MDD guide lines
-     plt.axhline(
+      plt.axhline(
         y=mdd,
-        color='red',
-        linestyle='--',
+        color="red",
+        linestyle="--",
         linewidth=1
     )
 
-     plt.axvline(
+      plt.axvline(
         x=omc,
-        color='red',
-        linestyle='--',
+        color="red",
+        linestyle="--",
         linewidth=1
     )
 
-    # Annotation
-     plt.text(
-        omc + 0.2,
+      plt.text(
+        omc + 0.15,
         mdd + 0.002,
         f"OMC: {omc:.2f}%\nMDD: {mdd:.2f}",
-        color='red',
-        fontsize=11,
-        fontweight='bold'
+        fontsize=12,
+        color="red",
+        fontweight="bold"
     )
 
-    # Labels
-     plt.xlabel(
-        'Water Content (%)',
-        fontsize=12
-    )
-
-     plt.ylabel(
-        'Dry Density (g/cc)',
-        fontsize=12
-    )
-
-     plt.title(
-        'DETERMINATION OF COMPACTION OMC / MDD',
+      plt.xlabel(
+        "Water Content (%)",
         fontsize=16
     )
 
-    # Limits
-     plt.xlim(
-        left=0,
-        right=max(x) + 2
+      plt.ylabel(
+        "Dry Density (g/cc)",
+        fontsize=16
     )
 
-     plt.ylim(
-        bottom=min(y) - 0.03,
-        top=max(y_smooth) + 0.03
+      plt.title(
+        "DETERMINATION OF COMPACTION OMC / MDD",
+        fontsize=22
     )
 
-    # ==========================
-    # Graph Paper Background
-    # ==========================
-     ax = plt.gca()
+      plt.xlim(0, max(x) + 2)
 
-    # X-axis grid
-     ax.xaxis.set_major_locator(MultipleLocator(1))
-     ax.xaxis.set_minor_locator(MultipleLocator(0.1))
+      ymin = min(min(y), min(y_smooth))
+      ymax = max(max(y), max(y_smooth), mdd)
 
-    # Y-axis grid
-     ax.yaxis.set_major_locator(MultipleLocator(0.05))
-     ax.yaxis.set_minor_locator(MultipleLocator(0.001))
+      plt.ylim(
+        ymin - 0.02,
+        ymax + 0.03
+    )
 
-    # Major Grid
-     plt.grid(
-        which='major',
-        color='green',
-        linestyle='-',
+        # ---------------------------------------
+    # Graph paper background
+    # ---------------------------------------
+
+      ax = plt.gca()
+
+      ax.set_facecolor("#f8fff8")
+
+      ax.xaxis.set_major_locator(MultipleLocator(1))
+      ax.xaxis.set_minor_locator(MultipleLocator(0.1))
+
+      ax.yaxis.set_major_locator(MultipleLocator(0.05))
+      ax.yaxis.set_minor_locator(MultipleLocator(0.005))
+
+      ax.grid(
+        which="major",
+        color="green",
         linewidth=0.5,
-        alpha=0.55
-    )
-
-    # Minor Grid
-     plt.grid(
-        which='minor',
-        color='green',
-        linestyle=':',
-        linewidth=0.3,
         alpha=0.45
     )
 
-     plt.tight_layout()
-
-    # Save Image
-     buffer = io.BytesIO()
-
-     plt.savefig(
-        buffer,
-        format='png',
-        dpi=150,
-        bbox_inches='tight'
+      ax.grid(
+        which="minor",
+        color="green",
+        linestyle=":",
+        linewidth=0.3,
+        alpha=0.35
     )
 
-     plt.close()
+    # Make border thicker
+      for spine in ax.spines.values():
+        spine.set_linewidth(1.2)
 
-     buffer.seek(0)
+      plt.tight_layout()
 
-     return base64.b64encode(
+    # ---------------------------------------
+    # Save Image
+    # ---------------------------------------
+
+      buffer = io.BytesIO()
+
+      plt.savefig(
+        buffer,
+        format="png",
+        dpi=100,
+        bbox_inches="tight"
+    )
+
+      plt.close()
+
+      buffer.seek(0)
+
+      return base64.b64encode(
         buffer.read()
-    ).decode('utf-8')
+    ).decode("utf-8")
+
 
         
 
@@ -2271,7 +2236,15 @@ class Soil(models.Model):
             rec.cbr_5_s3 = (l.sample3_load / 2055)*100 if l.sample3_load else 0
 
         # -------- AVERAGE --------
-        rec.cbr_25_avg = (rec.cbr_25_s1 + rec.cbr_25_s2 + rec.cbr_25_s3) / 3
+        # rec.cbr_25_avg = (rec.cbr_25_s1 + rec.cbr_25_s2 + rec.cbr_25_s3) / 3
+
+        # --------MAX 2.5 mm --------
+        rec.cbr_25_avg = max(rec.cbr_25_s1,rec.cbr_25_s2,rec.cbr_25_s3)
+
+        
+        # -------- 5 mm --------
+        # rec.cbr_5_avg = max(rec.cbr_5_s1,rec.cbr_5_s2,rec.cbr_5_s3)
+
         # rec.cbr_5_avg = (rec.cbr_5_s1 + rec.cbr_5_s2 + rec.cbr_5_s3) / 3
 
         # # -------- MAX --------
@@ -2300,50 +2273,288 @@ class Soil(models.Model):
     show_cbr = fields.Boolean(string="Show CBR Graph")
 
 
+    # def action_generate_cbr_chart(self):
+    #  for rec in self:
+    #     lines = self.env['mechanical.cbr.line'].search([
+    #         ('parent_id', '=', rec.id)
+    #     ], order='penetration asc')
+
+    #     penetration = [l.penetration for l in lines]
+
+    #     s1 = [l.sample1_load for l in lines]
+    #     s2 = [l.sample2_load for l in lines]
+    #     s3 = [l.sample3_load for l in lines]
+
+    #     # ✅ Increase width only (width=12, height=5)
+    #     plt.figure(figsize=(10, 7))
+
+    #     plt.plot(penetration, s1, marker='o', label='Sample-1')
+    #     plt.plot(penetration, s2, marker='o', label='Sample-2')
+    #     plt.plot(penetration, s3, marker='o', label='Sample-3')
+
+    #     plt.xlabel('Penetration (mm)')
+    #     plt.ylabel('Load (Kg/cm²)')
+    #     plt.title('CBR Test Graph')
+
+    #     # ✅ Major grid (big squares)
+    #     plt.grid(which='major', linestyle='-', linewidth=0.8)
+
+    #     # ✅ Minor grid (small squares inside)
+    #     ax = plt.gca()
+    #     ax.xaxis.set_minor_locator(AutoMinorLocator(5))
+    #     ax.yaxis.set_minor_locator(AutoMinorLocator(5))
+    #     plt.grid(which='minor', linestyle=':', linewidth=0.5)
+
+    #     plt.legend()
+
+    #     # Save image
+    #     buffer = io.BytesIO()
+    #     plt.savefig(buffer, format='png', bbox_inches='tight')
+    #     plt.close()
+
+    #     image = base64.b64encode(buffer.getvalue())
+    #     buffer.close()
+
+    #     rec.cbr_chart_image = image
+    #     rec.cbr_chart_filename = "cbr_chart.png"
+
     def action_generate_cbr_chart(self):
+
      for rec in self:
-        lines = self.env['mechanical.cbr.line'].search([
-            ('parent_id', '=', rec.id)
-        ], order='penetration asc')
 
-        penetration = [l.penetration for l in lines]
+        # --------------------------------------
+        # Read CBR Data
+        # --------------------------------------
 
-        s1 = [l.sample1_load for l in lines]
-        s2 = [l.sample2_load for l in lines]
-        s3 = [l.sample3_load for l in lines]
+        lines = self.env['mechanical.cbr.line'].search(
+            [('parent_id', '=', rec.id)],
+            order='penetration asc'
+        )
 
-        # ✅ Increase width only (width=12, height=5)
-        plt.figure(figsize=(12, 5))
+        if len(lines) < 2:
+            continue
 
-        plt.plot(penetration, s1, marker='o', label='Sample-1')
-        plt.plot(penetration, s2, marker='o', label='Sample-2')
-        plt.plot(penetration, s3, marker='o', label='Sample-3')
+        penetration = np.array(
+            [float(line.penetration or 0) for line in lines],
+            dtype=float
+        )
 
-        plt.xlabel('Penetration (mm)')
-        plt.ylabel('Load (Kg/cm²)')
-        plt.title('CBR Test Graph')
+        sample1 = np.array(
+            [float(line.sample1_load or 0) for line in lines],
+            dtype=float
+        )
 
-        # ✅ Major grid (big squares)
-        plt.grid(which='major', linestyle='-', linewidth=0.8)
+        sample2 = np.array(
+            [float(line.sample2_load or 0) for line in lines],
+            dtype=float
+        )
 
-        # ✅ Minor grid (small squares inside)
-        ax = plt.gca()
-        ax.xaxis.set_minor_locator(AutoMinorLocator(5))
-        ax.yaxis.set_minor_locator(AutoMinorLocator(5))
-        plt.grid(which='minor', linestyle=':', linewidth=0.5)
+        sample3 = np.array(
+            [float(line.sample3_load or 0) for line in lines],
+            dtype=float
+        )
 
-        plt.legend()
+        # --------------------------------------
+        # Smooth Curve (Excel Style)
+        # --------------------------------------
 
-        # Save image
+        x_new = np.linspace(
+            penetration.min(),
+            penetration.max(),
+            500
+        )
+
+        curve1 = PchipInterpolator(
+            penetration,
+            sample1
+        )
+
+        curve2 = PchipInterpolator(
+            penetration,
+            sample2
+        )
+
+        curve3 = PchipInterpolator(
+            penetration,
+            sample3
+        )
+
+        y1 = curve1(x_new)
+        y2 = curve2(x_new)
+        y3 = curve3(x_new)
+
+        # --------------------------------------
+        # Create Figure
+        # --------------------------------------
+
+        fig, ax = plt.subplots(
+            figsize=(10, 6)
+        )
+
+                # --------------------------------------
+        # Plot Smooth Curves
+        # --------------------------------------
+
+        ax.plot(
+            x_new,
+            y1,
+            color="#1f77b4",
+            linewidth=2.2,
+            label="Sample-1"
+        )
+
+        ax.plot(
+            x_new,
+            y2,
+            color="#ff7f0e",
+            linewidth=2.2,
+            label="Sample-2"
+        )
+
+        ax.plot(
+            x_new,
+            y3,
+            color="#2ca02c",
+            linewidth=2.2,
+            label="Sample-3"
+        )
+
+        # --------------------------------------
+        # Original Data Points
+        # --------------------------------------
+
+        ax.scatter(
+            penetration,
+            sample1,
+            color="#1f77b4",
+            s=30,
+            zorder=5
+        )
+
+        ax.scatter(
+            penetration,
+            sample2,
+            color="#ff7f0e",
+            s=30,
+            zorder=5
+        )
+
+        ax.scatter(
+            penetration,
+            sample3,
+            color="#2ca02c",
+            s=30,
+            zorder=5
+        )
+
+        # --------------------------------------
+        # Labels & Title
+        # --------------------------------------
+
+        ax.set_title(
+            "CBR Test Graph",
+            fontsize=20,
+            fontweight="bold"
+        )
+
+        ax.set_xlabel(
+            "Penetration (mm)",
+            fontsize=15
+        )
+
+        ax.set_ylabel(
+            "Load (Kg/cm²)",
+            fontsize=15
+        )
+
+        # --------------------------------------
+        # Excel Style Axes
+        # --------------------------------------
+
+        ax.set_xlim(0, 14)
+        ax.set_ylim(40, 320)
+
+        ax.xaxis.set_major_locator(
+            MultipleLocator(1)
+        )
+
+        ax.xaxis.set_minor_locator(
+            MultipleLocator(0.2)
+        )
+
+        ax.yaxis.set_major_locator(
+            MultipleLocator(20)
+        )
+
+        ax.yaxis.set_minor_locator(
+            MultipleLocator(5)
+        )
+
+        # --------------------------------------
+        # Graph Paper
+        # --------------------------------------
+
+        ax.set_facecolor("white")
+
+        ax.grid(
+            which="major",
+            color="#9a9a9a",
+            linewidth=0.7,
+            alpha=0.6
+        )
+
+        ax.grid(
+            which="minor",
+            color="#d8d8d8",
+            linestyle=":",
+            linewidth=0.45
+        )
+
+        ax.set_axisbelow(True)
+
+        # Border
+
+        for spine in ax.spines.values():
+            spine.set_linewidth(1.0)
+
+        # Legend
+
+        ax.legend(
+            loc="upper left",
+            fontsize=12
+        )
+
+        plt.tight_layout()
+
+                # --------------------------------------
+        # Save Image
+        # --------------------------------------
+
         buffer = io.BytesIO()
-        plt.savefig(buffer, format='png', bbox_inches='tight')
-        plt.close()
 
-        image = base64.b64encode(buffer.getvalue())
+        plt.savefig(
+            buffer,
+            format="png",
+            dpi=100,
+            bbox_inches="tight",
+            facecolor="white"
+        )
+
+        plt.close(fig)
+
+        buffer.seek(0)
+
+        image_data = base64.b64encode(
+            buffer.read()
+        )
+
         buffer.close()
 
-        rec.cbr_chart_image = image
-        rec.cbr_chart_filename = "cbr_chart.png"
+        rec.write({
+            'cbr_chart_image': image_data,
+            'cbr_chart_filename': 'cbr_chart.png',
+            'show_cbr': True,
+        })
 
 
     cbr_25_avg_conformity = fields.Selection([
@@ -2687,177 +2898,470 @@ class Soil(models.Model):
     direct_shear_name = fields.Char("Name",default="Direct Shear Test")
     direct_shear_visible = fields.Boolean("Direct Shear Test Visible",compute="_compute_visible")
 
-    proving_ring_constant = fields.Float(string="Proving Ring Constant (k)", digits=(12,3))
+    sample_length = fields.Float(default=6)
+    sample_width = fields.Float(default=6)
+    sample_height = fields.Float(default=2.5)
 
-    direct_shear_ids = fields.One2many("mechanical.direct.shear.test.line", "parent_id", string="Test Readings")
-
-    avg_shear_stress = fields.Float(
-        string="Average Shear Stress (τ_avg) ",
-        compute="_compute_avg_shear_stress",
-        store=True,
-        digits=(12,2))
-
-    @api.depends("direct_shear_ids.shear_stress")
-    def _compute_avg_shear_stress(self):
-        for rec in self:
-            vals = [line.shear_stress for line in rec.direct_shear_ids if line.shear_stress is not None]
-            rec.avg_shear_stress = round(sum(vals)/len(vals), 2) if vals else 0.0
     
-    avg_shear_stress_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_avg_shear_stress_conformity", store=True)
 
-    @api.depends('avg_shear_stress','eln_ref','grade')
-    def _compute_avg_shear_stress_conformity(self):
-        
-        for record in self:
-            if not record.eln_ref or not record.eln_ref.conformity:
-                record.avg_shear_stress_conformity = 'na'
-                continue
-            record.avg_shear_stress_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.avg_shear_stress - record.avg_shear_stress*mu_value
-                    upper = record.avg_shear_stress + record.avg_shear_stress*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.avg_shear_stress_conformity = 'pass'
-                        break
-                    else:
-                        record.avg_shear_stress_conformity = 'fail'
+    direct_proving_ring_factor = fields.Float(string="Proving Ring Factor (Kgf/Div)")
 
-    avg_shear_stress_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_avg_shear_stress_nabl", store=True)
+    direct_strain_rate = fields.Float(default=1.25)
 
-    @api.depends('avg_shear_stress','eln_ref','grade')
-    def _compute_avg_shear_stress_nabl(self):
-        
-        for record in self:
-            record.avg_shear_stress_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
+    direct_area = fields.Float(
+        string="Cross Sectional Area cm2"
+    )
+
+    direct_line_ids = fields.One2many(
+        "mechanical.direct.shear.test.line",
+        "parent_id",
+        string="Observations",default=lambda self: self._default_direct_child_lines())
+    
+
+    @api.model
+    def _default_direct_child_lines(self):
+        default_lines = [
+            (0, 0, {'horizontal_dial': 0.0}),
+            (0, 0, {'horizontal_dial': 0.2}),
+            (0, 0, {'horizontal_dial': 0.4}),
+            (0, 0, {'horizontal_dial': 0.6}),
+            (0, 0, {'horizontal_dial': 0.8}),
+            (0, 0, {'horizontal_dial': 1.0}),
+            (0, 0, {'horizontal_dial': 1.2}),
+            (0, 0, {'horizontal_dial': 1.4}),
+            (0, 0, {'horizontal_dial': 1.6}),
+            (0, 0, {'horizontal_dial': 1.8}),
+            (0, 0, {'horizontal_dial': 2.0}),
+            (0, 0, {'horizontal_dial': 2.2}),
+            (0, 0, {'horizontal_dial': 2.4}),
+            (0, 0, {'horizontal_dial': 2.6}),
+            (0, 0, {'horizontal_dial': 2.8}),
+            (0, 0, {'horizontal_dial': 3.0}),
             
-            lower = record.avg_shear_stress - record.avg_shear_stress*mu_value
-            upper = record.avg_shear_stress + record.avg_shear_stress*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.avg_shear_stress_nabl = 'pass'
-                break
-            else:
-                record.avg_shear_stress_nabl = 'fail'
+        ]
+        return default_lines
+    
 
+    # Bottom Table
 
-     
+    failure_reading_05 = fields.Float(string="Horizontal Dial Gauge Reading At Failure (mm)",compute="_compute_results", store=True)
+    failure_reading_10 = fields.Float(string="Horizontal Dial Gauge Reading At Failure (mm)",compute="_compute_results", store=True)
+    failure_reading_15 = fields.Float(string="Horizontal Dial Gauge Reading At Failure (mm)",compute="_compute_results", store=True)
 
-    # Direct Shear Test (Angle of Friction)
-    angle_shear_name = fields.Char("Name",default="Direct Shear Test (Angle of Friction)")
-    angle_shear_visible = fields.Boolean("Direct Shear Test (Angle of Friction) Visible",compute="_compute_visible")
-     
+    proving_failure_05 = fields.Float(string="Proving Ring Reading at Failure (mm)",compute="_compute_results", store=True)
+    proving_failure_10 = fields.Float(string="Proving Ring Reading at Failure (mm)",compute="_compute_results", store=True)
+    proving_failure_15 = fields.Float(string="Proving Ring Reading at Failure (mm)",compute="_compute_results", store=True)
 
-    angleshear_line_ids = fields.One2many('mechanical.soil.direct.shear.line', 'parent_id', string="Test lines")
-    phi_deg = fields.Float(string="Angle of Internal Friction φ (°)", compute="_compute_phi_cohesion_direct", store=True)
-    cohesion = fields.Float(string="Cohesion c (kPa)", compute="_compute_phi_cohesion_direct", store=True)
+    displacement_05 = fields.Float(string="Displacement (δ ) in cm",compute="_compute_results", store=True)
+    displacement_10 = fields.Float(string="Displacement (δ ) in cm",compute="_compute_results", store=True)
+    displacement_15 = fields.Float(string="Displacement (δ ) in cm",compute="_compute_results", store=True)
 
-    phi_deg_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_phi_deg_conformity", store=True)
+    corrected_area_05 = fields.Float(string="Corrected Area sq.cm = A (1-δ/6)",compute="_compute_results", store=True)
+    corrected_area_10 = fields.Float(string="Corrected Area sq.cm = A (1-δ/6)",compute="_compute_results", store=True)
+    corrected_area_15 = fields.Float(string="Corrected Area sq.cm = A (1-δ/6)",compute="_compute_results", store=True)
 
-    @api.depends('phi_deg','eln_ref','grade')
-    def _compute_phi_deg_conformity(self):
-        
-        for record in self:
-            if not record.eln_ref or not record.eln_ref.conformity:
-                record.phi_deg_conformity = 'na'
-                continue
-            record.phi_deg_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.phi_deg - record.phi_deg*mu_value
-                    upper = record.phi_deg + record.phi_deg*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.phi_deg_conformity = 'pass'
-                        break
-                    else:
-                        record.phi_deg_conformity = 'fail'
+    shear_force_05 = fields.Float(string="Shear Force (kg)",compute="_compute_results", store=True)
+    shear_force_10 = fields.Float(string="Shear Force (kg)",compute="_compute_results", store=True)
+    shear_force_15 = fields.Float(string="Shear Force (kg)",compute="_compute_results", store=True)
 
-    phi_deg_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_phi_deg_nabl", store=True)
+    shear_stress_05 = fields.Float(string="Shear Stress (Kg/cm2 )",compute="_compute_results", store=True)
+    shear_stress_10 = fields.Float(string="Shear Stress (Kg/cm2 )",compute="_compute_results", store=True)
+    shear_stress_15 = fields.Float(string="Shear Stress (Kg/cm2 )",compute="_compute_results", store=True)
 
-    @api.depends('phi_deg','eln_ref','grade')
-    def _compute_phi_deg_nabl(self):
-        
-        for record in self:
-            record.phi_deg_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.phi_deg - record.phi_deg*mu_value
-            upper = record.phi_deg + record.phi_deg*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.phi_deg_nabl = 'pass'
-                break
-            else:
-                record.phi_deg_nabl = 'fail'
+    @api.depends(
+        'direct_line_ids.pr05',
+        'direct_line_ids.pr10',
+        'direct_line_ids.pr15',
+        'direct_line_ids.horizontal_dial',
+        'direct_line_ids.corrected_area',
+        'direct_line_ids.sf05',
+        'direct_line_ids.sf10',
+        'direct_line_ids.sf15',
+        'direct_line_ids.ss05',
+        'direct_line_ids.ss10',
+        'direct_line_ids.ss15'
+    )
+    def _compute_results(self):
 
-    @api.depends('angleshear_line_ids.normal_stress', 'angleshear_line_ids.shear_strength')
-    def _compute_phi_cohesion_direct(self):
         for rec in self:
-            lines = rec.angleshear_line_ids.filtered(lambda l: l.normal_stress is not None and l.shear_strength is not None)
-            n = len(lines)
-            if n < 2:
-                rec.phi_deg = 0.0
-                rec.cohesion = 0.0
+
+            # ---------------- 0.5 ----------------
+
+            if rec.direct_line_ids:
+                line = max(rec.direct_line_ids, key=lambda l: l.pr05 or 0)
+
+                rec.failure_reading_05 = line.horizontal_dial
+                rec.proving_failure_05 = line.pr05
+                rec.displacement_05 = line.horizontal_dial / 10
+                rec.corrected_area_05 = line.corrected_area
+                rec.shear_force_05 = line.sf05
+                rec.shear_stress_05 = line.ss05
+
+            # ---------------- 1.0 ----------------
+
+            if rec.direct_line_ids:
+                line = max(rec.direct_line_ids, key=lambda l: l.pr10 or 0)
+
+                rec.failure_reading_10 = line.horizontal_dial
+                rec.proving_failure_10 = line.pr10
+                rec.displacement_10 = line.horizontal_dial / 10
+                rec.corrected_area_10 = line.corrected_area
+                rec.shear_force_10 = line.sf10
+                rec.shear_stress_10 = line.ss10
+
+            # ---------------- 1.5 ----------------
+
+            if rec.direct_line_ids:
+                line = max(rec.direct_line_ids, key=lambda l: l.pr15 or 0)
+
+                rec.failure_reading_15 = line.horizontal_dial
+                rec.proving_failure_15 = line.pr15
+                rec.displacement_15 = line.horizontal_dial / 10
+                rec.corrected_area_15 = line.corrected_area
+                rec.shear_force_15 = line.sf15
+                rec.shear_stress_15 = line.ss15
+
+
+    direct_graph_image = fields.Binary("Direct Shear Graph", store=True)
+
+    show_direct_graph = fields.Boolean(string="Show Direct Shear Graph")
+    
+
+    cohesion = fields.Float("Cohesion")
+
+    internal_friction = fields.Float("Angle of Internal Friction")
+
+
+
+    def generate_line_chart_direct_shear(self):
+
+      for rec in self:
+
+        # -------------------------------
+        # Data
+        # -------------------------------
+
+        normal_stress = []
+        shear_stress = []
+
+        if rec.shear_stress_05:
+            normal_stress.append(0.5)
+            shear_stress.append(rec.shear_stress_05)
+
+        if rec.shear_stress_10:
+            normal_stress.append(1.0)
+            shear_stress.append(rec.shear_stress_10)
+
+        if rec.shear_stress_15:
+            normal_stress.append(1.5)
+            shear_stress.append(rec.shear_stress_15)
+
+        if len(normal_stress) < 2:
+            rec.direct_graph_image = False
+            continue
+
+        x = np.array(normal_stress)
+        y = np.array(shear_stress)
+
+        # Cohesion and Friction Angle
+
+        slope, intercept = np.polyfit(x, y, 1)
+
+        cohesion = intercept
+        friction_angle = math.degrees(math.atan(slope))
+
+        rec.cohesion = round(cohesion, 2)
+        rec.internal_friction = round(friction_angle, 2)
+
+        # -------------------------------
+        # Figure
+        # -------------------------------
+
+        fig = plt.figure(figsize=(10, 5), dpi=100)
+
+        ax = fig.add_subplot(111)
+
+        # Excel Graph Paper
+
+        ax.set_facecolor("white")
+
+        ax.set_xlim(0, 2.0)
+        ax.set_ylim(0, 1.6)
+
+        ax.set_axisbelow(True)
+
+        ax.minorticks_on()
+
+        # Major Grid
+
+        ax.grid(
+            which="major",
+            color="#84B7A0",
+            linewidth=1.0
+        )
+
+        # Minor Grid
+
+        ax.grid(
+            which="minor",
+            color="#C8E1D4",
+            linewidth=0.35
+        )
+
+        # Grid spacing
+
+        ax.xaxis.set_major_locator(MultipleLocator(0.5))
+        ax.xaxis.set_minor_locator(MultipleLocator(0.05))
+
+        ax.yaxis.set_major_locator(MultipleLocator(0.25))
+        ax.yaxis.set_minor_locator(MultipleLocator(0.025))
+
+        # Border
+
+        for spine in ax.spines.values():
+            spine.set_linewidth(1.0)
+
+        # Plot ONLY actual observations (like Excel)
+
+        ax.plot(
+            x,
+            y,
+            color="blue",
+            linewidth=1.2,
+            marker="o",
+            markersize=4
+        )
+
+        # Axis Labels
+
+        ax.set_xlabel(
+            "Penetration (mm)",
+            fontsize=10
+        )
+
+        ax.set_ylabel("Load (KG)",fontsize=10,rotation=0,labelpad=70,      va="center")
+
+                # Tick formatting
+
+        ax.tick_params(
+            axis='both',
+            which='major',
+            labelsize=8
+        )
+
+        # X-axis ticks
+
+        ax.set_xticks([0, 0.5, 1.0, 1.5, 2.0])
+        ax.set_xticklabels(
+            ['0', '0.5', '1', '1.5', '2']
+        )
+
+        # Y-axis ticks
+
+        ax.set_yticks(
+            np.arange(0, 1.75, 0.25)
+        )
+
+        ax.set_yticklabels([
+            "0.00",
+            "0.25",
+            "0.50",
+            "0.75",
+            "1.00",
+            "1.25",
+            "1.50",
+        ])
+
+        # Remove extra padding
+
+        plt.subplots_adjust(
+    left=0.20,        # Increase left margin
+    right=0.98,
+    top=0.95,
+    bottom=0.16
+)
+
+        # Save graph
+
+        buffer = io.BytesIO()
+
+        plt.savefig(
+            buffer,
+            format="png",
+            dpi=100,
+            bbox_inches=None,
+            facecolor="white"
+        )
+
+        buffer.seek(0)
+
+        rec.direct_graph_image = base64.b64encode(
+            buffer.read()
+        )
+
+        buffer.close()
+
+        plt.close(fig)
+
+      return True
+    
+
+    cohesion1 = fields.Float(
+    string="Cohesion (Kg/Sqcm)",
+    compute="_compute_cohesion_friction",
+    store=True,)
+
+    internal_friction1 = fields.Float(
+    string="Internal Friction (°)",
+    compute="_compute_cohesion_friction",
+    store=True,)
+
+
+    @api.depends(
+    'shear_force_05',
+    'shear_force_10',
+    'shear_force_15',
+    'corrected_area_05',
+    'corrected_area_10',
+    'corrected_area_15'
+)
+    def _compute_cohesion_friction(self):
+
+     for rec in self:
+
+        rec.cohesion1 = 0.0
+        rec.internal_friction1 = 0.0
+
+        if not (
+            rec.corrected_area_05 and
+            rec.corrected_area_10 and
+            rec.corrected_area_15
+        ):
+            continue
+
+        sigma1 = 0.5
+        sigma2 = 1.5
+
+        # Use FULL precision (not rounded values)
+        tau1 = rec.shear_force_05 / rec.corrected_area_05
+        tau2 = rec.shear_force_15 / rec.corrected_area_15
+
+        slope = (tau2 - tau1) / (sigma2 - sigma1)
+
+        rec.internal_friction1 = math.degrees(math.atan(slope))
+
+        rec.cohesion1 = tau1 - sigma1 * slope
+
+
+    cohesion1_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_cohesion1_conformity", store=True)
+
+    @api.depends('cohesion1','eln_ref','grade')
+    def _compute_cohesion1_conformity(self):
+        
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.cohesion1_conformity = 'na'
                 continue
+            record.cohesion1_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.cohesion1 - record.cohesion1*mu_value
+                    upper = record.cohesion1 + record.cohesion1*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.cohesion1_conformity = 'pass'
+                        break
+                    else:
+                        record.cohesion1_conformity = 'fail'
 
-            # Ordinary least squares for tau = c + m*sigma
-            sigma = [l.normal_stress for l in lines]
-            tau = [l.shear_strength for l in lines]
+    cohesion1_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')], string="NABL", compute="_compute_cohesion1_nabl", store=True)
 
-            sum_sigma = sum(sigma)
-            sum_tau = sum(tau)
-            sum_sigma_tau = sum(s * t for s, t in zip(sigma, tau))
-            sum_sigma2 = sum(s * s for s in sigma)
+    @api.depends('cohesion1','eln_ref','grade')
+    def _compute_cohesion1_nabl(self):
+        
+        for record in self:
+            record.cohesion1_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')]).parameter_table
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.cohesion1 - record.cohesion1*mu_value
+            upper = record.cohesion1 + record.cohesion1*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.cohesion1_nabl = 'pass'
+                break
+            else:
+                record.cohesion1_nabl = 'fail'
 
-            denom = (n * sum_sigma2) - (sum_sigma ** 2)
-            if abs(denom) < 1e-12:
-                # degenerate case: all sigma equal
-                # fallback to two-point if possible
-                rec.phi_deg = 0.0
-                rec.cohesion = 0.0
+
+    internal_friction1_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_internal_friction1_conformity", store=True)
+
+    @api.depends('internal_friction1','eln_ref','grade')
+    def _compute_internal_friction1_conformity(self):
+        
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.internal_friction1_conformity = 'na'
                 continue
+            record.internal_friction1_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.internal_friction1 - record.internal_friction1*mu_value
+                    upper = record.internal_friction1 + record.internal_friction1*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.internal_friction1_conformity = 'pass'
+                        break
+                    else:
+                        record.internal_friction1_conformity = 'fail'
 
-            m = (n * sum_sigma_tau - sum_sigma * sum_tau) / denom  # m = tan(phi)
-            c = (sum_tau - m * sum_sigma) / n
+    internal_friction1_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')], string="NABL", compute="_compute_internal_friction1_nabl", store=True)
 
-            # convert m to degrees
-            phi_rad = math.atan(m)
-            phi_deg = phi_rad * 180.0 / math.pi
+    @api.depends('internal_friction1','eln_ref','grade')
+    def _compute_internal_friction1_nabl(self):
+        
+        for record in self:
+            record.internal_friction1_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr')]).parameter_table
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.internal_friction1 - record.internal_friction1*mu_value
+            upper = record.internal_friction1 + record.internal_friction1*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.internal_friction1_nabl = 'pass'
+                break
+            else:
+                record.internal_friction1_nabl = 'fail'
 
-            rec.phi_deg = phi_deg
-            rec.cohesion = c
 
+    
 
      # Moisture Content
     moisture_content_name = fields.Char("Name",default="Moisture Content")
@@ -2948,7 +3452,6 @@ class Soil(models.Model):
             record.fsi_visible  = False 
             record.specific_gravity_visible  = False 
             record.direct_shear_visible  = False 
-            record.angle_shear_visible  = False 
             record.moisture_content_visible = False
 
 
@@ -2994,7 +3497,7 @@ class Soil(models.Model):
                     record.direct_shear_visible = True
 
                 if sample.internal_id == '00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr':
-                    record.angle_shear_visible = True
+                    record.direct_shear_visible = True
 
 
     
@@ -3152,8 +3655,8 @@ class Soil(models.Model):
             # Direct Shear Test
             if result.parameter.internal_id == '21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr':
                 result.calculated = True
-                result.result_char = round(self.avg_shear_stress,2)
-                if self.avg_shear_stress_nabl == 'pass':
+                result.result_char = round(self.cohesion1,2)
+                if self.cohesion1_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -3165,8 +3668,8 @@ class Soil(models.Model):
             # Direct Shear Test (Angle of Friction)
             if result.parameter.internal_id == '00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr':
                 result.calculated = True
-                result.result_char = round(self.phi_deg,2)
-                if self.phi_deg_nabl == 'pass':
+                result.result_char = round(self.internal_friction1,2)
+                if self.internal_friction1_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -3335,9 +3838,15 @@ class SoilSieveAnalysisLine(models.Model):
     sieve_size = fields.Char(string="IS Sieve Size")
     particle_size = fields.Char(string="Particle Size  (mm)")
     wt_retained = fields.Float(string="Wt. Retained in gms")
+
+    cumulative_percent = fields.Float(string="Cum. Weight Retained (gm)",compute="_compute_cumulative_percent",
+    store=True,)
+
     percent_retained = fields.Float(string='% Retained', compute="_compute_percent_retained")
     cumulative_retained = fields.Float(string="Cum. Retained %",compute="_compute_cum_retained" , store=True)
     passing_percent = fields.Float(string="Cumulative % ")
+
+
 
     # @api.onchange('cumulative_retained')
     # def _compute_passing_percent(self):
@@ -3399,6 +3908,16 @@ class SoilSieveAnalysisLine(models.Model):
                 record.percent_retained = (record.wt_retained / record.parent_id.wt_of_sample) * 100 if record.parent_id.wt_of_sample else 0.0
             except ZeroDivisionError:
                 record.percent_retained = 0.0
+
+    @api.depends('wt_retained', 'parent_id.sieve_analysis_child_lines.wt_retained')
+    def _compute_cumulative_percent(self):
+        for parent in self.mapped('parent_id'):
+            total = 0
+            lines = parent.sieve_analysis_child_lines.sorted('serial_no')
+
+            for line in lines:
+                total += line.wt_retained or 0
+                line.cumulative_percent = total
 
 
 
@@ -3818,15 +4337,33 @@ class ShrinkagelimitLINE(models.Model):
     serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
 
     container_no = fields.Char(string="Container No.")
-    shrinkage_mass = fields.Float(string="Mass of container (m1) ",digits=(12,3))
-    shrinkage_wet = fields.Float(string="Wt. of Container + Wet Soil(m2)",digits=(12,3))
-    wt_dry = fields.Float(string="Wt. of Container + dry Soil (m3)",digits=(12,3))
-    mass_dry = fields.Float(string="mass of dry soil (Ms=m3-m1)",digits=(12,3),compute="_compute_mass_dry")
-    mass_water = fields.Float(string="mass of water (Mw=m2-m3)",digits=(12,3),compute="_compute_mass_water")
-    moisture_content_shri = fields.Float(string="Moisture Content %(Mw/Ms*100)",digits=(12,3),compute="_compute_moisture_content_shri")
-    volume_wet_shri = fields.Float(string="Volume of wet soil (V1)",digits=(12,3),compute="_compute_volume_wet_shri")
-    volume_dry_shir = fields.Float(string="Volume of dry Soil pat (V2)",digits=(12,3),compute="_compute_volume_dry_shir")
+    shrinkage_mass = fields.Float(string="Mass of container (M1) ",digits=(12,3))
+
+    shrinkage_wet = fields.Float(string="Mass of container + Wet soil (M2)",digits=(12,3))
+
+    wt_dry = fields.Float(string="Mass of container + Dry soil (M3)",digits=(12,3))
+
+    mass_dry = fields.Float(string="Mass of Dry soil (M3-M1),Ms",digits=(12,3),compute="_compute_mass_dry")
+    mass_water = fields.Float(string="Mass of Water( M2-M3) , Mw",digits=(12,3),compute="_compute_mass_water")
+
+
+    moisture_content_shri = fields.Float(string="Water Content %",digits=(12,3),compute="_compute_moisture_content_shri")
+
+    volume_wet_shri = fields.Float(string="Volume of Wet Soil ,V1 (CC)",digits=(12,3))
+
+    volume_dry_shir = fields.Float(string="Volume of Dry Soil ,V2 (CC)",digits=(12,3))
+
     shrinkage_limit = fields.Float(string="Shrinkage limit (%)",digits=(12,3),compute="_compute_shrinkage_limit")
+
+    shrinkage_ratio = fields.Float(string="Shrinkage ratio (Ms/V2)",digits=(12,3),compute="_compute_values")
+
+    @api.depends("mass_dry", "volume_dry_shir")
+    def _compute_values(self):
+        for rec in self:
+            if rec.volume_dry_shir:
+                rec.shrinkage_ratio = rec.mass_dry / rec.volume_dry_shir
+            else:
+                rec.shrinkage_ratio = 0.0
 
     @api.depends('wt_dry', 'shrinkage_mass')
     def _compute_mass_dry(self):
@@ -3852,27 +4389,7 @@ class ShrinkagelimitLINE(models.Model):
             else:
                 rec.moisture_content_shri = 0.0
 
-    @api.depends("parent_id")
-    def _compute_volume_wet_shri(self):
-        for rec in self:
-            volume = 0.0
-            if rec.parent_id:
-                # घेतो पहिला record volume wet lines मधून
-                wet_line = rec.parent_id.volume_wet_table[:1]  
-                if wet_line:
-                    volume = wet_line.volume_wet
-            rec.volume_wet_shri = volume
-
-    @api.depends("parent_id")
-    def _compute_volume_dry_shir(self):
-        for rec in self:
-            volume1 = 0.0
-            if rec.parent_id:
-                # घेतो पहिला record volume wet lines मधून
-                wet_line1 = rec.parent_id.volume_dry_table[:1]  
-                if wet_line1:
-                    volume1 = wet_line1.volume_dry
-            rec.volume_dry_shir = volume1
+    
 
     @api.depends('moisture_content_shri', 'volume_wet_shri', 'volume_dry_shir', 'mass_dry')
     def _compute_shrinkage_limit(self):
@@ -4011,38 +4528,108 @@ class VolumeWetLINE(models.Model):
             record.serial_no = index + 1
 
 
-
-
 class DirectShearTestLine(models.Model):
     _name = "mechanical.direct.shear.test.line"
     parent_id = fields.Many2one('mechanical.soil',string="Parent Id")
 
     serial_no = fields.Integer(string="Test",readonly=True, copy=False, default=1)
 
-    ao = fields.Float(string="Area of Sample (Ao) [cm²]", digits=(12,3))
-    delta = fields.Float(string="Horizontal Dial Gauge (δ) [mm]", digits=(12,3))
-    proving_ring_reading = fields.Float(string="Proving Ring Reading", digits=(12,3))
-    normal_stress = fields.Float(string="Normal Stress [kg/cm²]", digits=(12,3))
 
-    horizontal_load = fields.Float(string="Horizontal Load [kg]", compute="_compute_shear", store=True, digits=(12,3))
-    corrected_area = fields.Float(string="Corrected Area [cm²]", compute="_compute_shear", store=True, digits=(12,3))
-    shear_stress = fields.Float(string="Shear Stress (τ) [kg/cm²]", compute="_compute_shear", store=True, digits=(12,3))
+    horizontal_dial = fields.Float(string="Horizontal Dial Reading (mm)")
 
-    @api.depends("ao","delta","proving_ring_reading","parent_id.proving_ring_constant")
-    def _compute_shear(self):
-        for rec in self:
-            k = rec.parent_id.proving_ring_constant or 0
-            # Horizontal Load
-            rec.horizontal_load = rec.proving_ring_reading * k
-            # Corrected Area
-            rec.corrected_area = rec.ao * (1 - rec.delta/100)
-            # Shear Stress (sign preserved)
-            if rec.corrected_area != 0:
-                rec.shear_stress = rec.horizontal_load / rec.corrected_area
-            else:
-                rec.shear_stress = 0.0
+    corrected_area = fields.Float(string="Corrected Area sq.cm = A (1-δ/6)",compute="_compute_corrected_area",store=True)
 
-   
+    # ---------------- 0.5 ----------------
+
+    pr05 = fields.Float("Proving Ring Reading 0.5")
+
+    sf05 = fields.Float(string="Shear Force ,kg",
+        compute="_compute_shear_force",
+        store=True
+    )
+
+    ss05 = fields.Float(string="Shear Stress kg/cm2",
+        compute="_compute_shear_stress",
+        store=True
+    )
+
+    # ---------------- 1.0 ----------------
+
+    pr10 = fields.Float(string="Proving Ring Reading 1.0",)
+
+    sf10 = fields.Float(string="Shear Force ,kg",
+        compute="_compute_shear_force",
+        store=True
+    )
+
+    ss10 = fields.Float(string="Shear Stress kg/cm2",
+        compute="_compute_shear_stress",
+        store=True
+    )
+
+    # ---------------- 1.5 ----------------
+
+    pr15 = fields.Float(string="Proving Ring Reading 1.5",)
+
+    sf15 = fields.Float(string="Shear Force ,kg",
+        compute="_compute_shear_force",
+        store=True
+    )
+
+    ss15 = fields.Float(string="Shear Stress kg/cm2",
+        compute="_compute_shear_stress",
+        store=True
+    )
+
+    @api.depends('horizontal_dial', 'parent_id.direct_area')
+    def _compute_corrected_area(self):
+
+        for line in self:
+            area = line.parent_id.direct_area or 36
+            line.corrected_area = area * (1 - line.horizontal_dial / 60)
+
+    @api.depends(
+        'pr05',
+        'pr10',
+        'pr15',
+        'parent_id.direct_proving_ring_factor'
+    )
+    def _compute_shear_force(self):
+
+        for line in self:
+
+            factor = line.parent_id.direct_proving_ring_factor or 0
+
+            line.sf05 = round(line.pr05 * factor, 2)
+            line.sf10 = round(line.pr10 * factor, 2)
+            line.sf15 = round(line.pr15 * factor, 2)
+
+    @api.depends(
+        'sf05',
+        'sf10',
+        'sf15',
+        'corrected_area'
+    )
+    def _compute_shear_stress(self):
+
+        for line in self:
+
+            if line.corrected_area:
+
+                line.ss05 = round(
+                    line.sf05 / line.corrected_area,
+                    2
+                )
+
+                line.ss10 = round(
+                    line.sf10 / line.corrected_area,
+                    2
+                )
+
+                line.ss15 = round(
+                    line.sf15 / line.corrected_area,
+                    2
+                )
 
     @api.model
     def create(self, vals):
@@ -4064,34 +4651,34 @@ class DirectShearTestLine(models.Model):
 
 
 
-class DirectShearLine(models.Model):
-    _name = "mechanical.soil.direct.shear.line"
-    parent_id = fields.Many2one('mechanical.soil',string="Parent Id")
+# class DirectShearLine(models.Model):
+#     _name = "mechanical.soil.direct.shear.line"
+#     parent_id = fields.Many2one('mechanical.soil',string="Parent Id")
 
-    serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
+#     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
 
-    normal_stress = fields.Float(string="Normal stress σ (kPa)")
-    shear_strength = fields.Float(string="Shear stress τ (kPa)")
+#     normal_stress = fields.Float(string="Normal stress σ (kPa)")
+#     shear_strength = fields.Float(string="Shear stress τ (kPa)")
 
    
 
     
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
+#     @api.model
+#     def create(self, vals):
+#         # Set the serial_no based on the existing records for the same parent
+#         if vals.get('parent_id'):
+#             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+#             if existing_records:
+#                 max_serial_no = max(existing_records.mapped('serial_no'))
+#                 vals['serial_no'] = max_serial_no + 1
 
-        return super(DirectShearLine, self).create(vals)
+#         return super(DirectShearLine, self).create(vals)
 
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
+#     def _reorder_serial_numbers(self):
+#         # Reorder the serial numbers based on the positions of the records in child_lines
+#         records = self.sorted('id')
+#         for index, record in enumerate(records):
+#             record.serial_no = index + 1
 
 
 class SoilNotes(models.Model):

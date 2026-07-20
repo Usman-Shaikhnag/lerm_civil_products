@@ -159,21 +159,18 @@ class CementPSC(models.Model):
     consistency_cement_lines = fields.One2many('consistensy.cement.psc.line','parent_id',string="Consistency")
 
     average_consistency = fields.Float(
-        string="Average Consistency (%)",
+        string="Final Consistency (%)",
         compute="_compute_average_consistency",
         store=True
     )
 
     @api.depends('consistency_cement_lines.consistency')
     def _compute_average_consistency(self):
-        for rec in self:
-            if rec.consistency_cement_lines:
-                rec.average_consistency = round(
-                    sum(rec.consistency_cement_lines.mapped('consistency')) / len(rec.consistency_cement_lines),
-                    2
-                )
-            else:
-                rec.average_consistency = 0.0
+     for rec in self:
+        if rec.consistency_cement_lines:
+            rec.average_consistency = rec.consistency_cement_lines[-1].consistency
+        else:
+            rec.average_consistency = 0.0
 
     average_consistency_confirmity = fields.Selection([
         ('pass', 'Pass'),
@@ -246,7 +243,7 @@ class CementPSC(models.Model):
     )
 
     weight_of_water = fields.Float(
-        string="Weight of Water Added (0.85 x Normal Consistency)",
+        string="Weight of Water Added = 0.85 * Normal Consistency x Weight of Cement Sample in Initial & Final Setting Time",
         compute="_compute_weight_of_water",
         store=True,
         readonly=True,
@@ -418,9 +415,6 @@ class CementPSC(models.Model):
             (0, 0, {'days': '7 Days'}),
             (0, 0, {'days': '7 Days'}),
             (0, 0, {'days': '7 Days'}),
-            (0, 0, {'days': '14 Days'}),
-            (0, 0, {'days': '14 Days'}),
-            (0, 0, {'days': '14 Days'}),
             (0, 0, {'days': '28 Days'}),
             (0, 0, {'days': '28 Days'}),
             (0, 0, {'days': '28 Days'}),
@@ -438,7 +432,7 @@ class CementPSC(models.Model):
 
     avg_7_days = fields.Float(string="Avg Compressive Strength (7 Days)", compute="_compute_avg_strengths", store=True)
 
-    avg_14_days = fields.Float(string="Avg Compressive Strength (14 Days)", compute="_compute_avg_strengths", store=True)
+    
 
     avg_28_days = fields.Float(string="Avg Compressive Strength (28 Days)", compute="_compute_avg_strengths", store=True)
 
@@ -448,12 +442,12 @@ class CementPSC(models.Model):
         for rec in self:
             strengths_3 = [line.compressive_strength for line in rec.compressive_lines if line.days == '3 Days' and line.compressive_strength]
             strengths_7 = [line.compressive_strength for line in rec.compressive_lines if line.days == '7 Days' and line.compressive_strength]
-            strengths_14 = [line.compressive_strength for line in rec.compressive_lines if line.days == '14 Days' and line.compressive_strength]
+            
             strengths_28 = [line.compressive_strength for line in rec.compressive_lines if line.days == '28 Days' and line.compressive_strength]
 
             rec.avg_3_days = mean(strengths_3) if strengths_3 else 0.0
             rec.avg_7_days = mean(strengths_7) if strengths_7 else 0.0
-            rec.avg_14_days = mean(strengths_14) if strengths_14 else 0.0
+            
             rec.avg_28_days = mean(strengths_28) if strengths_28 else 0.0
 
     avg_3_days_confirmity = fields.Selection([
@@ -564,57 +558,7 @@ class CementPSC(models.Model):
 
     
 
-    avg_14_days_confirmity = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),('na', 'NA'),], string='Confirmity',compute="_compute_avg_14_days_confirmity")
     
-    @api.depends('avg_14_days','eln_ref','grade')
-    def _compute_avg_14_days_confirmity(self):
-        for record in self:
-            if not record.eln_ref or not record.eln_ref.conformity:
-                record.avg_14_days_confirmity = 'na'
-                continue
-            record.avg_14_days_confirmity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a3525d21-e21a-44d3-a09c-f87afc1fbcc4')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a3525d21-e21a-44d3-a09c-f87afc1fbcc4')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    lower = record.avg_14_days - record.avg_14_days*mu_value
-                    upper = record.avg_14_days + record.avg_14_days*mu_value
-                    if lower >= req_min and upper <= req_max :
-                        record.avg_14_days_confirmity = 'pass'
-                        break
-                    else:
-                        record.avg_14_days_confirmity = 'fail'
-
-    avg_14_days_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string='NABL', compute="_compute_avg_14_days_nabl",store=True)
-
-    @api.depends('avg_14_days','eln_ref','grade')
-    def _compute_avg_14_days_nabl(self):
-        
-        for record in self:
-            record.avg_14_days_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a3525d21-e21a-44d3-a09c-f87afc1fbcc4')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a3525d21-e21a-44d3-a09c-f87afc1fbcc4')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.avg_14_days - record.avg_14_days*mu_value
-                    upper = record.avg_14_days + record.avg_14_days*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.avg_14_days_nabl = 'pass'
-                        break
-                    else:
-                        record.avg_14_days_nabl = 'fail'
-
 
     avg_28_days_confirmity = fields.Selection([
         ('pass', 'Pass'),
@@ -1258,15 +1202,7 @@ class CementPSC(models.Model):
                 continue
 
 
-            # Compressive Strength (14 Days)
-            if result.parameter.internal_id == 'a3525d21-e21a-44d3-a09c-f87afc1fbcc4':
-                result.result_char = round(self.avg_14_days,2)
-                result.calculated = True
-                if self.avg_14_days_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
+            
 
             # Compressive Strength (28 Days)
             if result.parameter.internal_id == '5777fffrrtt11-372f-4775-9bcb-e9dd723547htui':
@@ -1556,7 +1492,7 @@ class CompressiveCementPSCLine(models.Model):
     @api.depends('parent_id')
     def _compute_area(self):
         for rec in self:
-            rec.area = 7.06 * 7.06
+            rec.area = 70.6 * 70.6
 
     
 
@@ -1571,7 +1507,7 @@ class CompressiveCementPSCLine(models.Model):
     def _compute_strength(self):
         for rec in self:
             if rec.area:
-                rec.compressive_strength = (rec.load / rec.area)
+                rec.compressive_strength = (rec.load * 1000) / rec.area
             else:
                 rec.compressive_strength = 0.0
 

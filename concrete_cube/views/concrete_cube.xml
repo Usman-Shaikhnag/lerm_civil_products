@@ -203,7 +203,7 @@
                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="cube_visible == False" >
                         <tbody>
                            
-                            <tr>
+                            <!-- <tr>
                                 <td><label for="confirmity">confirmity</label></td>
                                 <td>
                                     <field name="confirmity"  style="color: green;" invisible="confirmity != 'pass'"/>
@@ -216,6 +216,27 @@
                                 <td>
                                     <field name="nabl"  style="color: green;" invisible="nabl != 'pass'"/>
                                     <field name="nabl"  style="color: red;" invisible="nabl != 'fail'"/>
+                                </td>
+                            </tr> -->
+
+                            <tr>
+                                 <td><label class="fw-bold" for="avg_compressive_strength_conformity">Conformity</label></td>
+                                 <td>
+                                     <field name="avg_compressive_strength_conformity"
+                                        decoration-success="avg_compressive_strength_conformity == 'pass'" 
+                                        decoration-danger="avg_compressive_strength_conformity == 'fail'" 
+                                        readonly="1"/>
+                                 </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="fw-bold" for="avg_compressive_strength_nabl">NABL</label>
+                                </td>
+                                <td>
+                                    <field name="avg_compressive_strength_nabl"
+                                        decoration-success="avg_compressive_strength_nabl == 'pass'" 
+                                        decoration-danger="avg_compressive_strength_nabl == 'fail'" 
+                                        readonly="1"/>
                                 </td>
                             </tr>
                         </tbody>

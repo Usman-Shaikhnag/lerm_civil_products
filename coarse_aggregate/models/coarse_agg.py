@@ -138,6 +138,28 @@ class CoarseAggregateMechanical(models.Model):
     total_sieve_analysis = fields.Float(string="Total",compute="_compute_total_sieve")
 
 
+    report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="Report Type",
+        default='nabl',
+        required=True,
+    )
+
+    sieve_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_sieve_nabl",
+    store=True
+)
+
+    @api.depends('report_type')
+    def _compute_sieve_nabl(self):
+     for rec in self:
+        rec.sieve_nabl = 'pass' if rec.report_type == 'nabl' else 'fail'
+
+
     def default_get(self, fields):
         print("From Default Value")
         res = super(CoarseAggregateMechanical, self).default_get(fields)
@@ -253,26 +275,69 @@ class CoarseAggregateMechanical(models.Model):
 
 
 
-    def calculate_sieve(self): 
-        for record in self:
-            # import wdb; wdb.set_trace()
-            record.populate_sieve_analysis_lines()  # replace default_get call
-            for line in record.sieve_analysis_child_lines:
-                # print("Rows",str(line.percent_retained))
-                previous_line = line.serial_no - 1
-                if previous_line == 0:
-                    if line.percent_retained == 0:
-                        line.write({'cumulative_retained': round(line.percent_retained + line.percent_retained,2),
-                                    'passing_percent': 100 ,})
-                    else:
-                        line.write({'cumulative_retained': round(line.percent_retained + line.percent_retained,2),
-                                    'passing_percent': round(100 -line.percent_retained - line.percent_retained,2),})
-                else:
-                    previous_line_record = self.env['mechanical.coarse.aggregate.sieve.analysis.line'].sudo().search([("serial_no", "=", previous_line),("parent_id","=",self.id)]).cumulative_retained
-                    line.write({'cumulative_retained': previous_line_record + line.percent_retained,
-                                'passing_percent': round(100-(previous_line_record + line.percent_retained),2),})
+    # def calculate_sieve(self): 
+    #     for record in self:
+    #         # import wdb; wdb.set_trace()
+    #         record.populate_sieve_analysis_lines()  # replace default_get call
+    #         for line in record.sieve_analysis_child_lines:
+    #             # print("Rows",str(line.percent_retained))
+    #             previous_line = line.serial_no - 1
+    #             if previous_line == 0:
+    #                 if line.percent_retained == 0:
+    #                     line.write({'cumulative_retained': round(line.percent_retained + line.percent_retained,2),
+    #                                 'passing_percent': 100 ,})
+    #                 else:
+    #                     line.write({'cumulative_retained': round(line.percent_retained + line.percent_retained,2),
+    #                                 'passing_percent': round(100 -line.percent_retained - line.percent_retained,2),})
+    #             else:
+    #                 previous_line_record = self.env['mechanical.coarse.aggregate.sieve.analysis.line'].sudo().search([("serial_no", "=", previous_line),("parent_id","=",self.id)]).cumulative_retained
+    #                 line.write({'cumulative_retained': previous_line_record + line.percent_retained,
+    #                             'passing_percent': round(100-(previous_line_record + line.percent_retained),2),})
                     
                     # print("Previous Cumulative",previous_line_record)
+
+
+    def calculate_sieve(self): 
+        for record in self:
+            previous_cumulative = 0  
+            for line in record.sieve_analysis_child_lines:
+                print("Rows", str(line.percent_retained))
+                previous_line = line.serial_no - 1
+
+                # If this line is 'Pan', directly assign fixed values
+                if line.sieve_size and line.sieve_size.lower() == 'pan':
+                    line.write({
+                        'cumulative_retained': 100.00,
+                        'passing_percent': 0.00,
+                    })
+                    print("PAN LINE: cumulative_retained=100, passing_percent=0")
+                    continue  # skip rest of logic for pan
+
+                # Normal sieve calculation
+                if previous_line == 0:
+                    cumulative_retained = line.percent_retained
+                else:
+                    previous_line_record = self.env['mechanical.coarse.aggregate.sieve.analysis.line'].sudo().search([
+                        ("serial_no", "=", previous_line),
+                        ("parent_id", "=", record.id)
+                    ], limit=1)
+                    
+                    if previous_line_record:
+                        previous_cumulative = previous_line_record.cumulative_retained
+                    cumulative_retained = previous_cumulative + line.percent_retained
+
+                passing_percent = 100 - cumulative_retained
+
+                # Write updated values
+                line.write({
+                    'cumulative_retained': round(cumulative_retained, 2),
+                    'passing_percent': round(passing_percent, 2),
+                })
+
+                print("Updated Cumulative Retained:", cumulative_retained)
+                print("Updated Passing Percent:", passing_percent)
+
+                previous_cumulative = cumulative_retained
                     
 
     
@@ -799,25 +864,73 @@ class CoarseAggregateMechanical(models.Model):
     specific_gravity_name = fields.Char("Name",default="Specific Gravity & Water Absorption")
     specific_gravity_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
 
+    
+
+    show_pycnometer = fields.Boolean(
+    compute="_compute_show_pycnometer",
+    store=False,
+)
+
+    @api.depends('eln_ref.size_id')
+    def _compute_show_pycnometer(self):
+     for rec in self:
+        size = (rec.eln_ref.size_id.size or "").replace(" ", "").lower()
+
+        print("SIZE =", size)
+
+        rec.show_pycnometer = size in ('6mm', '10mm')
+
+        print("SHOW =", rec.show_pycnometer)
+
+    specific_gravity_line_ids = fields.One2many(
+        "pycnometer.specific.gravity.line",
+        "parent_id",
+        string="Tests")
+
+    
+
     specific_water_line_ids = fields.One2many('specific.gravity.water.absorption.line', 'parent_id', string="Observations")
 
     avg_specific_gravity = fields.Float("Average Specific Gravity", compute="_compute_avg_specific_water", store=True)
     avg_water_absorption = fields.Float("Average Water Absorption (%)", compute="_compute_avg_specific_water", store=True)
 
-    @api.depends('specific_water_line_ids.specific_gravity', 'specific_water_line_ids.water_absorption')
+
+    @api.depends(
+    'eln_ref.size_id',
+    'specific_water_line_ids.specific_gravity',
+    'specific_water_line_ids.water_absorption',
+    'specific_gravity_line_ids.specific_gravity',
+    'specific_gravity_line_ids.water_absorption',
+)
     def _compute_avg_specific_water(self):
      for rec in self:
-        lines = rec.specific_water_line_ids
+        size = (rec.size_id.size or "").replace(" ", "").lower() if rec.size_id else ""
 
-        if lines:
-            sg_list = lines.mapped('specific_gravity')
-            wa_list = lines.mapped('water_absorption')
-
-            rec.avg_specific_gravity = sum(sg_list) / len(sg_list) if sg_list else 0.0
-            rec.avg_water_absorption = sum(wa_list) / len(wa_list) if wa_list else 0.0
+        if size in ('6mm', '10mm'):
+            lines = rec.specific_gravity_line_ids
         else:
-            rec.avg_specific_gravity = 0.0
-            rec.avg_water_absorption = 0.0
+            lines = rec.specific_water_line_ids
+
+        sg = lines.mapped('specific_gravity')
+        wa = lines.mapped('water_absorption')
+
+        rec.avg_specific_gravity = sum(sg) / len(sg) if sg else 0.0
+        rec.avg_water_absorption = sum(wa) / len(wa) if wa else 0.0
+
+    # @api.depends('specific_water_line_ids.specific_gravity', 'specific_water_line_ids.water_absorption')
+    # def _compute_avg_specific_water(self):
+    #  for rec in self:
+    #     lines = rec.specific_water_line_ids
+
+    #     if lines:
+    #         sg_list = lines.mapped('specific_gravity')
+    #         wa_list = lines.mapped('water_absorption')
+
+    #         rec.avg_specific_gravity = sum(sg_list) / len(sg_list) if sg_list else 0.0
+    #         rec.avg_water_absorption = sum(wa_list) / len(wa_list) if wa_list else 0.0
+    #     else:
+    #         rec.avg_specific_gravity = 0.0
+    #         rec.avg_water_absorption = 0.0
 
 
     avg_specific_gravity_conformity = fields.Selection([
@@ -2457,6 +2570,7 @@ class CoarseAggregateMechanical(models.Model):
 
     @api.model
     def create(self, vals):
+        
         # import wdb;wdb.set_trace()
         record = super(CoarseAggregateMechanical, self).create(vals)
         # record.get_all_fields()
@@ -2467,7 +2581,7 @@ class CoarseAggregateMechanical(models.Model):
 
         self._compute_sample_parameters()
         self._compute_visible()
-        self.default_get(fields)
+        # self.default_get(fields)
 
         return super(CoarseAggregateMechanical, self).read(fields=fields, load=load)
 
@@ -2504,6 +2618,8 @@ class CoarseAggregateMechanical(models.Model):
                 parameter_ids = user_param_results.mapped('parameter').ids
 
             record.sample_parameters = [(6, 0, parameter_ids)]
+
+
     def get_all_fields(self):
         record = self.env['mechanical.coarse.aggregate'].browse(self.ids[0])
         field_values = {}
@@ -2527,6 +2643,11 @@ class SieveAnalysisLine(models.Model):
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
     sieve_size = fields.Char(string="IS Sieve Size mm")
     wt_retained = fields.Float(string="Wt. Retained in gms")
+
+    cumulative_percent = fields.Float(string="Cum. Weight Retained (gm)",compute="_compute_cumulative_percent",
+    store=True,)
+
+
     percent_retained = fields.Float(string='% of Weight Retained', compute="_compute_percent_retained",digits=(16,2))
     cumulative_retained = fields.Float(string="% of Cumulative Wt. Retained ", store=True,digits=(16,2))
     passing_percent = fields.Float(string="% of wt passing",digits=(16,2))
@@ -2582,6 +2703,16 @@ class SieveAnalysisLine(models.Model):
             except ZeroDivisionError:
                 record.percent_retained = 0
 
+    @api.depends('wt_retained', 'parent_id.sieve_analysis_child_lines.wt_retained')
+    def _compute_cumulative_percent(self):
+        for parent in self.mapped('parent_id'):
+            total = 0
+            lines = parent.sieve_analysis_child_lines.sorted('serial_no')
+
+            for line in lines:
+                total += line.wt_retained or 0
+                line.cumulative_percent = total
+
 
     @api.depends('cumulative_retained')
     def _compute_cum_retained(self):
@@ -2600,28 +2731,18 @@ class LooseBulkDensityLine(models.Model):
    
     serial_no = fields.Integer(string="Sr.No.", readonly=True, copy=False, default=1)
 
-    empty_container_weight = fields.Float("Empty Container Weight (Kg)")
     container_with_material = fields.Float("Weight of Material in Container after pouring, W  (Kg)")
 
-    # AUTO CALCULATED W
-    loose_weight = fields.Float(
-        "Weight of Material (W)",
-        compute="_compute_weight",
-        store=True
-    )
     volume_of_cont = fields.Float(string="Volume of calibrating container ,V (Lit)")
     loose_bulk_density = fields.Float(string="Loose Bulk Density of Material,W/V (Kg/Lit)",compute="_compute_loose_bulk_density")
 
-    @api.depends('empty_container_weight', 'container_with_material')
-    def _compute_weight(self):
-        for rec in self:
-            rec.loose_weight = rec.container_with_material - rec.empty_container_weight
+ 
 
-    @api.depends('loose_weight', 'volume_of_cont')
+    @api.depends('container_with_material', 'volume_of_cont')
     def _compute_loose_bulk_density(self):
         for record in self:
             if record.volume_of_cont:
-                record.loose_bulk_density = record.loose_weight / record.volume_of_cont
+                record.loose_bulk_density = record.container_with_material / record.volume_of_cont
             else:
                 record.loose_bulk_density = 0.0
 
@@ -2650,29 +2771,19 @@ class RoddedBulkDensityLine(models.Model):
    
     serial_no = fields.Integer(string="Sr.No.", readonly=True, copy=False, default=1)
 
-    empty_container_weight = fields.Float("Empty Container Weight (Kg)")
+    
     container_with_material = fields.Float("Weight of Material in Container after pouring, W  (Kg)")
 
-    # AUTO CALCULATED W
-    rodded_weight = fields.Float(
-        "Weight of Material (W)",
-        compute="_compute_weight",
-        store=True
-    )
+    
     volume_of_cont = fields.Float(string="Volume of calibrating container ,V (Lit)")
     rodded_bulk_density = fields.Float(string="Rodded Bulk Density of Material,W/V (Kg/Lit)",compute="_compute_rodded_bulk_density")
 
-    @api.depends('empty_container_weight', 'container_with_material')
-    def _compute_weight(self):
-        for rec in self:
-            rec.rodded_weight = rec.container_with_material - rec.empty_container_weight
-
-
-    @api.depends('rodded_weight', 'volume_of_cont')
+   
+    @api.depends('container_with_material', 'volume_of_cont')
     def _compute_rodded_bulk_density(self):
         for record in self:
             if record.volume_of_cont:
-                record.rodded_bulk_density = record.rodded_weight / record.volume_of_cont
+                record.rodded_bulk_density = record.container_with_material / record.volume_of_cont
             else:
                 record.rodded_bulk_density = 0.0
 
@@ -2759,13 +2870,20 @@ class ElongationFlakinessLine(models.Model):
     parent_id = fields.Many2one('mechanical.coarse.aggregate', string="Parent Id")
 
 
-    passing_sieve = fields.Float("Passing IS Sieve (mm)")
-    retained_sieve = fields.Float("Retained IS Sieve (mm)")
+    passing_sieve = fields.Float("Passing IS Sieve (mm)" )
+    retained_sieve = fields.Float("Retained IS Sieve (mm)" )
 
     total_weight = fields.Float("Total Wt of Aggregate Retained (gm)")
     wt_passing_flakiness = fields.Float("Wt Passing Flakiness Gauge (gm)")
-    wt_retained_flakiness = fields.Float("Wt. Retained on Flakiness gauge (gm) = [(Total Wt of aggregate Retained (gm)) - (Wt. Passing on Flakiness gauge (gm)]")
+    wt_retained_flakiness = fields.Float("Wt. Retained on Flakiness gauge (gm) = [(Total Wt of aggregate Retained (gm)) - (Wt. Passing on Flakiness gauge (gm)]",compute="_compute_wt_retained_flakiness",store=True,)
     wt_retained_elongation = fields.Float("Wt Retained Elongation Gauge (gm)")
+
+    @api.depends("total_weight", "wt_passing_flakiness")
+    def _compute_wt_retained_flakiness(self):
+        for rec in self:
+            rec.wt_retained_flakiness = (
+                rec.total_weight - rec.wt_passing_flakiness
+            )
 
 
 
@@ -2819,6 +2937,137 @@ class ImpactValueLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.sample_no = index + 1
+
+
+class PycnometerSpecificGravityLine(models.Model):
+    _name = "pycnometer.specific.gravity.line"
+    parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
+
+    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
+
+    temperature = fields.Float(
+        string="Temperature of Water (°C)",
+        digits=(16, 2),
+    )
+
+    pycnometer_bottle_number = fields.Integer(
+        string="Pycnometer Bottle Number",
+    )
+
+    # W1 = Weight of Saturated Surface Dry Sample
+
+    w1 = fields.Float(
+        string="Weight of Saturated Surface Dry Sample, W1 (gm)",
+        digits=(16, 2),
+    )
+
+    # W2 = Weight of Pycnometer Bottle + Water + Sample
+
+    w2 = fields.Float(
+        string="Weight of Pycnometer Bottle + Water + Sample, W2 (gm)",
+        digits=(16, 2),
+    )
+
+    # W3 = Weight of Pycnometer Bottle + Water
+
+    w3 = fields.Float(
+        string="Weight of Pycnometer Bottle + Water, W3 (gm)",
+        digits=(16, 2),
+    )
+
+    # W4 = Weight of Oven Dry Sample
+
+    w4 = fields.Float(
+        string="Weight of Oven Dry Sample, W4 (gm)",
+        digits=(16, 2),
+    )
+
+    specific_gravity = fields.Float(
+        string="Specific Gravity = W4/[W1-(W2-W3)]",
+        compute="_compute_test_results",
+        store=True,
+        digits=(16, 3),
+    )
+
+    apparent_specific_gravity = fields.Float(
+        string="Apparent Specific Gravity = W4/[W4-(W2-W3)]",
+        compute="_compute_test_results",
+        store=True,
+        digits=(16, 3),
+    )
+
+    water_absorption = fields.Float(
+        string="Water Absorption (%) = 100 x (W1 - W4)/W4",
+        compute="_compute_test_results",
+        store=True,
+        digits=(16, 3),
+    )
+
+    @api.depends("w1", "w2", "w3", "w4")
+    def _compute_test_results(self):
+        for line in self:
+            line.specific_gravity = 0.0
+            line.apparent_specific_gravity = 0.0
+            line.water_absorption = 0.0
+
+            # ------------------------------------------------
+            # Specific Gravity
+            #
+            # W4 / [W1 - (W2 - W3)]
+            # ------------------------------------------------
+
+            specific_gravity_denominator = (
+                line.w1 - (line.w2 - line.w3)
+            )
+
+            if specific_gravity_denominator != 0:
+                line.specific_gravity = (
+                    line.w4 / specific_gravity_denominator
+                )
+
+            # ------------------------------------------------
+            # Apparent Specific Gravity
+            #
+            # W4 / [W4 - (W2 - W3)]
+            # ------------------------------------------------
+
+            apparent_gravity_denominator = (
+                line.w4 - (line.w2 - line.w3)
+            )
+
+            if apparent_gravity_denominator != 0:
+                line.apparent_specific_gravity = (
+                    line.w4 / apparent_gravity_denominator
+                )
+
+            # ------------------------------------------------
+            # Water Absorption
+            #
+            # 100 × (W1 - W4) / W4
+            # ------------------------------------------------
+
+            if line.w4 > 0:
+                line.water_absorption = (
+                    100.0 * (line.w1 - line.w4) / line.w4
+                )
+    
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(PycnometerSpecificGravityLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
 
 
 
@@ -3232,7 +3481,7 @@ class WetImpactValueLine(models.Model):
     def _compute_values(self):
         for rec in self:
             # Retained (optional calculation)
-            rec.retained = rec.w1 - rec.w2
+            rec.retained = rec.w_ssd - rec.w2
 
             # Impact Value
             rec.impact_value = (rec.w2 / rec.w1) * 100 if rec.w1 else 0.0
@@ -3263,7 +3512,7 @@ class SodiumSulphateLine(models.Model):
 
     sample_no = fields.Integer(string="Trial No", readonly=True, copy=False, default=1)
 
-    passing_sieve = fields.Char("Passing Sieve Size")
+    passing_sieve = fields.Char("Passing Sieve Size" )
     retained_sieve = fields.Char("Retained Sieve Size")
 
     grading_percent = fields.Float("Grading of Orignal Sample Percent")
@@ -3286,9 +3535,9 @@ class SodiumSulphateLine(models.Model):
     @api.depends('weight_before', 'weight_after')
     def _compute_loss(self):
      for rec in self:
-        if rec.weight_before > 0:
+        if rec.weight_before:
             rec.percent_loss = (
-                (rec.weight_before - rec.weight_after)
+                (rec.weight_after / rec.weight_before)
             ) * 100
         else:
             rec.percent_loss = 0
@@ -3307,8 +3556,8 @@ class SodiumSulphateTwoLine(models.Model):
 
     sample_no = fields.Integer(string="Trial No", readonly=True, copy=False, default=1)
 
-    passing_sieve = fields.Char("Passing Sieve Size")
-    retained_sieve = fields.Char("Retained Sieve Size")
+    passing_sieve = fields.Char("Passing Sieve Size" )
+    retained_sieve = fields.Char("Retained Sieve Size" )
 
     grading_percent = fields.Float("Grading of Original Sample (%)")
 
@@ -3330,9 +3579,9 @@ class SodiumSulphateTwoLine(models.Model):
     @api.depends('weight_before', 'weight_after')
     def _compute_loss(self):
      for rec in self:
-        if rec.weight_before > 0:
+        if rec.weight_before:
             rec.percent_loss = (
-                (rec.weight_before - rec.weight_after)
+                (rec.weight_after / rec.weight_before)
             ) * 100
         else:
             rec.percent_loss = 0
@@ -3351,8 +3600,8 @@ class MagnesiumSulphateLine(models.Model):
 
     sample_no = fields.Integer(string="Trial No", readonly=True, copy=False, default=1)
 
-    passing_sieve = fields.Char("Passing Sieve Size")
-    retained_sieve = fields.Char("Retained Sieve Size")
+    passing_sieve = fields.Char("Passing Sieve Size" )
+    retained_sieve = fields.Char("Retained Sieve Size" )
 
     grading_percent = fields.Float("Grading of Orignal Sample Percent")
 
@@ -3371,9 +3620,9 @@ class MagnesiumSulphateLine(models.Model):
     @api.depends('weight_before', 'weight_after')
     def _compute_loss(self):
      for rec in self:
-        if rec.weight_before > 0:
+        if rec.weight_before:
             rec.percent_loss = (
-                (rec.weight_before - rec.weight_after)
+               (rec.weight_after / rec.weight_before)
             ) * 100
         else:
             rec.percent_loss = 0
@@ -3392,8 +3641,8 @@ class MagnesiumSulphateTwoLine(models.Model):
 
     sample_no = fields.Integer(string="Trial No", readonly=True, copy=False, default=1)
 
-    passing_sieve = fields.Char("Passing Sieve Size")
-    retained_sieve = fields.Char("Retained Sieve Size")
+    passing_sieve = fields.Char("Passing Sieve Size" )
+    retained_sieve = fields.Char("Retained Sieve Size" )
 
     grading_percent = fields.Float("Grading of Original Sample (%)")
 
@@ -3412,9 +3661,9 @@ class MagnesiumSulphateTwoLine(models.Model):
     @api.depends('weight_before', 'weight_after')
     def _compute_loss(self):
      for rec in self:
-        if rec.weight_before > 0:
+        if rec.weight_before:
             rec.percent_loss = (
-                (rec.weight_before - rec.weight_after)
+                (rec.weight_after / rec.weight_before)
             ) * 100
         else:
             rec.percent_loss = 0

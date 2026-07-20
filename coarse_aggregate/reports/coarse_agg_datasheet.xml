@@ -40,7 +40,7 @@
 										<span t-esc="r['wt_retained']" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r['percent_retained']" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r['cumulative_percent']" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
 										<span t-esc="r['cumulative_retained']"/>
@@ -132,9 +132,7 @@
 							<thead>
 								<tr style="background-color: #f0f0f0; text-align: center;">
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Sr No.</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Empty Container Weight (Kg)</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Weight of Material in Container after pouring, W  (Kg)</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Weight of Material (W)</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Volume of calibrating container ,V (Lit)</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Loose Bulk Density of Material,W/V (Kg/Lit)</th>
 								</tr>
@@ -147,13 +145,7 @@
 										<t t-set="k" t-value="k+1"/>
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r['empty_container_weight']"/>
-									</td>
-									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
 										<span t-esc="r['container_with_material']"/>
-									</td>
-									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r['loose_weight']" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
 										<span t-esc="r['volume_of_cont']" />
@@ -247,9 +239,7 @@
 							<thead>
 								<tr style="background-color: #f0f0f0; text-align: center;">
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Sr No.</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Empty Container Weight (Kg)</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Weight of Material in Container after pouring, W  (Kg)</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Weight of Material (W)</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Volume of calibrating container ,V (Lit)</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">Rodded Bulk Density of Material,W/V (Kg/Lit)</th>
 								</tr>
@@ -262,13 +252,7 @@
 										<t t-set="k" t-value="k+1"/>
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r['empty_container_weight']"/>
-									</td>
-									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
 										<span t-esc="r['container_with_material']"/>
-									</td>
-									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r['rodded_weight']" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
 										<span t-esc="r['volume_of_cont']" />
@@ -733,6 +717,8 @@
 							Specific Gravity and Water Absorption
 						</div>
 
+						<t t-if="not data.show_pycnometer">
+
 						<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
 							<thead>
 								<tr style="background-color: #f0f0f0; text-align: center;">
@@ -779,6 +765,70 @@
 								</tr>
 							</tbody>
 						</table>
+						</t>
+
+
+						<t t-if="data.show_pycnometer">
+
+						<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+							<thead>
+								<tr style="background-color: #f0f0f0; text-align: center;">
+									<th style="text-align: center;border: 1px solid #ccc; padding: 8px;" colspan="2">Sr No.</th>
+									<th style="text-align: center;border: 1px solid #ccc; padding: 8px;" colspan="2">Temperature of Water (°C)</th>
+									<th style="text-align: center;border: 1px solid #ccc; padding: 8px;" colspan="2">Pycnometer Bottle Number</th>
+									<th style="text-align: center;border: 1px solid #ccc; padding: 8px;" colspan="2">Weight of Saturated Surface Dry Sample, W1 (gm)</th>
+									<th style="text-align: center;border: 1px solid #ccc; padding: 8px;" colspan="2">Weight of Pycnometer Bottle + Water + Sample, W2 (gm)</th>
+									<th style="text-align: center;border: 1px solid #ccc; padding: 8px;" colspan="2">Weight of Pycnometer Bottle + Water, W3 (gm)</th>
+									<th style="text-align: center;border: 1px solid #ccc; padding: 8px;" colspan="2">Weight of Oven Dry Sample, W4 (gm)</th>
+									<th style="text-align: center;border: 1px solid #ccc; padding: 8px;" colspan="2">Specific Gravity = W4/[W1-(W2-W3)]</th>
+									<th style="text-align: center;border: 1px solid #ccc; padding: 8px;" colspan="2">Apparent Specific Gravity = W4/[W4-(W2-W3)]</th>
+									<th style="text-align: center;border: 1px solid #ccc; padding: 8px;" colspan="2">Water Absorption (%) = 100 x (W1 - W4)/W4</th>
+									
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="k" t-value="0"/>
+								<tr t-foreach="data.specific_gravity_line_ids" t-as="r" style="text-align: center;">
+									<td style="text-align: center;border: 1px solid #ccc; padding: 6px;" colspan="2">
+										<span t-esc="k + 1" />
+										<t t-set="k" t-value="k+1"/>
+									</td>
+									<td style="text-align: center;border: 1px solid #ccc; padding: 6px;" colspan="2">
+										<span t-esc="r['temperature']"/>
+									</td>
+									<td style="text-align: center;border: 1px solid #ccc; padding: 6px;" colspan="2">
+										<span t-esc="r['pycnometer_bottle_number']"/>
+									</td>
+									<td style="text-align: center;border: 1px solid #ccc; padding: 6px;" colspan="2">
+										<span t-esc="r['w1']"/>
+									</td>
+									<td style="text-align: center;border: 1px solid #ccc; padding: 6px;" colspan="2">
+										<span t-esc="r['w2']"/>
+									</td>
+									<td style="text-align: center;border: 1px solid #ccc; padding: 6px;" colspan="2">
+										<span t-esc="r['w3']"/>
+									</td>
+									<td style="text-align: center;border: 1px solid #ccc; padding: 6px;" colspan="2">
+										<span t-esc="r['w4']"/>
+									</td>
+									<td style="text-align: center;border: 1px solid #ccc; padding: 6px;" colspan="2">
+										<span t-esc="r['specific_gravity']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="text-align: center;border: 1px solid #ccc; padding: 6px;" colspan="2">
+										<span t-esc="r['apparent_specific_gravity']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="text-align: center;border: 1px solid #ccc; padding: 6px;" colspan="2">
+										<span t-esc="r['water_absorption']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									
+								</tr>
+							</tbody>
+						</table>
+
+
+
+
+						</t>
 
 						<table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;">
 							<tr style="font-weight: bold; background-color: #f9f9f9;">
