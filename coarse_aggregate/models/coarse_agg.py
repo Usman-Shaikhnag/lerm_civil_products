@@ -451,6 +451,33 @@ class CoarseAggregateMechanical(models.Model):
                     else:
                         record.loose_avg_nabl = 'fail'
 
+    loose_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    loose_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_loose_final_report", store=True)
+
+    @api.depends('loose_avg_nabl', 'loose_report_type')
+    def _compute_loose_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.loose_report_type == 'nabl':
+            rec.loose_final_report = 'nabl'
+
+        elif rec.loose_report_type == 'non_nabl':
+            rec.loose_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.loose_avg_nabl == 'pass':
+                rec.loose_final_report = 'nabl'
+            else:
+                rec.loose_final_report = 'non_nabl'
+
 
 
     # Rodded Bulk Density
