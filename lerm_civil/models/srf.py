@@ -1015,6 +1015,24 @@ class CreateSampleWizard(models.TransientModel):
         string='Available Parameters'
     )
 
+    @api.onchange('parameters')
+    def _onchange_parameters(self):
+        """ जेव्हा जेव्हा फॉर्मवर पॅरामीटर्स निवडले/बदलले जातील, 
+            तेव्हा Max Date आपोआप भरली जाईल, पण युझर ती एडिट करू शकेल. """
+        for sample in self:
+            if sample.parameters:
+                # ज्या पॅरामीटर्समध्ये तारीख आहे त्यांची लिस्ट
+                due_dates = [
+                    param.report_due_date1 
+                    for param in sample.parameters 
+                    if param.report_due_date1
+                ]
+                
+                # सर्वात मोठी तारीख ऑटोमॅटिक सेट करा
+                if due_dates:
+                    sample.report_due_date = max(due_dates)
+
+
     @api.model
     def _get_oldest_lab(self):
         oldest_lab = self.env['lerm.lab.master'].search([], order="create_date asc", limit=1)

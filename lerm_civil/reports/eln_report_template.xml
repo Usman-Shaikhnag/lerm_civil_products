@@ -146,7 +146,7 @@
 					</span>
 				
 					<div style="text-align:center;margin-top:12px">	
-						SRI SAINATH LABORATORY.
+						<span t-esc="env['lerm.lab.master'].search([], limit=1).lab_name"/>
 					</div>
 					<div style="text-align:center;">
 						TEST DATA SHEET
@@ -455,9 +455,18 @@
 											<!-- <td>
 												<span t-esc="parameter['nabl_status']"/>
 											</td> -->
-											<td t-if="eln.conformity">
+											<!-- <td t-if="eln.conformity">
 												<span t-esc="parameter['conformity_status']"/>
-											</td>
+											</td> -->
+											<td t-if="eln.conformity">
+											<t t-if="parameter.specification_permissible_limit and parameter.specification_permissible_limit.strip() == '--'">
+												<span>--</span>
+											</t>
+											<t t-else="">
+												<span t-attf-style="color: #{'green' if parameter.conformity_status and parameter.conformity_status.lower() == 'pass' else ('red' if parameter.conformity_status and parameter.conformity_status.lower() == 'fail' else 'black')}; font-weight: bold;"
+													t-esc="parameter.conformity_status"/>
+											</t>
+										</td>
 										</tr>
 									</t>
 								</tbody>
@@ -545,9 +554,18 @@
 											<!-- <td>
 												<span t-esc="parameter['nabl_status']"/>
 											</td> -->
-											<td t-if="eln.conformity">
+											<!-- <td t-if="eln.conformity">
 												<span t-esc="parameter['conformity_status']"/>
-											</td>
+											</td> -->
+											<td t-if="eln.conformity">
+											<t t-if="parameter.specification_permissible_limit and parameter.specification_permissible_limit.strip() == '--'">
+												<span>--</span>
+											</t>
+											<t t-else="">
+												<span t-attf-style="color: #{'green' if parameter.conformity_status and parameter.conformity_status.lower() == 'pass' else ('red' if parameter.conformity_status and parameter.conformity_status.lower() == 'fail' else 'black')}; font-weight: bold;"
+													t-esc="parameter.conformity_status"/>
+											</t>
+										</td>
 										</tr>
 									</t>
 								</tbody>
@@ -647,9 +665,18 @@
 											<!-- <td>
 												<span t-esc="parameter['nabl_status']"/>
 											</td> -->
-											<td t-if="eln.conformity">
+											<!-- <td t-if="eln.conformity">
 												<span t-esc="parameter['conformity_status']"/>
-											</td>
+											</td> -->
+											<td t-if="eln.conformity">
+											<t t-if="parameter.specification_permissible_limit and parameter.specification_permissible_limit.strip() == '--'">
+												<span>--</span>
+											</t>
+											<t t-else="">
+												<span t-attf-style="color: #{'green' if parameter.conformity_status and parameter.conformity_status.lower() == 'pass' else ('red' if parameter.conformity_status and parameter.conformity_status.lower() == 'fail' else 'black')}; font-weight: bold;"
+													t-esc="parameter.conformity_status"/>
+											</t>
+										</td>
 										</tr>
 									</t>
 								</tbody>
@@ -744,9 +771,18 @@
 											<!-- <td>
 												<span t-esc="parameter['nabl_status']"/>
 											</td> -->
-											<td t-if="eln.conformity">
+											<!-- <td t-if="eln.conformity">
 												<span t-esc="parameter['conformity_status']"/>
-											</td>
+											</td> -->
+											<td t-if="eln.conformity">
+											<t t-if="parameter.specification_permissible_limit and parameter.specification_permissible_limit.strip() == '--'">
+												<span>--</span>
+											</t>
+											<t t-else="">
+												<span t-attf-style="color: #{'green' if parameter.conformity_status and parameter.conformity_status.lower() == 'pass' else ('red' if parameter.conformity_status and parameter.conformity_status.lower() == 'fail' else 'black')}; font-weight: bold;"
+													t-esc="parameter.conformity_status"/>
+											</t>
+										</td>
 										</tr>
 									</t>
 								</tbody>
@@ -835,9 +871,18 @@
 											<!-- <td>
 												<span t-esc="parameter['nabl_status']"/>
 											</td> -->
-											<td t-if="eln.conformity">
+											<!-- <td t-if="eln.conformity">
 												<span t-esc="parameter['conformity_status']"/>
-											</td>
+											</td> -->
+											<td t-if="eln.conformity">
+											<t t-if="parameter.specification_permissible_limit and parameter.specification_permissible_limit.strip() == '--'">
+												<span>--</span>
+											</t>
+											<t t-else="">
+												<span t-attf-style="color: #{'green' if parameter.conformity_status and parameter.conformity_status.lower() == 'pass' else ('red' if parameter.conformity_status and parameter.conformity_status.lower() == 'fail' else 'black')}; font-weight: bold;"
+													t-esc="parameter.conformity_status"/>
+											</t>
+										</td>
 										</tr>
 									</t>
 								</tbody>
@@ -937,9 +982,18 @@
 											<!-- <td>
 												<span t-esc="parameter['nabl_status']"/>
 											</td> -->
-											<td t-if="eln.conformity">
+											<!-- <td t-if="eln.conformity">
 												<span t-esc="parameter['conformity_status']"/>
-											</td>
+											</td> -->
+											<td t-if="eln.conformity">
+											<t t-if="parameter.specification_permissible_limit and parameter.specification_permissible_limit.strip() == '--'">
+												<span>--</span>
+											</t>
+											<t t-else="">
+												<span t-attf-style="color: #{'green' if parameter.conformity_status and parameter.conformity_status.lower() == 'pass' else ('red' if parameter.conformity_status and parameter.conformity_status.lower() == 'fail' else 'black')}; font-weight: bold;"
+													t-esc="parameter.conformity_status"/>
+											</t>
+										</td>
 										</tr>
 									</t>
 								</tbody>
@@ -994,11 +1048,12 @@
 									&#160;&#160;(i) The results relate only to the items tested 
 									&#160;&#160;(ii) This test report should not be reproduced except in full, without written approval of this Laboratory 
 									&#160;&#160;(iii) Any corrections invalidate the test reports 
-									&#160;&#160;(iv) Any Query regarding the report must be reported immediately. 
+									&#160;&#160;(iv) Any Query regarding the report must be reported immediately. <br></br>
 								
 									<t t-if="eln.has_witness">
 										&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
 									</t>
+									<br></br>
 									<t t-if="eln.remarks">
 										&#160;&#160;<span t-esc="eln.remarks"/>
 									</t>
