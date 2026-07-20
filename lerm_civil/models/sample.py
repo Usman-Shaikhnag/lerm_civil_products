@@ -196,9 +196,6 @@ class LermSampleForm(models.Model):
             'target': 'current',
         }
 
-
-    
-
         
     @api.depends('quantity_received', 'quantity_consumed','quantity_discarded')
     def compute_quantity_balance(self):

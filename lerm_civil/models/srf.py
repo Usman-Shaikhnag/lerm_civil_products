@@ -127,7 +127,7 @@ class SrfForm(models.Model):
     client = fields.Char("Client")
     # site_address = fields.Many2one('res.partner',string="Site Address")
     site_address = fields.Char(string="Site Address",compute="_compute_site_address")
-    name_work = fields.Many2one('res.partner.project',string="Name of Work")
+    name_work = fields.Many2one('res.partner.project',string="Project Name")
 
     consultant_name1 = fields.Char(string="Consultant Name")
     # department_id = fields.Many2one('hr.department', string='Department')
@@ -1031,6 +1031,7 @@ class CreateSampleWizard(models.TransientModel):
                 # सर्वात मोठी तारीख ऑटोमॅटिक सेट करा
                 if due_dates:
                     sample.report_due_date = max(due_dates)
+
 
     @api.model
     def _get_oldest_lab(self):

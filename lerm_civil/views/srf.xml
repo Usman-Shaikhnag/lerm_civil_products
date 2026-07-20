@@ -57,7 +57,7 @@
                         <group style="width:50%">
                             <field name="name_work" domain="[('id', 'in', name_works)]"  readonly="state == '2-confirm'"/>
                             <field name="client" readonly="state == '2-confirm'"/>
-                            <field name="contractor" domain="[('id', 'in', contractor_ids)]"/>
+                            <field name="contractor" domain="[('id', 'in', contractor_ids)]" invisible="1"/>
                             <field name="contractor_ids" invisible='1'/>
                             <field name="contact_other_ids" invisible='1'/>
                             <field name="billing_customer" readonly="state == '2-confirm'"/>

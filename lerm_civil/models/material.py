@@ -37,8 +37,6 @@ class Material(models.Model):
     source_sample = fields.Char(string="Source Sample")
     test_method_adopted = fields.Char(string="Test Method Adopted")
 
-    specification_code = fields.Char(string="Specification Code")
-
     product_reports_count = fields.Integer(string="Product Reports Count", compute="_compute_product_reports_count")
 
     def _compute_product_reports_count(self):
