@@ -142,6 +142,13 @@ class SoilReport(models.AbstractModel):
         if getattr(general_data, 'show_cbr', False):
             graph_cbr = self.generate_cbr_chart(general_data)
 
+        
+        graph_direct = False
+        if getattr(general_data, 'show_direct_graph', False):
+            graph_direct = self.generate_line_chart_direct_shear(general_data)
+
+        
+
         return {
             'eln': eln,
             'data' : general_data,
@@ -158,6 +165,8 @@ class SoilReport(models.AbstractModel):
             'lightomc' : light_omc,
             'lightmdd' : light_mdd,
             'graphcbr' : graph_cbr,
+            'graphDirect': graph_direct,
+
             
             
             # 'graphLight' : graph_image1,
@@ -168,6 +177,123 @@ class SoilReport(models.AbstractModel):
             # 'load2': cbry_values[5] if len(cbry_values) > 5 else 0,
             # 'load5': cbry_values[8] if len(cbry_values) > 8 else 0,
         }
+    
+
+    def generate_line_chart_direct_shear(self, data):
+
+        normal_stress = []
+        shear_stress = []
+
+        if data.shear_stress_05:
+            normal_stress.append(0.5)
+            shear_stress.append(float(data.shear_stress_05))
+
+        if data.shear_stress_10:
+            normal_stress.append(1.0)
+            shear_stress.append(float(data.shear_stress_10))
+
+        if data.shear_stress_15:
+            normal_stress.append(1.5)
+            shear_stress.append(float(data.shear_stress_15))
+
+        if len(normal_stress) < 2:
+            return False
+
+        x = np.array(normal_stress)
+        y = np.array(shear_stress)
+
+        fig, ax = plt.subplots(figsize=(10, 5))
+
+        ax.set_facecolor("white")
+
+        ax.set_xlim(0, 2.0)
+        ax.set_ylim(0, 1.6)
+
+        ax.set_axisbelow(True)
+        ax.minorticks_on()
+
+        ax.grid(
+        which="major",
+        color="#84B7A0",
+        linewidth=1.0)
+
+        ax.grid(
+        which="minor",
+        color="#C8E1D4",
+        linewidth=0.35)
+
+        ax.xaxis.set_major_locator(MultipleLocator(0.5))
+        ax.xaxis.set_minor_locator(MultipleLocator(0.05))
+
+        ax.yaxis.set_major_locator(MultipleLocator(0.25))
+        ax.yaxis.set_minor_locator(MultipleLocator(0.025))
+
+        for spine in ax.spines.values():
+            spine.set_linewidth(1)
+
+        ax.plot(
+        x,
+        y,
+        color="blue",
+        linewidth=1.2,
+        marker="o",
+        markersize=4)
+
+        ax.set_xlabel(
+        "Penetration (mm)",
+        fontsize=10)
+
+        ax.set_ylabel(
+        "Load (KG)",
+        fontsize=10,
+        rotation=0,
+        labelpad=70,
+        va="center")
+
+        ax.tick_params(
+        axis="both",
+        which="major",
+        labelsize=8)
+
+        ax.set_xticks([0, 0.5, 1.0, 1.5, 2.0])
+
+        ax.set_xticklabels(
+        ["0", "0.5", "1", "1.5", "2"])
+
+        ax.set_yticks(
+        np.arange(0, 1.75, 0.25))
+
+        ax.set_yticklabels([
+        "0.00",
+        "0.25",
+        "0.50",
+        "0.75",
+        "1.00",
+        "1.25",
+        "1.50"  ])
+
+        plt.tight_layout()
+
+        buffer = io.BytesIO()
+
+        plt.savefig(
+        buffer,
+        format="png",
+        dpi=100,
+        bbox_inches="tight",
+        facecolor="white")
+
+        plt.close(fig)
+
+        buffer.seek(0)
+
+        image_data = base64.b64encode(
+        buffer.read()
+    ).decode("utf-8")
+
+        buffer.close()
+
+        return image_data
     
 
     def generate_cbr_chart(self, data):
