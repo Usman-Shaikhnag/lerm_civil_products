@@ -431,6 +431,34 @@ class MechanicalConcreteCube(models.Model):
                         record.avg_compressive_strength_nabl = 'fail'
 
 
+    compressive_strength_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    compressive_strength_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_compressive_strength_final_report", store=True)
+
+    @api.depends('avg_compressive_strength_nabl', 'compressive_strength_report_type')
+    def _compute_compressive_strength_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.compressive_strength_report_type == 'nabl':
+            rec.compressive_strength_final_report = 'nabl'
+
+        elif rec.compressive_strength_report_type == 'non_nabl':
+            rec.compressive_strength_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_compressive_strength_nabl == 'pass':
+                rec.compressive_strength_final_report = 'nabl'
+            else:
+                rec.compressive_strength_final_report = 'non_nabl'
+
+
     
     # Water Permeability 					
 
@@ -511,6 +539,34 @@ class MechanicalConcreteCube(models.Model):
                   else:
                       record.average_depth_nabl = 'fail'
 
+    
+    water_permeability_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    water_permeability_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_water_permeability_final_report", store=True)
+
+    @api.depends('average_depth_nabl', 'water_permeability_report_type')
+    def _compute_water_permeability_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.water_permeability_report_type == 'nabl':
+            rec.water_permeability_final_report = 'nabl'
+
+        elif rec.water_permeability_report_type == 'non_nabl':
+            rec.water_permeability_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.average_depth_nabl == 'pass':
+                rec.water_permeability_final_report = 'nabl'
+            else:
+                rec.water_permeability_final_report = 'non_nabl'
+
 
     # Compressive Strength By ACT									
 					
@@ -587,6 +643,34 @@ class MechanicalConcreteCube(models.Model):
                       break
                   else:
                       record.average_act_compressive_nabl = 'fail'
+
+
+    act_compressive_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    act_compressive_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_act_compressive_final_report", store=True)
+
+    @api.depends('average_act_compressive_nabl', 'act_compressive_report_type')
+    def _compute_act_compressive_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.act_compressive_report_type == 'nabl':
+            rec.act_compressive_final_report = 'nabl'
+
+        elif rec.act_compressive_report_type == 'non_nabl':
+            rec.act_compressive_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.average_act_compressive_nabl == 'pass':
+                rec.act_compressive_final_report = 'nabl'
+            else:
+                rec.act_compressive_final_report = 'non_nabl'
 
 
     # Density								
@@ -717,6 +801,33 @@ class MechanicalConcreteCube(models.Model):
                   else:
                       record.avg_3_days_nabl = 'fail'
 
+    avg_3_days_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_3_days_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_3_days_final_report", store=True)
+
+    @api.depends('avg_3_days_nabl', 'avg_3_days_report_type')
+    def _compute_avg_3_days_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_3_days_report_type == 'nabl':
+            rec.avg_3_days_final_report = 'nabl'
+
+        elif rec.avg_3_days_report_type == 'non_nabl':
+            rec.avg_3_days_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_3_days_nabl == 'pass':
+                rec.avg_3_days_final_report = 'nabl'
+            else:
+                rec.avg_3_days_final_report = 'non_nabl'
+
 
     avg_7_days_confirmity = fields.Selection([
         ('pass', 'Pass'),
@@ -771,6 +882,33 @@ class MechanicalConcreteCube(models.Model):
                       break
                   else:
                       record.avg_7_days_nabl = 'fail'
+
+    avg_7_days_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_7_days_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_7_days_final_report", store=True)
+
+    @api.depends('avg_7_days_nabl', 'avg_7_days_report_type')
+    def _compute_avg_7_days_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_7_days_report_type == 'nabl':
+            rec.avg_7_days_final_report = 'nabl'
+
+        elif rec.avg_7_days_report_type == 'non_nabl':
+            rec.avg_7_days_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_7_days_nabl == 'pass':
+                rec.avg_7_days_final_report = 'nabl'
+            else:
+                rec.avg_7_days_final_report = 'non_nabl'
 
 
 
@@ -829,6 +967,34 @@ class MechanicalConcreteCube(models.Model):
                       record.avg_14_days_nabl = 'fail'
 
 
+    avg_14_days_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_14_days_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_14_days_final_report", store=True)
+
+    @api.depends('avg_14_days_nabl', 'avg_14_days_report_type')
+    def _compute_avg_14_days_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_14_days_report_type == 'nabl':
+            rec.avg_14_days_final_report = 'nabl'
+
+        elif rec.avg_14_days_report_type == 'non_nabl':
+            rec.avg_14_days_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_14_days_nabl == 'pass':
+                rec.avg_14_days_final_report = 'nabl'
+            else:
+                rec.avg_14_days_final_report = 'non_nabl'
+
+
 
     avg_28_days_confirmity = fields.Selection([
         ('pass', 'Pass'),
@@ -883,6 +1049,34 @@ class MechanicalConcreteCube(models.Model):
                       break
                   else:
                       record.avg_28_days_nabl = 'fail'
+
+
+    avg_28_days_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_28_days_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_28_days_final_report", store=True)
+
+    @api.depends('avg_28_days_nabl', 'avg_28_days_report_type')
+    def _compute_avg_28_days_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_28_days_report_type == 'nabl':
+            rec.avg_28_days_final_report = 'nabl'
+
+        elif rec.avg_28_days_report_type == 'non_nabl':
+            rec.avg_28_days_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_28_days_nabl == 'pass':
+                rec.avg_28_days_final_report = 'nabl'
+            else:
+                rec.avg_28_days_final_report = 'non_nabl'
 
 
     # Weight								
@@ -991,6 +1185,7 @@ class MechanicalConcreteCube(models.Model):
                         break
                     else:
                         record.weight_avg_3_days_confirmity = 'fail'
+                        
 
     @api.depends('weight_avg_3_days','eln_ref')
     def _compute_weight_avg_3_days_nabl(self):
@@ -1012,6 +1207,34 @@ class MechanicalConcreteCube(models.Model):
                       break
                   else:
                       record.weight_avg_3_days_nabl = 'fail'
+
+
+    weight_avg_3_days_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    weight_avg_3_days_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_weight_avg_3_days_final_report", store=True)
+
+    @api.depends('weight_avg_3_days_nabl', 'weight_avg_3_days_report_type')
+    def _compute_weight_avg_3_days_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.weight_avg_3_days_report_type == 'nabl':
+            rec.weight_avg_3_days_final_report = 'nabl'
+
+        elif rec.weight_avg_3_days_report_type == 'non_nabl':
+            rec.weight_avg_3_days_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.weight_avg_3_days_nabl == 'pass':
+                rec.weight_avg_3_days_final_report = 'nabl'
+            else:
+                rec.weight_avg_3_days_final_report = 'non_nabl'
 
 
     weight_avg_7_days_confirmity = fields.Selection([
@@ -1067,6 +1290,34 @@ class MechanicalConcreteCube(models.Model):
                       break
                   else:
                       record.weight_avg_7_days_nabl = 'fail'
+
+
+    weight_avg_7_days_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    weight_avg_7_days_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_weight_avg_7_days_final_report", store=True)
+
+    @api.depends('weight_avg_7_days_nabl', 'weight_avg_7_days_report_type')
+    def _compute_weight_avg_7_days_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.weight_avg_7_days_report_type == 'nabl':
+            rec.weight_avg_7_days_final_report = 'nabl'
+
+        elif rec.weight_avg_7_days_report_type == 'non_nabl':
+            rec.weight_avg_7_days_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.weight_avg_7_days_nabl == 'pass':
+                rec.weight_avg_7_days_final_report = 'nabl'
+            else:
+                rec.weight_avg_7_days_final_report = 'non_nabl'
 
 
 
@@ -1125,6 +1376,34 @@ class MechanicalConcreteCube(models.Model):
                       record.weight_avg_14_days_nabl = 'fail'
 
 
+    weight_avg_14_days_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    weight_avg_14_days_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_weight_avg_14_days_final_report", store=True)
+
+    @api.depends('weight_avg_14_days_nabl', 'weight_avg_14_days_report_type')
+    def _compute_weight_avg_14_days_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.weight_avg_14_days_report_type == 'nabl':
+            rec.weight_avg_14_days_final_report = 'nabl'
+
+        elif rec.weight_avg_14_days_report_type == 'non_nabl':
+            rec.weight_avg_14_days_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.weight_avg_14_days_nabl == 'pass':
+                rec.weight_avg_14_days_final_report = 'nabl'
+            else:
+                rec.weight_avg_14_days_final_report = 'non_nabl'
+
+
 
     weight_avg_28_days_confirmity = fields.Selection([
         ('pass', 'Pass'),
@@ -1179,6 +1458,34 @@ class MechanicalConcreteCube(models.Model):
                       break
                   else:
                       record.weight_avg_28_days_nabl = 'fail'
+
+
+    weight_avg_28_days_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    weight_avg_28_days_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_weight_avg_28_days_final_report", store=True)
+
+    @api.depends('weight_avg_28_days_nabl', 'weight_avg_28_days_report_type')
+    def _compute_weight_avg_28_days_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.weight_avg_28_days_report_type == 'nabl':
+            rec.weight_avg_28_days_final_report = 'nabl'
+
+        elif rec.weight_avg_28_days_report_type == 'non_nabl':
+            rec.weight_avg_28_days_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.weight_avg_28_days_nabl == 'pass':
+                rec.weight_avg_28_days_final_report = 'nabl'
+            else:
+                rec.weight_avg_28_days_final_report = 'non_nabl'
 
 
 

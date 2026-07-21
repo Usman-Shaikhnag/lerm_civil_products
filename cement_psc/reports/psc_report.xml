@@ -231,13 +231,13 @@
 							<tbody>
 
 							<!-- Compressive Strength -->
-                            <t t-set="show_3_days" t-value="data.avg_3_days_nabl == 'pass' and nabl or (data.avg_3_days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+                            <t t-set="show_3_days" t-value="data.avg_3_days_final_report == 'nabl' and nabl or data.avg_3_days_final_report == 'non_nabl' and not nabl"/>
 
-                            <t t-set="show_7_days" t-value="data.avg_7_days_nabl == 'pass' and nabl or (data.avg_7_days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+                            <t t-set="show_7_days" t-value="data.avg_7_days_final_report == 'nabl' and nabl or data.avg_7_days_final_report == 'non_nabl' and not nabl"/>
 
 							
 
-							<t t-set="show_28_days" t-value="data.avg_28_days_nabl == 'pass' and nabl or (data.avg_28_days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+							<t t-set="show_28_days" t-value="data.avg_28_days_final_report == 'nabl' and nabl or data.avg_28_days_final_report == 'non_nabl' and not nabl"/>
 
                             <!-- 🔹 Step 2: Rowspan calculation -->
 					      <t t-set="rowspan_count" t-value="1 + int(show_3_days) + int(show_7_days) + int(show_28_days)"/>
@@ -383,9 +383,9 @@
 
 
 								<!-- Setting Time -->
-                            <t t-set="show_initial_setting_time" t-value="data.initial_setting_time_nabl == 'pass' and nabl or (data.initial_setting_time_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+                            <t t-set="show_initial_setting_time" t-value="data.initial_setting_final_report == 'nabl' and nabl or data.initial_setting_final_report == 'non_nabl' and not nabl"/>
 
-                            <t t-set="show_final_setting_time" t-value="data.final_setting_time_nabl == 'pass' and nabl or (data.final_setting_time_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+                            <t t-set="show_final_setting_time" t-value="data.final_setting_final_report == 'nabl' and nabl or data.final_setting_final_report == 'non_nabl' and not nabl"/>
 
                             <!-- 🔹 Step 2: Rowspan calculation -->
 					      <t t-set="rowspan_count" t-value="1 + int(show_initial_setting_time) + int(show_final_setting_time)"/>
@@ -488,7 +488,7 @@
 								</tr>
 
 								<!-- Fineness of Cement by Dry Sieving -->
-							<tr t-if="data.fineness_cement_visible and (data.avg_fineness_nabl == 'pass' and nabl or (data.avg_fineness_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.fineness_cement_visible and (data.avg_fineness_final_report == 'nabl' and nabl or data.avg_fineness_final_report == 'non_nabl' and not nabl)">
 									<t t-set="fine_dry" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','12457800-372f-4775-9bcb-e9dd70e6e6df')])"/>
 									
 									<td style="text-align: center;">
@@ -533,7 +533,7 @@
 								</tr>
 
 								<!-- Consistency of Cement -->
-							<tr t-if="data.consistency_cement_visible and (data.average_consistency_nabl == 'pass' and nabl or (data.average_consistency_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.consistency_cement_visible and (data.average_consistency_final_report == 'nabl' and nabl or data.average_consistency_final_report == 'non_nabl' and not nabl)">
 									<t t-set="consistency" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','01247gggty-372f-4775-9bcb-e9dd723547htui')])"/>
 									
 									<td style="text-align: center;">
@@ -578,7 +578,7 @@
 								</tr>
 
 								<!-- SOUNDNESS OF CEMENT BY LE-CHATELIER METHOD -->
-							<tr t-if="data.soundness_cement_visible and (data.avg_soundness_expansion_nabl == 'pass' and nabl or (data.avg_soundness_expansion_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.soundness_cement_visible and (data.soundness_expansion_final_report == 'nabl' and nabl or data.soundness_expansion_final_report == 'non_nabl' and not nabl)">
 									<t t-set="soundness" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','21457896f-372f-4775-9bcb-e9dd723547htui')])"/>
 									
 									<td style="text-align: center;">
@@ -624,7 +624,7 @@
 
 
 								<!-- SPECIFIC GRAVITY OF CEMENT -->
-							<tr t-if="data.specific_gravity_visible and (data.average_specific_gravity_nabl == 'pass' and nabl or (data.average_specific_gravity_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.specific_gravity_visible and (data.specific_gravity_final_report == 'nabl' and nabl or data.specific_gravity_final_report == 'non_nabl' and not nabl)">
 									<t t-set="specific_gravity" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','0157yutr1034-372f-4775-9bcb-e9dd723547htui')])"/>
 									
 									<td style="text-align: center;">
@@ -669,7 +669,7 @@
 								</tr>
 
 								<!-- DENSITY OF CEMENT -->
-							<tr t-if="data.density_cement_visible and (data.average_density_nabl == 'pass' and nabl or (data.average_density_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.density_cement_visible and (data.average_density_final_report == 'nabl' and nabl or data.average_density_final_report == 'non_nabl' and not nabl)">
 									<t t-set="density" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','23145870-372f-4775-9bcb-e9dd70e3587g')])"/>
 									
 									<td style="text-align: center;">
@@ -714,7 +714,7 @@
 								</tr>
 
 								<!-- FINENESS OF CEMENT BY BLAINE AIR PERMEABILITY METHOD -->
-							<tr t-if="data.fineness_blaine_visible and (data.specific_surface_nabl == 'pass' and nabl or (data.specific_surface_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.fineness_blaine_visible and (data.specific_surface_final_report == 'nabl' and nabl or data.specific_surface_final_report == 'non_nabl' and not nabl)">
 									<t t-set="specific_surface" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','3012478fffrr-372f-4775-9bcb-e9dd70214578r')])"/>
 									
 									<td style="text-align: center;">
@@ -760,7 +760,7 @@
 
 
 								<!-- Drying Skrinkage -->
-							<tr t-if="data.drying_shrinkage_visible and (data.drying_shrinkage_nabl == 'pass' and nabl or (data.drying_shrinkage_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.drying_shrinkage_visible and (data.drying_shrinkage_final_report == 'nabl' and nabl or data.drying_shrinkage_final_report == 'non_nabl' and not nabl)">
 									<t t-set="drying" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','c16b7457-0c65-4f5d-90b4-e94fa41405e8')])"/>
 									
 									<td style="text-align: center;">

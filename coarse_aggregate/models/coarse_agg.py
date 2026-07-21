@@ -299,6 +299,7 @@ class CoarseAggregateMechanical(models.Model):
 
     def calculate_sieve(self): 
         for record in self:
+            record.populate_sieve_analysis_lines()
             previous_cumulative = 0  
             for line in record.sieve_analysis_child_lines:
                 print("Rows", str(line.percent_retained))
@@ -451,6 +452,33 @@ class CoarseAggregateMechanical(models.Model):
                     else:
                         record.loose_avg_nabl = 'fail'
 
+    loose_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    loose_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_loose_final_report", store=True)
+
+    @api.depends('loose_avg_nabl', 'loose_report_type')
+    def _compute_loose_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.loose_report_type == 'nabl':
+            rec.loose_final_report = 'nabl'
+
+        elif rec.loose_report_type == 'non_nabl':
+            rec.loose_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.loose_avg_nabl == 'pass':
+                rec.loose_final_report = 'nabl'
+            else:
+                rec.loose_final_report = 'non_nabl'
+
 
 
     # Rodded Bulk Density
@@ -528,6 +556,34 @@ class CoarseAggregateMechanical(models.Model):
                         record.rodded_avg_nabl = 'fail'
 
 
+    rodded_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    rodded_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_rodded_final_report", store=True)
+
+    @api.depends('rodded_avg_nabl', 'rodded_report_type')
+    def _compute_rodded_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.rodded_report_type == 'nabl':
+            rec.rodded_final_report = 'nabl'
+
+        elif rec.rodded_report_type == 'non_nabl':
+            rec.rodded_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.rodded_avg_nabl == 'pass':
+                rec.rodded_final_report = 'nabl'
+            else:
+                rec.rodded_final_report = 'non_nabl'
+
+
 
 
     # Crushing Value
@@ -599,6 +655,34 @@ class CoarseAggregateMechanical(models.Model):
                         break
                     else:
                         record.average_crushing_value_nabl = 'fail'
+
+
+    crushing_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    crushing_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_crushing_final_report", store=True)
+
+    @api.depends('average_crushing_value_nabl', 'crushing_report_type')
+    def _compute_crushing_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.crushing_report_type == 'nabl':
+            rec.crushing_final_report = 'nabl'
+
+        elif rec.crushing_report_type == 'non_nabl':
+            rec.crushing_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.average_crushing_value_nabl == 'pass':
+                rec.crushing_final_report = 'nabl'
+            else:
+                rec.crushing_final_report = 'non_nabl'
 
 
     # Flakiness and Elongation 
@@ -736,6 +820,33 @@ class CoarseAggregateMechanical(models.Model):
                     else:
                         record.elongation_index_nabl = 'fail'
 
+    elongation_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Elongation Report Type", default='auto')
+
+    elongation_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_elongation_final_report", store=True)
+
+    @api.depends('elongation_index_nabl', 'elongation_report_type')
+    def _compute_elongation_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.elongation_report_type == 'nabl':
+            rec.elongation_final_report = 'nabl'
+
+        elif rec.elongation_report_type == 'non_nabl':
+            rec.elongation_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.elongation_index_nabl == 'pass':
+                rec.elongation_final_report = 'nabl'
+            else:
+                rec.elongation_final_report = 'non_nabl'
+
     flakiness_index_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),('na', 'NA'),], string="Flakiness Index Conformity", compute="_compute_flakiness_index_conformity", store=True)
@@ -788,6 +899,34 @@ class CoarseAggregateMechanical(models.Model):
                         break
                     else:
                         record.flakiness_index_nabl = 'fail'
+
+    
+    flakiness_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Flakiness Report Type", default='auto')
+
+    flakiness_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_flakiness_final_report", store=True)
+
+    @api.depends('flakiness_index_nabl', 'flakiness_report_type')
+    def _compute_flakiness_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.flakiness_report_type == 'nabl':
+            rec.flakiness_final_report = 'nabl'
+
+        elif rec.flakiness_report_type == 'non_nabl':
+            rec.flakiness_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.flakiness_index_nabl == 'pass':
+                rec.flakiness_final_report = 'nabl'
+            else:
+                rec.flakiness_final_report = 'non_nabl'
 
 
     # Aggregate Impact Value
@@ -859,6 +998,35 @@ class CoarseAggregateMechanical(models.Model):
                         break
                     else:
                         record.impact_value_nabl = 'fail'
+
+    impact_value_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    impact_value_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_impact_value_final_report", store=True)
+
+    @api.depends('impact_value_nabl', 'impact_value_report_type')
+    def _compute_impact_value_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.impact_value_report_type == 'nabl':
+            rec.impact_value_final_report = 'nabl'
+
+        elif rec.impact_value_report_type == 'non_nabl':
+            rec.impact_value_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.impact_value_nabl == 'pass':
+                rec.impact_value_final_report = 'nabl'
+            else:
+                rec.impact_value_final_report = 'non_nabl'
+
+
 
     # Specific Gravety 
     specific_gravity_name = fields.Char("Name",default="Specific Gravity & Water Absorption")
@@ -986,6 +1154,33 @@ class CoarseAggregateMechanical(models.Model):
                     else:
                         record.avg_specific_gravity_nabl = 'fail'
 
+    specific_gravity_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    specific_gravity_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_specific_gravity_final_report", store=True)
+
+    @api.depends('avg_specific_gravity_nabl', 'specific_gravity_report_type')
+    def _compute_specific_gravity_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.specific_gravity_report_type == 'nabl':
+            rec.specific_gravity_final_report = 'nabl'
+
+        elif rec.specific_gravity_report_type == 'non_nabl':
+            rec.specific_gravity_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_specific_gravity_nabl == 'pass':
+                rec.specific_gravity_final_report = 'nabl'
+            else:
+                rec.specific_gravity_final_report = 'non_nabl'
+
 
     avg_water_absorption_conformity = fields.Selection([
             ('pass', 'Pass'),
@@ -1039,6 +1234,33 @@ class CoarseAggregateMechanical(models.Model):
                         break
                     else:
                         record.avg_water_absorption_nabl = 'fail'
+
+    water_absorption_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    water_absorption_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_water_absorption_final_report", store=True)
+
+    @api.depends('avg_water_absorption_nabl', 'water_absorption_report_type')
+    def _compute_water_absorption_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.water_absorption_report_type == 'nabl':
+            rec.water_absorption_final_report = 'nabl'
+
+        elif rec.water_absorption_report_type == 'non_nabl':
+            rec.water_absorption_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_water_absorption_nabl == 'pass':
+                rec.water_absorption_final_report = 'nabl'
+            else:
+                rec.water_absorption_final_report = 'non_nabl'
 
 
     # DELETERIOUS MATERIAL (COAL & LIGNITE)
@@ -1119,6 +1341,34 @@ class CoarseAggregateMechanical(models.Model):
                     else:
                         record.avg_deleterious_coal_lignite_nabl = 'fail'
 
+
+    deleterious_coal_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    deleterious_coal_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_deleterious_coal_final_report", store=True)
+
+    @api.depends('avg_deleterious_coal_lignite_nabl', 'deleterious_coal_report_type')
+    def _compute_deleterious_coal_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.deleterious_coal_report_type == 'nabl':
+            rec.deleterious_coal_final_report = 'nabl'
+
+        elif rec.deleterious_coal_report_type == 'non_nabl':
+            rec.deleterious_coal_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_deleterious_coal_lignite_nabl == 'pass':
+                rec.deleterious_coal_final_report = 'nabl'
+            else:
+                rec.deleterious_coal_final_report = 'non_nabl'
+
   
 
 
@@ -1197,6 +1447,34 @@ class CoarseAggregateMechanical(models.Model):
                         break
                     else:
                         record.avg_abrasion_value_nabl = 'fail'
+
+    
+    abrasion_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    abrasion_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_abrasion_final_report", store=True)
+
+    @api.depends('avg_abrasion_value_nabl', 'abrasion_report_type')
+    def _compute_abrasion_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.abrasion_report_type == 'nabl':
+            rec.abrasion_final_report = 'nabl'
+
+        elif rec.abrasion_report_type == 'non_nabl':
+            rec.abrasion_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_abrasion_value_nabl == 'pass':
+                rec.abrasion_final_report = 'nabl'
+            else:
+                rec.abrasion_final_report = 'non_nabl'
 
 
     # Deleterious Material (Soft Fragments)
@@ -1277,6 +1555,34 @@ class CoarseAggregateMechanical(models.Model):
                     else:
                         record.soft_fragments_percent_nabl = 'fail'
 
+
+    soft_fragments_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    soft_fragments_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_soft_fragments_final_report", store=True)
+
+    @api.depends('soft_fragments_percent_nabl', 'soft_fragments_report_type')
+    def _compute_soft_fragments_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.soft_fragments_report_type == 'nabl':
+            rec.soft_fragments_final_report = 'nabl'
+
+        elif rec.soft_fragments_report_type == 'non_nabl':
+            rec.soft_fragments_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.soft_fragments_percent_nabl == 'pass':
+                rec.soft_fragments_final_report = 'nabl'
+            else:
+                rec.soft_fragments_final_report = 'non_nabl'
+
     
     # Material Finer than 75 Micron
 
@@ -1354,6 +1660,34 @@ class CoarseAggregateMechanical(models.Model):
                 break
             else:
                 record.avg_finer_percent_nabl = 'fail'
+
+
+    finer_percent_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    finer_percent_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_finer_percent_final_report", store=True)
+
+    @api.depends('avg_finer_percent_nabl', 'finer_percent_report_type')
+    def _compute_finer_percent_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.finer_percent_report_type == 'nabl':
+            rec.finer_percent_final_report = 'nabl'
+
+        elif rec.finer_percent_report_type == 'non_nabl':
+            rec.finer_percent_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_finer_percent_nabl == 'pass':
+                rec.finer_percent_final_report = 'nabl'
+            else:
+                rec.finer_percent_final_report = 'non_nabl'
 
     
     # TEN PERCENT FINES VALUE (10% FINE VALUE) OF COARSE AGGREGATE			
@@ -1437,6 +1771,34 @@ class CoarseAggregateMechanical(models.Model):
                 record.load_10percent_fine_values_nabl = 'fail'
 
 
+    load_10percent_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    load_10percent_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_load_10percent_final_report", store=True)
+
+    @api.depends('load_10percent_fine_values_nabl', 'load_10percent_report_type')
+    def _compute_load_10percent_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.load_10percent_report_type == 'nabl':
+            rec.load_10percent_final_report = 'nabl'
+
+        elif rec.load_10percent_report_type == 'non_nabl':
+            rec.load_10percent_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.load_10percent_fine_values_nabl == 'pass':
+                rec.load_10percent_final_report = 'nabl'
+            else:
+                rec.load_10percent_final_report = 'non_nabl'
+
+
     # DELETERIOUS MATERIAL (CLAY & LUMPS)
     
     name_clay_lumps = fields.Char("Name",default="DELETERIOUS MATERIAL (CLAY & LUMPS)")
@@ -1514,6 +1876,34 @@ class CoarseAggregateMechanical(models.Model):
                         break
                     else:
                         record.clay_lumps_percent_nabl = 'fail'
+
+
+    clay_lumps_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    clay_lumps_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_clay_lumps_final_report", store=True)
+
+    @api.depends('clay_lumps_percent_nabl', 'clay_lumps_report_type')
+    def _compute_clay_lumps_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.clay_lumps_report_type == 'nabl':
+            rec.clay_lumps_final_report = 'nabl'
+
+        elif rec.clay_lumps_report_type == 'non_nabl':
+            rec.clay_lumps_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.clay_lumps_percent_nabl == 'pass':
+                rec.clay_lumps_final_report = 'nabl'
+            else:
+                rec.clay_lumps_final_report = 'non_nabl'
 
 
     # Stripping Value
@@ -1596,6 +1986,34 @@ class CoarseAggregateMechanical(models.Model):
                         break
                     else:
                         record.avg_stripping_nabl = 'fail'
+
+
+    stripping_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    stripping_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_stripping_final_report", store=True)
+
+    @api.depends('avg_stripping_nabl', 'stripping_report_type')
+    def _compute_stripping_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.stripping_report_type == 'nabl':
+            rec.stripping_final_report = 'nabl'
+
+        elif rec.stripping_report_type == 'non_nabl':
+            rec.stripping_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_stripping_nabl == 'pass':
+                rec.stripping_final_report = 'nabl'
+            else:
+                rec.stripping_final_report = 'non_nabl'
 
 
 
@@ -1682,6 +2100,34 @@ class CoarseAggregateMechanical(models.Model):
                         break
                     else:
                         record.avg_impact_nabl = 'fail'
+
+    
+    wet_impact_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    wet_impact_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_wet_impact_final_report", store=True)
+
+    @api.depends('avg_impact_nabl', 'wet_impact_report_type')
+    def _compute_wet_impact_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.wet_impact_report_type == 'nabl':
+            rec.wet_impact_final_report = 'nabl'
+
+        elif rec.wet_impact_report_type == 'non_nabl':
+            rec.wet_impact_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_impact_nabl == 'pass':
+                rec.wet_impact_final_report = 'nabl'
+            else:
+                rec.wet_impact_final_report = 'non_nabl'
 
 
 
@@ -1821,6 +2267,34 @@ class CoarseAggregateMechanical(models.Model):
                     record.total_weighted_avg_nabl = 'fail'
 
 
+    sodium_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    sodium_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_sodium_final_report", store=True)
+
+    @api.depends('total_weighted_avg_nabl', 'sodium_report_type')
+    def _compute_sodium_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.sodium_report_type == 'nabl':
+            rec.sodium_final_report = 'nabl'
+
+        elif rec.sodium_report_type == 'non_nabl':
+            rec.sodium_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.total_weighted_avg_nabl == 'pass':
+                rec.sodium_final_report = 'nabl'
+            else:
+                rec.sodium_final_report = 'non_nabl'
+
+
     # SOUNDNESS (MAGNESIUM SULPHATE TEST)
     soundness_mgso4_name = fields.Char("Name",default="SOUNDNESS (MAGNESIUM SULPHATE TEST)")
     soundness_mgso4_visible = fields.Boolean("SOUNDNESS (MAGNESIUM SULPHATE TEST) Visible",compute="_compute_visible")
@@ -1958,6 +2432,35 @@ class CoarseAggregateMechanical(models.Model):
                         break
                     else:
                         record.mag_total_weighted_avg_nabl = 'fail'
+
+
+
+    magnesium_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    magnesium_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_magnesium_final_report", store=True)
+
+    @api.depends('mag_total_weighted_avg_nabl', 'magnesium_report_type')
+    def _compute_magnesium_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.magnesium_report_type == 'nabl':
+            rec.magnesium_final_report = 'nabl'
+
+        elif rec.magnesium_report_type == 'non_nabl':
+            rec.magnesium_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.mag_total_weighted_avg_nabl == 'pass':
+                rec.magnesium_final_report = 'nabl'
+            else:
+                rec.magnesium_final_report = 'non_nabl'
     
 
 
