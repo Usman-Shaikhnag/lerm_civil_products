@@ -1,6 +1,5 @@
 from . import ert
 from . import soil_resistivity
-from . import borehole
 from . import pile_load
 
 from . import initial_pullout_pile_load

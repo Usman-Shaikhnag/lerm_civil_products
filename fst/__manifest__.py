@@ -9,12 +9,11 @@
     'summary': '',
     'description': """
     """,
-    'depends': ['base','lerm_civil','soil_resistivity'],
+    'depends': ['base','lerm_civil','soil_resistivity','fst_borehole'],
     'data': [
                  'security/security.xml',
                  'views/ert.xml',
                  'views/soil_resistivity.xml',
-                 'views/borehole.xml',
                  'views/pile_load_test.xml',
 
                  'views/initial_pullout_pile_load_views.xml',
