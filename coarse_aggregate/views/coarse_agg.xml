@@ -184,6 +184,15 @@
                         </tbody>
                     </table>
 
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not loose_bulk_density_visible" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="loose_report_type">Report Type</label></td>
+                                <td><field name="loose_report_type" class="blue-input" decoration-info="loose_report_type != 0"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
 
                      <!-- Rodded Bulk Density -->
 
@@ -229,6 +238,15 @@
                                         decoration-success="rodded_avg_nabl == 'pass'" 
                                         decoration-danger="rodded_avg_nabl == 'fail'"/>
                                 </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not rodded_bulk_density_visible" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="rodded_report_type">Report Type</label></td>
+                                <td><field name="rodded_report_type" class="blue-input" decoration-info="rodded_report_type != 0"/></td>
                             </tr>
                         </tbody>
                     </table>
@@ -280,7 +298,15 @@
                             </tr>
                         </tbody>
                     </table>
-                    <group/>
+
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not crushing_visible" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="crushing_report_type">Report Type</label></td>
+                                <td><field name="crushing_report_type" class="blue-input" decoration-info="crushing_report_type != 0"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
 
 
 
@@ -437,6 +463,25 @@
                     </table>
                     </div>
 
+                    <div class="d-flex gap-2" invisible="elongation_fl_visible == False"> 
+                         <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="elongation_fl_visible == False">
+                          <tbody>
+                              <tr>
+                                <td><label class="fw-bold" for="elongation_report_type">Report Type</label></td>
+                                <td><field name="elongation_report_type" class="blue-input" decoration-info="elongation_report_type != 0"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                     <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="elongation_fl_visible == False">
+                          <tbody>
+                              <tr>
+                                <td><label class="fw-bold" for="flakiness_report_type">Report Type</label></td>
+                                <td><field name="flakiness_report_type" class="blue-input" decoration-info="flakiness_report_type != 0"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+
                     <!-- Aggregate Impact Value -->
 
                     <div invisible = "impact_visible == False">
@@ -486,7 +531,15 @@
                             </tr>
                         </tbody>
                     </table>
-                    <group/>
+                    
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not impact_visible" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="impact_value_report_type">Report Type</label></td>
+                                <td><field name="impact_value_report_type" class="blue-input" decoration-info="impact_value_report_type != 0"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
 
         
                  <!-- Specific Gravity and Water Absorbtion  -->
@@ -594,6 +647,25 @@
                     </table>
                     </div>
 
+                    <div class="d-flex gap-2" invisible="specific_gravity_visible == False"> 
+                         <table class="table table-sm table-bordered w-50 custom_table_borders" >
+                          <tbody>
+                              <tr>
+                                <td><label class="fw-bold" for="specific_gravity_report_type">Specific Gravity Report Type</label></td>
+                                <td><field name="specific_gravity_report_type" class="blue-input" decoration-info="specific_gravity_report_type != 0"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                     <table class="table table-sm table-bordered w-50 custom_table_borders" >
+                          <tbody>
+                               <tr>
+                                <td><label class="fw-bold" for="water_absorption_report_type">Water Absorption Report Type</label></td>
+                                <td><field name="water_absorption_report_type" class="blue-input" decoration-info="water_absorption_report_type != 0"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+
                     <!-- DELETERIOUS MATERIAL (COAL & LIGNITE) -->
 
 
@@ -641,7 +713,14 @@
                             </tr>
                         </tbody>
                     </table>
-                    <group/>
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not deleterious_coal_lignite_visible" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="deleterious_coal_report_type">Report Type</label></td>
+                                <td><field name="deleterious_coal_report_type" class="blue-input" decoration-info="deleterious_coal_report_type != 0"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
                     
 
                     <!-- Abrasion Value -->
@@ -691,7 +770,14 @@
                             </tr>
                         </tbody>
                     </table>
-                    <group/>
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not abrasion_visible" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="abrasion_report_type">Report Type</label></td>
+                                <td><field name="abrasion_report_type" class="blue-input" decoration-info="abrasion_report_type != 0"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
 
 
                      <!-- Deleterious Material (Soft Fragments) -->
@@ -741,7 +827,14 @@
                             </tr>
                         </tbody>
                     </table>
-                    <group/>
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not soft_fragments_visible" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="soft_fragments_report_type">Report Type</label></td>
+                                <td><field name="soft_fragments_report_type" class="blue-input" decoration-info="soft_fragments_report_type != 0"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
 
 
 
@@ -792,7 +885,14 @@
                             </tr>
                         </tbody>
                     </table>
-                    <group/>
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not finer75_visible" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="finer_percent_report_type">Report Type</label></td>
+                                <td><field name="finer_percent_report_type" class="blue-input" decoration-info="finer_percent_report_type != 0"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
                     
 
 
@@ -850,7 +950,14 @@
                             </tr>
                         </tbody>
                     </table>
-                    <group/>
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not fine10_visible" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="load_10percent_report_type">Report Type</label></td>
+                                <td><field name="load_10percent_report_type" class="blue-input" decoration-info="load_10percent_report_type != 0"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
 
                 
 
@@ -901,7 +1008,14 @@
                             </tr>
                         </tbody>
                     </table>
-                    <group/>
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not clay_lump_visible" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="clay_lumps_report_type">Report Type</label></td>
+                                <td><field name="clay_lumps_report_type" class="blue-input" decoration-info="clay_lumps_report_type != 0"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
 
 
                      <!-- Stripping Value -->
@@ -951,7 +1065,14 @@
                             </tr>
                         </tbody>
                     </table>
-                    <group/>
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not stripping_value_visible" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="stripping_report_type">Report Type</label></td>
+                                <td><field name="stripping_report_type" class="blue-input" decoration-info="stripping_report_type != 0"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
 
 
                     <!-- Wet Impact Value -->
@@ -1003,7 +1124,14 @@
                             </tr>
                         </tbody>
                     </table>
-                    <group/>
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not wet_impact_visible" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="wet_impact_report_type">Report Type</label></td>
+                                <td><field name="wet_impact_report_type" class="blue-input" decoration-info="wet_impact_report_type != 0"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
 
 
 
@@ -1123,7 +1251,14 @@
                             </tr>
                         </tbody>
                     </table>
-                    <group/>
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not soundness_na2so4_visible" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="sodium_report_type">Report Type</label></td>
+                                <td><field name="sodium_report_type" class="blue-input" decoration-info="sodium_report_type != 0"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
 
 
                      <!-- Soundness Mgso4  -->
@@ -1241,7 +1376,14 @@
                             </tr>
                         </tbody>
                     </table>
-                    <group/>
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not soundness_mgso4_visible" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="magnesium_report_type">Report Type</label></td>
+                                <td><field name="magnesium_report_type" class="blue-input" decoration-info="magnesium_report_type != 0"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
 
 
 

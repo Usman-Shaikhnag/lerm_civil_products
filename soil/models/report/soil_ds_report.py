@@ -15,6 +15,13 @@ import io
 from scipy.interpolate import PchipInterpolator
 from matplotlib.ticker import AutoMinorLocator
 from matplotlib.ticker import LogLocator, MultipleLocator
+from odoo import api, models
+
+from matplotlib.ticker import (
+    LogLocator,
+    MultipleLocator,
+    FuncFormatter,
+)
 
 
 class SoilDatasheet(models.AbstractModel):
@@ -239,6 +246,11 @@ class SoilReport(models.AbstractModel):
         marker="o",
         markersize=4)
 
+        ax.set_title(
+        "Direct Shear Test Graph",
+        fontsize=20,
+        fontweight="bold")
+
         ax.set_xlabel(
         "Penetration (mm)",
         fontsize=10)
@@ -296,211 +308,183 @@ class SoilReport(models.AbstractModel):
         return image_data
     
 
+    from scipy.interpolate import CubicHermiteSpline
+    from matplotlib.ticker import MultipleLocator
+
     def generate_cbr_chart(self, data):
+     from scipy.interpolate import CubicHermiteSpline
 
-        # --------------------------------------
-        # Read CBR Data
-        # --------------------------------------
+    # ---------------------------------------
+    # Read CBR Data
+    # ---------------------------------------
 
-        lines = self.env['mechanical.cbr.line'].search(
+     lines = self.env['mechanical.cbr.line'].search(
         [('parent_id', '=', data.id)],
-        order='penetration asc')
+        order='penetration asc'
+    )
 
-        if len(lines) < 2:
-            return False
+     if len(lines) < 2:
+        return False
 
-        penetration = np.array(
-        [float(line.penetration or 0) for line in lines],
-        dtype=float)
+     penetration = np.array(
+        [float(x.penetration or 0) for x in lines],
+        dtype=float
+    )
 
-        sample1 = np.array(
-        [float(line.sample1_load or 0) for line in lines],
-        dtype=float)
+     sample1 = np.array(
+        [float(x.sample1_load or 0) for x in lines],
+        dtype=float
+    )
 
-        sample2 = np.array(
-        [float(line.sample2_load or 0) for line in lines],
-        dtype=float)
+     sample2 = np.array(
+        [float(x.sample2_load or 0) for x in lines],
+        dtype=float
+    )
 
-        sample3 = np.array(
-        [float(line.sample3_load or 0) for line in lines],
-        dtype=float)
+     sample3 = np.array(
+        [float(x.sample3_load or 0) for x in lines],
+        dtype=float
+    )
 
-        # --------------------------------------
-        # Smooth Curve (Excel Style)
-        # --------------------------------------
-
-        x_new = np.linspace(
-        penetration.min(),
-        penetration.max(),
-        500)
-
-        curve1 = PchipInterpolator(
+    # Remove duplicate penetration values
+     penetration, idx = np.unique(
         penetration,
-        sample1)
+        return_index=True
+    )
 
-        curve2 = PchipInterpolator(
-        penetration,
-        sample2)
+     sample1 = sample1[idx]
+     sample2 = sample2[idx]
+     sample3 = sample3[idx]
 
-        curve3 = PchipInterpolator(
-        penetration,
-        sample3)
+    # ---------------------------------------
+    # Excel Style Curve
+    # ---------------------------------------
 
-        y1 = curve1(x_new)
-        y2 = curve2(x_new)
-        y3 = curve3(x_new)
+     def create_curve(x, y):
 
-        # --------------------------------------
-        # Create Figure
-        # --------------------------------------
+        ctrl_points = [0.5, 2.5, 5.0, 12.5]
 
-        fig, ax = plt.subplots(
-        figsize=(10, 6))
+        cx = []
+        cy = []
 
-        # --------------------------------------
-        # Plot Smooth Curves
-        # --------------------------------------
+        for p in ctrl_points:
+            idx = np.where(np.isclose(x, p))[0]
 
-        ax.plot(
-        x_new,
-        y1,
-        color="#1f77b4",
-        linewidth=2.2,
-        label="Sample-1")
+            if len(idx):
+                cx.append(x[idx[0]])
+                cy.append(y[idx[0]])
 
-        ax.plot(
-        x_new,
-        y2,
-        color="#ff7f0e",
-        linewidth=2.2,
-        label="Sample-2")
+        cx = np.array(cx)
+        cy = np.array(cy)
 
-        ax.plot(
-        x_new,
-        y3,
-        color="#2ca02c",
-        linewidth=2.2,
-        label="Sample-3")
+        if len(cx) < 2:
+            return x, y
 
-        # --------------------------------------
-        # Original Data Points
-        # --------------------------------------
+        d = np.zeros(len(cx))
 
-        ax.scatter(
-        penetration,
-        sample1,
-        color="#1f77b4",
-        s=30,
-        zorder=5)
+        d[0] = (cy[1] - cy[0]) / (cx[1] - cx[0])
 
-        ax.scatter(
-        penetration,
-        sample2,
-        color="#ff7f0e",
-        s=30,
-        zorder=5)
+        d[1] = (
+            (cy[2] - cy[0]) /
+            (cx[2] - cx[0])
+        )
 
-        ax.scatter(
-        penetration,
-        sample3,
-        color="#2ca02c",
-        s=30,
-        zorder=5)
+        slope = (
+            (cy[3] - cy[1]) /
+            (cx[3] - cx[1])
+        )
 
-    # --------------------------------------
-    # Labels
-    # --------------------------------------
+        d[2] = slope * 0.45
 
-        ax.set_title(
-        "CBR Test Graph",
-        fontsize=20,
-        fontweight="bold")
+        d[3] = (
+            (cy[3] - cy[2]) /
+            (cx[3] - cx[2])
+        ) * 0.10
 
-        ax.set_xlabel(
-        "Penetration (mm)",
-        fontsize=15)
+        spline = CubicHermiteSpline(cx, cy, d)
 
-        ax.set_ylabel(
-        "Load (Kg/cm²)",
-        fontsize=15)
+        xs1 = np.linspace(cx[0], cx[2], 350)
+        ys1 = spline(xs1)
 
-        # --------------------------------------
-        # Axis Limits
-        # --------------------------------------
+        xs2 = np.linspace(cx[2], cx[3], 350)
+        ys2 = np.interp(
+            xs2,
+            [cx[2], cx[3]],
+            [cy[2], cy[3]]
+        )
 
-        ax.set_xlim(0, 14)
-        ax.set_ylim(40, 320)
+        xs = np.concatenate([xs1, xs2])
+        ys = np.concatenate([ys1, ys2])
 
-        ax.xaxis.set_major_locator(
-        MultipleLocator(1))
+        return xs, ys
 
-        ax.xaxis.set_minor_locator(
-        MultipleLocator(0.2))
+     x1, y1 = create_curve(penetration, sample1)
+     x2, y2 = create_curve(penetration, sample2)
+     x3, y3 = create_curve(penetration, sample3)
 
-        ax.yaxis.set_major_locator(
-        MultipleLocator(20))
+    # ---------------------------------------
+    # Figure
+    # ---------------------------------------
 
-        ax.yaxis.set_minor_locator(
-        MultipleLocator(5))
+     fig, ax = plt.subplots(figsize=(8, 8), dpi=100)
 
-        # --------------------------------------
-        # Graph Paper
-        # --------------------------------------
+     fig.patch.set_facecolor("white")
+     ax.set_facecolor("white")
 
-        ax.set_facecolor("white")
+     ax.plot(x1, y1, color="#4472C4", linewidth=1.6, label="Sample-1")
+     ax.plot(x2, y2, color="#ED7D31", linewidth=1.6, label="Sample-2")
+     ax.plot(x3, y3, color="#70AD47", linewidth=1.6, label="Sample-3")
 
-        ax.grid(
-        which="major",
-        color="#9a9a9a",
-        linewidth=0.7,
-        alpha=0.6)
+     ax.scatter(penetration, sample1, color="#4472C4", s=24)
+     ax.scatter(penetration, sample2, color="#ED7D31", s=24)
+     ax.scatter(penetration, sample3, color="#70AD47", s=24)
 
-        ax.grid(
-        which="minor",
-        color="#d8d8d8",
-        linestyle=":",
-        linewidth=0.45)
+     ax.set_title("CBR Graph", fontsize=20)
 
-        ax.set_axisbelow(True)
+     ax.set_xlabel("Penetration (mm)", fontsize=14)
+     ax.set_ylabel("Corrected Load (Kg)", fontsize=14)
 
-        # Border
+     ax.set_xlim(0, 14)
+     ax.set_ylim(40, 340)
 
-        for spine in ax.spines.values():
-            spine.set_linewidth(1.0)
+     ax.xaxis.set_major_locator(MultipleLocator(1))
+     ax.xaxis.set_minor_locator(MultipleLocator(0.5))
 
-        # Legend
+     ax.yaxis.set_major_locator(MultipleLocator(20))
+     ax.yaxis.set_minor_locator(MultipleLocator(10))
 
-        ax.legend(
-        loc="upper left",
-        fontsize=12)
+     ax.grid(which="major", color="#D0D0D0", linewidth=0.8)
+     ax.grid(which="minor", color="#ECECEC", linewidth=0.4)
 
-        plt.tight_layout()
+     ax.legend(loc="upper left")
 
+     plt.tight_layout()
 
-        # --------------------------------------
-        # Save Image
-        # --------------------------------------
+    # ---------------------------------------
+    # Return Image
+    # ---------------------------------------
 
-        buffer = io.BytesIO()
+     buffer = io.BytesIO()
 
-        plt.savefig(
+     plt.savefig(
         buffer,
         format="png",
         dpi=100,
         bbox_inches="tight",
-        facecolor="white")
+        facecolor="white"
+    )
 
-        plt.close(fig)
+     plt.close(fig)
+ 
+     buffer.seek(0)
 
-        buffer.seek(0)
-
-        image_data = base64.b64encode(
+     image = base64.b64encode(
         buffer.read()
     ).decode("utf-8")
 
-        buffer.close()
+     buffer.close()
 
-        return image_data
+     return image
     
 
     def generate_line_chart_light_omc(self, data):
@@ -906,12 +890,15 @@ class SoilReport(models.AbstractModel):
     )
 
 
-
     def generate_line_chart_slive(self, data):
 
         x_value = []
         y_value = []
         x_labels = []
+
+        # ---------------------------------------
+        # Read Data
+        # ---------------------------------------
 
         for line in data.sieve_analysis_child_lines:
 
@@ -919,155 +906,442 @@ class SoilReport(models.AbstractModel):
                 continue
 
             try:
-                sieve_str = str(line.sieve_size).strip().lower()
 
-                if 'mm' in sieve_str:
+                sieve_str = str(
+                    line.sieve_size
+                ).strip().lower()
+
+                if "mm" in sieve_str:
+
                     sieve_val = float(
-                    sieve_str.replace('mm', '').strip()
-                )
+                        sieve_str.replace(
+                            "mm",
+                            ""
+                        ).strip()
+                    )
+
                     label = f"{sieve_val:g} mm"
 
-                elif 'µ' in sieve_str or 'μ' in sieve_str:
+                elif "µ" in sieve_str or "μ" in sieve_str:
+
                     micron = float(
-                    sieve_str.replace('µ', '')
-                    .replace('μ', '')
-                    .strip()
-                )
+                        sieve_str.replace(
+                            "µ",
+                            ""
+                        ).replace(
+                            "μ",
+                            ""
+                        ).strip()
+                    )
 
                     sieve_val = micron / 1000.0
+
                     label = f"{int(micron)} µm"
 
                 else:
                     continue
 
                 x_value.append(sieve_val)
-                y_value.append(float(line.passing_percent or 0))
+                y_value.append(
+                    float(
+                        line.passing_percent or 0
+                    )
+                )
                 x_labels.append(label)
 
             except Exception:
                 continue
 
         if not x_value:
-             return False
+            return False
+
+        # ---------------------------------------
+        # Sort
+        # ---------------------------------------
 
         sorted_data = sorted(
-        zip(x_value, y_value, x_labels),
-        key=lambda x: x[0]
-    )
+            zip(
+                x_value,
+                y_value,
+                x_labels
+            ),
+            key=lambda x: x[0]
+        )
 
         x_value, y_value, x_labels = zip(*sorted_data)
 
-        fig, ax = plt.subplots(figsize=(10, 5))
+        # ---------------------------------------
+        # Figure
+        # ---------------------------------------
 
-        ax.set_xscale('log')
+        fig, ax = plt.subplots(
+            figsize=(10, 5)
+        )
 
-        ax.plot(x_value,
-        y_value,
-        color='blue',
-        linewidth=2
-    )
+        fig.patch.set_facecolor("white")
+        ax.set_facecolor("white")
+
+        ax.set_axisbelow(True)
+
+        # ---------------------------------------
+        # Log Scale
+        # ---------------------------------------
+
+        ax.set_xscale("log")
+
+        # ---------------------------------------
+        # Plot
+        # ---------------------------------------
+
+        ax.plot(
+            x_value,
+            y_value,
+            color="blue",
+            linewidth=2,
+            zorder=3
+        )
 
         ax.scatter(
-        x_value,
-        y_value,
-        color='red',
-        s=60,
-        zorder=5
-    )
-
-        ax.set_xlabel("Particle Size (mm)")
-        ax.set_ylabel("% Passing")
-        ax.set_title("Grain Size Distribution Curve")  
-        ax.set_xticks(x_value)
-
-        ax.set_xticklabels(
-        x_labels,
-        rotation=45,
-        ha='right'
-    )
-
-        ax.xaxis.set_minor_locator(
-        LogLocator(
-            base=10.0,
-            subs=np.arange(1, 10) * 0.1,
-            numticks=100
+            x_value,
+            y_value,
+            color="red",
+            s=60,
+            zorder=5
         )
-    )
 
-        ax.yaxis.set_minor_locator(
-        MultipleLocator(2)
-    )
+        # ---------------------------------------
+        # Labels
+        # ---------------------------------------
 
-        ax.grid(
-        True,
-        which='both',
-        linestyle='--',
-        linewidth=0.4
-    )
+        ax.set_xlabel(
+            "Particle Size (mm)"
+        )
+
+        ax.set_ylabel(
+            "% Passing"
+        )
+
+        ax.set_title(
+            "Grain Size Distribution Curve"
+        )
+
+        # ---------------------------------------
+        # X Axis
+        # ---------------------------------------
 
         ax.set_xlim(
-        left=min(x_value) / 1.5,
-        right=max(x_value) * 1.5
-    )
+            0.01,
+            100
+        )
+
+        ax.set_xticks(
+            [0.01, 0.1, 1, 10, 100]
+        )
+
+        ax.xaxis.set_major_formatter(
+            FuncFormatter(
+                lambda x, pos: f"{x:g}"
+            )
+        )
+
+        ax.xaxis.set_major_locator(
+            LogLocator(base=10)
+        )
+
+        ax.xaxis.set_minor_locator(
+            LogLocator(
+                base=10,
+                subs=np.arange(2, 10) * 0.1,
+                numticks=100
+            )
+        )
+
+        # ---------------------------------------
+        # Y Axis
+        # ---------------------------------------
 
         ax.set_ylim(0, 110)
 
+        ax.yaxis.set_major_locator(
+            MultipleLocator(10)
+        )
+
+        ax.yaxis.set_minor_locator(
+            MultipleLocator(2)
+        )
+
+        # ---------------------------------------
+        # Grid
+        # ---------------------------------------
+
+        ax.grid(
+            which="major",
+            color="#8c8c8c",
+            linewidth=0.8,
+            linestyle="-"
+        )
+
+        ax.grid(
+            which="minor",
+            color="#d9d9d9",
+            linewidth=0.4,
+            linestyle="-"
+        )
+
+        # ---------------------------------------
+        # Border
+        # ---------------------------------------
+
+        for spine in ax.spines.values():
+
+            spine.set_color("black")
+            spine.set_linewidth(1)
+
+        # ---------------------------------------
+        # D10 D30 D60
+        # ---------------------------------------
+
         d_points = [
-        (data.d10, 10, 'black', 'D10'),
-        (data.d30, 30, 'green', 'D30'),
-        (data.d60, 60, 'orange', 'D60'),
-    ]
+
+            (
+                data.d10,
+                10,
+                "black",
+                "D10"
+            ),
+
+            (
+                data.d30,
+                30,
+                "green",
+                "D30"
+            ),
+
+            (
+                data.d60,
+                60,
+                "orange",
+                "D60"
+            ),
+
+        ]
 
         for dx, dy, color, label in d_points:
 
-             if dx and dx > 0:
+            if dx and dx > 0:
 
                 ax.scatter(
-                dx,
-                dy,
-                color=color,
-                s=90,
-                zorder=10
-            )
+                    dx,
+                    dy,
+                    color=color,
+                    s=120,
+                    zorder=10
+                )
 
                 ax.plot(
-                [dx, dx],
-                [0, dy],
-                color=color,
-                linewidth=1.2
-            )
+                    [dx, dx],
+                    [0, dy],
+                    color=color,
+                    linewidth=1.5
+                )
 
                 ax.plot(
-                [min(x_value), dx],
-                [dy, dy],
-                color=color,
-                linewidth=1.2
-            )
+                    [0.01, dx],
+                    [dy, dy],
+                    color=color,
+                    linewidth=1.5
+                )
 
                 ax.annotate(
-                f"{label}={dx:.4f}",
-                (dx, dy),
-                fontsize=9
-            )
+                    f"{label}={dx:.4f}",
+                    (dx, dy),
+                    xytext=(5, 0),
+                    textcoords="offset points",
+                    fontsize=10
+                )
 
         plt.tight_layout()
 
         buffer = io.BytesIO()
 
         plt.savefig(
-        buffer,
-        format='png',
-        dpi=100,
-        bbox_inches='tight'
-    )
+            buffer,
+            format="png",
+            dpi=100,
+            bbox_inches="tight"
+        )
 
         plt.close(fig)
- 
+
         buffer.seek(0)
 
-        image_data = base64.b64encode(buffer.read()).decode('utf-8')
+        return base64.b64encode(
+            buffer.read()
+        ).decode("utf-8")
 
-        return image_data
+
+
+    # def generate_line_chart_slive(self, data):
+
+    #     x_value = []
+    #     y_value = []
+    #     x_labels = []
+
+    #     for line in data.sieve_analysis_child_lines:
+
+    #         if not line.sieve_size:
+    #             continue
+
+    #         try:
+    #             sieve_str = str(line.sieve_size).strip().lower()
+
+    #             if 'mm' in sieve_str:
+    #                 sieve_val = float(
+    #                 sieve_str.replace('mm', '').strip()
+    #             )
+    #                 label = f"{sieve_val:g} mm"
+
+    #             elif 'µ' in sieve_str or 'μ' in sieve_str:
+    #                 micron = float(
+    #                 sieve_str.replace('µ', '')
+    #                 .replace('μ', '')
+    #                 .strip()
+    #             )
+
+    #                 sieve_val = micron / 1000.0
+    #                 label = f"{int(micron)} µm"
+
+    #             else:
+    #                 continue
+
+    #             x_value.append(sieve_val)
+    #             y_value.append(float(line.passing_percent or 0))
+    #             x_labels.append(label)
+
+    #         except Exception:
+    #             continue
+
+    #     if not x_value:
+    #          return False
+
+    #     sorted_data = sorted(
+    #     zip(x_value, y_value, x_labels),
+    #     key=lambda x: x[0]
+    # )
+
+    #     x_value, y_value, x_labels = zip(*sorted_data)
+
+    #     fig, ax = plt.subplots(figsize=(10, 5))
+
+    #     ax.set_xscale('log')
+
+    #     ax.plot(x_value,
+    #     y_value,
+    #     color='blue',
+    #     linewidth=2
+    # )
+
+    #     ax.scatter(
+    #     x_value,
+    #     y_value,
+    #     color='red',
+    #     s=60,
+    #     zorder=5
+    # )
+
+    #     ax.set_xlabel("Particle Size (mm)")
+    #     ax.set_ylabel("% Passing")
+    #     ax.set_title("Grain Size Distribution Curve")  
+    #     ax.set_xticks(x_value)
+
+    #     ax.set_xticklabels(
+    #     x_labels,
+    #     rotation=45,
+    #     ha='right'
+    # )
+
+    #     ax.xaxis.set_minor_locator(
+    #     LogLocator(
+    #         base=10.0,
+    #         subs=np.arange(1, 10) * 0.1,
+    #         numticks=100
+    #     )
+    # )
+
+    #     ax.yaxis.set_minor_locator(
+    #     MultipleLocator(2)
+    # )
+
+    #     ax.grid(
+    #     True,
+    #     which='both',
+    #     linestyle='--',
+    #     linewidth=0.4
+    # )
+
+    #     ax.set_xlim(
+    #     left=min(x_value) / 1.5,
+    #     right=max(x_value) * 1.5
+    # )
+
+    #     ax.set_ylim(0, 110)
+
+    #     d_points = [
+    #     (data.d10, 10, 'black', 'D10'),
+    #     (data.d30, 30, 'green', 'D30'),
+    #     (data.d60, 60, 'orange', 'D60'),
+    # ]
+
+    #     for dx, dy, color, label in d_points:
+
+    #          if dx and dx > 0:
+
+    #             ax.scatter(
+    #             dx,
+    #             dy,
+    #             color=color,
+    #             s=90,
+    #             zorder=10
+    #         )
+
+    #             ax.plot(
+    #             [dx, dx],
+    #             [0, dy],
+    #             color=color,
+    #             linewidth=1.2
+    #         )
+
+    #             ax.plot(
+    #             [min(x_value), dx],
+    #             [dy, dy],
+    #             color=color,
+    #             linewidth=1.2
+    #         )
+
+    #             ax.annotate(
+    #             f"{label}={dx:.4f}",
+    #             (dx, dy),
+    #             fontsize=9
+    #         )
+
+    #     plt.tight_layout()
+
+    #     buffer = io.BytesIO()
+
+    #     plt.savefig(
+    #     buffer,
+    #     format='png',
+    #     dpi=100,
+    #     bbox_inches='tight'
+    # )
+
+    #     plt.close(fig)
+ 
+    #     buffer.seek(0)
+
+    #     image_data = base64.b64encode(buffer.read()).decode('utf-8')
+
+    #     return image_data
     
 
 
