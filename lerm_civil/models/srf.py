@@ -1016,21 +1016,18 @@ class CreateSampleWizard(models.TransientModel):
     )
 
     @api.onchange('parameters')
-    def _onchange_parameters(self):
-        """ जेव्हा जेव्हा फॉर्मवर पॅरामीटर्स निवडले/बदलले जातील, 
-            तेव्हा Max Date आपोआप भरली जाईल, पण युझर ती एडिट करू शकेल. """
-        for sample in self:
-            if sample.parameters:
-                # ज्या पॅरामीटर्समध्ये तारीख आहे त्यांची लिस्ट
-                due_dates = [
-                    param.report_due_date1 
-                    for param in sample.parameters 
-                    if param.report_due_date1
-                ]
-                
-                # सर्वात मोठी तारीख ऑटोमॅटिक सेट करा
-                if due_dates:
-                    sample.report_due_date = max(due_dates)
+    def _onchange_parameters_compute_due_date(self):
+        if self.parameters:
+            # Selected parameters madhun maximum testing_days shocha
+            max_days = max(self.parameters.mapped('testing_days') or [0])
+            
+            # Current date (Aajchi date) + Max testing days
+            self.report_due_date = fields.Date.today() + timedelta(days=max_days)
+        else:
+            # Jara parameter select nahi kela tar report_due_date empty/clear kara
+            self.report_due_date = False
+
+   
 
 
     @api.model
