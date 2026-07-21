@@ -186,6 +186,34 @@ class FlexuralStrengthConcreteBeam(models.Model):
                     else:
                         record.avg_3_days_flexural_nabl = 'fail'
 
+
+    avg_3_days_flexural_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_3_days_flexural_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_3_days_flexural_final_report", store=True)
+
+    @api.depends('avg_3_days_flexural_nabl', 'avg_3_days_flexural_report_type')
+    def _compute_avg_3_days_flexural_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_3_days_flexural_report_type == 'nabl':
+            rec.avg_3_days_flexural_final_report = 'nabl'
+
+        elif rec.avg_3_days_flexural_report_type == 'non_nabl':
+            rec.avg_3_days_flexural_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_3_days_flexural_nabl == 'pass':
+                rec.avg_3_days_flexural_final_report = 'nabl'
+            else:
+                rec.avg_3_days_flexural_final_report = 'non_nabl'
+
     
     avg_7_days_flexural_confirmity = fields.Selection([
         ('pass', 'Pass'),
@@ -239,6 +267,34 @@ class FlexuralStrengthConcreteBeam(models.Model):
                         break
                     else:
                         record.avg_7_days_flexural_nabl = 'fail'
+
+
+    avg_7_days_flexural_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_7_days_flexural_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_7_days_flexural_final_report", store=True)
+
+    @api.depends('avg_7_days_flexural_nabl', 'avg_7_days_flexural_report_type')
+    def _compute_avg_7_days_flexural_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_7_days_flexural_report_type == 'nabl':
+            rec.avg_7_days_flexural_final_report = 'nabl'
+
+        elif rec.avg_7_days_flexural_report_type == 'non_nabl':
+            rec.avg_7_days_flexural_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_7_days_flexural_nabl == 'pass':
+                rec.avg_7_days_flexural_final_report = 'nabl'
+            else:
+                rec.avg_7_days_flexural_final_report = 'non_nabl'
 
     
     avg_14_days_flexural_confirmity = fields.Selection([
@@ -294,6 +350,33 @@ class FlexuralStrengthConcreteBeam(models.Model):
                     else:
                         record.avg_14_days_flexural_nabl = 'fail'
 
+    avg_14_days_flexural_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_14_days_flexural_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_14_days_flexural_final_report", store=True)
+
+    @api.depends('avg_14_days_flexural_nabl', 'avg_14_days_flexural_report_type')
+    def _compute_avg_14_days_flexural_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_14_days_flexural_report_type == 'nabl':
+            rec.avg_14_days_flexural_final_report = 'nabl'
+
+        elif rec.avg_14_days_flexural_report_type == 'non_nabl':
+            rec.avg_14_days_flexural_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_14_days_flexural_nabl == 'pass':
+                rec.avg_14_days_flexural_final_report = 'nabl'
+            else:
+                rec.avg_14_days_flexural_final_report = 'non_nabl'
+
 
     avg_28_days_flexural_confirmity = fields.Selection([
         ('pass', 'Pass'),
@@ -347,6 +430,34 @@ class FlexuralStrengthConcreteBeam(models.Model):
                         break
                     else:
                         record.avg_28_days_flexural_nabl = 'fail'
+
+    
+    avg_28_days_flexural_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_28_days_flexural_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_28_days_flexural_final_report", store=True)
+
+    @api.depends('avg_28_days_flexural_nabl', 'avg_28_days_flexural_report_type')
+    def _compute_avg_28_days_flexural_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_28_days_flexural_report_type == 'nabl':
+            rec.avg_28_days_flexural_final_report = 'nabl'
+
+        elif rec.avg_28_days_flexural_report_type == 'non_nabl':
+            rec.avg_28_days_flexural_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_28_days_flexural_nabl == 'pass':
+                rec.avg_28_days_flexural_final_report = 'nabl'
+            else:
+                rec.avg_28_days_flexural_final_report = 'non_nabl'
     
 
     @api.depends('eln_ref','sample_parameters')

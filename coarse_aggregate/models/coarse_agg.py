@@ -299,6 +299,7 @@ class CoarseAggregateMechanical(models.Model):
 
     def calculate_sieve(self): 
         for record in self:
+            record.populate_sieve_analysis_lines()
             previous_cumulative = 0  
             for line in record.sieve_analysis_child_lines:
                 print("Rows", str(line.percent_retained))
