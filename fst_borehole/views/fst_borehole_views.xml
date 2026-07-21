@@ -200,5 +200,39 @@
             </form>
         </field>
         </record>
+        <record id="soil_borehole_action" model="ir.actions.act_window">
+            <field name="name">BH</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">soil.borehole</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">SOIL BH</p>
+            </field>
+        </record>
+
+        <record id="fst_borehole_action_soil_borehole" model="ir.actions.act_window">
+            <field name="name">Borehole</field>
+            <field name="res_model">soil.borehole.parent</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="fst_borehole_dashboard_card" model="ir.ui.view">
+            <field name="name">fst.dashboard.borehole.card</field>
+            <field name="model">lerm.ert.dashboard</field>
+            <field name="inherit_id" ref="fst.view_ert_dashboard"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[contains(@class, 'card-box')][last()]" position="after">
+                    <div class="card-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+                        <h3 class="title">Soil</h3>
+                        <a type="action"
+                        name="%(fst_borehole_action_soil_borehole)d"
+                        class="btn btn-lg"
+                        style="background:#2e7d32; color:#fff;">
+                            Borehole
+                        </a>
+                    </div>
+                </xpath>
+            </field>
+        </record>
     </data>
 </odoo>

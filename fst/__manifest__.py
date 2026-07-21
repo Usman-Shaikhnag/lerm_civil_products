@@ -9,22 +9,13 @@
     'summary': '',
     'description': """
     """,
-    'depends': ['base','lerm_civil','soil_resistivity','fst_borehole'],
+    'depends': ['base','lerm_civil','soil_resistivity'],
     'data': [
                  'security/security.xml',
                  'views/ert.xml',
-                 'views/soil_resistivity.xml',
-                 'views/pile_load_test.xml',
-
-                 'views/initial_pullout_pile_load_views.xml',
-                 'views/routine_pullout_pile_load_views.xml',
-                 'views/routine_pile_load_test_views.xml',
-                 'views/routine_lateral_pile_load_views.xml',
                  'views/temp_monitoring.xml',
-                 'views/plate_load_test_views.xml',
                  'data/sequence.xml',
-                 'reports/soil_resistivity_report_docx.xml',
-                 'reports/plate_load_test_template.xml',
+                 'reports/borehole_report_docx.xml',
                  'security/ir.model.access.csv',
 
     ],

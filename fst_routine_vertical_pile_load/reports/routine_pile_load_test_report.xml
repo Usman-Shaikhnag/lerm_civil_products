@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="routine_pile_load_test_report_py3o" model="ir.actions.report">
+        <field name="name">Routine Vertical Pile Load Report</field>
+        <field name="model">routine.pile.load.test</field>
+        <field name="report_name">fst_routine_vertical_pile_load.routine_pile_load_test</field>
+        <field name="report_type">py3o</field>
+        <field name="py3o_filetype">docx</field>
+        <field name="module">fst_routine_vertical_pile_load</field>
+        <field name="py3o_template_fallback">reports/routine_pile_load_test.odt</field>
+        <field name="print_report_name">'Routine Vertical Pile Load Report'</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" ref="model_routine_pile_load_test"/>
+    </record>
+</odoo>
