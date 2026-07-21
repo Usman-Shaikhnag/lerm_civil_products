@@ -184,6 +184,34 @@ class CementNormalConsistency(models.Model):
                         record.avg_fineness_nabl = 'fail'
 
 
+    avg_fineness_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_fineness_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_fineness_final_report", store=True)
+
+    @api.depends('avg_fineness_nabl', 'avg_fineness_report_type')
+    def _compute_avg_fineness_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_fineness_report_type == 'nabl':
+            rec.avg_fineness_final_report = 'nabl'
+
+        elif rec.avg_fineness_report_type == 'non_nabl':
+            rec.avg_fineness_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_fineness_nabl == 'pass':
+                rec.avg_fineness_final_report = 'nabl'
+            else:
+                rec.avg_fineness_final_report = 'non_nabl'
+
+
         # Consistency of cement
 
     consistency_cement_name = fields.Char("Name",default="Consistency of Cement")
@@ -255,6 +283,34 @@ class CementNormalConsistency(models.Model):
                         break
                     else:
                         record.average_consistency_nabl = 'fail'
+
+
+    average_consistency_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    average_consistency_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_average_consistency_final_report", store=True)
+
+    @api.depends('average_consistency_nabl', 'average_consistency_report_type')
+    def _compute_average_consistency_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.average_consistency_report_type == 'nabl':
+            rec.average_consistency_final_report = 'nabl'
+
+        elif rec.average_consistency_report_type == 'non_nabl':
+            rec.average_consistency_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.average_consistency_nabl == 'pass':
+                rec.average_consistency_final_report = 'nabl'
+            else:
+                rec.average_consistency_final_report = 'non_nabl'
 
 
     #  Initial Setting Time And Final Setting Time
@@ -380,6 +436,34 @@ class CementNormalConsistency(models.Model):
                     else:
                         record.initial_setting_time_nabl = 'fail'
 
+
+    initial_setting_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    initial_setting_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_initial_setting_final_report", store=True)
+
+    @api.depends('initial_setting_time_nabl', 'initial_setting_report_type')
+    def _compute_initial_setting_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.initial_setting_report_type == 'nabl':
+            rec.initial_setting_final_report = 'nabl'
+
+        elif rec.initial_setting_report_type == 'non_nabl':
+            rec.initial_setting_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.initial_setting_time_nabl == 'pass':
+                rec.initial_setting_final_report = 'nabl'
+            else:
+                rec.initial_setting_final_report = 'non_nabl'
+
     final_setting_time_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),('na', 'NA'),], string='Confirmity',compute="_compute_final_setting_time_confirmity")
@@ -432,6 +516,34 @@ class CementNormalConsistency(models.Model):
                         record.final_setting_time_nabl = 'fail'
 
 
+    final_setting_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    final_setting_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_final_setting_final_report", store=True)
+
+    @api.depends('final_setting_time_nabl', 'final_setting_report_type')
+    def _compute_final_setting_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.final_setting_report_type == 'nabl':
+            rec.final_setting_final_report = 'nabl'
+
+        elif rec.final_setting_report_type == 'non_nabl':
+            rec.final_setting_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.final_setting_time_nabl == 'pass':
+                rec.final_setting_final_report = 'nabl'
+            else:
+                rec.final_setting_final_report = 'non_nabl'
+
+
     # Compressive Strength Of Cement
 
     compressive_name = fields.Char("Name",default="Compressive Strength Of Cement")
@@ -464,8 +576,6 @@ class CementNormalConsistency(models.Model):
     avg_3_days = fields.Float(string="Avg Compressive Strength (3 Days)", compute="_compute_avg_strengths", store=True)
 
     avg_7_days = fields.Float(string="Avg Compressive Strength (7 Days)", compute="_compute_avg_strengths", store=True)
-
-    
 
     avg_28_days = fields.Float(string="Avg Compressive Strength (28 Days)", compute="_compute_avg_strengths", store=True)
 
@@ -534,6 +644,34 @@ class CementNormalConsistency(models.Model):
                     else:
                         record.avg_3_days_nabl = 'fail'
 
+
+    avg_3_days_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_3_days_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_3_days_final_report", store=True)
+
+    @api.depends('avg_3_days_nabl', 'avg_3_days_report_type')
+    def _compute_avg_3_days_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_3_days_report_type == 'nabl':
+            rec.avg_3_days_final_report = 'nabl'
+
+        elif rec.avg_3_days_report_type == 'non_nabl':
+            rec.avg_3_days_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_3_days_nabl == 'pass':
+                rec.avg_3_days_final_report = 'nabl'
+            else:
+                rec.avg_3_days_final_report = 'non_nabl'
+
     
 
     avg_7_days_confirmity = fields.Selection([
@@ -587,11 +725,32 @@ class CementNormalConsistency(models.Model):
                     else:
                         record.avg_7_days_nabl = 'fail'
 
-   
+    avg_7_days_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
 
-    
+    avg_7_days_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_7_days_final_report", store=True)
 
-    
+    @api.depends('avg_7_days_nabl', 'avg_7_days_report_type')
+    def _compute_avg_7_days_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_7_days_report_type == 'nabl':
+            rec.avg_7_days_final_report = 'nabl'
+
+        elif rec.avg_7_days_report_type == 'non_nabl':
+            rec.avg_7_days_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_7_days_nabl == 'pass':
+                rec.avg_7_days_final_report = 'nabl'
+            else:
+                rec.avg_7_days_final_report = 'non_nabl'    
 
 
     avg_28_days_confirmity = fields.Selection([
@@ -644,6 +803,34 @@ class CementNormalConsistency(models.Model):
                         break
                     else:
                         record.avg_28_days_nabl = 'fail'
+
+            
+    avg_28_days_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_28_days_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_28_days_final_report", store=True)
+
+    @api.depends('avg_28_days_nabl', 'avg_28_days_report_type')
+    def _compute_avg_28_days_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_28_days_report_type == 'nabl':
+            rec.avg_28_days_final_report = 'nabl'
+
+        elif rec.avg_28_days_report_type == 'non_nabl':
+            rec.avg_28_days_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_28_days_nabl == 'pass':
+                rec.avg_28_days_final_report = 'nabl'
+            else:
+                rec.avg_28_days_final_report = 'non_nabl'
 
 
     # SOUNDNESS OF CEMENT BY LE-CHATELIER METHOD
@@ -719,6 +906,34 @@ class CementNormalConsistency(models.Model):
                         break
                     else:
                         record.avg_soundness_expansion_nabl = 'fail'
+
+
+    soundness_expansion_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    soundness_expansion_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_soundness_expansion_final_report", store=True)
+
+    @api.depends('avg_soundness_expansion_nabl', 'soundness_expansion_report_type')
+    def _compute_soundness_expansion_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.soundness_expansion_report_type == 'nabl':
+            rec.soundness_expansion_final_report = 'nabl'
+
+        elif rec.soundness_expansion_report_type == 'non_nabl':
+            rec.soundness_expansion_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_soundness_expansion_nabl == 'pass':
+                rec.soundness_expansion_final_report = 'nabl'
+            else:
+                rec.soundness_expansion_final_report = 'non_nabl'
 
 
     # SPECIFIC GRAVITY OF CEMENT
@@ -800,6 +1015,33 @@ class CementNormalConsistency(models.Model):
                         break
                     else:
                         record.average_specific_gravity_nabl = 'fail'
+
+    specific_gravity_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    specific_gravity_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_specific_gravity_final_report", store=True)
+
+    @api.depends('average_specific_gravity_nabl', 'specific_gravity_report_type')
+    def _compute_specific_gravity_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.specific_gravity_report_type == 'nabl':
+            rec.specific_gravity_final_report = 'nabl'
+
+        elif rec.specific_gravity_report_type == 'non_nabl':
+            rec.specific_gravity_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.average_specific_gravity_nabl == 'pass':
+                rec.specific_gravity_final_report = 'nabl'
+            else:
+                rec.specific_gravity_final_report = 'non_nabl'
 
     
 
@@ -883,6 +1125,34 @@ class CementNormalConsistency(models.Model):
                         break
                     else:
                         record.average_density_nabl = 'fail'
+
+
+    average_density_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    average_density_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_average_density_final_report", store=True)
+
+    @api.depends('average_density_nabl', 'average_density_report_type')
+    def _compute_average_density_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.average_density_report_type == 'nabl':
+            rec.average_density_final_report = 'nabl'
+
+        elif rec.average_density_report_type == 'non_nabl':
+            rec.average_density_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.average_density_nabl == 'pass':
+                rec.average_density_final_report = 'nabl'
+            else:
+                rec.average_density_final_report = 'non_nabl'
 
 
 
@@ -999,6 +1269,34 @@ class CementNormalConsistency(models.Model):
                         record.specific_surface_nabl = 'fail'
 
 
+    specific_surface_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    specific_surface_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_specific_surface_final_report", store=True)
+
+    @api.depends('specific_surface_nabl', 'specific_surface_report_type')
+    def _compute_specific_surface_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.specific_surface_report_type == 'nabl':
+            rec.specific_surface_final_report = 'nabl'
+
+        elif rec.specific_surface_report_type == 'non_nabl':
+            rec.specific_surface_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.specific_surface_nabl == 'pass':
+                rec.specific_surface_final_report = 'nabl'
+            else:
+                rec.specific_surface_final_report = 'non_nabl'
+
+
 
     # DRYING SHRINKAGE OF CEMENT
     drying_shrinkage_name = fields.Char("Name", default="Drying Shrinkage Of Cement")
@@ -1087,6 +1385,34 @@ class CementNormalConsistency(models.Model):
                       break
                   else:
                       record.drying_shrinkage_nabl = 'fail'
+
+
+    drying_shrinkage_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    drying_shrinkage_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_drying_shrinkage_final_report", store=True)
+
+    @api.depends('drying_shrinkage_nabl', 'drying_shrinkage_report_type')
+    def _compute_drying_shrinkage_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.drying_shrinkage_report_type == 'nabl':
+            rec.drying_shrinkage_final_report = 'nabl'
+
+        elif rec.drying_shrinkage_report_type == 'non_nabl':
+            rec.drying_shrinkage_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.drying_shrinkage_nabl == 'pass':
+                rec.drying_shrinkage_final_report = 'nabl'
+            else:
+                rec.drying_shrinkage_final_report = 'non_nabl'
 
 
 

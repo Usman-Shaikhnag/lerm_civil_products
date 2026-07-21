@@ -229,7 +229,7 @@
 
 
 							<!-- Compressive Strength -->
-							<tr t-if="data.compressive_strength_visible and (data.avg_compressive_strength_nabl == 'pass' and nabl or (data.avg_compressive_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.compressive_strength_visible and (data.compressive_strength_final_report == 'nabl' and nabl or data.compressive_strength_final_report == 'non_nabl' and not nabl)">
 									<t t-set="compressive" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','254187-47c9-4662-9298-3095ac900ffc')])"/>
 									
 									<td style="text-align: center;">
@@ -275,7 +275,7 @@
 								</tr>
 
 								<!-- Water Permeability -->
-							<tr t-if="data.water_permeability_visible and (data.average_depth_nabl == 'pass' and nabl or (data.average_depth_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.water_permeability_visible and (data.water_permeability_final_report == 'nabl' and nabl or data.water_permeability_final_report == 'non_nabl' and not nabl)">
 									<t t-set="permeability" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','02145jj-eba3-4f15-b33d-679b39f73301')])"/>
 									
 									<td style="text-align: center;">

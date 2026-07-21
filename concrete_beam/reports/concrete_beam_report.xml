@@ -232,13 +232,13 @@
 
 
 							<!-- Flexural Strength -->
-                            <t t-set="fshow_3days" t-value="data.avg_3_days_flexural_nabl == 'pass' and nabl or (data.avg_3_days_flexural_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+                            <t t-set="fshow_3days" t-value="data.avg_3_days_flexural_final_report == 'nabl' and nabl or data.avg_3_days_flexural_final_report == 'non_nabl' and not nabl"/>
 
-							<t t-set="fshow_7days" t-value="data.avg_7_days_flexural_nabl == 'pass' and nabl or (data.avg_7_days_flexural_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+							<t t-set="fshow_7days" t-value="data.avg_7_days_flexural_final_report == 'nabl' and nabl or data.avg_7_days_flexural_final_report == 'non_nabl' and not nabl"/>
 
-							<t t-set="fshow_14days" t-value="data.avg_14_days_flexural_nabl == 'pass' and nabl or (data.avg_14_days_flexural_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+							<t t-set="fshow_14days" t-value="data.avg_14_days_flexural_final_report == 'nabl' and nabl or data.avg_14_days_flexural_final_report == 'non_nabl' and not nabl"/>
 
-							<t t-set="fshow_28days" t-value="data.avg_28_days_flexural_nabl == 'pass' and nabl or (data.avg_28_days_flexural_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+							<t t-set="fshow_28days" t-value="data.avg_28_days_flexural_final_report == 'nabl' and nabl or data.avg_28_days_flexural_final_report == 'non_nabl' and not nabl"/>
 
                             
 

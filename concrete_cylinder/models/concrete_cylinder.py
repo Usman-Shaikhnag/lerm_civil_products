@@ -165,6 +165,33 @@ class MechanicalConcreteCylinder(models.Model):
                   else:
                       record.average_depth_nabl = 'fail'
 
+    water_permeability_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    water_permeability_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_water_permeability_final_report", store=True)
+
+    @api.depends('average_depth_nabl', 'water_permeability_report_type')
+    def _compute_water_permeability_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.water_permeability_report_type == 'nabl':
+            rec.water_permeability_final_report = 'nabl'
+
+        elif rec.water_permeability_report_type == 'non_nabl':
+            rec.water_permeability_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.average_depth_nabl == 'pass':
+                rec.water_permeability_final_report = 'nabl'
+            else:
+                rec.water_permeability_final_report = 'non_nabl'
+
 
 
     # Compressive Strength
@@ -239,6 +266,37 @@ class MechanicalConcreteCylinder(models.Model):
                       break
                   else:
                       record.avg_compressive_strength_nabl = 'fail'
+
+
+
+    compressive_strength_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    compressive_strength_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_compressive_strength_final_report", store=True)
+
+    @api.depends('avg_compressive_strength_nabl', 'compressive_strength_report_type')
+    def _compute_compressive_strength_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.compressive_strength_report_type == 'nabl':
+            rec.compressive_strength_final_report = 'nabl'
+
+        elif rec.compressive_strength_report_type == 'non_nabl':
+            rec.compressive_strength_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_compressive_strength_nabl == 'pass':
+                rec.compressive_strength_final_report = 'nabl'
+            else:
+                rec.compressive_strength_final_report = 'non_nabl'
+
+
     
 
 

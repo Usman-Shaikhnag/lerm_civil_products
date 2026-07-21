@@ -85,7 +85,7 @@
 						</table>
 					</div>
 					<div style="">
-						<table class="custom_table_borders" t-if="data.cube_visible and (data.avg_compressive_strength_nabl == 'pass' and nabl or (data.avg_compressive_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+						<table class="custom_table_borders" t-if="data.cube_visible and (data.compressive_strength_final_report == 'nabl' and nabl or data.compressive_strength_final_report == 'non_nabl' and not nabl)">
 							<thead>
 								<tr>
 									<th style="text-align: center; font-weight: bold; width: 4%;">Sr. No</th>
@@ -178,13 +178,13 @@
 
 
 							<!-- Density -->
-                            <t t-set="show_3days" t-value="data.avg_3_days_nabl == 'pass' and nabl or (data.avg_3_days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+                            <t t-set="show_3days" t-value="data.avg_3_days_final_report == 'nabl' and nabl or data.avg_3_days_final_report == 'non_nabl' and not nabl"/>
 
-							<t t-set="show_7days" t-value="data.avg_7_days_nabl == 'pass' and nabl or (data.avg_7_days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+							<t t-set="show_7days" t-value="data.avg_7_days_final_report == 'nabl' and nabl or data.avg_7_days_final_report == 'non_nabl' and not nabl"/>
 
-							<t t-set="show_14days" t-value="data.avg_14_days_nabl == 'pass' and nabl or (data.avg_14_days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+							<t t-set="show_14days" t-value="data.avg_14_days_final_report == 'nabl' and nabl or data.avg_14_days_final_report == 'non_nabl' and not nabl"/>
 
-							<t t-set="show_28days" t-value="data.avg_28_days_nabl == 'pass' and nabl or (data.avg_28_days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+							<t t-set="show_28days" t-value="data.avg_28_days_final_report == 'nabl' and nabl or data.avg_28_days_final_report == 'non_nabl' and not nabl"/>
 
                             
 
@@ -372,13 +372,13 @@
 
 
 								<!-- Weight -->
-                            <t t-set="fshow_3days" t-value="data.weight_avg_3_days == 'pass' and nabl or (data.weight_avg_3_days == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+                            <t t-set="fshow_3days" t-value="data.weight_avg_3_days_final_report == 'nabl' and nabl or data.weight_avg_3_days_final_report == 'non_nabl' and not nabl"/>
 
-							<t t-set="fshow_7days" t-value="data.weight_avg_7_days_nabl == 'pass' and nabl or (data.weight_avg_7_days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+							<t t-set="fshow_7days" t-value="data.weight_avg_7_days_final_report == 'nabl' and nabl or data.weight_avg_7_days_final_report == 'non_nabl' and not nabl"/>
 
-							<t t-set="fshow_14days" t-value="data.weight_avg_14_days_nabl == 'pass' and nabl or (data.weight_avg_14_days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+							<t t-set="fshow_14days" t-value="data.weight_avg_14_days_final_report == 'nabl' and nabl or data.weight_avg_14_days_final_report == 'non_nabl' and not nabl"/>
 
-							<t t-set="fshow_28days" t-value="data.weight_avg_28_days_nabl == 'pass' and nabl or (data.weight_avg_28_days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+							<t t-set="fshow_28days" t-value="data.weight_avg_28_days_final_report == 'nabl' and nabl or data.weight_avg_28_days_final_report == 'non_nabl' and not nabl"/>
 
                             
 
@@ -565,7 +565,7 @@
 								</tr>
 
 								<!-- Water Permeability -->
-							<tr t-if="data.water_permeability_visible and (data.average_depth_nabl == 'pass' and nabl or (data.average_depth_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.water_permeability_visible and (data.water_permeability_final_report == 'nabl' and nabl or data.water_permeability_final_report == 'non_nabl' and not nabl)">
 									<t t-set="permeability" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','1023457-0268-46ef-ba88-9c0453210lkit1')])"/>
 									
 									<td style="text-align: center;">
@@ -612,7 +612,7 @@
 
 
 								<!-- Compressive Strength By ACT -->
-							<tr t-if="data.act_compressive_visible and (data.average_act_compressive_nabl == 'pass' and nabl or (data.average_act_compressive_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.act_compressive_visible and (data.act_compressive_final_report == 'nabl' and nabl or data.act_compressive_final_report == 'non_nabl' and not nabl)">
 									<t t-set="permeability" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','24b7a3b3-55c6-4b1b-84a6-d6cc986a7715')])"/>
 									
 									<td style="text-align: center;">
