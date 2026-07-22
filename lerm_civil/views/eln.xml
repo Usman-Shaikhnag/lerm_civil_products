@@ -77,24 +77,7 @@
                     <field name="quantity"/>
                 </group>
 
-                <table class="table table-sm">
-                    <thead>
-                        <tr>
-                            <th>Sample Quantity</th>
-                            <th>Received</th>
-                            <th>Consumed</th>
-                            <th>Balance</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><field name="uom_id" readonly="1"/></td>
-                            <td><field name="quantity_received" readonly="1"/></td>
-                            <td><field name="quantity_consumed"/></td>
-                            <td><field name="quantity_balance" readonly="1"/></td>
-                        </tr>
-                    </tbody>
-                </table>
+                
 
                 <button string="Open Form" name="open_product_based_form" class="oe_highlight" type="object"
                             invisible="is_product_based_calculation == False"/>
@@ -125,7 +108,7 @@
                         <field name="sequence" string="Sequence" widget="handle"/>
                         <field name="parameter"/>
                         <field name="technician"/>
-                        <field name="result_type" optional="show" readonly="1"/>
+                        <field name="result_type" optional="show" />
                         <field name="result_char" optional="show" readonly="result_type == 'number'"/>
                         <field name="result" optional="show" readonly="1" column_invisible="parent.is_product_based_calculation == True"/>
                         <field name="calculation_type" optional="show" column_invisible="parent.is_product_based_calculation == True"/>

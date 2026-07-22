@@ -9,7 +9,10 @@ class ContactsInherited(models.Model):
     stamp = fields.Binary(string="Stamps")
 
 
-
+    user_type = fields.Selection([
+        ('employee', 'Employee'),
+        ('seller', 'Seller'),
+    ], string='User Type', default='seller')
 
 class ContractorLine(models.Model):
     _name = 'lerm.contractor.line'
