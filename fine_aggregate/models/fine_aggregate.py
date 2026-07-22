@@ -391,6 +391,34 @@ class FineAggregate(models.Model):
                         record.avg_deleterious_coal_lignite_nabl = 'fail'
 
 
+    deleterious_coal_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    deleterious_coal_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_deleterious_coal_final_report", store=True)
+    
+    @api.depends('avg_deleterious_coal_lignite_nabl', 'deleterious_coal_report_type')
+    def _compute_deleterious_coal_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.deleterious_coal_report_type == 'nabl':
+                rec.deleterious_coal_final_report = 'nabl'
+    
+            elif rec.deleterious_coal_report_type == 'non_nabl':
+                rec.deleterious_coal_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.avg_deleterious_coal_lignite_nabl == 'pass':
+                    rec.deleterious_coal_final_report = 'nabl'
+                else:
+                    rec.deleterious_coal_final_report = 'non_nabl'
+
+
     # DELETERIOUS MATERIAL (CLAY & LUMPS)
     
     name_clay_lumps = fields.Char("Name",default="DELETERIOUS MATERIAL (CLAY & LUMPS)")
@@ -470,6 +498,34 @@ class FineAggregate(models.Model):
                         record.clay_lumps_percent_nabl = 'fail'
 
 
+    clay_lumps_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    clay_lumps_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_clay_lumps_final_report", store=True)
+    
+    @api.depends('clay_lumps_percent_nabl', 'clay_lumps_report_type')
+    def _compute_clay_lumps_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.clay_lumps_report_type == 'nabl':
+                rec.clay_lumps_final_report = 'nabl'
+    
+            elif rec.clay_lumps_report_type == 'non_nabl':
+                rec.clay_lumps_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.clay_lumps_percent_nabl == 'pass':
+                    rec.clay_lumps_final_report = 'nabl'
+                else:
+                    rec.clay_lumps_final_report = 'non_nabl'
+
+
     # Material Finer than 75 Micron
 
     finer75_name = fields.Char("Name",default="Material Finer than 75 Micron")					
@@ -546,6 +602,34 @@ class FineAggregate(models.Model):
                 break
             else:
                 record.avg_finer_percent_nabl = 'fail'
+
+
+    finer_percent_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    finer_percent_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_finer_percent_final_report", store=True)
+    
+    @api.depends('avg_finer_percent_nabl', 'finer_percent_report_type')
+    def _compute_finer_percent_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.finer_percent_report_type == 'nabl':
+                rec.finer_percent_final_report = 'nabl'
+    
+            elif rec.finer_percent_report_type == 'non_nabl':
+                rec.finer_percent_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.avg_finer_percent_nabl == 'pass':
+                    rec.finer_percent_final_report = 'nabl'
+                else:
+                    rec.finer_percent_final_report = 'non_nabl'
 
     
 
@@ -626,6 +710,34 @@ class FineAggregate(models.Model):
                         break
                     else:
                         record.soft_fragments_percent_nabl = 'fail'
+
+
+    soft_fragments_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    soft_fragments_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_soft_fragments_final_report", store=True)
+    
+    @api.depends('soft_fragments_percent_nabl', 'soft_fragments_report_type')
+    def _compute_soft_fragments_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.soft_fragments_report_type == 'nabl':
+                rec.soft_fragments_final_report = 'nabl'
+    
+            elif rec.soft_fragments_report_type == 'non_nabl':
+                rec.soft_fragments_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.soft_fragments_percent_nabl == 'pass':
+                    rec.soft_fragments_final_report = 'nabl'
+                else:
+                    rec.soft_fragments_final_report = 'non_nabl'
 
 
        # Moisture Content
@@ -733,6 +845,33 @@ class FineAggregate(models.Model):
                         break
                     else:
                         record.average_moisture_content_nabl = 'fail'
+
+    moisture_content_report_type = fields.Selection([
+            ('auto', 'Auto'),
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+        
+    moisture_content_final_report = fields.Selection([
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], compute="_compute_moisture_content_final_report", store=True)
+        
+    @api.depends('average_moisture_content_nabl', 'moisture_content_report_type')
+    def _compute_moisture_content_final_report(self):
+        for rec in self:
+        
+                # Manual override
+                if rec.moisture_content_report_type == 'nabl':
+                    rec.moisture_content_final_report = 'nabl'
+        
+                elif rec.moisture_content_report_type == 'non_nabl':
+                    rec.moisture_content_final_report = 'non_nabl'
+        
+                # Automatic
+                else:
+                    if rec.average_moisture_content_nabl == 'pass':
+                        rec.moisture_content_final_report = 'nabl'
+                    else:
+                        rec.moisture_content_final_report = 'non_nabl'
 
 
     
@@ -842,6 +981,35 @@ class FineAggregate(models.Model):
                         break
                     else:
                         record.average_bulking_nabl = 'fail'
+
+
+
+    bulking_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    bulking_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_bulking_final_report", store=True)
+    
+    @api.depends('average_bulking_nabl', 'bulking_report_type')
+    def _compute_bulking_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.bulking_report_type == 'nabl':
+                rec.bulking_final_report = 'nabl'
+    
+            elif rec.bulking_report_type == 'non_nabl':
+                rec.bulking_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.average_bulking_nabl == 'pass':
+                    rec.bulking_final_report = 'nabl'
+                else:
+                    rec.bulking_final_report = 'non_nabl'
 
      
 
@@ -1003,6 +1171,33 @@ class FineAggregate(models.Model):
                     else:
                         record.average_specific_gravity_nabl = 'fail'
 
+    specific_gravity_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    specific_gravity_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_specific_gravity_final_report", store=True)
+    
+    @api.depends('average_specific_gravity_nabl', 'specific_gravity_report_type')
+    def _compute_specific_gravity_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.specific_gravity_report_type == 'nabl':
+                rec.specific_gravity_final_report = 'nabl'
+    
+            elif rec.specific_gravity_report_type == 'non_nabl':
+                rec.specific_gravity_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.average_specific_gravity_nabl == 'pass':
+                    rec.specific_gravity_final_report = 'nabl'
+                else:
+                    rec.specific_gravity_final_report = 'non_nabl'
+
     average_water_absorption_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),
@@ -1062,6 +1257,34 @@ class FineAggregate(models.Model):
                         break
                     else:
                         record.average_water_absorption_nabl = 'fail'
+
+
+    water_absorption_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    water_absorption_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_water_absorption_final_report", store=True)
+    
+    @api.depends('average_water_absorption_nabl', 'water_absorption_report_type')
+    def _compute_water_absorption_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.water_absorption_report_type == 'nabl':
+                rec.water_absorption_final_report = 'nabl'
+    
+            elif rec.water_absorption_report_type == 'non_nabl':
+                rec.water_absorption_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.average_water_absorption_nabl == 'pass':
+                    rec.water_absorption_final_report = 'nabl'
+                else:
+                    rec.water_absorption_final_report = 'non_nabl'
 
 
 
@@ -1144,6 +1367,33 @@ class FineAggregate(models.Model):
                     else:
                         record.loose_avg_nabl = 'fail'
 
+    loose_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    loose_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_loose_final_report", store=True)
+    
+    @api.depends('loose_avg_nabl', 'loose_report_type')
+    def _compute_loose_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.loose_report_type == 'nabl':
+                rec.loose_final_report = 'nabl'
+    
+            elif rec.loose_report_type == 'non_nabl':
+                rec.loose_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.loose_avg_nabl == 'pass':
+                    rec.loose_final_report = 'nabl'
+                else:
+                    rec.loose_final_report = 'non_nabl'
+
     
 
 
@@ -1220,6 +1470,34 @@ class FineAggregate(models.Model):
                         break
                     else:
                         record.rodded_avg_nabl = 'fail'
+
+
+    rodded_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    rodded_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_rodded_final_report", store=True)
+    
+    @api.depends('rodded_avg_nabl', 'rodded_report_type')
+    def _compute_rodded_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.rodded_report_type == 'nabl':
+                rec.rodded_final_report = 'nabl'
+    
+            elif rec.rodded_report_type == 'non_nabl':
+                rec.rodded_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.rodded_avg_nabl == 'pass':
+                    rec.rodded_final_report = 'nabl'
+                else:
+                    rec.rodded_final_report = 'non_nabl'
 
 
 
@@ -1324,6 +1602,34 @@ class FineAggregate(models.Model):
                    record.total_weighted_avg_nabl = 'fail'
 
 
+    sodium_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    sodium_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_sodium_final_report", store=True)
+    
+    @api.depends('total_weighted_avg_nabl', 'sodium_report_type')
+    def _compute_sodium_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.sodium_report_type == 'nabl':
+                rec.sodium_final_report = 'nabl'
+    
+            elif rec.sodium_report_type == 'non_nabl':
+                rec.sodium_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.total_weighted_avg_nabl == 'pass':
+                    rec.sodium_final_report = 'nabl'
+                else:
+                    rec.sodium_final_report = 'non_nabl'
+
+
     # SOUNDNESS (MAGNESIUM SULPHATE TEST)
     soundness_mgso4_name = fields.Char("Name",default="SOUNDNESS (MAGNESIUM SULPHATE TEST)")
     soundness_mgso4_visible = fields.Boolean("SOUNDNESS (MAGNESIUM SULPHATE TEST) Visible",compute="_compute_visible")
@@ -1426,6 +1732,34 @@ class FineAggregate(models.Model):
                         record.mag_total_weighted_avg_nabl = 'fail'
 
 
+    magnesium_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    magnesium_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_magnesium_final_report", store=True)
+    
+    @api.depends('mag_total_weighted_avg_nabl', 'magnesium_report_type')
+    def _compute_magnesium_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.magnesium_report_type == 'nabl':
+                rec.magnesium_final_report = 'nabl'
+    
+            elif rec.magnesium_report_type == 'non_nabl':
+                rec.magnesium_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.mag_total_weighted_avg_nabl == 'pass':
+                    rec.magnesium_final_report = 'nabl'
+                else:
+                    rec.magnesium_final_report = 'non_nabl'
+
+
 
 
     
@@ -1511,6 +1845,34 @@ class FineAggregate(models.Model):
                         break
                     else:
                         record.avg_clay_percentage_nabl = 'fail'
+
+
+    avg_clay_percent_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    avg_clay_percent_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_avg_clay_percent_final_report", store=True)
+    
+    @api.depends('avg_clay_percentage_nabl', 'avg_clay_percent_report_type')
+    def _compute_avg_clay_percent_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.avg_clay_percent_report_type == 'nabl':
+                rec.avg_clay_percent_final_report = 'nabl'
+    
+            elif rec.avg_clay_percent_report_type == 'non_nabl':
+                rec.avg_clay_percent_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.avg_clay_percentage_nabl == 'pass':
+                    rec.avg_clay_percent_final_report = 'nabl'
+                else:
+                    rec.avg_clay_percent_final_report = 'non_nabl'
 
     
 

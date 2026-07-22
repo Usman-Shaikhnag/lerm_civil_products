@@ -249,6 +249,10 @@
                                             decoration-danger="liquid_limit_nabl == 'fail'" 
                                             readonly="1" /></td>
                             </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="liquid_limit_report_type">Report Type</label></td>
+                                <td><field name="liquid_limit_report_type" class="blue-input" decoration-info="liquid_limit_report_type != 0"/></td>
+                            </tr>
                         </tbody>
                     </table>
 
@@ -312,6 +316,10 @@
                                                 decoration-danger="plastic_limit_nabl == 'fail'" 
                                                 readonly="1" /></td>
                                 </tr>
+                                <tr>
+                                   <td><label class="fw-bold" for="plastic_limit_report_type">Report Type</label></td>
+                                   <td><field name="plastic_limit_report_type" class="blue-input" decoration-info="plastic_limit_report_type != 0"/></td>
+                                </tr>
                             </tbody>
                         </table>
 
@@ -335,6 +343,7 @@
                                                 decoration-danger="plasticity_index_nabl == 'fail'" 
                                                 readonly="1" /></td>
                                 </tr>
+                                
                             </tbody>
                         </table>
                     </div>
@@ -390,6 +399,10 @@
                                             decoration-success="shrinkage_limit1_nabl == 'pass'" 
                                             decoration-danger="shrinkage_limit1_nabl == 'fail'" 
                                             readonly="1" /></td>
+                                </tr>
+                                <tr>
+                                   <td><label class="fw-bold" for="shrinkage_report_type">Report Type</label></td>
+                                   <td><field name="shrinkage_report_type" class="blue-input" decoration-info="shrinkage_report_type != 0"/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -463,6 +476,10 @@
                                             decoration-danger="max_dry_density_nabl == 'fail'" 
                                             readonly="1" /></td>
                             </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="dry_density_report_type">Report Type</label></td>
+                                <td><field name="dry_density_report_type" class="blue-input" decoration-info="dry_density_report_type != 0"/></td>
+                            </tr>
                         </tbody>
                     </table>
                     <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not heavy_visible">
@@ -484,6 +501,10 @@
                                             decoration-success="omc_nabl == 'pass'" 
                                             decoration-danger="omc_nabl == 'fail'" 
                                             readonly="1" /></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="omc_report_type">Report Type</label></td>
+                                <td><field name="omc_report_type" class="blue-input" decoration-info="omc_report_type != 0"/></td>
                             </tr>
                         </tbody>
                     </table>
@@ -559,6 +580,10 @@
                                             decoration-danger="max_dry_density1_nabl == 'fail'" 
                                             readonly="1" /></td>
                             </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="dry_density1_report_type">Report Type</label></td>
+                                <td><field name="dry_density1_report_type" class="blue-input" decoration-info="dry_density1_report_type != 0"/></td>
+                            </tr>
                         </tbody>
                     </table>
 
@@ -581,6 +606,10 @@
                                             decoration-success="omc1_nabl == 'pass'" 
                                             decoration-danger="omc1_nabl == 'fail'" 
                                             readonly="1" /></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="omc1_report_type">Report Type</label></td>
+                                <td><field name="omc1_report_type" class="blue-input" decoration-info="omc1_report_type != 0"/></td>
                             </tr>
                         </tbody>
                     </table>
@@ -694,6 +723,10 @@
                                             decoration-danger="cbr_25_avg_nabl == 'fail'" 
                                             readonly="1" /></td>
                                 </tr>
+                                <tr>
+                                <td><label class="fw-bold" for="cbr_25_avg_report_type">Report Type</label></td>
+                                <td><field name="cbr_25_avg_report_type" class="blue-input" decoration-info="cbr_25_avg_report_type != 0"/></td>
+                            </tr>
                             </tbody>
                         </table>
 
@@ -746,58 +779,17 @@
                                             decoration-danger="fsi_nabl == 'fail'" 
                                             readonly="1" /></td>
                                 </tr>
+                                <tr>
+                                <td><label class="fw-bold" for="fsi_report_type">Report Type</label></td>
+                                <td><field name="fsi_report_type" class="blue-input" decoration-info="fsi_report_type != 0"/></td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
 
 
                      
-                    <!-- <div invisible = "shrinkage_limit_visible == False">
-                        <h1 class="text-center">
-                            <field name="volume_dry_name" readonly="1" nolabel="1"/>
-                            <field name="shrinkage_limit_visible" invisible="1"/>
-                        </h1>
-                    </div>
-                    
-
-                    <div invisible = "shrinkage_limit_visible == False">
-                        <field name="volume_dry_table">
-                            <tree editable="bottom" class="custom_table_borders">
-                                <field name='serial_no'/>
-                                <field name='container_no_dry'  width="100px" class="blue-input" decoration-info="container_no_dry != 0"/>
-                                <field name='shrinkage_dry_before' class="blue-input" decoration-info="shrinkage_dry_before != 0"/>
-                                <field name='shrinkage_dry_after' class="blue-input" decoration-info="shrinkage_dry_after != 0"/>
-                                <field name='mass_mercury_dry'/>
-                                <field name='density_dry' class="blue-input" decoration-info="density_dry != 0"/>
-                                <field name='volume_dry'/>
-                            </tree>
-                        </field>
-                    </div> -->
-
-                  
-
-                    <!-- <div invisible = "shrinkage_limit_visible == False">
-                        <h1 class="text-center">
-                            <field name="volume_wet_name" readonly="1" nolabel="1"/>
-                            <field name="shrinkage_limit_visible" invisible="1"/>
-                        </h1>
-                    </div>
-                    
-
-                    <div invisible = "shrinkage_limit_visible == False">
-                        <field name="volume_wet_table">
-                            <tree editable="bottom" class="custom_table_borders">
-                                <field name='serial_no'/>
-                                <field name='container_no_wet'  width="100px" class="blue-input" decoration-info="container_no_wet != 0"/>
-                                <field name='shrinkage_wet_before' class="blue-input" decoration-info="shrinkage_wet_before != 0"/>
-                                <field name='shrinkage_wet_after' class="blue-input" decoration-info="shrinkage_wet_after != 0"/>
-                                <field name='mass_mercury_wet'/>
-                                <field name='density_wet' class="blue-input" decoration-info="density_wet != 0"/>
-                                <field name='volume_wet'/>
-                            </tree>
-                        </field>
-                    </div> -->
-
+                   
 
                      <!-- Specific Gravity -->
 
@@ -851,6 +843,10 @@
                                             decoration-danger="specific_gravity_nabl == 'fail'" 
                                             readonly="1" /></td>
                                 </tr>
+                                <tr>
+                                <td><label class="fw-bold" for="specific_gravity_report_type">Report Type</label></td>
+                                <td><field name="specific_gravity_report_type" class="blue-input" decoration-info="specific_gravity_report_type != 0"/></td>
+                            </tr>
                             </tbody>
                         </table>
 
@@ -999,6 +995,10 @@
                                             decoration-danger="cohesion1_nabl == 'fail'" 
                                             readonly="1" /></td>
                                 </tr>
+                                <tr>
+                                <td><label class="fw-bold" for="cohesion1_report_type">Report Type</label></td>
+                                <td><field name="cohesion1_report_type" class="blue-input" decoration-info="cohesion1_report_type != 0"/></td>
+                            </tr>
                         </tbody>
                     </table>
 
@@ -1022,6 +1022,10 @@
                                             decoration-danger="internal_friction1_nabl == 'fail'" 
                                             readonly="1" /></td>
                                 </tr>
+                                <tr>
+                                <td><label class="fw-bold" for="internal_friction1_report_type">Report Type</label></td>
+                                <td><field name="internal_friction1_report_type" class="blue-input" decoration-info="internal_friction1_report_type != 0"/></td>
+                            </tr>
                         </tbody>
                     </table>
 
@@ -1071,6 +1075,10 @@
                                             decoration-danger="avg_moisture_content_nabl == 'fail'" 
                                             readonly="1" /></td>
                                 </tr>
+                                <tr>
+                                <td><label class="fw-bold" for="avg_moisture_report_type">Report Type</label></td>
+                                <td><field name="avg_moisture_report_type" class="blue-input" decoration-info="avg_moisture_report_type != 0"/></td>
+                            </tr>
                             </tbody>
                         </table>
 
