@@ -1108,6 +1108,34 @@ class Soil(models.Model):
                 record.liquid_limit_nabl = 'fail'
 
 
+    liquid_limit_report_type = fields.Selection([
+            ('auto', 'Auto'),
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+        
+    liquid_limit_final_report = fields.Selection([
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], compute="_compute_liquid_limit_final_report", store=True)
+        
+    @api.depends('liquid_limit_nabl', 'liquid_limit_report_type')
+    def _compute_liquid_limit_final_report(self):
+        for rec in self:
+        
+                # Manual override
+                if rec.liquid_limit_report_type == 'nabl':
+                    rec.liquid_limit_final_report = 'nabl'
+        
+                elif rec.liquid_limit_report_type == 'non_nabl':
+                    rec.liquid_limit_final_report = 'non_nabl'
+        
+                # Automatic
+                else:
+                    if rec.liquid_limit_nabl == 'pass':
+                        rec.liquid_limit_final_report = 'nabl'
+                    else:
+                        rec.liquid_limit_final_report = 'non_nabl'
+
+
     graph_image_liquid = fields.Binary("Line Chart", compute="_compute_graph_image_liquid", store=True)
 
     show_liquid_graph = fields.Boolean(string="Show Liquid Limit Graph")
@@ -1456,6 +1484,36 @@ class Soil(models.Model):
             else:
                 record.plastic_limit_nabl = 'fail'
 
+
+    plastic_limit_report_type = fields.Selection([
+            ('auto', 'Auto'),
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+        
+    plastic_limit_final_report = fields.Selection([
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], compute="_compute_plastic_limit_final_report", store=True)
+        
+    @api.depends('plastic_limit_nabl', 'plastic_limit_report_type')
+    def _compute_plastic_limit_final_report(self):
+        for rec in self:
+        
+                # Manual override
+                if rec.plastic_limit_report_type == 'nabl':
+                    rec.plastic_limit_final_report = 'nabl'
+        
+                elif rec.plastic_limit_report_type == 'non_nabl':
+                    rec.plastic_limit_final_report = 'non_nabl'
+        
+                # Automatic
+                else:
+                    if rec.plastic_limit_nabl == 'pass':
+                        rec.plastic_limit_final_report = 'nabl'
+                    else:
+                        rec.plastic_limit_final_report = 'non_nabl'
+
+
+
     plasticity_index = fields.Float(string="Plasticity Index", compute="_compute_plasticity_index")
 
     @api.depends('plastic_limit', 'liquid_limit')
@@ -1521,6 +1579,35 @@ class Soil(models.Model):
             else:
                 record.plasticity_index_nabl = 'fail'
 
+    plasticity_report_type = fields.Selection([
+            ('auto', 'Auto'),
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+        
+    plasticity_final_report = fields.Selection([
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], compute="_compute_plasticity_final_report", store=True)
+        
+    @api.depends('plasticity_index_nabl', 'plasticity_report_type')
+    def _compute_plasticity_final_report(self):
+        for rec in self:
+        
+                # Manual override
+                if rec.plasticity_report_type == 'nabl':
+                    rec.plasticity_final_report = 'nabl'
+        
+                elif rec.plasticity_report_type == 'non_nabl':
+                    rec.plasticity_final_report = 'non_nabl'
+        
+                # Automatic
+                else:
+                    if rec.plasticity_index_nabl == 'pass':
+                        rec.plasticity_final_report = 'nabl'
+                    else:
+                        rec.plasticity_final_report = 'non_nabl'
+
+
+
 
      # Shrinkage limit (%)
     shrinkage_limit_name = fields.Char("Name",default="Shrinkage limit")
@@ -1582,6 +1669,35 @@ class Soil(models.Model):
                 break
             else:
                 record.shrinkage_limit1_nabl = 'fail'
+
+
+    shrinkage_report_type = fields.Selection([
+            ('auto', 'Auto'),
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+        
+    shrinkage_final_report = fields.Selection([
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], compute="_compute_shrinkage_final_report", store=True)
+        
+    @api.depends('shrinkage_limit1_nabl', 'shrinkage_report_type')
+    def _compute_shrinkage_final_report(self):
+        for rec in self:
+        
+                # Manual override
+                if rec.shrinkage_report_type == 'nabl':
+                    rec.shrinkage_final_report = 'nabl'
+        
+                elif rec.shrinkage_report_type == 'non_nabl':
+                    rec.shrinkage_final_report = 'non_nabl'
+        
+                # Automatic
+                else:
+                    if rec.shrinkage_limit1_nabl == 'pass':
+                        rec.shrinkage_final_report = 'nabl'
+                    else:
+                        rec.shrinkage_final_report = 'non_nabl'
+
 
 
     @api.depends('shrinkage_limit_table.shrinkage_limit')
@@ -1688,6 +1804,34 @@ class Soil(models.Model):
                 record.max_dry_density_nabl = 'fail'
 
 
+    dry_density_report_type = fields.Selection([
+            ('auto', 'Auto'),
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+        
+    dry_density_final_report = fields.Selection([
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], compute="_compute_dry_density_final_report", store=True)
+        
+    @api.depends('max_dry_density_nabl', 'dry_density_report_type')
+    def _compute_dry_density_final_report(self):
+        for rec in self:
+        
+                # Manual override
+                if rec.dry_density_report_type == 'nabl':
+                    rec.dry_density_final_report = 'nabl'
+        
+                elif rec.dry_density_report_type == 'non_nabl':
+                    rec.dry_density_final_report = 'non_nabl'
+        
+                # Automatic
+                else:
+                    if rec.max_dry_density_nabl == 'pass':
+                        rec.dry_density_final_report = 'nabl'
+                    else:
+                        rec.dry_density_final_report = 'non_nabl'
+
+
     omc_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_omc_conformity", store=True)
@@ -1740,6 +1884,34 @@ class Soil(models.Model):
                 break
             else:
                 record.omc_nabl = 'fail'
+
+
+    omc_report_type = fields.Selection([
+            ('auto', 'Auto'),
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+        
+    omc_final_report = fields.Selection([
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], compute="_compute_omc_final_report", store=True)
+        
+    @api.depends('omc_nabl', 'omc_report_type')
+    def _compute_omc_final_report(self):
+        for rec in self:
+        
+                # Manual override
+                if rec.omc_report_type == 'nabl':
+                    rec.omc_final_report = 'nabl'
+        
+                elif rec.omc_report_type == 'non_nabl':
+                    rec.omc_final_report = 'non_nabl'
+        
+                # Automatic
+                else:
+                    if rec.omc_nabl == 'pass':
+                        rec.omc_final_report = 'nabl'
+                    else:
+                        rec.omc_final_report = 'non_nabl'
 
     
     graph_image_density = fields.Binary("Line Chart", compute="_compute_graph_image_density_omc_light", store=True)
@@ -2041,6 +2213,34 @@ class Soil(models.Model):
             else:
                 record.max_dry_density1_nabl = 'fail'
 
+    dry_density1_report_type = fields.Selection([
+            ('auto', 'Auto'),
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+        
+    dry_density1_final_report = fields.Selection([
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], compute="_compute_dry_density1_final_report", store=True)
+        
+    @api.depends('max_dry_density1_nabl', 'dry_density1_report_type')
+    def _compute_dry_density1_final_report(self):
+        for rec in self:
+        
+                # Manual override
+                if rec.dry_density1_report_type == 'nabl':
+                    rec.dry_density1_final_report = 'nabl'
+        
+                elif rec.dry_density1_report_type == 'non_nabl':
+                    rec.dry_density1_final_report = 'non_nabl'
+        
+                # Automatic
+                else:
+                    if rec.max_dry_density1_nabl == 'pass':
+                        rec.dry_density1_final_report = 'nabl'
+                    else:
+                        rec.dry_density1_final_report = 'non_nabl'
+
+
     omc1_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_omc1_conformity", store=True)
@@ -2093,6 +2293,34 @@ class Soil(models.Model):
                 break
             else:
                 record.omc1_nabl = 'fail'
+
+    omc1_report_type = fields.Selection([
+            ('auto', 'Auto'),
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+        
+    omc1_final_report = fields.Selection([
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], compute="_compute_omc1_final_report", store=True)
+        
+    @api.depends('omc1_nabl', 'omc1_report_type')
+    def _compute_omc1_final_report(self):
+        for rec in self:
+        
+                # Manual override
+                if rec.omc1_report_type == 'nabl':
+                    rec.omc1_final_report = 'nabl'
+        
+                elif rec.omc1_report_type == 'non_nabl':
+                    rec.omc1_final_report = 'non_nabl'
+        
+                # Automatic
+                else:
+                    if rec.omc1_nabl == 'pass':
+                        rec.omc1_final_report = 'nabl'
+                    else:
+                        rec.omc1_final_report = 'non_nabl'
+
 
     
     graph_image_density1 = fields.Binary("Line Chart", compute="_compute_graph_image_density_omc_light1", store=True)
@@ -2909,6 +3137,34 @@ class Soil(models.Model):
                 record.cbr_25_avg_nabl = 'fail'
 
 
+    cbr_25_avg_report_type = fields.Selection([
+            ('auto', 'Auto'),
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+        
+    cbr_25_avg_final_report = fields.Selection([
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], compute="_compute_cbr_25_avg_final_report", store=True)
+        
+    @api.depends('cbr_25_avg_nabl', 'cbr_25_avg_report_type')
+    def _compute_cbr_25_avg_final_report(self):
+        for rec in self:
+        
+                # Manual override
+                if rec.cbr_25_avg_report_type == 'nabl':
+                    rec.cbr_25_avg_final_report = 'nabl'
+        
+                elif rec.cbr_25_avg_report_type == 'non_nabl':
+                    rec.cbr_25_avg_final_report = 'non_nabl'
+        
+                # Automatic
+                else:
+                    if rec.cbr_25_avg_nabl == 'pass':
+                        rec.cbr_25_avg_final_report = 'nabl'
+                    else:
+                        rec.cbr_25_avg_final_report = 'non_nabl'
+
+
 
 
 
@@ -3104,6 +3360,33 @@ class Soil(models.Model):
             else:
                 record.fsi_nabl = 'fail'
 
+    fsi_report_type = fields.Selection([
+            ('auto', 'Auto'),
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+        
+    fsi_final_report = fields.Selection([
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], compute="_compute_fsi_final_report", store=True)
+        
+    @api.depends('fsi_nabl', 'fsi_report_type')
+    def _compute_fsi_final_report(self):
+        for rec in self:
+        
+                # Manual override
+                if rec.fsi_report_type == 'nabl':
+                    rec.fsi_final_report = 'nabl'
+        
+                elif rec.fsi_report_type == 'non_nabl':
+                    rec.fsi_final_report = 'non_nabl'
+        
+                # Automatic
+                else:
+                    if rec.fsi_nabl == 'pass':
+                        rec.fsi_final_report = 'nabl'
+                    else:
+                        rec.fsi_final_report = 'non_nabl'
+
 
      # Specific Gravity
     specific_gravity_name = fields.Char("Name",default="Specific Gravity")
@@ -3186,6 +3469,34 @@ class Soil(models.Model):
                 break
             else:
                 record.specific_gravity_nabl = 'fail'
+
+
+    specific_gravity_report_type = fields.Selection([
+            ('auto', 'Auto'),
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+        
+    specific_gravity_final_report = fields.Selection([
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], compute="_compute_specific_gravity_final_report", store=True)
+        
+    @api.depends('specific_gravity_nabl', 'specific_gravity_report_type')
+    def _compute_specific_gravity_final_report(self):
+        for rec in self:
+        
+                # Manual override
+                if rec.specific_gravity_report_type == 'nabl':
+                    rec.specific_gravity_final_report = 'nabl'
+        
+                elif rec.specific_gravity_report_type == 'non_nabl':
+                    rec.specific_gravity_final_report = 'non_nabl'
+        
+                # Automatic
+                else:
+                    if rec.specific_gravity_nabl == 'pass':
+                        rec.specific_gravity_final_report = 'nabl'
+                    else:
+                        rec.specific_gravity_final_report = 'non_nabl'
 
 
      # Direct Shear Test
@@ -3606,6 +3917,34 @@ class Soil(models.Model):
                 record.cohesion1_nabl = 'fail'
 
 
+    cohesion1_report_type = fields.Selection([
+            ('auto', 'Auto'),
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+        
+    cohesion1_final_report = fields.Selection([
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], compute="_compute_cohesion1_final_report", store=True)
+        
+    @api.depends('cohesion1_nabl', 'cohesion1_report_type')
+    def _compute_cohesion1_final_report(self):
+        for rec in self:
+        
+                # Manual override
+                if rec.cohesion1_report_type == 'nabl':
+                    rec.cohesion1_final_report = 'nabl'
+        
+                elif rec.cohesion1_report_type == 'non_nabl':
+                    rec.cohesion1_final_report = 'non_nabl'
+        
+                # Automatic
+                else:
+                    if rec.cohesion1_nabl == 'pass':
+                        rec.cohesion1_final_report = 'nabl'
+                    else:
+                        rec.cohesion1_final_report = 'non_nabl'
+
+
     internal_friction1_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_internal_friction1_conformity", store=True)
@@ -3658,6 +3997,34 @@ class Soil(models.Model):
                 break
             else:
                 record.internal_friction1_nabl = 'fail'
+
+
+    internal_friction1_report_type = fields.Selection([
+            ('auto', 'Auto'),
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+        
+    internal_friction1_final_report = fields.Selection([
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], compute="_compute_internal_friction1_final_report", store=True)
+        
+    @api.depends('internal_friction1_nabl', 'internal_friction1_report_type')
+    def _compute_internal_friction1_final_report(self):
+        for rec in self:
+        
+                # Manual override
+                if rec.internal_friction1_report_type == 'nabl':
+                    rec.internal_friction1_final_report = 'nabl'
+        
+                elif rec.internal_friction1_report_type == 'non_nabl':
+                    rec.internal_friction1_final_report = 'non_nabl'
+        
+                # Automatic
+                else:
+                    if rec.internal_friction1_nabl == 'pass':
+                        rec.internal_friction1_final_report = 'nabl'
+                    else:
+                        rec.internal_friction1_final_report = 'non_nabl'
 
 
     
@@ -3732,6 +4099,33 @@ class Soil(models.Model):
                 break
             else:
                 record.avg_moisture_content_nabl = 'fail'
+
+    avg_moisture_report_type = fields.Selection([
+            ('auto', 'Auto'),
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+        
+    avg_moisture_final_report = fields.Selection([
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], compute="_compute_avg_moisture_final_report", store=True)
+        
+    @api.depends('avg_moisture_content_nabl', 'avg_moisture_report_type')
+    def _compute_avg_moisture_final_report(self):
+        for rec in self:
+        
+                # Manual override
+                if rec.avg_moisture_report_type == 'nabl':
+                    rec.avg_moisture_final_report = 'nabl'
+        
+                elif rec.avg_moisture_report_type == 'non_nabl':
+                    rec.avg_moisture_final_report = 'non_nabl'
+        
+                # Automatic
+                else:
+                    if rec.avg_moisture_content_nabl == 'pass':
+                        rec.avg_moisture_final_report = 'nabl'
+                    else:
+                        rec.avg_moisture_final_report = 'non_nabl'
 
      
 
