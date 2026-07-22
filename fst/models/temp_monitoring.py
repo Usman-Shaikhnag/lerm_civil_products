@@ -40,8 +40,8 @@ class TempMonitoring(models.Model):
         record = super(TempMonitoring, self).create(vals)
         # import wdb;wdb.set_trace()
         # record.get_all_fields()
-        self._compute_size_id()
-        self._compute_grade_id()
+        # self._compute_size_id()
+        # self._compute_grade_id()
         record.eln_ref.write({'model_id':record.id})
         return record
 

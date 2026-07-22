@@ -1,87 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-        <record id="action_open_ert_report_wizard" model="ir.actions.act_window">
-            <field name="name">ERT Report Wizard</field>
-            <field name="res_model">ert.report.wizard</field>
-            <field name="view_mode">form</field>
-            <field name="target">new</field>
-        </record>
 
-        <record id="view_ert_report_wizard_form" model="ir.ui.view">
-            <field name="name">ert.report.wizard.form</field>
-            <field name="model">ert.report.wizard</field>
-            <field name="arch" type="xml">
-                <form string="Download ERT Reports">
-                    <sheet>
-                        <group>
-                            <field name="parent_id" readonly="1"/>
-                        </group>
-                        <field name="line_ids">
-                            <tree editable="bottom" create="false" delete="false">
-                                <field name="selected"/>
-                                <field name="soil_resistivity_id" readonly="1"/>
-                                <field name="line_id" invisible="1" optional="hide"/>
-                            </tree>
-                        </field>
-                    </sheet>
-                    <footer>
-                        <button string="Download Reports"
-                                type="object"
-                                name="action_print_reports"
-                                class="btn-primary"/>
-                        <button string="Cancel" class="btn-secondary" special="cancel"/>
-                    </footer>
-                </form>
-            </field>
-        </record>
-
-        <record id="ert_parent_view" model="ir.ui.view">
-            <field name="name">lerm.ert.parent.form</field>
-            <field name="model">lerm.ert.parent</field>
-            <field name="arch" type="xml">
-                <form>
-                    <header>
-                        <!-- <button name="%(action_open_ert_report_wizard)d"
-                            string="Print ERT Reports"
-                            type="action"
-                            class="btn-primary"/> -->
-                            <button name="print_report"
-                            string="Print Project Report"
-                            type="object"
-                            class="btn-primary"/>
-
-                    </header>
-              
-                    <sheet>
-                        <group>
-                            <field name="name" />
-                            <field name="rec_date"/>
-                        </group>
-
-                        
-                        <button
-                            type="object"
-                            class="oe_highlight" 
-                            name="create_ert"
-                            string="Create ERT"
-                            />
-
-                        <field name="ert_lines" readonly="1">
-                            <tree editable="bottom">
-                                <field name="soil_resistivity_id" widget="many2one" options="{'no_open': False}"/>
-                                <field name="create_date" readonly="1"/>
-                                <button name="action_duplicate_ert" string="Duplicate" type="object" icon="fa-copy" class="btn-secondary me-5"/>
-                                <button name="action_delete_line" string="Delete" type="object" icon="fa-trash" class="btn-danger" confirm="Are you sure you want to delete this line?"/>
-                            </tree>
-                        </field>
-                    
-                    
-                    </sheet>
-                </form>
-            </field>
-        </record>
-        
         <record id="soil_borehole_parent_tree_view" model="ir.ui.view">
             <field name="name">soil.borehole.parent.tree</field>
             <field name="model">soil.borehole.parent</field>
@@ -94,7 +14,6 @@
             </field>
         </record>
 
-
         <record id="soil_borehole_parent_view" model="ir.ui.view">
             <field name="name">soil.borehole.parent.form</field>
             <field name="model">soil.borehole.parent</field>
@@ -106,96 +25,30 @@
                         <button name="print_corrected_spt" string="Corrected N value" type="object" class="btn-primary"/>
                         <button name="print_grain_size" string="Grain Size" type="object" class="btn-primary"/>
                         <button name="print_direct_shear" string="Direct Shear" type="object" class="btn-primary"/>
-                        <!-- <button name="action_open_react" string="Open in React" type="object" class="btn-primary"/> -->
-
                     </header>
-
                     <sheet>
                         <group>
                             <field name="name" />
                             <field name="rec_date"/>
                         </group>
-
                         <button type="object"
                                 class="oe_highlight"
                                 name="create_ert"
                                 string="Borehole"/>
-
-                        <!-- <field name="borehole_lines" readonly="1"> 
-                            <tree editable="bottom"> 
-                                <field name="soil_borehole_id" widget="many2one" options="{'no_open': False}"/> 
-                                <field name="create_date" readonly="1"/> 
-                            </tree> 
-                        </field> -->
                         <notebook>
                             <page string="">
                                 <field name="borehole_lines" readonly="1">
                                     <tree editable="bottom">
                                         <field name="soil_borehole_id" widget="many2one" options="{'no_open': False}"/>
                                         <field name="create_date" readonly="1"/>
-
                                         <button name="action_duplicate_borehole" string="Duplicate" type="object" class="btn-secondary me-5" icon="fa-copy"/>
                                         <button name="action_delete_line" string="Delete" type="object" icon="fa-trash" class="btn-danger" confirm="Are you sure you want to delete this line?"/>
-                                    
                                     </tree>
                                 </field>
                             </page>
-
-                            <!-- <page string="Combined Images">
-                                <field name="combined_images">
-                                    <tree>
-                                        <field name="sequence"/>
-                                        <field name="image" widget="image"/>
-                                    </tree>
-                                    <form>
-                                        <sheet>
-                                            <field name="sequence"/>
-                                            <field name="image" widget="image" class="oe_avatar"/>
-                                        </sheet>
-                                    </form>
-                                </field>
-                            </page> -->
                         </notebook>
-
                     </sheet>
                 </form>
-            </field>
-        </record>
-
-        <record id="action_print_report" model="ir.actions.server">
-            <field name="name">Print Report</field>
-            <field name="model_id" ref="model_lerm_ert_parent"/>   <!-- your model -->
-            <field name="binding_model_id" ref="model_lerm_ert_parent"/>  <!-- bind to model -->
-            <field name="binding_view_types">list</field>   <!-- will appear in Action menu of tree view -->
-            <field name="state">code</field>
-            <field name="code">records.print_report()</field>
-        </record>
-
-        <record id="ert_parent_tree_view" model="ir.ui.view">
-            <field name="name">lerm.ert.parent.tree</field>
-            <field name="model">lerm.ert.parent</field>
-            <field name="arch" type="xml">
-                <tree>
-                    <!-- <header>
-                        <button name="print_report" string="Print Report" type="object" class="btn-primary"/>
-                    </header> -->
-                    <field name='name'/>
-                    <field name="rec_date" optional="show" />
-                    <button name="action_duplicate_parent" string="Duplicate Project" type="object" class="btn-secondary" icon="fa-copy"/>
-
-                </tree>
-            </field>
-        </record>
-        
-
-       
-        <record id="lerm_ert_parent_action" model="ir.actions.act_window">
-            <field name="name">ERT</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">lerm.ert.parent</field>
-            <field name="view_mode">tree,form</field>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">ERT</p>
             </field>
         </record>
 
@@ -207,85 +60,18 @@
             <field name="limit">1</field>
         </record>
 
-        <record id="action_lerm_ert_parent" model="ir.actions.act_window">
-            <field name="name">ERTs</field>
-            <field name="res_model">lerm.ert.parent</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-        
-        <record id="action_soil_borehole" model="ir.actions.act_window">
-            <field name="name">Borehole</field>
-            <field name="res_model">soil.borehole.parent</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
         <record id="action_temp_monitoring" model="ir.actions.act_window">
             <field name="name">Temperature Monitoring</field>
             <field name="res_model">lerm.temp.monitoring</field>
             <field name="view_mode">tree,form</field>
         </record>
 
-        <record id="soil_borehole_action" model="ir.actions.act_window">
-            <field name="name">BH</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">soil.borehole</field>
-            <field name="view_mode">tree,form</field>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">SOIL BH</p>
-            </field>
-        </record>
-
-        <record id="action_pile_load_test_parent" model="ir.actions.act_window">
-            <field name="name">Pile Load Tests</field>
-            <field name="res_model">pile.load.test.parent</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
-
-        <record id="action_pullout_pile_load_test_parent" model="ir.actions.act_window">
-            <field name="name">Pull-Out Pile Load Tests</field>
-            <field name="res_model">pullout.pile.load.test.parent</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
-        <record id="action_routine_pullout_pile_load_test_parent" model="ir.actions.act_window">
-            <field name="name">Routine Pull-Out Pile Load Tests</field>
-            <field name="res_model">routine.pullout.pile.load.test.parent</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
-        <record id="action_routine_pile" model="ir.actions.act_window">
-            <field name="name">Routine Vertical Pile Load Test</field>
-            <field name="res_model">routine.pile.load.test</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
-        <record id="action_routine_lateral_pile_load_test" model="ir.actions.act_window">
-            <field name="name">Routine Lateral Load Tests</field>
-            <field name="res_model">routine.lateral.pile.load.test.parent</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
-        <record id="action_plate_load_test" model="ir.actions.act_window">
-            <field name="name">Plate Load Test</field>
-            <field name="res_model">fst.plate.load.test</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
-
         <menuitem id="fst_root"
             name="FST"
             sequence="11"
-            action="action_ert_dashboard" 
-            /> 
-<!-- 
-        <menuitem id="ert_menuitem"
-            name="ERT"
-            sequence="10"
-            parent="fst_root"
-            action="lerm_ert_parent_action"
-            />  -->
-            
+            action="action_ert_dashboard"
+            />
+
         <record id="view_ert_dashboard" model="ir.ui.view">
             <field name="name">lerm.ert.dashboard.view</field>
             <field name="model">lerm.ert.dashboard</field>
@@ -294,84 +80,6 @@
                     <templates>
                         <t t-name="kanban-box">
                             <div style="width:100%; max-width:100%; display:grid; grid-template-columns:repeat(auto-fit,minmax(350px,1fr)); gap:15px;">
-                                <!-- ERTs -->
-                                <div class="card-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
-                                    <h3 class="title">ERTs</h3>
-                                    <a type="action"
-                                    name="%(action_lerm_ert_parent)d"
-                                    class="btn btn-lg"
-                                    style="background:#4b0082; color:#fff;">
-                                        Create ERT
-                                    </a>
-                                </div>
-
-                                <!-- Soil -->
-                                <div class="card-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
-                                    <h3 class="title">Soil</h3>
-                                    <a type="action"
-                                    name="%(action_soil_borehole)d"
-                                    class="btn btn-lg"
-                                    style="background:#2e7d32; color:#fff;">
-                                        Borehole
-                                    </a>
-                                </div>
-
-                                <!-- Vertical -->
-                                <div class="card-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
-                                    <h3 class="title">Vertical Pile Load Test</h3>
-                                    <a type="action"
-                                    name="%(action_pile_load_test_parent)d"
-                                    class="btn btn-lg"
-                                    style="background:#ff7f0e; color:#fff;">
-                                        Records
-                                    </a>
-                                </div>
-
-
-                                <!-- Initial Pull-Out -->
-                                <div class="card-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
-                                    <h3 class="title">Initial Pull-Out Pile Load Test</h3>
-                                    <a type="action"
-                                    name="%(action_pullout_pile_load_test_parent)d"
-                                    class="btn btn-lg"
-                                    style="background:#d32f2f; color:#fff;">
-                                        Records
-                                    </a>
-                                </div>
-
-                                <!-- Routine Pull-Out -->
-                                <div class="card-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
-                                    <h3 class="title">Routine Pull-Out Pile Load Test</h3>
-                                    <a type="action"
-                                    name="%(action_routine_pullout_pile_load_test_parent)d"
-                                    class="btn btn-lg"
-                                    style="background:#00897b; color:#fff;">
-                                        Records
-                                    </a>
-                                </div>
-
-                                <!-- Routine Vertical -->
-                                <div class="card-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
-                                    <h3 class="title">Routine Vertical Pile Load Test</h3>
-                                    <a type="action"
-                                    name="%(action_routine_pile)d"
-                                    class="btn btn-lg"
-                                    style="background:#6a1b9a; color:#fff;">
-                                        Records
-                                    </a>
-                                </div>
-
-                                <!-- Routine Lateral -->
-                                <div class="card-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
-                                    <h3 class="title">Routine Lateral Pile Load Test</h3>
-                                    <a type="action"
-                                    name="%(action_routine_lateral_pile_load_test)d"
-                                    class="btn btn-lg"
-                                    style="background:#1565c0; color:#fff;">
-                                        Records
-                                    </a>
-                                </div>
-
                                 <!-- Temperature -->
                                 <div class="card-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
                                     <h3 class="title">Temperature Monitoring</h3>
@@ -379,17 +87,6 @@
                                     name="%(action_temp_monitoring)d"
                                     class="btn btn-lg"
                                     style="background:#ffb300; color:#000;">
-                                        Records
-                                    </a>
-                                </div>
-
-                                <!-- Plate Load Test -->
-                                <div class="card-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
-                                    <h3 class="title">Plate Load Test</h3>
-                                    <a type="action"
-                                    name="%(action_plate_load_test)d"
-                                    class="btn btn-lg"
-                                    style="background:#ffb300; color:#fff;">
                                         Records
                                     </a>
                                 </div>
@@ -404,14 +101,12 @@
 
         <!-- Ensure one record exists -->
         <record id="lerm_ert_dashboard_record" model="lerm.ert.dashboard"/>
-        
 
         <menuitem id="menu_ert_dashboard"
           name="FST Dashboard"
           parent="fst_root"
           action="action_ert_dashboard"
           sequence="1"/>
-
 
     </data>
 </odoo>

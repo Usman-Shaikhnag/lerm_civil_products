@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="soil_borehole" model="ir.ui.view">
+        <field name="name">soil.borehole.form</field>
+        <field name="model">soil.borehole</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <h1>
+                        <field name="name" nolabel="1"/>
+                    </h1>
+                    <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                        <tbody>
+                            <tr>
+                                <td><label for="location"></label></td>
+                                <td style="width: 50%;">
+                                    <field name="location" style="width: 100%;"/>
+                                </td>
+
+                                <td><label for="client"></label></td>
+                                <td style="width: 50%;">
+                                    <field name="client" style="width: 100%;"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="d-flex justify-content">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="type_of_boring"></label></td>
+                                    <td>
+                                        <field name="type_of_boring"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><label for="dia_of_boring"></label></td>
+                                    <td>
+                                        <field name="dia_of_boring"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="date_started"></label></td>
+                                    <td>
+                                        <field name="date_started"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><label for="date_completed"></label></td>
+                                    <td>
+                                        <field name="date_completed"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <field name="nvalue_ids" class="custom_table_borders" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="top_depth"/>
+                                <field name="bottom_depth"/>
+                                <field name="sample_type"/>
+                                <field name="classification"/>
+                                <field name="symbol"/>
+                                <field name="n15"/>
+                                <field name="n30"/>
+                                <field name="n45"/>
+                                <field name="n_value"/>
+                                <field name="core_recovery"/>
+                                <field name="rqd"/>
+                            </tree>
+                        </field>
+                        <button name="generate_borehole_graph" type="object" string="Generate Graph" class="btn-primary"/>
+                    </div>
+                    <!-- Graph -->
+                    <div>
+                        <field name="graph_image" widget="image" />
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                        <tbody>
+                            <tr>
+                                <td><label for="hammer_energy"></label></td>
+                                <td>
+                                    <field name="hammer_energy"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div>
+                        <field name="spt_n_value_ids" class="custom_table_borders">
+                            <tree editable="bottom">
+                                <field name="depth"/>
+                                <field name="type_of_soil"/>
+                                <field name="bulk_den"/>
+                                <field name="overburden_pressure"/>
+                                <field name="pore_water_pressure"/>
+                                <field name="total_pore_water_pressure"/>
+                                <field name="effective_overburden_pressure"/>
+                                <field name="effective_overburden_pressure_kg"/>
+                                <field name="overburden_correction_factor"/>
+                                <field name="hammer_energy"/>
+                                <field name="observed_n_value"/>
+                                <field name="corrected_n_value"/>
+                                <field name="spt_n_dilatancy"/>
+                            </tree>
+                        </field>
+                        <button name="generate_corrected_spt_graph" type="object" string="Generate Graph" class="btn-primary"/>
+                    </div>
+                    <div>
+                        <field name="corrected_spt_graph" widget="image"/>
+                    </div>
+
+                    <!-- <div class="custom_table_borders">
+                        <field name="cohesion"/>
+                        <field name="angle_of_internal_friction"/>
+                    </div> -->
+                    <field name="tan_phi"/>
+                    <div>
+                        <field name="direct_shear_ids" class="custom_table_borders">
+                            <tree editable="bottom">
+                                <field name="applied_normal_stress"/>
+                                <field name="no_of_divisions"/>
+                                <field name="proving_ring_correction_factor"/>
+                                <field name="shear_load"/>
+                                <field name="area_of_specimen"/>
+                                <field name="displacement_dial"/>
+                                <field name="displacement"/>
+                                <field name="corrected_area"/>
+                                <field name="shear_stress"/>
+                                
+                            </tree>
+                        </field>
+                    </div>
+                    <button name="generate_shear_parameters" type="object" string="Generate Graph" class="btn-primary"/>
+                    <div>
+                        <field name="direct_shear_graph" widget="image" nolabel="1"/>
+                    </div>
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                        <tbody>
+                            <tr>
+                                <td><label for="weight"></label></td>
+                                <td>
+                                    <field name="weight"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>                
+                    <field name="grain_size_ids">
+                        <tree>
+                            <field name="sample_name"/>
+                            <field name="top_depth"/>
+                            <field name="bottom_depth"/>
+                            <field name="classification"/>
+                            <field name="line_ids"/>
+                            <field name="boulder"/>
+                            <field name="gravel"/>
+                            <field name="sand"/>
+                            <field name="silt"/>
+                            <field name="clay"/>
+                            <field name="d10"/>
+                            <field name="d30"/>
+                            <field name="d60"/>
+                            <field name="cu"/>
+                            <field name="cc"/>
+                        </tree>
+                        <form>
+                            <sheet>
+                                <group>
+                                    <field name="sample_name"/>
+                                    <field name="weight"/>
+                                    <button name="action_recompute_particle_distribution" type="object"
+                                            string="Recalculate Distribution" class="oe_highlight"/>
+                                </group>
+                                <separator string="Sieve Analysis Data"/>
+                                <field name="line_ids">
+                                    <tree editable="bottom">
+                                        <field name="sieve_size"/>
+                                        <field name="percent_retained"/>
+                                        <field name="wt_retained"/>
+                                        <field name="cumulative_retained"/>
+                                        <field name="passing_percent"/>
+                                    </tree>
+                                </field>
+                            </sheet>
+                        </form>
+                    </field>
+                    <button name="generate_grain_size_parameters" type="object" string="Generate Graph" class="btn-primary"/>
+                    <div>
+                        <field name="grain_size_graph" widget="image" nolabel="1"/>
+                    </div>
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+        <record id="soil_borehole_action" model="ir.actions.act_window">
+            <field name="name">BH</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">soil.borehole</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">SOIL BH</p>
+            </field>
+        </record>
+
+        <record id="fst_borehole_action_soil_borehole" model="ir.actions.act_window">
+            <field name="name">Borehole</field>
+            <field name="res_model">soil.borehole.parent</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="fst_borehole_dashboard_card" model="ir.ui.view">
+            <field name="name">fst.dashboard.borehole.card</field>
+            <field name="model">lerm.ert.dashboard</field>
+            <field name="inherit_id" ref="fst.view_ert_dashboard"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[contains(@class, 'card-box')][last()]" position="after">
+                    <div class="card-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+                        <h3 class="title">Soil</h3>
+                        <a type="action"
+                        name="%(fst_borehole_action_soil_borehole)d"
+                        class="btn btn-lg"
+                        style="background:#2e7d32; color:#fff;">
+                            Borehole
+                        </a>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

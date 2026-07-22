@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="mechanical_ert_soil_resistivity" model="ir.ui.view">
+            <field name="name">ert.soil.resistivity.form</field>
+            <field name="model">ert.soil.resistivity</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_print_soil_resistivity_report"
+                            string="Print Report"
+                            type="object"
+                            class="btn-primary"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="ert_point" string="ERT POINT NO"/>
+                            <field name="factor_multiplied"/>
+                            <field name="temperature_site"/>
+                            <field name="last_weather"/>
+                            <field name="current"/>
+                            <field name="voltage"/>
+                            <field name="present_weather"/>
+                        </group>
+
+                        <group string="Resistivity Readings">
+                            <field name="line_ids" nolabel="1">
+                                <tree editable="bottom" create="true" delete="true">
+                                    <field name="sr_no" readonly="1"/>
+                                    <field name="spacing"/>
+                                    <field name="resistivity_n1"/>
+                                    <field name="resistivity_ne1"/>
+                                    <field name="resistivity_e1"/>
+                                    <field name="resistivity_se1"/>
+                                    <field name="resistivity_s1"/>
+                                    <field name="resistivity_sw1"/>
+                                    <field name="resistivity_w1"/>
+                                    <field name="resistivity_nw1"/>
+                                    <field name="resistivity_n2"/>
+                                    <field name="resistivity_ne2"/>
+                                    <field name="resistivity_e2"/>
+                                    <field name="resistivity_se2"/>
+                                    <field name="resistivity_s2"/>
+                                    <field name="resistivity_sw2"/>
+                                    <field name="resistivity_w2"/>
+                                    <field name="resistivity_nw2"/>
+                                    <field name="resistivity_n"/>
+                                    <field name="resistivity_ne"/>
+                                    <field name="resistivity_e"/>
+                                    <field name="resistivity_se"/>
+                                    <field name="resistivity_s"/>
+                                    <field name="resistivity_sw"/>
+                                    <field name="resistivity_w"/>
+                                    <field name="resistivity_nw"/>
+                                    <field name="area"/>
+                                    <field name="radius"/>
+                                </tree>
+                            </field>
+                        </group>
+
+                        <button name="button_add_footer"
+                            string="Calculate Average Resistivity"
+                            type="object"
+                            class="btn-secondary"/>
+
+                        <group string="Pin Spacing Summary">
+                            <field name="pin_line_ids" nolabel="1">
+                                <tree editable="bottom" create="true" delete="true">
+                                    <field name="pin_spacing"/>
+                                    <field name="equivalent_radius"/>
+                                </tree>
+                            </field>
+                        </group>
+
+                        <group>
+                            <field name="ert_recommended" string="Recommended ERT"/>
+                            <field name="class_of_soil" string="Class of Soil (IS 3043:2018)"/>
+                            <field name="avg_equivalent_radius" string="Average ERT Resistivity"/>
+                        </group>
+
+                        <button name="action_generate_graph"
+                            string="Generate Graph"
+                            type="object"
+                            class="btn-secondary"/>
+
+                        <button name="action_copy_spacing_to_pin"
+                            string="ERT Average"
+                            type="object"
+                            class="btn-secondary"/>
+
+                        <group string="Graphs">
+                            <field name="graph_images" nolabel="1">
+                                <tree>
+                                    <field name="graph_image" widget="image"/>
+                                </tree>
+                            </field>
+                        </group>
+
+                        <footer>
+                            <button name="save_ert"
+                                string="Submit"
+                                type="object"
+                                class="btn-primary"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>
