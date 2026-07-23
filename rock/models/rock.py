@@ -56,35 +56,26 @@ class MechanicalRock(models.Model):
         res = super(MechanicalRock, self).default_get(fields)
 
         default_notes = [
-            (0, 0, {
-                'sr_no': 'a',
-                'notes': 'The report shall not be reproduced in full or partially without written approval of the laboratory HOD/CEO/Maganement.',
+(0, 0, {
+                'sr_no': 'i',
+                'notes': 'Attention is drawn to the limitations of liability, indemnification, and jurisdiction provisions applicable to this report. The information contained herein reflects the findings of Geonyms India Private Limited at the time of testing and only within the scope of work and instructions received from the Client, where applicable',
             }),
             (0, 0, {
-                'sr_no': 'b',
-                'notes': 'Sampling is not done by us unless mentioned otherwide.',
+                'sr_no': 'ii',
+                'notes': 'The Companys responsibility is limited to the Client for whom this report has been issued. This report does not relieve any party from exercising its rights and fulfilling its obligations under any contract, agreement, or applicable statutory requirements. Unless otherwise stated, the results reported herein relate only to the sample(s) tested and do not necessarily indicate the quality of the entire lot, batch, or material from which the sample(s) were drawn. ',
             }),
             (0, 0, {
-                'sr_no': 'c',
-                'notes': 'without a QR Code and hologram this report is considered invalid.',
+                'sr_no': 'iii',
+                'notes': 'The sample(s) tested shall be retained for a period of ninety (90) days from the date of issue of this report unless otherwise agreed with the Client. This report shall not be reproduced, except in full, without the prior written approval of Geonyms India Private Limited. ',
             }),
             (0, 0, {
-                'sr_no': 'd',
-                'notes': 'The Result listed refer only to tested samples & applicable parameter Endorsement of product is neither interred nor inplied.',
+                'sr_no': 'iv',
+                'notes': 'Partial reproduction, unauthorized alteration, forgery, falsification, or misuse of this report is prohibited and may result in legal action.',
             }),
 
             (0, 0, {
-                'sr_no': 'e',
-                'notes': 'The use or report for arbitration, publicity & evidence in legal dispute is forbidden except with prior written consent NBML Lab.',
-            }),
-             (0, 0, {
-                'sr_no': 'f',
-                'notes': 'All disputed are subject to Raipur jurisdiction 7 days correction to this report invalidates this report.',
-            }),
-
-             (0, 0, {
-                'sr_no': 'g',
-                'notes': 'Sample will be destroyed after 30-days from the date of test report unless otherwise Specified.',
+                'sr_no': 'v',
+                'notes': ' Any complaint concerning this report shall be submitted in writing within fifteen (15) days from the date of issue of the report. The use of this report or extracts thereof in advertisements, promotional material, media publications, or any public disclosure requires prior written approval from Geonyms India Private Limited',
             }),
         ]
 

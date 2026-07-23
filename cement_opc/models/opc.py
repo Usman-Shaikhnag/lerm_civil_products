@@ -29,23 +29,24 @@ class CementNormalConsistency(models.Model):
         default_notes = [
             (0, 0, {
                 'sr_no': 'i',
-                'notes': 'The results stated in this report apply only to the tested sample(s) and are based on the conditions and parameters at the time of testing.',
+                'notes': 'Attention is drawn to the limitations of liability, indemnification, and jurisdiction provisions applicable to this report. The information contained herein reflects the findings of Geonyms India Private Limited at the time of testing and only within the scope of work and instructions received from the Client, where applicable',
             }),
             (0, 0, {
                 'sr_no': 'ii',
-                'notes': 'This report is invalid without the official paper seal of Make Infracon.',
+                'notes': 'The Companys responsibility is limited to the Client for whom this report has been issued. This report does not relieve any party from exercising its rights and fulfilling its obligations under any contract, agreement, or applicable statutory requirements. Unless otherwise stated, the results reported herein relate only to the sample(s) tested and do not necessarily indicate the quality of the entire lot, batch, or material from which the sample(s) were drawn. ',
             }),
             (0, 0, {
                 'sr_no': 'iii',
-                'notes': 'All test results are confidential and will not be disclosed to any third party without written consent of the client, except where required by law.',
+                'notes': 'The sample(s) tested shall be retained for a period of ninety (90) days from the date of issue of this report unless otherwise agreed with the Client. This report shall not be reproduced, except in full, without the prior written approval of Geonyms India Private Limited. ',
             }),
             (0, 0, {
                 'sr_no': 'iv',
-                'notes': 'The # points mentioned in the report which information is given by Client/Customer.',
+                'notes': 'Partial reproduction, unauthorized alteration, forgery, falsification, or misuse of this report is prohibited and may result in legal action.',
             }),
+
             (0, 0, {
                 'sr_no': 'v',
-                'notes': 'Any disputes shall be subject to jurisdiction of Nashik courts only.',
+                'notes': ' Any complaint concerning this report shall be submitted in writing within fifteen (15) days from the date of issue of the report. The use of this report or extracts thereof in advertisements, promotional material, media publications, or any public disclosure requires prior written approval from Geonyms India Private Limited',
             }),
         ]
 
