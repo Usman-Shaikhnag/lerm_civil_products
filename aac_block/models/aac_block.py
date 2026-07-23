@@ -119,6 +119,34 @@ class AacBlockMechanical(models.Model):
                     else:
                         record.avg_measured_length_nabl = 'fail'
 
+    length_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    length_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_length_final_report", store=True)
+    
+    @api.depends('avg_measured_length_nabl', 'length_report_type')
+    def _compute_length_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.length_report_type == 'nabl':
+                rec.length_final_report = 'nabl'
+    
+            elif rec.length_report_type == 'non_nabl':
+                rec.length_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.avg_measured_length_nabl == 'pass':
+                    rec.length_final_report = 'nabl'
+                else:
+                    rec.length_final_report = 'non_nabl'
+
+
     # Dimension Height
     height_dimen_name = fields.Char(default="Dimension Height")
     height_dimen_visible = fields.Boolean(string="Dimension Height Visible" ,compute="_compute_visible")
@@ -193,6 +221,33 @@ class AacBlockMechanical(models.Model):
                         break
                     else:
                         record.avg_measured_height_nabl = 'fail'
+
+    height_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    height_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_height_final_report", store=True)
+    
+    @api.depends('avg_measured_height_nabl', 'height_report_type')
+    def _compute_height_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.height_report_type == 'nabl':
+                rec.height_final_report = 'nabl'
+    
+            elif rec.height_report_type == 'non_nabl':
+                rec.height_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.avg_measured_height_nabl == 'pass':
+                    rec.height_final_report = 'nabl'
+                else:
+                    rec.height_final_report = 'non_nabl'
 
     # Dimension Thickness
     thickness_dimen_name = fields.Char(default="Dimension Thickness")
@@ -269,6 +324,34 @@ class AacBlockMechanical(models.Model):
                     else:
                         record.avg_measured_thickness_nabl = 'fail'
 
+    thickness_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    thickness_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_thickness_final_report", store=True)
+    
+    @api.depends('avg_measured_thickness_nabl', 'thickness_report_type')
+    def _compute_thickness_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.thickness_report_type == 'nabl':
+                rec.thickness_final_report = 'nabl'
+    
+            elif rec.thickness_report_type == 'non_nabl':
+                rec.thickness_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.avg_measured_thickness_nabl == 'pass':
+                    rec.thickness_final_report = 'nabl'
+                else:
+                    rec.thickness_final_report = 'non_nabl'
+
+
     # Bulk Density 
     bulk_density_name = fields.Char(default="Bulk Density")
     bulk_density_visible = fields.Boolean(string="Bulk Density Visible",compute="_compute_visible")
@@ -340,6 +423,34 @@ class AacBlockMechanical(models.Model):
                         break
                     else:
                         record.mean_bulk_density_nabl = 'fail'
+
+
+    mean_bulk_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    mean_bulk_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_mean_bulk_final_report", store=True)
+    
+    @api.depends('mean_bulk_density_nabl', 'mean_bulk_report_type')
+    def _compute_mean_bulk_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.mean_bulk_report_type == 'nabl':
+                rec.mean_bulk_final_report = 'nabl'
+    
+            elif rec.mean_bulk_report_type == 'non_nabl':
+                rec.mean_bulk_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.mean_bulk_density_nabl == 'pass':
+                    rec.mean_bulk_final_report = 'nabl'
+                else:
+                    rec.mean_bulk_final_report = 'non_nabl'
 
 
     # Moisture Content
@@ -414,6 +525,34 @@ class AacBlockMechanical(models.Model):
                     else:
                         record.mean_moisture_content_nabl = 'fail'
 
+
+    moisture_content_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    moisture_content_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_moisture_content_final_report", store=True)
+    
+    @api.depends('mean_moisture_content_nabl', 'moisture_content_report_type')
+    def _compute_moisture_content_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.moisture_content_report_type == 'nabl':
+                rec.moisture_content_final_report = 'nabl'
+    
+            elif rec.moisture_content_report_type == 'non_nabl':
+                rec.moisture_content_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.mean_moisture_content_nabl == 'pass':
+                    rec.moisture_content_final_report = 'nabl'
+                else:
+                    rec.moisture_content_final_report = 'non_nabl'
+
     # Compressive Strength
     compressive_strength_name = fields.Char(default="Compressive Strength")
     compressive_strength_visible = fields.Boolean(string="Compressive Strength Visible",compute="_compute_visible")
@@ -483,6 +622,34 @@ class AacBlockMechanical(models.Model):
                         break
                     else:
                         record.compressive_strength_nabl = 'fail'
+
+
+    compressive_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    compressive_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_compressive_final_report", store=True)
+    
+    @api.depends('compressive_strength_nabl', 'compressive_report_type')
+    def _compute_compressive_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.compressive_report_type == 'nabl':
+                rec.compressive_final_report = 'nabl'
+    
+            elif rec.compressive_report_type == 'non_nabl':
+                rec.compressive_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.compressive_strength_nabl == 'pass':
+                    rec.compressive_final_report = 'nabl'
+                else:
+                    rec.compressive_final_report = 'non_nabl'
 
     
 
@@ -563,6 +730,34 @@ class AacBlockMechanical(models.Model):
                         break
                     else:
                         record.mean_drying_shrinkage_nabl = 'fail'
+
+
+    drying_shrinkage_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    drying_shrinkage_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_drying_shrinkage_final_report", store=True)
+    
+    @api.depends('mean_drying_shrinkage_nabl', 'drying_shrinkage_report_type')
+    def _compute_drying_shrinkage_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.drying_shrinkage_report_type == 'nabl':
+                rec.drying_shrinkage_final_report = 'nabl'
+    
+            elif rec.drying_shrinkage_report_type == 'non_nabl':
+                rec.drying_shrinkage_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.mean_drying_shrinkage_nabl == 'pass':
+                    rec.drying_shrinkage_final_report = 'nabl'
+                else:
+                    rec.drying_shrinkage_final_report = 'non_nabl'
 
 
 
