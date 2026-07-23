@@ -688,9 +688,7 @@
 						</table>
 						
 					</t>
-					
 
-					<div style="page-break-inside: avoid;">
 					<table style="margin-top:10px;" t-foreach="data" t-as="formdata" t-if="resultdata and len(resultdata) &gt; 0">
 							<tr cols="12">
 								<td colspan="6" t-foreach="resultdata" t-as="result">
@@ -698,10 +696,6 @@
 										<t t-esc="result[1]"/>
 									</span> : 
 									<![CDATA[&nbsp;]]>
-									<!-- <span>
-										<t t-esc="formdata[result[0]]" />
-										
-									</span> -->
 									<span>
 										<t t-if="str(formdata[result[0]]).replace('.', '', 1).isdigit()">
 											<t t-esc="round(float(formdata[result[0]]),2)"/>
@@ -713,7 +707,6 @@
 
 											<t t-if="field_type.ttype == 'selection'">
 												<t t-set="selection" t-value="env['ir.model.fields.selection'].search([('field_id','=',field_type.id),('value','=',formdata[result[0]])])"/>
-												<!-- <span>Selection </span> -->
 												
 												<t t-esc="selection.name"/>
 											</t>
@@ -726,17 +719,17 @@
 								</td>
 							</tr>
 						</table>
-					<div >
-						<div style="margin-top:20px" class="noteContainer">
+					<div style="margin-top:0;margin-bottom:0;padding:0; page-break-inside: avoid;">
+						<div style="margin-top:5px; page-break-inside: avoid;" class="noteContainer">
 							<table class="table table-bordered">
 							<tr>
 								<td style="padding: 5px; font-style: italic; font-size: 12px;">
-									<b>Note:-</b>
-									&#160;&#160;(i) The results stated in this report apply only to the tested sample(s) and are based on the conditions and parameters at the time of testing.
-									&#160;&#160;(ii) This report is invalid without the official paper seal of Make Infracon.  
-									&#160;&#160;(iii)  All test results are confidential and will not be disclosed to any third party without written consent of the client, except where required by law. 
-									&#160;&#160;(iv) The # points mentioned in the report which information is given by Client/Customer. 
-									&#160;&#160;(v) Any disputes shall be subject to jurisdiction of Nashik courts only.
+									<b>Notes:-</b>
+									&#160;&#160;(i) Attention is drawn to the limitations of liability, indemnification, and jurisdiction provisions applicable to this report. The information contained herein reflects the findings of Geonyms India Private Limited at the time of testing and only within the scope of work and instructions received from the Client, where applicable.
+									&#160;&#160;(ii) The Companys responsibility is limited to the Client for whom this report has been issued. This report does not relieve any party from exercising its rights and fulfilling its obligations under any contract, agreement, or applicable statutory requirements. Unless otherwise stated, the results reported herein relate only to the sample(s) tested and do not necessarily indicate the quality of the entire lot, batch, or material from which the sample(s) were drawn.
+									&#160;&#160;(iii) The sample(s) tested shall be retained for a period of ninety (90) days from the date of issue of this report unless otherwise agreed with the Client. This report shall not be reproduced, except in full, without the prior written approval of Geonyms India Private Limited.
+									&#160;&#160;(iv) Partial reproduction, unauthorized alteration, forgery, falsification, or misuse of this report is prohibited and may result in legal action.
+									&#160;&#160;(v) Any complaint concerning this report shall be submitted in writing within fifteen (15) days from the date of issue of the report. The use of this report or extracts thereof in advertisements, promotional material, media publications, or any public disclosure requires prior written approval from Geonyms India Private Limited.
 									<t t-if="eln.has_witness">
 										&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
 									</t>
@@ -762,15 +755,13 @@
 							<div>
 								<div>
 									<b>
-										Checked By
+										Reviewed By
 									</b>
 								</div>
-								<div style="height: 40px;">
-									<t t-if="eln.sample_id.checkby_signature_required">
-										<div t-if="eln.sample_id.check_by.employee_id.signature">
-											<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-										</div>
-										
+								<div style="height: 50px;">
+									<t t-if="eln.sample_id.checkby_signature_required and eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')"
+											style="max-width: 200px; max-height: 45px; margin-top: 1px; z-index: -10;"/>
 									</t>
 								</div>
 								<div>
@@ -783,41 +774,29 @@
 										(<span t-esc="eln.sample_id.check_by.job_title"/>)
 									</b>
 								</div>
-								
 							</div>
-							<!-- <div>
-								<div t-if="stamp and stamp == '4-in_report'">
-									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
-								</div>
-								<div style="padding-top:5px">
-									FORMAT No. <![CDATA[&nbsp;]]> <span t-esc="eln.parameters_result[0].parameter.report_format_no"/>
-								</div>
-							</div> -->
+
+							<div>
+							</div>
+
 							<div>
 								<div>
 									<b>
-										Approved By 
+										Per pro GEONYMS INDIA PRIVATE LIMITED.
 									</b>
-									
 								</div>
-								<div style="height: 40px;">
+								<div style="height: 50px;">
 									<t t-if="eln.sample_id.approveby_signature_required">
 										<div t-if="eln.sample_id.approved_by.employee_id.signature">
-											<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+											<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 45px;margin-top:1px; z-index: -10;"/>
 										</div>
-										
 									</t>
 								</div>
 								<div>
 									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
+										<span t-esc="eln.sample_id.approved_by.name"/>
 									</b>
 								</div>
-								<!-- <div>
-									<b>
-										NDT Department (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div> -->
 								<div>
 									<b>
 										(<span t-esc="eln.sample_id.approved_by.job_title"/>)
@@ -825,12 +804,9 @@
 								</div>
 							</div>
 						</div>
-						</div>
 					</div>
-					<div style="margin-top: 10px; text-align: center;">
-							<p style="border-top: 1px dashed #000; padding-top: 10px;">
-								...... End Of Report......
-							</p>
+					<div style="margin-top: 5px; text-align: center;">
+						<p style="font-weight:800;">...... End Of Report......</p>
 					</div>
 				</div>
 			</t>
