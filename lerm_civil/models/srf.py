@@ -1015,6 +1015,21 @@ class CreateSampleWizard(models.TransientModel):
         string='Available Parameters'
     )
 
+    @api.onchange('parameters')
+    def _onchange_parameters_compute_due_date(self):
+        if self.parameters:
+            # Selected parameters madhun maximum testing_days shocha
+            max_days = max(self.parameters.mapped('testing_days') or [0])
+            
+            # Current date (Aajchi date) + Max testing days
+            self.report_due_date = fields.Date.today() + timedelta(days=max_days)
+        else:
+            # Jara parameter select nahi kela tar report_due_date empty/clear kara
+            self.report_due_date = False
+
+   
+
+
     @api.model
     def _get_oldest_lab(self):
         oldest_lab = self.env['lerm.lab.master'].search([], order="create_date asc", limit=1)

@@ -146,7 +146,7 @@
 					</span>
 				
 					<div style="text-align:center;margin-top:12px">	
-						SRI SAINATH LABORATORY.
+						<span t-esc="env['lerm.lab.master'].search([], limit=1).lab_name"/>
 					</div>
 					<div style="text-align:center;">
 						TEST DATA SHEET
@@ -191,11 +191,11 @@
 			 <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
 
 			 	
-				<div class="container_eln" style="padding-top:70px;">
+				<div class="container_eln">
 
 					<div t-foreach="eln" t-as="o">
 					
-						<!-- <table style="margin-top:20px;">
+						<table style="margin-top:20px;">
 							<tr>
 								<td colspan="12">#Customer Party Name :
 									<![CDATA[&nbsp;]]>
@@ -210,7 +210,17 @@
 								</td>
 							</tr>
 							<tr>
-								
+								<!-- <td colspan="12">Project / Site Address :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.site_address.name"/>
+									<span t-field="o.srf_id.site_address.street"/>
+									<span t-field="o.srf_id.site_address.street2"/>
+									<span t-field="o.srf_id.site_address.city"/>
+									<span t-if="o.srf_id.site_address.zip" t-field="o.srf_id.site_address.zip"/>
+									<span t-field="o.srf_id.site_address.state_id"/>
+											,
+									<span t-field="o.srf_id.site_address.country_id"/>
+								</td> -->
 								<td colspan="12">#Project / Site Address : <![CDATA[&nbsp;]]>
 									<span t-field="o.srf_id.name_work"/>
 								</td>
@@ -286,65 +296,11 @@
 									<span t-field="o.material.lab_name"/>
 								</td>
 							</tr>
-						</table> -->
-						<table style="margin-top:10px; width: 100%; border-collapse: collapse;">
-							<tbody>
-								<tr>
-									<td style="width: 30%; padding: 5px;"><strong>Client Details</strong></td>
-									<td style="padding-left: 10px;">
-										<span t-field="o.srf_id.customer.name"/>
-										<span t-field="o.srf_id.customer.street"/>
-										<span t-field="o.srf_id.customer.street2"/>
-										<span t-field="o.srf_id.customer.city"/>
-										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
-										<span t-field="o.srf_id.customer.state_id"/> ,
-										<span t-field="o.srf_id.customer.country_id"/>
-									</td>
-								
-								</tr>
-								
-								<tr>
-									<td><strong>Client's Reference</strong></td>
-									<td style="padding-left: 10px;"><span t-field="o.srf_id.client_refrence"/></td>
-								</tr>
-
-								<tr>
-									<td><strong>Name of Work</strong></td>
-									<td style="padding-left: 10px;"><span t-field="o.srf_id.name_work"/></td>
-								</tr>
-
-								<tr>
-									<td><strong>Date of Testing</strong></td>
-									<td style="padding-left: 10px;">
-										<span t-field="o.start_date" style="margin-right:10px;"/> to 
-										<span t-field="o.end_date" style="margin-left:10px;"/>
-									</td>
-								</tr>
-
-								<tr>
-									<td><strong>Type of Sample</strong></td>
-									<td style="padding-left: 10px;"><span t-field="o.material.name"/></td>
-								</tr>
-
-								<tr>
-									<td><strong>Grade of Sample</strong></td>
-									<td style="padding-left: 10px;"><span t-field="o.grade_id.grade"/></td>
-								</tr>
-
-								<!-- Source of Sample (only if value exists) -->
-								<tr t-if="o.material.source_sample">
-									<td style="font-weight: bold;">Source of Sample</td>
-									<td><span t-field="o.material.source_sample"/></td>
-								</tr>
-
-								<!-- Test method adopted (only if value exists) -->
-								<tr t-if="o.material.test_method_adopted">
-									<td style="font-weight: bold;">Test method adopted:</td>
-									<td><span t-field="o.material.test_method_adopted"/></td>
-								</tr>
-							</tbody>
 						</table>
 					</div>
+					
+					
+						
 					
 					<div style="margin-top:20px;">
 						<u>Results</u>
@@ -455,9 +411,18 @@
 											<!-- <td>
 												<span t-esc="parameter['nabl_status']"/>
 											</td> -->
-											<td t-if="eln.conformity">
+											<!-- <td t-if="eln.conformity">
 												<span t-esc="parameter['conformity_status']"/>
-											</td>
+											</td> -->
+											<td t-if="eln.conformity">
+											<t t-if="parameter.specification_permissible_limit and parameter.specification_permissible_limit.strip() == '--'">
+												<span>--</span>
+											</t>
+											<t t-else="">
+												<span t-attf-style="color: #{'green' if parameter.conformity_status and parameter.conformity_status.lower() == 'pass' else ('red' if parameter.conformity_status and parameter.conformity_status.lower() == 'fail' else 'black')}; font-weight: bold;"
+													t-esc="parameter.conformity_status"/>
+											</t>
+										</td>
 										</tr>
 									</t>
 								</tbody>
@@ -545,9 +510,18 @@
 											<!-- <td>
 												<span t-esc="parameter['nabl_status']"/>
 											</td> -->
-											<td t-if="eln.conformity">
+											<!-- <td t-if="eln.conformity">
 												<span t-esc="parameter['conformity_status']"/>
-											</td>
+											</td> -->
+											<td t-if="eln.conformity">
+											<t t-if="parameter.specification_permissible_limit and parameter.specification_permissible_limit.strip() == '--'">
+												<span>--</span>
+											</t>
+											<t t-else="">
+												<span t-attf-style="color: #{'green' if parameter.conformity_status and parameter.conformity_status.lower() == 'pass' else ('red' if parameter.conformity_status and parameter.conformity_status.lower() == 'fail' else 'black')}; font-weight: bold;"
+													t-esc="parameter.conformity_status"/>
+											</t>
+										</td>
 										</tr>
 									</t>
 								</tbody>
@@ -647,9 +621,18 @@
 											<!-- <td>
 												<span t-esc="parameter['nabl_status']"/>
 											</td> -->
-											<td t-if="eln.conformity">
+											<!-- <td t-if="eln.conformity">
 												<span t-esc="parameter['conformity_status']"/>
-											</td>
+											</td> -->
+											<td t-if="eln.conformity">
+											<t t-if="parameter.specification_permissible_limit and parameter.specification_permissible_limit.strip() == '--'">
+												<span>--</span>
+											</t>
+											<t t-else="">
+												<span t-attf-style="color: #{'green' if parameter.conformity_status and parameter.conformity_status.lower() == 'pass' else ('red' if parameter.conformity_status and parameter.conformity_status.lower() == 'fail' else 'black')}; font-weight: bold;"
+													t-esc="parameter.conformity_status"/>
+											</t>
+										</td>
 										</tr>
 									</t>
 								</tbody>
@@ -744,9 +727,18 @@
 											<!-- <td>
 												<span t-esc="parameter['nabl_status']"/>
 											</td> -->
-											<td t-if="eln.conformity">
+											<!-- <td t-if="eln.conformity">
 												<span t-esc="parameter['conformity_status']"/>
-											</td>
+											</td> -->
+											<td t-if="eln.conformity">
+											<t t-if="parameter.specification_permissible_limit and parameter.specification_permissible_limit.strip() == '--'">
+												<span>--</span>
+											</t>
+											<t t-else="">
+												<span t-attf-style="color: #{'green' if parameter.conformity_status and parameter.conformity_status.lower() == 'pass' else ('red' if parameter.conformity_status and parameter.conformity_status.lower() == 'fail' else 'black')}; font-weight: bold;"
+													t-esc="parameter.conformity_status"/>
+											</t>
+										</td>
 										</tr>
 									</t>
 								</tbody>
@@ -835,9 +827,18 @@
 											<!-- <td>
 												<span t-esc="parameter['nabl_status']"/>
 											</td> -->
-											<td t-if="eln.conformity">
+											<!-- <td t-if="eln.conformity">
 												<span t-esc="parameter['conformity_status']"/>
-											</td>
+											</td> -->
+											<td t-if="eln.conformity">
+											<t t-if="parameter.specification_permissible_limit and parameter.specification_permissible_limit.strip() == '--'">
+												<span>--</span>
+											</t>
+											<t t-else="">
+												<span t-attf-style="color: #{'green' if parameter.conformity_status and parameter.conformity_status.lower() == 'pass' else ('red' if parameter.conformity_status and parameter.conformity_status.lower() == 'fail' else 'black')}; font-weight: bold;"
+													t-esc="parameter.conformity_status"/>
+											</t>
+										</td>
 										</tr>
 									</t>
 								</tbody>
@@ -937,9 +938,18 @@
 											<!-- <td>
 												<span t-esc="parameter['nabl_status']"/>
 											</td> -->
-											<td t-if="eln.conformity">
+											<!-- <td t-if="eln.conformity">
 												<span t-esc="parameter['conformity_status']"/>
-											</td>
+											</td> -->
+											<td t-if="eln.conformity">
+											<t t-if="parameter.specification_permissible_limit and parameter.specification_permissible_limit.strip() == '--'">
+												<span>--</span>
+											</t>
+											<t t-else="">
+												<span t-attf-style="color: #{'green' if parameter.conformity_status and parameter.conformity_status.lower() == 'pass' else ('red' if parameter.conformity_status and parameter.conformity_status.lower() == 'fail' else 'black')}; font-weight: bold;"
+													t-esc="parameter.conformity_status"/>
+											</t>
+										</td>
 										</tr>
 									</t>
 								</tbody>
@@ -960,7 +970,7 @@
 
 
 					<div style="page-break-inside: avoid;">
-						<!-- <div style="margin-top:10px" class="noteContainer">
+						<div style="margin-top:10px" class="noteContainer">
 							<div>
 								<b>Note :-</b>
 							</div>
@@ -985,26 +995,8 @@
 										<span t-esc="eln.remarks"/>
 									</li>
 								</ul>
-							</div> -->
-							<div>
-							<table class="table table-bordered">
-							<tr>
-								<td style="padding: 5px; font-style: italic; font-size: 12px;">
-									<b>Note:-</b>
-									&#160;&#160;(i) The results relate only to the items tested 
-									&#160;&#160;(ii) This test report should not be reproduced except in full, without written approval of this Laboratory 
-									&#160;&#160;(iii) Any corrections invalidate the test reports 
-									&#160;&#160;(iv) Any Query regarding the report must be reported immediately. 
-								
-									<t t-if="eln.has_witness">
-										&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
-									</t>
-									<t t-if="eln.remarks">
-										&#160;&#160;<span t-esc="eln.remarks"/>
-									</t>
-								</td>
-							</tr>
-						</table>
+							</div>
+						
 
 						</div>
 						
@@ -1169,10 +1161,21 @@
 									<td>
 										<span t-esc="r['inputs']"/>
 									</td>
-									<td>
+									<!-- <td>
 										<span t-esc="r['value']"/>
-										 <!-- <span t-esc="'{:.{}f}'.format(r['value'], r['decimal'])"/> -->
-									</td>
+									</td> -->
+									
+								<td t-if="r.get('result_type') == 'number'">
+									<!-- Number asel tar float format karun print hoil -->
+									<span t-esc="'{:.{}f}'.format(float(r.get('value') or 0), int(r.get('decimal') or 2))"/>
+								</td>
+								<td t-elif="r.get('result_type') == 'char'">
+									<!-- Fakta Formula line var ch result_char disel, baaki normal input saathi value disel -->
+									<span t-if="r.get('identifier') == 'Formula'" t-esc="r.get('result_char', '')"/>
+									<span t-else="" t-esc="r.get('value', '')"/>
+								</td>
+								
+								
 								</tr>
 							</tbody>
 						</table>

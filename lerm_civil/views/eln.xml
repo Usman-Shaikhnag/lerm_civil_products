@@ -34,7 +34,7 @@
                         <field name='start_date' required="1"/>
                         <field name='witness_description'/>
                         <field name='remarks'/>
-                        <field name='conformity' readonly="1"/>
+                        <field name='conformity' />
                         <field name='has_witness'/>
                         <field name='is_product_based_calculation'/>
                         <field name='file_upload' invisible="1" widget="many2many_binary"/>
@@ -98,10 +98,10 @@
 
                 <button string="Open Form" name="open_product_based_form" class="oe_highlight" type="object"
                             invisible="is_product_based_calculation == False"/>
-                <group>
+                <div>
                     <button string="Fetch Inputs" name="fetch_inputs" class="oe_highlight" type="object"
                             invisible="invisible_fetch_inputs == True or is_product_based_calculation == True"/>
-                </group>
+                </div>
 
                 <group style="width:50%" invisible="1">
                     
@@ -125,7 +125,7 @@
                         <field name="sequence" string="Sequence" widget="handle"/>
                         <field name="parameter"/>
                         <field name="technician"/>
-                        <field name="result_type" optional="show" readonly="1"/>
+                        <field name="result_type" optional="show" />
                         <field name="result_char" optional="show" readonly="result_type == 'number'"/>
                         <field name="result" optional="show" readonly="1" column_invisible="parent.is_product_based_calculation == True"/>
                         <field name="calculation_type" optional="show" column_invisible="parent.is_product_based_calculation == True"/>
