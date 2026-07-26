@@ -234,7 +234,7 @@
 
 								<!-- Dimension Length  -->
 
-								<tr t-if="data.length_dimen_visible and (data.avg_measured_length_nabl == 'pass' and nabl or (data.avg_measured_length_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.length_dimen_visible and (data.length_final_report == 'nabl' and nabl or data.length_final_report == 'non_nabl' and not nabl)">
 									<t t-set="length" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','42ea2fdb-c7be-4d19-8912-63f72c07574f')])"/>
 									
 									<td style="text-align: center;">
@@ -280,7 +280,7 @@
 
 								<!-- Dimension Height  -->
 
-								<tr t-if="data.height_dimen_visible and (data.avg_measured_height_nabl == 'pass' and nabl or (data.avg_measured_height_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.height_dimen_visible and (data.height_final_report == 'nabl' and nabl or data.height_final_report == 'non_nabl' and not nabl)">
 									<t t-set="height" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','f9bdf3df-9bb8-4cdd-8ff1-6bb6a2b23b34')])"/>
 									
 									<td style="text-align: center;">
@@ -326,7 +326,7 @@
 
                           <!-- Dimension Thickness  -->
 
-								<tr t-if="data.thickness_dimen_visible and (data.avg_measured_thickness_nabl == 'pass' and nabl or (data.avg_measured_thickness_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.thickness_dimen_visible and (data.thickness_final_report == 'nabl' and nabl or data.thickness_final_report == 'non_nabl' and not nabl)">
 									<t t-set="thickness" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','b3751088-d3ed-4e07-9546-de0e4bd26b0f')])"/>
 									
 									<td style="text-align: center;">
@@ -372,7 +372,7 @@
 
 								<!-- Bulk Density  -->
 
-								<tr t-if="data.bulk_density_visible and (data.mean_bulk_density_nabl == 'pass' and nabl or (data.mean_bulk_density_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.bulk_density_visible and (data.mean_bulk_final_report == 'nabl' and nabl or data.mean_bulk_final_report == 'non_nabl' and not nabl)">
 									<t t-set="bulk_density" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','254879sw-4ef4-4e51-abeb-57dd2abe29a4')])"/>
 									
 									<td style="text-align: center;">
@@ -418,7 +418,7 @@
 
 								<!-- Moisture Content  -->
 
-								<tr t-if="data.moisture_content_visible and (data.mean_moisture_content_nabl == 'pass' and nabl or (data.mean_moisture_content_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.moisture_content_visible and (data.moisture_content_final_report == 'nabl' and nabl or data.moisture_content_final_report == 'non_nabl' and not nabl)">
 									<t t-set="moisture_content" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','6478fde2-8097-4275-b80f-48ebdbcfe244')])"/>
 									
 									<td style="text-align: center;">
@@ -464,7 +464,7 @@
 
 								<!-- Compressive Strength  -->
 
-								<tr t-if="data.compressive_strength_visible and (data.compressive_strength_nabl == 'pass' and nabl or (data.compressive_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.compressive_strength_visible and (data.compressive_final_report == 'nabl' and nabl or data.compressive_final_report == 'non_nabl' and not nabl)">
 									<t t-set="compressive_strength" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','21457896dfe-cb61-45db-91c5-0167b27a9ab5')])"/>
 									
 									<td style="text-align: center;">
@@ -510,7 +510,7 @@
 
 								<!-- Drying Shrinkage  -->
 
-								<tr t-if="data.drying_shrinkage_visible and (data.mean_drying_shrinkage_nabl == 'pass' and nabl or (data.mean_drying_shrinkage_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.drying_shrinkage_visible and (data.drying_shrinkage_final_report == 'nabl' and nabl or data.drying_shrinkage_final_report == 'non_nabl' and not nabl)">
 									<t t-set="drying_shrinkage" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','214578ews-b1a2-4dac-b8cb-e077770af52f')])"/>
 									
 									<td style="text-align: center;">

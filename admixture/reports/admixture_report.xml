@@ -231,13 +231,13 @@
 							<tbody>
 
 								<!-- Compressive Strength -->
-                            <t t-set="show_3days" t-value="data.avg_3_days_nabl == 'pass' and nabl or (data.avg_3_days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+                            <t t-set="show_3days" t-value="data.avg_3_days_final_report == 'nabl' and nabl or data.avg_3_days_final_report == 'non_nabl' and not nabl"/>
 
-							<t t-set="show_7days" t-value="data.avg_7_days_nabl == 'pass' and nabl or (data.avg_7_days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+							<t t-set="show_7days" t-value="data.avg_7_days_final_report == 'nabl' and nabl or data.avg_7_days_final_report == 'non_nabl' and not nabl"/>
 
-							<t t-set="show_14days" t-value="data.avg_14_days_nabl == 'pass' and nabl or (data.avg_14_days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+							<t t-set="show_14days" t-value="data.avg_14_days_final_report == 'nabl' and nabl or data.avg_14_days_final_report == 'non_nabl' and not nabl"/>
 
-							<t t-set="show_28days" t-value="data.avg_28_days_nabl == 'pass' and nabl or (data.avg_28_days_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+							<t t-set="show_28days" t-value="data.avg_28_days_final_report == 'nabl' and nabl or data.avg_28_days_final_report == 'non_nabl' and not nabl"/>
 
                             
 
@@ -424,13 +424,13 @@
 								</tr>
 
 								<!-- Flexural Strength -->
-                            <t t-set="fshow_3days" t-value="data.avg_3_days_flexural_nabl == 'pass' and nabl or (data.avg_3_days_flexural_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+                            <t t-set="fshow_3days" t-value="data.avg_3_days_flexural_final_report == 'nabl' and nabl or data.avg_3_days_flexural_final_report == 'non_nabl' and not nabl"/>
 
-							<t t-set="fshow_7days" t-value="data.avg_7_days_flexural_nabl == 'pass' and nabl or (data.avg_7_days_flexural_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+							<t t-set="fshow_7days" t-value="data.avg_7_days_flexural_final_report == 'nabl' and nabl or data.avg_7_days_flexural_final_report == 'non_nabl' and not nabl"/>
 
-							<t t-set="fshow_14days" t-value="data.avg_14_days_flexural_nabl == 'pass' and nabl or (data.avg_14_days_flexural_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+							<t t-set="fshow_14days" t-value="data.avg_14_days_flexural_final_report == 'nabl' and nabl or data.avg_14_days_flexural_final_report == 'non_nabl' and not nabl"/>
 
-							<t t-set="fshow_28days" t-value="data.avg_28_days_flexural_nabl == 'pass' and nabl or (data.avg_28_days_flexural_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+							<t t-set="fshow_28days" t-value="data.avg_28_days_flexural_final_report == 'nabl' and nabl or data.avg_28_days_flexural_final_report == 'non_nabl' and not nabl"/>
 
                             
 
@@ -619,7 +619,7 @@
 
 							<!-- Bleeding Test  -->
 
-								<tr t-if="data.bleeding_visible and (data.avg_bleeding_percent_nabl == 'pass' and nabl or (data.avg_bleeding_percent_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.bleeding_visible and (data.bleeding_final_report == 'nabl' and nabl or data.bleeding_final_report == 'non_nabl' and not nabl)">
 									<t t-set="bleeding" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','5f722fd9-5698-452d-90c1-a36e837d7805')])"/>
 									
 									<td style="text-align: center;">
@@ -665,7 +665,7 @@
 
 								<!-- Slump Test  -->
 
-								<tr t-if="data.slump_test_visible and (data.avg_slump_nabl == 'pass' and nabl or (data.avg_slump_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.slump_test_visible and (data.slump_final_report == 'nabl' and nabl or data.slump_final_report == 'non_nabl' and not nabl)">
 									<t t-set="slump" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','98717d5e-562d-48b6-a969-d411229301de')])"/>
 									
 									<td style="text-align: center;">
@@ -713,7 +713,7 @@
 
 								<!-- Loss Of Workability  -->
 
-								<tr t-if="data.loss_work_visible and (data.avg_percentage_loss_nabl == 'pass' and nabl or (data.avg_percentage_loss_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.loss_work_visible and (data.percentage_loss_final_report == 'nabl' and nabl or data.percentage_loss_final_report == 'non_nabl' and not nabl)">
 									<t t-set="loss_work" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','e1b00302-8095-4db4-870a-42b431544440')])"/>
 									
 									<td style="text-align: center;">
@@ -759,7 +759,7 @@
 
 								<!-- Flow of Concrete of High Workability  -->
 
-								<tr t-if="data.flowhigh_work_visible and (data.avg_flow_diameter_nabl == 'pass' and nabl or (data.avg_flow_diameter_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.flowhigh_work_visible and (data.avg_flow_diameter_final_report == 'nabl' and nabl or data.avg_flow_diameter_final_report == 'non_nabl' and not nabl)">
 									<t t-set="flowhigh_work" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','143209a1-768a-465e-9399-e7de8bfae482')])"/>
 									
 									<td style="text-align: center;">

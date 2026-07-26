@@ -189,6 +189,36 @@ class MechanicalAdmixture(models.Model):
                     else:
                         record.avg_bleeding_percent_nabl = 'fail'
 
+    bleeding_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    bleeding_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_bleeding_final_report", store=True)
+
+    @api.depends('avg_bleeding_percent_nabl', 'bleeding_report_type')
+    def _compute_bleeding_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.bleeding_report_type == 'nabl':
+            rec.bleeding_final_report = 'nabl'
+
+        elif rec.bleeding_report_type == 'non_nabl':
+            rec.bleeding_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_bleeding_percent_nabl == 'pass':
+                rec.bleeding_final_report = 'nabl'
+            else:
+                rec.bleeding_final_report = 'non_nabl'
+
+
+    
+
     # Slump Test
     slump_test_name = fields.Char(default="Slump Test")
     slump_test_visible = fields.Boolean(string="Slump Test Visible" ,compute="_compute_visible")
@@ -271,6 +301,34 @@ class MechanicalAdmixture(models.Model):
                         break
                     else:
                         record.avg_slump_nabl = 'fail'
+
+
+    slump_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    slump_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_slump_final_report", store=True)
+    
+    @api.depends('avg_slump_nabl', 'slump_report_type')
+    def _compute_slump_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.slump_report_type == 'nabl':
+                rec.slump_final_report = 'nabl'
+    
+            elif rec.slump_report_type == 'non_nabl':
+                rec.slump_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.avg_slump_nabl == 'pass':
+                    rec.slump_final_report = 'nabl'
+                else:
+                    rec.slump_final_report = 'non_nabl'
 
 
     # Compressive Strength
@@ -403,6 +461,34 @@ class MechanicalAdmixture(models.Model):
                         record.avg_3_days_nabl = 'fail'
 
 
+    avg_3_days_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    avg_3_days_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_avg_3_days_final_report", store=True)
+    
+    @api.depends('avg_3_days_nabl', 'avg_3_days_report_type')
+    def _compute_avg_3_days_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.avg_3_days_report_type == 'nabl':
+                rec.avg_3_days_final_report = 'nabl'
+    
+            elif rec.avg_3_days_report_type == 'non_nabl':
+                rec.avg_3_days_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.avg_3_days_nabl == 'pass':
+                    rec.avg_3_days_final_report = 'nabl'
+                else:
+                    rec.avg_3_days_final_report = 'non_nabl'
+
+
     avg_7_days_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
@@ -455,6 +541,33 @@ class MechanicalAdmixture(models.Model):
                         break
                     else:
                         record.avg_7_days_nabl = 'fail'
+
+    avg_7_days_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    avg_7_days_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_avg_7_days_final_report", store=True)
+    
+    @api.depends('avg_7_days_nabl', 'avg_7_days_report_type')
+    def _compute_avg_7_days_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.avg_7_days_report_type == 'nabl':
+                rec.avg_7_days_final_report = 'nabl'
+    
+            elif rec.avg_7_days_report_type == 'non_nabl':
+                rec.avg_7_days_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.avg_7_days_nabl == 'pass':
+                    rec.avg_7_days_final_report = 'nabl'
+                else:
+                    rec.avg_7_days_final_report = 'non_nabl'
 
 
     avg_14_days_confirmity = fields.Selection([
@@ -510,6 +623,34 @@ class MechanicalAdmixture(models.Model):
                     else:
                         record.avg_14_days_nabl = 'fail'
 
+
+    avg_14_days_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    avg_14_days_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_avg_14_days_final_report", store=True)
+    
+    @api.depends('avg_14_days_nabl', 'avg_14_days_report_type')
+    def _compute_avg_14_days_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.avg_14_days_report_type == 'nabl':
+                rec.avg_14_days_final_report = 'nabl'
+    
+            elif rec.avg_14_days_report_type == 'non_nabl':
+                rec.avg_14_days_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.avg_14_days_nabl == 'pass':
+                    rec.avg_14_days_final_report = 'nabl'
+                else:
+                    rec.avg_14_days_final_report = 'non_nabl'
+
     
     avg_28_days_confirmity = fields.Selection([
         ('pass', 'Pass'),
@@ -563,6 +704,34 @@ class MechanicalAdmixture(models.Model):
                         break
                     else:
                         record.avg_28_days_nabl = 'fail'
+
+
+    avg_28_days_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    avg_28_days_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_avg_28_days_final_report", store=True)
+    
+    @api.depends('avg_28_days_nabl', 'avg_28_days_report_type')
+    def _compute_avg_28_days_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.avg_28_days_report_type == 'nabl':
+                rec.avg_28_days_final_report = 'nabl'
+    
+            elif rec.avg_28_days_report_type == 'non_nabl':
+                rec.avg_28_days_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.avg_28_days_nabl == 'pass':
+                    rec.avg_28_days_final_report = 'nabl'
+                else:
+                    rec.avg_28_days_final_report = 'non_nabl'
 
 
 
@@ -690,6 +859,36 @@ class MechanicalAdmixture(models.Model):
                     else:
                         record.avg_3_days_flexural_nabl = 'fail'
 
+
+    avg_3_days_flexural_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    avg_3_days_flexural_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_avg_3_days_flexural_final_report", store=True)
+    
+    @api.depends('avg_3_days_flexural_nabl', 'avg_3_days_flexural_report_type')
+    def _compute_avg_3_days_flexural_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.avg_3_days_flexural_report_type == 'nabl':
+                rec.avg_3_days_flexural_final_report = 'nabl'
+    
+            elif rec.avg_3_days_flexural_report_type == 'non_nabl':
+                rec.avg_3_days_flexural_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.avg_3_days_flexural_nabl == 'pass':
+                    rec.avg_3_days_flexural_final_report = 'nabl'
+                else:
+                    rec.avg_3_days_flexural_final_report = 'non_nabl'
+
+
+    
     
     avg_7_days_flexural_confirmity = fields.Selection([
         ('pass', 'Pass'),
@@ -743,6 +942,34 @@ class MechanicalAdmixture(models.Model):
                         break
                     else:
                         record.avg_7_days_flexural_nabl = 'fail'
+
+
+    avg_7_days_flexural_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    avg_7_days_flexural_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_avg_7_days_flexural_final_report", store=True)
+    
+    @api.depends('avg_7_days_flexural_nabl', 'avg_7_days_flexural_report_type')
+    def _compute_avg_7_days_flexural_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.avg_7_days_flexural_report_type == 'nabl':
+                rec.avg_7_days_flexural_final_report = 'nabl'
+    
+            elif rec.avg_7_days_flexural_report_type == 'non_nabl':
+                rec.avg_7_days_flexural_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.avg_7_days_flexural_nabl == 'pass':
+                    rec.avg_7_days_flexural_final_report = 'nabl'
+                else:
+                    rec.avg_7_days_flexural_final_report = 'non_nabl'
 
     
     avg_14_days_flexural_confirmity = fields.Selection([
@@ -798,6 +1025,33 @@ class MechanicalAdmixture(models.Model):
                     else:
                         record.avg_14_days_flexural_nabl = 'fail'
 
+    avg_14_days_flexural_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    avg_14_days_flexural_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_avg_14_days_flexural_final_report", store=True)
+    
+    @api.depends('avg_14_days_flexural_nabl', 'avg_14_days_flexural_report_type')
+    def _compute_avg_14_days_flexural_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.avg_14_days_flexural_report_type == 'nabl':
+                rec.avg_14_days_flexural_final_report = 'nabl'
+    
+            elif rec.avg_14_days_flexural_report_type == 'non_nabl':
+                rec.avg_14_days_flexural_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.avg_14_days_flexural_nabl == 'pass':
+                    rec.avg_14_days_flexural_final_report = 'nabl'
+                else:
+                    rec.avg_14_days_flexural_final_report = 'non_nabl'
+
 
     avg_28_days_flexural_confirmity = fields.Selection([
         ('pass', 'Pass'),
@@ -851,6 +1105,34 @@ class MechanicalAdmixture(models.Model):
                         break
                     else:
                         record.avg_28_days_flexural_nabl = 'fail'
+
+
+    avg_28_days_flexural_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    avg_28_days_flexural_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_avg_28_days_flexural_final_report", store=True)
+    
+    @api.depends('avg_28_days_flexural_nabl', 'avg_28_days_flexural_report_type')
+    def _compute_avg_28_days_flexural_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.avg_28_days_flexural_report_type == 'nabl':
+                rec.avg_28_days_flexural_final_report = 'nabl'
+    
+            elif rec.avg_28_days_flexural_report_type == 'non_nabl':
+                rec.avg_28_days_flexural_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.avg_28_days_flexural_nabl == 'pass':
+                    rec.avg_28_days_flexural_final_report = 'nabl'
+                else:
+                    rec.avg_28_days_flexural_final_report = 'non_nabl'
 
     
     # Loss Of Workability
@@ -937,6 +1219,33 @@ class MechanicalAdmixture(models.Model):
                         break
                     else:
                         record.avg_percentage_loss_nabl = 'fail'
+
+    percentage_loss_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    percentage_loss_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_percentage_loss_final_report", store=True)
+    
+    @api.depends('avg_percentage_loss_nabl', 'percentage_loss_report_type')
+    def _compute_percentage_loss_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.percentage_loss_report_type == 'nabl':
+                rec.percentage_loss_final_report = 'nabl'
+    
+            elif rec.percentage_loss_report_type == 'non_nabl':
+                rec.percentage_loss_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.avg_percentage_loss_nabl == 'pass':
+                    rec.percentage_loss_final_report = 'nabl'
+                else:
+                    rec.percentage_loss_final_report = 'non_nabl'
 
     
     # Flow of Concrete of High Workability
@@ -1085,6 +1394,34 @@ class MechanicalAdmixture(models.Model):
                         break
                     else:
                         record.avg_flow_diameter_nabl = 'fail'
+
+
+    avg_flow_diameter_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    avg_flow_diameter_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_avg_flow_diameter_final_report", store=True)
+    
+    @api.depends('avg_flow_diameter_nabl', 'avg_flow_diameter_report_type')
+    def _compute_avg_flow_diameter_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.avg_flow_diameter_report_type == 'nabl':
+                rec.avg_flow_diameter_final_report = 'nabl'
+    
+            elif rec.avg_flow_diameter_report_type == 'non_nabl':
+                rec.avg_flow_diameter_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.avg_flow_diameter_nabl == 'pass':
+                    rec.avg_flow_diameter_final_report = 'nabl'
+                else:
+                    rec.avg_flow_diameter_final_report = 'non_nabl'
     
     
     

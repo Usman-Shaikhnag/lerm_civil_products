@@ -1424,6 +1424,12 @@ class CementPSC(models.Model):
                 if sample.internal_id == '72096e8f-63cb-474b-822f-9b631d7b3553':
                     record.setting_time_visible = True
 
+                if sample.internal_id == 'psc5478-30fe-4043-b518-015f5c60d916':
+                    record.setting_time_visible = True
+
+                if sample.internal_id == '987psc47-5e9c-4335-9ea2-2d87624c3061':
+                    record.setting_time_visible = True
+
                 if sample.internal_id == '214578gt-372f-4775-9bcb-e9dd723547htui':
                     record.compressive_visible = True
 

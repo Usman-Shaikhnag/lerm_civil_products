@@ -1449,6 +1449,13 @@ class CementNormalConsistency(models.Model):
                 if sample.internal_id == '12457888yui14-372f-4775-9bcb-e9dd723547htui2':
                     record.setting_time_visible = True
 
+                if sample.internal_id == '40ce7425-30fe-4043-b518-015f5c60d916':
+                    record.setting_time_visible = True
+
+                if sample.internal_id == 'd339933c-5e9c-4335-9ea2-2d87624c3061':
+                    record.setting_time_visible = True
+                
+
                 if sample.internal_id == '2014587ghty1-372f-4775-9bcb-e9dd723547htui':
                     record.compressive_visible = True
 
