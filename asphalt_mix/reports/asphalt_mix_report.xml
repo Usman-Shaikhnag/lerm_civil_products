@@ -231,6 +231,8 @@
 							</thead>
 							<tbody>
 
+							<t t-if="data.dry_gradation_visible and ((data.report_type == 'nabl' and nabl) or (data.report_type == 'non_nabl' and not nabl))">
+
 
 							<!-- Sieve Analysis -->
                             <t t-set="valid_sieve_lines" t-value="[r for r in data.sieve_analysis_child_lines if r['sieve_size'] != 'pan']"/>
@@ -331,10 +333,12 @@
 									
 									
 								</tr>
+
+								</t>
 								
 
-								<!--  Wet Impact Value -->
-							<tr t-if="data.binder_content_visible and (data.avg_binder_content_nabl == 'pass' and nabl or (data.avg_binder_content_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<!--  Binder Content Visible -->
+							<tr t-if="data.binder_content_visible and (data.binder_content_final_report == 'nabl' and nabl or data.binder_content_final_report == 'non_nabl' and not nabl)">
 									<t t-set="binder" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','ae96765d-e7ab-4c7d-b67e-5815f4788b03')])"/>
 									
 									<td style="text-align: center;">

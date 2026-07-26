@@ -140,6 +140,34 @@ class PrecastKerbMechanical(models.Model):
                       record.avrg_length_nabl = 'fail'
 
 
+    avrg_length_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avrg_length_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avrg_length_final_report", store=True)
+
+    @api.depends('avrg_length_nabl', 'avrg_length_report_type')
+    def _compute_avrg_length_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avrg_length_report_type == 'nabl':
+            rec.avrg_length_final_report = 'nabl'
+
+        elif rec.avrg_length_report_type == 'non_nabl':
+            rec.avrg_length_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avrg_length_nabl == 'pass':
+                rec.avrg_length_final_report = 'nabl'
+            else:
+                rec.avrg_length_final_report = 'non_nabl'
+
+
     
 
     avrg_width_confirmity = fields.Selection([
@@ -196,6 +224,33 @@ class PrecastKerbMechanical(models.Model):
                   else:
                       record.avrg_width_nabl = 'fail'
 
+    avrg_width_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avrg_width_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avrg_width_final_report", store=True)
+
+    @api.depends('avrg_width_nabl', 'avrg_width_report_type')
+    def _compute_avrg_width_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avrg_width_report_type == 'nabl':
+            rec.avrg_width_final_report = 'nabl'
+
+        elif rec.avrg_width_report_type == 'non_nabl':
+            rec.avrg_width_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avrg_width_nabl == 'pass':
+                rec.avrg_width_final_report = 'nabl'
+            else:
+                rec.avrg_width_final_report = 'non_nabl'
+
 
     avrg_height_confirmity = fields.Selection([
         ('pass', 'Pass'),
@@ -250,6 +305,33 @@ class PrecastKerbMechanical(models.Model):
                       break
                   else:
                       record.avrg_height_nabl = 'fail'
+
+    avrg_height_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avrg_height_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avrg_height_final_report", store=True)
+
+    @api.depends('avrg_height_nabl', 'avrg_height_report_type')
+    def _compute_avrg_height_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avrg_height_report_type == 'nabl':
+            rec.avrg_height_final_report = 'nabl'
+
+        elif rec.avrg_height_report_type == 'non_nabl':
+            rec.avrg_height_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avrg_height_nabl == 'pass':
+                rec.avrg_height_final_report = 'nabl'
+            else:
+                rec.avrg_height_final_report = 'non_nabl'
 
 
     # Compressive Strength
@@ -324,6 +406,34 @@ class PrecastKerbMechanical(models.Model):
                       break
                   else:
                       record.avg_compressive_strength_nabl = 'fail'
+
+
+    compressive_strength_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    compressive_strength_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_compressive_strength_final_report", store=True)
+
+    @api.depends('avg_compressive_strength_nabl', 'compressive_strength_report_type')
+    def _compute_compressive_strength_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.compressive_strength_report_type == 'nabl':
+            rec.compressive_strength_final_report = 'nabl'
+
+        elif rec.compressive_strength_report_type == 'non_nabl':
+            rec.compressive_strength_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_compressive_strength_nabl == 'pass':
+                rec.compressive_strength_final_report = 'nabl'
+            else:
+                rec.compressive_strength_final_report = 'non_nabl'
 
     
 
@@ -413,6 +523,34 @@ class PrecastKerbMechanical(models.Model):
                       break
                   else:
                       record.average_water_absorption_nabl = 'fail'
+
+
+    water_absorption_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    water_absorption_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_water_absorption_final_report", store=True)
+
+    @api.depends('average_water_absorption_nabl', 'water_absorption_report_type')
+    def _compute_water_absorption_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.water_absorption_report_type == 'nabl':
+            rec.water_absorption_final_report = 'nabl'
+
+        elif rec.water_absorption_report_type == 'non_nabl':
+            rec.water_absorption_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.average_water_absorption_nabl == 'pass':
+                rec.water_absorption_final_report = 'nabl'
+            else:
+                rec.water_absorption_final_report = 'non_nabl'
 
     
 

@@ -362,9 +362,9 @@
 
 
 							<!-- Bulk Density -->
-                            <t t-set="show_loose_bulk_density" t-value="data.loose_avg_nabl == 'pass' and nabl or (data.loose_avg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+                            <t t-set="show_loose_bulk_density" t-value="data.loose_final_report == 'nabl' and nabl or data.loose_final_report == 'non_nabl' and not nabl"/>
 
-                            <t t-set="show_rodded_bulk_density" t-value="data.rodded_avg_nabl == 'pass' and nabl or (data.rodded_avg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+							 <t t-set="show_rodded_bulk_density" t-value="data.rodded_final_report == 'nabl' and nabl or data.rodded_final_report == 'non_nabl' and not nabl"/>
 
                             <!-- 🔹 Step 2: Rowspan calculation -->
 					      <t t-set="rowspan_count" t-value="1 + int(show_loose_bulk_density) + int(show_rodded_bulk_density)"/>
@@ -467,7 +467,7 @@
 								</tr>
 
 								<!-- Aggregate Impact Value -->
-							<tr t-if="data.impact_visible and (data.impact_value_nabl == 'pass' and nabl or (data.impact_value_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.impact_visible and (data.impact_value_final_report == 'nabl' and nabl or data.impact_value_final_report == 'non_nabl' and not nabl)">
 									<t t-set="impact" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','c19a25e1-5ba8-41a9-83c4-d6276c5e7c4a')])"/>
 									
 									<td style="text-align: center;">
@@ -513,7 +513,7 @@
 								</tr>
 
 							<!-- Specific Gravity -->
-								<tr t-if="data.specific_gravity_visible and (data.avg_specific_gravity_nabl == 'pass' and nabl or (data.avg_specific_gravity_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.specific_gravity_visible and (data.specific_gravity_final_report == 'nabl' and nabl or data.specific_gravity_final_report == 'non_nabl' and not nabl)">
 									<t t-set="specific_gravity" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','3c968fb8-a40a-4035-a027-2f8ce099b522')])"/>
 									
 									<td style="text-align: center;">
@@ -560,7 +560,7 @@
 
 								<!-- water absorbtion -->
 
-								<tr t-if="data.specific_gravity_visible and (data.avg_water_absorption_nabl == 'pass' and nabl or (data.avg_water_absorption_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.specific_gravity_visible and (data.water_absorption_final_report == 'nabl' and nabl or data.water_absorption_final_report == 'non_nabl' and not nabl)">
 									<t t-set="water_absorption" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','7535007b-0629-4ab7-9b8e-b972f85d618d')])"/>
 									
 									<td style="text-align: center;">
@@ -610,7 +610,7 @@
 						
 
 								<!-- Los Angeles Abrasion Value -->
-							<tr t-if="data.abrasion_visible and (data.avg_abrasion_value_nabl == 'pass' and nabl or (data.avg_abrasion_value_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.abrasion_visible and (data.abrasion_final_report == 'nabl' and nabl or data.abrasion_final_report == 'non_nabl' and not nabl)">
 									<t t-set="abrasion" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','8c7ae324-86e4-424a-816f-cd315f75550e')])"/>
 									
 									<td style="text-align: center;">

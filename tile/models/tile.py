@@ -143,6 +143,34 @@ class Tile(models.Model):
                         record.avg_length_nabl = 'fail'
 
 
+    avg_length_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_length_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_length_final_report", store=True)
+
+    @api.depends('avg_length_nabl', 'avg_length_report_type')
+    def _compute_avg_length_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_length_report_type == 'nabl':
+            rec.avg_length_final_report = 'nabl'
+
+        elif rec.avg_length_report_type == 'non_nabl':
+            rec.avg_length_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_length_nabl == 'pass':
+                rec.avg_length_final_report = 'nabl'
+            else:
+                rec.avg_length_final_report = 'non_nabl'
+
+
     avg_width_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),('na', 'NA'),], string='Confirmity',compute="_compute_avg_width_confirmity")
@@ -193,6 +221,34 @@ class Tile(models.Model):
                         break
                     else:
                         record.avg_width_nabl = 'fail'
+
+    avg_width_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_width_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_width_final_report", store=True)
+
+    @api.depends('avg_width_nabl', 'avg_width_report_type')
+    def _compute_avg_width_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_width_report_type == 'nabl':
+            rec.avg_width_final_report = 'nabl'
+
+        elif rec.avg_width_report_type == 'non_nabl':
+            rec.avg_width_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_width_nabl == 'pass':
+                rec.avg_width_final_report = 'nabl'
+            else:
+                rec.avg_width_final_report = 'non_nabl'
+
 
 
     avg_thickness_confirmity = fields.Selection([
@@ -245,6 +301,34 @@ class Tile(models.Model):
                         break
                     else:
                         record.avg_thickness_nabl = 'fail'
+
+
+    avg_thickness_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_thickness_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_thickness_final_report", store=True)
+
+    @api.depends('avg_thickness_nabl', 'avg_thickness_report_type')
+    def _compute_avg_thickness_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_thickness_report_type == 'nabl':
+            rec.avg_thickness_final_report = 'nabl'
+
+        elif rec.avg_thickness_report_type == 'non_nabl':
+            rec.avg_thickness_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_thickness_nabl == 'pass':
+                rec.avg_thickness_final_report = 'nabl'
+            else:
+                rec.avg_thickness_final_report = 'non_nabl'
 
 
 
@@ -416,6 +500,34 @@ class Tile(models.Model):
                         record.straightness_max_gap_nabl = 'fail'
 
 
+    straightness_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    straightness_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_straightness_final_report", store=True)
+
+    @api.depends('straightness_max_gap_nabl', 'straightness_report_type')
+    def _compute_straightness_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.straightness_report_type == 'nabl':
+            rec.straightness_final_report = 'nabl'
+
+        elif rec.straightness_report_type == 'non_nabl':
+            rec.straightness_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.straightness_max_gap_nabl == 'pass':
+                rec.straightness_final_report = 'nabl'
+            else:
+                rec.straightness_final_report = 'non_nabl'
+
+
     # Water Absorption
     water_absorption_name = fields.Char("Name",default="Water Absorption")
     water_absorption_visible = fields.Boolean("Water Absorption Visible",compute="_compute_visible")   
@@ -491,6 +603,34 @@ class Tile(models.Model):
                         break
                     else:
                         record.average_water_absorption_nabl = 'fail'
+
+
+    water_absorption_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    water_absorption_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_water_absorption_final_report", store=True)
+
+    @api.depends('average_water_absorption_nabl', 'water_absorption_report_type')
+    def _compute_water_absorption_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.water_absorption_report_type == 'nabl':
+            rec.water_absorption_final_report = 'nabl'
+
+        elif rec.water_absorption_report_type == 'non_nabl':
+            rec.water_absorption_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.average_water_absorption_nabl == 'pass':
+                rec.water_absorption_final_report = 'nabl'
+            else:
+                rec.water_absorption_final_report = 'non_nabl'
 
     
 
@@ -571,6 +711,34 @@ class Tile(models.Model):
                         record.avg_bulk_density_nabl = 'fail'
 
 
+    bulk_density_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    bulk_density_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_bulk_density_final_report", store=True)
+
+    @api.depends('avg_bulk_density_nabl', 'bulk_density_report_type')
+    def _compute_bulk_density_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.bulk_density_report_type == 'nabl':
+            rec.bulk_density_final_report = 'nabl'
+
+        elif rec.bulk_density_report_type == 'non_nabl':
+            rec.bulk_density_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_bulk_density_nabl == 'pass':
+                rec.bulk_density_final_report = 'nabl'
+            else:
+                rec.bulk_density_final_report = 'non_nabl'
+
+
 
     # Rectangularity
     rectangularity_name = fields.Char("Name",default="Rectangularity")
@@ -645,6 +813,34 @@ class Tile(models.Model):
                         break
                     else:
                         record.average_rectangularity_nabl = 'fail'
+
+
+    rectangularity_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    rectangularity_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_rectangularity_final_report", store=True)
+
+    @api.depends('average_rectangularity_nabl', 'rectangularity_report_type')
+    def _compute_rectangularity_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.rectangularity_report_type == 'nabl':
+            rec.rectangularity_final_report = 'nabl'
+
+        elif rec.rectangularity_report_type == 'non_nabl':
+            rec.rectangularity_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.average_rectangularity_nabl == 'pass':
+                rec.rectangularity_final_report = 'nabl'
+            else:
+                rec.rectangularity_final_report = 'non_nabl'
 
 
     # Deviation in Length and Width
@@ -751,6 +947,34 @@ class Tile(models.Model):
                         record.avg_length_deviation_nabl = 'fail'
 
 
+    length_deviation_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    length_deviation_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_length_deviation_final_report", store=True)
+
+    @api.depends('avg_length_deviation_nabl', 'length_deviation_report_type')
+    def _compute_length_deviation_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.length_deviation_report_type == 'nabl':
+            rec.length_deviation_final_report = 'nabl'
+
+        elif rec.length_deviation_report_type == 'non_nabl':
+            rec.length_deviation_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_length_deviation_nabl == 'pass':
+                rec.length_deviation_final_report = 'nabl'
+            else:
+                rec.length_deviation_final_report = 'non_nabl'
+
+
     avg_width_deviation_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),('na', 'NA'),], string='Confirmity',compute="_compute_avg_width_deviation_confirmity")
@@ -801,6 +1025,34 @@ class Tile(models.Model):
                         break
                     else:
                         record.avg_width_deviation_nabl = 'fail'
+
+
+    width_deviation_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    width_deviation_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_width_deviation_final_report", store=True)
+
+    @api.depends('avg_width_deviation_nabl', 'width_deviation_report_type')
+    def _compute_width_deviation_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.width_deviation_report_type == 'nabl':
+            rec.width_deviation_final_report = 'nabl'
+
+        elif rec.width_deviation_report_type == 'non_nabl':
+            rec.width_deviation_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_width_deviation_nabl == 'pass':
+                rec.width_deviation_final_report = 'nabl'
+            else:
+                rec.width_deviation_final_report = 'non_nabl'
 
 
     

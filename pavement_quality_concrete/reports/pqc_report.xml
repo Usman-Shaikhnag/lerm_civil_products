@@ -342,7 +342,7 @@
 
 							
 								<!-- Elongation -->
-							<tr t-if="data.elongation_fl_visible and (data.elongation_index_nabl == 'pass' and nabl or (data.elongation_index_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.elongation_fl_visible and (data.elongation_final_report == 'nabl' and nabl or data.elongation_final_report == 'non_nabl' and not nabl)">
 									<t t-set="elongation" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')])"/>
 									
 									<td style="text-align: center;">
@@ -388,7 +388,7 @@
 								</tr>
 
 								<!-- Flakiness -->
-							<tr t-if="data.elongation_fl_visible and (data.flakiness_index_nabl == 'pass' and nabl or (data.flakiness_index_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.elongation_fl_visible and (data.flakiness_final_report == 'nabl' and nabl or data.flakiness_final_report == 'non_nabl' and not nabl)">
 									<t t-set="elongation_fl" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','be7a60bc-bb2c-410d-b91a-4f8730a4ac6f')])"/>
 									
 									<td style="text-align: center;">
@@ -434,7 +434,7 @@
 								</tr>
 
 								<!-- Aggregate Impact Value -->
-							<tr t-if="data.impact_visible and (data.impact_value_nabl == 'pass' and nabl or (data.impact_value_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.impact_visible and (data.impact_value_final_report == 'nabl' and nabl or data.impact_value_final_report == 'non_nabl' and not nabl)">
 									<t t-set="impact" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','2bd241bd-4bc3-4fe0-bea2-c1c15ff867a2')])"/>
 									
 									<td style="text-align: center;">
@@ -480,7 +480,7 @@
 								</tr>
 
 							<!-- Specific Gravity -->
-								<tr t-if="data.specific_gravity_visible and (data.avg_specific_gravity_nabl == 'pass' and nabl or (data.avg_specific_gravity_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.specific_gravity_visible and (data.specific_gravity_final_report == 'nabl' and nabl or data.specific_gravity_final_report == 'non_nabl' and not nabl)">
 									<t t-set="specific_gravity" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','3114db41-cfa7-49ad-9324-fcdbc9661038')])"/>
 									
 									<td style="text-align: center;">
@@ -527,7 +527,7 @@
 
 								<!-- water absorbtion -->
 
-								<tr t-if="data.specific_gravity_visible and (data.avg_water_absorption_nabl == 'pass' and nabl or (data.avg_water_absorption_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.specific_gravity_visible and (data.water_absorption_final_report == 'nabl' and nabl or data.water_absorption_final_report == 'non_nabl' and not nabl)">
 									<t t-set="water_absorption" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','22ee804f-41a3-4fd1-a301-a8d9180fba10')])"/>
 									
 									<td style="text-align: center;">
@@ -577,7 +577,7 @@
 						
 
 								<!-- Soundness - Na2SO4 -->
-							<tr t-if="data.soundness_na2so4_visible and (data.total_weighted_avg_nabl == 'pass' and nabl or (data.total_weighted_avg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.soundness_na2so4_visible and (data.sodium_final_report == 'nabl' and nabl or data.sodium_final_report == 'non_nabl' and not nabl)">
 									<t t-set="sodium" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','153f3c8b-6ccb-4db0-b89d-02db61f61e81')])"/>
 									
 									<td style="text-align: center;">
@@ -623,7 +623,7 @@
 								</tr>
 
 								<!--  Soundness - MgSO4 -->
-							<tr t-if="data.soundness_mgso4_visible and (data.mag_total_weighted_avg_nabl == 'pass' and nabl or (data.mag_total_weighted_avg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.soundness_mgso4_visible and (data.magnesium_final_report == 'nabl' and nabl or data.magnesium_final_report == 'non_nabl' and not nabl)">
 									<t t-set="magnesium" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','89650e58-11a6-42af-8eb7-187467443a79')])"/>
 									
 									<td style="text-align: center;">
@@ -670,9 +670,9 @@
 
 								<!-- Compressive Strength -->
 
-							<t t-set="show_7days" t-value="data.avg_7_comp_strength_nabl == 'pass' and nabl or (data.avg_7_comp_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+							<t t-set="show_7days" t-value="data.avg_7_comp_final_report == 'nabl' and nabl or data.avg_7_comp_final_report == 'non_nabl' and not nabl"/>
 
-							<t t-set="show_28days" t-value="data.avg_28_comp_strength_nabl == 'pass' and nabl or (data.avg_28_comp_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+							<t t-set="show_28days" t-value="data.avg_28_comp_final_report == 'nabl' and nabl or data.avg_28_comp_final_report == 'non_nabl' and not nabl"/>
 
                             
 
@@ -778,9 +778,9 @@
 
 								<!-- Flexural Strength -->
 
-							<t t-set="fshow_7days" t-value="data.avg_7_flex_strength_nabl == 'pass' and nabl or (data.avg_7_flex_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+							<t t-set="fshow_7days" t-value="data.avg_7_flex_final_report == 'nabl' and nabl or data.avg_7_flex_final_report == 'non_nabl' and not nabl"/>
 
-							<t t-set="fshow_28days" t-value="data.avg_28_flex_strength_nabl == 'pass' and nabl or (data.avg_28_flex_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+							<t t-set="fshow_28days" t-value="data.avg_28_flex_final_report == 'nabl' and nabl or data.avg_28_flex_final_report == 'non_nabl' and not nabl"/>
 
                             
 

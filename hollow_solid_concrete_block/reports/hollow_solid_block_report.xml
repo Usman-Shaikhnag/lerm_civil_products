@@ -238,7 +238,7 @@
 
 								<!-- Dimension Length  -->
 
-								<tr t-if="data.length_dimen_visible and (data.avg_measured_length_nabl == 'pass' and nabl or (data.avg_measured_length_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.length_dimen_visible and (data.measured_length_final_report == 'nabl' and nabl or data.measured_length_final_report == 'non_nabl' and not nabl)">
 									<t t-set="length" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','916c70fe-57ff-4f2a-9361-41a687b54f85')])"/>
 									
 									<td style="text-align: center;">
@@ -284,7 +284,7 @@
 
 								<!-- Dimension Height  -->
 
-								<tr t-if="data.height_dimen_visible and (data.avg_measured_height_nabl == 'pass' and nabl or (data.avg_measured_height_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.height_dimen_visible and (data.measured_height_final_report == 'nabl' and nabl or data.measured_height_final_report == 'non_nabl' and not nabl)">
 									<t t-set="height" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','6c0d4ef6-867f-4e79-baf1-690338654f26')])"/>
 									
 									<td style="text-align: center;">
@@ -330,7 +330,7 @@
 
                           <!-- Dimension Width  -->
 
-								<tr t-if="data.width_dimen_visible and (data.avg_measured_width_nabl == 'pass' and nabl or (data.avg_measured_width_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.width_dimen_visible and (data.measured_width_final_report == 'nabl' and nabl or data.measured_width_final_report == 'non_nabl' and not nabl)">
 									<t t-set="width" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','ffa13e28-aab7-400a-9885-22b12783ca07')])"/>
 									
 									<td style="text-align: center;">
@@ -376,7 +376,7 @@
 
 								<!-- Block Density  -->
 
-								<tr t-if="data.block_density_visible and (data.mean_block_density_nabl == 'pass' and nabl or (data.mean_block_density_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.block_density_visible and (data.block_density_final_report == 'nabl' and nabl or data.block_density_final_report == 'non_nabl' and not nabl)">
 									<t t-set="block_density" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','eaea5db1-dda0-4516-a043-322050d93537')])"/>
 									
 									<td style="text-align: center;">
@@ -424,7 +424,7 @@
 
 								<!-- Compressive Strength  -->
 
-								<tr t-if="data.compressive_strength_visible and (data.compressive_strength_nabl == 'pass' and nabl or (data.compressive_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.compressive_strength_visible and (data.compressive_final_report == 'nabl' and nabl or data.compressive_final_report == 'non_nabl' and not nabl)">
 									<t t-set="compressive_strength" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','692bb4da-26eb-4701-9ad7-b341c974c8e8')])"/>
 									
 									<td style="text-align: center;">
@@ -471,7 +471,7 @@
 
 								<!-- Water Absorption  -->
 
-								<tr t-if="data.water_absorbtion_visible and (data.mean_water_absorption_nabl == 'pass' and nabl or (data.mean_water_absorption_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.water_absorbtion_visible and (data.water_absorption_final_report == 'nabl' and nabl or data.water_absorption_final_report == 'non_nabl' and not nabl)">
 									<t t-set="water" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','fc4c19c4-3a3a-45f3-a099-f33a4b8e57a9')])"/>
 									
 									<td style="text-align: center;">

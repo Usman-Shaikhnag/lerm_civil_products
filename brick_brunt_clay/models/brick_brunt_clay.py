@@ -176,6 +176,34 @@ class MechanicalBricksBurntClay(models.Model):
                       record.avrg_length_nabl = 'fail'
 
 
+    avg_length_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_length_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_length_final_report", store=True)
+
+    @api.depends('avrg_length_nabl', 'avg_length_report_type')
+    def _compute_avg_length_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_length_report_type == 'nabl':
+            rec.avg_length_final_report = 'nabl'
+
+        elif rec.avg_length_report_type == 'non_nabl':
+            rec.avg_length_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avrg_length_nabl == 'pass':
+                rec.avg_length_final_report = 'nabl'
+            else:
+                rec.avg_length_final_report = 'non_nabl'
+
+
     
 
     avrg_width_confirmity = fields.Selection([
@@ -233,6 +261,34 @@ class MechanicalBricksBurntClay(models.Model):
                       record.avrg_width_nabl = 'fail'
 
 
+    avg_width_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_width_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_width_final_report", store=True)
+
+    @api.depends('avrg_width_nabl', 'avg_width_report_type')
+    def _compute_avg_width_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_width_report_type == 'nabl':
+            rec.avg_width_final_report = 'nabl'
+
+        elif rec.avg_width_report_type == 'non_nabl':
+            rec.avg_width_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avrg_width_nabl == 'pass':
+                rec.avg_width_final_report = 'nabl'
+            else:
+                rec.avg_width_final_report = 'non_nabl'
+
+
     avrg_height_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
@@ -286,6 +342,34 @@ class MechanicalBricksBurntClay(models.Model):
                       break
                   else:
                       record.avrg_height_nabl = 'fail'
+
+
+    avrg_height_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avrg_height_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avrg_height_final_report", store=True)
+
+    @api.depends('avrg_height_nabl', 'avrg_height_report_type')
+    def _compute_avrg_height_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avrg_height_report_type == 'nabl':
+            rec.avrg_height_final_report = 'nabl'
+
+        elif rec.avrg_height_report_type == 'non_nabl':
+            rec.avrg_height_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avrg_height_nabl == 'pass':
+                rec.avrg_height_final_report = 'nabl'
+            else:
+                rec.avrg_height_final_report = 'non_nabl'
 
 
     
@@ -357,6 +441,34 @@ class MechanicalBricksBurntClay(models.Model):
                         break
                     else:
                         record.comp_strength_nabl = 'fail'
+
+
+    comp_strength_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    comp_strength_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_comp_strength_final_report", store=True)
+
+    @api.depends('comp_strength_nabl', 'comp_strength_report_type')
+    def _compute_comp_strength_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.comp_strength_report_type == 'nabl':
+            rec.comp_strength_final_report = 'nabl'
+
+        elif rec.comp_strength_report_type == 'non_nabl':
+            rec.comp_strength_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.comp_strength_nabl == 'pass':
+                rec.comp_strength_final_report = 'nabl'
+            else:
+                rec.comp_strength_final_report = 'non_nabl'
 
     
 
@@ -447,22 +559,72 @@ class MechanicalBricksBurntClay(models.Model):
                         record.water_absorption_nabl = 'fail'
 
 
+    water_absorption_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    water_absorption_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_water_absorption_final_report", store=True)
+
+    @api.depends('water_absorption_nabl', 'water_absorption_report_type')
+    def _compute_water_absorption_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.water_absorption_report_type == 'nabl':
+            rec.water_absorption_final_report = 'nabl'
+
+        elif rec.water_absorption_report_type == 'non_nabl':
+            rec.water_absorption_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.water_absorption_nabl == 'pass':
+                rec.water_absorption_final_report = 'nabl'
+            else:
+                rec.water_absorption_final_report = 'non_nabl'
+
+
     # Efflorescence Visual Observation 
     efflorescence_visible = fields.Boolean("Efflorescence Visible",compute="_compute_visible")
     visual_observation_name_efflorescence = fields.Char("Name",default="Efflorescence")
-    visual_observation_1 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
+
+
+    efflorescence_line_ids = fields.One2many(
+        "bricks.efflorescence.line",
+        "parent_id",
+        string="Observation Lines"
+    )
+
+
+    report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="Report Type",
+        default='nabl',
+        required=True,
+    )
+
+    efflorescence_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_efflorescence_nabl",
+    store=True
+)
+
+    @api.depends('report_type')
+    def _compute_efflorescence_nabl(self):
+     for rec in self:
+        rec.efflorescence_nabl = 'pass' if rec.report_type == 'nabl' else 'fail'
+
     
 
 
     
     
-
-    
-
-    confirmity = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),
-    ], string='Confirmity', default='fail')
 
 
     ### Compute Visible
@@ -484,6 +646,7 @@ class MechanicalBricksBurntClay(models.Model):
                     record.water_absorbtion_visible = True
                 if sample.internal_id == "3e9d3877-e657-4409-8e7c-12c066f3cf26":
                     record.efflorescence_visible = True
+
                 if sample.internal_id == "9f1689be-107d-4e30-9d3d-2aff6292264d":
                     record.dimension_visible = True 
 
@@ -521,7 +684,6 @@ class MechanicalBricksBurntClay(models.Model):
 
             # Efflorence
             if result.parameter.internal_id == '3e9d3877-e657-4409-8e7c-12c066f3cf26':
-                result.result_char = self.visual_observation_1
                 result.calculated = True
 
             # Dimension
@@ -738,6 +900,8 @@ class BrickDimensionLine(models.Model):
     parent_id = fields.Many2one('mechanical.bricks.burnt.clay',string="Parent Id")
 
     serial_no = fields.Integer(string="Sample No", readonly=True, copy=False, default=1)
+
+    no_bricks = fields.Float(string="No. of Bricks")
     lengthh = fields.Float(string="Length")
     width = fields.Float(string="Width")
     height = fields.Float(string="Height")
@@ -753,6 +917,64 @@ class BrickDimensionLine(models.Model):
                 vals['serial_no'] = max_serial_no + 1
 
         return super(BrickDimensionLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+class BricksEflorescenceLine(models.Model):
+    _name = "bricks.efflorescence.line"
+    parent_id = fields.Many2one('mechanical.bricks.burnt.clay', string="Parent Id")
+
+    serial_no = fields.Integer(string="Sample No", readonly=True, copy=False, default=1)
+
+    brick_identification_no = fields.Char(
+        string="Brick Identification No."
+    )
+
+    water_level = fields.Float(
+        string="Water Level (mm)"
+    )
+
+    first_cycle = fields.Selection([
+        ('nil', 'NIL'),
+        ('slight', 'SLIGHT'),
+        ('moderate', 'MODERATE'),
+        ('heavy', 'HEAVY'),
+        ('serious', 'SERIOUS'),
+    ], string="1st Cycle Observation")
+
+    second_cycle = fields.Selection([
+        ('nil', 'NIL'),
+        ('slight', 'SLIGHT'),
+        ('moderate', 'MODERATE'),
+        ('heavy', 'HEAVY'),
+        ('serious', 'SERIOUS'),
+    ], string="2nd Cycle Observation")
+
+    efflorescence_rating = fields.Selection([
+        ('nil', 'NIL'),
+        ('slight', 'SLIGHT'),
+        ('moderate', 'MODERATE'),
+        ('heavy', 'HEAVY'),
+        ('serious', 'SERIOUS'),
+    ], string="Efflorescence Rating")
+
+    remarks = fields.Char("Remarks")
+    
+   
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(BricksEflorescenceLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines

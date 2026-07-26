@@ -457,6 +457,34 @@ class BallastMechanical(models.Model):
                         record.loose_avg_nabl = 'fail'
 
 
+    loose_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    loose_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_loose_final_report", store=True)
+
+    @api.depends('loose_avg_nabl', 'loose_report_type')
+    def _compute_loose_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.loose_report_type == 'nabl':
+            rec.loose_final_report = 'nabl'
+
+        elif rec.loose_report_type == 'non_nabl':
+            rec.loose_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.loose_avg_nabl == 'pass':
+                rec.loose_final_report = 'nabl'
+            else:
+                rec.loose_final_report = 'non_nabl'
+
+
 
     # Rodded Bulk Density
     rodded_bulk_density_name = fields.Char("Name",default="Rodded Bulk Density")
@@ -533,6 +561,34 @@ class BallastMechanical(models.Model):
                         record.rodded_avg_nabl = 'fail'
 
 
+    rodded_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    rodded_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_rodded_final_report", store=True)
+
+    @api.depends('rodded_avg_nabl', 'rodded_report_type')
+    def _compute_rodded_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.rodded_report_type == 'nabl':
+            rec.rodded_final_report = 'nabl'
+
+        elif rec.rodded_report_type == 'non_nabl':
+            rec.rodded_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.rodded_avg_nabl == 'pass':
+                rec.rodded_final_report = 'nabl'
+            else:
+                rec.rodded_final_report = 'non_nabl'
+
+
 
 
     # Aggregate Impact Value
@@ -604,6 +660,36 @@ class BallastMechanical(models.Model):
                         break
                     else:
                         record.impact_value_nabl = 'fail'
+
+
+    impact_value_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    impact_value_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_impact_value_final_report", store=True)
+
+    @api.depends('impact_value_nabl', 'impact_value_report_type')
+    def _compute_impact_value_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.impact_value_report_type == 'nabl':
+            rec.impact_value_final_report = 'nabl'
+
+        elif rec.impact_value_report_type == 'non_nabl':
+            rec.impact_value_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.impact_value_nabl == 'pass':
+                rec.impact_value_final_report = 'nabl'
+            else:
+                rec.impact_value_final_report = 'non_nabl'
+
+
 
     # Specific Gravety 
     specific_gravity_name = fields.Char("Name",default="Specific Gravity & Water Absorption")
@@ -684,6 +770,34 @@ class BallastMechanical(models.Model):
                         record.avg_specific_gravity_nabl = 'fail'
 
 
+    specific_gravity_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    specific_gravity_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_specific_gravity_final_report", store=True)
+
+    @api.depends('avg_specific_gravity_nabl', 'specific_gravity_report_type')
+    def _compute_specific_gravity_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.specific_gravity_report_type == 'nabl':
+            rec.specific_gravity_final_report = 'nabl'
+
+        elif rec.specific_gravity_report_type == 'non_nabl':
+            rec.specific_gravity_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_specific_gravity_nabl == 'pass':
+                rec.specific_gravity_final_report = 'nabl'
+            else:
+                rec.specific_gravity_final_report = 'non_nabl'
+
+
     avg_water_absorption_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
@@ -736,6 +850,34 @@ class BallastMechanical(models.Model):
                         break
                     else:
                         record.avg_water_absorption_nabl = 'fail'
+
+
+    water_absorption_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    water_absorption_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_water_absorption_final_report", store=True)
+
+    @api.depends('avg_water_absorption_nabl', 'water_absorption_report_type')
+    def _compute_water_absorption_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.water_absorption_report_type == 'nabl':
+            rec.water_absorption_final_report = 'nabl'
+
+        elif rec.water_absorption_report_type == 'non_nabl':
+            rec.water_absorption_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_water_absorption_nabl == 'pass':
+                rec.water_absorption_final_report = 'nabl'
+            else:
+                rec.water_absorption_final_report = 'non_nabl'
 
 
 
@@ -817,6 +959,34 @@ class BallastMechanical(models.Model):
                         break
                     else:
                         record.avg_abrasion_value_nabl = 'fail'
+
+
+    abrasion_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    abrasion_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_abrasion_final_report", store=True)
+
+    @api.depends('avg_abrasion_value_nabl', 'abrasion_report_type')
+    def _compute_abrasion_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.abrasion_report_type == 'nabl':
+            rec.abrasion_final_report = 'nabl'
+
+        elif rec.abrasion_report_type == 'non_nabl':
+            rec.abrasion_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_abrasion_value_nabl == 'pass':
+                rec.abrasion_final_report = 'nabl'
+            else:
+                rec.abrasion_final_report = 'non_nabl'
 
 
 

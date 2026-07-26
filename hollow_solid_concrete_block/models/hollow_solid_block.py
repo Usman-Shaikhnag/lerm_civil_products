@@ -123,6 +123,33 @@ class HollowSolidConcreteBlock(models.Model):
                     else:
                         record.avg_measured_length_nabl = 'fail'
 
+    measured_length_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    measured_length_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_measured_length_final_report", store=True)
+
+    @api.depends('avg_measured_length_nabl', 'measured_length_report_type')
+    def _compute_measured_length_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.measured_length_report_type == 'nabl':
+            rec.measured_length_final_report = 'nabl'
+
+        elif rec.measured_length_report_type == 'non_nabl':
+            rec.measured_length_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_measured_length_nabl == 'pass':
+                rec.measured_length_final_report = 'nabl'
+            else:
+                rec.measured_length_final_report = 'non_nabl'
+
     # Dimension Height
     height_dimen_name = fields.Char(default="Dimension Height")
     height_dimen_visible = fields.Boolean(string="Dimension Height Visible" ,compute="_compute_visible")
@@ -197,6 +224,33 @@ class HollowSolidConcreteBlock(models.Model):
                         break
                     else:
                         record.avg_measured_height_nabl = 'fail'
+
+    measured_height_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    measured_height_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_measured_height_final_report", store=True)
+
+    @api.depends('avg_measured_height_nabl', 'measured_height_report_type')
+    def _compute_measured_height_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.measured_height_report_type == 'nabl':
+            rec.measured_height_final_report = 'nabl'
+
+        elif rec.measured_height_report_type == 'non_nabl':
+            rec.measured_height_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_measured_height_nabl == 'pass':
+                rec.measured_height_final_report = 'nabl'
+            else:
+                rec.measured_height_final_report = 'non_nabl'
 
     # Dimension Width
     width_dimen_name = fields.Char(default="Dimension Width")
@@ -273,6 +327,34 @@ class HollowSolidConcreteBlock(models.Model):
                     else:
                         record.avg_measured_width_nabl = 'fail'
 
+
+    measured_width_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    measured_width_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_measured_width_final_report", store=True)
+
+    @api.depends('avg_measured_width_nabl', 'measured_width_report_type')
+    def _compute_measured_width_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.measured_width_report_type == 'nabl':
+            rec.measured_width_final_report = 'nabl'
+
+        elif rec.measured_width_report_type == 'non_nabl':
+            rec.measured_width_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_measured_width_nabl == 'pass':
+                rec.measured_width_final_report = 'nabl'
+            else:
+                rec.measured_width_final_report = 'non_nabl'
+
     # Block Density 
     block_density_name = fields.Char(default="Block Density")
     block_density_visible = fields.Boolean(string="Block Density Visible",compute="_compute_visible")
@@ -346,6 +428,34 @@ class HollowSolidConcreteBlock(models.Model):
                         record.mean_block_density_nabl = 'fail'
 
 
+    block_density_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    block_density_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_block_density_final_report", store=True)
+
+    @api.depends('mean_block_density_nabl', 'block_density_report_type')
+    def _compute_block_density_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.block_density_report_type == 'nabl':
+            rec.block_density_final_report = 'nabl'
+
+        elif rec.block_density_report_type == 'non_nabl':
+            rec.block_density_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.mean_block_density_nabl == 'pass':
+                rec.block_density_final_report = 'nabl'
+            else:
+                rec.block_density_final_report = 'non_nabl'
+
+
     
 
     # Compressive Strength
@@ -417,6 +527,33 @@ class HollowSolidConcreteBlock(models.Model):
                         break
                     else:
                         record.compressive_strength_nabl = 'fail'
+
+    compressive_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    compressive_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_compressive_final_report", store=True)
+
+    @api.depends('compressive_strength_nabl', 'compressive_report_type')
+    def _compute_compressive_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.compressive_report_type == 'nabl':
+            rec.compressive_final_report = 'nabl'
+
+        elif rec.compressive_report_type == 'non_nabl':
+            rec.compressive_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.compressive_strength_nabl == 'pass':
+                rec.compressive_final_report = 'nabl'
+            else:
+                rec.compressive_final_report = 'non_nabl'
 
 
 
@@ -525,6 +662,34 @@ class HollowSolidConcreteBlock(models.Model):
                       break
                   else:
                       record.mean_water_absorption_nabl = 'fail'
+
+
+    water_absorption_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    water_absorption_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_water_absorption_final_report", store=True)
+
+    @api.depends('mean_water_absorption_nabl', 'water_absorption_report_type')
+    def _compute_water_absorption_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.water_absorption_report_type == 'nabl':
+            rec.water_absorption_final_report = 'nabl'
+
+        elif rec.water_absorption_report_type == 'non_nabl':
+            rec.water_absorption_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.mean_water_absorption_nabl == 'pass':
+                rec.water_absorption_final_report = 'nabl'
+            else:
+                rec.water_absorption_final_report = 'non_nabl'
 
     
 

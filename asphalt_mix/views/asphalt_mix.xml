@@ -89,6 +89,17 @@
                             <field name="dry_gradation_visible" invisible="1"/>
                         </h1>
                     </div>
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not dry_gradation_visible">
+                        <tbody>
+                            <tr>
+                                <td class="w-25"><label for="report_type"/></td>
+                                <td  class="w-25">
+                                    <field name="report_type" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
 
                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not dry_gradation_visible">
                         <tbody>
@@ -130,6 +141,8 @@
                                 <td><label for="total_sieve_analysis" class="text-bold">Total</label></td>
                                 <td><field name="total_sieve_analysis" class="text-bold"/></td>
                             </tr>
+                            
+                            
                         </tbody>
 
                     </table>
@@ -183,6 +196,10 @@
                                         decoration-success="avg_binder_content_nabl == 'pass'" 
                                         decoration-danger="avg_binder_content_nabl == 'fail'"/>
                                 </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="binder_content_report_type">Report Type</label></td>
+                                <td><field name="binder_content_report_type" class="blue-input" decoration-info="binder_content_report_type != 0"/></td>
                             </tr>
                         </tbody>
                     </table>

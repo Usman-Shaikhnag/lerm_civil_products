@@ -67,6 +67,28 @@ class AsphaltMixMechanical(models.Model):
     total_sieve_analysis = fields.Float(string="Total",compute="_compute_total_sieve")
 
 
+    report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="Report Type",
+        default='nabl',
+        required=True,
+    )
+
+    sieve_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_sieve_nabl",
+    store=True
+)
+
+    @api.depends('report_type')
+    def _compute_sieve_nabl(self):
+     for rec in self:
+        rec.sieve_nabl = 'pass' if rec.report_type == 'nabl' else 'fail'
+
+
     @api.model
     def default_get(self, fields):
         res = super().default_get(fields)
@@ -402,11 +424,41 @@ class AsphaltMixMechanical(models.Model):
                         record.avg_binder_content_nabl = 'fail'
 
 
+    binder_content_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    binder_content_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_binder_content_final_report", store=True)
+
+    @api.depends('avg_binder_content_nabl', 'binder_content_report_type')
+    def _compute_binder_content_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.binder_content_report_type == 'nabl':
+            rec.binder_content_final_report = 'nabl'
+
+        elif rec.binder_content_report_type == 'non_nabl':
+            rec.binder_content_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_binder_content_nabl == 'pass':
+                rec.binder_content_final_report = 'nabl'
+            else:
+                rec.binder_content_final_report = 'non_nabl'
+
+                
 
 
 
 
 
+    
+    
 
     
 

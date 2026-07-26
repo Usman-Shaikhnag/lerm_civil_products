@@ -201,7 +201,7 @@
 					
 					<div style="">
 						<table style="margin-top:10px;">
-						<t t-set="i" t-value="1"/>
+						<t t-set="i" t-value="0"/>
 							<thead>
 								<tr>
 									<th style="text-align: center;">
@@ -339,7 +339,7 @@
 
 							
 							<!--  -->
-							<tr t-if="data.specific_gravity_visible and (data.avg_water_absorption_nabl == 'pass' and nabl or (data.avg_water_absorption_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.specific_gravity_visible and (data.water_absorption_final_report == 'nabl' and nabl or data.water_absorption_final_report == 'non_nabl' and not nabl)">
 									<t t-set="water_absorption" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','2113f38a-d129-4efe-bac4-ff5826dface8')])"/>
 									
 									<td style="text-align: center;">
@@ -387,7 +387,7 @@
 
 								
 								<!--  -->
-								<tr t-if="data.impact_visible and (data.impact_value_nabl == 'pass' and nabl or (data.impact_value_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.impact_visible and (data.impact_value_final_report == 'nabl' and nabl or data.impact_value_final_report == 'non_nabl' and not nabl)">
 									<t t-set="impact_value" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','fbf04a49-ea53-4b14-acd4-1797e06669ae')])"/>
 									
 									<td style="text-align: center;">
@@ -436,7 +436,7 @@
 
 								
 								<!--  -->
-								<tr t-if="data.elongation_fl_visible and (data.elongation_index_nabl == 'pass' and nabl or (data.elongation_index_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.elongation_fl_visible and (data.elongation_final_report == 'nabl' and nabl or data.elongation_final_report == 'non_nabl' and not nabl)">
 									<t t-set="elongation" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','70ef993d-d2f8-424c-9729-4e081d647bb1')])"/>
 									
 									<td style="text-align: center;">
@@ -483,8 +483,8 @@
 								</tr>
 
 								
-								<!--  -->
-								<tr t-if="data.elongation_fl_visible and (data.flakiness_index_nabl == 'pass' and nabl or (data.flakiness_index_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<!-- Flakiness -->
+							<tr t-if="data.elongation_fl_visible and (data.flakiness_final_report == 'nabl' and nabl or data.flakiness_final_report == 'non_nabl' and not nabl)">
 									<t t-set="flakiness" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','c8a5f37e-1449-4794-a854-cdb169493a1a')])"/>
 									
 									<td style="text-align: center;">
@@ -533,8 +533,8 @@
 
 
 
-					<!--  -->
-					<tr t-if="data.abrasion_visible and (data.avg_abrasion_value_nabl == 'pass' and nabl or (data.avg_abrasion_value_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+					<!-- Los Angeles Abrasion Value -->
+							<tr t-if="data.abrasion_visible and (data.abrasion_final_report == 'nabl' and nabl or data.abrasion_final_report == 'non_nabl' and not nabl)">
 						<td style="text-align: center;">
 							<span t-esc="i + 1" />
 							<t t-set="i" t-value="i+1"/>

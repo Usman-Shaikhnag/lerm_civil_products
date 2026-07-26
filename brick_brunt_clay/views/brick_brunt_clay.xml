@@ -141,6 +141,10 @@
                                         readonly="1"/>
                                 </td>
                             </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="comp_strength_report_type">Report Type</label></td>
+                                <td><field name="comp_strength_report_type" class="blue-input" decoration-info="comp_strength_report_type != 0"/></td>
+                            </tr>
                         </tbody>
                     </table>
 
@@ -195,9 +199,12 @@
                                         readonly="1"/>
                                 </td>
                             </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="water_absorption_report_type">Report Type</label></td>
+                                <td><field name="water_absorption_report_type" class="blue-input" decoration-info="water_absorption_report_type != 0"/></td>
+                            </tr>
                         </tbody>
                     </table>
-                    <group/>
 
                     <!-- Dimension -->
 
@@ -213,6 +220,7 @@
                     <field name="dimension_lines" nolabel="1" >
                             <tree editable="bottom"  class="custom_table_borders">
                                 <field name="serial_no" />
+                                <field name='no_bricks' class="blue-input" decoration-info="no_bricks != 0"/>
                                 <field name='lengthh' class="blue-input" decoration-info="lengthh != 0"/>
                                 <field name='width' class="blue-input" decoration-info="height != 0"/>
                                 <field name='height' class="blue-input" decoration-info="height != 0"/>
@@ -253,6 +261,10 @@
                                         readonly="1"/>
                                 </td>
                             </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_length_report_type">Report Type</label></td>
+                                <td><field name="avg_length_report_type" class="blue-input" decoration-info="avg_length_report_type != 0"/></td>
+                            </tr>
                         </tbody>
                     </table>
 
@@ -286,6 +298,10 @@
                                         decoration-danger="avrg_width_nabl == 'fail'" 
                                         readonly="1"/>
                                 </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_width_report_type">Report Type</label></td>
+                                <td><field name="avg_width_report_type" class="blue-input" decoration-info="avg_width_report_type != 0"/></td>
                             </tr>
                         </tbody>
                     </table>
@@ -321,11 +337,15 @@
                                         readonly="1"/>
                                 </td>
                             </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avrg_height_report_type">Report Type</label></td>
+                                <td><field name="avrg_height_report_type" class="blue-input" decoration-info="avrg_height_report_type != 0"/></td>
+                            </tr>
                         </tbody>
                     </table>
                     </div>
 
-                      <!-- visual_observation -->
+                      <!-- efforescence visual_observation -->
                     <div invisible="efflorescence_visible == False" style="text-align:center">
                         <h1>
                             <field name="visual_observation_name_efflorescence" readonly="1" nolabel="1"/>
@@ -333,24 +353,36 @@
                         </h1>
                     </div>
 
-                    <div invisible="efflorescence_visible == False" class="mb-3">
-                        <table class="table custom_table_borders o_form_table">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Observation 1</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            
-                             <tr>
-                                    <td><strong>Observation</strong></td>
-                                    <td><field name="visual_observation_1" nolabel="1" class="blue-input"/></td>
-                                </tr>
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not efflorescence_visible">
+                        <tbody>
+                            <tr>
+                                <td class="w-25"><label for="report_type"/></td>
+                                <td  class="w-25">
+                                    <field name="report_type" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
 
-                            </tbody>
-                        </table>
+                    <div invisible="efflorescence_visible == False" class="custom_table_borders">
+                        <field name="efflorescence_line_ids" nolabel="1">
+                            <tree editable="bottom">
+                                <field name='serial_no' />
+                                <field name='brick_identification_no' class="blue-input" decoration-info="brick_identification_no != 0"/>
+                                <field name='water_level' class="blue-input" decoration-info="water_level != 0"/>
+
+                                 <field name='first_cycle' class="blue-input" decoration-info="first_cycle != 0"/>
+
+                                  <field name='second_cycle' class="blue-input" decoration-info="second_cycle != 0"/>
+
+                                   <field name='efflorescence_rating' class="blue-input" decoration-info="efflorescence_rating != 0"/>
+
+                                   <field name='remarks' class="blue-input" decoration-info="remarks != 0" width="130"/>
+                            </tree>
+                        </field>
                     </div>
+
 
                      <notebook>
 
