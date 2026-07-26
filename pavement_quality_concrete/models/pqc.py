@@ -494,6 +494,33 @@ class PavementQualityConcrete(models.Model):
                     else:
                         record.elongation_index_nabl = 'fail'
 
+    elongation_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Elongation Report Type", default='auto')
+
+    elongation_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_elongation_final_report", store=True)
+
+    @api.depends('elongation_index_nabl', 'elongation_report_type')
+    def _compute_elongation_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.elongation_report_type == 'nabl':
+            rec.elongation_final_report = 'nabl'
+
+        elif rec.elongation_report_type == 'non_nabl':
+            rec.elongation_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.elongation_index_nabl == 'pass':
+                rec.elongation_final_report = 'nabl'
+            else:
+                rec.elongation_final_report = 'non_nabl'
+
     flakiness_index_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),('na', 'NA'),], string="Flakiness Index Conformity", compute="_compute_flakiness_index_conformity", store=True)
@@ -546,6 +573,34 @@ class PavementQualityConcrete(models.Model):
                         break
                     else:
                         record.flakiness_index_nabl = 'fail'
+
+
+    flakiness_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Flakiness Report Type", default='auto')
+
+    flakiness_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_flakiness_final_report", store=True)
+
+    @api.depends('flakiness_index_nabl', 'flakiness_report_type')
+    def _compute_flakiness_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.flakiness_report_type == 'nabl':
+            rec.flakiness_final_report = 'nabl'
+
+        elif rec.flakiness_report_type == 'non_nabl':
+            rec.flakiness_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.flakiness_index_nabl == 'pass':
+                rec.flakiness_final_report = 'nabl'
+            else:
+                rec.flakiness_final_report = 'non_nabl'
 
 
     # Aggregate Impact Value
@@ -617,6 +672,35 @@ class PavementQualityConcrete(models.Model):
                         break
                     else:
                         record.impact_value_nabl = 'fail'
+
+    impact_value_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    impact_value_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_impact_value_final_report", store=True)
+
+    @api.depends('impact_value_nabl', 'impact_value_report_type')
+    def _compute_impact_value_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.impact_value_report_type == 'nabl':
+            rec.impact_value_final_report = 'nabl'
+
+        elif rec.impact_value_report_type == 'non_nabl':
+            rec.impact_value_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.impact_value_nabl == 'pass':
+                rec.impact_value_final_report = 'nabl'
+            else:
+                rec.impact_value_final_report = 'non_nabl'
+
+
 
     # Specific Gravety 
     specific_gravity_name = fields.Char("Name",default="Specific Gravity & Water Absorption")
@@ -697,6 +781,34 @@ class PavementQualityConcrete(models.Model):
                         record.avg_specific_gravity_nabl = 'fail'
 
 
+    specific_gravity_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    specific_gravity_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_specific_gravity_final_report", store=True)
+
+    @api.depends('avg_specific_gravity_nabl', 'specific_gravity_report_type')
+    def _compute_specific_gravity_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.specific_gravity_report_type == 'nabl':
+            rec.specific_gravity_final_report = 'nabl'
+
+        elif rec.specific_gravity_report_type == 'non_nabl':
+            rec.specific_gravity_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_specific_gravity_nabl == 'pass':
+                rec.specific_gravity_final_report = 'nabl'
+            else:
+                rec.specific_gravity_final_report = 'non_nabl'
+
+
     avg_water_absorption_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_avg_water_absorption_conformity", store=True)
@@ -724,6 +836,34 @@ class PavementQualityConcrete(models.Model):
                         break
                     else:
                         record.avg_water_absorption_conformity = 'fail'
+
+
+    water_absorption_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    water_absorption_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_water_absorption_final_report", store=True)
+
+    @api.depends('avg_water_absorption_nabl', 'water_absorption_report_type')
+    def _compute_water_absorption_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.water_absorption_report_type == 'nabl':
+            rec.water_absorption_final_report = 'nabl'
+
+        elif rec.water_absorption_report_type == 'non_nabl':
+            rec.water_absorption_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_water_absorption_nabl == 'pass':
+                rec.water_absorption_final_report = 'nabl'
+            else:
+                rec.water_absorption_final_report = 'non_nabl'
 
     avg_water_absorption_nabl = fields.Selection([
         ('pass', 'NABL'),
@@ -888,6 +1028,34 @@ class PavementQualityConcrete(models.Model):
                     record.total_weighted_avg_nabl = 'fail'
 
 
+    sodium_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    sodium_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_sodium_final_report", store=True)
+
+    @api.depends('total_weighted_avg_nabl', 'sodium_report_type')
+    def _compute_sodium_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.sodium_report_type == 'nabl':
+            rec.sodium_final_report = 'nabl'
+
+        elif rec.sodium_report_type == 'non_nabl':
+            rec.sodium_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.total_weighted_avg_nabl == 'pass':
+                rec.sodium_final_report = 'nabl'
+            else:
+                rec.sodium_final_report = 'non_nabl'
+
+
     # SOUNDNESS (MAGNESIUM SULPHATE TEST)
     soundness_mgso4_name = fields.Char("Name",default="SOUNDNESS (MAGNESIUM SULPHATE TEST)")
     soundness_mgso4_visible = fields.Boolean("SOUNDNESS (MAGNESIUM SULPHATE TEST) Visible",compute="_compute_visible")
@@ -1027,6 +1195,34 @@ class PavementQualityConcrete(models.Model):
                         record.mag_total_weighted_avg_nabl = 'fail'
 
 
+    magnesium_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    magnesium_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_magnesium_final_report", store=True)
+
+    @api.depends('mag_total_weighted_avg_nabl', 'magnesium_report_type')
+    def _compute_magnesium_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.magnesium_report_type == 'nabl':
+            rec.magnesium_final_report = 'nabl'
+
+        elif rec.magnesium_report_type == 'non_nabl':
+            rec.magnesium_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.mag_total_weighted_avg_nabl == 'pass':
+                rec.magnesium_final_report = 'nabl'
+            else:
+                rec.magnesium_final_report = 'non_nabl'
+
+
     # Compressive Strength Of Pavement Quality Concrete (PQC) 
     
     comp_strength_name = fields.Char("Name",default="Compressive Strength Of Pavement Quality Concrete (PQC)")
@@ -1161,6 +1357,34 @@ class PavementQualityConcrete(models.Model):
                         record.avg_7_comp_strength_nabl = 'fail'
 
 
+    avg_7_comp_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_7_comp_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_7_comp_final_report", store=True)
+
+    @api.depends('avg_7_comp_strength_nabl', 'avg_7_comp_report_type')
+    def _compute_avg_7_comp_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_7_comp_report_type == 'nabl':
+            rec.avg_7_comp_final_report = 'nabl'
+
+        elif rec.avg_7_comp_report_type == 'non_nabl':
+            rec.avg_7_comp_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_7_comp_strength_nabl == 'pass':
+                rec.avg_7_comp_final_report = 'nabl'
+            else:
+                rec.avg_7_comp_final_report = 'non_nabl'
+
+
     avg_28_comp_strength_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_avg_28_comp_strength_conformity", store=True)
@@ -1213,6 +1437,34 @@ class PavementQualityConcrete(models.Model):
                         break
                     else:
                         record.avg_28_comp_strength_nabl = 'fail'
+
+
+    avg_28_comp_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_28_comp_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_28_comp_final_report", store=True)
+
+    @api.depends('avg_28_comp_strength_nabl', 'avg_28_comp_report_type')
+    def _compute_avg_28_comp_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_28_comp_report_type == 'nabl':
+            rec.avg_28_comp_final_report = 'nabl'
+
+        elif rec.avg_28_comp_report_type == 'non_nabl':
+            rec.avg_28_comp_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_28_comp_strength_nabl == 'pass':
+                rec.avg_28_comp_final_report = 'nabl'
+            else:
+                rec.avg_28_comp_final_report = 'non_nabl'
 
 
 
@@ -1328,6 +1580,34 @@ class PavementQualityConcrete(models.Model):
                         record.avg_7_flex_strength_nabl = 'fail'
 
 
+    avg_7_flex_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_7_flex_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_7_flex_final_report", store=True)
+
+    @api.depends('avg_7_flex_strength_nabl', 'avg_7_flex_report_type')
+    def _compute_avg_7_flex_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_7_flex_report_type == 'nabl':
+            rec.avg_7_flex_final_report = 'nabl'
+
+        elif rec.avg_7_flex_report_type == 'non_nabl':
+            rec.avg_7_flex_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_7_flex_strength_nabl == 'pass':
+                rec.avg_7_flex_final_report = 'nabl'
+            else:
+                rec.avg_7_flex_final_report = 'non_nabl'
+
+
     avg_28_flex_strength_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_avg_28_flex_strength_conformity", store=True)
@@ -1380,6 +1660,34 @@ class PavementQualityConcrete(models.Model):
                         break
                     else:
                         record.avg_28_flex_strength_nabl = 'fail'
+
+
+    avg_28_flex_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_28_flex_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_28_flex_final_report", store=True)
+
+    @api.depends('avg_28_flex_strength_nabl', 'avg_28_flex_report_type')
+    def _compute_avg_28_flex_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_28_flex_report_type == 'nabl':
+            rec.avg_28_flex_final_report = 'nabl'
+
+        elif rec.avg_28_flex_report_type == 'non_nabl':
+            rec.avg_28_flex_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_28_flex_strength_nabl == 'pass':
+                rec.avg_28_flex_final_report = 'nabl'
+            else:
+                rec.avg_28_flex_final_report = 'non_nabl'
 
 
     

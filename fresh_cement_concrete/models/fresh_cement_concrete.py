@@ -22,8 +22,8 @@ class FreshCementConcrete(models.Model):
 
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
-    aac_temp = fields.Char("Temperature",store=True)
-    aac_humidity = fields.Char("Humidity",store=True)
+    temp = fields.Char("Temperature",store=True)
+    humidity = fields.Char("Humidity",store=True)
 
     @api.depends("eln_ref")
     def _compute_size_id(self):
@@ -124,6 +124,34 @@ class FreshCementConcrete(models.Model):
                         record.avg_slump_value_nabl = 'fail'
 
 
+    avg_slump_value_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_slump_value_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_slump_value_final_report", store=True)
+
+    @api.depends('avg_slump_value_nabl', 'avg_slump_value_report_type')
+    def _compute_avg_slump_value_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_slump_value_report_type == 'nabl':
+            rec.avg_slump_value_final_report = 'nabl'
+
+        elif rec.avg_slump_value_report_type == 'non_nabl':
+            rec.avg_slump_value_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_slump_value_nabl == 'pass':
+                rec.avg_slump_value_final_report = 'nabl'
+            else:
+                rec.avg_slump_value_final_report = 'non_nabl'
+
+
     # Density
     density_name = fields.Char(default="Density Test")
     density_visible = fields.Boolean(string="Density Test Visible" ,compute="_compute_visible")
@@ -199,6 +227,33 @@ class FreshCementConcrete(models.Model):
                         break
                     else:
                         record.avg_density_nabl = 'fail'
+
+    avg_density_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_density_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_density_final_report", store=True)
+
+    @api.depends('avg_density_nabl', 'avg_density_report_type')
+    def _compute_avg_density_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_density_report_type == 'nabl':
+            rec.avg_density_final_report = 'nabl'
+
+        elif rec.avg_density_report_type == 'non_nabl':
+            rec.avg_density_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_density_nabl == 'pass':
+                rec.avg_density_final_report = 'nabl'
+            else:
+                rec.avg_density_final_report = 'non_nabl'
 
 
     # Flow of Concrete of High Workability Test
@@ -278,6 +333,34 @@ class FreshCementConcrete(models.Model):
                         record.avg_flow_high_nabl = 'fail'
 
 
+    avg_flow_high_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_flow_high_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_flow_high_final_report", store=True)
+
+    @api.depends('avg_flow_high_nabl', 'avg_flow_high_report_type')
+    def _compute_avg_flow_high_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_flow_high_report_type == 'nabl':
+            rec.avg_flow_high_final_report = 'nabl'
+
+        elif rec.avg_flow_high_report_type == 'non_nabl':
+            rec.avg_flow_high_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_flow_high_nabl == 'pass':
+                rec.avg_flow_high_final_report = 'nabl'
+            else:
+                rec.avg_flow_high_final_report = 'non_nabl'
+
+
     # Wet Density Test
     wet_density_name = fields.Char(default="Wet Density Test")
     wet_density_visible = fields.Boolean(string="Wet Density Test Visible" ,compute="_compute_visible")
@@ -353,6 +436,33 @@ class FreshCementConcrete(models.Model):
                         break
                     else:
                         record.avg_wet_density_nabl = 'fail'
+
+    wet_density_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    wet_density_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_wet_density_final_report", store=True)
+
+    @api.depends('avg_wet_density_nabl', 'wet_density_report_type')
+    def _compute_wet_density_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.wet_density_report_type == 'nabl':
+            rec.wet_density_final_report = 'nabl'
+
+        elif rec.wet_density_report_type == 'non_nabl':
+            rec.wet_density_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_wet_density_nabl == 'pass':
+                rec.wet_density_final_report = 'nabl'
+            else:
+                rec.wet_density_final_report = 'non_nabl'
 
 
     # Flow Test of Fresh Cement Concrete 
@@ -430,6 +540,34 @@ class FreshCementConcrete(models.Model):
                         break
                     else:
                         record.avg_flow_test_nabl = 'fail'
+
+
+    avg_flow_test_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_flow_test_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_flow_test_final_report", store=True)
+
+    @api.depends('avg_flow_test_nabl', 'avg_flow_test_report_type')
+    def _compute_avg_flow_test_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_flow_test_report_type == 'nabl':
+            rec.avg_flow_test_final_report = 'nabl'
+
+        elif rec.avg_flow_test_report_type == 'non_nabl':
+            rec.avg_flow_test_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_flow_test_nabl == 'pass':
+                rec.avg_flow_test_final_report = 'nabl'
+            else:
+                rec.avg_flow_test_final_report = 'non_nabl'
 
 
 

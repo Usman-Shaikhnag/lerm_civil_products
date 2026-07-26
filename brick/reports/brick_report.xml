@@ -198,200 +198,350 @@
 							</table>
 					</div>
 
-					<div  t-if="data.compressive_strength_visible and (data.water_absorption_nabl == 'pass' and nabl or (data.water_absorption_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-					<div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 10px;margin-top: 20px;">
-							Water Absorption
-						</div>
-
-						<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+					<div style="">
+						<table style="margin-top:10px;">
+						<t t-set="i" t-value="0"/>
 							<thead>
-								<tr style="text-align: center;">
-									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" colspan="2">Sr No.</th>
-									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" colspan="2">Bricks Identification No.</th>
-									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" colspan="2">Weight of Oven Dried Sample (W1)</th>
-									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" colspan="2">Weight of Sample After Water Absorption (W2)</th>
-									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" colspan="2">% Water Aborption (W2-W1/W1)*100</th>
-									<th style="text-align:center;border: 1px solid black; padding: 8px;width:80px;vertical-align: middle;"  >
-									  Average Water Absorption 
-                                     </th>
-									 <th style="text-align:center;border: 1px solid black; padding: 8px;width:80px;vertical-align: middle;" >
-									  Test Method/Specifications
-                                     </th>
+								<tr>
+									<th style="text-align: center;">Sr. No</th>
+									<th style="text-align: center;">
+									<span t-esc="eln.material.test_parameter"/>
+									<!-- Test Parameter -->
+									</th>
+
+                                    <th style="text-align: center;">
+									<span t-esc="eln.material.result_remark"/>
+									<!-- Test Result -->
+									</th>
+
+									<th style="text-align: center;">
+									<span t-esc="eln.material.unit"/>
+									<!-- Unit -->
+									</th>
+
+                                    <th style="text-align: center;"><span t-esc="eln.material.specifications"/></th>
+
+									<th style="text-align: center;"><span t-esc="eln.material.method_reference"/></th>
+									
 								</tr>
 							</thead>
 							<tbody>
-								<t t-set="k" t-value="0"/>
-								<t t-set="total_rows" t-value="len(data.water_absorbtion_line_ids)"/>
-								<tr t-foreach="data.water_absorbtion_line_ids" t-as="r" style="text-align: center;">
-									<td style="text-align:center;border: 1px solid black; padding: 6px;" colspan="2">
-										<span t-esc="k + 1" />
-										<t t-set="k" t-value="k+1"/>
+
+							<!-- Dimension -->
+                            <t t-set="show_length" t-value="data.avg_length_final_report == 'nabl' and nabl or data.avg_length_final_report == 'non_nabl' and not nabl"/>
+
+                            <t t-set="show_width" t-value="data.avg_width_final_report == 'nabl' and nabl or data.avg_width_final_report == 'non_nabl' and not nabl"/>
+
+							<t t-set="show_thickness" t-value="data.avrg_height_final_report == 'nabl' and nabl or data.avrg_height_final_report == 'non_nabl' and not nabl"/>
+
+                            <!-- 🔹 Step 2: Rowspan calculation -->
+					      <t t-set="rowspan_count" t-value="1 + int(show_length) + int(show_width)+ int(show_thickness)"/>
+
+                          <tr t-if="data.dimension_visible  and (show_length or show_width or show_thickness)">
+
+									<t t-set="bulk" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','125478bvf3-8d5d-4f45-8afb-b911f9cafe41')])"/>
+									
+									<td t-att-rowspan="rowspan_count"  style="text-align: center;vertical-align:middle;">
+						                 <span t-esc="i + 1"/>
+							             <t t-set="i" t-value="i+1"/>
+						            </td>
+									<td colspan="5">
+										<span t-esc="bulk.parameter_name"/>
 									</td>
-									<td style="text-align:center;border: 1px solid black; padding: 6px;" colspan="2">
-										<span t-esc="r['identifi_no']"/>
-									</td>
-									<td style="text-align:center;border: 1px solid black; padding: 6px;" colspan="2">
-										<span t-esc="r['w1']"/>
-									</td>
-									<td style="text-align:center;border: 1px solid black; padding: 6px;" colspan="2">
-										<span t-esc="r['w2']" />
-									</td>
-									<td style="text-align:center;border: 1px solid black; padding: 6px;" colspan="2">
-										<span t-esc="r['water_absorption']" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-									<!-- Average Column (ONLY once with rowspan) -->
-								
-                                  <t t-if="k == 1">
-                                      <td t-att-rowspan="total_rows" style="border: 1px solid black; padding: 6px;text-align:center; vertical-align: middle; ">
-                                          <span t-field="data.avrg_water_absorption"/>
-                                      </td>
-                                  </t>
-								  <!-- Average Column (ONLY once with rowspan) -->
-								
-                                  <t t-if="k == 1">
-                                      <td t-att-rowspan="total_rows" style="border: 1px solid black; padding: 6px;text-align:center; vertical-align: middle;" >
-                                          <!-- <span t-field="o.material.test_method_adopted"/> -->
-										  As Per IS 3495 - (Part-2)
-                                      </td>
-                                  </t>
 								</tr>
-								
-								
-							</tbody>
-						</table>
 
-						</div>
-
-					<div  t-if="data.compressive_strength_visible and (data.comp_strength_nabl == 'pass' and nabl or (data.comp_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-					<div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 10px;margin-top: 20px;">
-							Compressive Strength
-						</div>
-
-						<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-							<thead>
-								<tr style="text-align: center;">
-									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" colspan="2">Sr No.</th>
-									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" colspan="2">Length in mm</th>
-									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" colspan="2">Width in  mm</th>
-									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" colspan="2">Area in mm2</th>
-									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" colspan="2">Load in KN</th>
-									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" colspan="2">Compressive Strength (N/mm2)</th>
-									<th style="text-align:center;border: 1px solid black; padding: 8px;width:80px;vertical-align: middle;"  >
-									  Average Compressive Strength (N/mm²)
-                                     </th>
-									 <th style="text-align:center;border: 1px solid black; padding: 8px;width:80px;vertical-align: middle;" >
-									  Test Method/Specifications
-                                     </th>
-								</tr>
-							</thead>
-							<tbody>
-								<t t-set="k" t-value="0"/>
-								<t t-set="total_rows" t-value="len(data.compressive_strength_line_ids)"/>
-								<tr t-foreach="data.compressive_strength_line_ids" t-as="r" style="text-align: center;">
-									<td style="text-align:center;border: 1px solid black; padding: 6px;" colspan="2">
-										<span t-esc="k + 1" />
-										<t t-set="k" t-value="k+1"/>
+					
+							 <!-- Length -->
+                             <tr t-if="data.dimension_visible and show_length">
+									<t t-set="length" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','50e5bbcc-df2c-4fa9-8360-d0567d753361')])"/>
+									
+									<td>
+										<span t-esc="length.parameter_name"/>
 									</td>
-									<td style="text-align:center;border: 1px solid black; padding: 6px;" colspan="2">
-										<span t-esc="r['length']"/>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="data.avrg_length" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
 									</td>
-									<td style="text-align:center;border: 1px solid black; padding: 6px;" colspan="2">
-										<span t-esc="r['width']"/>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="length.unit.name"/>
+										</span>
 									</td>
-									<td style="text-align:center;border: 1px solid black; padding: 6px;" colspan="2">
-										<span t-esc="r['area']" t-options='{"widget": "float", "precision": 2}'/>
+
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="length.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
 									</td>
-									<td style="text-align:center;border: 1px solid black; padding: 6px;" colspan="2">
-										<span t-esc="r['load_kn']" />
+
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="length.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
 									</td>
-									<td style="text-align:center;border: 1px solid black; padding: 6px;" colspan="2">
-										<span t-esc="r['compressive_strength']" t-options='{"widget": "float", "precision": 2}'/>
+									
+								</tr>
+
+								<!-- Width -->
+							<tr t-if="data.dimension_visible and show_width">
+									<t t-set="width" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','62fd063f-251a-4ab3-9025-d90755deb02e')])"/>
+									
+									<td>
+										<span t-esc="width.parameter_name"/>
 									</td>
-									<!-- Average Column (ONLY once with rowspan) -->
-								
-                                  <t t-if="k == 1">
-                                      <td t-att-rowspan="total_rows" style="border: 1px solid black; padding: 6px;text-align:center; vertical-align: middle; ">
-                                          <span t-field="data.avrg_compressive_strength"/>
-                                      </td>
-                                  </t>
-								  <!-- Average Column (ONLY once with rowspan) -->
-								
-                                  <t t-if="k == 1">
-                                      <td t-att-rowspan="total_rows" style="border: 1px solid black; padding: 6px;text-align:center; vertical-align: middle;" >
-                                          <!-- <span t-field="o.material.test_method_adopted"/> -->
-										  (As Per IS : 3495-Part 1 -1992)
-                                      </td>
-                                  </t>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="data.avrg_width" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="width.unit.name"/>
+										</span>
+									</td>
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="width.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="width.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
 								</tr>
-								
-								
-							</tbody>
-						</table>
 
-						</div>
+								<!-- Thickness -->
+							<tr t-if="data.dimension_visible and show_thickness">
+									<t t-set="thickness" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','5d967f0e-21de-4c17-9f98-8202f3133ccb')])"/>
+									
+									<td>
+										<span t-esc="thickness.parameter_name"/>
+									</td>
 
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="data.avrg_height" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
 
-							<!-- Dimension  -->
-
-					<div  t-if="data.dimension_visible">
-					<div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 10px;margin-top: 20px;">
-							Dimension
-						</div>
-
-						<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-							<tbody>
-								<tr style="text-align: center;">
-									<th style="text-align:center;border: 1px solid black; padding: 2px;vertical-align: middle;" colspan="2"></th>
-									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" colspan="2">Length in mm</th>
-									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" colspan="2">Width in mm</th>
-									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" colspan="2"> Height in mm</th>
-									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" width="200"  >
-									  Test Method/Specifications
-                                     </th>
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="thickness.unit.name"/>
+										</span>
+									</td>
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="thickness.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="thickness.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
 								</tr>
-								<tr style="text-align: center;">
-								   <th style="text-align:center;border: 1px solid black; padding: 2px;vertical-align: middle;" colspan="2"> Size of the Brick :- (mm)</th>
-									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" colspan="2"><span t-field="data.length_in_mm"/></th>
-									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" colspan="2"><span t-field="data.width_in_mm"/></th>
-									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" colspan="2"><span t-field="data.height_in_mm"/></th>
-									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" width="200" >
-									  IS 1077 :2025
-                                     </th>
+
+
+								<!-- Water Absorption -->
+								<tr t-if="data.water_absorbtion_visible and (data.water_absorption_final_report == 'nabl' and nabl or data.water_absorption_final_report == 'non_nabl' and not nabl)">
+									<t t-set="water_absorption" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')])"/>
+									
+									<td style="text-align: center;">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td >
+									
+										<span t-field="water_absorption.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="data.avrg_water_absorption" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-field="water_absorption.unit.name"/>
+										</span>
+									</td>
+									
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="water_absorption.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="water_absorption.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
 								</tr>
-							</tbody>
-						</table>
-
-						</div>
 
 
-						<!-- Efflorescence  -->
+								<!-- Compressive Strength  -->
+								<tr t-if="data.compressive_strength_visible and (data.comp_strength_final_report == 'nabl' and nabl or data.comp_strength_final_report == 'non_nabl' and not nabl)">
+									<t t-set="compressive" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')])"/>
+									
+									<td style="text-align: center;">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td >
+									
+										<span t-field="compressive.parameter_name"/>
+									</td>
 
-					<div  t-if="data.efflorescence_visible">
-					<div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 10px;margin-top: 20px;">
-							Efflorescence
-						</div>
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="data.avrg_compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
 
-						<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-							<tbody>
-								<tr style="text-align: center;">
-									<th style="text-align:center;border: 1px solid black; padding: 2px;vertical-align: middle;" colspan="2"></th>
-									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" colspan="2">Observation 1</th>
-									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" width="260" >
-									  Test Method/Specifications
-                                     </th>
+									<td style="text-align: center;">
+										<span>
+											<span t-field="compressive.unit.name"/>
+										</span>
+									</td>
+									
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="compressive.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="compressive.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
 								</tr>
-								<tr style="text-align: center;">
-								   <th style="text-align:center;border: 1px solid black; padding: 2px;vertical-align: middle;" colspan="2">Observation</th>
-									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" colspan="2"><span t-field="data.visual_observation_1"/></th>
-									<th style="text-align:center;border: 1px solid black; padding: 8px;vertical-align: middle;" width="260" >
-									  IS 3495 (Part 3) :2019
-                                     </th>
 
+
+
+								<!-- Efflorescence  -->
+
+								<t t-if="data.efflorescence_visible and ((data.report_type == 'nabl' and nabl) or (data.report_type == 'non_nabl' and not nabl))">
+
+
+								<tr t-if="data.efflorescence_visible">
+									<t t-set="efflorescence" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','3214598fgrt-d27d-4ef9-9b27-e8eb4e7ae6ac')])"/>
+									
+									<td style="text-align: center;">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td >
+									
+										<span t-field="efflorescence.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<!-- <span t-field="data.avrg_compressive_strength" t-options='{"widget": "float", "precision": 2}'/> -->
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-field="efflorescence.unit.name"/>
+										</span>
+									</td>
+									
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="efflorescence.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="efflorescence.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
 								</tr>
-							</tbody>
-						</table>
 
-						</div>
+
+								</t>
+
+
+					
+						
+
+					
+                    
+					</tbody>
+					
+					</table>
+
+					</div>
+
 
 
 						

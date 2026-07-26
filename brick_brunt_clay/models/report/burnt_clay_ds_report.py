@@ -82,7 +82,7 @@ class BrickReportSsl(models.AbstractModel):
         brick_data = self.env[model].search([("id","=",eln.model_id)])
         return {
             'eln': eln,
-            'brick': brick_data,
+            'data': brick_data,
             'qrcode': qr_code,
             'qrcode_static': qr_static_b64,
             'nabl':nabl

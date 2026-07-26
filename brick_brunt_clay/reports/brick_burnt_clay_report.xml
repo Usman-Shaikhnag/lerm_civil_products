@@ -169,16 +169,16 @@
                             <tr>
 									<td colspan="1">Temperature :-</td>
 										<td colspan="1" >
-											<t t-if="brick.brick_temperature is not None">
-											<span t-field="brick.brick_temperature"/>   °C
+											<t t-if="data.brick_temperature is not None">
+											<span t-field="data.brick_temperature"/>   °C
 										</t>
 									<t t-else="">NA</t>
 										</td>
 
 									<td colspan="1">Humidity :-</td>
 										<td colspan="1" >
-											<t t-if="brick.brick_humidity is not None">
-											<span t-field="brick.brick_humidity"/>   °C
+											<t t-if="data.brick_humidity is not None">
+											<span t-field="data.brick_humidity"/>   °C
 										</t>
 									<t t-else="">NA</t>
 										</td>
@@ -201,9 +201,356 @@
 					</div>
 
 
+					<div style="">
+						<table style="margin-top:10px;">
+						<t t-set="i" t-value="0"/>
+							<thead>
+								<tr>
+									<th style="text-align: center;">Sr. No</th>
+									<th style="text-align: center;">
+									<span t-esc="eln.material.test_parameter"/>
+									<!-- Test Parameter -->
+									</th>
+
+                                    <th style="text-align: center;">
+									<span t-esc="eln.material.result_remark"/>
+									<!-- Test Result -->
+									</th>
+
+									<th style="text-align: center;">
+									<span t-esc="eln.material.unit"/>
+									<!-- Unit -->
+									</th>
+
+                                    <th style="text-align: center;"><span t-esc="eln.material.specifications"/></th>
+
+									<th style="text-align: center;"><span t-esc="eln.material.method_reference"/></th>
+									
+								</tr>
+							</thead>
+							<tbody>
+
+							<!-- Dimension -->
+                            <t t-set="show_length" t-value="data.avg_length_final_report == 'nabl' and nabl or data.avg_length_final_report == 'non_nabl' and not nabl"/>
+
+                            <t t-set="show_width" t-value="data.avg_width_final_report == 'nabl' and nabl or data.avg_width_final_report == 'non_nabl' and not nabl"/>
+
+							<t t-set="show_thickness" t-value="data.avrg_height_final_report == 'nabl' and nabl or data.avrg_height_final_report == 'non_nabl' and not nabl"/>
+
+                            <!-- 🔹 Step 2: Rowspan calculation -->
+					      <t t-set="rowspan_count" t-value="1 + int(show_length) + int(show_width)+ int(show_thickness)"/>
+
+                          <tr t-if="data.dimension_visible  and (show_length or show_width or show_thickness)">
+
+									<t t-set="bulk" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','9f1689be-107d-4e30-9d3d-2aff6292264d')])"/>
+									
+									<td t-att-rowspan="rowspan_count"  style="text-align: center;vertical-align:middle;">
+						                 <span t-esc="i + 1"/>
+							             <t t-set="i" t-value="i+1"/>
+						            </td>
+									<td colspan="5">
+										<span t-esc="bulk.parameter_name"/>
+									</td>
+								</tr>
+
+					
+							 <!-- Length -->
+                             <tr t-if="data.dimension_visible and show_length">
+									<t t-set="length" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','457360db-e033-49ed-9c93-11e3bf87548d')])"/>
+									
+									<td>
+										<span t-esc="length.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="data.avrg_length" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="length.unit.name"/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="length.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="length.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+								<!-- Width -->
+							<tr t-if="data.dimension_visible and show_width">
+									<t t-set="width" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','c41c2f45-dc62-4d9b-a08f-607a05b87115')])"/>
+									
+									<td>
+										<span t-esc="width.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="data.avrg_width" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="width.unit.name"/>
+										</span>
+									</td>
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="width.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="width.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+								<!-- Thickness -->
+							<tr t-if="data.dimension_visible and show_thickness">
+									<t t-set="thickness" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','b88e1360-4bdf-4170-b3bc-913bdbc467f6')])"/>
+									
+									<td>
+										<span t-esc="thickness.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="data.avrg_height" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="thickness.unit.name"/>
+										</span>
+									</td>
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="thickness.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="thickness.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+
+								<!-- Water Absorption -->
+								<tr t-if="data.water_absorbtion_visible and (data.water_absorption_final_report == 'nabl' and nabl or data.water_absorption_final_report == 'non_nabl' and not nabl)">
+									<t t-set="water_absorption" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')])"/>
+									
+									<td style="text-align: center;">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td >
+									
+										<span t-field="water_absorption.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="data.avrg_water_absorption" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-field="water_absorption.unit.name"/>
+										</span>
+									</td>
+									
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="water_absorption.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="water_absorption.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+
+								<!-- Compressive Strength  -->
+								<tr t-if="data.compressive_strength_visible and (data.comp_strength_final_report == 'nabl' and nabl or data.comp_strength_final_report == 'non_nabl' and not nabl)">
+									<t t-set="compressive" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','97928829-9b1f-4091-aa7f-4b76f98eb47f')])"/>
+									
+									<td style="text-align: center;">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td >
+									
+										<span t-field="compressive.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="data.avrg_compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-field="compressive.unit.name"/>
+										</span>
+									</td>
+									
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="compressive.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="compressive.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+
+
+								<!-- Efflorescence  -->
+
+								<t t-if="data.efflorescence_visible and ((data.report_type == 'nabl' and nabl) or (data.report_type == 'non_nabl' and not nabl))">
+
+
+								<tr t-if="data.efflorescence_visible">
+									<t t-set="efflorescence" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','3e9d3877-e657-4409-8e7c-12c066f3cf26')])"/>
+									
+									<td style="text-align: center;">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td >
+									
+										<span t-field="efflorescence.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<!-- <span t-field="data.avrg_compressive_strength" t-options='{"widget": "float", "precision": 2}'/> -->
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-field="efflorescence.unit.name"/>
+										</span>
+									</td>
+									
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="efflorescence.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="efflorescence.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+
+								</t>
+
+
+					
+						
+
+					
+                    
+					</tbody>
+					
+					</table>
+
+					</div>
+
+
+
+
 					<!-- 1 Compressive strength  -->
 
-					<div  t-if="brick.compressive_strength_visible and (brick.comp_strength_nabl == 'pass' and nabl or (brick.comp_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+					<!-- <div  t-if="brick.compressive_strength_visible and (brick.comp_strength_nabl == 'pass' and nabl or (brick.comp_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 					<div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 10px;margin-top: 20px;">
 							Compressive Strength
 						</div>
@@ -253,18 +600,18 @@
 									<td style="text-align:center;border: 1px solid black; padding: 6px;" colspan="2">
 										<span t-esc="r['comp_strength_1']" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
-									<!-- Average Column (ONLY once with rowspan) -->
+									
 								
                                   <t t-if="k == 1">
                                       <td t-att-rowspan="total_rows" style="border: 1px solid black; padding: 6px;text-align:center; vertical-align: middle; ">
                                           <span t-field="brick.avrg_compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
                                       </td>
                                   </t>
-								  <!-- Average Column (ONLY once with rowspan) -->
+								 
 								
                                   <t t-if="k == 1">
                                       <td t-att-rowspan="total_rows" style="border: 1px solid black; padding: 6px;text-align:center; vertical-align: middle;" >
-                                          <!-- <span t-field="o.material.test_method_adopted"/> -->
+                                         
 										  IS 3495 (Part 1) :2019
                                       </td>
                                   </t>
@@ -274,12 +621,12 @@
 							</tbody>
 						</table>
 
-						</div>
+						</div> -->
 
 
 						<!-- Water Absorption  -->
 
-					<div  t-if="brick.water_absorbtion_visible and (brick.water_absorption_nabl == 'pass' and nabl or (brick.water_absorption_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+					<!-- <div  t-if="brick.water_absorbtion_visible and (brick.water_absorption_nabl == 'pass' and nabl or (brick.water_absorption_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 					<div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 10px;margin-top: 20px;">
 							Water Absorption
 						</div>
@@ -321,18 +668,18 @@
 									<td style="text-align:center;border: 1px solid black; padding: 6px;" colspan="2">
 										<span t-esc="r['water_absorption']" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
-									<!-- Average Column (ONLY once with rowspan) -->
+									
 								
                                   <t t-if="k == 1">
                                       <td t-att-rowspan="total_rows" style="border: 1px solid black; padding: 6px;text-align:center; vertical-align: middle; ">
                                           <span t-field="brick.avrg_water_absorption" t-options='{"widget": "float", "precision": 2}'/>
                                       </td>
                                   </t>
-								  <!-- Average Column (ONLY once with rowspan) -->
+								
 								
                                   <t t-if="k == 1">
                                       <td t-att-rowspan="total_rows" style="border: 1px solid black; padding: 6px;text-align:center; vertical-align: middle;" >
-                                          <!-- <span t-field="o.material.test_method_adopted"/> -->
+                                         
 										  IS 3495 (Part 2) :2019
                                       </td>
                                   </t>
@@ -342,12 +689,12 @@
 							</tbody>
 						</table>
 
-						</div>
+						</div> -->
 
 
 						<!-- Dimension  -->
 
-					<t t-set="length_nabl" t-value="(brick.avrg_length_nabl == 'pass' and nabl) or ((brick.avrg_length_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)"/>
+					<!-- <t t-set="length_nabl" t-value="(brick.avrg_length_nabl == 'pass' and nabl) or ((brick.avrg_length_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)"/>
 
                     <t t-set="width_nabl" t-value="(brick.avrg_width_nabl == 'pass' and nabl) or ((brick.avrg_width_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)"/>
 
@@ -406,7 +753,7 @@
 									<td style="text-align:center;border: 1px solid black; padding: 6px;" colspan="2">
 										<span t-esc="r['height']"/>
 									</td>
-									<!-- Average Column (ONLY once with rowspan) -->
+									
 								
                                   <t t-if="k == 1">
                                       <td t-att-rowspan="total_rows" style="border: 1px solid black; padding: 6px;text-align:center; vertical-align: middle; ">
@@ -426,11 +773,11 @@
                                       </td>
                                   </t>
 
-								  <!-- Average Column (ONLY once with rowspan) -->
+								 
 								
                                   <t t-if="k == 1">
                                       <td t-att-rowspan="total_rows" style="border: 1px solid black; padding: 6px;text-align:center; vertical-align: middle;" >
-                                          <!-- <span t-field="o.material.test_method_adopted"/> -->
+                                          
 										  IS 1077 : 2025
                                       </td>
                                   </t>
@@ -440,12 +787,12 @@
 							</tbody>
 						</table>
 
-						</div>
+						</div> -->
 
 
 						<!-- Efflorescence  -->
 
-					<div  t-if="brick.efflorescence_visible">
+					<!-- <div  t-if="brick.efflorescence_visible">
 					<div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 10px;margin-top: 20px;">
 							Efflorescence
 						</div>
@@ -470,7 +817,7 @@
 						</table>
 
 						</div>
-
+ -->
 
 
 					
@@ -482,8 +829,8 @@
 								<td style="padding: 5px; font-style: italic; ">
 
 									<b>Notes:-</b>
-										<t t-if="brick.notes_id">
-										<t t-foreach="brick.notes_id" t-as="n">
+										<t t-if="data.notes_id">
+										<t t-foreach="data.notes_id" t-as="n">
 											<span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span>
 										</t>
 									</t>

@@ -112,6 +112,34 @@ class ChequeredCementTile(models.Model):
                         record.avg_length_nabl = 'fail'
 
 
+    avg_length_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_length_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_length_final_report", store=True)
+
+    @api.depends('avg_length_nabl', 'avg_length_report_type')
+    def _compute_avg_length_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_length_report_type == 'nabl':
+            rec.avg_length_final_report = 'nabl'
+
+        elif rec.avg_length_report_type == 'non_nabl':
+            rec.avg_length_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_length_nabl == 'pass':
+                rec.avg_length_final_report = 'nabl'
+            else:
+                rec.avg_length_final_report = 'non_nabl'
+
+
     avg_width_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),('na', 'NA'),], string='Confirmity',compute="_compute_avg_width_confirmity")
@@ -164,6 +192,34 @@ class ChequeredCementTile(models.Model):
                         record.avg_width_nabl = 'fail'
 
 
+    avg_width_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_width_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_width_final_report", store=True)
+
+    @api.depends('avg_width_nabl', 'avg_width_report_type')
+    def _compute_avg_width_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_width_report_type == 'nabl':
+            rec.avg_width_final_report = 'nabl'
+
+        elif rec.avg_width_report_type == 'non_nabl':
+            rec.avg_width_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_width_nabl == 'pass':
+                rec.avg_width_final_report = 'nabl'
+            else:
+                rec.avg_width_final_report = 'non_nabl'
+
+
     avg_thickness_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),('na', 'NA'),], string='Confirmity',compute="_compute_avg_thickness_confirmity")
@@ -214,6 +270,33 @@ class ChequeredCementTile(models.Model):
                         break
                     else:
                         record.avg_thickness_nabl = 'fail'
+
+    avg_thickness_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_thickness_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_thickness_final_report", store=True)
+
+    @api.depends('avg_thickness_nabl', 'avg_thickness_report_type')
+    def _compute_avg_thickness_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_thickness_report_type == 'nabl':
+            rec.avg_thickness_final_report = 'nabl'
+
+        elif rec.avg_thickness_report_type == 'non_nabl':
+            rec.avg_thickness_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_thickness_nabl == 'pass':
+                rec.avg_thickness_final_report = 'nabl'
+            else:
+                rec.avg_thickness_final_report = 'non_nabl'
 
 
     # Flatness
@@ -334,6 +417,34 @@ class ChequeredCementTile(models.Model):
                         record.sample_concavity_nabl = 'fail'
 
 
+    sample_concavity_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    sample_concavity_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_sample_concavity_final_report", store=True)
+
+    @api.depends('sample_concavity_nabl', 'sample_concavity_report_type')
+    def _compute_sample_concavity_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.sample_concavity_report_type == 'nabl':
+            rec.sample_concavity_final_report = 'nabl'
+
+        elif rec.sample_concavity_report_type == 'non_nabl':
+            rec.sample_concavity_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.sample_concavity_nabl == 'pass':
+                rec.sample_concavity_final_report = 'nabl'
+            else:
+                rec.sample_concavity_final_report = 'non_nabl'
+
+
     sample_convexity_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),('na', 'NA'),], string='Convexity Confirmity',compute="_compute_sample_convexity_confirmity")
@@ -384,6 +495,33 @@ class ChequeredCementTile(models.Model):
                         break
                     else:
                         record.sample_convexity_nabl = 'fail'
+
+    sample_convexity_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    sample_convexity_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_sample_convexity_final_report", store=True)
+
+    @api.depends('sample_convexity_nabl', 'sample_convexity_report_type')
+    def _compute_sample_convexity_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.sample_convexity_report_type == 'nabl':
+            rec.sample_convexity_final_report = 'nabl'
+
+        elif rec.sample_convexity_report_type == 'non_nabl':
+            rec.sample_convexity_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.sample_convexity_nabl == 'pass':
+                rec.sample_convexity_final_report = 'nabl'
+            else:
+                rec.sample_convexity_final_report = 'non_nabl'
 
 
 
@@ -466,6 +604,33 @@ class ChequeredCementTile(models.Model):
                     else:
                         record.largest_gap_average_nabl = 'fail'
 
+    largest_gap_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    largest_gap_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_largest_gap_final_report", store=True)
+
+    @api.depends('largest_gap_average_nabl', 'largest_gap_report_type')
+    def _compute_largest_gap_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.largest_gap_report_type == 'nabl':
+            rec.largest_gap_final_report = 'nabl'
+
+        elif rec.largest_gap_report_type == 'non_nabl':
+            rec.largest_gap_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.largest_gap_average_nabl == 'pass':
+                rec.largest_gap_final_report = 'nabl'
+            else:
+                rec.largest_gap_final_report = 'non_nabl'
+
 
 
     # Straightness
@@ -543,6 +708,33 @@ class ChequeredCementTile(models.Model):
                     else:
                         record.straightness_max_gap_nabl = 'fail'
 
+    straightness_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    straightness_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_straightness_final_report", store=True)
+
+    @api.depends('straightness_max_gap_nabl', 'straightness_report_type')
+    def _compute_straightness_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.straightness_report_type == 'nabl':
+            rec.straightness_final_report = 'nabl'
+
+        elif rec.straightness_report_type == 'non_nabl':
+            rec.straightness_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.straightness_max_gap_nabl == 'pass':
+                rec.straightness_final_report = 'nabl'
+            else:
+                rec.straightness_final_report = 'non_nabl'
+
 
     # Water Absorption
     water_absorption_name = fields.Char("Name",default="Water Absorption")
@@ -619,6 +811,34 @@ class ChequeredCementTile(models.Model):
                         break
                     else:
                         record.average_water_absorption_nabl = 'fail'
+
+
+    water_absorption_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    water_absorption_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_water_absorption_final_report", store=True)
+
+    @api.depends('average_water_absorption_nabl', 'water_absorption_report_type')
+    def _compute_water_absorption_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.water_absorption_report_type == 'nabl':
+            rec.water_absorption_final_report = 'nabl'
+
+        elif rec.water_absorption_report_type == 'non_nabl':
+            rec.water_absorption_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.average_water_absorption_nabl == 'pass':
+                rec.water_absorption_final_report = 'nabl'
+            else:
+                rec.water_absorption_final_report = 'non_nabl'
 
      
 

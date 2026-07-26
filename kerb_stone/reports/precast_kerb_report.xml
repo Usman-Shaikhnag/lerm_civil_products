@@ -228,11 +228,11 @@
 							<tbody>
 
 							<!-- Dimension -->
-                            <t t-set="show_length" t-value="data.avrg_length_nabl == 'pass' and nabl or (data.avrg_length_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+                            <t t-set="show_length" t-value="data.avrg_length_final_report == 'nabl' and nabl or data.avrg_length_final_report == 'non_nabl' and not nabl"/>
 
-                            <t t-set="show_width" t-value="data.avrg_width_nabl == 'pass' and nabl or (data.avrg_width_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+                            <t t-set="show_width" t-value="data.avrg_width_final_report == 'nabl' and nabl or data.avrg_width_final_report == 'non_nabl' and not nabl"/>
 
-							<t t-set="show_thickness" t-value="data.avrg_height_nabl == 'pass' and nabl or (data.avrg_height_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+							<t t-set="show_thickness" t-value="data.avrg_height_final_report == 'nabl' and nabl or data.avrg_height_final_report == 'non_nabl' and not nabl"/>
 
                             <!-- 🔹 Step 2: Rowspan calculation -->
 					      <t t-set="rowspan_count" t-value="1 + int(show_length) + int(show_width)+ int(show_thickness)"/>
@@ -377,7 +377,7 @@
 
 
 							<!-- Compressive Strength -->
-							<tr t-if="data.compressive_strength_visible and (data.avg_compressive_strength_nabl == 'pass' and nabl or (data.avg_compressive_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.compressive_strength_visible and (data.compressive_strength_final_report == 'nabl' and nabl or data.compressive_strength_final_report == 'non_nabl' and not nabl)">
 									<t t-set="compressive" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','9dccce17-5e98-43c1-8d32-bbca24aae288')])"/>
 									
 									<td style="text-align: center;">
@@ -423,7 +423,7 @@
 								</tr>
 
 								<!-- Water Absorption -->
-							<tr t-if="data.water_absorption_visible and (data.average_water_absorption_nabl == 'pass' and nabl or (data.average_water_absorption_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.water_absorption_visible and (data.water_absorption_final_report == 'nabl' and nabl or data.water_absorption_final_report == 'non_nabl' and not nabl)">
 									<t t-set="absorption" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','f913fc79-eeb4-4e16-a7fc-75608384d9b0')])"/>
 									
 									<td style="text-align: center;">

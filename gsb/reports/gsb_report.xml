@@ -1541,12 +1541,13 @@
 
 
 				<t t-if="graphlight">
-                   <div style="text-align:center; margin-top:20px;" t-if="data.omc_visible and (
-            ((data.max_dry_density1_nabl == 'pass' and nabl) or
-             ((data.max_dry_density1_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl))
+                   <div style="text-align:center; margin-top:20px;"
+     t-if="data.omc_visible and (
+            ((data.dry_density1_report_type == 'nabl' and nabl) or
+             (data.dry_density1_report_type == 'non_nabl' and not nabl))
             or
-            ((data.omc1_nabl == 'pass' and nabl) or
-             ((data.omc1_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl))
+            ((data.omc1_final_report == 'nabl' and nabl) or
+             (data.omc1_final_report == 'non_nabl' and not nabl))
           )">
                    <img t-att-src="'data:image/png;base64,%s' % graphlight" style="max-width:100%; height:auto;"/>
                  

@@ -67,11 +67,7 @@ class MechanicalBricks(models.Model):
         ]
     
 
-    # Dimension
-
-    length_in_mm = fields.Float(string="Length in mm")
-    width_in_mm = fields.Float(string="Width in mm")
-    height_in_mm = fields.Float(string="Height in mm")
+    
     
 
 
@@ -142,6 +138,34 @@ class MechanicalBricks(models.Model):
                       break
                   else:
                       record.water_absorption_nabl = 'fail'
+
+
+    water_absorption_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    water_absorption_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_water_absorption_final_report", store=True)
+
+    @api.depends('water_absorption_nabl', 'water_absorption_report_type')
+    def _compute_water_absorption_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.water_absorption_report_type == 'nabl':
+            rec.water_absorption_final_report = 'nabl'
+
+        elif rec.water_absorption_report_type == 'non_nabl':
+            rec.water_absorption_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.water_absorption_nabl == 'pass':
+                rec.water_absorption_final_report = 'nabl'
+            else:
+                rec.water_absorption_final_report = 'non_nabl'
 
   
 
@@ -217,33 +241,355 @@ class MechanicalBricks(models.Model):
             else:
                 record.comp_strength_nabl = 'fail'
 
+
+    comp_strength_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    comp_strength_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_comp_strength_final_report", store=True)
+
+    @api.depends('comp_strength_nabl', 'comp_strength_report_type')
+    def _compute_comp_strength_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.comp_strength_report_type == 'nabl':
+            rec.comp_strength_final_report = 'nabl'
+
+        elif rec.comp_strength_report_type == 'non_nabl':
+            rec.comp_strength_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.comp_strength_nabl == 'pass':
+                rec.comp_strength_final_report = 'nabl'
+            else:
+                rec.comp_strength_final_report = 'non_nabl'
+
     
 
 
-        #-2----------Efflorescence Visual Observation 
+    
+
+
+        
+
+    # Dimension 
+
+    dimension_visible = fields.Boolean("Dimension Visible",compute="_compute_visible")
+    dimension_name = fields.Char("Name",default="Dimension (mm)")
+
+    dimension_lines = fields.One2many('fly.bricks.dimension.line','parent_id',string="Parameter")
+
+    avrg_length = fields.Float(string="Average length",compute="_compute_dimension",
+    store=True)
+    avrg_width = fields.Float(string="Average Width",compute="_compute_dimension",
+    store=True)
+    avrg_height = fields.Float(string="Average Height",compute="_compute_dimension",
+    store=True)
+
+    @api.depends('dimension_lines.lengthh', 'dimension_lines.width', 'dimension_lines.height')
+    def _compute_dimension(self):
+     for rec in self:
+
+        lengths = [l for l in rec.dimension_lines.mapped('lengthh') if l]
+        widths = [w for w in rec.dimension_lines.mapped('width') if w]
+        heights = [h for h in rec.dimension_lines.mapped('height') if h]
+
+        rec.avrg_length = sum(lengths) / len(lengths) if lengths else 0.0
+        rec.avrg_width = sum(widths) / len(widths) if widths else 0.0
+        rec.avrg_height = sum(heights) / len(heights) if heights else 0.0
+
+
+    avrg_length_confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ('na', 'NA'),], string='Confirmity', compute="_compute_avrg_length_confirmity")
+
+    avrg_length_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')],string="NABL",compute="_compute_avrg_length_nabl",store=True)
+
+
+    @api.depends('avrg_length','eln_ref')
+    def _compute_avrg_length_confirmity(self):
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avrg_length_confirmity = 'na'
+                continue
+            record.avrg_length_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','50e5bbcc-df2c-4fa9-8360-d0567d753361')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','50e5bbcc-df2c-4fa9-8360-d0567d753361')]).parameter_table
+            for material in materials:
+                
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.avrg_length - record.avrg_length*mu_value
+                    upper = record.avrg_length + record.avrg_length*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.avrg_length_confirmity = 'pass'
+                        break
+                    else:
+                        record.avrg_length_confirmity = 'fail'
+
+    @api.depends('avrg_length','eln_ref')
+    def _compute_avrg_length_nabl(self):
+        
+        for record in self:
+            record.avrg_length_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','50e5bbcc-df2c-4fa9-8360-d0567d753361')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','50e5bbcc-df2c-4fa9-8360-d0567d753361')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                  lab_min = line.lab_min_value
+                  lab_max = line.lab_max_value
+                  mu_value = line.mu_value
+            
+                  lower = record.avrg_length - record.avrg_length*mu_value
+                  upper = record.avrg_length + record.avrg_length*mu_value
+                  if lower >= lab_min and upper <= lab_max:
+                      record.avrg_length_nabl = 'pass'
+                      break
+                  else:
+                      record.avrg_length_nabl = 'fail'
+
+
+    avg_length_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_length_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_length_final_report", store=True)
+
+    @api.depends('avrg_length_nabl', 'avg_length_report_type')
+    def _compute_avg_length_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_length_report_type == 'nabl':
+            rec.avg_length_final_report = 'nabl'
+
+        elif rec.avg_length_report_type == 'non_nabl':
+            rec.avg_length_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avrg_length_nabl == 'pass':
+                rec.avg_length_final_report = 'nabl'
+            else:
+                rec.avg_length_final_report = 'non_nabl'
+
+
+    
+
+    avrg_width_confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ('na', 'NA'),], string='Confirmity', compute="_compute_avrg_width_confirmity")
+
+    avrg_width_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')],string="NABL",compute="_compute_avrg_width_nabl",store=True)
+
+
+    @api.depends('avrg_width','eln_ref')
+    def _compute_avrg_width_confirmity(self):
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avrg_width_confirmity = 'na'
+                continue
+            record.avrg_width_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','62fd063f-251a-4ab3-9025-d90755deb02e')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','62fd063f-251a-4ab3-9025-d90755deb02e')]).parameter_table
+            for material in materials:
+                
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.avrg_width - record.avrg_width*mu_value
+                    upper = record.avrg_width + record.avrg_width*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.avrg_width_confirmity = 'pass'
+                        break
+                    else:
+                        record.avrg_width_confirmity = 'fail'
+
+    @api.depends('avrg_width','eln_ref')
+    def _compute_avrg_width_nabl(self):
+        
+        for record in self:
+            record.avrg_width_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','62fd063f-251a-4ab3-9025-d90755deb02e')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','62fd063f-251a-4ab3-9025-d90755deb02e')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                  lab_min = line.lab_min_value
+                  lab_max = line.lab_max_value
+                  mu_value = line.mu_value
+            
+                  lower = record.avrg_width - record.avrg_width*mu_value
+                  upper = record.avrg_width + record.avrg_width*mu_value
+                  if lower >= lab_min and upper <= lab_max:
+                      record.avrg_width_nabl = 'pass'
+                      break
+                  else:
+                      record.avrg_width_nabl = 'fail'
+
+    avg_width_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_width_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_width_final_report", store=True)
+
+    @api.depends('avrg_width_nabl', 'avg_width_report_type')
+    def _compute_avg_width_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_width_report_type == 'nabl':
+            rec.avg_width_final_report = 'nabl'
+
+        elif rec.avg_width_report_type == 'non_nabl':
+            rec.avg_width_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avrg_width_nabl == 'pass':
+                rec.avg_width_final_report = 'nabl'
+            else:
+                rec.avg_width_final_report = 'non_nabl'
+
+
+    avrg_height_confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ('na', 'NA'),], string='Confirmity', compute="_compute_avrg_height_confirmity")
+
+    avrg_height_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')],string="NABL",compute="_compute_avrg_height_nabl",store=True)
+
+
+    @api.depends('avrg_height','eln_ref')
+    def _compute_avrg_height_confirmity(self):
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avrg_height_confirmity = 'na'
+                continue
+            record.avrg_height_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5d967f0e-21de-4c17-9f98-8202f3133ccb')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5d967f0e-21de-4c17-9f98-8202f3133ccb')]).parameter_table
+            for material in materials:
+                
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.avrg_height - record.avrg_height*mu_value
+                    upper = record.avrg_height + record.avrg_height*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.avrg_height_confirmity = 'pass'
+                        break
+                    else:
+                        record.avrg_height_confirmity = 'fail'
+
+    @api.depends('avrg_height','eln_ref')
+    def _compute_avrg_height_nabl(self):
+        
+        for record in self:
+            record.avrg_height_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5d967f0e-21de-4c17-9f98-8202f3133ccb')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5d967f0e-21de-4c17-9f98-8202f3133ccb')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                  lab_min = line.lab_min_value
+                  lab_max = line.lab_max_value
+                  mu_value = line.mu_value
+            
+                  lower = record.avrg_height - record.avrg_height*mu_value
+                  upper = record.avrg_height + record.avrg_height*mu_value
+                  if lower >= lab_min and upper <= lab_max:
+                      record.avrg_height_nabl = 'pass'
+                      break
+                  else:
+                      record.avrg_height_nabl = 'fail'
+
+
+    avrg_height_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avrg_height_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avrg_height_final_report", store=True)
+
+    @api.depends('avrg_height_nabl', 'avrg_height_report_type')
+    def _compute_avrg_height_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avrg_height_report_type == 'nabl':
+            rec.avrg_height_final_report = 'nabl'
+
+        elif rec.avrg_height_report_type == 'non_nabl':
+            rec.avrg_height_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avrg_height_nabl == 'pass':
+                rec.avrg_height_final_report = 'nabl'
+            else:
+                rec.avrg_height_final_report = 'non_nabl'
+
+
+    
+
+
+    
+
+    #  Efflorescence 
     efflorescence_visible = fields.Boolean("Efflorescence Visible",compute="_compute_visible")
     visual_observation_name_efforescence = fields.Char("Name",default="Efflorescence")
 
-    visual_observation_1 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
+    efflorescence_line_ids = fields.One2many(
+        "fly.bricks.efflorescence.line",
+        "parent_id",
+        string="Observation Lines"
+    )
 
 
-         #-3----------  Dimension As per IS: IS : 1077 -1992 
+    report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="Report Type",
+        default='nabl',
+        required=True,
+    )
 
-    dimension_visible = fields.Boolean("Efflorescence Visible",compute="_compute_visible")
-    dimension_name1 = fields.Char("Name",default="Dimension (mm)")
-    avrg_length = fields.Float(string="Average length")
-    avrg_width = fields.Float(string="Average Width")
-    avrg_height = fields.Float(string="Average Height")
+    efflorescence_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_efflorescence_nabl",
+    store=True
+)
 
-    
-
-    
-    
-
-    confirmity = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),
-    ('na', 'NA'),], string='Confirmity', default='fail')
+    @api.depends('report_type')
+    def _compute_efflorescence_nabl(self):
+     for rec in self:
+        rec.efflorescence_nabl = 'pass' if rec.report_type == 'nabl' else 'fail'
 
 
     ### Compute Visible
@@ -313,14 +659,46 @@ class MechanicalBricks(models.Model):
                 # result.result_char = round(self.avrg_water_absorption,2)
                 result.calculated = True
 
+
             # Dimension
             if result.parameter.internal_id == '125478bvf3-8d5d-4f45-8afb-b911f9cafe41':
-                # result.result_char = round(self.avrg_water_absorption,2)
                 result.calculated = True
+
+            # Length - Dimension
+            if result.parameter.internal_id == '50e5bbcc-df2c-4fa9-8360-d0567d753361':
+                result.result_char = round(self.avrg_length,2)
+                result.calculated = True
+                if self.avrg_length_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Width - Dimension
+            if result.parameter.internal_id == '62fd063f-251a-4ab3-9025-d90755deb02e':
+                result.result_char = round(self.avrg_width,2)
+                result.calculated = True
+                if self.avrg_width_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            # Height - Dimension
+            if result.parameter.internal_id == '5d967f0e-21de-4c17-9f98-8202f3133ccb':
+                result.result_char = round(self.avrg_height,2)
+                result.calculated = True
+                if self.avrg_height_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
 
             # Efflorescence
             if result.parameter.internal_id == '3214598fgrt-d27d-4ef9-9b27-e8eb4e7ae6ac':
-                result.result_char = self.visual_observation_1
+                
                 result.calculated = True
             
             
@@ -502,6 +880,96 @@ class BrickCompressiveLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.sample_no = index + 1
+
+
+class FLYBrickDimensionLine(models.Model):
+    _name = "fly.bricks.dimension.line"
+    parent_id = fields.Many2one('mechanical.bricks',string="Parent Id")
+
+    serial_no = fields.Integer(string="Sample No", readonly=True, copy=False, default=1)
+
+    no_bricks = fields.Float(string="No. of Bricks")
+    lengthh = fields.Float(string="Length")
+    width = fields.Float(string="Width")
+    height = fields.Float(string="Height")
+    
+   
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(FLYBrickDimensionLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+class BrickEflorescenceLine(models.Model):
+    _name = "fly.bricks.efflorescence.line"
+    parent_id = fields.Many2one('mechanical.bricks',string="Parent Id")
+
+    serial_no = fields.Integer(string="Sample No", readonly=True, copy=False, default=1)
+
+    brick_identification_no = fields.Char(
+        string="Brick Identification No."
+    )
+
+    water_level = fields.Float(
+        string="Water Level (mm)"
+    )
+
+    first_cycle = fields.Selection([
+        ('nil', 'NIL'),
+        ('slight', 'SLIGHT'),
+        ('moderate', 'MODERATE'),
+        ('heavy', 'HEAVY'),
+        ('serious', 'SERIOUS'),
+    ], string="1st Cycle Observation")
+
+    second_cycle = fields.Selection([
+        ('nil', 'NIL'),
+        ('slight', 'SLIGHT'),
+        ('moderate', 'MODERATE'),
+        ('heavy', 'HEAVY'),
+        ('serious', 'SERIOUS'),
+    ], string="2nd Cycle Observation")
+
+    efflorescence_rating = fields.Selection([
+        ('nil', 'NIL'),
+        ('slight', 'SLIGHT'),
+        ('moderate', 'MODERATE'),
+        ('heavy', 'HEAVY'),
+        ('serious', 'SERIOUS'),
+    ], string="Efflorescence Rating")
+
+    remarks = fields.Char("Remarks")
+    
+   
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(BrickEflorescenceLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
 
 class MechanicalBricksNotes(models.Model):
     _name = "mechanical.bricks.notes"

@@ -336,9 +336,9 @@
 
 								</t>
 
-								<t t-set="show_liquid_limit" t-value="data.liquid_limit_nabl == 'pass' and nabl or (data.liquid_limit_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+								<t t-set="show_liquid_limit" t-value="data.liquid_limit_final_report == 'nabl' and nabl or data.liquid_limit_final_report == 'non_nabl' and not nabl"/>
 					
-					<t t-set="show_plastic_limit" t-value="data.plastic_limit_nabl == 'pass' and nabl or (data.plastic_limit_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+					<t t-set="show_plastic_limit" t-value="data.plastic_limit_final_report == 'nabl' and nabl or data.plastic_limit_final_report == 'non_nabl' and not nabl"/>
 
 					<t t-set="rowspan_count" t-value="1 + int(show_liquid_limit) + int(show_plastic_limit) "/>
 
@@ -449,9 +449,9 @@
 								</tr>
 
 								<!-- Bulk Density -->
-                            <t t-set="show_loose_bulk_density" t-value="data.loose_avg_nabl == 'pass' and nabl or (data.loose_avg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+                            <t t-set="show_loose_bulk_density" t-value="data.loose_final_report == 'nabl' and nabl or data.loose_final_report == 'non_nabl' and not nabl"/>
 
-                            <t t-set="show_rodded_bulk_density" t-value="data.rodded_avg_nabl == 'pass' and nabl or (data.rodded_avg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl"/>
+							 <t t-set="show_rodded_bulk_density" t-value="data.rodded_final_report == 'nabl' and nabl or data.rodded_final_report == 'non_nabl' and not nabl"/>
 
                             <!-- 🔹 Step 2: Rowspan calculation -->
 					      <t t-set="rowspan_count" t-value="1 + int(show_loose_bulk_density) + int(show_rodded_bulk_density)"/>
@@ -554,7 +554,7 @@
 								</tr>
 
 								<!-- Crushing Value -->
-							<tr t-if="data.crushing_visible and (data.average_crushing_value_nabl == 'pass' and nabl or (data.average_crushing_value_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.crushing_visible and data.crushing_final_report == 'nabl' and nabl or data.crushing_final_report == 'non_nabl' and not nabl">
 									<t t-set="crushing_value" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','d71a0df2-2bbd-4b7e-adec-f9731dee1084')])"/>
 									
 									<td style="text-align: center;">
@@ -599,7 +599,7 @@
 								</tr>
 
 								<!-- Specific Gravity -->
-								<tr t-if="data.water_absorbtion_visible and (data.avg_specific_gravity_nabl == 'pass' and nabl or (data.avg_specific_gravity_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.water_absorbtion_visible and (data.specific_gravity_final_report == 'nabl' and nabl or data.specific_gravity_final_report == 'non_nabl' and not nabl)">
 									<t t-set="specific_gravity" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','48935a6d-40bc-4791-b133-b9818c43709a')])"/>
 									
 									<td style="text-align: center;">
@@ -646,7 +646,7 @@
 
 								<!-- water absorbtion -->
 
-								<tr t-if="data.water_absorbtion_visible and (data.avg_water_absorption_nabl == 'pass' and nabl or (data.avg_water_absorption_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.water_absorbtion_visible and (data.water_absorption_final_report == 'nabl' and nabl or data.water_absorption_final_report == 'non_nabl' and not nabl)">
 									<t t-set="water_absorption" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','1478578hgfr-6d14-468e-8488-6d100818e924')])"/>
 									
 									<td style="text-align: center;">
@@ -694,7 +694,7 @@
 								</tr>
 
 								<!-- Impact Value -->
-							<tr t-if="data.impact_visible and (data.average_impact_value_nabl == 'pass' and nabl or (data.average_impact_value_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.wet_impact_visible and (data.wet_impact_final_report == 'nabl' and nabl or data.wet_impact_final_report == 'non_nabl' and not nabl)">
 									<t t-set="impact" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','nbv21455-7446-446e-a018-8a5f9dcfd549')])"/>
 									
 									<td style="text-align: center;">
@@ -741,7 +741,7 @@
 
 
 									<!-- Los Angeles Abrasion Value -->
-							<tr t-if="data.abrasion_visible and (data.avg_abrasion_value_nabl == 'pass' and nabl or (data.avg_abrasion_value_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.abrasion_visible and (data.abrasion_final_report == 'nabl' and nabl or data.abrasion_final_report == 'non_nabl' and not nabl)">
 									<t t-set="abrasion" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','bghf65241-a4ae-451c-a4cf-36d2c042ed7d')])"/>
 									
 									<td style="text-align: center;">
@@ -787,7 +787,7 @@
 								</tr>
 
 								<!-- Material finer than 75 micron -->
-							<tr t-if="data.finer75_visible and (data.avg_finer_percent_nabl == 'pass' and nabl or (data.avg_finer_percent_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.finer75_visible and (data.finer_percent_final_report == 'nabl' and nabl or data.finer_percent_final_report == 'non_nabl' and not nabl)">
 									<t t-set="finer75" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','69ab02a7-1183-4c0c-8f00-76613ebfe25b')])"/>
 									
 									<td style="text-align: center;">
@@ -833,7 +833,7 @@
 								</tr>
 
 								<!-- 10 % Fine Value -->
-							<tr t-if="data.fine10_visible and (data.load_10percent_fine_values_nabl == 'pass' and nabl or (data.load_10percent_fine_values_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.fine10_visible and (data.load_10percent_final_report == 'nabl' and nabl or data.load_10percent_final_report == 'non_nabl' and not nabl)">
 									<t t-set="fine10" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','f32894f3-23b1-4e3f-8cbd-6f98d6130717')])"/>
 									
 									<td style="text-align: center;">
@@ -880,7 +880,7 @@
 
 
 								<!-- DELETERIOUS MATERIAL (CLAY & LUMPS) -->
-							<tr t-if="data.clay_lump_visible and (data.clay_lumps_percent_nabl == 'pass' and nabl or (data.clay_lumps_percent_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.clay_lump_visible and (data.clay_lumps_final_report == 'nabl' and nabl or data.clay_lumps_final_report == 'non_nabl' and not nabl)">
 									<t t-set="clay_lump" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','8634c76e-ae55-4011-98c1-70f20c6b5fd1')])"/>
 									
 									<td style="text-align: center;">
@@ -926,7 +926,7 @@
 								</tr>
 
 								<!-- Deleterious Material (Fine Silt & Fine Dust) -->
-							<tr t-if="data.silt_dust_visible and (data.silt_dust_percent_nabl == 'pass' and nabl or (data.silt_dust_percent_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.silt_dust_visible and (data.silt_dust_percent_final_report == 'nabl' and nabl or data.silt_dust_percent_final_report == 'non_nabl' and not nabl)">
 									<t t-set="silt_dust" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','bff5966a-5c81-497e-a100-93eea630b4a0')])"/>
 									
 									<td style="text-align: center;">
@@ -973,7 +973,7 @@
 
 
 								<!-- Deleterious Material (Soft Fragments) -->
-							<tr t-if="data.soft_fragments_visible and (data.soft_fragments_percent_nabl == 'pass' and nabl or (data.soft_fragments_percent_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.soft_fragments_visible and (data.soft_fragments_final_report == 'nabl' and nabl or data.soft_fragments_final_report == 'non_nabl' and not nabl)">
 									<t t-set="soft_fragments" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','01b2cc83-a922-40a8-9c7f-dd8ff411ad7d')])"/>
 									
 									<td style="text-align: center;">
@@ -1019,7 +1019,7 @@
 								</tr>
 
 									<!--  Wet Impact Value -->
-							<tr t-if="data.wet_impact_visible and (data.avg_impact_nabl == 'pass' and nabl or (data.avg_impact_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.wet_impact_visible and (data.wet_impact_final_report == 'nabl' and nabl or data.wet_impact_final_report == 'non_nabl' and not nabl)">
 									<t t-set="wet_impact" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','3b240165-440e-41ef-ba06-de49f51414e2')])"/>
 									
 									<td style="text-align: center;">
@@ -1065,7 +1065,7 @@
 								</tr>
 
 								<!-- Soundness - Na2SO4 -->
-							<tr t-if="data.soundness_na2so4_visible and (data.total_weighted_avg_nabl == 'pass' and nabl or (data.total_weighted_avg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.soundness_na2so4_visible and (data.sodium_final_report == 'nabl' and nabl or data.sodium_final_report == 'non_nabl' and not nabl)">
 									<t t-set="sodium" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','9896a6a5-59e7-4e56-b503-a630e0c6bee3')])"/>
 									
 									<td style="text-align: center;">
@@ -1111,7 +1111,7 @@
 								</tr>
 
 								<!--  Soundness - MgSO4 -->
-							<tr t-if="data.soundness_mgso4_visible and (data.mag_total_weighted_avg_nabl == 'pass' and nabl or (data.mag_total_weighted_avg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.soundness_mgso4_visible and (data.magnesium_final_report == 'nabl' and nabl or data.magnesium_final_report == 'non_nabl' and not nabl)">
 									<t t-set="magnesium" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','312gthdvfe-3e7e-4fff-b912-f7b046f5099c')])"/>
 									
 									<td style="text-align: center;">
@@ -1156,7 +1156,7 @@
 								</tr>
 
 								<!-- Elongation -->
-							<tr t-if="data.elongation_fl_visible and (data.elongation_index_nabl == 'pass' and nabl or (data.elongation_index_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.elongation_fl_visible and (data.elongation_final_report == 'nabl' and nabl or data.elongation_final_report == 'non_nabl' and not nabl)">
 									<t t-set="elongation" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','9effe915-e5a3-45a7-aaeb-10caababd667')])"/>
 									
 									<td style="text-align: center;">
@@ -1202,7 +1202,7 @@
 								</tr>
 
 								<!-- Flakiness -->
-							<tr t-if="data.elongation_fl_visible and (data.flakiness_index_nabl == 'pass' and nabl or (data.flakiness_index_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.elongation_fl_visible and (data.flakiness_final_report == 'nabl' and nabl or data.flakiness_final_report == 'non_nabl' and not nabl)">
 									<t t-set="elongation_fl" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','asd21452-2d4b-47f4-b9ee-7a4a5b176b97')])"/>
 									
 									<td style="text-align: center;">
@@ -1248,7 +1248,7 @@
 								</tr>
 
 								<!-- CBR -->
-								<tr t-if="data.soil_visible and (data.cbr_25_avg_nabl == 'pass' and nabl or (data.cbr_25_avg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.soil_visible and (data.cbr_25_avg_final_report == 'nabl' and nabl or data.cbr_25_avg_final_report == 'non_nabl' and not nabl)">
 									<td style="text-align: center;" colspan="1">
 										<div>
 											<span t-esc="i + 1" />
@@ -1293,7 +1293,7 @@
 									
 								</tr>
 
-								<tr t-if="data.heavy_visible and (data.max_dry_density_nabl == 'pass' and nabl or (data.max_dry_density_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.heavy_visible and (data.dry_density_report_type == 'nabl' and nabl or data.dry_density_report_type == 'non_nabl' and not nabl)">
 									<td style="text-align: center;" colspan="1">
 										<div>
 											<span t-esc="i + 1" />
@@ -1339,7 +1339,9 @@
 								</tr>
 
 
-								<tr t-if="data.heavy_visible and (data.omc_nabl == 'pass' and nabl or (data.omc_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<!-- HEAVY OMC -->
+								
+								<tr t-if="data.heavy_visible and (data.omc_final_report == 'nabl' and nabl or data.omc_final_report == 'non_nabl' and not nabl)">
 									<td style="text-align: center;" colspan="1">
 										<div>
 											<span t-esc="i + 1" />
@@ -1386,7 +1388,9 @@
 
 								
 
-								<tr t-if="data.omc_visible and (data.max_dry_density1_nabl == 'pass' and nabl or (data.max_dry_density1_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<!-- LIGHT MDD -->
+
+								<tr t-if="data.omc_visible and (data.dry_density1_final_report == 'nabl' and nabl or data.dry_density1_final_report == 'non_nabl' and not nabl)">
 									<td style="text-align: center;" colspan="1">
 										<div>
 											<span t-esc="i + 1" />
@@ -1432,7 +1436,9 @@
 
 								</tr>
 
-								<tr t-if="data.omc_visible and (data.omc1_nabl == 'pass' and nabl or (data.omc1_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<!-- LIGHT OMC -->
+								
+								<tr t-if="data.omc_visible and (data.omc1_final_report == 'nabl' and nabl or data.omc1_final_report == 'non_nabl' and not nabl)">
 									<td style="text-align: center;" colspan="1">
 										<div>
 											<span t-esc="i + 1" />
@@ -1489,13 +1495,25 @@
 
 
 				<t t-if="graphliquid">
-                   <div style="text-align:center; margin-top:20px;" t-if="data.liquid_limit_visible and data.liquid_limit_nabl == 'pass' and nabl or (data.liquid_limit_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl">
+                   <div style="text-align:center; margin-top:20px;" t-if="data.heavy_visible and (
+            ((data.dry_density_report_type == 'nabl' and nabl) or
+             (data.dry_density_report_type == 'non_nabl' and not nabl))
+            or
+            ((data.omc_final_report == 'nabl' and nabl) or
+             (data.omc_final_report == 'non_nabl' and not nabl))
+          )">
                        <img t-att-src="'data:image/png;base64,%s' % graphliquid" style="max-width:100%; height:auto;"/>
                   </div>
 				</t>
 
 				<t t-if="graphHeavy">
-                   <div style="text-align:center; margin-top:20px;" t-if="(data.heavy_visible and (data.max_dry_density_nabl == 'pass' and nabl or (data.max_dry_density_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)) or (data.heavy_visible and (data.omc_nabl == 'pass' and nabl or (data.omc_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl))">
+                   <div style="text-align:center; margin-top:20px;" t-if="data.heavy_visible and (
+            ((data.dry_density_report_type == 'nabl' and nabl) or
+             (data.dry_density_report_type == 'non_nabl' and not nabl))
+            or
+            ((data.omc_final_report == 'nabl' and nabl) or
+             (data.omc_final_report == 'non_nabl' and not nabl))
+          )">
                    <img t-att-src="'data:image/png;base64,%s' % graphHeavy" style="max-width:100%; height:auto;"/>
                  
 
@@ -1518,7 +1536,14 @@
 
 
 				<t t-if="graphlight">
-                   <div style="text-align:center; margin-top:20px;" t-if="(data.omc_visible and (data.max_dry_density1_nabl == 'pass' and nabl or (data.max_dry_density1_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)) or (data.omc_visible and (data.omc1_nabl == 'pass' and nabl or (data.omc1_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl))">
+                  <div style="text-align:center; margin-top:20px;"
+     t-if="data.omc_visible and (
+            ((data.dry_density1_report_type == 'nabl' and nabl) or
+             (data.dry_density1_report_type == 'non_nabl' and not nabl))
+            or
+            ((data.omc1_final_report == 'nabl' and nabl) or
+             (data.omc1_final_report == 'non_nabl' and not nabl))
+          )">
                    <img t-att-src="'data:image/png;base64,%s' % graphlight" style="max-width:100%; height:auto;"/>
                  
 
@@ -1541,7 +1566,9 @@
 
 
 				<t t-if="graphcbr">
-                   <div style="text-align:center; margin-top:20px;" t-if="data.soil_visible and (data.cbr_25_avg_nabl == 'pass' and nabl or (data.cbr_25_avg_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+                   <div style="text-align:center; margin-top:20px;" t-if="data.soil_visible and (data.cbr_25_avg_final_report == 'nabl' and nabl or data.cbr_25_avg_final_report == 'non_nabl' and not nabl)">
+
+				   
                       <img t-att-src="'data:image/png;base64,%s' % graphcbr" style="max-width:100%; height:auto;"/>
 
 				      <table class="table table-sm o_form_table table-bordered custom_table_borders w-100" invisible="not soil_visible " >

@@ -133,10 +133,10 @@
 							<tr>
 								<td colspan="1">Condition of Sample  :-</td>
 								<td colspan="1">
-									<!-- <t t-if="o.sample_id.sample_received_date">
-											<span t-field="o.sample_id.sample_received_date"/>
+									<t t-if="o.sample_id.sample_condition">
+											<span t-field="o.sample_id.sample_condition"/>
 										</t>
-									<t t-else="">NA</t> -->
+									<t t-else="">NA</t>
 								</td>
 
 									<td colspan="1">Date of Report Issue :-</td>
@@ -171,16 +171,16 @@
                             <tr>
 									<td colspan="1">Temperature :-</td>
 										<td colspan="1" >
-											<t t-if="data.aac_temp is not None">
-											<span t-field="data.aac_temp"/>   °C
+											<t t-if="data.temp is not None">
+											<span t-field="data.temp"/>   °C
 										</t>
 									<t t-else="">NA</t>
 										</td>
 
 									<td colspan="1">Humidity :-</td>
 										<td colspan="1" >
-											<t t-if="data.aac_humidity is not None">
-											<span t-field="data.aac_humidity"/>   °C
+											<t t-if="data.humidity is not None">
+											<span t-field="data.humidity"/>   °C
 										</t>
 									<t t-else="">NA</t>
 										</td>
@@ -233,7 +233,7 @@
 
 							<!-- Slump Test -->
 
-								<tr t-if="data.slump_test_visible and (data.avg_slump_value_nabl == 'pass' and nabl or (data.avg_slump_value_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.slump_test_visible and (data.avg_slump_value_final_report == 'nabl' and nabl or data.avg_slump_value_final_report == 'non_nabl' and not nabl)">
 									<t t-set="slump" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','49f934a0-ebd7-478b-a11e-641d7babc9c0')])"/>
 									
 									<td style="text-align: center;">
@@ -283,7 +283,7 @@
 
 								<!-- Density Test -->
 
-								<tr t-if="data.density_visible and (data.avg_density_nabl == 'pass' and nabl or (data.avg_density_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.density_visible and (data.avg_density_final_report == 'nabl' and nabl or data.avg_density_final_report == 'non_nabl' and not nabl)">
 									<t t-set="density" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','021ea043-8164-487b-8857-6aa4240a38df')])"/>
 									
 									<td style="text-align: center;">
@@ -333,7 +333,7 @@
 
 								<!-- Flow of Concrete of High Workability Test -->
 
-								<tr t-if="data.flow_high_work_visible and (data.avg_flow_high_nabl == 'pass' and nabl or (data.avg_flow_high_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.flow_high_work_visible and (data.avg_flow_high_final_report == 'nabl' and nabl or data.avg_flow_high_final_report == 'non_nabl' and not nabl)">
 									<t t-set="flow_high_work" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','664503ee-02ac-48cf-88b0-a5e3bc33f290')])"/>
 									
 									<td style="text-align: center;">
@@ -383,7 +383,7 @@
 
 								<!-- Wet Density Test -->
 
-								<tr t-if="data.wet_density_visible and (data.avg_wet_density_nabl == 'pass' and nabl or (data.avg_wet_density_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.wet_density_visible and (data.wet_density_final_report == 'nabl' and nabl or data.wet_density_final_report == 'non_nabl' and not nabl)">
 									<t t-set="wet_density" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','d0855037-7ccd-4238-bc7b-674a40d40580')])"/>
 									
 									<td style="text-align: center;">
@@ -432,7 +432,7 @@
 
 								<!-- Flow Test of Fresh Cement Concrete -->
 
-								<tr t-if="data.flow_test_visible and (data.avg_flow_test_nabl == 'pass' and nabl or (data.avg_flow_test_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.flow_test_visible and (data.avg_flow_test_final_report == 'nabl' and nabl or data.avg_flow_test_final_report == 'non_nabl' and not nabl)">
 									<t t-set="flow_test" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','c3cad715-b384-4ac6-955d-e4d3248a8bfb')])"/>
 									
 									<td style="text-align: center;">

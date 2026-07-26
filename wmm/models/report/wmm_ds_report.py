@@ -474,6 +474,9 @@ class WMMReport(models.AbstractModel):
         y3
     ], dtype=float)
 
+      # if abs(np.linalg.det(A)) < 1e-10:
+      #     return False
+
       a, b, c = np.linalg.solve(A, B)
 
       def curve(xx):
