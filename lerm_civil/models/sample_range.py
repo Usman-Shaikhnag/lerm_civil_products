@@ -36,9 +36,11 @@ class SampleRangeLine(models.Model):
     received_by_id = fields.Many2one('res.partner',string="Received By")
     sample_received_date = fields.Date(string="Sample Received Date")
     sample_condition = fields.Selection([
-        ('satisfactory', 'Satisfactory'),
-        ('non_satisfactory', 'Non-Satisfactory'),
-    ], string='Sample Condition', default='satisfactory')
+        # ('satisfactory', 'Satisfactory'),
+        # ('non_satisfactory', 'Non-Satisfactory'),
+        ('acceptable', 'Acceptable'),
+            ('non_acceptable', 'Non-Acceptable'),
+    ], string='Sample Condition', default='acceptable')
     # technicians = fields.Many2one("res.users",string="Technicians")
     location = fields.Char(string="Location")
     sample_reject_reason = fields.Char(string="Sample Reject Reason")

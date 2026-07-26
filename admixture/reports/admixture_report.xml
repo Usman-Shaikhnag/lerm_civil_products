@@ -123,7 +123,9 @@
 								<td colspan="1">Date of Performance of Test :-</td>
 								<td colspan="1">
 									<t t-if="o.start_date and o.end_date">
-											<span t-field="o.start_date"/><![CDATA[&nbsp;]]> to <![CDATA[&nbsp;]]> <span t-field="o.end_date"/>
+											<span t-field="o.start_date" t-options='{"widget": "date"}'/>
+											<span style="display:inline-block; padding:0 3px;">to</span>
+											<span t-field="o.end_date" t-options='{"widget": "date"}'/>
 										</t>
 									<t t-else="">NA</t>
 								</td>
@@ -132,10 +134,10 @@
 							<tr>
 								<td colspan="1">Condition of Sample  :-</td>
 								<td colspan="1">
-									<!-- <t t-if="o.sample_id.sample_received_date">
-											<span t-field="o.sample_id.sample_received_date"/>
+									<t t-if="o.sample_id.sample_condition">
+											<span t-field="o.sample_id.sample_condition"/>
 										</t>
-									<t t-else="">NA</t> -->
+									<t t-else="">NA</t>
 								</td>
 
 									<td colspan="1">Date of Report Issue :-</td>

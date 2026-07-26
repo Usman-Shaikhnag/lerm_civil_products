@@ -120,7 +120,9 @@
 								<td colspan="1">Date of Performance of Test :-</td>
 								<td colspan="1">
 									<t t-if="o.start_date and o.end_date">
-											<span t-field="o.start_date"/><![CDATA[&nbsp;]]> to <![CDATA[&nbsp;]]> <span t-field="o.end_date"/>
+											<span t-field="o.start_date" t-options='{"widget": "date"}'/>
+											<span style="display:inline-block; padding:0 3px;">to</span>
+											<span t-field="o.end_date" t-options='{"widget": "date"}'/>
 										</t>
 									<t t-else="">NA</t>
 								</td>
@@ -129,10 +131,10 @@
 							<tr>
 								<td colspan="1">Condition of Sample  :-</td>
 								<td colspan="1">
-									<!-- <t t-if="o.sample_id.sample_received_date">
-											<span t-field="o.sample_id.sample_received_date"/>
+									<t t-if="o.sample_id.sample_condition">
+											<span t-field="o.sample_id.sample_condition"/>
 										</t>
-									<t t-else="">NA</t> -->
+									<t t-else="">NA</t>
 								</td>
 
 									<td colspan="1">Date of Report Issue :-</td>
@@ -167,18 +169,18 @@
                             <tr>
 									<td colspan="1">Temperature :-</td>
 										<td colspan="1" >
-											<t t-if="data.temperature is not None">
-											<span t-field="data.temperature"/>   °C
+											<t t-if="data.temp is not None">
+											<span t-field="data.temp"/>   °C
 										</t>
 									<t t-else="">NA</t>
 										</td>
 
 									<td colspan="1">Humidity :-</td>
 										<td colspan="1" >
-											<!-- <t t-if="brick.brick_humidity is not None">
-											<span t-field="brick.brick_humidity"/>   °C
+											<t t-if="data.humidity is not None">
+											<span t-field="data.humidity"/>   °C
 										</t>
-									<t t-else="">NA</t> -->
+									<t t-else="">NA</t>
 										</td>
 								
 							</tr>

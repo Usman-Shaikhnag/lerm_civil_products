@@ -24,6 +24,9 @@ class CementNormalConsistency(models.Model):
     date_of_testing = fields.Date(string="Date of Testing",compute="_compute_date_testing")
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
+    temp = fields.Char("Temperature",store=True)
+    humidity = fields.Char("Humidity",store=True)
+
     @api.depends('eln_ref')
     def _compute_date_testing(self):
         if self.eln_ref:
