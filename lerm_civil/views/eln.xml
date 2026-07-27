@@ -34,7 +34,7 @@
                         <field name='start_date' required="1"/>
                         <field name='witness_description'/>
                         <field name='remarks'/>
-                        <field name='conformity' readonly="1"/>
+                        <field name='conformity' />
                         <field name='has_witness'/>
                         <field name='is_product_based_calculation'/>
                         <field name='file_upload' invisible="1" widget="many2many_binary"/>
@@ -112,7 +112,7 @@
                         <field name="result_char" optional="show" readonly="result_type == 'number'"/>
                         <field name="result" optional="show" readonly="1" column_invisible="parent.is_product_based_calculation == True"/>
                         <field name="calculation_type" optional="show" column_invisible="parent.is_product_based_calculation == True"/>
-                        <field name="calculated" optional="show" readonly="1"/>
+                        <field name="calculated" optional="show" />
                         <field name="unit" optional="show" column_invisible="parent.is_product_based_calculation == True"/>
                         <field name="test_method" optional="show" string="Parameter Test Method" column_invisible="parent.is_product_based_calculation == True"/>
                         <field name="specification_permissible_limit" optional="show" column_invisible="parent.is_product_based_calculation == True"/>
