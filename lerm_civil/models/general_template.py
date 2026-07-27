@@ -193,6 +193,7 @@ class DataSheetReport(models.AbstractModel):
     @api.model
     def _get_report_values(self, docids, data):
         # eln = self.env['lerm.eln'].sudo().browse(docids)
+        import wdb;wdb.set_trace()
         inreport_value = data.get('inreport', None)
         print(data['context'])
         nabl = data.get('nabl')
@@ -240,7 +241,6 @@ class DataSheetReport(models.AbstractModel):
             # import wdb;wdb.set_trace()
         else:
             general_data = self.env['lerm.eln'].sudo().browse(docids)
-            # import wdb;wdb.set_trace()
         print('columns dataa',resultfields)
 
         return {
