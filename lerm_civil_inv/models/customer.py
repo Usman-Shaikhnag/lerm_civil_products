@@ -168,9 +168,13 @@ class AccountMoveInherited(models.Model):
                 if command[0] in (0, 1):  # create or update
                     line_vals = command[2]
                     if not line_vals.get("account_id"):
-                        line_vals["account_id"] = self.env["account.account"].search(
-                            [('user_type_id.name', '=', 'Revenue')], limit=1
-                        ).id
+                        account = self.env["account.account"].search(
+                            [('account_type', '=', 'income')], limit=1
+                        )
+                        if not account:
+                            account = self.env["account.account"].search([], limit=1)
+                        if account:
+                            line_vals["account_id"] = account.id
         return super(AccountMoveInherited, self).create(vals_list)
     
 
