@@ -54,17 +54,33 @@
                             }
                     </style>
 
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                        <tbody>
-                            <tr>
-                                <td><label for="temperature">Temperature</label></td>
-                                <td>
-                                    <field name="temperature" class="blue-input" />
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
+                    <div class="d-flex gap-2"> 
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="temp"></label>
+                                    </td>
+                                    <td>
+                                        <field name="temp" class="blue-input"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="humidity" ></label>
+                                    </td>
+                                    <td>
+                                        <field name="humidity" class="blue-input"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                     <!-- Penetration Value Of Bitumen  -->
 
                     <div class="text-center" invisible="penetration_value_visible == False">
@@ -79,9 +95,9 @@
                         <field name="penetration_value_line_ids" nolabel="1">
                                 <tree editable="bottom">
                                     <field name='sample_no' width="200"/>
-                                    <field name='test_temp' class="blue-input" decoration-info="test_temp != 0" width="200"/>
-                                    <field name='dial_initial' class="blue-input" decoration-info="dial_initial != 0" width="200"/>
-                                    <field name='dial_final' class="blue-input" decoration-info="dial_final != 0" width="200"/>
+                                    <field name='test_temperature' class="blue-input" decoration-info="test_temperature != 0" width="200"/>
+                                    <field name='initial_reading' class="blue-input" decoration-info="initial_reading != 0" width="200"/>
+                                    <field name='final_reading' class="blue-input" decoration-info="final_reading != 0" width="200"/>
                                     <field name='penetration' width="150"/>
                                      <field name='remarks' width="150" class="blue-input" decoration-info="remarks != 0"/>
                                 </tree>
@@ -116,6 +132,10 @@
                                         decoration-danger="average_penetration_nabl == 'fail'" 
                                         readonly="1"/>
                                 </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="penetration_report_type">Report Type</label></td>
+                                <td><field name="penetration_report_type" class="blue-input" decoration-info="penetration_report_type != 0"/></td>
                             </tr>
                         </tbody>
                     </table>
@@ -175,6 +195,10 @@
                                         decoration-danger="avg_specific_gravity_nabl == 'fail'" 
                                         readonly="1"/>
                                 </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="specific_gravity_report_type">Report Type</label></td>
+                                <td><field name="specific_gravity_report_type" class="blue-input" decoration-info="specific_gravity_report_type != 0"/></td>
                             </tr>
                         </tbody>
                     </table>
@@ -267,6 +291,10 @@
                                         decoration-danger="soft_mean_value_nabl == 'fail'" 
                                         readonly="1"/>
                                 </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="soft_mean_value_report_type">Report Type</label></td>
+                                <td><field name="soft_mean_value_report_type" class="blue-input" decoration-info="soft_mean_value_report_type != 0"/></td>
                             </tr>
                         </tbody>
                     </table>
@@ -365,6 +393,10 @@
                                         readonly="1"/>
                                 </td>
                             </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="ductility_report_type">Report Type</label></td>
+                                <td><field name="ductility_report_type" class="blue-input" decoration-info="ductility_report_type != 0"/></td>
+                            </tr>
                         </tbody>
                     </table>
                      
@@ -424,6 +456,10 @@
                                         readonly="1"/>
                                 </td>
                             </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="absolute_viscosity_report_type">Report Type</label></td>
+                                <td><field name="absolute_viscosity_report_type" class="blue-input" decoration-info="absolute_viscosity_report_type != 0"/></td>
+                            </tr>
                         </tbody>
                     </table>
                      
@@ -480,6 +516,10 @@
                                         decoration-danger="avg_kinematic_viscosity_nabl == 'fail'" 
                                         readonly="1"/>
                                 </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="kinematic_viscosity_report_type">Report Type</label></td>
+                                <td><field name="kinematic_viscosity_report_type" class="blue-input" decoration-info="kinematic_viscosity_report_type != 0"/></td>
                             </tr>
                         </tbody>
                     </table>

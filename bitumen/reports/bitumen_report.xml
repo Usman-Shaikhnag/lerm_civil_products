@@ -89,9 +89,8 @@
 							<tr>
 								<td colspan="1">Samples Description :-</td>
 								<td colspan="1">
-								      <t t-if="o.material and o.material.lab_name or o.sample_id.size_id">
-									       <span t-field="o.material.lab_name"/> <![CDATA[&nbsp;]]>
-											<span t-field="o.sample_id.size_id"/>   
+								      <t t-if="o.material and o.material.lab_name or o.sample_id.size_id or o.sample_id.grade_id">
+											  <span t-field="o.material.lab_name"/><![CDATA[&nbsp;]]><span t-field="o.sample_id.grade_id"/><![CDATA[&nbsp;]]> 
 										</t>
 									<t t-else="">NA</t>
 								</td>
@@ -119,7 +118,9 @@
 								<td colspan="1">Date of Performance of Test :-</td>
 								<td colspan="1">
 									<t t-if="o.start_date and o.end_date">
-											<span t-field="o.start_date"/><![CDATA[&nbsp;]]> to <![CDATA[&nbsp;]]> <span t-field="o.end_date"/>
+											<span t-field="o.start_date" t-options='{"widget": "date"}'/>
+											<span style="display:inline-block; padding:0 3px;">to</span>
+											<span t-field="o.end_date" t-options='{"widget": "date"}'/>
 										</t>
 									<t t-else="">NA</t>
 								</td>
@@ -128,10 +129,10 @@
 							<tr>
 								<td colspan="1">Condition of Sample  :-</td>
 								<td colspan="1">
-									<!-- <t t-if="o.sample_id.sample_received_date">
-											<span t-field="o.sample_id.sample_received_date"/>
+									<t t-if="o.sample_id.sample_condition">
+											<span t-field="o.sample_id.sample_condition"/>
 										</t>
-									<t t-else="">NA</t> -->
+									<t t-else="">NA</t>
 								</td>
 
 									<td colspan="1">Date of Report Issue :-</td>
@@ -166,18 +167,18 @@
                             <tr>
 									<td colspan="1">Temperature :-</td>
 										<td colspan="1" >
-											<t t-if="data.temperature is not None">
-											<span t-field="data.temperature"/>   °C
+											<t t-if="data.temp is not None">
+											<span t-field="data.temp"/>   °C
 										</t>
 									<t t-else="">NA</t>
 										</td>
 
 									<td colspan="1">Humidity :-</td>
 										<td colspan="1" >
-											<!-- <t t-if="brick.brick_humidity is not None">
-											<span t-field="brick.brick_humidity"/>   %
+											<t t-if="data.humidity is not None">
+											<span t-field="data.humidity"/>   %
 										</t>
-									<t t-else="">NA</t> -->
+									<t t-else="">NA</t>
 										</td>
 								
 							</tr>
@@ -232,7 +233,7 @@
 							<tbody>
 
 								<!-- Penetration Value Of Bitumen -->
-							<tr t-if="data.penetration_value_visible and (data.average_penetration_nabl == 'pass' and nabl or (data.average_penetration_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+							<tr t-if="data.penetration_value_visible and (data.penetration_final_report == 'nabl' and nabl or data.penetration_final_report == 'non_nabl' and not nabl)">
 									<t t-set="penetrate" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','b5ddbb0a-cdde-43b9-a42f-a7071028add5')])"/>
 									
 									<td style="text-align: center;">
@@ -279,7 +280,7 @@
 
 								<!-- Specific Gravity  -->
 
-								<tr t-if="data.specific_gravity_visible and (data.avg_specific_gravity_nabl == 'pass' and nabl or (data.avg_specific_gravity_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.specific_gravity_visible and (data.specific_gravity_final_report == 'nabl' and nabl or data.specific_gravity_final_report == 'non_nabl' and not nabl)">
 									<t t-set="specific" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','b13d2195-69e0-4a8c-b3d6-309e5ffcacc2')])"/>
 									
 									<td style="text-align: center;">
@@ -325,7 +326,7 @@
 
 								<!-- Determination Of Softening Point  -->
 
-								<tr t-if="data.soft_point_visible and (data.soft_mean_value_nabl == 'pass' and nabl or (data.soft_mean_value_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.soft_point_visible and (data.soft_mean_value_final_report == 'nabl' and nabl or data.soft_mean_value_final_report == 'non_nabl' and not nabl)">
 									<t t-set="soft_point" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','5ffca993-9538-40aa-80e4-dbbc43e2de42')])"/>
 									
 									<td style="text-align: center;">
@@ -371,7 +372,7 @@
 
 								<!-- Ductility Test  -->
 
-								<tr t-if="data.ductility_visible and (data.average_ductility_nabl == 'pass' and nabl or (data.average_ductility_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.ductility_visible and (data.ductility_final_report == 'nabl' and nabl or data.ductility_final_report == 'non_nabl' and not nabl)">
 									<t t-set="ductility" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','4f04739c-d930-49ee-8962-dbe8796fdf5b')])"/>
 									
 									<td style="text-align: center;">
@@ -417,7 +418,7 @@
 
 								<!-- Absolute Viscosity  -->
 
-								<tr t-if="data.absolute_vis_visible and (data.avg_absolute_viscosity_nabl == 'pass' and nabl or (data.avg_absolute_viscosity_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.absolute_vis_visible and (data.absolute_viscosity_final_report == 'nabl' and nabl or data.absolute_viscosity_final_report == 'non_nabl' and not nabl)">
 									<t t-set="absolute" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','e7ce069a-c150-4c4b-91f7-0898ddfd754c')])"/>
 									
 									<td style="text-align: center;">
@@ -463,7 +464,7 @@
 
 								<!-- Kinematic Viscosity  -->
 
-								<tr t-if="data.kinematic_vis_visible and (data.avg_kinematic_viscosity_nabl == 'pass' and nabl or (data.avg_kinematic_viscosity_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.kinematic_vis_visible and (data.kinematic_viscosity_final_report == 'nabl' and nabl or data.kinematic_viscosity_final_report == 'non_nabl' and not nabl)">
 									<t t-set="kinematic" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','7880694c-561c-4600-ae22-d1a290c65299')])"/>
 									
 									<td style="text-align: center;">
@@ -517,26 +518,7 @@
 
 
 					<div style="page-break-inside: avoid;">
-                        <!-- <div style="margin-top:10px; padding:0" class="noteContainer">
-                            <table class="table table-bordered">
-								<tr>
-									<td style="padding: 5px; font-style: italic; font-size: 12px;">
-										<b>Note:-</b>
-										&#160;&#160;(i) The results stated in this report apply only to the tested sample(s) and are based on the conditions and parameters at the time of testing. 
-										&#160;&#160;(ii) This report is invalid without the official paper seal of Make Infracon.
-										&#160;&#160;(iii)All test results are confidential and will not be disclosed to any third party without written consent of the client, except where required by law.
-										&#160;&#160;(iv) This report must not be used, in whole or in part, for advertising or promotional purposes without written authorization. or used as evidence in a court of law. 
-										&#160;&#160;(v) Any disputes shall be subject to jurisdiction of {Your Nashik/Location}Courts Only.
-										<t t-if="eln.has_witness">
-											&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
-										</t>
-										<t t-if="eln.remarks">
-											&#160;&#160;<span t-esc="eln.remarks"/>
-										</t>
-									</td>
-								</tr>
-							</table>
-                        </div> -->
+                        
                         <div style="margin-top:50px" class="noteContainer">
 							<table >
 								<tr>
