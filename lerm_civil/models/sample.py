@@ -37,9 +37,11 @@ class LermSampleForm(models.Model):
     received_by_id = fields.Many2one('res.partner',string="Received By")
     sample_received_date = fields.Date(string="Sample Received Date")
     sample_condition = fields.Selection([
-        ('satisfactory', 'Satisfactory'),
-        ('non_satisfactory', 'Non-Satisfactory'),
-    ], string='Sample Condition', default='satisfactory')
+        # ('satisfactory', 'Satisfactory'),
+        # ('non_satisfactory', 'Non-Satisfactory'),
+        ('acceptable', 'Acceptable'),
+        ('non_acceptable', 'Non-Acceptable'),
+    ], string='Sample Condition', default='acceptable')
     report_due_date = fields.Date(string="Report Due Date")
     technicians = fields.Many2one("res.users",string="Technicians",tracking=5)
     location = fields.Integer(string="Location Code")

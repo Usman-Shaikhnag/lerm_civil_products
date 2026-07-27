@@ -72,7 +72,7 @@
                                 <field name="has_witness" readonly="1"/>
                                 <field name="witness" invisible="has_witness != True"/>
                                 <field name="casting" readonly="state != '1-allotment_pending'"/>
-                                <field name="sample_reject_reason" required="sample_condition == 'non_satisfactory'" readonly="state != '1-allotment_pending'"/>
+                                <field name="sample_reject_reason" required="sample_condition == 'non_acceptable'" readonly="state != '1-allotment_pending'"/>
                                 <field name="scope" />
                                 <field name="sample_description" readonly="state != '1-allotment_pending'"/>
                                 <field name="filled_by" readonly="1"/>

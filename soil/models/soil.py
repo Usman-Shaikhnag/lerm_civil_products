@@ -38,6 +38,9 @@ class Soil(models.Model):
 
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
+    temp = fields.Char("Temperature",store=True)
+    humidity = fields.Char("Humidity",store=True)
+
     def prefill_data(self):
         # import wdb; wdb.set_trace()
         return {

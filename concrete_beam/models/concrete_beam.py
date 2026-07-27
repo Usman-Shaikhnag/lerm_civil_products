@@ -19,6 +19,9 @@ class FlexuralStrengthConcreteBeam(models.Model):
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
 
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
+
+    temp = fields.Char("Temperature",store=True)
+    humidity = fields.Char("Humidity",store=True)
     
     
     date_of_casting = fields.Date(string="Date of Casting",compute="compute_date_of_casting")

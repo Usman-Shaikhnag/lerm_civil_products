@@ -27,6 +27,10 @@ class CementPSC(models.Model):
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
 
 
+    temp = fields.Char("Temperature",store=True)
+    humidity = fields.Char("Humidity",store=True)
+
+
     @api.depends('eln_ref')
     def _compute_date_testing(self):
         if self.eln_ref:

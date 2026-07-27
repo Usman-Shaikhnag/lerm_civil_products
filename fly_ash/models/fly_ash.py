@@ -23,6 +23,9 @@ class FlyaschNormalConsistency(models.Model):
 
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
+    temp = fields.Char("Temperature",store=True)
+    humidity = fields.Char("Humidity",store=True)
+
     temp_percent_normal = fields.Float("Temperature °c")
     humidity_percent_normal = fields.Float("Humidity %")
 

@@ -951,9 +951,11 @@ class CreateSampleWizard(models.TransientModel):
     received_by_id = fields.Many2one('res.users',string="Received By",default=lambda self: self.env.user)
     sample_received_date = fields.Date(string="Sample Received Date")
     sample_condition = fields.Selection([
-        ('satisfactory', 'Satisfactory'),
-        ('non_satisfactory', 'Non-Satisfactory'),
-    ], string='Sample Condition', default='satisfactory')
+        # ('satisfactory', 'Satisfactory'),
+        # ('non_satisfactory', 'Non-Satisfactory'),
+        ('acceptable', 'Acceptable'),
+    ('non_acceptable', 'Non-Acceptable'),
+    ], string='Sample Condition', default='acceptable')
     location = fields.Char(string="Location Code")
     sample_reject_reason = fields.Char(string="Sample Reject Reason")
     has_witness = fields.Boolean(string="Witness")
@@ -1066,7 +1068,7 @@ class CreateSampleWizard(models.TransientModel):
     @api.depends('sample_condition')
     def _compute_show_reject_reason(self):
         for rec in self:
-            rec.show_reject_reason = rec.sample_condition == 'non_satisfactory'
+            rec.show_reject_reason = rec.sample_condition == 'non_acceptable'
 
     @api.depends('has_witness')
     def _compute_show_witness(self):

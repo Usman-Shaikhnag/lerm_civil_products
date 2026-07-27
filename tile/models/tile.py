@@ -17,6 +17,9 @@ class Tile(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
+    temp = fields.Char("Temperature",store=True)
+    humidity = fields.Char("Humidity",store=True)
+
 
     @api.depends("eln_ref")
     def _compute_size_id(self):

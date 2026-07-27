@@ -30,6 +30,9 @@ class WbmMechanical(models.Model):
 
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
+    temp = fields.Char("Temperature",store=True)
+    humidity = fields.Char("Humidity",store=True)
+
 
 
     # Dry Gradation Sieve Analysis (Sieve Size: 53 mm to 75 micron)
