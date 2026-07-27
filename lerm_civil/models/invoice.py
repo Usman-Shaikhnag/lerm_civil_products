@@ -24,27 +24,18 @@ class AccountMoveInheritedLerm(models.Model):
 
     def action_post(self):
         self.invoice_user_id = self.partner_id.user_id.id
-        for rec in self.invoice_line_ids.report_no1:
-            rec.sudo().write({
-                'invoice_status' : '2-invoiced'
-            })
-                
         super(AccountMoveInheritedLerm,self).action_post()
         for record in self.invoice_line_ids.report_no1:
-            record.sudo().write({
-            'invoice_number' :self
-            })
+            if record.invoice_number != self:
+                record.sudo().write({'invoice_number': self.id})
+            record.sudo()._compute_invoice_status()
 
     def button_draft(self):
-        for rec in self.invoice_line_ids.report_no1:
-            rec.sudo().write({
-                'invoice_status' : '1-uninvoiced'
-            })
         super(AccountMoveInheritedLerm,self).button_draft()
         for record in self.invoice_line_ids.report_no1:
-            record.sudo().write({
-            'invoice_number' :None
-            })
+            if not record.invoice_number:
+                record.sudo().write({'invoice_number': self.id})
+            record.sudo()._compute_invoice_status()
 
     # Field to set Invoice Salesperson
     invoice_user_id = fields.Many2one(
@@ -81,7 +72,7 @@ class AccountMoveLineInherited(models.Model):
     report_no = fields.Char(string="Report No")
     pricelist_id = fields.Many2one("product.pricelist",string="Pricelist",compute='_compute_pricelist')
     product_id = fields.Many2one('product.product', string='Product', ondelete='restrict')
-    report_no1 = fields.Many2many("lerm.srf.sample", string="Report No",domain="[('state', '=', '4-in_report'),('invoice_status', '!=', '2-invoiced'),('srf_id.customer', '=', partner_id),('material_id', '=', product_tmpl_id)]")
+    report_no1 = fields.Many2many("lerm.srf.sample", string="Report No",domain="[('state', '=', '4-in_report'),('invoice_status', 'in', ('1-uninvoiced',)),('srf_id.customer', '=', partner_id),('material_id', '=', product_tmpl_id)]")
     
     parameters = fields.Many2many('lerm.parameter.master', string='Parameters')
     product_tmpl_id = fields.Many2one('product.template', related='product_id.product_tmpl_id', string='Product Template')
