@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="stones_datasheet">
-         <t t-call="web.html_container">
+        <t t-call="web.html_container">
             <t t-call="lerm_civil.mechanical_data_sheet_header">
                 <div style="text-align:center;font-size:18px;font-weight: bold">
                     STONE DATASHEET
@@ -10,12 +10,11 @@
                 <div class="container_eln" style="margin-top:5px">
                     <table style="margin-top:20px">
                         <tr cols="12">
-                            
                             <td colspan="6">Job No :
                                 <![CDATA[&nbsp;]]>
                                 <span t-field="eln.kes_no"></span>
                             </td>
-                            <td colspan="6">Test Start Date: 
+                            <td colspan="6">Test Start Date:
                                 <![CDATA[&nbsp;]]>
                                 <span t-field="eln.start_date"></span>
                             </td>
@@ -26,16 +25,10 @@
                             <td colspan="6">Test End Date: <span t-field="eln.end_date"></span>
                             </td>
                         </tr>
-                        <!-- <tr>
-                            <td colspan="6">Age at Test: <span t-field="data.age_of_days"></span>
-                            </td>
-                            <td colspan="6">Sample Conditioning: <span t-field="data.sample_condition"></span>
-                            </td>
-                        </tr> -->
                     </table>
-					
-					<table>
-						<tr style="height:50px" cols="12">
+
+                    <table>
+                        <tr style="height:50px" cols="12">
                             <td colspan="4">Performed By :
                                 <![CDATA[&nbsp;]]>
                                 <span t-field="eln.technician.name"/>
@@ -49,701 +42,660 @@
                                 <span style='padding:20px'></span>
                             </td>
                         </tr>
-					</table>
+                    </table>
+                </div>
 
+                <div class="container_eln pageSeperater" style="margin-top:5px">
 
-					<div t-if="data.compressive_dry_visible" style="margin-top:20px">
-
+                    <!-- Compressive Strength Dry -->
+                    <div t-if="data.compressive_dry_visible" style="margin-top:20px">
                         <div style="text-align:center; font-size:18px; font-weight:bold; text-decoration:underline; margin-bottom:10px;">
-                              DRY CONDITION
+                            DRY CONDITION
                         </div>
 
-
-					  <table>
+                        <table>
                             <tr cols="12" style="background-color:#f9f9f9;">
                                 <td rowspan="2" style="text-align: center;"><b>Sr No</b></td>
-								<td rowspan="2" style="text-align: center;"><b>Date</b></td>
-								<td rowspan="2" style="text-align: center;"><b>Room temperature (deg)</b></td>
+                                <td rowspan="2" style="text-align: center;"><b>Date</b></td>
+                                <td rowspan="2" style="text-align: center;"><b>Room temperature (deg)</b></td>
                                 <td rowspan="2" style="text-align: center;"><b>Relative Humidity (%)</b></td>
-                                
                                 <td rowspan="2" style="text-align: center;"><b>Functional Checks</b></td>
                                 <td rowspan="2" style="text-align: center;"><b>Type of stone</b></td>
                                 <td rowspan="2" style="text-align: center;"><b>Shape of test piece (Cube/Cylinder)</b></td>
                                 <td rowspan="2" style="text-align: center;"><b>Height of sample(H), mm</b></td>
-								 <td rowspan="2" style="text-align: center;"><b>Width/Diameter of sample(D), mm</b></td>
+                                <td rowspan="2" style="text-align: center;"><b>Width/Diameter of sample(D), mm</b></td>
                                 <td rowspan="2" style="text-align: center;"><b>Test condition (Dry/Saturated)</b></td>
                                 <td colspan="2" style="text-align: center;"><b>Load at failure (kN)</b></td>
-								<td colspan="2" style="text-align: center;"><b>Load at failure (N)</b></td>
-								<td rowspan="2" style="text-align: center;"><b>Duration of test (sec)</b></td>
-								<td rowspan="2" style="text-align: center;"><b>Appearance/any unusual features at failure</b></td>
-								<td rowspan="2" style="text-align: center;"><b>H/d</b></td>
+                                <td colspan="2" style="text-align: center;"><b>Load at failure (N)</b></td>
+                                <td rowspan="2" style="text-align: center;"><b>Duration of test (sec)</b></td>
+                                <td rowspan="2" style="text-align: center;"><b>Appearance/any unusual features at failure</b></td>
+                                <td rowspan="2" style="text-align: center;"><b>H/d</b></td>
                                 <td rowspan="2" style="text-align: center;"><b>Area of sample (mm2)</b></td>
-                                <td colspan="2" style="text-align: center;"><b>Compressive Strength(N/mm2) </b></td>
+                                <td colspan="2" style="text-align: center;"><b>Compressive Strength(N/mm2)</b></td>
                                 <td colspan="2" style="text-align: center;"><b>Stress rate (MPa/s)</b></td>
-                               
-                                </tr>
+                            </tr>
 
-                                 <tr style="background-color:#f9f9f9;"> 
-                                 <td colspan="1" style="text-align: center;"><b>Perpendicular to plane of Anisotropy</b></td>
-                                <td colspan="1" style="text-align: center;"><b>Parallel to plane of Anisotropy</b></td>
-
-                                 <td colspan="1" style="text-align: center;"><b>Perpendicular to plane of Anisotropy</b></td>
-                                <td colspan="1" style="text-align: center;"><b>Parallel to plane of Anisotropy</b></td>
-
-                                 <td colspan="1" style="text-align: center;"><b>Perpendicular to plane of Anisotropy</b></td>
+                            <tr style="background-color:#f9f9f9;">
+                                <td colspan="1" style="text-align: center;"><b>Perpendicular to plane of Anisotropy</b></td>
                                 <td colspan="1" style="text-align: center;"><b>Parallel to plane of Anisotropy</b></td>
                                 <td colspan="1" style="text-align: center;"><b>Perpendicular to plane of Anisotropy</b></td>
                                 <td colspan="1" style="text-align: center;"><b>Parallel to plane of Anisotropy</b></td>
-                              
-								
+                                <td colspan="1" style="text-align: center;"><b>Perpendicular to plane of Anisotropy</b></td>
+                                <td colspan="1" style="text-align: center;"><b>Parallel to plane of Anisotropy</b></td>
+                                <td colspan="1" style="text-align: center;"><b>Perpendicular to plane of Anisotropy</b></td>
+                                <td colspan="1" style="text-align: center;"><b>Parallel to plane of Anisotropy</b></td>
                             </tr>
 
                             <t t-set="f" t-value="0"/>
                             <tr t-foreach="data.compressive_dry_ids" t-as="r">
-                                <td   style="text-align: center;">
+                                <td style="text-align: center;">
                                     <div>
                                         <span t-esc="f + 1" />
                                         <t t-set="f" t-value="f + 1"/>
                                     </div>
                                 </td>
-								<td   style="text-align: center;">
+                                <td style="text-align: center;">
                                     <span t-esc="r['date']"/>
                                 </td>
-								<td   style="text-align: center;">
+                                <td style="text-align: center;">
                                     <span t-esc="r['room_temp']"/>
                                 </td>
-								
-                                <td   style="text-align: center;">
+                                <td style="text-align: center;">
                                     <span t-esc="r['relative_humidity']"/>
                                 </td>
-                               
-                             
-                                 <td   style="text-align: center;">
+                                <td style="text-align: center;">
                                     <span t-esc="r['functional_check']" />
                                 </td>
-                                <td   style="text-align: center;">
+                                <td style="text-align: center;">
                                     <span t-esc="r['stone_type']" />
                                 </td>
-								<td   style="text-align: center;">
+                                <td style="text-align: center;">
                                     <span t-esc="r['shape_stone']" />
                                 </td>
-								<td   style="text-align: center;">
+                                <td style="text-align: center;">
                                     <span t-esc="r['height_shape']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>   
-								<td   style="text-align: center;">
+                                </td>
+                                <td style="text-align: center;">
                                     <span t-esc="r['width_stone']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-									<td   style="text-align: center;">
+                                </td>
+                                <td style="text-align: center;">
                                     <span t-esc="r['test_conditin']"/>
-                                </td>   
-								
-								<td   style="text-align: center;">
+                                </td>
+                                <td style="text-align: center;">
                                     <span t-esc="r['load_perpendiculer']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>   
-								<td   style="text-align: center;">
+                                </td>
+                                <td style="text-align: center;">
                                     <span t-esc="r['load_parallel']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>    
-								<td   style="text-align: center;">
+                                </td>
+                                <td style="text-align: center;">
                                     <span t-esc="r['load_perpendiculer_n']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>   
-
-								<td   style="text-align: center;">
+                                </td>
+                                <td style="text-align: center;">
                                     <span t-esc="r['load_parallel_n']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>   
-								<td   style="text-align: center;">
+                                </td>
+                                <td style="text-align: center;">
                                     <span t-esc="r['duration_test']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>  
-								<td   style="text-align: center;">
+                                </td>
+                                <td style="text-align: center;">
                                     <span t-esc="r['appearance_stone']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>  
-								<td   style="text-align: center;">
+                                </td>
+                                <td style="text-align: center;">
                                     <span t-esc="r['hd_stone']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>  
-
-								<td   style="text-align: center;">
+                                </td>
+                                <td style="text-align: center;">
                                     <span t-esc="r['area_stone']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								<td   style="text-align: center;">
+                                </td>
+                                <td style="text-align: center;">
                                     <span t-esc="r['compressive_perpendiculer']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-
-                                <td   style="text-align: center;">
+                                </td>
+                                <td style="text-align: center;">
                                     <span t-esc="r['compressive_parallel']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>    
-                                <td colspan="1"  style="text-align: center;">
+                                </td>
+                                <td colspan="1" style="text-align: center;">
                                     <span t-esc="r['stress_perpendiculer']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>    
-                                <td colspan="1"  style="text-align: center;">
+                                </td>
+                                <td colspan="1" style="text-align: center;">
                                     <span t-esc="r['stress_parallel']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>    
-								
-                                
+                                </td>
                             </tr>
                         </table>
 
-                         <table   style="margin-top:20px;">
+                        <table style="margin-top:20px;">
                             <tbody>
-                            <tr>
-                                <td><span>Average Compressive Strength Perpendicular Dry  (N/mm²)</span></td>
-								<td><span t-field="data.compressive_perpendiculer_avg" t-options='{"widget":"float","precision":2}'/></td>
-                            </tr>
-                            <tr>
-                                <td><span>Average Compressive Strength Parallel Dry (N/mm²)</span></td>
-								<td><span t-field="data.compressive_parallel_avg" t-options='{"widget":"float","precision":2}'/></td>
-                            </tr>
+                                <tr>
+                                    <td><span>Average Compressive Strength Perpendicular Dry (N/mm²)</span></td>
+                                    <td><span t-field="data.compressive_perpendiculer_avg" t-options='{"widget":"float","precision":2}'/></td>
+                                </tr>
+                                <tr>
+                                    <td><span>Average Compressive Strength Parallel Dry (N/mm²)</span></td>
+                                    <td><span t-field="data.compressive_parallel_avg" t-options='{"widget":"float","precision":2}'/></td>
+                                </tr>
                             </tbody>
                         </table>
-                
 
-                    <t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','5478ttr5-41c5-4cb5-843a-e09590c7c5789hh')], limit=1).technician"/>
-                    <div t-if="data.compressive_dry_visible" class="signatureContainer girdgird">
-							<div>
-								<div>
-									<b>
-										Prepared By
-									</b>
-								</div>
-								
+                        <t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','5478ttr5-41c5-4cb5-843a-e09590c7c5789hh')], limit=1).technician"/>
+                        <div class="signatureContainer noPageBreak girdgird">
                             <div>
-                                <b>
-                                <span t-esc="prepared_by_obj.name or ''"/>
-                                </b>
+                                <div>
+                                    <b>
+                                        Prepared By
+                                    </b>
+                                </div>
+                                <div style="height: 40px;">
+                                    <t t-if="eln.tested_by_signature_datasheet and prepared_by_obj">
+                                        <div t-if="prepared_by_obj.employee_id.signature">
+                                            <img t-att-src="'data:image/png;base64,%s' % prepared_by_obj.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+                                        </div>
+                                    </t>
+                                </div>
+                                <div>
+                                    <b>
+                                        <span t-esc="prepared_by_obj.name or ''"/>
+                                    </b>
+                                </div>
+                                <div>
+                                    <b>
+                                        (<span t-esc="prepared_by_obj.job_title or ''"/>)
+                                    </b>
+                                </div>
                             </div>
-                            <div>
-                                <b>
-                                    (<span t-esc="prepared_by_obj.job_title or ''"/>)
-                                </b>
+                            <div style="margin-left:600px">
+                                <div>
+                                    <b>
+                                        Checked By
+                                    </b>
+                                </div>
+                                <div style="height: 40px;">
+                                    <t t-if="eln.sample_id.checked_by_signature_datasheet">
+                                        <div t-if="eln.sample_id.check_by.employee_id.signature">
+                                            <img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+                                        </div>
+                                    </t>
+                                </div>
+                                <div>
+                                    <b>
+                                        <span t-esc="eln.sample_id.approved_by.name"/>
+                                    </b>
+                                </div>
+                                <div>
+                                    <b>
+                                        (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+                                    </b>
+                                </div>
                             </div>
                         </div>
-                        
-                        <div style="margin-left:600px">
-                                    
-                            <div>
-                                <b>
-                                    Checked By
-                                </b>
-                            </div>
-						
-								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
-							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
-								
-							
-						</div>
-					</div>
                     </div>
-                
 
+                    <!-- Compressive Strength Wet -->
+                    <div t-if="data.compressive_wet_visible" style="margin-top:20px; ">
+                        <div style="text-align:center; font-size:18px; font-weight:bold; text-decoration:underline; margin-bottom:10px;">
+                            SATURATED CONDITION
+                        </div>
 
-                    <div t-if="data.compressive_wet_visible" style="margin-top:20px;page-break-before: always;">
-
-                       <div style="text-align:center; font-size:18px; font-weight:bold; text-decoration:underline; margin-bottom:10px;">
-                           SATURATED CONDITION
-                       </div>
-
-
-					  <table>
+                        <table>
                             <tr cols="12" style="background-color:#f9f9f9;">
                                 <td rowspan="2" style="text-align: center;"><b>Sr No</b></td>
-								<td rowspan="2" style="text-align: center;"><b>Date</b></td>
-								<td rowspan="2" style="text-align: center;"><b>Room temperature (deg)</b></td>
+                                <td rowspan="2" style="text-align: center;"><b>Date</b></td>
+                                <td rowspan="2" style="text-align: center;"><b>Room temperature (deg)</b></td>
                                 <td rowspan="2" style="text-align: center;"><b>Relative Humidity (%)</b></td>
-                                
                                 <td rowspan="2" style="text-align: center;"><b>Functional Checks</b></td>
                                 <td rowspan="2" style="text-align: center;"><b>Type of stone</b></td>
                                 <td rowspan="2" style="text-align: center;"><b>Shape of test piece (Cube/Cylinder)</b></td>
                                 <td rowspan="2" style="text-align: center;"><b>Height of sample(H), mm</b></td>
-								 <td rowspan="2" style="text-align: center;"><b>Width/Diameter of sample(D), mm</b></td>
+                                <td rowspan="2" style="text-align: center;"><b>Width/Diameter of sample(D), mm</b></td>
                                 <td rowspan="2" style="text-align: center;"><b>Test condition (Dry/Saturated)</b></td>
                                 <td colspan="2" style="text-align: center;"><b>Load at failure (kN)</b></td>
-								<td colspan="2" style="text-align: center;"><b>Load at failure (N)</b></td>
-								<td rowspan="2" style="text-align: center;"><b>Duration of test (sec)</b></td>
-								<td rowspan="2" style="text-align: center;"><b>Appearance/any unusual features at failure</b></td>
-								<td rowspan="2" style="text-align: center;"><b>H/d</b></td>
+                                <td colspan="2" style="text-align: center;"><b>Load at failure (N)</b></td>
+                                <td rowspan="2" style="text-align: center;"><b>Duration of test (sec)</b></td>
+                                <td rowspan="2" style="text-align: center;"><b>Appearance/any unusual features at failure</b></td>
+                                <td rowspan="2" style="text-align: center;"><b>H/d</b></td>
                                 <td rowspan="2" style="text-align: center;"><b>Area of sample (mm2)</b></td>
-                                <td colspan="2" style="text-align: center;"><b>Compressive Strength(N/mm2) </b></td>
+                                <td colspan="2" style="text-align: center;"><b>Compressive Strength(N/mm2)</b></td>
                                 <td colspan="2" style="text-align: center;"><b>Stress rate (MPa/s)</b></td>
-                               
-                                </tr>
+                            </tr>
 
-                                 <tr style="background-color:#f9f9f9;"> 
-                                 <td colspan="1" style="text-align: center;"><b>Perpendicular to plane of Anisotropy</b></td>
-                                <td colspan="1" style="text-align: center;"><b>Parallel to plane of Anisotropy</b></td>
-
-                                 <td colspan="1" style="text-align: center;"><b>Perpendicular to plane of Anisotropy</b></td>
-                                <td colspan="1" style="text-align: center;"><b>Parallel to plane of Anisotropy</b></td>
-
-                                 <td colspan="1" style="text-align: center;"><b>Perpendicular to plane of Anisotropy</b></td>
+                            <tr style="background-color:#f9f9f9;">
+                                <td colspan="1" style="text-align: center;"><b>Perpendicular to plane of Anisotropy</b></td>
                                 <td colspan="1" style="text-align: center;"><b>Parallel to plane of Anisotropy</b></td>
                                 <td colspan="1" style="text-align: center;"><b>Perpendicular to plane of Anisotropy</b></td>
                                 <td colspan="1" style="text-align: center;"><b>Parallel to plane of Anisotropy</b></td>
-                              
-								
+                                <td colspan="1" style="text-align: center;"><b>Perpendicular to plane of Anisotropy</b></td>
+                                <td colspan="1" style="text-align: center;"><b>Parallel to plane of Anisotropy</b></td>
+                                <td colspan="1" style="text-align: center;"><b>Perpendicular to plane of Anisotropy</b></td>
+                                <td colspan="1" style="text-align: center;"><b>Parallel to plane of Anisotropy</b></td>
                             </tr>
 
                             <t t-set="f" t-value="0"/>
                             <tr t-foreach="data.compressive_wet_ids" t-as="r">
-                                <td   style="text-align: center;">
+                                <td style="text-align: center;">
                                     <div>
                                         <span t-esc="f + 1" />
                                         <t t-set="f" t-value="f + 1"/>
                                     </div>
                                 </td>
-								<td   style="text-align: center;">
+                                <td style="text-align: center;">
                                     <span t-esc="r['date']"/>
                                 </td>
-								<td   style="text-align: center;">
+                                <td style="text-align: center;">
                                     <span t-esc="r['room_temp']"/>
                                 </td>
-								
-                                <td   style="text-align: center;">
+                                <td style="text-align: center;">
                                     <span t-esc="r['relative_humidity']"/>
                                 </td>
-                               
-                             
-                                 <td   style="text-align: center;">
+                                <td style="text-align: center;">
                                     <span t-esc="r['functional_check']" />
                                 </td>
-                                <td   style="text-align: center;">
+                                <td style="text-align: center;">
                                     <span t-esc="r['stone_type']" />
                                 </td>
-								<td   style="text-align: center;">
+                                <td style="text-align: center;">
                                     <span t-esc="r['shape_stone']" />
                                 </td>
-								<td   style="text-align: center;">
+                                <td style="text-align: center;">
                                     <span t-esc="r['height_shape']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>   
-								<td   style="text-align: center;">
+                                </td>
+                                <td style="text-align: center;">
                                     <span t-esc="r['width_stone']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-									<td   style="text-align: center;">
+                                </td>
+                                <td style="text-align: center;">
                                     <span t-esc="r['test_conditin']"/>
-                                </td>   
-								
-								<td   style="text-align: center;">
+                                </td>
+                                <td style="text-align: center;">
                                     <span t-esc="r['load_perpendiculer']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>   
-								<td   style="text-align: center;">
+                                </td>
+                                <td style="text-align: center;">
                                     <span t-esc="r['load_parallel']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>    
-								<td   style="text-align: center;">
+                                </td>
+                                <td style="text-align: center;">
                                     <span t-esc="r['load_perpendiculer_n']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>   
-
-								<td   style="text-align: center;">
+                                </td>
+                                <td style="text-align: center;">
                                     <span t-esc="r['load_parallel_n']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>   
-								<td   style="text-align: center;">
+                                </td>
+                                <td style="text-align: center;">
                                     <span t-esc="r['duration_test']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>  
-								<td   style="text-align: center;">
+                                </td>
+                                <td style="text-align: center;">
                                     <span t-esc="r['appearance_stone']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>  
-								<td   style="text-align: center;">
+                                </td>
+                                <td style="text-align: center;">
                                     <span t-esc="r['hd_stone']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>  
-
-								<td   style="text-align: center;">
+                                </td>
+                                <td style="text-align: center;">
                                     <span t-esc="r['area_stone']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								<td   style="text-align: center;">
+                                </td>
+                                <td style="text-align: center;">
                                     <span t-esc="r['compressive_perpendiculer']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-
-                                <td   style="text-align: center;">
+                                </td>
+                                <td style="text-align: center;">
                                     <span t-esc="r['compressive_parallel']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>    
-                                <td colspan="1"  style="text-align: center;">
+                                </td>
+                                <td colspan="1" style="text-align: center;">
                                     <span t-esc="r['stress_perpendiculer']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>    
-                                <td colspan="1"  style="text-align: center;">
+                                </td>
+                                <td colspan="1" style="text-align: center;">
                                     <span t-esc="r['stress_parallel']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>    
-								
-                                
+                                </td>
                             </tr>
                         </table>
 
-
-                          <table   style="margin-top:20px;">
+                        <table style="margin-top:20px;">
                             <tbody>
-                            <tr>
-                                <td><span>Average Compressive Strength Perpendicular Dry  (N/mm²)</span></td>
-								<td><span t-field="data.compressive_perpendiculer_wet_avg" t-options='{"widget":"float","precision":2}'/></td>
-                            </tr>
-                            <tr>
-                                <td><span>Average Compressive Strength Parallel Dry (N/mm²)</span></td>
-								<td><span t-field="data.compressive_parallel_wet_avg" t-options='{"widget":"float","precision":2}'/></td>
-                            </tr>
+                                <tr>
+                                    <td><span>Average Compressive Strength Perpendicular Dry (N/mm²)</span></td>
+                                    <td><span t-field="data.compressive_perpendiculer_wet_avg" t-options='{"widget":"float","precision":2}'/></td>
+                                </tr>
+                                <tr>
+                                    <td><span>Average Compressive Strength Parallel Dry (N/mm²)</span></td>
+                                    <td><span t-field="data.compressive_parallel_wet_avg" t-options='{"widget":"float","precision":2}'/></td>
+                                </tr>
                             </tbody>
                         </table>
 
-                        
-
-					<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','547896rg-41c5-4cb5-843a-e09590c7c57878tt')], limit=1).technician"/>
-					<div t-if="data.compressive_dry_visible" class="signatureContainer girdgird">
-							<div>
-								<div>
-									<b>
-										Prepared By
-									</b>
-								</div>
-								
+                        <t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','547896rg-41c5-4cb5-843a-e09590c7c57878tt')], limit=1).technician"/>
+                        <div class="signatureContainer noPageBreak girdgird">
                             <div>
-                                <b>
-                                <span t-esc="prepared_by_obj.name or ''"/>
-                                </b>
+                                <div>
+                                    <b>
+                                        Prepared By
+                                    </b>
+                                </div>
+                                <div style="height: 40px;">
+                                    <t t-if="eln.tested_by_signature_datasheet and prepared_by_obj">
+                                        <div t-if="prepared_by_obj.employee_id.signature">
+                                            <img t-att-src="'data:image/png;base64,%s' % prepared_by_obj.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+                                        </div>
+                                    </t>
+                                </div>
+                                <div>
+                                    <b>
+                                        <span t-esc="prepared_by_obj.name or ''"/>
+                                    </b>
+                                </div>
+                                <div>
+                                    <b>
+                                        (<span t-esc="prepared_by_obj.job_title or ''"/>)
+                                    </b>
+                                </div>
                             </div>
-                            <div>
-                                <b>
-                                    (<span t-esc="prepared_by_obj.job_title or ''"/>)
-                                </b>
+                            <div style="margin-left:600px">
+                                <div>
+                                    <b>
+                                        Checked By
+                                    </b>
+                                </div>
+                                <div style="height: 40px;">
+                                    <t t-if="eln.sample_id.checked_by_signature_datasheet">
+                                        <div t-if="eln.sample_id.check_by.employee_id.signature">
+                                            <img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+                                        </div>
+                                    </t>
+                                </div>
+                                <div>
+                                    <b>
+                                        <span t-esc="eln.sample_id.approved_by.name"/>
+                                    </b>
+                                </div>
+                                <div>
+                                    <b>
+                                        (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+                                    </b>
+                                </div>
                             </div>
                         </div>
-                        
-                        <div style="margin-left:600px">
-                                    
-                            <div>
-                                <b>
-                                    Checked By
-                                </b>
-                            </div>
-						
-								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
-							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
-								
-							
-						</div>
-					</div>
                     </div>
 
                     <!-- Water Absorption -->
+                    <div t-if="data.water_absorption_visible" style="margin-top:20px; ">
+                        <div style="text-align:center;font-size:18px;margin-bottom:10px;">
+                            Water Absorption
+                        </div>
 
-                        <div t-if="data.water_absorption_visible" style = "page-break-before: always;margin-top:20px;">
-							<div style="text-align:center;font-size:18px;margin-bottom:10px;">
-								Water Absorption
-							</div>
-						
-								
-								<table>
-											<tr>
-												<th style="text-align: center; font-weight: bold;">Sample No</th>
-												<th style="text-align: center; font-weight: bold;">Sample 1</th>
-												<th style="text-align: center; font-weight: bold;">Sample 2</th>
-                                                <th style="text-align: center; font-weight: bold;">Sample 3</th>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;text-align: center;">Oven Dried Weight (g)</td>
-												<td style="text-align: center;"><span t-field="data.sample1_oven_weight"/></td>
-												<td style="text-align: center;"><span t-field="data.sample2_oven_weight"/></td>
-                                                <td style="text-align: center;"><span t-field="data.sample3_oven_weight"/></td>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;text-align: center;">Saturated Surface Dry Weight (g)</td>
-												<td style="text-align: center;"><span t-field="data.sample1_saturated_weight"/></td>
-												<td style="text-align: center;"><span t-field="data.sample2_saturated_weight"/></td>
-                                                <td style="text-align: center;"><span t-field="data.sample3_saturated_weight"/></td>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;text-align: center;">Water Absorption</td>
-												<td style="text-align: center;"><span t-field="data.sample1_water_absorption" t-options='{"widget": "float", "precision": 2}'/></td>
-												<td style="text-align: center;"><span t-field="data.sample2_water_absorption" t-options='{"widget": "float", "precision": 2}'/></td>
-                                                <td style="text-align: center;"><span t-field="data.sample3_water_absorption" t-options='{"widget": "float", "precision": 2}'/></td>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;text-align: center;">Average Water Absorption</td>
-												<td colspan="3" style="text-align: center;"><span t-field="data.avg_water_absorption" t-options='{"widget": "float", "precision": 2}'/></td>
-											</tr>
-										</table>
+                        <table>
+                            <tr>
+                                <th style="text-align: center; font-weight: bold;">Sample No</th>
+                                <th style="text-align: center; font-weight: bold;">Sample 1</th>
+                                <th style="text-align: center; font-weight: bold;">Sample 2</th>
+                                <th style="text-align: center; font-weight: bold;">Sample 3</th>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;text-align: center;">Oven Dried Weight (g)</td>
+                                <td style="text-align: center;"><span t-field="data.sample1_oven_weight"/></td>
+                                <td style="text-align: center;"><span t-field="data.sample2_oven_weight"/></td>
+                                <td style="text-align: center;"><span t-field="data.sample3_oven_weight"/></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;text-align: center;">Saturated Surface Dry Weight (g)</td>
+                                <td style="text-align: center;"><span t-field="data.sample1_saturated_weight"/></td>
+                                <td style="text-align: center;"><span t-field="data.sample2_saturated_weight"/></td>
+                                <td style="text-align: center;"><span t-field="data.sample3_saturated_weight"/></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;text-align: center;">Water Absorption</td>
+                                <td style="text-align: center;"><span t-field="data.sample1_water_absorption" t-options='{"widget": "float", "precision": 2}'/></td>
+                                <td style="text-align: center;"><span t-field="data.sample2_water_absorption" t-options='{"widget": "float", "precision": 2}'/></td>
+                                <td style="text-align: center;"><span t-field="data.sample3_water_absorption" t-options='{"widget": "float", "precision": 2}'/></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;text-align: center;">Average Water Absorption</td>
+                                <td colspan="3" style="text-align: center;"><span t-field="data.avg_water_absorption" t-options='{"widget": "float", "precision": 2}'/></td>
+                            </tr>
+                        </table>
 
-							<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','57r7896rg-41c5-4cb5-843a-e09590c74578trew8')], limit=1).technician"/>
-							<div t-if="data.water_absorption_visible" class="signatureContainer girdgird">
-							<div>
-								<div>
-									<b>
-										Prepared By
-									</b>
-								</div>
-								
+                        <t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','57r7896rg-41c5-4cb5-843a-e09590c74578trew8')], limit=1).technician"/>
+                        <div class="signatureContainer noPageBreak girdgird">
                             <div>
-                                <b>
-                                <span t-esc="prepared_by_obj.name or ''"/>
-                                </b>
+                                <div>
+                                    <b>
+                                        Prepared By
+                                    </b>
+                                </div>
+                                <div style="height: 40px;">
+                                    <t t-if="eln.tested_by_signature_datasheet and prepared_by_obj">
+                                        <div t-if="prepared_by_obj.employee_id.signature">
+                                            <img t-att-src="'data:image/png;base64,%s' % prepared_by_obj.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+                                        </div>
+                                    </t>
+                                </div>
+                                <div>
+                                    <b>
+                                        <span t-esc="prepared_by_obj.name or ''"/>
+                                    </b>
+                                </div>
+                                <div>
+                                    <b>
+                                        (<span t-esc="prepared_by_obj.job_title or ''"/>)
+                                    </b>
+                                </div>
                             </div>
-                            <div>
-                                <b>
-                                    (<span t-esc="prepared_by_obj.job_title or ''"/>)
-                                </b>
+                            <div style="margin-left:600px">
+                                <div>
+                                    <b>
+                                        Checked By
+                                    </b>
+                                </div>
+                                <div style="height: 40px;">
+                                    <t t-if="eln.sample_id.checked_by_signature_datasheet">
+                                        <div t-if="eln.sample_id.check_by.employee_id.signature">
+                                            <img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+                                        </div>
+                                    </t>
+                                </div>
+                                <div>
+                                    <b>
+                                        <span t-esc="eln.sample_id.approved_by.name"/>
+                                    </b>
+                                </div>
+                                <div>
+                                    <b>
+                                        (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+                                    </b>
+                                </div>
                             </div>
                         </div>
-                        
-                        <div style="margin-left:600px">
-                                    
+                    </div>
+
+                    <!-- Apparent Specific Gravity -->
+                    <div t-if="data.app_specific_visible" style="margin-top:20px; ">
+                        <div style="text-align:center;font-size:18px;margin-bottom:10px;">
+                            Apparent Specific Gravity
+                        </div>
+
+                        <table>
+                            <tr>
+                                <th style="text-align: center; font-weight: bold;">Sample No</th>
+                                <th style="text-align: center; font-weight: bold;">Sample 1</th>
+                                <th style="text-align: center; font-weight: bold;">Sample 2</th>
+                                <th style="text-align: center; font-weight: bold;">Sample 3</th>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;text-align: center;">Dry Weight (g)</td>
+                                <td style="text-align: center;"><span t-field="data.sample1_dry_weight"/></td>
+                                <td style="text-align: center;"><span t-field="data.sample2_dry_weight"/></td>
+                                <td style="text-align: center;"><span t-field="data.sample3_dry_weight"/></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;text-align: center;">Suspended Weight (g)</td>
+                                <td style="text-align: center;"><span t-field="data.sample1_suspended_weight"/></td>
+                                <td style="text-align: center;"><span t-field="data.sample2_suspended_weight"/></td>
+                                <td style="text-align: center;"><span t-field="data.sample3_suspended_weight"/></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;text-align: center;">Saturated Weight (g)</td>
+                                <td style="text-align: center;"><span t-field="data.sample11_saturated_weight"/></td>
+                                <td style="text-align: center;"><span t-field="data.sample22_saturated_weight"/></td>
+                                <td style="text-align: center;"><span t-field="data.sample33_saturated_weight"/></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;text-align: center;">Apparent Specific Gravity</td>
+                                <td style="text-align: center;"><span t-field="data.sample1_apparent_specific_gravity" t-options='{"widget": "float", "precision": 2}'/></td>
+                                <td style="text-align: center;"><span t-field="data.sample2_apparent_specific_gravity" t-options='{"widget": "float", "precision": 2}'/></td>
+                                <td style="text-align: center;"><span t-field="data.sample3_apparent_specific_gravity" t-options='{"widget": "float", "precision": 2}'/></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;text-align: center;">Average Apparent Specific Gravity</td>
+                                <td colspan="3" style="text-align: center;"><span t-field="data.avg_apparent_specific_gravity" t-options='{"widget": "float", "precision": 2}'/></td>
+                            </tr>
+                        </table>
+
+                        <t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','57r7896rg-41c5-4cb5-843a-e09590c7789rte143q')], limit=1).technician"/>
+                        <div class="signatureContainer noPageBreak girdgird">
                             <div>
-                                <b>
-                                    Checked By
-                                </b>
+                                <div>
+                                    <b>
+                                        Prepared By
+                                    </b>
+                                </div>
+                                <div style="height: 40px;">
+                                    <t t-if="eln.tested_by_signature_datasheet and prepared_by_obj">
+                                        <div t-if="prepared_by_obj.employee_id.signature">
+                                            <img t-att-src="'data:image/png;base64,%s' % prepared_by_obj.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+                                        </div>
+                                    </t>
+                                </div>
+                                <div>
+                                    <b>
+                                        <span t-esc="prepared_by_obj.name or ''"/>
+                                    </b>
+                                </div>
+                                <div>
+                                    <b>
+                                        (<span t-esc="prepared_by_obj.job_title or ''"/>)
+                                    </b>
+                                </div>
                             </div>
-						
-								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
-							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
-								
-							
-						</div>
-					</div>
-									
-						</div>
-
-
-                <!-- Apparent Specific Gravity -->
-
-                        <div t-if="data.app_specific_visible" style = "page-break-before: always;margin-top:20px;">
-							<div style="text-align:center;font-size:18px;margin-bottom:10px;">
-								Apparent Specific Gravity
-							</div>
-						
-								
-								<table>
-											<tr>
-												<th style="text-align: center; font-weight: bold;">Sample No</th>
-												<th style="text-align: center; font-weight: bold;">Sample 1</th>
-												<th style="text-align: center; font-weight: bold;">Sample 2</th>
-                                                <th style="text-align: center; font-weight: bold;">Sample 3</th>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;text-align: center;">Dry Weight (g)</td>
-												<td style="text-align: center;"><span t-field="data.sample1_dry_weight"/></td>
-												<td style="text-align: center;"><span t-field="data.sample2_dry_weight"/></td>
-                                                <td style="text-align: center;"><span t-field="data.sample3_dry_weight"/></td>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;text-align: center;">Suspended Weight (g)</td>
-												<td style="text-align: center;"><span t-field="data.sample1_suspended_weight"/></td>
-												<td style="text-align: center;"><span t-field="data.sample2_suspended_weight"/></td>
-                                                <td style="text-align: center;"><span t-field="data.sample3_suspended_weight"/></td>
-											</tr>
-                                            <tr>
-												<td style="font-weight: bold;text-align: center;">Saturated Weight (g)</td>
-												<td style="text-align: center;"><span t-field="data.sample11_saturated_weight"/></td>
-												<td style="text-align: center;"><span t-field="data.sample22_saturated_weight"/></td>
-                                                <td style="text-align: center;"><span t-field="data.sample33_saturated_weight"/></td>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;text-align: center;">Apparent Specific Gravity</td>
-												<td style="text-align: center;"><span t-field="data.sample1_apparent_specific_gravity" t-options='{"widget": "float", "precision": 2}'/></td>
-												<td style="text-align: center;"><span t-field="data.sample2_apparent_specific_gravity" t-options='{"widget": "float", "precision": 2}'/></td>
-                                                <td style="text-align: center;"><span t-field="data.sample3_apparent_specific_gravity" t-options='{"widget": "float", "precision": 2}'/></td>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;text-align: center;">Average Apparent Specific Gravity</td>
-												<td colspan="3" style="text-align: center;"><span t-field="data.avg_apparent_specific_gravity" t-options='{"widget": "float", "precision": 2}'/></td>
-											</tr>
-										</table>
-
-							<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','57r7896rg-41c5-4cb5-843a-e09590c7789rte143q')], limit=1).technician"/>
-							<div t-if="data.water_absorption_visible" class="signatureContainer girdgird">
-							<div>
-								<div>
-									<b>
-										Prepared By
-									</b>
-								</div>
-								
-                            <div>
-                                <b>
-                                <span t-esc="prepared_by_obj.name or ''"/>
-                                </b>
-                            </div>
-                            <div>
-                                <b>
-                                    (<span t-esc="prepared_by_obj.job_title or ''"/>)
-                                </b>
+                            <div style="margin-left:600px">
+                                <div>
+                                    <b>
+                                        Checked By
+                                    </b>
+                                </div>
+                                <div style="height: 40px;">
+                                    <t t-if="eln.sample_id.checked_by_signature_datasheet">
+                                        <div t-if="eln.sample_id.check_by.employee_id.signature">
+                                            <img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+                                        </div>
+                                    </t>
+                                </div>
+                                <div>
+                                    <b>
+                                        <span t-esc="eln.sample_id.approved_by.name"/>
+                                    </b>
+                                </div>
+                                <div>
+                                    <b>
+                                        (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+                                    </b>
+                                </div>
                             </div>
                         </div>
-                        
-                        <div style="margin-left:600px">
-                                    
+                    </div>
+
+                    <!-- True Specific Gravity -->
+                    <div t-if="data.true_specific_visible" style="margin-top:20px; ">
+                        <div style="text-align:center;font-size:18px;margin-bottom:10px;">
+                            True Specific Gravity
+                        </div>
+
+                        <table>
+                            <tr>
+                                <th style="text-align: center; font-weight: bold;">Sample No</th>
+                                <th style="text-align: center; font-weight: bold;">Sample 1</th>
+                                <th style="text-align: center; font-weight: bold;">Sample 2</th>
+                                <th style="text-align: center; font-weight: bold;">Sample 3</th>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;text-align: center;">Empty Bottle Weight (W1) (g)</td>
+                                <td style="text-align: center;"><span t-field="data.sample1_w1"/></td>
+                                <td style="text-align: center;"><span t-field="data.sample2_w1"/></td>
+                                <td style="text-align: center;"><span t-field="data.sample3_w1"/></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;text-align: center;">Bottle + Powder Weight (W2) (g)</td>
+                                <td style="text-align: center;"><span t-field="data.sample1_w2"/></td>
+                                <td style="text-align: center;"><span t-field="data.sample2_w2"/></td>
+                                <td style="text-align: center;"><span t-field="data.sample3_w2"/></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;text-align: center;">Bottle + Powder + Water Weight (W3) (g)</td>
+                                <td style="text-align: center;"><span t-field="data.sample1_w3"/></td>
+                                <td style="text-align: center;"><span t-field="data.sample2_w3"/></td>
+                                <td style="text-align: center;"><span t-field="data.sample3_w3"/></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;text-align: center;">Bottle + Water Weight (W4) (g)</td>
+                                <td style="text-align: center;"><span t-field="data.sample1_w4"/></td>
+                                <td style="text-align: center;"><span t-field="data.sample2_w4"/></td>
+                                <td style="text-align: center;"><span t-field="data.sample3_w4"/></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;text-align: center;">True Specific Gravity</td>
+                                <td style="text-align: center;"><span t-field="data.sample1_true_specific_gravity" t-options='{"widget": "float", "precision": 2}'/></td>
+                                <td style="text-align: center;"><span t-field="data.sample2_true_specific_gravity" t-options='{"widget": "float", "precision": 2}'/></td>
+                                <td style="text-align: center;"><span t-field="data.sample3_true_specific_gravity" t-options='{"widget": "float", "precision": 2}'/></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: bold;text-align: center;">Average True Specific Gravity</td>
+                                <td colspan="3" style="text-align: center;"><span t-field="data.avg_true_specific_gravity" t-options='{"widget": "float", "precision": 2}'/></td>
+                            </tr>
+                        </table>
+
+                        <t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','57r7896rg-41c5-4cb5-843a-e09590c77832547ewrv')], limit=1).technician"/>
+                        <div class="signatureContainer noPageBreak girdgird">
                             <div>
-                                <b>
-                                    Checked By
-                                </b>
+                                <div>
+                                    <b>
+                                        Prepared By
+                                    </b>
+                                </div>
+                                <div style="height: 40px;">
+                                    <t t-if="eln.tested_by_signature_datasheet and prepared_by_obj">
+                                        <div t-if="prepared_by_obj.employee_id.signature">
+                                            <img t-att-src="'data:image/png;base64,%s' % prepared_by_obj.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+                                        </div>
+                                    </t>
+                                </div>
+                                <div>
+                                    <b>
+                                        <span t-esc="prepared_by_obj.name or ''"/>
+                                    </b>
+                                </div>
+                                <div>
+                                    <b>
+                                        (<span t-esc="prepared_by_obj.job_title or ''"/>)
+                                    </b>
+                                </div>
                             </div>
-						
-								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
-							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
-								
-							
-						</div>
-					</div>
-									
-						</div>
-
-
-                        <!-- True Specific Gravity -->
-
-                        <div t-if="data.true_specific_visible" style = "page-break-before: always;margin-top:20px;">
-							<div style="text-align:center;font-size:18px;margin-bottom:10px;">
-								True Specific Gravity
-							</div>
-						
-								
-								<table>
-											<tr>
-												<th style="text-align: center; font-weight: bold;">Sample No</th>
-												<th style="text-align: center; font-weight: bold;">Sample 1</th>
-												<th style="text-align: center; font-weight: bold;">Sample 2</th>
-                                                <th style="text-align: center; font-weight: bold;">Sample 3</th>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;text-align: center;">Empty Bottle Weight (W1) (g)</td>
-												<td style="text-align: center;"><span t-field="data.sample1_w1"/></td>
-												<td style="text-align: center;"><span t-field="data.sample2_w1"/></td>
-                                                <td style="text-align: center;"><span t-field="data.sample3_w1"/></td>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;text-align: center;">Bottle + Powder Weight (W2) (g)</td>
-												<td style="text-align: center;"><span t-field="data.sample1_w2"/></td>
-												<td style="text-align: center;"><span t-field="data.sample2_w2"/></td>
-                                                <td style="text-align: center;"><span t-field="data.sample3_w2"/></td>
-											</tr>
-                                            <tr>
-												<td style="font-weight: bold;text-align: center;">Bottle + Powder + Water Weight (W3) (g)</td>
-												<td style="text-align: center;"><span t-field="data.sample1_w3"/></td>
-												<td style="text-align: center;"><span t-field="data.sample2_w3"/></td>
-                                                <td style="text-align: center;"><span t-field="data.sample3_w3"/></td>
-											</tr>
-                                            <tr>
-												<td style="font-weight: bold;text-align: center;">Bottle + Water Weight (W4) (g)</td>
-												<td style="text-align: center;"><span t-field="data.sample1_w4"/></td>
-												<td style="text-align: center;"><span t-field="data.sample2_w4"/></td>
-                                                <td style="text-align: center;"><span t-field="data.sample3_w4"/></td>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;text-align: center;">True Specific Gravity</td>
-												<td style="text-align: center;"><span t-field="data.sample1_true_specific_gravity" t-options='{"widget": "float", "precision": 2}'/></td>
-												<td style="text-align: center;"><span t-field="data.sample2_true_specific_gravity" t-options='{"widget": "float", "precision": 2}'/></td>
-                                                <td style="text-align: center;"><span t-field="data.sample3_true_specific_gravity" t-options='{"widget": "float", "precision": 2}'/></td>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;text-align: center;">Average True Specific Gravity</td>
-												<td colspan="3" style="text-align: center;"><span t-field="data.avg_true_specific_gravity" t-options='{"widget": "float", "precision": 2}'/></td>
-											</tr>
-										</table>
-
-							
-									
-						</div>
-
-
-
-
-
-
-					
-                    
-                   <t t-set="prepared_by_obj" t-value="eln.parameters_result[0].technician if eln.parameters_result else False"/>
-                   <div class="signatureContainer girdgird">
-							<div>
-								<div>
-									<b>
-										Prepared By
-									</b>
-								</div>
-								<div style="height: 40px;">
-						<!-- <t t-if="eln.sample_id.testedby_signature_required"> -->
-							<t t-if="eln.tested_by_signature_datasheet and prepared_by_obj">
-
-								<div t-if="prepared_by_obj.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,%s' % prepared_by_obj.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
-								
-							</t>
-						</div>
-                            <div>
-                                <b>
-                                <span t-esc="prepared_by_obj.name or ''"/>
-                                </b>
-                            </div>
-                            <div>
-                                <b>
-                                    (<span t-esc="prepared_by_obj.job_title or ''"/>)
-                                </b>
+                            <div style="margin-left:600px">
+                                <div>
+                                    <b>
+                                        Checked By
+                                    </b>
+                                </div>
+                                <div style="height: 40px;">
+                                    <t t-if="eln.sample_id.checked_by_signature_datasheet">
+                                        <div t-if="eln.sample_id.check_by.employee_id.signature">
+                                            <img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+                                        </div>
+                                    </t>
+                                </div>
+                                <div>
+                                    <b>
+                                        <span t-esc="eln.sample_id.approved_by.name"/>
+                                    </b>
+                                </div>
+                                <div>
+                                    <b>
+                                        (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+                                    </b>
+                                </div>
                             </div>
                         </div>
-                        
-                        <div style="margin-left:600px">
-                                    
-                            <div>
-                                <b>
-                                    Checked By
-                                </b>
-                            </div>
-							<div style="height: 40px;">
-								<t t-if="eln.sample_id.checked_by_signature_datasheet">
-									<div t-if="eln.sample_id.check_by.employee_id.signature">
-										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-									</div>
-									
-								</t>
-							</div>
-								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
-							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
-								
-								<!-- <div>
-									<b>
-										(Authorized Signatory)
-									</b>
-								</div> -->
-							</div>
-						</div>
-                    
+                    </div>
+
                 </div>
 
             </t>
         </t>
     </template>
-    </odoo>
+</odoo>
