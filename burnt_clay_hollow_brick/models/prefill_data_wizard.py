@@ -4,7 +4,7 @@ class BurntClayHollowBrickPrefillData(models.TransientModel):
     _name = "burnt.clay.hollow.brick.prefill.data"
 
     product_id = fields.Many2one('product.template', string="Product",required=True)
-    sample_id = fields.Many2one('lerm.srf.sample', string="Sample",domain="[('product_id','=',product_id)]",required=True)
+    sample_id = fields.Many2one('lerm.srf.sample',domain="[('material_id', '=', product_id), ('id', '!=', context.get('exclude_sample_id'))]", string="Sample") 
 
     def prefill_data(self):
         current_product = self.env['mechanical.burnt.clay.hollow.brick'].search([('eln_ref.sample_id','=',self.sample_id.id)])

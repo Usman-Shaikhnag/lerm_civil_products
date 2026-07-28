@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-        <report id="report_burnt_clay_hollow_brick_datasheet"
-            model="mechanical.burnt.clay.hollow.brick"
-            string="Burnt Clay Hollow Brick Datasheet"
-            report_type="qweb-pdf"
-            name="burnt_clay_hollow_brick.bchb_datasheet"
-            file="burnt_clay_hollow_brick.bchb_datasheet"
-            menu="False"
-        />
-
         <template id="bchb_datasheet">
             <t t-call="lerm_civil.mechanical_data_sheet_header">
                 <t t-set="data" t-value="data"/>
