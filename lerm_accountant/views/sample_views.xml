@@ -9,16 +9,16 @@
             <field name="code">
 action = env['bulk.invoice.wizard'].sudo().open_wizard()
             </field>
-            <field name="groups_id" eval="[(4, ref('lerm_civil_inv.kes_invocing_access_group'))]"/>
+            <field name="groups_id" eval="[(4, ref('lerm_accountant.lerm_accountant_group'))]"/>
         </record>
 
         <record id="lerm_accountant_sample_tree" model="ir.ui.view">
             <field name="name">lerm.srf.sample.accountant.tree</field>
             <field name="model">lerm.srf.sample</field>
             <field name="arch" type="xml">
-                <tree default_order='create_date desc' create="false" edit="true" multi_edit="1">
+                <tree default_order='create_date desc' create="false" edit="true">
                     <header>
-                        <button name="%(action_generate_bulk_invoice)d"
+                        <button name="lerm_accountant.action_generate_bulk_invoice"
                             type="action"
                             string="Generate Invoice"/>
                     </header>
@@ -42,7 +42,7 @@ action = env['bulk.invoice.wizard'].sudo().open_wizard()
                         string="Open Invoice"
                         class="btn btn-link p-0"
                         icon="fa-external-link"
-                        attrs="{'invisible': [('invoice_number', '=', False)]}"/>
+                        invisible="invoice_number == False"/>
                     <field name="kes_no" readonly="1"/>
                     <field name="srf_id" readonly="1"/>
                     <field name="customer_id" readonly="1"/>

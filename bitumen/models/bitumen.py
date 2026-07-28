@@ -20,6 +20,10 @@ class BitumenMechanical(models.Model):
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
 
+    temp = fields.Char("Temperature",store=True)
+    humidity = fields.Char("Humidity",store=True)
+
+
     notes_id = fields.One2many('bitumen.notes', 'parent_id',string="Notes",
     default=lambda self: self._default_notes_lines()
 )
@@ -140,16 +144,18 @@ class BitumenMechanical(models.Model):
     )
 
     average_penetration = fields.Float(
-        string='Average Penetration Value Of Bitumen',
-        compute='_compute_average',
+        string="Average",
+        compute="_compute_average_penetration",
         store=True
     )
 
     @api.depends('penetration_value_line_ids.penetration')
-    def _compute_average(self):
+    def _compute_average_penetration(self):
         for rec in self:
-            vals = rec.penetration_value_line_ids.mapped('penetration')
-            rec.average_penetration = sum(vals) / len(vals) if vals else 0.0
+            values = rec.penetration_value_line_ids.mapped('penetration')
+            rec.average_penetration = round(
+                sum(values) / len(values), 2
+            ) if values else 0.0
 
 
     average_penetration_conformity = fields.Selection([
@@ -204,6 +210,34 @@ class BitumenMechanical(models.Model):
                         break
                     else:
                         record.average_penetration_nabl = 'fail'
+
+
+    penetration_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    penetration_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_penetration_final_report", store=True)
+
+    @api.depends('average_penetration_nabl', 'penetration_report_type')
+    def _compute_penetration_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.penetration_report_type == 'nabl':
+            rec.penetration_final_report = 'nabl'
+
+        elif rec.penetration_report_type == 'non_nabl':
+            rec.penetration_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.average_penetration_nabl == 'pass':
+                rec.penetration_final_report = 'nabl'
+            else:
+                rec.penetration_final_report = 'non_nabl'
 
 
     
@@ -292,6 +326,33 @@ class BitumenMechanical(models.Model):
                         break
                     else:
                         record.avg_specific_gravity_nabl = 'fail'
+
+    specific_gravity_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    specific_gravity_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_specific_gravity_final_report", store=True)
+
+    @api.depends('avg_specific_gravity_nabl', 'specific_gravity_report_type')
+    def _compute_specific_gravity_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.specific_gravity_report_type == 'nabl':
+            rec.specific_gravity_final_report = 'nabl'
+
+        elif rec.specific_gravity_report_type == 'non_nabl':
+            rec.specific_gravity_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_specific_gravity_nabl == 'pass':
+                rec.specific_gravity_final_report = 'nabl'
+            else:
+                rec.specific_gravity_final_report = 'non_nabl'
 
     # Determination Of Softening Point
     soft_point_name = fields.Char("Name",default="Determination Of Softening Point")
@@ -401,6 +462,34 @@ class BitumenMechanical(models.Model):
                         record.soft_mean_value_nabl = 'fail'
 
 
+    soft_mean_value_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    soft_mean_value_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_soft_mean_value_final_report", store=True)
+
+    @api.depends('soft_mean_value_nabl', 'soft_mean_value_report_type')
+    def _compute_soft_mean_value_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.soft_mean_value_report_type == 'nabl':
+            rec.soft_mean_value_final_report = 'nabl'
+
+        elif rec.soft_mean_value_report_type == 'non_nabl':
+            rec.soft_mean_value_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.soft_mean_value_nabl == 'pass':
+                rec.soft_mean_value_final_report = 'nabl'
+            else:
+                rec.soft_mean_value_final_report = 'non_nabl'
+
+
     # Ductility Test 
     ductility_name = fields.Char("Name",default="Ductility Test")
     ductility_visible = fields.Boolean("Ductility Test Visible",compute="_compute_visible")
@@ -497,6 +586,34 @@ class BitumenMechanical(models.Model):
                     else:
                         record.average_ductility_nabl = 'fail'
 
+
+    ductility_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    ductility_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_ductility_final_report", store=True)
+
+    @api.depends('average_ductility_nabl', 'ductility_report_type')
+    def _compute_ductility_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.ductility_report_type == 'nabl':
+            rec.ductility_final_report = 'nabl'
+
+        elif rec.ductility_report_type == 'non_nabl':
+            rec.ductility_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.average_ductility_nabl == 'pass':
+                rec.ductility_final_report = 'nabl'
+            else:
+                rec.ductility_final_report = 'non_nabl'
+
     # ABSOLUTE VISCOSITY
     absolute_vis_name = fields.Char("Name",default="Absolute Viscosity")
     absolute_vis_visible = fields.Boolean("Absolute Viscosity Visible",compute="_compute_visible")
@@ -570,6 +687,35 @@ class BitumenMechanical(models.Model):
                     else:
                         record.avg_absolute_viscosity_nabl = 'fail'
 
+    absolute_viscosity_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    absolute_viscosity_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_absolute_viscosity_final_report", store=True)
+
+    @api.depends('avg_absolute_viscosity_nabl', 'absolute_viscosity_report_type')
+    def _compute_absolute_viscosity_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.absolute_viscosity_report_type == 'nabl':
+            rec.absolute_viscosity_final_report = 'nabl'
+
+        elif rec.absolute_viscosity_report_type == 'non_nabl':
+            rec.absolute_viscosity_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_absolute_viscosity_nabl == 'pass':
+                rec.absolute_viscosity_final_report = 'nabl'
+            else:
+                rec.absolute_viscosity_final_report = 'non_nabl'
+
+
+
     # KINEMATIC VISCOSITY
     kinematic_vis_name = fields.Char("Name",default="Kinematic Viscosity")
     kinematic_vis_visible = fields.Boolean("Kinematic Viscosity Visible",compute="_compute_visible")
@@ -642,6 +788,34 @@ class BitumenMechanical(models.Model):
                         break
                     else:
                         record.avg_kinematic_viscosity_nabl = 'fail'
+
+
+    kinematic_viscosity_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    kinematic_viscosity_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_kinematic_viscosity_final_report", store=True)
+
+    @api.depends('avg_kinematic_viscosity_nabl', 'kinematic_viscosity_report_type')
+    def _compute_kinematic_viscosity_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.kinematic_viscosity_report_type == 'nabl':
+            rec.kinematic_viscosity_final_report = 'nabl'
+
+        elif rec.kinematic_viscosity_report_type == 'non_nabl':
+            rec.kinematic_viscosity_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_kinematic_viscosity_nabl == 'pass':
+                rec.kinematic_viscosity_final_report = 'nabl'
+            else:
+                rec.kinematic_viscosity_final_report = 'non_nabl'
 
 
 
@@ -837,23 +1011,32 @@ class BitumenPenetrationValueLine(models.Model):
 
     sample_no = fields.Integer(string="Sample", readonly=True, copy=False, default=1)
 
-    test_temp = fields.Float(string='Test Temp.(C)')
-    
-    dial_initial = fields.Float(string='Initial')
-    dial_final = fields.Float(string='Final')
+    test_temperature = fields.Float(
+        string="Test Temp (°C)"
+    )
+
+    initial_reading = fields.Float(
+        string="Initial Dial Reading"
+    )
+
+    final_reading = fields.Float(
+        string="Final Dial Reading"
+    )
 
     penetration = fields.Float(
-        string='Penetration (0.1mm)',
-        compute='_compute_penetration',
+        string="Penetration (0.1 mm)",
+        compute="_compute_penetration",
         store=True
     )
 
-    remarks = fields.Char(string='Remarks')
+    remarks = fields.Char(
+        string="Remark"
+    )
 
-    @api.depends('dial_initial', 'dial_final')
+    @api.depends('initial_reading', 'final_reading')
     def _compute_penetration(self):
         for rec in self:
-            rec.penetration = rec.dial_final - rec.dial_initial
+            rec.penetration = rec.final_reading - rec.initial_reading
 
 
     @api.model
@@ -884,10 +1067,10 @@ class BitumenSpecificGravityLine(models.Model):
     sample_no = fields.Integer(string="Sr No.", readonly=True, copy=False, default=1)
 
     # Input Values
-    w1 = fields.Float(string="Weight of Pycnometer (W1) g")
-    w2 = fields.Float(string="Weight of Pycnometer + Sample (W2) g")
-    w3 = fields.Float(string="Weight of Pycnometer + Sample + Water (W3) g")
-    w4 = fields.Float(string="Weight of Pycnometer + Water (W4) g")
+    w1 = fields.Float(string="Weight of Density Bottle (W1) g")
+    w2 = fields.Float(string="Weight of Density Bottle + Sample (W2) g")
+    w3 = fields.Float(string="Weight of Density Bottle + Sample + Water (W3) g")
+    w4 = fields.Float(string="Weight of Density Bottle + Water (W4) g")
 
     # Calculated Values
     sample_weight = fields.Float(
@@ -897,7 +1080,7 @@ class BitumenSpecificGravityLine(models.Model):
     )
 
     specific_gravity = fields.Float(
-        string="Specific Gravity",
+        string="Specific Gravity of Sample = (W2-W1)/(W4-W1) - (W3-W2)",
         compute="_compute_values",
         store=True
     )
