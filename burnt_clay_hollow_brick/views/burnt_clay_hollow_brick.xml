@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_burnt_clay_hollow_brick_form" model="ir.ui.view">
+        <field name="name">mechanical.burnt.clay.hollow.brick.form</field>
+        <field name="model">mechanical.burnt.clay.hollow.brick</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <sheet>
+                   <group style="white-space: nowrap; width:70%;">
+                        <h1>
+                            <field name="name_burnt_clay_hollow_brick" readonly="1" nolabel="1"/>
+                        </h1>
+                    </group>
+                    <group >
+                       <field name="grade"/>
+
+                        <field name="eln_ref"/>
+                        <field name="size_id"/>
+                        <field name="eln_state" widget="badge" decoration-success="eln_state == 'approved'" decoration-info="eln_state == 'in-test' or eln_state == 'in-check'" decoration-danger="eln_state == 'rejected'" decoration-warning="eln_state == 'allotted'"/>
+                   </group>
+
+                   <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex">
+                            <button name="prefill_data" string="Prefill Data" type="object" class="btn btn-primary"/>
+                        </div>
+                        <div >
+                            <button name="open_eln_page" string="Submit" type="object"  class="btn btn-primary"/>
+                        </div>
+                    </div>
+
+                    <group >
+                       <field name="sample_parameters" nolabel="1" >
+                            <tree>
+                                <field name="parameter_name" />
+                                <field name="test_method" />
+                           </tree>
+                        </field>
+                    </group>
+
+                    <!-- Crushing Value -->
+                    <div invisible= "crushing_visible == False">
+                        <h1 class="text-center">
+                            <field name="crushing_value_name" readonly="1" nolabel="1"/>
+                            <field name="crushing_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+                    <div invisible= "crushing_visible == False" class="custom_table_borders">
+                        <field name="crushing_value_child_lines" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name='sample_no'/>
+                                    <field name='w1' class="blue-input" decoration-info="w1 != 0"/>
+                                    <field name='w2' class="blue-input" decoration-info="w2 != 0"/>
+                                    <field name='w3' class="blue-input" decoration-info="w3 != 0"/>
+                                    <field name='acv'/>
+                                </tree>
+                        </field> 
+                    </div>
+
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not crushing_visible" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="average_crushing_value">Average Crushing Value (%)</label></td>
+                                <td><field name="average_crushing_value"/></td>
+                            </tr>
+
+                            <tr>
+                                <td><label class="fw-bold" for="average_crushing_value_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="average_crushing_value_conformity"
+                                        decoration-success="average_crushing_value_conformity == 'pass'" 
+                                        decoration-danger="average_crushing_value_conformity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                               <td><label class="fw-bold" for="average_crushing_value_nabl">NABL</label></td>
+                                <td>
+                                    <field name="average_crushing_value_nabl"
+                                        decoration-success="average_crushing_value_nabl == 'pass'" 
+                                        decoration-danger="average_crushing_value_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Dimension -->
+                    <group invisible = "dimension_visible == False"  style="white-space: nowrap; width:70%;">
+                        <h1 >
+                            <field name="dimension_name" readonly="1" nolabel="1"/>
+                            <field name="dimension_visible" invisible="1"/>
+                        </h1>
+                    </group>
+
+                    <div class="custom_table_borders" style="width: 100%;"  invisible="dimension_visible == False">
+                        <field name="dimension_child_lines" mode="tree" nolabel="1">
+                            <tree editable="bottom" class="custom_table_borders" style="width: 100%; border-collapse: collapse;">
+                                <field name="serial_no" />
+                                <field name="length" class="blue-input" decoration-info="length != 0"/>
+                                <field name="width" class="blue-input" decoration-info="width != 0"/>
+                                <field name="height" class="blue-input" decoration-info="height != 0"/>
+                                <field name="area"/>
+                            </tree>
+                        </field>
+                    </div>
+
+                    <div class="d-flex gap-4" invisible = "dimension_visible == False">
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "dimension_visible == False">
+                            <tbody>
+                                <tr>
+                                    <td><label class="fw-bold" for="avg_length">Avg. Length</label></td>
+                                    <td><field name="avg_length"/> <span>mm</span></td>
+                                </tr>
+                                <tr>
+                                    <td><label class="fw-bold" for="avg_length_conformity">Conformity</label></td>
+                                    <td><field name="avg_length_conformity"
+                                                decoration-success="avg_length_conformity == 'pass'"
+                                                decoration-danger="avg_length_conformity == 'fail'"
+                                                readonly="1"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label class="fw-bold" for="avg_length_nabl">NABL</label></td>
+                                    <td><field name="avg_length_nabl"
+                                                decoration-success="avg_length_nabl == 'pass'"
+                                                decoration-danger="avg_length_nabl == 'fail'"
+                                                readonly="1"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "dimension_visible == False">
+                            <tbody>
+                                <tr>
+                                    <td><label class="fw-bold" for="avg_width">Avg. Width</label></td>
+                                    <td><field name="avg_width"/> <span>mm</span></td>
+                                </tr>
+                                <tr>
+                                    <td><label class="fw-bold" for="avg_width_conformity">Conformity</label></td>
+                                    <td><field name="avg_width_conformity"
+                                                decoration-success="avg_width_conformity == 'pass'"
+                                                decoration-danger="avg_width_conformity == 'fail'"
+                                                readonly="1"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label class="fw-bold" for="avg_width_nabl">NABL</label></td>
+                                    <td><field name="avg_width_nabl"
+                                                decoration-success="avg_width_nabl == 'pass'"
+                                                decoration-danger="avg_width_nabl == 'fail'"
+                                                readonly="1"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "dimension_visible == False">
+                            <tbody>
+                                <tr>
+                                    <td><label class="fw-bold" for="avg_height">Avg. Height</label></td>
+                                    <td><field name="avg_height"/> <span>mm</span></td>
+                                </tr>
+                                <tr>
+                                    <td><label class="fw-bold" for="avg_height_conformity">Conformity</label></td>
+                                    <td><field name="avg_height_conformity"
+                                                decoration-success="avg_height_conformity == 'pass'"
+                                                decoration-danger="avg_height_conformity == 'fail'"
+                                                readonly="1"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label class="fw-bold" for="avg_height_nabl">NABL</label></td>
+                                    <td><field name="avg_height_nabl"
+                                                decoration-success="avg_height_nabl == 'pass'"
+                                                decoration-danger="avg_height_nabl == 'fail'"
+                                                readonly="1"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "dimension_visible == False">
+                            <tbody>
+                                <tr>
+                                    <td><label class="fw-bold" for="avg_area">Avg. Cross Sectional Area</label></td>
+                                    <td><field name="avg_area"/> <span>mm2</span></td>
+                                </tr>
+                                <tr>
+                                    <td><label class="fw-bold" for="avg_area_conformity">Conformity</label></td>
+                                    <td><field name="avg_area_conformity"
+                                                decoration-success="avg_area_conformity == 'pass'"
+                                                decoration-danger="avg_area_conformity == 'fail'"
+                                                readonly="1"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label class="fw-bold" for="avg_area_nabl">NABL</label></td>
+                                    <td><field name="avg_area_nabl"
+                                                decoration-success="avg_area_nabl == 'pass'"
+                                                decoration-danger="avg_area_nabl == 'fail'"
+                                                readonly="1"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <notebook>
+                        <page string="Notes">
+                            <field name="notes_id" nolabel="1">
+                                <tree>
+                                    <field name="sr_no"/>
+                                    <field name="notes"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+
+        <record id="action_burnt_clay_hollow_brick_prefill_data_wizard" model="ir.actions.act_window">
+                <field name="name">Prefill Data</field>
+                <field name="res_model">burnt.clay.hollow.brick.prefill.data</field>
+                <field name="view_mode">form</field>
+                <field name="target">new</field>
+                <field name="binding_model_id" ref="model_mechanical_burnt_clay_hollow_brick"/>
+        </record>
+
+
+        <record id="view_burnt_clay_hollow_brick_prefill_data_form" model="ir.ui.view">
+            <field name="name">burnt.clay.hollow.brick.prefill.data.form</field>
+            <field name="model">burnt.clay.hollow.brick.prefill.data</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="product_id" readonly="1"/>
+                        <field name="sample_id" options="{'no_create': True, 'no_open': True}"/>
+                    </group>
+                    <footer>
+                        <button name="prefill_data" string="Prefill Data" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>
