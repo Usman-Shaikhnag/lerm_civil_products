@@ -1,4 +1,4 @@
-from odoo import models, api
+from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 from odoo import _
 from odoo.osv.expression import AND
@@ -6,6 +6,34 @@ from collections import OrderedDict
 
 class LermSrfSample(models.Model):
     _inherit = 'lerm.srf.sample'
+
+    billing_customer = fields.Many2one('res.partner', related='srf_id.billing_customer', string="Billing Customer", store=True)
+
+    invoice_status = fields.Selection([
+        ('1-uninvoiced', 'Uninvoiced'),
+        ('2-draft', 'Draft'),
+        ('3-invoiced', 'Invoiced'),
+        ('4-partially_paid', 'Partially Paid'),
+        ('5-paid', 'Paid'),
+    ], string='Invoice Status', compute='_compute_invoice_status', store=True)
+
+    @api.depends('invoice_number', 'invoice_number.state', 'invoice_number.invoice_payment_term_id', 'invoice_number.amount_residual', 'invoice_number.amount_total')
+    def _compute_invoice_status(self):
+        for rec in self:
+            inv = rec.invoice_number
+            if not inv or not inv.id or inv.state == 'cancel':
+                rec.invoice_status = '1-uninvoiced'
+            elif inv.state == 'draft':
+                rec.invoice_status = '2-draft'
+            elif inv.state == 'posted':
+                if inv.amount_residual == 0:
+                    rec.invoice_status = '5-paid'
+                elif inv.amount_residual < inv.amount_total:
+                    rec.invoice_status = '4-partially_paid'
+                else:
+                    rec.invoice_status = '3-invoiced'
+            else:
+                rec.invoice_status = '1-uninvoiced'
 
     @api.model
     def _search_panel_domain_image(self, field_name, domain, set_count=False, limit=False):

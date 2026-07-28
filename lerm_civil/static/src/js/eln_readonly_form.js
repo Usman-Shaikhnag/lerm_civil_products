@@ -44,12 +44,14 @@ patch(FormRenderer.prototype, {
         }
 
         const elnState = record.data.eln_state;
-        const shouldLock = elnState && elnState !== "1-draft";
+        const shouldLock =
+            elnState &&
+            !["1-draft", "4-rejected"].includes(elnState);
 
         if (shouldLock) {
             formEl.classList.add("eln-form-locked");
         } else {
             formEl.classList.remove("eln-form-locked");
         }
-    },
+    }
 });

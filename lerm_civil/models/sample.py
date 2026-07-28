@@ -101,29 +101,9 @@ class LermSampleForm(models.Model):
 
     invoice_status = fields.Selection([
         ('1-uninvoiced', 'Uninvoiced'),
-        ('2-draft', 'Draft'),
-        ('3-invoiced', 'Invoiced'),
-        ('4-partially_paid', 'Partially Paid'),
-        ('5-paid', 'Paid'),
-    ], string='Invoice Status', compute='_compute_invoice_status', store=True)
-
-    @api.depends('invoice_number', 'invoice_number.state', 'invoice_number.invoice_payment_term_id', 'invoice_number.amount_residual', 'invoice_number.amount_total')
-    def _compute_invoice_status(self):
-        for rec in self:
-            inv = rec.invoice_number
-            if not inv or not inv.id or inv.state == 'cancel':
-                rec.invoice_status = '1-uninvoiced'
-            elif inv.state == 'draft':
-                rec.invoice_status = '2-draft'
-            elif inv.state == 'posted':
-                if inv.amount_residual == 0:
-                    rec.invoice_status = '5-paid'
-                elif inv.amount_residual < inv.amount_total:
-                    rec.invoice_status = '4-partially_paid'
-                else:
-                    rec.invoice_status = '3-invoiced'
-            else:
-                rec.invoice_status = '1-uninvoiced'
+        ('2-invoiced', 'Invoiced'),
+        ('3-closed', 'Closed'),
+    ], string='Invoice Status', store=True, default='1-uninvoiced')
 
     print_button_visible = fields.Boolean("Print Nabl visible",compute="_compute_print_nabl_visible")
    
@@ -748,12 +728,37 @@ class RejectSampleWizard(models.Model):
         # return {'type': 'ir.actions.act_window_close'}
         if self.reject_reason:
             sample_id = self.env.context.get('active_id')
-            sample = self.env['lerm.srf.sample'].search([('id','=',sample_id)]).write({'state': '2-alloted'})
+            sample = self.env['lerm.srf.sample'].search([('id','=',sample_id)])
+            sample.write({'state': '2-alloted'})
             eln = self.env['lerm.eln'].sudo().search([('sample_id','=',sample_id)])
             eln.write({'state':'4-rejected'})
             eln.message_post(body="<b>Sample Rejected :<b> " + self.reject_reason)
 
-            
+            # Create rejection tasks for each technician assigned in the ELN
+            technician_parameters = {}
+            for result in eln.parameters_result:
+                if result.technician:
+                    tech_id = result.technician.id
+                    if tech_id not in technician_parameters:
+                        technician_parameters[tech_id] = []
+                    technician_parameters[tech_id].append(
+                        result.parameter.parameter_name or result.parameter.name or 'Unknown'
+                    )
+
+            for tech_id, params in technician_parameters.items():
+                param_list_str = ', '.join(params)
+                self.env['project.task'].sudo().create({
+                    'name': f"Sample Rejected: {sample.kes_no or 'Unknown'}",
+                    'user_ids': [(4, tech_id)],
+                    'date_deadline': sample.report_due_date,
+                    'description': (
+                        f"**Sample ID:** {sample.kes_no or 'Unknown'}\n\n"
+                        f"**Material:** {eln.material.name or 'N/A'}\n\n"
+                        f"**Reject Reason:** {self.reject_reason}\n\n"
+                        f"**Your Parameters:** {param_list_str}\n\n"
+                        f"This sample has been rejected. Please review the reject reason and make the necessary changes."
+                    ),
+                })
 
             return {'type': 'ir.actions.act_window_close'}
         else:
@@ -761,6 +766,7 @@ class RejectSampleWizard(models.Model):
 
     def close_reject_wizard(self):
         return {'type': 'ir.actions.act_window_close'}
+
 
 
 class SampleParametersResult(models.Model):

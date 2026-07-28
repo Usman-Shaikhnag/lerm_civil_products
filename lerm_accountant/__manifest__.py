@@ -17,6 +17,7 @@
         'security/ir.model.access.csv',
         'views/sample_views.xml',
         'views/menu_views.xml',
+        'wizards/bulk_invoice_wizard_views.xml',
     ],
     'license': 'LGPL-3',
     'installable': True,
