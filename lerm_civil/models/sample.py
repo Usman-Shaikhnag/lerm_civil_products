@@ -71,6 +71,7 @@ class LermSampleForm(models.Model):
     ], string='Days of casting', default='3')
     date_casting = fields.Date("Date of Casting")
     customer_id = fields.Many2one('res.partner' , string="Customer")
+    billing_customer = fields.Many2one('res.partner', related='srf_id.billing_customer', string="Billing Customer", store=True)
     alias = fields.Char(string="Alias")
     product_alias = fields.Many2one('product.product',string="Product Alias")
     parameters = fields.Many2many('lerm.parameter.master',string="Parameter")
@@ -100,9 +101,29 @@ class LermSampleForm(models.Model):
 
     invoice_status = fields.Selection([
         ('1-uninvoiced', 'Uninvoiced'),
-        ('2-invoiced', 'Invoiced'),
-        ('3-closed', 'Closed'),
-    ], string='Invoice Status',store=True, default='1-uninvoiced')
+        ('2-draft', 'Draft'),
+        ('3-invoiced', 'Invoiced'),
+        ('4-partially_paid', 'Partially Paid'),
+        ('5-paid', 'Paid'),
+    ], string='Invoice Status', compute='_compute_invoice_status', store=True)
+
+    @api.depends('invoice_number', 'invoice_number.state', 'invoice_number.invoice_payment_term_id', 'invoice_number.amount_residual', 'invoice_number.amount_total')
+    def _compute_invoice_status(self):
+        for rec in self:
+            inv = rec.invoice_number
+            if not inv or not inv.id or inv.state == 'cancel':
+                rec.invoice_status = '1-uninvoiced'
+            elif inv.state == 'draft':
+                rec.invoice_status = '2-draft'
+            elif inv.state == 'posted':
+                if inv.amount_residual == 0:
+                    rec.invoice_status = '5-paid'
+                elif inv.amount_residual < inv.amount_total:
+                    rec.invoice_status = '4-partially_paid'
+                else:
+                    rec.invoice_status = '3-invoiced'
+            else:
+                rec.invoice_status = '1-uninvoiced'
 
     print_button_visible = fields.Boolean("Print Nabl visible",compute="_compute_print_nabl_visible")
    

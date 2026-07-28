@@ -13,6 +13,7 @@
         'report/kes_invoice_template_without_header.xml',
         'views/customer.xml',
         'views/company.xml',
+        'wizards/bulk_invoice_wizard_views.xml',
     ],
  'assets': {
         'web.report_assets_common': [

@@ -740,6 +740,28 @@
     <field name="binding_type">report</field>
 </record>
 
+
+<record id="dlc_datasheet_action" model="ir.actions.report">
+    <field name="name">Dry Lean Concrete DataSheet </field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">dlc.dlc_datasheet</field>
+    <field name="report_file">dlc.dlc_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="dlc_report_action" model="ir.actions.report">
+    <field name="name">Dry Lean Concrete Report </field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">dlc.dlc_report</field>
+    <field name="report_file">dlc.dlc_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="paperformat_id" ref="paperformat_makeinfra_report"/>
+    <field name="binding_type">report</field>
+</record>
+
 <record id="gypsum_plaster_board_datasheet_action" model="ir.actions.report">
     <field name="name">Gypsum Plaster Board DataSheet </field>
     <field name="model">lerm.eln</field>
