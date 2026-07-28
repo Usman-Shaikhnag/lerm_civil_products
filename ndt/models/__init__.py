@@ -9,3 +9,6 @@ from .ndt import acil_upv
 from .ndt import upv
 from .ndt import crackwidth
 from .ndt import half_cell
+from .ndt import upv_direct
+from .ndt import upv_indirect
+from .ndt import upv_combined

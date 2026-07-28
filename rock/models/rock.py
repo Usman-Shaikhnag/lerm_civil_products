@@ -35,84 +35,40 @@ class MechanicalRock(models.Model):
     specific_gravity_name = fields.Char("Name",default="Specific Gravity")
     specific_gravity_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
 
-    # SAMPLE 1
-    sample1_dry = fields.Float(string="Dry Weight (g)")
-    sample1_wet = fields.Float(string="Wet/Saturated Weight (g)")
-    sample1_suspended = fields.Float(string="Suspended Weight (g)")
-    sample1_result = fields.Float(
-        string="Specific Gravity",
-        compute="_compute_results",
-        store=True
-    )
-
-    # SAMPLE 2
-    sample2_dry = fields.Float(string="Dry Weight (g)")
-    sample2_wet = fields.Float(string="Wet/Saturated Weight (g)")
-    sample2_suspended = fields.Float(string="Suspended Weight (g)")
-    sample2_result = fields.Float(
-        string="Specific Gravity",
-        compute="_compute_results",
-        store=True
-    )
-
-    # SAMPLE 3
-    sample3_dry = fields.Float(string="Dry Weight (g)")
-    sample3_wet = fields.Float(string="Wet/Saturated Weight (g)")
-    sample3_suspended = fields.Float(string="Suspended Weight (g)")
-    sample3_result = fields.Float(
-        string="Specific Gravity",
-        compute="_compute_results",
-        store=True
+    specific_gravity_line_ids = fields.One2many(
+        'rock.specific.gravity.water.absorption.line',
+        'parent_id',
+        string="Test Readings"
     )
 
     avg_specific_gravity = fields.Float(
         string="Average Specific Gravity",
-        compute="_compute_results",
+        compute="_compute_average",
+        store=True
+    )
+
+    avg_water_absorption = fields.Float(
+        string="Average Water Absorption (%)",
+        compute="_compute_average",
         store=True
     )
 
     @api.depends(
-        'sample1_dry', 'sample1_wet', 'sample1_suspended',
-        'sample2_dry', 'sample2_wet', 'sample2_suspended',
-        'sample3_dry', 'sample3_wet', 'sample3_suspended'
+        'specific_gravity_line_ids.specific_gravity',
+        'specific_gravity_line_ids.water_absorption'
     )
-    def _compute_results(self):
-
+    def _compute_average(self):
         for rec in self:
+            sg = rec.specific_gravity_line_ids.mapped('specific_gravity')
+            wa = rec.specific_gravity_line_ids.mapped('water_absorption')
 
-            # SAMPLE 1
-            den1 = rec.sample1_wet - rec.sample1_suspended
-            rec.sample1_result = (
-                rec.sample1_dry / den1
-                if den1 > 0 else 0.0
-            )
+            rec.avg_specific_gravity = round(
+                sum(sg) / len(sg), 2
+            ) if sg else 0.0
 
-            # SAMPLE 2
-            den2 = rec.sample2_wet - rec.sample2_suspended
-            rec.sample2_result = (
-                rec.sample2_dry / den2
-                if den2 > 0 else 0.0
-            )
-
-            # SAMPLE 3
-            den3 = rec.sample3_wet - rec.sample3_suspended
-            rec.sample3_result = (
-                rec.sample3_dry / den3
-                if den3 > 0 else 0.0
-            )
-
-            results = [
-                r for r in [
-                    rec.sample1_result,
-                    rec.sample2_result,
-                    rec.sample3_result
-                ] if r > 0
-            ]
-
-            rec.avg_specific_gravity = (
-                sum(results) / len(results)
-                if results else 0.0
-            )
+            rec.avg_water_absorption = round(
+                sum(wa) / len(wa), 2
+            ) if wa else 0.0
 
 
     avg_specific_gravity_conformity = fields.Selection([
@@ -170,82 +126,34 @@ class MechanicalRock(models.Model):
                 record.avg_specific_gravity_nabl = 'fail'
 
 
-    # Water Absorption
-    water_absorption_name = fields.Char("Name",default="Water Absorption")
-    water_absorption_visible = fields.Boolean("Water Absorption Visible",compute="_compute_visible")
-
-    # SAMPLE 1
-    water_sample1_dry = fields.Float(string="Dry Weight (g)")
-    water_sample1_wet = fields.Float(string="Saturated Weight (g)")
-    water_sample1_result = fields.Float(
-        string="Water Absorption",
-        compute="_compute_resultss",
-        store=True
-    )
-
-    # SAMPLE 2
-    water_sample2_dry = fields.Float(string="Dry Weight (g)")
-    water_sample2_wet = fields.Float(string="Saturated Weight (g)")
-    water_sample2_result = fields.Float(
-        string="Water Absorption",
-        compute="_compute_resultss",
-        store=True
-    )
-
-    # SAMPLE 3
-    water_sample3_dry = fields.Float(string="Dry Weight (g)")
-    water_sample3_wet = fields.Float(string="Saturated Weight (g)")
-    water_sample3_result = fields.Float(
-        string="Water Absorption",
-        compute="_compute_resultss",
-        store=True
-    )
-
-    avg_water_absorption = fields.Float(
-        string="Average Water Absorption",
-        compute="_compute_resultss",
-        store=True
-    )
-
-    @api.depends(
-        'water_sample1_dry', 'water_sample1_wet',
-        'water_sample2_dry', 'water_sample2_wet',
-        'water_sample3_dry', 'water_sample3_wet'
-    )
-    def _compute_resultss(self):
-
+    specific_gravity_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    specific_gravity_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_specific_gravity_final_report", store=True)
+    
+    @api.depends('avg_specific_gravity_nabl', 'specific_gravity_report_type')
+    def _compute_specific_gravity_final_report(self):
         for rec in self:
+    
+            # Manual override
+            if rec.specific_gravity_report_type == 'nabl':
+                rec.specific_gravity_final_report = 'nabl'
+    
+            elif rec.specific_gravity_report_type == 'non_nabl':
+                rec.specific_gravity_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.avg_specific_gravity_nabl == 'pass':
+                    rec.specific_gravity_final_report = 'nabl'
+                else:
+                    rec.specific_gravity_final_report = 'non_nabl'
 
-            # SAMPLE 1
-            rec.water_sample1_result = (
-                ((rec.water_sample1_wet - rec.water_sample1_dry) / rec.water_sample1_dry) * 100
-                if rec.water_sample1_dry > 0 else 0.0
-            )
 
-            # SAMPLE 2
-            rec.water_sample2_result = (
-                ((rec.water_sample2_wet - rec.water_sample2_dry) / rec.water_sample2_dry) * 100
-                if rec.water_sample2_dry > 0 else 0.0
-            )
-
-            # SAMPLE 3
-            rec.water_sample3_result = (
-                ((rec.water_sample3_wet - rec.water_sample3_dry) / rec.water_sample3_dry) * 100
-                if rec.water_sample3_dry > 0 else 0.0
-            )
-
-            results = [
-                r for r in [
-                    rec.water_sample1_result,
-                    rec.water_sample2_result,
-                    rec.water_sample3_result
-                ] if r > 0
-            ]
-
-            rec.avg_water_absorption = (
-                sum(results) / len(results)
-                if results else 0.0
-            )
 
     avg_water_absorption_conformity = fields.Selection([
             ('pass', 'Pass'),
@@ -301,83 +209,59 @@ class MechanicalRock(models.Model):
             else:
                 record.avg_water_absorption_nabl = 'fail'
 
+
+    water_absorption_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    water_absorption_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_water_absorption_final_report", store=True)
+    
+    @api.depends('avg_water_absorption_nabl', 'water_absorption_report_type')
+    def _compute_water_absorption_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.water_absorption_report_type == 'nabl':
+                rec.water_absorption_final_report = 'nabl'
+    
+            elif rec.water_absorption_report_type == 'non_nabl':
+                rec.water_absorption_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.avg_water_absorption_nabl == 'pass':
+                    rec.water_absorption_final_report = 'nabl'
+                else:
+                    rec.water_absorption_final_report = 'non_nabl'
+
     # Water Content
 
     water_content_name = fields.Char("Name",default="Water Content")
     water_content_visible = fields.Boolean("Water Content Visible",compute="_compute_visible")
 
-    # SAMPLE 1
-    water_content_sample1_wet = fields.Float(string="Wet Weight (g)")
-    water_content_sample1_dry = fields.Float(string="Dry Weight (g)")
-    water_content_sample1_result = fields.Float(
-    string="Water Content",
-    compute="_compute_water_content",
-    store=True
-)
-
-    # SAMPLE 2
-    water_content_sample2_wet = fields.Float(string="Wet Weight (g)")
-    water_content_sample2_dry = fields.Float(string="Dry Weight (g)")
-    water_content_sample2_result = fields.Float(
-    string="Water Content",
-    compute="_compute_water_content",
-    store=True
-)
-
-    # SAMPLE 3
-    water_content_sample3_wet = fields.Float(string="Wet Weight (g)")
-    water_content_sample3_dry = fields.Float(string="Dry Weight (g)")
-    water_content_sample3_result = fields.Float(
-    string="Water Content",
-    compute="_compute_water_content",
-    store=True)
+    water_content_line_ids = fields.One2many(
+        'rock.water.content.line',
+        'parent_id',
+        string="Samples"
+    )
 
     avg_water_content = fields.Float(
-    string="Average Water Content",
-    compute="_compute_water_content",
-    store=True)
+        string="Average Water Content (%)",
+        compute="_compute_average",
+        store=True,
+        digits=(16, 2)
+    )
 
-    @api.depends(
-    'water_content_sample1_wet', 'water_content_sample1_dry',
-    'water_content_sample2_wet', 'water_content_sample2_dry',
-    'water_content_sample3_wet', 'water_content_sample3_dry')
-    def _compute_water_content(self):
-
-     for rec in self:
-
-        # SAMPLE 1
-        rec.water_content_sample1_result = (
-            ((rec.water_content_sample1_wet - rec.water_content_sample1_dry)
-             / rec.water_content_sample1_dry) * 100
-            if rec.water_content_sample1_dry > 0 else 0.0
-        )
-
-        # SAMPLE 2
-        rec.water_content_sample2_result = (
-            ((rec.water_content_sample2_wet - rec.water_content_sample2_dry)
-             / rec.water_content_sample2_dry) * 100
-            if rec.water_content_sample2_dry > 0 else 0.0
-        )
-
-        # SAMPLE 3
-        rec.water_content_sample3_result = (
-            ((rec.water_content_sample3_wet - rec.water_content_sample3_dry)
-             / rec.water_content_sample3_dry) * 100
-            if rec.water_content_sample3_dry > 0 else 0.0
-        )
-
-        results = [
-            r for r in [
-                rec.water_content_sample1_result,
-                rec.water_content_sample2_result,
-                rec.water_content_sample3_result
-            ] if r > 0
-        ]
-
-        rec.avg_water_content = (
-            sum(results) / len(results)
-            if results else 0.0
-        )
+    @api.depends('water_content_line_ids.water_content')
+    def _compute_average(self):
+        for rec in self:
+            values = rec.water_content_line_ids.mapped('water_content')
+            rec.avg_water_content = round(
+                sum(values) / len(values), 2
+            ) if values else 0.0
 
     avg_water_content_conformity = fields.Selection([
             ('pass', 'Pass'),
@@ -432,6 +316,34 @@ class MechanicalRock(models.Model):
                 break
             else:
                 record.avg_water_content_nabl = 'fail'
+
+
+    water_content_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    water_content_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_water_content_final_report", store=True)
+    
+    @api.depends('avg_water_content_nabl', 'water_content_report_type')
+    def _compute_water_content_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.water_content_report_type == 'nabl':
+                rec.water_content_final_report = 'nabl'
+    
+            elif rec.water_content_report_type == 'non_nabl':
+                rec.water_content_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.avg_water_content_nabl == 'pass':
+                    rec.water_content_final_report = 'nabl'
+                else:
+                    rec.water_content_final_report = 'non_nabl'
     
     
 
@@ -443,7 +355,6 @@ class MechanicalRock(models.Model):
         for record in self:
 
             record.specific_gravity_visible = False
-            record.water_absorption_visible = False
             record.water_content_visible = False
 
 
@@ -459,7 +370,7 @@ class MechanicalRock(models.Model):
                     record.specific_gravity_visible = True
 
                 if sample.internal_id == "71e24ae1-b9a9-41cb-86a5-89d87312f3d6":
-                    record.water_absorption_visible = True
+                    record.specific_gravity_visible = True
 
                 if sample.internal_id == "a1f9c5d0-0bc7-41a6-a2bb-0fe9d898008d":
                     record.water_content_visible = True
@@ -600,6 +511,173 @@ class MechanicalRock(models.Model):
 
 
 
+
+
+class RockSpecificGravityLine(models.Model):
+    _name = "rock.specific.gravity.water.absorption.line"
+    _description = "Specific Gravity Line"
+
+    parent_id = fields.Many2one('mechanical.rock', string="Parent Id")
+
+    sample_no = fields.Integer(string="Specimen No.", readonly=True, copy=False, default=1)
+
+
+    dry_weight = fields.Float(
+        string="Dry Weight of Sample, A (g)"
+    )
+
+    ssd_weight = fields.Float(
+        string="Saturated Surface Dry Weight, B (g)"
+    )
+
+    water_weight = fields.Float(
+        string="Weight in Water,  C (g)"
+    )
+
+    volume_sample = fields.Float(
+        string="Volume of Sample (B−C) (cm³)",
+        compute="_compute_values",
+        store=True
+    )
+
+    specific_gravity = fields.Float(
+        string="Specific Gravity (A/(B−C))",
+        compute="_compute_values",
+        store=True,
+        digits=(16, 2)
+    )
+
+    water_absorption = fields.Float(
+        string="Water Absorption (%) ((B−A)/A ×100)",
+        compute="_compute_values",
+        store=True,
+        digits=(16, 2)
+    )
+
+    remarks = fields.Char(string="Remarks")
+
+    @api.depends('dry_weight', 'ssd_weight', 'water_weight')
+    def _compute_values(self):
+        for rec in self:
+
+            volume = rec.ssd_weight - rec.water_weight
+            rec.volume_sample = round(volume, 2)
+
+            if volume:
+                rec.specific_gravity = round(
+                    rec.dry_weight / volume,
+                    2
+                )
+            else:
+                rec.specific_gravity = 0.0
+
+            if rec.dry_weight:
+                rec.water_absorption = round(
+                    ((rec.ssd_weight - rec.dry_weight) / rec.dry_weight) * 100,
+                    2
+                )
+            else:
+                rec.water_absorption = 0.0
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sample_no'))
+                vals['sample_no'] = max_serial_no + 1
+
+        return super(RockSpecificGravityLine, self).create(vals)
+
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.sample_no = index + 1
+
+
+
+
+
+class RockWaterContentLine(models.Model):
+    _name = "rock.water.content.line"
+    _description = "Water Content Sample"
+
+    parent_id = fields.Many2one('mechanical.rock', string="Parent Id")
+
+    sample_no = fields.Integer(string="Specimen No.", readonly=True, copy=False, default=1)
+
+    container_no = fields.Char(string="Container No.")
+
+    w1 = fields.Float(
+        string="Weight of Empty Container, W₁ (g)"
+    )
+
+    w2 = fields.Float(
+        string="Weight of Container + Wet Rock, W₂ (g)"
+    )
+
+    w3 = fields.Float(
+        string="Weight of Container + Dry Rock, W₃ (g)"
+    )
+
+    weight_water = fields.Float(
+        string="Weight of Water (W₂ − W₃) (g)",
+        compute="_compute_values",
+        store=True,
+        digits=(16, 2)
+    )
+
+    weight_dry_rock = fields.Float(
+        string="Weight of Dry Rock (W₃ − W₁) (g)",
+        compute="_compute_values",
+        store=True,
+        digits=(16, 2)
+    )
+
+    water_content = fields.Float(
+        string="Water Content (%) [(W₂ − W₃)/(W₃ − W₁) ×100]",
+        compute="_compute_values",
+        store=True,
+        digits=(16, 2)
+    )
+
+    @api.depends('w1', 'w2', 'w3')
+    def _compute_values(self):
+        for rec in self:
+
+            rec.weight_water = rec.w2 - rec.w3
+            rec.weight_dry_rock = rec.w3 - rec.w1
+
+            if rec.weight_dry_rock:
+                rec.water_content = round(
+                    (rec.weight_water / rec.weight_dry_rock) * 100,
+                    2
+                )
+            else:
+                rec.water_content = 0.0
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sample_no'))
+                vals['sample_no'] = max_serial_no + 1
+
+        return super(RockWaterContentLine, self).create(vals)
+
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.sample_no = index + 1
 
 
 

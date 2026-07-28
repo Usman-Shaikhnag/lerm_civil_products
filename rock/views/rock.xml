@@ -86,46 +86,26 @@
                         </h1>
                     </div>
 
-                    <div invisible="specific_gravity_visible == False" style="text-align:center">
-                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                       <tbody>
-                         <tr>
-                           <td style="font-weight:bold"><span>Sample No</span></td>
-                           <td  style="font-weight:bold"><span>Sample 1</span></td>
-                           <td  style="font-weight:bold"><span>Sample 2</span></td>
-                           <td  style="font-weight:bold"><span>Sample 3</span></td>
-                         </tr>
-                         <tr>
-                           <td><label for="sample1_dry">Dry Weight (g)</label></td>
-                           <td><field  name="sample1_dry"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample2_dry"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample3_dry"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                         </tr>
-                         <tr>
-                           <td><label for="sample1_wet">Wet/Saturated Weight (g)</label></td>
-                           <td><field  name="sample1_wet"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample2_wet"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample3_wet"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                         </tr>
-                         <tr>
-                           <td><label for="sample1_suspended">Suspended Weight (g)</label></td>
-                           <td><field  name="sample1_suspended"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample2_suspended"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample3_suspended"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                         </tr>
-                         <tr>
-                           <td><label for="sample1_result">Specific Gravity</label></td>
-                           <td><field  name="sample1_result"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample2_result"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample3_result"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                         </tr>
-                       </tbody>
-                     </table>
+                    <div class="custom_table_borders" invisible="not specific_gravity_visible">
+                        <field name="specific_gravity_line_ids" nolabel="1" >
+                        <tree editable="bottom">
+                        <field name="sample_no" width="200"/>
+                          <field name="dry_weight" class="blue-input" decoration-info="dry_weight != 0" width="200"/>
+                          <field name="ssd_weight" class="blue-input" decoration-info="ssd_weight != 0" width="200"/>
+                          <field name="water_weight" class="blue-input" decoration-info="water_weight != 0" width="200"/>
+
+                          <field name="volume_sample" width="200"/>
+
+                          <field name="specific_gravity" width="200"/>
+                          <field name="water_absorption" width="200"/>
+                          <field name="remarks" class="blue-input" decoration-info="remarks != 0" width="200"/>
+                        </tree>
+                        </field>
                     </div>
 
                                     
-                    
-                    <table class="table o_form_table w-50 mt-2 custom_table_borders" invisible="not specific_gravity_visible">
+                    <div class="d-flex gap-2"> 
+                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not specific_gravity_visible">
                         <tbody>
                             <tr>
                                 <td><label class="text-bold" for="avg_specific_gravity">Average Specific Gravity</label></td>
@@ -151,53 +131,15 @@
                                         readonly="1"/>
                                 </td>
                             </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="specific_gravity_report_type">Report Type</label></td>
+                                <td><field name="specific_gravity_report_type" class="blue-input" decoration-info="specific_gravity_report_type != 0"/></td>
+                            </tr>
                         </tbody>
                     </table>
 
 
-                    <!-- Water Absorption -->
-
-                    <div invisible="water_absorption_visible == False" style="text-align:center">
-                        <h1>
-                          <field name="water_absorption_name" readonly="1" nolabel="1"/>
-                          <field name="water_absorption_visible" invisible='1'/>
-                        </h1>
-                    </div>
-
-                    <div invisible="water_absorption_visible == False" style="text-align:center">
-                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                       <tbody>
-                         <tr>
-                           <td style="font-weight:bold"><span>Sample No</span></td>
-                           <td  style="font-weight:bold"><span>Sample 1</span></td>
-                           <td  style="font-weight:bold"><span>Sample 2</span></td>
-                           <td  style="font-weight:bold"><span>Sample 3</span></td>
-                         </tr>
-                         <tr>
-                           <td><label for="water_sample1_dry">Dry Weight (g)</label></td>
-                           <td><field  name="water_sample1_dry"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="water_sample2_dry"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="water_sample3_dry"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                         </tr>
-                         <tr>
-                           <td><label for="water_sample1_wet">Wet/Saturated Weight (g)</label></td>
-                           <td><field  name="water_sample1_wet"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="water_sample2_wet"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="water_sample3_wet"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                         </tr>
-                         <tr>
-                           <td><label for="water_sample1_result">Water Absorption</label></td>
-                           <td><field  name="water_sample1_result"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="water_sample2_result"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="water_sample3_result"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                         </tr>
-                       </tbody>
-                     </table>
-                    </div>
-
-                                    
-                    
-                    <table class="table o_form_table w-50 mt-2 custom_table_borders" invisible="not water_absorption_visible">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not specific_gravity_visible">
                         <tbody>
                             <tr>
                                 <td><label class="text-bold" for="avg_water_absorption">Average Water Absorption</label></td>
@@ -223,8 +165,19 @@
                                         readonly="1"/>
                                 </td>
                             </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="water_absorption_report_type">Report Type</label></td>
+                                <td><field name="water_absorption_report_type" class="blue-input" decoration-info="water_absorption_report_type != 0"/></td>
+                            </tr>
                         </tbody>
-                    </table>
+                      </table>
+
+                    </div>
+
+
+                    
+                    
+                    
 
 
                      <!-- Water Content -->
@@ -236,41 +189,26 @@
                         </h1>
                     </div>
 
-                    <div invisible="water_content_visible == False" style="text-align:center">
-                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                       <tbody>
-                         <tr>
-                           <td style="font-weight:bold"><span>Sample No</span></td>
-                           <td  style="font-weight:bold"><span>Sample 1</span></td>
-                           <td  style="font-weight:bold"><span>Sample 2</span></td>
-                           <td  style="font-weight:bold"><span>Sample 3</span></td>
-                         </tr>
-                         
-                         <tr>
-                           <td><label for="water_content_sample1_dry">Dry Weight (g)</label></td>
-                           <td><field  name="water_content_sample1_dry"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="water_content_sample2_dry"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="water_content_sample3_dry"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                         </tr>
-                         <tr>
-                           <td><label for="water_content_sample1_wet">Wet Weight (g)</label></td>
-                           <td><field  name="water_content_sample1_wet"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="water_content_sample2_wet"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="water_content_sample3_wet"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                         </tr>
-                         <tr>
-                           <td><label for="water_content_sample1_result">Water Content</label></td>
-                           <td><field  name="water_content_sample1_result"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="water_content_sample2_result"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="water_content_sample3_result"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                         </tr>
-                       </tbody>
-                     </table>
+                    <div class="custom_table_borders" invisible="not specific_gravity_visible">
+                        <field name="water_content_line_ids" nolabel="1" >
+                        <tree editable="bottom">
+                        <field name="sample_no" width="200"/>
+                          <field name="container_no" class="blue-input" decoration-info="container_no != 0" width="200"/>
+                          <field name="w1" class="blue-input" decoration-info="w1 != 0" width="200"/>
+                          <field name="w2" class="blue-input" decoration-info="w2 != 0" width="200"/>
+                          <field name="w3" class="blue-input" decoration-info="w3 != 0" width="200"/>
+
+                          <field name="weight_water" width="200"/>
+
+                          <field name="weight_dry_rock" width="200"/>
+                          <field name="water_content" width="200"/>
+                        </tree>
+                        </field>
                     </div>
 
                                     
                     
-                    <table class="table o_form_table w-50 mt-2 custom_table_borders" invisible="not water_content_visible">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not water_content_visible">
                         <tbody>
                             <tr>
                                 <td><label class="text-bold" for="avg_water_content">Average Water Content</label></td>
@@ -295,6 +233,10 @@
                                         decoration-danger="avg_water_content_nabl == 'fail'"
                                         readonly="1"/>
                                 </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="water_content_report_type">Report Type</label></td>
+                                <td><field name="water_content_report_type" class="blue-input" decoration-info="water_content_report_type != 0"/></td>
                             </tr>
                         </tbody>
                     </table>

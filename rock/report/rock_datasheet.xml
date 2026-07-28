@@ -52,50 +52,79 @@
 					</table>
 
 
-                     <!-- Specific Gravity  -->
+                     <!-- Specific Gravity And Water Absorption -->
 
                     <div t-if="data.specific_gravity_visible" style="margin-top:20px">
 							<div style="text-align:center;font-size:18px;margin-bottom:10px;">
-								Specific Gravity
+								Specific Gravity And Water Absorption
 							</div>
+
+							<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+							<thead>
+								<tr style="background-color: #f0f0f0;">
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Specimen No.</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Dry Weight of Sample, A (g)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Saturated Surface Dry Weight, B (g)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Weight in Water,  C (g)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Volume of Sample (B−C) (cm³)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Specific Gravity (A/(B−C))</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Water Absorption (%) ((B−A)/A ×100)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Remarks</th>
+								</tr>		
+
+							</thead>
+							<tbody>
+								<t t-set="k" t-value="0"/>
+								<tr t-foreach="data.specific_gravity_line_ids" t-as="r" style="text-align: center;">
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="k + 1" />
+										<t t-set="k" t-value="k+1"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['dry_weight']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['ssd_weight']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['water_weight']" />
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['volume_sample']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['specific_gravity']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['water_absorption']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['remarks']" />
+									</td>
+									
+								</tr>
+							</tbody>
+						</table>
+
+
+						<table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;">
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Average Specific Gravity :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+									<span t-field="data.avg_specific_gravity" t-options='{"widget": "float", "precision": 3}'/>
+								</td>
+							</tr>
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Average Water Absorption (%) :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+									<span t-field="data.avg_water_absorption" t-options='{"widget": "float", "precision": 3}'/>
+								</td>
+							</tr>
+						</table>
 						
 								
-								<table>
-											<tr>
-												<th style="text-align: center; font-weight: bold;">Sample No</th>
-												<th style="text-align: center; font-weight: bold;">Sample 1</th>
-												<th style="text-align: center; font-weight: bold;">Sample 2</th>
-                                                <th style="text-align: center; font-weight: bold;">Sample 3</th>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;">Dry Weight (g)</td>
-												<td style="text-align: center;"><span t-field="data.sample1_dry"/></td>
-												<td style="text-align: center;"><span t-field="data.sample2_dry"/></td>
-                                                <td style="text-align: center;"><span t-field="data.sample3_dry"/></td>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;">Wet/Saturated Weight (g)</td>
-												<td style="text-align: center;"><span t-field="data.sample1_wet"/></td>
-												<td style="text-align: center;"><span t-field="data.sample2_wet"/></td>
-                                                <td style="text-align: center;"><span t-field="data.sample3_wet"/></td>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;">Suspended Weight (g)</td>
-												<td style="text-align: center;"><span t-field="data.sample1_suspended"/></td>
-												<td style="text-align: center;"><span t-field="data.sample2_suspended"/></td>
-                                                <td style="text-align: center;"><span t-field="data.sample3_suspended"/></td>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;">Specific Gravity</td>
-												<td style="text-align: center;"><span t-field="data.sample1_result" t-options='{"widget": "float", "precision": 2}'/></td>
-												<td style="text-align: center;"><span t-field="data.sample2_result" t-options='{"widget": "float", "precision": 2}'/></td>
-                                                <td style="text-align: center;"><span t-field="data.sample3_result" t-options='{"widget": "float", "precision": 2}'/></td>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;">Average Specific gravity</td>
-												<td colspan="3" style="text-align: center;"><span t-field="data.avg_specific_gravity" t-options='{"widget": "float", "precision": 2}'/></td>
-											</tr>
-										</table>
+								
+										
 
 							<div t-if="data.specific_gravity_visible" class="signatureContainer girdgird">
 							<div>
@@ -146,91 +175,7 @@
 
 
 
-                        <!-- Water Absorption -->
-
-                        <div t-if="data.water_absorption_visible" style = "page-break-before: always;margin-top:20px;">
-							<div style="text-align:center;font-size:18px;margin-bottom:10px;">
-								Water Absorption
-							</div>
-						
-								
-								<table>
-											<tr>
-												<th style="text-align: center; font-weight: bold;">Sample No</th>
-												<th style="text-align: center; font-weight: bold;">Sample 1</th>
-												<th style="text-align: center; font-weight: bold;">Sample 2</th>
-                                                <th style="text-align: center; font-weight: bold;">Sample 3</th>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;">Dry Weight (g)</td>
-												<td style="text-align: center;"><span t-field="data.water_sample1_dry"/></td>
-												<td style="text-align: center;"><span t-field="data.water_sample2_dry"/></td>
-                                                <td style="text-align: center;"><span t-field="data.water_sample3_dry"/></td>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;">Wet/Saturated Weight (g)</td>
-												<td style="text-align: center;"><span t-field="data.water_sample1_wet"/></td>
-												<td style="text-align: center;"><span t-field="data.water_sample2_wet"/></td>
-                                                <td style="text-align: center;"><span t-field="data.water_sample3_wet"/></td>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;">Water Absorption</td>
-												<td style="text-align: center;"><span t-field="data.water_sample1_result" t-options='{"widget": "float", "precision": 2}'/></td>
-												<td style="text-align: center;"><span t-field="data.water_sample2_result" t-options='{"widget": "float", "precision": 2}'/></td>
-                                                <td style="text-align: center;"><span t-field="data.water_sample3_result" t-options='{"widget": "float", "precision": 2}'/></td>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;">Average Water Absorption</td>
-												<td colspan="3" style="text-align: center;"><span t-field="data.avg_water_absorption" t-options='{"widget": "float", "precision": 2}'/></td>
-											</tr>
-										</table>
-
-							<div t-if="data.water_absorption_visible" class="signatureContainer girdgird">
-							<div>
-								<div>
-									<b>
-										Prepared By
-									</b>
-								</div>
-								
-                            <div>
-                                <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
-                                </b>
-                            </div>
-                            <div>
-                                <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
-                                </b>
-                            </div>
-                        </div>
-                        
-                        <div style="margin-left:600px">
-                                    
-                            <div>
-                                <b>
-                                    Checked By
-                                </b>
-                            </div>
-						
-								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
-							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
-								
-							
-						</div>
-					</div>
-									
-						</div>
-
+                      
 
                         <!-- Water Content -->
 					<div t-if="data.water_content_visible" style = "page-break-before: always;margin-top:20px;">
@@ -238,37 +183,71 @@
 								Water Content
 							</div>
 						
-								<table>
-											<tr>
-												<th style="text-align: center; font-weight: bold;">Sample No</th>
-												<th style="text-align: center; font-weight: bold;">Sample 1</th>
-												<th style="text-align: center; font-weight: bold;">Sample 2</th>
-                                                <th style="text-align: center; font-weight: bold;">Sample 3</th>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;">Dry Weight (g)</td>
-												<td style="text-align: center;"><span t-field="data.water_content_sample1_dry"/></td>
-												<td style="text-align: center;"><span t-field="data.water_content_sample2_dry"/></td>
-                                                <td style="text-align: center;"><span t-field="data.water_content_sample3_dry"/></td>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;">Wet Weight (g)</td>
-												<td style="text-align: center;"><span t-field="data.water_content_sample1_wet"/></td>
-												<td style="text-align: center;"><span t-field="data.water_content_sample2_wet"/></td>
-                                                <td style="text-align: center;"><span t-field="data.water_content_sample3_wet"/></td>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;">Water Content</td>
-												<td style="text-align: center;"><span t-field="data.water_content_sample1_result" t-options='{"widget": "float", "precision": 2}'/></td>
-												<td style="text-align: center;"><span t-field="data.water_content_sample2_result" t-options='{"widget": "float", "precision": 2}'/></td>
-                                                <td style="text-align: center;"><span t-field="data.water_content_sample3_result" t-options='{"widget": "float", "precision": 2}'/></td>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;">Average Water Content</td>
-												<td colspan="3" style="text-align: center;"><span t-field="data.avg_water_content" t-options='{"widget": "float", "precision": 2}'/></td>
-											</tr>
-										</table>
+								<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+							<thead>
+								<tr style="background-color: #f0f0f0;">
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Specimen No.</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Container No.</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Weight of Empty Container, W₁ (g)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Weight of Container + Wet Rock, W₂ (g)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Weight of Container + Dry Rock, W₃ (g)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Weight of Water (W₂ − W₃) (g)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Weight of Dry Rock (W₃ − W₁) (g)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Water Content (%) [(W₂ − W₃)/(W₃ − W₁) ×100]</th>
+								</tr>		
+
+							</thead>
+							<tbody>
+								<t t-set="k" t-value="0"/>
+								<tr t-foreach="data.water_content_line_ids" t-as="r" style="text-align: center;">
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="k + 1" />
+										<t t-set="k" t-value="k+1"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['container_no']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['w1']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['w2']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['w3']" />
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['weight_water']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['weight_dry_rock']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['water_content']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									
+								</tr>
+							</tbody>
+						</table>
+
+
+						<table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;">
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Average Water Content (%) :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+									<span t-field="data.avg_water_content" t-options='{"widget": "float", "precision": 3}'/>
+								</td>
+							</tr>
+						</table>
+
+
 						</div>
+
+
+
+
+
+
 
 						<div class="signatureContainer girdgird">
 							<div>

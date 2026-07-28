@@ -232,7 +232,7 @@
 							</thead>
 							<t t-set="i" t-value="0"/>
 							<tbody>
-								<tr t-if="data.specific_gravity_visible and (data.avg_specific_gravity_nabl == 'pass' and nabl or (data.avg_specific_gravity_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.specific_gravity_visible and (data.specific_gravity_final_report == 'nabl' and nabl or data.specific_gravity_final_report == 'non_nabl' and not nabl)">
 									<td colspan="1" style="text-align:center;">
 										<div>
 											<span t-esc="i + 1" />
@@ -277,7 +277,7 @@
 
 								</tr>
 
-								<tr t-if="data.water_absorption_visible and (data.avg_water_absorption_nabl == 'pass' and nabl or (data.avg_water_absorption_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+								<tr t-if="data.specific_gravity_visible and (data.water_absorption_final_report == 'nabl' and nabl or data.water_absorption_final_report == 'non_nabl' and not nabl)">
 									<td colspan="1" style="text-align:center;">
 										<div>
 											<span t-esc="i + 1" />
@@ -290,7 +290,7 @@
 										</span>
 									</td>
 									<td style="text-align:center;">
-										<span t-field="data.avg_specific_gravity" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-field="data.avg_water_absorption" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									
 									<td style="text-align:center;">  
@@ -322,7 +322,11 @@
 
 								</tr>
 
-								<tr t-if="data.water_content_visible and (data.avg_water_content_nabl == 'pass' and nabl or (data.avg_water_content_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+
+
+								<!--  -->
+
+								<tr t-if="data.water_content_visible and (data.water_content_final_report == 'nabl' and nabl or data.water_content_final_report == 'non_nabl' and not nabl)">
 									<td style="text-align:center;" colspan="1">
 										<div>
 											<span t-esc="i + 1" />
@@ -335,7 +339,7 @@
 										</span>
 									</td>
 									<td style="text-align:center;">
-										<span t-field="data.avg_specific_gravity" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-field="data.avg_water_content" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									
 									<td style="text-align:center;">

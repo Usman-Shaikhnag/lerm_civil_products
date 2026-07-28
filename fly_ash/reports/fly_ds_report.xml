@@ -170,16 +170,16 @@
                             <tr>
 									<td colspan="1">Temperature :-</td>
 										<td colspan="1" >
-											<t t-if="flyash.temp is not None">
-											<span t-field="flyash.temp"/>   °C
+											<t t-if="data.temp is not None">
+											<span t-field="data.temp"/>   °C
 										</t>
 									<t t-else="">NA</t>
 										</td>
 
 									<td colspan="1">Humidity :-</td>
 										<td colspan="1" >
-											<t t-if="flyash.humidity is not None">
-											<span t-field="flyash.humidity"/>   %
+											<t t-if="data.humidity is not None">
+											<span t-field="data.humidity"/>   %
 										</t>
 									<t t-else="">NA</t>
 										</td>
@@ -235,35 +235,60 @@
 							<tbody>     
 
 
+							<!-- Compressive Strength -->
+                            
 
-						<!-- Normal Consistency -->
-						<tr t-if="flyash.normal_consistency_visible and (flyash.normal_consistency_nabl == 'pass' and nabl or (flyash.normal_consistency_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="normal" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','124fgrt3-1b3c-43ae-9c20-5421b6d6edf9')])"/>
+                            <t t-set="show_7_days" t-value="data.avg_7_days_final_report == 'nabl' and nabl or data.avg_7_days_final_report == 'non_nabl' and not nabl"/>
+
+
+							<t t-set="show_14_days" t-value="data.avg_14_days_final_report == 'nabl' and nabl or data.avg_14_days_final_report == 'non_nabl' and not nabl"/>
+
+							
+
+							<t t-set="show_28_days" t-value="data.avg_28_days_final_report == 'nabl' and nabl or data.avg_28_days_final_report == 'non_nabl' and not nabl"/>
+
+                            <!-- 🔹 Step 2: Rowspan calculation -->
+					      <t t-set="rowspan_count" t-value="1 + int(show_14_days) + int(show_7_days) + int(show_28_days)"/>
+
+                          <tr t-if="(data.compressive_visible) and (show_14_days or show_7_days or show_28_days)">
+
+									<t t-set="bulk" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','c6167563-a68b-4e6d-86c8-d04b78b81007')])"/>
 									
-									<td style="text-align: center;">
-										<span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/>
+									<td t-att-rowspan="rowspan_count"  style="text-align: center;vertical-align:middle;">
+						                 <span t-esc="i + 1"/>
+							             <t t-set="i" t-value="i+1"/>
+						            </td>
+									<td colspan="5">
+										<span t-esc="bulk.parameter_name"/>
 									</td>
+								</tr>
+
+					
+							 
+
+								<!-- Compressive Strength (7 Days) -->
+							<tr t-if="data.compressive_visible and show_7_days">
+									<t t-set="seven_days" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','35075d7e-19d2-4d03-8cd4-fdcb91ab5ff9')])"/>
+									
 									<td>
-										<span t-esc="normal.parameter_name"/>
+										<span t-esc="seven_days.parameter_name"/>
 									</td>
 
                                     <td style="text-align: center;">
 										<span>
-											<span t-field="flyash.normal_consistency_fly_1" t-options='{"widget": "float", "precision": 2}'/>
+											<span t-field="data.avg_7_days" t-options='{"widget": "float", "precision": 2}'/>
 										</span>
-                                    </td>
+									</td>
 
 									<td style="text-align: center;">
 										<span>
-											<span t-esc="normal.unit.name"/>
+											<span t-esc="seven_days.unit.name"/>
 										</span>
 									</td>
-																		
 									
 									<td style="text-align: center;">
 										<span>
-											<t t-foreach="normal.parameter_table" t-as="parameter">
+											<t t-foreach="seven_days.parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
 													<span t-field="parameter.permissable_limit"/>
 												</t>
@@ -272,7 +297,91 @@
 									</td>
                                     <td style="text-align: center;">
 										<span>
-											<t t-foreach="normal.parameter_table" t-as="parameter">
+											<t t-foreach="seven_days.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+								<!-- Compressive Strength (14 Days) -->
+                             <tr t-if="data.compressive_visible and show_14_days">
+									<t t-set="three_days" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','07a6ac57-3942-4709-baf2-f76510fb9c09')])"/>
+									
+									<td>
+										<span t-esc="three_days.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="data.avg_14_days" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="three_days.unit.name"/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="three_days.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="three_days.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+								
+								<!-- Compressive Strength (28 Days) -->
+							<tr t-if="data.compressive_visible and show_28_days">
+									<t t-set="two_eight_days" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','ecc443e4-4d79-446f-b765-a0df0e52efd7')])"/>
+									
+									<td>
+										<span t-esc="two_eight_days.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="data.avg_28_days" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="two_eight_days.unit.name"/>
+										</span>
+									</td>
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="two_eight_days.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="two_eight_days.parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
 													<span t-field="parameter.specification"/>
 												</t>
@@ -283,35 +392,93 @@
 								</tr>
 
 
+								<!-- Setting Time -->
+                            <t t-set="show_initial_setting_time" t-value="data.initial_setting_final_report == 'nabl' and nabl or data.initial_setting_final_report == 'non_nabl' and not nabl"/>
 
-						<!-- Specific Gravity -->
-						<tr t-if="flyash.specigic_gravity_visible and (flyash.average_specific_gravity_nabl == 'pass' and nabl or (flyash.average_specific_gravity_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="specific" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','3214fgrt-1d2c-4d3b-9ebe-ecb0b5e1221e')])"/>
+                            <t t-set="show_final_setting_time" t-value="data.final_setting_final_report == 'nabl' and nabl or data.final_setting_final_report == 'non_nabl' and not nabl"/>
+
+                            <!-- 🔹 Step 2: Rowspan calculation -->
+					      <t t-set="rowspan_count" t-value="1 + int(show_initial_setting_time) + int(show_final_setting_time)"/>
+
+                          <tr t-if="(data.setting_time_visible) and (show_initial_setting_time or show_final_setting_time)">
+
+									<t t-set="bulk" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','e08aa994-127c-491d-973c-54d57643397b')])"/>
 									
-									<td style="text-align: center;">
-										<span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/>
+									<td t-att-rowspan="rowspan_count"  style="text-align: center;vertical-align:middle;">
+						                 <span t-esc="i + 1"/>
+							             <t t-set="i" t-value="i+1"/>
+						            </td>
+									<td colspan="5">
+										<span t-esc="bulk.parameter_name"/>
 									</td>
+								</tr>
+
+					
+							 <!-- Initial Setting Time -->
+                             <tr t-if="data.setting_time_visible and show_initial_setting_time">
+									<t t-set="initial_setting" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','a85c7372-ae62-4543-b675-97be1c322fd9')])"/>
+									
 									<td>
-										<span t-esc="specific.parameter_name"/>
+										<span t-esc="initial_setting.parameter_name"/>
 									</td>
 
                                     <td style="text-align: center;">
 										<span>
-											<span t-field="flyash.average_specific_gravity" t-options='{"widget": "float", "precision": 2}'/>
+											<span t-field="data.initial_setting_time" t-options='{"widget": "float", "precision": 2}'/>
 										</span>
-                                    </td>
+									</td>
 
 									<td style="text-align: center;">
 										<span>
-											<span t-esc="specific.unit.name"/>
+											<span t-esc="initial_setting.unit.name"/>
 										</span>
 									</td>
-																		
+
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="initial_setting.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="initial_setting.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+								<!-- Final Setting Time -->
+							<tr t-if="data.setting_time_visible and show_final_setting_time">
+									<t t-set="final_setting" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','45b99f40-ca41-45ac-a791-e6731794009d')])"/>
+									
+									<td>
+										<span t-esc="final_setting.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="data.final_setting_time" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="final_setting.unit.name"/>
+										</span>
+									</td>
 									
 									<td style="text-align: center;">
 										<span>
-											<t t-foreach="specific.parameter_table" t-as="parameter">
+											<t t-foreach="final_setting.parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
 													<span t-field="parameter.permissable_limit"/>
 												</t>
@@ -320,7 +487,7 @@
 									</td>
                                     <td style="text-align: center;">
 										<span>
-											<t t-foreach="specific.parameter_table" t-as="parameter">
+											<t t-foreach="final_setting.parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
 													<span t-field="parameter.specification"/>
 												</t>
@@ -331,36 +498,33 @@
 								</tr>
 
 
-						
-						<!-- Compressive Strength -->
-						
-						<tr t-if="flyash.compressive_visible and (flyash.compressive_strength_of_sample_nabl == 'pass' and nabl or (flyash.compressive_strength_of_sample_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="compressive" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','3201vfg-98f0-419e-94cd-1844af4393f5')])"/>
+									<!-- Consistency of Fly Ash -->
+							<tr t-if="data.consistency_cement_visible and (data.average_consistency_final_report == 'nabl' and nabl or data.average_consistency_final_report == 'non_nabl' and not nabl)">
+									<t t-set="consistency" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','81cddfcc-3ffb-42f2-bc01-186f260745dd')])"/>
 									
 									<td style="text-align: center;">
 										<span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/>
 									</td>
 									<td>
-										<span t-esc="compressive.parameter_name"/>
+										<span t-esc="consistency.parameter_name"/>
 									</td>
 
                                     <td style="text-align: center;">
 										<span>
-											<span t-field="flyash.average_casting_28dayss" t-options='{"widget": "float", "precision": 2}'/>
+											<span t-field="data.average_consistency" t-options='{"widget": "float", "precision": 2}'/>
 										</span>
-                                    </td>
+									</td>
 
 									<td style="text-align: center;">
 										<span>
-											<span t-esc="compressive.unit.name"/>
+											<span t-esc="consistency.unit.name"/>
 										</span>
 									</td>
-																		
 									
 									<td style="text-align: center;">
 										<span>
-											<t t-foreach="compressive.parameter_table" t-as="parameter">
+											<t t-foreach="consistency.parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
 													<span t-field="parameter.permissable_limit"/>
 												</t>
@@ -369,7 +533,7 @@
 									</td>
                                     <td style="text-align: center;">
 										<span>
-											<t t-foreach="compressive.parameter_table" t-as="parameter">
+											<t t-foreach="consistency.parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
 													<span t-field="parameter.specification"/>
 												</t>
@@ -379,10 +543,147 @@
 									
 								</tr>
 
-						<!-- Drying Shrinkage -->
+								<!-- SOUNDNESS OF Fly Ash BY LE-CHATELIER METHOD -->
+							<tr t-if="data.soundness_cement_visible and (data.soundness_expansion_final_report == 'nabl' and nabl or data.soundness_expansion_final_report == 'non_nabl' and not nabl)">
+									<t t-set="soundness" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','d96c9c20-4084-458b-a736-8a6d42830c34')])"/>
+									
+									<td style="text-align: center;">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td>
+										<span t-esc="soundness.parameter_name"/>
+									</td>
 
-						<tr t-if="flyash.drying_shrinkage_visible and (flyash.drying_shrinkage_nabl == 'pass' and nabl or (flyash.drying_shrinkage_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="drying" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','a475e70d-d1f5-4f63-9595-15c45e940da7')])"/>
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="data.avg_soundness_expansion" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="soundness.unit.name"/>
+										</span>
+									</td>
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="soundness.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="soundness.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+
+								<!-- SPECIFIC GRAVITY OF Fly Ash -->
+							<tr t-if="data.specific_gravity_visible and (data.specific_gravity_final_report == 'nabl' and nabl or data.specific_gravity_final_report == 'non_nabl' and not nabl)">
+									<t t-set="specific_gravity" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','dca30e4f-c3ec-42a9-9bf5-cde1feefdb3f')])"/>
+									
+									<td style="text-align: center;">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td>
+										<span t-esc="specific_gravity.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="data.average_specific_gravity" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="specific_gravity.unit.name"/>
+										</span>
+									</td>
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="specific_gravity.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="specific_gravity.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+
+								<!-- FINENESS OF Fly Ash BY BLAINE AIR PERMEABILITY METHOD -->
+							<tr t-if="data.fineness_blaine_visible and (data.specific_surface_final_report == 'nabl' and nabl or data.specific_surface_final_report == 'non_nabl' and not nabl)">
+									<t t-set="specific_surface" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','9ef488f6-ed20-441b-bffa-bbd19d79ee80')])"/>
+									
+									<td style="text-align: center;">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td>
+										<span t-esc="specific_surface.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="data.specific_surface" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="specific_surface.unit.name"/>
+										</span>
+									</td>
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="specific_surface.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="specific_surface.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+
+								<!-- Drying Skrinkage -->
+							<tr t-if="data.drying_shrinkage_visible and (data.drying_shrinkage_final_report == 'nabl' and nabl or data.drying_shrinkage_final_report == 'non_nabl' and not nabl)">
+									<t t-set="drying" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','e181384e-5838-4b0d-929c-0bfb1c2afaac')])"/>
 									
 									<td style="text-align: center;">
 										<span t-esc="i + 1" />
@@ -394,16 +695,15 @@
 
                                     <td style="text-align: center;">
 										<span>
-											<span t-field="flyash.average1" t-options='{"widget": "float", "precision": 2}'/>
+											<span t-field="data.drying_shrinkage" t-options='{"widget": "float", "precision": 2}'/>
 										</span>
-                                    </td>
+									</td>
 
 									<td style="text-align: center;">
 										<span>
 											<span t-esc="drying.unit.name"/>
 										</span>
 									</td>
-																		
 									
 									<td style="text-align: center;">
 										<span>
@@ -427,35 +727,35 @@
 								</tr>
 
 
-						<!--Initial Setting Time -->
 
-						<tr t-if="flyash.initial_setting_time_visible and (flyash.initial_setting_nabl == 'pass' and nabl or (flyash.initial_setting_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="initial" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','2014fgr32-6bbe-4fdf-9571-a5a099be0293')])"/>
+								<!-- FINENESS BY WET SIEVING ( 45 MICRON ) 
+ -->
+							<tr t-if="data.particles_retained_visible and (data.percentage_passing_final_report == 'nabl' and nabl or data.percentage_passing_final_report == 'non_nabl' and not nabl)">
+									<t t-set="fine_dry" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','3214vbfsd-0da6-4ec4-a91e-d41c44f5edb5')])"/>
 									
 									<td style="text-align: center;">
 										<span t-esc="i + 1" />
 										<t t-set="i" t-value="i+1"/>
 									</td>
 									<td>
-										<span t-esc="initial.parameter_name"/>
+										<span t-esc="fine_dry.parameter_name"/>
 									</td>
 
                                     <td style="text-align: center;">
 										<span>
-											<span t-field="flyash.initial_setting_time_minutes_unrounded" t-options='{"widget": "float", "precision": 2}'/>
+											<span t-field="data.avg_percentage_passing" t-options='{"widget": "float", "precision": 2}'/>
 										</span>
-                                    </td>
+									</td>
 
 									<td style="text-align: center;">
 										<span>
-											<span t-esc="initial.unit.name"/>
+											<span t-esc="fine_dry.unit.name"/>
 										</span>
 									</td>
-																		
 									
 									<td style="text-align: center;">
 										<span>
-											<t t-foreach="initial.parameter_table" t-as="parameter">
+											<t t-foreach="fine_dry.parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
 													<span t-field="parameter.permissable_limit"/>
 												</t>
@@ -464,7 +764,7 @@
 									</td>
                                     <td style="text-align: center;">
 										<span>
-											<t t-foreach="initial.parameter_table" t-as="parameter">
+											<t t-foreach="fine_dry.parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
 													<span t-field="parameter.specification"/>
 												</t>
@@ -475,286 +775,7 @@
 								</tr>
 
 
-					<!-- Final Setting Time -->
 
-
-					<tr t-if="flyash.final_setting_time_visible and (flyash.final_setting_nabl == 'pass' and nabl or (flyash.final_setting_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="final" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','32145grte8-6526-4fcc-a5ec-18cc1ae10857')])"/>
-									
-									<td style="text-align: center;">
-										<span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/>
-									</td>
-									<td>
-										<span t-esc="final.parameter_name"/>
-									</td>
-
-                                    <td style="text-align: center;">
-										<span>
-											<span t-field="flyash.final_setting_time_minutes_unrounded" t-options='{"widget": "float", "precision": 2}'/>
-										</span>
-                                    </td>
-
-									<td style="text-align: center;">
-										<span>
-											<span t-esc="final.unit.name"/>
-										</span>
-									</td>
-																		
-									
-									<td style="text-align: center;">
-										<span>
-											<t t-foreach="final.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.permissable_limit"/>
-												</t>
-											</t>
-										</span>
-									</td>
-                                    <td style="text-align: center;">
-										<span>
-											<t t-foreach="final.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-												</t>
-											</t>
-										</span>
-									</td>
-									
-								</tr>
-
-
-							<!-- Soundness By Le-Chatelier Test -->
-					<tr t-if="flyash.soundness_visible and (flyash.avg_expansion_nabl == 'pass' and nabl or (flyash.avg_expansion_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="soundness_le" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','3210ght7-91b0-4153-87ef-11b6954a9837')])"/>
-									
-									<td style="text-align: center;">
-										<span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/>
-									</td>
-									<td>
-										<span t-esc="soundness_le.parameter_name"/>
-									</td>
-
-                                    <td style="text-align: center;">
-										<span>
-											<span t-field="flyash.avg_expansion" t-options='{"widget": "float", "precision": 2}'/>
-										</span>
-                                    </td>
-
-									<td style="text-align: center;">
-										<span>
-											<span t-esc="soundness_le.unit.name"/>
-										</span>
-									</td>
-																		
-									
-									<td style="text-align: center;">
-										<span>
-											<t t-foreach="soundness_le.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.permissable_limit"/>
-												</t>
-											</t>
-										</span>
-									</td>
-                                    <td style="text-align: center;">
-										<span>
-											<t t-foreach="soundness_le.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-												</t>
-											</t>
-										</span>
-									</td>
-									
-								</tr>
-
-
-								<!-- Soundness By Le-Chatelier Test -->
-					<tr t-if="flyash.sound_auto_visible and (flyash.avg_autoclave_expansion_nabl == 'pass' and nabl or (flyash.avg_autoclave_expansion_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="sound_auto" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','b0e2437d-514b-4875-9f3a-203d5fad1d83')])"/>
-									
-									<td style="text-align: center;">
-										<span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/>
-									</td>
-									<td>
-										<span t-esc="sound_auto.parameter_name"/>
-									</td>
-
-                                    <td style="text-align: center;">
-										<span>
-											<span t-field="flyash.avg_autoclave_expansion" t-options='{"widget": "float", "precision": 2}'/>
-										</span>
-                                    </td>
-
-									<td style="text-align: center;">
-										<span>
-											<span t-esc="sound_auto.unit.name"/>
-										</span>
-									</td>
-																		
-									
-									<td style="text-align: center;">
-										<span>
-											<t t-foreach="sound_auto.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.permissable_limit"/>
-												</t>
-											</t>
-										</span>
-									</td>
-                                    <td style="text-align: center;">
-										<span>
-											<t t-foreach="sound_auto.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-												</t>
-											</t>
-										</span>
-									</td>
-									
-								</tr>
-
-					  <!-- Particles retained on 45 micron IS sieve (wet sieving) -->
-					<tr t-if="flyash.particles_retained_visible and (flyash.prcent_retaind_nabl == 'pass' and nabl or (flyash.prcent_retaind_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="fineness" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','3214vbfsd-0da6-4ec4-a91e-d41c44f5edb5')])"/>
-									
-									<td style="text-align: center;">
-										<span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/>
-									</td>
-									<td>
-										<span t-esc="fineness.parameter_name"/>
-									</td>
-
-                                    <td style="text-align: center;">
-										<span>
-											<span t-field="flyash.prcent_retaind" t-options='{"widget": "float", "precision": 2}'/>
-										</span>
-                                    </td>
-
-									<td style="text-align: center;">
-										<span>
-											<span t-esc="fineness.unit.name"/>
-										</span>
-									</td>
-																		
-									
-									<td style="text-align: center;">
-										<span>
-											<t t-foreach="fineness.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.permissable_limit"/>
-												</t>
-											</t>
-										</span>
-									</td>
-                                    <td style="text-align: center;">
-										<span>
-											<t t-foreach="fineness.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-												</t>
-											</t>
-										</span>
-									</td>
-									
-								</tr>
-
-
-						<!-- Fineness Blaine -->
-					<tr t-if="flyash.fineness_blaine_visible and (flyash.fineness_blaine_nabl == 'pass' and nabl or (flyash.fineness_blaine_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="fine_blaine" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','2104fvdr-6047-4781-9885-0b8b29050fda')])"/>
-									
-									<td style="text-align: center;">
-										<span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/>
-									</td>
-									<td>
-										<span t-esc="fine_blaine.parameter_name"/>
-									</td>
-
-                                    <td style="text-align: center;">
-										<span>
-											<span t-field="flyash.fineness_air_permeability" t-options='{"widget": "float", "precision": 2}'/>
-										</span>
-                                    </td>
-
-									<td style="text-align: center;">
-										<span>
-											<span t-esc="fine_blaine.unit.name"/>
-										</span>
-									</td>
-																		
-									
-									<td style="text-align: center;">
-										<span>
-											<t t-foreach="fine_blaine.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.permissable_limit"/>
-												</t>
-											</t>
-										</span>
-									</td>
-                                    <td style="text-align: center;">
-										<span>
-											<t t-foreach="fine_blaine.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-												</t>
-											</t>
-										</span>
-									</td>
-									
-								</tr>
-
-								<!-- Specific Surface -->
-					<tr t-if="flyash.fineness_blaine_visible and (flyash.specific_surface_nabl == 'pass' and nabl or (flyash.specific_surface_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
-									<t t-set="specific_sur" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','f7404f69-4779-434e-ba9f-99e470700da9')])"/>
-									
-									<td style="text-align: center;">
-										<span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/>
-									</td>
-									<td>
-										<span t-esc="specific_sur.parameter_name"/>
-									</td>
-
-                                    <td style="text-align: center;">
-										<span>
-											<span t-field="flyash.specific_surface" t-options='{"widget": "float", "precision": 2}'/>
-										</span>
-                                    </td>
-
-									<td style="text-align: center;">
-										<span>
-											<span t-esc="specific_sur.unit.name"/>
-										</span>
-									</td>
-																		
-									
-									<td style="text-align: center;">
-										<span>
-											<t t-foreach="specific_sur.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.permissable_limit"/>
-												</t>
-											</t>
-										</span>
-									</td>
-                                    <td style="text-align: center;">
-										<span>
-											<t t-foreach="specific_sur.parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-												</t>
-											</t>
-										</span>
-									</td>
-									
-								</tr>
 
 								</tbody>
 								</table>
