@@ -13,21 +13,21 @@
                         <field name="name" readonly="1" nolabel="1"/>
                     </h1>
                     </group>
-                    <group>
+                     <group>
                         <field name="srf_id" invisible="1"/>
-                        <field name="sample_id" />
+                        <field name="sample_id" readonly="1"/>
                         <field name="eln_ref" readonly="1"/>
                         <field name="parameter_id" invisible="1"/>
                         <field name="eln_state" />
                     </group>
-                    <group>
+                    <div class="custom_table_borders">
                       <field name="sample_parameters">
-                        <tree class="table-bordered o_list_view">
+                        <tree>
                           <field name="parameter_name"/>
                           <field name="test_method"/>
                         </tree>
                       </field>
-                    </group>
+                    </div>
                      <!--% Sulphur trioxide (SO3)-->
                     <group invisible="not so3_visible">
                         <h1>
@@ -37,8 +37,8 @@
                     </group>
 
 
-                    <div style="display:flex;">
-                    <div style="width:50%;">
+                    <div style="display:flex;" invisible="not so3_visible">
+                    <div style="width:50%;" invisible="not so3_visible">
                       <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:98%">
                          <tbody>
                             <tr>
@@ -54,7 +54,7 @@
                     </div>
 
 
-                    <div style="width:50%;">
+                    <div style="width:50%;" invisible="not so3_visible">
                       <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                          <tbody>
                             <tr>
@@ -72,25 +72,11 @@
                     </div>
                     <group/>
 
-                    <!-- <group invisible="not so3_visible">
-                        <group>
-                            <field name="plaster1"/>
-                        </group>
-                        <group>
-                            <field name="retarded1" />
-                        </group>
-                          <group>
-                            <field name="anhydrous1"/>
-                        </group>
-                        <group>
-                            <field name="keenes1" />
-                        </group>
-                    </group> -->
-
+                 
                     <group/>
 
-                    <div style="display:flex;">
-                    <div style="width:33%;">
+                    <div style="display:flex;" invisible="not so3_visible">
+                    <div style="width:33%;" invisible="not so3_visible">
                      <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:98%;">
                         <tbody>
                           <tr>
@@ -101,7 +87,7 @@
                       </table>
                     </div>
 
-                    <div style=" width:35%;">
+                    <div style=" width:35%;" invisible="not so3_visible">
                     <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:98%;">
                         <tbody>
                           <tr>
@@ -112,7 +98,7 @@
                       </table>
                     </div>
 
-                    <div style="width:33%;">
+                    <div style="width:33%;" invisible="not so3_visible">
                     <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:100%;">
                         <tbody>
                           <tr>
@@ -125,8 +111,8 @@
                     </div>
 
 
-                    <div style="display:flex;">
-                    <div style="width:50%;">
+                    <div style="display:flex;" invisible="not so3_visible">
+                    <div style="width:50%;" invisible="not so3_visible">
                     <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:98%;">
                         <tbody>
                          <tr>
@@ -140,7 +126,7 @@
                         </tbody>
                       </table>
                     </div>
-                    <div style="width:50%">
+                    <div style="width:50%" invisible="not so3_visible">
                           <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                           <tbody>
                            <tr>
@@ -161,31 +147,7 @@
                     <group/>
 
 
-                    <!-- <group invisible="not so3_visible">
-                       <group>
-                            <field name="wt_of_sample_so3"/>
-                            <br></br>
-                            <field name="wt_cr_so3"/>
-                             <br></br>
-                            <field name="wt_empty_co3"/>
-                             <br></br>
-                            <field name="difference_co3"/>
-                             <br></br>
-                              <field name="so3"/>
-                             <br></br>
-                       </group> -->
-
-                       
-                    <!-- </group>  -->
-                     <!-- <group invisible="not so3_visible">
-                          
-                        <field name='so3_conformity'
-                               decoration-success="so3_conformity == 'pass'" 
-                               decoration-danger="so3_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name='so3_nabl'/>
-                    </group>  -->
-
+                   
                     
                      <!--%Loss on Ignition -->
                     <div invisible="not loi_visible">
@@ -196,8 +158,8 @@
                     </div>
                     <group/>
 
-                     <div style="display:flex;">
-                    <div style="width:50%;">
+                     <div style="display:flex;" invisible="not loi_visible">
+                    <div style="width:50%;" invisible="not loi_visible">
                       <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:98%;">
                          <tbody>
                             <tr>
@@ -213,7 +175,7 @@
                     </div>
 
 
-                    <div style="width:50%;">
+                    <div style="width:50%;" invisible="not loi_visible">
                       <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                          <tbody>
                             <tr>
@@ -233,7 +195,7 @@
 
 
                     <group/>
-                    <div style="display:flex;">
+                    <div style="display:flex;" invisible="not loi_visible">
                     <div style="width:50%;">
                      <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:98%;">
                         <tbody>
@@ -248,30 +210,23 @@
                           <tr>
                             <td><label for="wt_cs_loi">C. Wt.of sample (B-A) ( gm )</label></td>
                             <td><field name="wt_cs_loi"/></td>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>C. Wt.of sample (B-A) (gm)</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"><field name="wt_cs_loi"/> </td>
+                            
                           </tr>
                           <tr>
                             <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>D. (Wt of empty weighing bottle + Sample) after ignition, (gm)</span></td>
                             <td style="border: 1px solid black; padding: 5px;"><field name="wt_of_sample_loi"/></td>
                           </tr>
                           
-                          <tr>
-                            <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>E. Diff. in weight = (B - D), gm</span></td>
-                            <td style="border: 1px solid black; padding: 5px;"><field name="loi_in_wt"/></td>
-                          </tr>
+                       
                         </tbody>
                       </table>
                     </div>
 
                     
-                    <div style="width:50%;">
+                    <div style="width:50%;" invisible="not loi_visible">
                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
-                        <tr>
-                            <td><label for="wt_of_sample_loi">D. (Wt of empty weighing bottle + Sample) after ignition, (gm)</label></td>
-                            <td><field name="wt_of_sample_loi"/></td>
-                          </tr>
+                       
                           <tr>
                             <td><label for="loi_in_wt">E. Diff. in weight = (B - D), gm</label></td>
                             <td><field name="loi_in_wt"/></td>
@@ -286,7 +241,7 @@
                     </div>
                     <group/>
 
-                    <div>
+                    <div invisible="not loi_visible">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                           <tbody>
                            <tr>
@@ -305,36 +260,7 @@
                       </div> 
                     <group/>
 
-                    <!-- <group invisible="not loi_visible" style="white-space:nowrap;">
-                         <group>
-                            <field name="plaster2"/>
-                            <field name="anhydrous2"/>
-                        </group>
-                        <group>
-                            <field name="retarded2" />
-                             <field name="keenes2" />
-                        </group>
-                    </group> -->
-
-                    <!-- <group invisible="not loi_visible">
-                       <group style="white-space:nowrap; width:60%">
-                            <field name="wt_of_empty_loi"/>
-                            <field name="wt_empty_cs_loi"/>
-                            <field name="wt_cs_loi"/>
-                            <field name="wt_of_sample_loi"/>
-                            <field name="loi_in_wt"/>
-                            <field name="loi"/>
-                       </group>
-                    </group> 
-                     <group invisible="not loi_visible">
-                          
-                        <field name='loss_conformity'
-                               decoration-success="loss_conformity == 'pass'" 
-                               decoration-danger="loss_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name='loss_nabl'/>
-                    </group>  -->
-
+                 
                        <!--cao-->
                     <group invisible="not cao_visible">
                         <h1>
@@ -343,7 +269,7 @@
                         </h1>
                     </group>
 
-                    <div style="display:flex;">
+                    <div style="display:flex;" invisible="not cao_visible">
                     <div style="width:50%;">
                       <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:98%;">
                          <tbody>
@@ -361,7 +287,7 @@
                     </div>
 
 
-                    <div style="width:50%;">
+                    <div style="width:50%;" invisible="not cao_visible">
                       <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                          <tbody>
                             <tr>
@@ -381,8 +307,8 @@
 
                     
                     <group/>
-                    <div style="display:flex;">
-                    <div style="width:50%;">
+                    <div style="display:flex;" invisible="not cao_visible">
+                    <div style="width:50%;" invisible="not cao_visible">
                      <table class="table table-sm o_form_table table-bordered custom_table_borders" style=" width:98%;">
                         <tbody>
                           <tr>
@@ -396,7 +322,7 @@
                         </tbody>
                       </table>
                     </div>
-                    <div style="width:50%;">
+                    <div style="width:50%;" invisible="not cao_visible">
                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
                           <tr>
@@ -412,7 +338,7 @@
                     </div>
                     </div>
 
-                    <div>
+                    <div invisible="not cao_visible">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                           <tbody>
                            <tr>
@@ -431,34 +357,7 @@
                       </div> 
                     <group/>
 
-                    <!-- <group invisible="not cao_visible" >
-                         <group style="white-space:nowrap;">
-                            <field name="plaster3"/>
-                             <field name="anhydrous3"/>
-                        </group>
-                        <group style="white-space:nowrap;">
-                            <field name="retarded3" />
-                             <field name="keenes3" />
-                        </group>
-                    </group> -->
-
-
-                    <!-- <group invisible="not cao_visible">
-                       <group style="white-space:nowrap;">
-                            <field name="wt_of_sample_cao1"/>
-                            <field name="burette_cao1"/>
-                            <field name="normality_cao1"/>
-                            <field name="cao1"/>
-                       </group>
-                    </group> 
-                     <group invisible="not cao_visible">  
-                        <field name='cao1_conformity'
-                               decoration-success="cao1_conformity == 'pass'" 
-                               decoration-danger="cao1_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name='cao1_nabl'/>
-                    </group>  -->
-
+                    
                      <!--MgO-->
                     <group invisible="not mgo_visible">
                         <h1>
@@ -467,7 +366,7 @@
                         </h1>
                     </group>
 
-                    <div style="display:flex;">
+                    <div style="display:flex;" invisible="not mgo_visible">
                     <div style="width:50%;">
                       <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:98%;">
                          <tbody>
@@ -484,7 +383,7 @@
                     </div>
 
 
-                    <div style="width:50%;">
+                    <div style="width:50%;" invisible="not mgo_visible">
                       <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                          <tbody>
                             <tr>
@@ -503,8 +402,8 @@
                     <group/>
 
                     <group/>
-                    <div style="display:flex;">
-                    <div style="width:50%">
+                    <div style="display:flex;" invisible="not mgo_visible">
+                    <div style="width:50%" invisible="not mgo_visible">
                      <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%%;">
                         <tbody>
                           <tr>
@@ -522,7 +421,7 @@
                         </tbody>
                       </table>
                     </div>
-                    <div style="width:50%;">
+                    <div style="width:50%;" invisible="not mgo_visible">
                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
                           <tr>
@@ -530,7 +429,7 @@
                             <td><field name="dilution_mgo1"/></td>
                           </tr>
                           <tr>
-                            <td><label for="dilution_mgo2">D. Dilution</label></td>
+                            <td><label for="dilution_mgo2">E. Dilution</label></td>
                             <td><field name="dilution_mgo2"/></td>
                           </tr>
                            <tr>
@@ -543,7 +442,7 @@
                     </div>
                     <group/>
 
-                    <div>
+                    <div invisible="not mgo_visible">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                           <tbody>
                            <tr>
@@ -562,36 +461,7 @@
                       </div> 
                     <group/>
 
-                    <!-- <group invisible="not mgo_visible" style="white-space:nowrap;">
-                         <group>
-                            <field name="plaster4"/>
-                            <field name="anhydrous4"/>
-                        </group>
-                        <group>
-                            <field name="retarded4" />
-                             <field name="keenes4" />
-                        </group>
-                    </group> -->
-                    <!-- <group invisible="not mgo_visible" >
-                       <group style="white-space:nowrap;">
-                            <field name="wt_of_sample_mgo1"/>
-                            <field name="burette_mgo1"/>
-                            <field name="normality_mgo1"/>
-                            <field name="dilution_mgo1"/>
-                            <field name="dilution_mgo2"/>
-                            <field name="mgo1"/> 
-                       </group>
-                    </group> 
-                     <group invisible="not mgo_visible">
-                            <field name='mgo_conformity1'
-                               decoration-success="mgo_conformity1 == 'pass'" 
-                               decoration-danger="mgo_conformity1 == 'fail'" 
-                               readonly="1"/>
-                            <field name='mgo_nabl1'/>
-                    </group>  -->
-
-
-
+                    
                        <!--cao2-->
                     <group invisible="not cao_visible2">
                         <h1>
@@ -600,8 +470,8 @@
                         </h1>
                     </group>
 
-                    <div style="display:flex;">
-                    <div style="width:50%;">
+                    <div style="display:flex;" invisible="not cao_visible2">
+                    <div style="width:50%;" invisible="not cao_visible2">
                       <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:98%;">
                          <tbody>
                             <tr>
@@ -617,7 +487,7 @@
                     </div>
 
 
-                    <div style="width:50%;">
+                    <div style="width:50%;" invisible="not cao_visible2">
                       <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                          <tbody>
                             <tr>
@@ -636,7 +506,7 @@
                     <group/>
 
                     <group/>
-                    <div>
+                    <div invisible="not cao_visible2">
                      <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:70%;">
                         <tbody>
                           <tr>
@@ -662,7 +532,7 @@
                         </tbody>
                       </table>
                     </div>
-                    <div>
+                    <div invisible="not cao_visible2">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                           <tbody>
                            <tr>
@@ -681,37 +551,7 @@
                       </div> 
                     <group/>
 
-                    <!-- <group invisible="not cao_visible2" style="white-space:nowrap;">
-                         <group>
-                            <field name="plaster5"/>
-                             <field name="anhydrous5"/>
-                        </group>
-                        <group>
-                            <field name="retarded5" />
-                            <field name="keenes5" />
-                        </group>
-                    </group> -->
-
-
-                    <!-- <group invisible="not cao_visible2" style="white-space:nowrap;">
-                       <group>
-                            <field name="wt_of_sample_cao2"/>
-                            <field name="burette_cao2"/>
-                            <field name="normality_cao2"/>
-                            <field name="dilution_cao2"/>
-                            <field name="cao2"/>
-                       </group>
-                    </group> 
-                     <group invisible="not cao_visible2">
-                          
-                        <field name='cao_conformity2'
-                               decoration-success="cao_conformity2 == 'pass'" 
-                               decoration-danger="cao_conformity2 == 'fail'" 
-                               readonly="1"/>
-                        <field name='cao_nabl2'/>
-                    </group>  -->
-
-
+                  
 
                         <!--MgO2-->
                     <group invisible="not mgo_visible2">
@@ -721,8 +561,8 @@
                         </h1>
                     </group>
 
-                    <div style="display:flex;">
-                    <div style="width:50%;">
+                    <div style="display:flex;" invisible="not mgo_visible2">
+                    <div style="width:50%;" invisible="not mgo_visible2">
                       <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:98%;">
                          <tbody>
                             <tr>
@@ -739,7 +579,7 @@
                     </div>
 
 
-                    <div style="width:50%;">
+                    <div style="width:50%;" invisible="not mgo_visible2">
                       <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                          <tbody>
                             <tr>
@@ -758,7 +598,7 @@
                     <group/>
 
                     <group/>
-                    <div>
+                    <div invisible="not mgo_visible2">
                      <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:70%;">
                         <tbody>
                           <tr>
@@ -786,7 +626,7 @@
                     </div>
                     <group/>
 
-                    <div>
+                    <div invisible="not mgo_visible2">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                           <tbody>
                            <tr>
@@ -805,37 +645,7 @@
                       </div> 
                     <group/>
 
-                    <!-- <group invisible="not mgo_visible2" style="white-space:nowrap">
-                         <group>
-                            <field name="plaster6"/>
-                             <field name="anhydrous6"/>
-                        </group>
-                        <group>
-                            <field name="retarded6" />
-                              <field name="keenes6" />
-                    </group>
-                    </group> -->
-
-
-                    <!-- <group invisible="not mgo_visible2">
-                       <group style="white-space:nowrap">
-                            <field name="wt_of_sample_mgo2"/>
-                            <field name="burette_mgo2"/>
-                            <field name="normality_mgo2"/>
-                            <field name="dilution_mgo2"/>
-                            <field name="mgo2"/>
-                       </group>
-                    </group> 
-                     <group invisible="not mgo_visible2">
-                        <field name='mgo_conformity2'
-                               decoration-success="mgo_conformity2 == 'pass'" 
-                               decoration-danger="mgo_conformity2 == 'fail'" 
-                               readonly="1"/>
-                        <field name='mgo_nabl2'/>
-                    </group>  -->
-
-
-
+                 
                       <!--Free Lime-->
                     <div invisible="not free_lime_visible">
                         <h1>
@@ -845,8 +655,8 @@
                     </div>
                     <group/>
 
-                    <div style="display:flex;">
-                    <div style="width:50%;">
+                    <div style="display:flex;" invisible="not free_lime_visible">
+                    <div style="width:50%;" invisible="not free_lime_visible">
                       <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:98%;">
                          <tbody>
                             <tr>
@@ -861,7 +671,7 @@
                       </table>
                     </div>
 
-                    <div style="width:50%;">
+                    <div style="width:50%;" invisible="not free_lime_visible">
                       <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                          <tbody>
                             <tr>
@@ -880,8 +690,8 @@
                     <group/>
 
                     <group/>
-                    <div style="display:flex;">
-                    <div style="width:50%;">
+                    <div style="display:flex;" invisible="not free_lime_visible">
+                    <div style="width:50%;" invisible="not free_lime_visible">
                      <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
                         <tbody>
                           <tr>
@@ -896,7 +706,7 @@
                       </table>
                     </div>
 
-                    <div style="width:50%;">
+                    <div style="width:50%;" invisible="not free_lime_visible">
                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
                           <tr>
@@ -913,7 +723,7 @@
                     </div>
                     <group/>
 
-                    <div>
+                    <div invisible="not free_lime_visible">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                           <tbody>
                            <tr>
@@ -934,36 +744,7 @@
 
 
 
-                    <!-- <group invisible="not free_lime_visible" style="white-space:nowrap">
-                         <group>
-                            <field name="plaster7"/>
-                             <field name="anhydrous7"/>
-                        </group>
-                        <group>
-                            <field name="retarded7" />
-                            <field name="keenes7" />
-                        </group>
-                    </group> -->
-
-
-                    <!-- <group invisible="not free_lime_visible">
-                       <group style="white-space:nowrap">
-                            <field name="free_lime_wt"/>
-                            <field name="free_lime_br"/>
-                            <field name="free_lime_nor"/>
-                            <field name="free_lime"/>
-                       </group>
-                    </group> 
-                     <group invisible="not free_lime_visible">
-                        <field name='free_lime_conformity'
-                               decoration-success="free_lime_conformity == 'pass'" 
-                               decoration-danger="free_lime_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name='free_lime_nabl'/>
-                    </group>  -->
-
-
-
+                    
                        <!--Soluble sodium oxide ( By Flame photo meter )-->
                     <div invisible="not soluble_sodium_visible">
                         <h1>
@@ -973,8 +754,8 @@
                     </div>
                     <group/>
 
-                    <div style="display:flex;">
-                    <div style="width:50%;">
+                    <div style="display:flex;" invisible="not soluble_sodium_visible">
+                    <div style="width:50%;" invisible="not soluble_sodium_visible">
                       <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:98%;">
                          <tbody>
                             <tr>
@@ -990,7 +771,7 @@
                     </div>
 
 
-                    <div style="width:50%;">
+                    <div style="width:50%;" invisible="not soluble_sodium_visible">
                       <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                          <tbody>
                             <tr>
@@ -1009,8 +790,8 @@
                     <group/>
 
                     <group/>
-                    <div style="display:flex;">
-                    <div style="width:50%;">
+                    <div style="display:flex;" invisible="not soluble_sodium_visible">
+                    <div style="width:50%;" invisible="not soluble_sodium_visible">
                      <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:98%;">
                         <tbody>
                           <tr>
@@ -1025,7 +806,7 @@
                       </table>
                     </div>
 
-                    <div style="width:50%;">
+                    <div style="width:50%;" invisible="not soluble_sodium_visible">
                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
                           <tr>
@@ -1041,7 +822,7 @@
                     </div>
                     </div>
 
-                    <div>
+                    <div invisible="not soluble_sodium_visible">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                           <tbody>
                            <tr>
@@ -1060,39 +841,9 @@
                       </div> 
                     <group/>
 
-                    <!-- <group invisible="not soluble_sodium_visible" style="white-space:nowrap">
-                         <group>
-                            <field name="plaster8"/>
-                             <field name="anhydrous8"/>
-                        </group>
-                        <group>
-                            <field name="retarded8" />
-                             <field name="keenes8" />
-                        </group>
-                    </group> -->
-
-
-                    <!-- <group invisible="not soluble_sodium_visible">
-                       <group style="white-space:nowrap">
-                            <field name="soluble_sodium_wt"/>
-                            <field name="soluble_sodium_re"/>
-                            <field name="soluble_sodium_fa"/>
-                            <field name="soluble_sodium"/>   
-                       </group>
-                    </group> 
-                     <group invisible="not soluble_sodium_visible">
-                          
-                        <field name='soluble_sodium_conformity'
-                               decoration-success="soluble_sodium_conformity == 'pass'" 
-                               decoration-danger="soluble_sodium_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name='soluble_sodium_nabl'/>
-                    </group>  -->
-
-
-
+                    
                        <!--Free Wster-->
-                    <div >
+                    <div invisible="not free_water_visible" >
                         <h1>
                             <field name="free_water_name" readonly="1" nolabel="1"/>
                             <field name="free_water_visible" invisible="1"/>
@@ -1100,7 +851,7 @@
                     </div>
                     <group/>
 
-                    <div style="display:flex;">
+                    <div style="display:flex;" invisible="not free_water_visible">
                     <div style="width:50%;">
                       <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:98%;">
                          <tbody>
@@ -1116,7 +867,7 @@
                       </table>
                     </div>
 
-                    <div style="width:50%;">
+                    <div style="width:50%;" invisible="not free_water_visible">
                       <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                          <tbody>
                             <tr>
@@ -1135,8 +886,8 @@
                     <group/>
 
                     <group/>
-                    <div style="display:flex;">
-                    <div style="width:50%;">
+                    <div style="display:flex;" invisible="not free_water_visible">
+                    <div style="width:50%;" invisible="not free_water_visible">
                      <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:98%;">
                         <tbody>
                           <tr>
@@ -1155,7 +906,7 @@
                       </table>
                     </div>
 
-                    <div style="width:50%;">
+                    <div style="width:50%;" invisible="not free_water_visible">
                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
                           <tr>
@@ -1175,7 +926,7 @@
                     </div>
                     </div>
 
-                    <div>
+                    <div invisible="not free_water_visible">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                           <tbody>
                            <tr>
@@ -1194,38 +945,10 @@
                       </div> 
                     <group/>
 
-                    <!-- <group invisible="not free_water_visible" style="white-space:nowrap">
-                         <group>
-                            <field name="plaster9"/>
-                            <field name="anhydrous9"/>
-                        </group>
-                        <group>
-                            <field name="retarded9" />
-                            <field name="keenes9" />
-                        </group>
-                    </group>
-                    <group invisible="not free_water_visible">
-                       <group style="white-space:nowrap; width:60%">
-                            <field name="wt_of_empty_water"/>
-                            <field name="wt_empty_cs_water"/>
-                            <field name="wt_cs_water"/>
-                            <field name="wt_of_sample_water"/>
-                            <field name="water_in_wt"/>
-                            <field name="free_water"/>
-                       </group>
-                    </group> 
-                     <group invisible="not free_water_visible"> 
-                        <field name='free_water_conformity'
-                               decoration-success="free_water_conformity == 'pass'" 
-                               decoration-danger="free_water_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name='free_water_nabl'/> 
-                    </group> -->
-
-
+                  
 
                       <!--Combined Water-->
-                    <div>
+                    <div invisible="not combined_water_visible">
                         <h1>
                             <field name="combined_water_name" readonly="1" nolabel="1"/>
                             <field name="combined_water_visible" invisible="1"/>
@@ -1233,8 +956,8 @@
                     </div>
                     <group/>
 
-                    <div style="display:flex;">
-                    <div style="width:50%;">
+                    <div style="display:flex;" invisible="not combined_water_visible">
+                    <div style="width:50%;" invisible="not combined_water_visible">
                       <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;" >
                          <tbody>
                             <tr>
@@ -1250,7 +973,7 @@
                     </div>
 
 
-                    <div style="width:50%;">
+                    <div style="width:50%;" invisible="not combined_water_visible">
                       <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                          <tbody>
                             <tr>
@@ -1269,7 +992,7 @@
                     <group/>
 
                     <group/>
-                    <div>
+                    <div invisible="not combined_water_visible">
                      <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:70%;">
                         <tbody>
                           <tr>
@@ -1297,7 +1020,7 @@
                     </div>
                     <group/>
 
-                    <div>
+                    <div invisible="not combined_water_visible">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                           <tbody>
                            <tr>
@@ -1316,36 +1039,7 @@
                       </div> 
                     <group/>
 
-                    <!-- <group invisible="not combined_water_visible" style="white-space:nowrap">
-                         <group>
-                            <field name="plaster9"/>
-                            <field name="anhydrous9"/>
-                        </group>
-                        <group>
-                            <field name="retarded9" />
-                            <field name="keenes9" />
-                        </group>
-                          
-                    </group>
-                    <group invisible="not combined_water_visible">
-                       <group style="white-space:nowrap">
-                            <field name="combined_water_wt"/>
-                            <field name="combined_water_br"/>
-                            <field name="combined_water_nor"/>
-                            <field name="combined_water_di"/>
-                            <field name="combined_water"/> 
-                       </group>
-                    </group> 
-                     <group invisible="not combined_water_visible">
-                        <field name='free_water_conformity'
-                               decoration-success="free_water_conformity == 'pass'" 
-                               decoration-danger="free_water_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name='free_water_nabl'/>
-                    </group>  -->
-
-
-
+                    
 
                       <!--calsium oxide-->
                     <div invisible="not calcium_oxide_visible2">
@@ -1357,8 +1051,8 @@
                     <group/>
 
 
-                     <div style="display:flex;">
-                    <div style="width:50%;">
+                     <div style="display:flex;" invisible="not calcium_oxide_visible2">
+                    <div style="width:50%;" invisible="not calcium_oxide_visible2">
                       <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:98%;">
                          <tbody>
                             <tr>
@@ -1374,7 +1068,7 @@
                     </div>
 
 
-                    <div style="width:50%;">
+                    <div style="width:50%;" invisible="not calcium_oxide_visible2">
                       <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                          <tbody>
                             <tr>
@@ -1393,7 +1087,7 @@
                     <group/>
 
                     <group/>
-                    <div>
+                    <div invisible="not calcium_oxide_visible2">
                      <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:70%;">
                         <tbody>
                           <tr>
@@ -1422,7 +1116,7 @@
                     <group/>
                     
 
-                    <div>
+                    <div invisible="not calcium_oxide_visible2">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                           <tbody>
                            <tr>
@@ -1443,33 +1137,25 @@
 
 
 
-                    <!-- <group invisible="not calcium_oxide_visible2" style="white-space:nowrap">
-                         <group>
-                            <field name="plaster11"/>
-                            <field name="anhydrous11"/>
-                        </group>
-                        <group>
-                            <field name="retarded11" />
-                             <field name="keenes11" />
-                        </group>
-                    </group>
-                    <group invisible="not calcium_oxide_visible2">
-                       <group style="white-space:nowrap">
-                            <field name="wt_of_sample_calcium_oxide"/>
-                            <field name="burette_calcium_oxide"/>
-                            <field name="normality_calcium_oxide"/>
-                            <field name="dilution_calcium_oxide"/>
-                            <field name="calcium_oxide"/>
-                       </group>
-                    </group> 
-                     <group invisible="not calcium_oxide_visible2">
-                        <field name='calcium_oxide_conformity2'
-                               decoration-success="calcium_oxide_conformity2 == 'pass'" 
-                               decoration-danger="calcium_oxide_conformity2 == 'fail'" 
-                               readonly="1"/>
-                        <field name='calcium_oxide_nabl2'/>
-                    </group>  -->
+                 <notebook>
 
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
+
+
+
+                    <button type="object" class="oe_highlight" name="open_eln_page" string="Submit"/>
                
                    
                 </sheet>

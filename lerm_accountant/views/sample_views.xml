@@ -1,0 +1,98 @@
+<odoo>
+    <data>
+
+        <record id="action_generate_bulk_invoice" model="ir.actions.server">
+            <field name="name">Generate Invoice</field>
+            <field name="model_id" ref="lerm_civil.model_lerm_srf_sample"/>
+            <field name="binding_model_id" ref="lerm_civil.model_lerm_srf_sample"/>
+            <field name="state">code</field>
+            <field name="code">
+action = env['bulk.invoice.wizard'].sudo().open_wizard()
+            </field>
+            <field name="groups_id" eval="[(4, ref('lerm_accountant.lerm_accountant_group'))]"/>
+        </record>
+
+        <record id="lerm_accountant_sample_tree" model="ir.ui.view">
+            <field name="name">lerm.srf.sample.accountant.tree</field>
+            <field name="model">lerm.srf.sample</field>
+            <field name="arch" type="xml">
+                <tree default_order='create_date desc' create="false" edit="true">
+                    <header>
+                        <button name="lerm_accountant.action_generate_bulk_invoice"
+                            type="action"
+                            string="Generate Invoice"/>
+                    </header>
+                    <field name="invoice_status" widget="badge"
+                        decoration-success="invoice_status == '5-paid'"
+                        decoration-info="invoice_status == '3-invoiced' or invoice_status == '4-partially_paid'"
+                        decoration-warning="invoice_status == '2-draft'"
+                        decoration-danger="invoice_status == '1-uninvoiced'"/>
+                    <field name="state" readonly="1" widget="badge"
+                        decoration-success="state == '4-in_report'"
+                        decoration-warning="state == '1-allotment_pending'"
+                        decoration-danger="state == '6-cancelled'"
+                        decoration-info="state == '3-pending_verification'"/>
+                    <field name="billing_customer" readonly="1"/>
+                    <field name="report_due_date" readonly="1"/>
+                    <field name="invoice_number" readonly="1"
+                        domain="[('move_type', '=', 'out_invoice')]"
+                        options="{'no_create': True, 'no_open': True}"/>
+                    <button name="action_open_invoice"
+                        type="object"
+                        string="Open Invoice"
+                        class="btn btn-link p-0"
+                        icon="fa-external-link"
+                        invisible="invoice_number == False"/>
+                    <field name="kes_no" readonly="1"/>
+                    <field name="srf_id" readonly="1"/>
+                    <field name="customer_id" readonly="1"/>
+                    <field name="material_id" readonly="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="lerm_accountant_sample_search" model="ir.ui.view">
+            <field name="name">lerm.srf.sample.accountant.search</field>
+            <field name="model">lerm.srf.sample</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="customer_id" string="Customer"/>
+                    <field name="billing_customer" string="Billing Customer"/>
+                    <field name="kes_no" string="UID"/>
+                    <field name="srf_id" string="SRF ID"/>
+                    <field name="material_id" string="Material"/>
+                    <field name="invoice_status" string="Invoice Status"/>
+                    <field name="state" string="State"/>
+                    <separator/>
+                    <filter name="uninvoiced" string="Uninvoiced"
+                        domain="[('invoice_status', '=', '1-uninvoiced')]"/>
+                    <filter name="draft_invoice" string="Draft"
+                        domain="[('invoice_status', '=', '2-draft')]"/>
+                    <filter name="invoiced" string="Invoiced"
+                        domain="[('invoice_status', '=', '3-invoiced')]"/>
+                    <filter name="partially_paid" string="Partially Paid"
+                        domain="[('invoice_status', '=', '4-partially_paid')]"/>
+                    <filter name="paid" string="Paid"
+                        domain="[('invoice_status', '=', '5-paid')]"/>
+                    <separator/>
+                    <filter name="in_report" string="In Report"
+                        domain="[('state', '=', '4-in_report')]"/>
+                    <group expand="0" string="Group By">
+                        <filter name="group_by_customer" string="Customer"
+                            context="{'group_by': 'customer_id'}"/>
+                        <filter name="group_by_billing_customer" string="Billing Customer"
+                            context="{'group_by': 'billing_customer'}"/>
+                        <filter name="group_by_invoice_status" string="Invoice Status"
+                            context="{'group_by': 'invoice_status'}"/>
+                    </group>
+                    <searchpanel>
+                        <field name="invoice_status" enable_counters="1"/>
+                        <field name="billing_customer" enable_counters="1"/>
+                        <field name="customer_id" enable_counters="1"/>
+                    </searchpanel>
+                </search>
+            </field>
+        </record>
+
+    </data>
+</odoo>

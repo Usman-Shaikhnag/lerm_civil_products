@@ -2409,34 +2409,25 @@
 
 
 						<div style="page-break-inside: avoid;">
-							<div  style="page-break-inside: avoid;margin-top:20px;" class="noteContainer">
-								<div>
-									<b>Note :-</b>
-								</div>
-								<div>
+								<div style="page-break-inside: avoid; margin-top: 20px;" class="noteContainer">
 									<ul>
-										<li>
-											The Test Report(s) is/are valid only to the sample submitted to the laboratory.
-										</li>
-										<li>
-											Sample(s) was/were not drawn by laboratory.
-										</li>
-										<li>
-											This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.
-										</li>
-											<li>
-												# - Information provided by the customer.
-										</li>
+										<t t-if="cement.notes_id">
+											<t t-foreach="cement.notes_id" t-as="n">
+												<li>
+													<span t-esc="n.sr_no"/>. <span t-esc="n.notes"/>
+												</li>
+											</t>
+										</t>
 										<li t-if="eln.has_witness">
-										Test witnessed by : <span t-esc="eln.witness_name"/>
-										
-									</li>
-									<li t-if="eln.remarks">
-										<span t-esc="eln.remarks"/>
-									</li>
+											Test witnessed by : <span t-esc="eln.witness_name"/>
+										</li>
+										<li t-if="eln.remarks">
+											<span t-esc="eln.remarks"/>
+										</li>
 									</ul>
 								</div>
 							</div>
+
 
 							<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
 									<div>
@@ -2510,7 +2501,7 @@
 									...... End Of Report......
 								</p>
 							</div>
-						</div>
+						<!-- </div> -->
 
 			
 				

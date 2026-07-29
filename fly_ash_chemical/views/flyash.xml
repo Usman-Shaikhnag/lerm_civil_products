@@ -32,14 +32,14 @@
                     </div>
                     <!-- Silica -->
                     <!-- <group> -->
-                    <div>
+                    <div invisible="not Silica_visible">
                         <h1>
                             <field name="Silica_name" readonly="1" nolabel="1"/>
                             <field name="Silica_visible" invisible="1"/>
                         </h1>  
                     </div>
                     <group/>
-                    <div>
+                    <div invisible="not Silica_visible">
                      <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:70%;">
                         <tbody>
                           <tr>
@@ -75,7 +75,7 @@
                     </div>
 
 
-                    <div>
+                    <div invisible="not Silica_visible">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                           <tbody>
                            <tr>
@@ -94,28 +94,10 @@
                       </div> 
                     <group/>
                     
-                    <!-- <group >
-                       <group style="white-space:nowrap; width:60%">
-                            <field name="siliceous1"/>
-                            <field name="calcareous1" />
-                            <field name="wt_of_sample"/>
-                            <field name="wt_of_two_rp"/>
-                            <field name="wt_of_two_r"/>
-                            <field name="difference_in_wt"/>
-                            <field name="Silica"/>
-                       </group>
-                    </group> 
-                    <group> 
-                          
-                        <field name='Silica_conformity'
-                               decoration-success="Silica_conformity == 'pass'" 
-                               decoration-danger="Silica_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name='Silica_nabl'/>
-                    </group> -->
+                 
 
                     <!-- Combined Ferric Oxide and Alumina -->
-                    <div>
+                    <div invisible="not r2o3_visible">
                         <h1>
                             <field name="r2o3_name" readonly="1" nolabel="1"/>
                             <field name="r2o3_visible" invisible="1"/>
@@ -124,7 +106,7 @@
                     </div>
                     <group/>
 
-                    <div>
+                    <div invisible="not r2o3_visible">
                      <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:70%;">
                         <tbody>
                           <tr>
@@ -160,7 +142,7 @@
                     </div>
 
 
-                    <div>
+                    <div invisible="not r2o3_visible">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                           <tbody>
                            <tr>
@@ -181,28 +163,9 @@
                     <group/>
 
                   
-                    <!-- <group>
-                       <group style="white-space:nowrap; width:50%">
-                            <field name="siliceous2"/>
-                            <field name="calcareous2" />
-                            <field name="wt_of_empty_combine"/>
-                            <field name="wt_of_cr_combine"/>
-                            <field name="wt_of_sample_combine"/>
-                            <field name="difference_in_wt_combaine"/>
-                            <field name="r2o3"/>
-                       </group>
-                    </group> 
-                     <group>
-                          
-                        <field name='r2o3_conformity'
-                               decoration-success="r2o3_conformity == 'pass'" 
-                               decoration-danger="r2o3_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name='r2o3_nabl'/>
-                    </group>  -->
-
+                    
                       <!--%Ferric Oxide-->
-                    <div>
+                    <div invisible="not ferric_oxide_visible">
                         <h1>
                             <field name="ferric_oxide_name" readonly="1" nolabel="1"/>
                             <field name="ferric_oxide_visible" invisible="1"/> 
@@ -210,7 +173,7 @@
                     </div>
                     <group/>
 
-                    <div>
+                    <div invisible="not ferric_oxide_visible">
                      <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:70%;">
                         <tbody>
                           <tr>
@@ -242,7 +205,7 @@
                     </div>
 
 
-                    <div>
+                    <div invisible="not ferric_oxide_visible">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                           <tbody>
                            <tr>
@@ -263,27 +226,10 @@
                     <group/>
 
 
-                    <!-- <group>
-                       <group style="white-space:nowrap; width:50%">
-                            <field name="siliceous3"/>
-                            <field name="calcareous3" />
-                            <field name="wt_of_sample_ferric_oxide"/>
-                            <field name="burette_ferric_oxide"/>
-                            <field name="normality_ferric_oxide"/>
-                            <field name="ferric_oxide"/>
-                       </group>
-                    </group> 
-                     <group> 
-                        <field name='ferric_oxide_conformity'
-                               decoration-success="ferric_oxide_conformity == 'pass'" 
-                               decoration-danger="ferric_oxide_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name='ferric_oxide_nabl'/>
-                    </group>  -->
-
+                  
 
                       <!--%Alumina-->
-                    <div>
+                    <div invisible="not alumina1_visible">
                         <h1>
                             <field name="alumina_name" readonly="1" nolabel="1"/>
                             <field name="alumina1_visible" invisible="1"/>   
@@ -291,7 +237,7 @@
                     </div>
                     <group/>
 
-                    <div>
+                    <div invisible="not alumina1_visible">
                      <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:70%;">
                         <tbody>
                           <tr>
@@ -311,7 +257,7 @@
                     </div>
 
 
-                    <div>
+                    <div invisible="not alumina1_visible">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                           <tbody>
                            <tr>
@@ -330,31 +276,16 @@
                       </div> 
                     <group/>
 
-                    <!-- <group>
-                       <group style="white-space:nowrap; width:50%">
-                            <field name="siliceous4"/>
-                            <field name="calcareous4" />
-                            <field name="alumina"/> 
-                       </group>
-                    </group> 
-                     <group>
-                          
-                        <field name='alumina_conformity'
-                               decoration-success="alumina_conformity == 'pass'" 
-                               decoration-danger="alumina_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name='alumina_nabl'/>
-                    </group>  -->
-
+                    
                       <!--cao-->
-                    <group>
+                    <group invisible="not cao_visible">
                         <h1>
                             <field name="cao_name" readonly="1" nolabel="1"/>
                             <field name="cao_visible" invisible="1"/>
                         </h1>
                     </group>
 
-                    <div>
+                    <div invisible="not cao_visible">
                      <table class="table table-sm o_form_table table-bordered custom_table_borders" style=" width: 70%;">
                         <tbody>
                           <tr>
@@ -388,7 +319,7 @@
                         </tbody>
                       </table>
                     </div>
-                    <div>
+                    <div invisible="not cao_visible">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                           <tbody>
                            <tr>
@@ -407,35 +338,17 @@
                       </div> 
                     <group/>
 
-                    <!-- <group>
-                       <group style="white-space:nowrap; width:50%">
-                            <field name="siliceous5"/>
-                            <field name="calcareous5" />
-                            <field name="wt_of_sample_cao"/>
-                            <field name="burette_cao"/>
-                            <field name="normality_cao"/>
-                            <field name="dilution_cao"/>
-                            <field name="cao"/>
-                        </group>
-                    </group> 
-                     <group>
-                          
-                        <field name='cao_conformity'
-                               decoration-success="cao_conformity == 'pass'" 
-                               decoration-danger="cao_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name='cao_nabl'/>
-                    </group>  -->
+                   
 
                      <!--MgO-->
-                    <group>
+                    <group invisible="not mgo_visible">
                         <h1>
                             <field name="mgo_name" readonly="1" nolabel="1"/>
                             <field name="mgo_visible" invisible="1"/>
                         </h1>
                     </group>
 
-                    <div>
+                    <div invisible="not mgo_visible">
                      <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:70%;">
                         <tbody>
                           <tr>
@@ -469,7 +382,7 @@
                         </tbody>
                       </table>
                     </div>
-                    <div>
+                    <div invisible="not mgo_visible">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                           <tbody>
                            <tr>
@@ -489,29 +402,10 @@
                     <group/>
 
                     
-                    <!-- <group>
-                       <group style="white-space:nowrap; width:50%"> 
-                            <field name="siliceous6"/>
-                            <field name="calcareous6" />
-                            <field name="wt_of_sample_mgo"/>
-                            <field name="burette_mgo"/>
-                            <field name="normality_mgo"/>
-                            <field name="dilution_mgo"/>
-                            <field name="mgo"/>
-                       </group>
-                    </group> 
-                     <group>
-                          
-                        <field name='mgo_conformity'
-                               decoration-success="mgo_conformity == 'pass'" 
-                               decoration-danger="mgo_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name='mgo_nabl'/>
-                    </group>  -->
-
+                  
 
                     <!--% Calicum Oxide-->
-                    <div>
+                    <div invisible="not calicum_oxide_visible">
                         <h1>
                             <field name="calicum_oxide_name" readonly="1" nolabel="1"/>
                             <field name="calicum_oxide_visible" invisible="1"/>
@@ -519,7 +413,7 @@
                     </div>
                     <group/>
 
-                    <div>
+                    <div invisible="not calicum_oxide_visible">
                      <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:70%;">
                         <tbody>
                           <tr>
@@ -553,7 +447,7 @@
                         </tbody>
                       </table>
                     </div>
-                    <div>
+                    <div invisible="not calicum_oxide_visible">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                           <tbody>
                            <tr>
@@ -574,30 +468,11 @@
                     <group/>
 
 
-                    <!-- <group>
-                       <group style="white-space:nowrap; width:50%">
-                             <field name="siliceous7"/>
-                            <field name="calcareous7" />
-                            <field name="wt_of_sample_calicum_oxide"/>
-                            <field name="wt_cr_calicum_oxide"/>
-                            <field name="wt_empty_calicum_oxide"/>
-                            <field name="difference_calicum_oxide"/>
-                            <field name="calicum_oxide"/>
-                       </group>
-                    </group> 
-                     <group>
-                          
-                        <field name='calicum_oxide_conformity'
-                               decoration-success="calicum_oxide_conformity == 'pass'" 
-                               decoration-danger="calicum_oxide_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name='calicum_oxide_nabl'/>
-                    </group>  -->
-
+                   
 
 
                       <!--%Magnesium Oxide-->
-                    <div>
+                    <div invisible="not magnesium_oxide_visible">
                         <h1>
                             <field name="magnesium_oxide_name" readonly="1" nolabel="1"/>
                             <field name="magnesium_oxide_visible" invisible="1"/>
@@ -605,7 +480,7 @@
                     </div>
                     <group/>
 
-                    <div>
+                    <div invisible="not magnesium_oxide_visible">
                      <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:70%;">
                         <tbody>
                           <tr>
@@ -639,7 +514,7 @@
                         </tbody>
                       </table>
                     </div>
-                    <div>
+                    <div invisible="not magnesium_oxide_visible">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                           <tbody>
                            <tr>
@@ -658,29 +533,10 @@
                       </div> 
                     <group/>
 
-                    <!-- <group>
-                       <group style="white-space:nowrap; width:50%">
-                            <field name="siliceous8"/>
-                            <field name="calcareous8" />
-                            <field name="wt_of_sample_magnesium_oxide"/>
-                            <field name="wt_cr_magnesium_oxide"/>
-                            <field name="wt_empty_magnesium_oxide"/>
-                            <field name="difference_magnesium_oxide"/>
-                            <field name="magnesium_oxide"/>
-                       </group>
-                    </group> 
-                     <group>
-                          
-                        <field name='magnesium_oxide_conformity'
-                               decoration-success="magnesium_oxide_conformity == 'pass'" 
-                               decoration-danger="magnesium_oxide_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name='magnesium_oxide_nabl'/>
-                    </group>  -->
-
+                  
 
                       <!--% Sulphur trioxide (SO3)-->
-                    <div>
+                    <div invisible="not so3_visible">
                         <h1>
                             <field name="so3_name" readonly="1" nolabel="1"/>
                             <field name="so3_visible" invisible="1"/>
@@ -688,7 +544,7 @@
                     </div>
                     <group/>
 
-                    <div>
+                    <div  invisible="not so3_visible">
                      <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:70%;">
                         <tbody>
                           <tr>
@@ -722,7 +578,7 @@
                         </tbody>
                       </table>
                     </div>
-                    <div>
+                    <div  invisible="not so3_visible">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                           <tbody>
                            <tr>
@@ -742,29 +598,11 @@
                     <group/>
 
 
-                    <!-- <group>
-                       <group style="white-space:nowrap; width:50%">
-                            <field name="siliceous9"/>
-                            <field name="calcareous9" />
-                            <field name="wt_of_sample_so3"/>
-                            <field name="wt_cr_so3"/>
-                            <field name="wt_empty_co3"/>
-                            <field name="difference_co3"/>
-                            <field name="so3"/>
-                       </group>
-                    </group> 
-                     <group>
-                          
-                        <field name='so3_conformity'
-                               decoration-success="so3_conformity == 'pass'" 
-                               decoration-danger="so3_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name='so3_nabl'/>
-                    </group>  -->
+                  
 
 
                      <!--%Loss on Ignition -->
-                    <div>
+                    <div  invisible="not loi_visible">
                         <h1>
                             <field name="loi_name" readonly="1" nolabel="1"/>
                             <field name="loi_visible" invisible="1"/>
@@ -772,7 +610,7 @@
                     </div>
                     <group/>
 
-                    <div>
+                    <div invisible="not loi_visible">
                      <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:70%;">
                         <tbody>
                           <tr>
@@ -811,7 +649,7 @@
                         </tbody>
                       </table>
                     </div>
-                    <div>
+                    <div invisible="not loi_visible">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                           <tbody>
                            <tr>
@@ -830,31 +668,10 @@
                       </div> 
                     <group/>
 
-                    <!-- <group>
-                       <group style="white-space:nowrap; width:50%">
-                            <field name="siliceous10"/>
-                            <field name="calcareous10" />
-                            <field name="wt_of_empty_loi"/>
-                            <field name="wt_empty_cs_loi"/>
-                            <field name="wt_cs_loi"/>
-                            <field name="wt_of_sample_loi"/>
-                            <field name="loi_in_wt"/>
-                            <field name="loi"/>
-                       </group>
-                    </group> 
-                     <group>
-                          
-                        <field name='loi_conformity'
-                               decoration-success="loi_conformity == 'pass'" 
-                               decoration-danger="loi_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name='loi_nabl'/>
-                    </group>  -->
-
-
+                   
 
                     <!--Alkali as Na₂O -->
-                    <div>
+                    <div invisible="not na2o_visible">
                         <h1>
                             <field name="na2o_name" readonly="1" nolabel="1"/>
                             <field name="na2o_visible" invisible="1"/>
@@ -862,14 +679,14 @@
                     </div>
                     <group/>
 
-                     <div>
+                     <div invisible="not na2o_visible">
                         <h1>
                             <field name="casting_28_name" readonly="1" nolabel="1"/>
                         </h1>
                     </div>
                     <group/>
 
-                    <div>
+                    <div invisible="not na2o_visible">
                     <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:49%;">
                     <tbody>
                       <tr>
@@ -890,9 +707,9 @@
                     <group/>
                     <group/>
 
-                    <div style="display:flex;">
+                    <div style="display:flex;" invisible="not na2o_visible">
 
-                    <div style="width:50%;">
+                    <div style="width:50%;" invisible="not na2o_visible">
                      <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
                         <tbody>
                           <tr>
@@ -915,7 +732,7 @@
                       </table>
                     </div>
 
-                    <div style="width:50%;">
+                    <div style="width:50%;" invisible="not na2o_visible">
                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders" >
                         <tbody>
                           <tr>
@@ -941,7 +758,7 @@
                     </div>
                     <group/>
 
-                    <div>
+                    <div invisible="not na2o_visible">
                           <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:49%;">
                           <tbody>
                            <tr>
@@ -960,49 +777,24 @@
                       </div> 
                     <group/>
 
-                    <!-- <group>
-                            <field name="status_28days"/>
-                    </group>
-                    <group>
-                       <group style="white-space:nowrap; width:50%">   
-                            <field name="casting_date_28days"/>
-                            <field name="testing_date_28days"/>
-                            <field name="siliceous11"/>
-                            <field name="calcareous11" />
-                            <field name="wt_of_sample_na2o"/>
-                            <field name="dilution_na2o"/>
-                            <field name="sodium_reading_na2o"/>
-                            <field name="ffg_na2o"/>
-                            <field name="na2o_calculation"/>
-                            <field name="na2o_round"/>
-                       </group>
-                    </group> 
-                     <group>
-                          
-                        <field name='na2o_round_conformity'
-                               decoration-success="na2o_round_conformity == 'pass'" 
-                               decoration-danger="na2o_round_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name='na2o_round_nabl'/>
-                    </group>  -->
-
+                   
 
                      <!--Alkali as K₂O -->
-                    <div>
+                    <div invisible="not k2o_visible">
                         <h1>
                             <field name="k2o_name" readonly="1" nolabel="1"/>
                             <field name="k2o_visible" invisible="1"/>
                         </h1>
                     </div>
                     <group/>
-                      <div>
+                      <div invisible="not k2o_visible">
                         <h1>
                             <field name="casting_28_name_k2o" readonly="1" nolabel="1"/>
                         </h1>
                     </div>
                     <group/>
 
-                    <div>
+                    <div invisible="not k2o_visible">
                     <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:49%;">
                     <tbody>
                       <tr>
@@ -1023,8 +815,8 @@
                     <group/>
                     <group/>
 
-                    <div style="display:flex;">
-                    <div style="width:50%;">
+                    <div style="display:flex;" invisible="not k2o_visible">
+                    <div style="width:50%;" invisible="not k2o_visible">
                      <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;">
                         <tbody>
                           <tr>
@@ -1047,7 +839,7 @@
                       </table>
                     </div>
 
-                    <div style="width:50%;">
+                    <div style="width:50%;" invisible="not k2o_visible">
                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
                           <tr>
@@ -1074,7 +866,7 @@
                     <group/>
 
 
-                    <div>
+                    <div invisible="not k2o_visible">
                           <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:49%;">
                           <tbody>
                            <tr>
@@ -1094,35 +886,10 @@
                     <group/>
 
 
-                    <!-- <group>
-                            <field name="status_28days_k2o"/>
-                    </group>
-                    <group>
-                       <group style="white-space:nowrap; width:50%">
-                            <field name="casting_date_28days_k2o"/>
-                            <field name="testing_date_28days_k2o"/>
-                            <field name="siliceous12"/>
-                            <field name="calcareous12" />
-                            <field name="wt_of_sample_k2o"/>
-                            <field name="dilution_k2o"/>
-                            <field name="potasium_reading_k2o"/>
-                            <field name="ffg_k2o"/>
-                            <field name="k2o_calculation"/>
-                            <field name="k2o_round"/>
-                       </group>
-                    </group> 
-                     <group>
-                          
-                        <field name='k2o_round_conformity'
-                               decoration-success="k2o_round_conformity == 'pass'" 
-                               decoration-danger="k2o_round_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name='k2o_round_nabl'/>
-                    </group>  -->
-
+                  
 
                       <!--Available alkalis  % = A+B (0.65) -->
-                    <div>
+                    <div invisible="not available_alkalis_visible">
                         <h1>
                             <field name="available_alkalis_name" readonly="1" nolabel="1"/>
                             <field name="available_alkalis_visible" invisible="1"/>
@@ -1130,7 +897,7 @@
                     </div>
                     <group/>
 
-                    <div>
+                    <div invisible="not available_alkalis_visible">
                      <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:70%;">
                         <tbody>
                           <tr>
@@ -1148,7 +915,7 @@
                         </tbody>
                       </table>
                     </div>
-                    <div>
+                    <div invisible="not available_alkalis_visible">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                           <tbody>
                            <tr>
@@ -1167,26 +934,10 @@
                       </div> 
                     <group/>
 
-                    <!-- <group>
-                       <group style="white-space:nowrap; width:50%">
-                            <field name="siliceous13"/>
-                            <field name="calcareous13" />
-                            <field name="available_alkalis"/>
-                       </group>
-                    </group> 
-                     <group>
-                          
-                        <field name='available_alkalis_conformity'
-                               decoration-success="available_alkalis_conformity == 'pass'" 
-                               decoration-danger="available_alkalis_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name='available_alkalis_nabl'/>
-                    </group>  -->
-
 
 
                      <!--#Chloride -->
-                    <div>
+                    <div invisible="not chloride_visible">
                         <h1>
                             <field name="chloride_name" readonly="1" nolabel="1"/>
                             <field name="chloride_visible" invisible="1"/>
@@ -1194,8 +945,8 @@
                     </div>
                     <group/>
 
-                    <div style="display:flex;">
-                    <div style="width:50%;">
+                    <div style="display:flex;" invisible="not chloride_visible">
+                    <div style="width:50%;" invisible="not chloride_visible">
                      <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:98%;" >
                         <tbody>
                           <tr>
@@ -1217,7 +968,7 @@
                           </tbody>
                       </table>
                     </div>
-                    <div style="width:50%;">
+                    <div style="width:50%;" invisible="not chloride_visible">
                      <table class="table table-sm o_form_table table-bordered  w-100 custom_table_borders" >
                         <tbody>
                           <tr>
@@ -1242,7 +993,7 @@
                     </div>
                     </div>
 
-                    <div>
+                    <div invisible="not chloride_visible">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                           <tbody>
                            <tr>
@@ -1264,31 +1015,11 @@
                    
 
 
-                    <!-- <group>
-                       <group style="white-space:nowrap; width:50%">
-                            <field name="siliceous14"/>
-                            <field name="calcareous14" />
-                            <field name="burette_reading_chloride"/>
-                            <field name="burette_reading_sample_chloride"/>
-                            <field name="diff_chloride"/>
-                            <field name="normality_chloride"/>
-                            <field name="wt_of_sample_chloride"/>
-                            <field name="chloride"/>
-                       </group>
-                    </group> 
-                     <group>
-                          
-                        <field name='chloride_conformity'
-                               decoration-success="chloride_conformity == 'pass'" 
-                               decoration-danger="chloride_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name='chloride_nabl'/>
-                    </group>  -->
-
+                   
 
                     <!-- SiO2 + Al2O3 + Fe2O3 % -->
 
-                     <div>
+                     <div invisible="not combined_percentage_visible">
                         <h1>
                             <field name="combined_percentage_name" readonly="1" nolabel="1"/>
                             <field name="combined_percentage_visible" invisible="1"/>
@@ -1296,7 +1027,7 @@
                     </div>
                     <group/>
 
-                    <div>
+                    <div invisible="not combined_percentage_visible">
                      <table class="table table-sm o_form_table table-bordered custom_table_borders" style="width:70%;">
                         <tbody>
                           <tr>
@@ -1314,7 +1045,7 @@
                         </tbody>
                       </table>
                     </div>
-                    <div>
+                    <div invisible="not combined_percentage_visible">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                           <tbody>
                            <tr>
@@ -1333,23 +1064,7 @@
                       </div> 
                     <group/>
 
-                     <!-- <group>
-                       <group style="white-space:nowrap; width:50%">
-                            <field name="siliceous15"/>
-                            <field name="calcareous15" />
-                            <field name="combined_percentage"/>
-                       </group>
-                    </group> 
-                     <group>
-                          
-                        <field name='combined_percentage_conformity'
-                               decoration-success="combined_percentage_conformity == 'pass'" 
-                               decoration-danger="combined_percentage_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name='combined_percentage_nabl'/>
-                    </group>  -->
-
-                <!-- </group> -->
+                   
 
 
                  <notebook>
