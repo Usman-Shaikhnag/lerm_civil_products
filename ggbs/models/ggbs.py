@@ -779,7 +779,7 @@ class GgbsMechanical(models.Model):
         )
 
         for result in technician_results:
-        
+           
             # Setting Time
             if result.parameter.internal_id == 'b37bdc2f-7956-4120-aee4-bbe9724785e0':
                 result.calculated = True
