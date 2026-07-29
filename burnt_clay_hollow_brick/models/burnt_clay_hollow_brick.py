@@ -105,6 +105,78 @@ class BurntClayHollowBrick(models.Model):
                         record.average_crushing_value_nabl = 'fail'
 
 
+    # Water Absorption
+    water_absorption_name = fields.Char("Name", default="Water Absorption")
+    water_absorbtion_visible = fields.Boolean("Water Absorption Visible", compute="_compute_visible")
+
+    water_absorption_lines = fields.One2many('mechanical.burnt.clay.hollow.brick.water.absorption.line', 'parent_id', string="Water Absorption")
+
+    avrg_water_absorption = fields.Float(
+        string="Average Water Absorption, %",
+        compute="_compute_avrg_water_absorption", store=True)
+
+    @api.depends('water_absorption_lines.water_absorption')
+    def _compute_avrg_water_absorption(self):
+        for rec in self:
+            lines = rec.water_absorption_lines
+            if lines:
+                total = sum(line.water_absorption for line in lines)
+                rec.avrg_water_absorption = round(total / len(lines), 2)
+            else:
+                rec.avrg_water_absorption = 0.0
+
+    water_absorption_confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+        ('na', 'NA'),
+    ], string='Confirmity', compute="_compute_water_absorption_confirmity", store=True)
+
+    @api.depends('avrg_water_absorption', 'eln_ref', 'grade')
+    def _compute_water_absorption_confirmity(self):
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.water_absorption_confirmity = 'na'
+                continue
+            record.water_absorption_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id', '=', 'df78443d-7cd6-425b-b647-58be1489a14e')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id', '=', 'df78443d-7cd6-425b-b647-58be1489a14e')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    lower = record.avrg_water_absorption - record.avrg_water_absorption * mu_value
+                    upper = record.avrg_water_absorption + record.avrg_water_absorption * mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.water_absorption_confirmity = 'pass'
+                        break
+                    else:
+                        record.water_absorption_confirmity = 'fail'
+
+    water_absorption_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL'),
+    ], string="NABL", compute="_compute_water_absorption_nabl", store=True)
+
+    @api.depends('avrg_water_absorption', 'eln_ref', 'grade')
+    def _compute_water_absorption_nabl(self):
+        for record in self:
+            record.water_absorption_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id', '=', 'df78443d-7cd6-425b-b647-58be1489a14e')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id', '=', 'df78443d-7cd6-425b-b647-58be1489a14e')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    lower = record.avrg_water_absorption - record.avrg_water_absorption * mu_value
+                    upper = record.avrg_water_absorption + record.avrg_water_absorption * mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.water_absorption_nabl = 'pass'
+                        break
+                    else:
+                        record.water_absorption_nabl = 'fail'
+
     # Dimension
     dimension_name = fields.Char("Name",default="Dimension")
     dimension_visible = fields.Boolean("Dimension Visible",compute="_compute_visible")
@@ -385,6 +457,7 @@ class BurntClayHollowBrick(models.Model):
         for record in self:
             record.crushing_visible = False
             record.dimension_visible = False
+            record.water_absorbtion_visible = False
             
             for sample in record.sample_parameters:
 
@@ -393,6 +466,9 @@ class BurntClayHollowBrick(models.Model):
 
                 if sample.internal_id == "65a8f5a6-5915-49b9-8fdd-70dc724bab58":
                     record.dimension_visible = True
+
+                if sample.internal_id == "df78443d-7cd6-425b-b647-58be1489a14e":
+                    record.water_absorbtion_visible = True
 
     def open_eln_page(self):
         current_user = self.env.user
@@ -421,6 +497,15 @@ class BurntClayHollowBrick(models.Model):
                 result.calculated = True
                 result.result_char = round(self.average_crushing_value,2)
                 if self.average_crushing_value_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'df78443d-7cd6-425b-b647-58be1489a14e':
+                result.calculated = True
+                result.result_char = round(self.avrg_water_absorption, 2)
+                if self.water_absorption_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -588,6 +673,38 @@ class DimensionLine(models.Model):
                 max_serial_no = max(existing_records.mapped('serial_no'))
                 vals['serial_no'] = max_serial_no + 1
         return super(DimensionLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+class BurntClayHollowBrickWaterAbsorptionLine(models.Model):
+    _name = "mechanical.burnt.clay.hollow.brick.water.absorption.line"
+    parent_id = fields.Many2one('mechanical.burnt.clay.hollow.brick', string="Parent Id")
+    serial_no = fields.Integer(string="Sr. No.", readonly=True, copy=False, default=1)
+    identification_mark = fields.Char(string="Identification No.")
+    initial_wt = fields.Float(string="Initial wt after 24 hr emersion water")
+    final_wt = fields.Float(string="Final wt after 24 hr oven")
+    water_absorption = fields.Float(string="Water Absorption %", compute="_compute_water_absorption", store=True)
+
+    @api.depends('initial_wt', 'final_wt')
+    def _compute_water_absorption(self):
+        for record in self:
+            if record.initial_wt != 0:
+                record.water_absorption = (record.final_wt - record.initial_wt) / record.initial_wt * 100
+            else:
+                record.water_absorption = 0
+
+    @api.model
+    def create(self, vals):
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+        return super(BurntClayHollowBrickWaterAbsorptionLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
         records = self.sorted('id')

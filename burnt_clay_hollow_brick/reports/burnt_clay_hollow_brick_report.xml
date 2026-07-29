@@ -303,6 +303,39 @@
                   </td>
                 </tr>
 
+                <!-- Water Absorption -->
+              <tr t-if="data.water_absorbtion_visible and (data.water_absorption_nabl == 'pass' and nabl or (data.water_absorption_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+                  <t t-set="water_absorption_param" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','df78443d-7cd6-425b-b647-58be1489a14e')])"/>
+
+                  <td style="text-align: center;">
+                    <span t-esc="i + 1" />
+                    <t t-set="i" t-value="i+1"/>
+                  </td>
+                  <td>
+                    <span t-esc="water_absorption_param.parameter_name"/>
+                  </td>
+                  <td style="text-align: center;">
+                    <span t-field="data.avrg_water_absorption" t-options='{"widget": "float", "precision": 2}'/>
+                  </td>
+                  <td style="text-align: center;">
+                    <span t-esc="water_absorption_param.unit.name"/>
+                  </td>
+                  <td style="text-align: center;">
+                      <t t-foreach="water_absorption_param.parameter_table" t-as="parameter">
+                        <t t-if="parameter.grade.id == eln.grade_id.id">
+                            <span t-field="parameter.permissable_limit"/>
+                        </t>
+                      </t>
+                  </td>
+                  <td style="text-align: center;">
+                      <t t-foreach="water_absorption_param.parameter_table" t-as="parameter">
+                        <t t-if="parameter.grade.id == eln.grade_id.id">
+                            <span t-field="parameter.specification"/>
+                        </t>
+                      </t>
+                  </td>
+                </tr>
+
                 <!-- Dimension Area -->
               <tr t-if="data.dimension_visible and (data.avg_area_nabl == 'pass' and nabl or (data.avg_area_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
                   <t t-set="area_param" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','b4368958-ca01-4724-8bd9-67514a3eb2ad')])"/>

@@ -15,7 +15,7 @@ class BurntClayHollowBrickPrefillData(models.TransientModel):
 
         normal_fields = ['grade']
 
-        one2many_fields = ['crushing_value_child_lines', 'dimension_child_lines']
+        one2many_fields = ['crushing_value_child_lines', 'dimension_child_lines', 'water_absorption_lines']
 
         update_vals = {}
 
@@ -33,6 +33,9 @@ class BurntClayHollowBrickPrefillData(models.TransientModel):
 
         if not current_product.dimension_visible:
             update_vals.pop('dimension_child_lines', None)
+
+        if not current_product.water_absorbtion_visible:
+            update_vals.pop('water_absorption_lines', None)
 
         if update_vals:
             current_product.sudo().write(update_vals)
