@@ -480,19 +480,19 @@ class BurntClayHollowBrick(models.Model):
         if self.eln_ref:
             self.grade = self.eln_ref.grade_id.id
 
-    def prefill_data(self):
-        view_id = self.env.ref('burnt_clay_hollow_brick.action_burnt_clay_hollow_brick_prefill_data_wizard').id
-        return {
-            'view_mode': 'form',
-            'res_model': 'burnt.clay.hollow.brick.prefill.data',
-            'target': 'new',
-            'type': 'ir.actions.act_window',
-            'view_id': view_id,
-            'context': {
-                'default_product_id': self.eln_ref.sample_id.material_id.id,
-                'exclude_sample_id': self.eln_ref.sample_id.id,
-            }
-        }
+    # def prefill_data(self):
+    #     view_id = self.env.ref('burnt_clay_hollow_brick.action_burnt_clay_hollow_brick_prefill_data_wizard').id
+    #     return {
+    #         'view_mode': 'form',
+    #         'res_model': 'burnt.clay.hollow.brick.prefill.data',
+    #         'target': 'new',
+    #         'type': 'ir.actions.act_window',
+    #         'view_id': view_id,
+    #         'context': {
+    #             'default_product_id': self.eln_ref.sample_id.material_id.id,
+    #             'exclude_sample_id': self.eln_ref.sample_id.id,
+    #         }
+    #     }
 
 
     notes_id = fields.One2many('mechanical.burnt.clay.hollow.brick.notes', 'parent_id', string="Notes", default=lambda self: self._default_notes_lines())

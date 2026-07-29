@@ -8,29 +8,47 @@
         <field name="arch" type="xml">
             <form create="false">
                 <sheet>
-                   <group style="white-space: nowrap; width:70%;">
-                        <h1>
-                            <field name="name_burnt_clay_hollow_brick" readonly="1" nolabel="1"/>
-                        </h1>
-                    </group>
-                    <group >
+                    <h1>
+                        <field name="name_burnt_clay_hollow_brick" readonly="1" nolabel="1"/>
+                    </h1>
+                    <!-- <button type="object" class="oe_highlight" name="prefill_data" string="Prefill Data"/> -->
+                    <group>
                        <field name="grade"/>
-
-                        <field name="eln_ref"/>
+                    </group>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
                         <field name="size_id"/>
-                        <field name="eln_state" widget="badge" decoration-success="eln_state == 'approved'" decoration-info="eln_state == 'in-test' or eln_state == 'in-check'" decoration-danger="eln_state == 'rejected'" decoration-warning="eln_state == 'allotted'"/>
+                        <field name="parameter_id" invisible="1"/>
+                        <field name="eln_state" />
                    </group>
 
-                    <button name="prefill_data" string="Prefill Data" type="object" class="oe_highlight"/>
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;
+                            border-color: #3b82f6 !important;
+                        }
 
-                    <group >
-                       <field name="sample_parameters" nolabel="1" >
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+                    <div class="custom_table_borders" style="margin-top: 15px;">
+                       <field name="sample_parameters" nolabel="1">
                             <tree>
                                 <field name="parameter_name" />
                                 <field name="test_method" />
                            </tree>
                         </field>
-                    </group>
+                    </div>
 
                     <!-- Crushing Value -->
                     <div invisible= "crushing_visible == False">
@@ -204,11 +222,12 @@
                         </page>
                     </notebook>
 
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <button name="open_eln_page" string="Submit" type="object" class="oe_highlight"/>
-                        </div>
-                    </div>
+                    <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
 
                 </sheet>
             </form>
@@ -216,12 +235,12 @@
         </record>
 
 
-        <record id="action_burnt_clay_hollow_brick_prefill_data_wizard" model="ir.actions.act_window">
+        <!-- <record id="action_burnt_clay_hollow_brick_prefill_data_wizard" model="ir.actions.act_window">
                 <field name="name">Prefill Data</field>
+                <field name="type">ir.actions.act_window</field>
                 <field name="res_model">burnt.clay.hollow.brick.prefill.data</field>
                 <field name="view_mode">form</field>
                 <field name="target">new</field>
-                <field name="binding_model_id" ref="model_mechanical_burnt_clay_hollow_brick"/>
         </record>
 
 
@@ -231,8 +250,8 @@
             <field name="arch" type="xml">
                 <form string="Prefill Data">
                     <group>
-                        <field name="product_id" readonly="1" style="width: 100%%;"/>
-                        <field name="sample_id" options="{'no_create': True, 'no_open': True}" style="width: 100%%;"/>
+                        <field name="product_id" readonly="1"/>
+                        <field name="sample_id"/>
                     </group>
                     <footer>
                         <button name="prefill_data" string="Prefill Data" type="object" class="btn-primary"/>
@@ -240,7 +259,7 @@
                     </footer>
                 </form>
             </field>
-        </record>
+        </record> -->
 
     </data>
 </odoo>
