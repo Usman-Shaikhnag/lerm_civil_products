@@ -14,7 +14,8 @@ This module contains all the common features of MICROSILICA.
     'data': [
                'security/ir.model.access.csv',
                'views/microsilica.xml',
-               'reports/microsilica_ds_report.xml'
+               'reports/microsilica_datasheet.xml',
+               'reports/microsilica_report.xml'
     ],
     'assets': {
     'web.assets_backend': [

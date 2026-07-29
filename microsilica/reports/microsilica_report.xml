@@ -1,0 +1,586 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	
+	
+	<template id="microsilica_report">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			
+			<t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
+				
+				<div class="container_eln" style="padding-top:20px;">
+					
+					<div class="" t-foreach="eln" t-as="o">
+						<table style="width:100%; border-collapse: collapse;" border="1">
+
+						   <tr>
+								<td colspan="1">#Project Name/Site Name :</td>
+								  <td colspan="3" style="font-weight:bold;">
+									<![CDATA[&nbsp;]]>
+
+									<span t-field="o.srf_id.name_work"/>
+									</td>
+								
+							</tr>
+							<tr >
+								<td colspan="1" >#Customer Name	:</td>
+
+								<td colspan="1" style="font-weight:bold;">
+									<![CDATA[&nbsp;]]>
+                                    <t t-if="o.srf_id.customer">
+									   <span t-field="o.srf_id.customer"/>
+                                    </t>
+                                    <t t-else="">--</t>
+								</td>
+
+                                <td colspan="1" >ULR NO:</td>
+
+								  <td colspan="1" style="font-weight:bold;">
+									<![CDATA[&nbsp;]]>
+                                    
+									  <span t-field="o.sample_id.ulr_no"/>
+                                   
+									</td>
+							</tr>
+
+							<tr>
+								<td colspan="1" >Address:</td>
+								  <td colspan="1" style="font-weight:bold;">
+									<![CDATA[&nbsp;]]>
+									<!-- <t t-if="o.srf_id.customer.name">
+									  <span t-field="o.srf_id.customer.name"/>
+									 </t>
+        							<t t-else=""></t>
+		                            <br/> -->
+
+									<span t-field="o.srf_id.customer.street"/>
+									<span t-field="o.srf_id.customer.street2"/>
+									<span t-field="o.srf_id.customer.city"/>
+									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
+									<span t-field="o.srf_id.customer.state_id"/>
+											,
+									<span t-field="o.srf_id.customer.country_id"/>
+									</td>
+                                    <td colspan="1" >Test Report No :</td>
+								  <td colspan="1" style="font-weight:bold;">
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.kes_no"/>
+
+									</td>
+							</tr>
+
+                            <tr>
+								<td colspan="1">Location of Performance :-</td>
+								<td colspan="1">
+								      <t t-if="o.sample_id.location_name">
+											 <span t-field="o.sample_id.location_name"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+
+                                <td colspan="1">Sample ID  :-</td>
+								<td colspan="1">
+
+								  <t t-if="o.sample_id.client_sample_id">
+											<span t-field="o.sample_id.client_sample_id"/>
+										</t>
+									<t t-else="">-</t>
+								
+								</td>
+                                </tr>
+
+							
+							<tr>
+								<td colspan="1">Samples Description :-</td>
+								<td colspan="1">
+								      <t t-if="o.material and o.material.lab_name or o.sample_id.size_id">
+											<span t-field="o.sample_id.size_id"/> <![CDATA[&nbsp;]]> <![CDATA[&nbsp;]]> <span t-field="o.material.lab_name"/>
+										</t>
+									<t t-else="">--</t>
+								</td>
+
+                                <td colspan="1">Date of Receipt :-</td>
+								<td colspan="1">
+
+								  <t t-if="o.sample_id.sample_received_date">
+											<span t-field="o.sample_id.sample_received_date"/>
+										</t>
+									<t t-else="">--</t>
+								
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="1">#Source of Sample	 :-</td>
+								<td colspan="1">
+								<t t-if="o.material.source_sample">
+											<span t-field="o.material.source_sample"/>
+										</t>
+									<t t-else="">NA</t>
+								</td>
+
+								<td colspan="1">Date of Performance of Test :-</td>
+								<td colspan="1">
+									<t t-if="o.start_date and o.end_date">
+											<span t-field="o.start_date" t-options='{"widget": "date"}'/>
+											<span style="display:inline-block; padding:0 3px;">to</span>
+											<span t-field="o.end_date" t-options='{"widget": "date"}'/>
+										</t>
+									<t t-else="">NA</t>
+								</td>
+							</tr>
+
+							<tr>
+								<td colspan="1">Condition of Sample  :-</td>
+								<td colspan="1">
+									<t t-if="o.sample_id.sample_condition">
+											<span t-field="o.sample_id.sample_condition"/>
+										</t>
+									<t t-else="">NA</t>
+								</td>
+
+									<td colspan="1">Date of Report Issue :-</td>
+										<td colspan="1" >
+											<t t-if="o.end_date">
+											<span t-field="o.end_date"/>
+										</t>
+									<t t-else="">NA</t>
+										</td>
+								
+							</tr>
+
+                            <tr>
+								<td colspan="1">Discipline  :-</td>
+								<td colspan="1">
+									<t t-if="o.sample_id.group_id">
+											<span t-field="o.sample_id.group_id"/>
+										</t>
+									<t t-else="">-</t>
+								</td>
+
+									<td colspan="1">Test Method Followed :-</td>
+										<td colspan="1" >
+											<t t-if="o.material.test_method_adopted">
+											<span t-field="o.material.test_method_adopted"/>
+										</t>
+									    <t t-else="">-</t>
+										</td>
+								
+							</tr>
+
+                            <tr>
+									<td colspan="1">Temperature :-</td>
+										<td colspan="1" >
+											<t t-if="microsilica.temp is not None">
+											<span t-field="microsilica.temp"/>   °C
+										</t>
+									<t t-else="">NA</t>
+										</td>
+
+									<td colspan="1">Humidity :-</td>
+										<td colspan="1" >
+											<t t-if="microsilica.humidity is not None">
+											<span t-field="microsilica.humidity"/>   %
+										</t>
+									<t t-else="">NA</t>
+										</td>
+								
+							</tr>
+							
+
+                            <tr>
+								<td colspan="1">Reference No.  :-</td>
+								<td colspan="3">
+									<t t-if="o.srf_id.client_refrence">
+											<span t-field="o.srf_id.client_refrence"/>
+										</t>
+									<t t-else="">NA</t>
+								</td>
+								
+							</tr>
+
+							</table>
+					</div>
+
+
+
+
+					<div style="">
+						<table style="margin-top:10px;">
+						<t t-set="i" t-value="0"/>
+							<thead>
+								<tr>
+									<th style="text-align: center;">Sr. No</th>
+									<th style="text-align: center;">
+									<span t-esc="eln.material.test_parameter"/>
+									<!-- Test Parameter -->
+									</th>
+
+                                    <th style="text-align: center;">
+									<span t-esc="eln.material.result_remark"/>
+									<!-- Test Result -->
+									</th>
+
+									<th style="text-align: center;">
+									<span t-esc="eln.material.unit"/>
+									<!-- Unit -->
+									</th>
+
+                                    <th style="text-align: center;"><span t-esc="eln.material.specifications"/></th>
+
+									<th style="text-align: center;"><span t-esc="eln.material.method_reference"/></th>
+									
+								</tr>
+							</thead>
+							<tbody>     
+
+
+							<!-- Compressive Strength -->
+                            
+
+                            <t t-set="show_7_days" t-value="microsilica.avg_7_days_final_report == 'nabl' and nabl or microsilica.avg_7_days_final_report == 'non_nabl' and not nabl"/>
+
+
+							<t t-set="show_14_days" t-value="microsilica.avg_14_days_final_report == 'nabl' and nabl or microsilica.avg_14_days_final_report == 'non_nabl' and not nabl"/>
+
+							
+
+							<t t-set="show_28_days" t-value="microsilica.avg_28_days_final_report == 'nabl' and nabl or microsilica.avg_28_days_final_report == 'non_nabl' and not nabl"/>
+
+                            <!-- 🔹 Step 2: Rowspan calculation -->
+					      <t t-set="rowspan_count" t-value="1 + int(show_14_days) + int(show_7_days) + int(show_28_days)"/>
+
+                          <tr t-if="(microsilica.compressive_visible) and (show_14_days or show_7_days or show_28_days)">
+
+									<t t-set="bulk" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','658798cvfd-889b-477c-a355-0476f6bcd0d7')])"/>
+									
+									<td t-att-rowspan="rowspan_count"  style="text-align: center;vertical-align:middle;">
+						                 <span t-esc="i + 1"/>
+							             <t t-set="i" t-value="i+1"/>
+						            </td>
+									<td colspan="5">
+										<span t-esc="bulk.parameter_name"/>
+									</td>
+								</tr>
+
+					
+							 
+
+								<!-- Compressive Strength (7 Days) -->
+							<tr t-if="microsilica.compressive_visible and show_7_days">
+									<t t-set="seven_days" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')])"/>
+									
+									<td>
+										<span t-esc="seven_days.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="microsilica.avg_7_days" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="seven_days.unit.name"/>
+										</span>
+									</td>
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="seven_days.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="seven_days.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+								<!-- Compressive Strength (14 Days) -->
+                             <tr t-if="microsilica.compressive_visible and show_14_days">
+									<t t-set="three_days" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')])"/>
+									
+									<td>
+										<span t-esc="three_days.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="microsilica.avg_14_days" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="three_days.unit.name"/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="three_days.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="three_days.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+								
+								<!-- Compressive Strength (28 Days) -->
+							<tr t-if="microsilica.compressive_visible and show_28_days">
+									<t t-set="two_eight_days" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','d62e47c1-64b1-4589-b412-677f1e21377b')])"/>
+									
+									<td>
+										<span t-esc="two_eight_days.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="microsilica.avg_28_days" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="two_eight_days.unit.name"/>
+										</span>
+									</td>
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="two_eight_days.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="two_eight_days.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+
+					<!-- FINENESS BY WET SIEVING ( 45 MICRON ) -->
+							<tr t-if="microsilica.particles_retained_visible and (microsilica.percentage_passing_final_report == 'nabl' and nabl or microsilica.percentage_passing_final_report == 'non_nabl' and not nabl)">
+									<t t-set="fine_dry" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')])"/>
+									
+									<td style="text-align: center;">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td>
+										<span t-esc="fine_dry.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="microsilica.avg_percentage_passing" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="fine_dry.unit.name"/>
+										</span>
+									</td>
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="fine_dry.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>     
+									</td>
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="fine_dry.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+
+
+								<!-- SPECIFIC GRAVITY  -->
+							<tr t-if="microsilica.specific_gravity_visible and (microsilica.specific_gravity_final_report == 'nabl' and nabl or microsilica.specific_gravity_final_report == 'non_nabl' and not nabl)">
+									<t t-set="specific_gravity" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')])"/>
+									
+									<td style="text-align: center;">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td>
+										<span t-esc="specific_gravity.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="microsilica.average_specific_gravity" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="specific_gravity.unit.name"/>
+										</span>
+									</td>
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="specific_gravity.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="specific_gravity.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+
+
+
+
+								</tbody>
+								</table>
+								</div>
+
+
+
+
+
+
+				</div>
+				<div style="page-break-inside: avoid;">
+					<div style="margin-top:20px; page-break-inside: avoid;" class="noteContainer">
+						<table>
+							<tr>
+								<td style="padding: 5px; font-style: italic; ">
+
+									<b>Notes:-</b>
+										<t t-if="microsilica.notes_id">
+										<t t-foreach="microsilica.notes_id" t-as="n">
+											<span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span>
+										</t>
+									</t>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+
+					<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Checked By
+									</b>
+								</div>
+								<div style="height:15px">
+
+								</div>
+								<div>
+									<b>
+										<span t-esc="eln.technician.name"/>
+									</b>
+								</div>
+								<div>
+									<b>
+										(<span t-esc="eln.sample_id.check_by.job_title"/>)
+									</b>
+								</div>
+							</div>
+
+							<div>
+						<!-- <div>
+							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
+						</div> -->
+						<div style="padding-top:5px">
+							Format No. <span t-esc="eln.material.test_format_no"/>
+						</div>
+					</div>
+							<div>
+								<div>
+									<b>
+										Approved By 
+									</b>
+									
+								</div>
+								<div style="height:15px">
+
+								</div>
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+								<!-- <div>
+									<b>
+										(Authorized Signatory)
+									</b>
+								</div> -->
+							</div>
+						</div>
+						<div style="text-align:center;margin-top:2px">
+							......End of Report......
+						</div>
+              </div>
+				
+			</t>
+		</t>
+	</template>
+</odoo>

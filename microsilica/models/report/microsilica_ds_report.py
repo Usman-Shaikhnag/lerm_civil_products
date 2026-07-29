@@ -36,8 +36,7 @@ class MicrosilicaDatasheet(models.AbstractModel):
                 general_data = self.env['lerm.eln'].sudo().browse(docids)
             return {
                 'eln': eln,
-                'data' : general_data,
-                'json': json,
+                'data' : general_data
             }
 
 
@@ -177,5 +176,6 @@ class MicrosilicaReport(models.AbstractModel):
             'qrcode': qr_code,
             'nabl' : nabl,
             'qrcode_static': qr_static_b64,
-            'json': json,
+            # 'stamp' : inreport_value,
+            'nabl' : nabl
         }

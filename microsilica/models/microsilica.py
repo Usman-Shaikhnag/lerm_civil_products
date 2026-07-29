@@ -2,6 +2,8 @@ from odoo import api, fields, models
 from odoo.exceptions import UserError,ValidationError
 from datetime import timedelta
 import math
+from statistics import mean
+from math import sqrt
 
 
 
@@ -20,542 +22,44 @@ class Microsilica(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
+
+    date_of_casting = fields.Date(string="Date of Casting",compute="compute_date_of_casting")
+    date_of_testing = fields.Date(string="Date of Testing",compute="_compute_date_testing")
+
+    @api.depends('eln_ref')
+    def _compute_grade_id(self):
+        if self.eln_ref:
+            self.grade = self.eln_ref.grade_id.id
+
+
+    @api.depends('eln_ref')
+    def _compute_date_testing(self):
+        if self.eln_ref:
+            self.date_of_testing = self.eln_ref.date_testing
+        else:
+            self.date_of_testing = ''
+
+    @api.onchange('eln_ref')
+    def compute_date_of_casting(self):
+        for record in self:
+            if record.eln_ref.sample_id:
+                sample_record = self.env['lerm.srf.sample'].sudo().search([('id','=', record.eln_ref.sample_id.id)]).date_casting
+                record.date_of_casting = sample_record
+            else:
+                record.date_of_casting = None
+
+
     temp = fields.Char("Temperature",store=True)
     humidity = fields.Char("Humidity",store=True)
 
 
-    # 1 — Fineness by Wet Sieving (45 Micron)
 
-    wet_sieving_name = fields.Char("Name", default="Fineness of Silica Fume by Wet Sieving (45 Micron)")
-    wet_sieving_visible = fields.Boolean("Wet Sieving Visible", compute="_compute_visible")
 
-    sample_weight_ws = fields.Float(string="Sample Weight (Ws) (g)", default=100.0)
-    sieve_size_ws = fields.Char(string="Sieve Size Used", default="45 Micron")
 
-    wet_sieving_line_ids = fields.One2many(
-        'microsilica.wet.sieving.line',
-        'parent_id',
-        string="Wet Sieving Trials"
-    )
 
-    avg_percent_passing = fields.Float(
-        string="Average % Material Passing",
-        compute="_compute_avg_percent_passing",
-        store=True
-    )
-
-    @api.depends('wet_sieving_line_ids.percent_passing')
-    def _compute_avg_percent_passing(self):
-        for rec in self:
-            vals = rec.wet_sieving_line_ids.mapped('percent_passing')
-            if vals:
-                rec.avg_percent_passing = sum(vals) / len(vals)
-            else:
-                rec.avg_percent_passing = 0.0
-
-    wet_sieving_conformity = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),
-    ], string='Conformity', default='fail', compute="_compute_wet_sieving_conformity")
-
-    wet_sieving_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_wet_sieving_nabl", store=True)
-
-    @api.depends('avg_percent_passing', 'eln_ref')
-    def _compute_wet_sieving_conformity(self):
-        for record in self:
-            record.wet_sieving_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id', '=', '52147fgtre-5f8c-44a2-984b-6ad2a17d250c')])
-            materials = line.parameter_table
-            for material in materials:
-                req_min = material.req_min
-                req_max = material.req_max
-                mu_value = line.mu_value
-                lower = record.avg_percent_passing - record.avg_percent_passing * mu_value
-                upper = record.avg_percent_passing + record.avg_percent_passing * mu_value
-                if lower >= req_min and upper <= req_max:
-                    record.wet_sieving_conformity = 'pass'
-                    break
-                else:
-                    record.wet_sieving_conformity = 'fail'
-
-    @api.depends('avg_percent_passing', 'eln_ref')
-    def _compute_wet_sieving_nabl(self):
-        for record in self:
-            record.wet_sieving_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id', '=', '52147fgtre-5f8c-44a2-984b-6ad2a17d250c')])
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            lower = record.avg_percent_passing - record.avg_percent_passing * mu_value
-            upper = record.avg_percent_passing + record.avg_percent_passing * mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.wet_sieving_nabl = 'pass'
-            else:
-                record.wet_sieving_nabl = 'fail'
-
-
-    # 2 — Compressive Strength of Micro Silica
-
-    compressive_strength_name = fields.Char("Name", default="Compressive Strength of Micro Silica")
-    compressive_strength_visible = fields.Boolean("Compressive Strength Visible", compute="_compute_visible")
-
-    wt_of_sand_cs = fields.Float(string="Weight of Sand (g)")
-    wt_of_cement_silica_cs = fields.Float(string="Weight of Cement + Silica (g)")
-    std_consistency_p = fields.Float(string="Standard Consistency P (%)")
-    water_weight_cs = fields.Float(string="Weight of Water (g)", compute="_compute_water_weight_cs", store=True)
-
-    @api.depends('std_consistency_p')
-    def _compute_water_weight_cs(self):
-        for rec in self:
-            if rec.std_consistency_p:
-                rec.water_weight_cs = rec.std_consistency_p / 4.0 + 3.0
-            else:
-                rec.water_weight_cs = 0.0
-
-    temp_cs = fields.Float("Temperature °c")
-    humidity_cs = fields.Float("Humidity %")
-    start_date_cs = fields.Date("Start Date")
-    end_date_cs = fields.Date("End Date")
-
-    comp_str_line_ids = fields.One2many(
-        'microsilica.compressive.strength.line',
-        'parent_id',
-        string="Compressive Strength Samples"
-    )
-
-    avg_7_strength = fields.Float("Avg Compressive Strength 7 Days (N/mm²)", compute="_compute_avg_strength_by_age", store=True)
-    avg_14_strength = fields.Float("Avg Compressive Strength 14 Days (N/mm²)", compute="_compute_avg_strength_by_age", store=True)
-    avg_28_strength = fields.Float("Avg Compressive Strength 28 Days (N/mm²)", compute="_compute_avg_strength_by_age", store=True)
-
-    comp_str_group_info = fields.Text("Compressive Strength Group Info", compute="_compute_comp_str_group_info")
-
-    @api.depends('comp_str_line_ids')
-    def _compute_comp_str_group_info(self):
-        import json
-        for rec in self:
-            groups = {}
-            for line in rec.comp_str_line_ids.sorted(lambda l: int(l.age_days)):
-                age = line.age_days
-                if age not in groups:
-                    groups[age] = {'age': age, 'count': 0, 'lines': [], 'avg': 0.0}
-                groups[age]['count'] += 1
-                groups[age]['lines'].append({
-                    'id': line.id,
-                    'sr_no': line.sr_no,
-                    'weight_g': line.weight_g,
-                    'density_g_cc': line.density_g_cc,
-                    'load_kN': line.load_kN,
-                    'comp_strength': line.comp_strength,
-                })
-            for age_key, g in groups.items():
-                vals = [l['comp_strength'] for l in g['lines'] if l['comp_strength']]
-                g['avg'] = sum(vals) / len(vals) if vals else 0.0
-            rec.comp_str_group_info = json.dumps(list(groups.values()))
-
-    @api.depends('comp_str_line_ids.comp_strength', 'comp_str_line_ids.age_days')
-    def _compute_avg_strength_by_age(self):
-        for rec in self:
-            rec.avg_7_strength = 0.0
-            rec.avg_14_strength = 0.0
-            rec.avg_28_strength = 0.0
-            for age, field in [(7, 'avg_7_strength'), (14, 'avg_14_strength'), (28, 'avg_28_strength')]:
-                lines = rec.comp_str_line_ids.filtered(lambda l: l.age_days == str(age))
-                vals = lines.mapped('comp_strength')
-                if vals:
-                    setattr(rec, field, sum(vals) / len(vals))
-
-    compressive_strength_conformity = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),
-    ], string='Conformity', default='fail', compute="_compute_compressive_strength_conformity")
-
-    compressive_strength_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_compressive_strength_nabl", store=True)
-
-    @api.depends('avg_28_strength', 'eln_ref')
-    def _compute_compressive_strength_conformity(self):
-        for record in self:
-            record.compressive_strength_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id', '=', '658798cvfd-889b-477c-a355-0476f6bcd0d7')])
-            materials = line.parameter_table
-            for material in materials:
-                req_min = material.req_min
-                req_max = material.req_max
-                mu_value = line.mu_value
-                lower = record.avg_28_strength - record.avg_28_strength * mu_value
-                upper = record.avg_28_strength + record.avg_28_strength * mu_value
-                if lower >= req_min and upper <= req_max:
-                    record.compressive_strength_conformity = 'pass'
-                    break
-                else:
-                    record.compressive_strength_conformity = 'fail'
-
-    @api.depends('avg_28_strength', 'eln_ref')
-    def _compute_compressive_strength_nabl(self):
-        for record in self:
-            record.compressive_strength_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id', '=', '658798cvfd-889b-477c-a355-0476f6bcd0d7')])
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            lower = record.avg_28_strength - record.avg_28_strength * mu_value
-            upper = record.avg_28_strength + record.avg_28_strength * mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.compressive_strength_nabl = 'pass'
-            else:
-                record.compressive_strength_nabl = 'fail'
-
-
-    # 3 — Specific Gravity
-
-    specific_gravity_name = fields.Char("Name", default="Specific Gravity of Micro Silica")
-    specific_gravity_visible = fields.Boolean("Specific Gravity Visible", compute="_compute_visible")
-
-    specific_gravity_tables = fields.One2many(
-        'microsilica.specific.gravity.line',
-        'parent_id',
-        string="Specific Gravity"
-    )
-
-    specific_gravity_avrg = fields.Float(string="Average", compute="_compute_specific_gravity_avrg")
-
-    specific_gravity_conformity = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),
-    ], string='Conformity', default='fail', compute="_compute_specific_gravity_conformity")
-
-    specific_gravity_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_specific_gravity_nabl", store=True)
-
-    @api.depends('specific_gravity_tables.spe_gravt_microsilica')
-    def _compute_specific_gravity_avrg(self):
-        for record in self:
-            vals = record.specific_gravity_tables.mapped('spe_gravt_microsilica')
-            if vals:
-                record.specific_gravity_avrg = sum(vals) / len(vals)
-            else:
-                record.specific_gravity_avrg = 0.0
-
-    @api.depends('specific_gravity_avrg', 'eln_ref')
-    def _compute_specific_gravity_conformity(self):
-        for record in self:
-            record.specific_gravity_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id', '=', '658fgtrcd-80ef-4de0-96ba-a279f27b9ede')])
-            materials = line.parameter_table
-            for material in materials:
-                req_min = material.req_min
-                req_max = material.req_max
-                mu_value = line.mu_value
-                lower = record.specific_gravity_avrg - record.specific_gravity_avrg * mu_value
-                upper = record.specific_gravity_avrg + record.specific_gravity_avrg * mu_value
-                if lower >= req_min and upper <= req_max:
-                    record.specific_gravity_conformity = 'pass'
-                    break
-                else:
-                    record.specific_gravity_conformity = 'fail'
-
-    @api.depends('specific_gravity_avrg', 'eln_ref')
-    def _compute_specific_gravity_nabl(self):
-        for record in self:
-            record.specific_gravity_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id', '=', '658fgtrcd-80ef-4de0-96ba-a279f27b9ede')])
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            lower = record.specific_gravity_avrg - record.specific_gravity_avrg * mu_value
-            upper = record.specific_gravity_avrg + record.specific_gravity_avrg * mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.specific_gravity_nabl = 'pass'
-            else:
-                record.specific_gravity_nabl = 'fail'
-
-
-    # 4 — Accelerated Pozzolanic Activity Index (7 days)
-
-    pozzolanic_name = fields.Char("Name", default="Accelerated pozzolanic activity index with portland cement")
-    pozzolanic_visible = fields.Boolean("Pozzolanic Visible", compute="_compute_visible")
-
-    temp_pozzolanic = fields.Float("Temperature °c")
-    humidity_pozzolanic = fields.Float("Humidity %")
-    start_date_pozzolanic = fields.Date("Start Date")
-    end_date_pozzolanic = fields.Date("End Date")
-
-    # Test Mixture
-    tm_high_range_water = fields.Integer(string="High Range water reducer (g)")
-    tm_wt_microsilica = fields.Integer(string="Weight of Microsilica (g)", default=50)
-    tm_wt_cement = fields.Integer(string="Weight of Cement (g)", default=450)
-    tm_wt_sand_grade1 = fields.Float(string="Weight of Standard Sand (g) Grade-I", default=458.33)
-    tm_wt_sand_grade2 = fields.Float(string="Weight of Standard Sand (g) Grade-II", default=458.33)
-    tm_wt_sand_grade3 = fields.Float(string="Weight of Standard Sand (g) Grade-III", default=458.33)
-    tm_quantity_water = fields.Integer(string="Quantity of Water (g)")
-
-    tm_measured_val1 = fields.Float(string="Measured Values")
-    tm_measured_val2 = fields.Float(string="Measured Values")
-    tm_measured_val3 = fields.Float(string="Measured Values")
-    tm_measured_val4 = fields.Float(string="Measured Values")
-
-    tm_avg_measured = fields.Float(string="Average", compute="_compute_tm_avg_measured")
-    tm_percent_flow = fields.Float(string="% Flow", compute="_compute_tm_flow")
-
-    @api.depends('tm_measured_val1', 'tm_measured_val2', 'tm_measured_val3', 'tm_measured_val4')
-    def _compute_tm_avg_measured(self):
-        for rec in self:
-            vals = [v for v in [rec.tm_measured_val1, rec.tm_measured_val2, rec.tm_measured_val3, rec.tm_measured_val4] if v]
-            rec.tm_avg_measured = sum(vals) / len(vals) if vals else 0.0
-
-    @api.depends('tm_avg_measured')
-    def _compute_tm_flow(self):
-        for rec in self:
-            rec.tm_percent_flow = rec.tm_avg_measured - 100
-
-    # 7 Days Casting — Test Mixture
-    tm_casting_date = fields.Date(string="Date of Casting")
-    tm_testing_date = fields.Date(string="Date of Testing", compute="_compute_tm_testing_date")
-    tm_casting_line_ids = fields.One2many('microsilica.pozzolanic.tm.line', 'parent_id', string="Test Mixture 7 Days")
-    tm_avg_7days = fields.Float("Average", compute="_compute_tm_avg_7days")
-    tm_comp_strength_7 = fields.Float("Compressive Strength", compute="_compute_tm_comp_7")
-
-    @api.depends('tm_casting_date')
-    def _compute_tm_testing_date(self):
-        for rec in self:
-            if rec.tm_casting_date:
-                cast = fields.Datetime.from_string(rec.tm_casting_date)
-                rec.tm_testing_date = fields.Datetime.to_string(cast + timedelta(days=7))
-            else:
-                rec.tm_testing_date = False
-
-    @api.depends('tm_casting_line_ids.compressive_strength')
-    def _compute_tm_avg_7days(self):
-        for rec in self:
-            vals = rec.tm_casting_line_ids.mapped('compressive_strength')
-            rec.tm_avg_7days = round(sum(vals) / len(vals), 2) if vals else 0
-
-    @api.depends('tm_avg_7days')
-    def _compute_tm_comp_7(self):
-        for rec in self:
-            int_part = math.floor(rec.tm_avg_7days)
-            frac = rec.tm_avg_7days - int_part
-            if 0 < frac <= 0.25:
-                rec.tm_comp_strength_7 = int_part
-            elif 0.25 < frac <= 0.75:
-                rec.tm_comp_strength_7 = int_part + 0.5
-            elif 0.75 < frac <= 1:
-                rec.tm_comp_strength_7 = int_part + 1
-            else:
-                rec.tm_comp_strength_7 = 0
-
-    # Control Sample
-    cs_high_range_water = fields.Integer(string="High Range water reducer (g)")
-    cs_wt_cement = fields.Integer(string="Weight of Cement (g)", default=500)
-    cs_wt_sand_grade1 = fields.Float(string="Weight of Standard Sand (g) Grade-I", default=458.33)
-    cs_wt_sand_grade2 = fields.Float(string="Weight of Standard Sand (g) Grade-II", default=458.33)
-    cs_wt_sand_grade3 = fields.Float(string="Weight of Standard Sand (g) Grade-III", default=458.33)
-    cs_quantity_water = fields.Integer(string="Quantity of Water (g)")
-
-    cs_measured_val1 = fields.Float(string="Measured Values")
-    cs_measured_val2 = fields.Float(string="Measured Values")
-    cs_measured_val3 = fields.Float(string="Measured Values")
-    cs_measured_val4 = fields.Float(string="Measured Values")
-
-    cs_avg_measured = fields.Float(string="Average", compute="_compute_cs_avg_measured")
-    cs_percent_flow = fields.Float(string="% Flow", compute="_compute_cs_flow")
-
-    @api.depends('cs_measured_val1', 'cs_measured_val2', 'cs_measured_val3', 'cs_measured_val4')
-    def _compute_cs_avg_measured(self):
-        for rec in self:
-            vals = [v for v in [rec.cs_measured_val1, rec.cs_measured_val2, rec.cs_measured_val3, rec.cs_measured_val4] if v]
-            rec.cs_avg_measured = sum(vals) / len(vals) if vals else 0.0
-
-    @api.depends('cs_avg_measured')
-    def _compute_cs_flow(self):
-        for rec in self:
-            rec.cs_percent_flow = rec.cs_avg_measured - 100
-
-    # 7 Days Casting — Control Sample
-    cs_casting_date = fields.Date(string="Date of Casting")
-    cs_testing_date = fields.Date(string="Date of Testing", compute="_compute_cs_testing_date")
-    cs_casting_line_ids = fields.One2many('microsilica.pozzolanic.cs.line', 'parent_id', string="Control Sample 7 Days")
-    cs_avg_7days = fields.Float("Average", compute="_compute_cs_avg_7days")
-    cs_comp_strength_7 = fields.Float("Compressive Strength", compute="_compute_cs_comp_7")
-
-    @api.depends('cs_casting_date')
-    def _compute_cs_testing_date(self):
-        for rec in self:
-            if rec.cs_casting_date:
-                cast = fields.Datetime.from_string(rec.cs_casting_date)
-                rec.cs_testing_date = fields.Datetime.to_string(cast + timedelta(days=7))
-            else:
-                rec.cs_testing_date = False
-
-    @api.depends('cs_casting_line_ids.cs_compressive_strength')
-    def _compute_cs_avg_7days(self):
-        for rec in self:
-            vals = rec.cs_casting_line_ids.mapped('cs_compressive_strength')
-            rec.cs_avg_7days = round(sum(vals) / len(vals), 2) if vals else 0
-
-    @api.depends('cs_avg_7days')
-    def _compute_cs_comp_7(self):
-        for rec in self:
-            int_part = math.floor(rec.cs_avg_7days)
-            frac = rec.cs_avg_7days - int_part
-            if 0 < frac <= 0.25:
-                rec.cs_comp_strength_7 = int_part
-            elif 0.25 < frac <= 0.75:
-                rec.cs_comp_strength_7 = int_part + 0.5
-            elif 0.75 < frac <= 1:
-                rec.cs_comp_strength_7 = int_part + 1
-            else:
-                rec.cs_comp_strength_7 = 0
-
-    # Accelerated Pozzolanic Activity Index
-    pozzolanic_index = fields.Float(
-        "Accelerated Pozzolanic Activity Index 7 Days (%)",
-        compute="_compute_pozzolanic_index"
-    )
-
-    @api.depends('tm_avg_7days', 'cs_avg_7days')
-    def _compute_pozzolanic_index(self):
-        for rec in self:
-            if rec.cs_avg_7days:
-                rec.pozzolanic_index = round((rec.tm_avg_7days / rec.cs_avg_7days) * 100, 2)
-            else:
-                rec.pozzolanic_index = 0
-
-    pozzolanic_conformity = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),
-    ], string='Conformity', default='fail', compute="_compute_pozzolanic_conformity")
-
-    pozzolanic_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_pozzolanic_nabl", store=True)
-
-    @api.depends('pozzolanic_index', 'eln_ref')
-    def _compute_pozzolanic_conformity(self):
-        for record in self:
-            record.pozzolanic_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id', '=', 'ddd2525aw-19f0-48b6-8e09-e7076a4b04b5')])
-            materials = line.parameter_table
-            for material in materials:
-                req_min = material.req_min
-                req_max = material.req_max
-                mu_value = line.mu_value
-                lower = record.pozzolanic_index - record.pozzolanic_index * mu_value
-                upper = record.pozzolanic_index + record.pozzolanic_index * mu_value
-                if lower >= req_min and upper <= req_max:
-                    record.pozzolanic_conformity = 'pass'
-                    break
-                else:
-                    record.pozzolanic_conformity = 'fail'
-
-    @api.depends('pozzolanic_index', 'eln_ref')
-    def _compute_pozzolanic_nabl(self):
-        for record in self:
-            record.pozzolanic_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id', '=', 'ddd2525aw-19f0-48b6-8e09-e7076a4b04b5')])
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            lower = record.pozzolanic_index - record.pozzolanic_index * mu_value
-            upper = record.pozzolanic_index + record.pozzolanic_index * mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.pozzolanic_nabl = 'pass'
-            else:
-                record.pozzolanic_nabl = 'fail'
-
-
-    # Compute Visible
-    @api.depends('sample_parameters')
-    def _compute_visible(self):
-        for record in self:
-            record.wet_sieving_visible = False
-            record.compressive_strength_visible = False
-            record.specific_gravity_visible = False
-            record.pozzolanic_visible = False
-
-            for sample in record.sample_parameters:
-                if sample.internal_id == 'ddd2525aw-19f0-48b6-8e09-e7076a4b04b5':
-                    record.pozzolanic_visible = True
-                if sample.internal_id == '52147fgtre-5f8c-44a2-984b-6ad2a17d250c':
-                    record.wet_sieving_visible = True
-                if sample.internal_id == '658fgtrcd-80ef-4de0-96ba-a279f27b9ede':
-                    record.specific_gravity_visible = True
-                if sample.internal_id == '658798cvfd-889b-477c-a355-0476f6bcd0d7':
-                    record.compressive_strength_visible = True
-
-    def open_eln_page(self):
-        current_user = self.env.user
-        technician_results = self.eln_ref.parameters_result.filtered(
-            lambda r: r.technician == current_user
-        )
-
-        for result in technician_results:
-            if result.parameter.internal_id == 'ddd2525aw-19f0-48b6-8e09-e7076a4b04b5':
-                result.result_char = round(self.pozzolanic_index, 2)
-                result.calculated = True
-                result.nabl_status = 'nabl' if self.pozzolanic_nabl == 'pass' else 'non-nabl'
-                continue
-
-            if result.parameter.internal_id == '52147fgtre-5f8c-44a2-984b-6ad2a17d250c':
-                result.result_char = round(self.avg_percent_passing, 2)
-                result.calculated = True
-                result.nabl_status = 'nabl' if self.wet_sieving_nabl == 'pass' else 'non-nabl'
-                continue
-
-            if result.parameter.internal_id == '658fgtrcd-80ef-4de0-96ba-a279f27b9ede':
-                result.result_char = round(self.specific_gravity_avrg, 2)
-                result.calculated = True
-                result.nabl_status = 'nabl' if self.specific_gravity_nabl == 'pass' else 'non-nabl'
-                continue
-
-            if result.parameter.internal_id == '658798cvfd-889b-477c-a355-0476f6bcd0d7':
-                result.result_char = round(self.avg_28_strength, 2)
-                result.calculated = True
-                result.nabl_status = 'nabl' if self.compressive_strength_nabl == 'pass' else 'non-nabl'
-                continue
-
-        return {
-            'view_mode': 'form',
-            'res_model': "lerm.eln",
-            'type': 'ir.actions.act_window',
-            'target': 'current',
-            'res_id': self.eln_ref.id,
-        }
-
-    @api.model
-    def create(self, vals):
-        record = super(Microsilica, self).create(vals)
-        record.eln_ref.write({'model_id': record.id})
-        return record
-
-    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
-    def _compute_sample_parameters(self):
-        current_user = self.env.user
-
-        for record in self:
-            if not record.eln_ref:
-                record.sample_parameters = [(6, 0, [])]
-                continue
-
-            if (
-                current_user.has_group('lerm_civil.kes_admin_access_group')
-                or current_user.has_group('lerm_civil.lerm_sample_verification')
-                or current_user.has_group('lerm_civil.lerm_sample_approval')
-            ):
-                parameter_ids = record.eln_ref.parameters_result.mapped('parameter').ids
-            else:
-                user_param_results = record.eln_ref.parameters_result.filtered(
-                    lambda r: r.technician and r.technician.id == current_user.id
-                )
-                parameter_ids = user_param_results.mapped('parameter').ids
-
-            record.sample_parameters = [(6, 0, parameter_ids)]
-
+    
     def prefill_data(self):
+        # import wdb; wdb.set_trace()
         return {
             'name': 'Prefill Data',
             'type': 'ir.actions.act_window',
@@ -565,8 +69,685 @@ class Microsilica(models.Model):
             'context': {
                 'default_product_id': self.eln_ref.sample_id.material_id.id,
                 'exclude_sample_id': self.eln_ref.sample_id.id,
-            },
+                },
         }
+
+
+
+
+     #  FINENESS BY WET SIEVING ( 45 MICRON ) 
+
+    particles_retained_name = fields.Char("Name",default="Fineness By Wet Sieving (Sieve Size in mm-0.045mm)")
+    particles_retained_visible = fields.Boolean("Particles retained Visible",compute="_compute_visible")
+
+    particles_retained_line_ids = fields.One2many(
+        "microsilica.particles.retained.line",
+        "parent_id",
+        string="Trials"
+    )
+
+    avg_percentage_passing = fields.Float(
+        string="Average Percentage Passing",
+        compute="_compute_avg_percentage_passing",
+        store=True,
+        digits=(16, 2)
+    )
+
+    @api.depends("particles_retained_line_ids.percentage_passing")
+    def _compute_avg_percentage_passing(self):
+        for rec in self:
+            values = rec.particles_retained_line_ids.mapped("percentage_passing")
+            rec.avg_percentage_passing = (
+                round(sum(values) / len(values), 2)
+                if values else 0.0
+            )
+
+
+    avg_percentage_passing_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Conformity", compute="_compute_avg_percentage_passing_conformity", store=True)
+
+    @api.depends('avg_percentage_passing','eln_ref','grade')
+    def _compute_avg_percentage_passing_conformity(self):
+        
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_percentage_passing_conformity = 'na'
+                continue
+            record.avg_percentage_passing_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_percentage_passing - record.avg_percentage_passing*mu_value
+                    upper = record.avg_percentage_passing + record.avg_percentage_passing*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.avg_percentage_passing_conformity = 'pass'
+                        break
+                    else:
+                        record.avg_percentage_passing_conformity = 'fail'
+
+    avg_percentage_passing_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_avg_percentage_passing_nabl", store=True)
+    
+    @api.depends('avg_percentage_passing','eln_ref','grade')
+    def _compute_avg_percentage_passing_nabl(self):
+        
+        for record in self:
+            record.avg_percentage_passing_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','52147fgtre-5f8c-44a2-984b-6ad2a17d250c')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                  lab_min = line.lab_min_value
+                  lab_max = line.lab_max_value
+                  mu_value = line.mu_value
+            
+                  lower = record.avg_percentage_passing - record.avg_percentage_passing*mu_value
+                  upper = record.avg_percentage_passing + record.avg_percentage_passing*mu_value
+                  if lower >= lab_min and upper <= lab_max:
+                     record.avg_percentage_passing_nabl = 'pass'
+                     break
+                  else:
+                     record.avg_percentage_passing_nabl = 'fail'
+
+
+    percentage_passing_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    percentage_passing_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_percentage_passing_final_report", store=True)
+    
+    @api.depends('avg_percentage_passing_nabl', 'percentage_passing_report_type')
+    def _compute_percentage_passing_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.percentage_passing_report_type == 'nabl':
+                rec.percentage_passing_final_report = 'nabl'
+    
+            elif rec.percentage_passing_report_type == 'non_nabl':
+                rec.percentage_passing_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.avg_percentage_passing_nabl == 'pass':
+                    rec.percentage_passing_final_report = 'nabl'
+                else:
+                    rec.percentage_passing_final_report = 'non_nabl'
+
+
+
+    # Compressive Strength Of Micro Silica
+
+    compressive_name = fields.Char("Name",default="Compressive Strength Of Micro Silica")
+    compressive_visible = fields.Boolean("Compressive Strength Of Micro Silica Visible",compute="_compute_visible")
+
+    compressive_lines = fields.One2many('microsilica.compressive.line','parent_id',string="Compressive",default=lambda self: self.compressive_lines_days())
+
+    @api.model
+    def compressive_lines_days(self):
+        default_lines = [
+            
+            (0, 0, {'days': '7 Days'}),
+            (0, 0, {'days': '7 Days'}),
+            (0, 0, {'days': '7 Days'}),
+            (0, 0, {'days': '14 Days'}),
+            (0, 0, {'days': '14 Days'}),
+            (0, 0, {'days': '14 Days'}),
+            (0, 0, {'days': '28 Days'}),
+            (0, 0, {'days': '28 Days'}),
+            (0, 0, {'days': '28 Days'}),
+            
+        ]
+        return default_lines 
+
+    @api.onchange('start_date', 'compressive_lines')
+    def _onchange_start_date_or_lines(self):
+        for line in self.compressive_lines:
+            if not line.dt_of_casting:  
+                line.dt_of_casting = self.start_date
+
+    
+
+    avg_7_days = fields.Float(string="Avg Compressive Strength (7 Days)", compute="_compute_avg_strengths", store=True)
+
+    avg_14_days = fields.Float(string="Avg Compressive Strength (14 Days)", compute="_compute_avg_strengths", store=True)
+
+    avg_28_days = fields.Float(string="Avg Compressive Strength (28 Days)", compute="_compute_avg_strengths", store=True)
+
+
+    @api.depends('compressive_lines.days', 'compressive_lines.compressive_strength')
+    def _compute_avg_strengths(self):
+        for rec in self:
+            
+            strengths_7 = [line.compressive_strength for line in rec.compressive_lines if line.days == '7 Days' and line.compressive_strength]
+
+            strengths_14 = [line.compressive_strength for line in rec.compressive_lines if line.days == '14 Days' and line.compressive_strength]
+            
+            strengths_28 = [line.compressive_strength for line in rec.compressive_lines if line.days == '28 Days' and line.compressive_strength]
+
+            
+            rec.avg_7_days = mean(strengths_7) if strengths_7 else 0.0
+            rec.avg_14_days = mean(strengths_14) if strengths_14 else 0.0
+            rec.avg_28_days = mean(strengths_28) if strengths_28 else 0.0
+
+    
+
+    
+
+    avg_7_days_confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),('na', 'NA'),], string='Confirmity',compute="_compute_avg_7_days_confirmity")
+    
+    @api.depends('avg_7_days','eln_ref','grade')
+    def _compute_avg_7_days_confirmity(self):
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_7_days_confirmity = 'na'
+                continue
+            record.avg_7_days_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    lower = record.avg_7_days - record.avg_7_days*mu_value
+                    upper = record.avg_7_days + record.avg_7_days*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.avg_7_days_confirmity = 'pass'
+                        break
+                    else:
+                        record.avg_7_days_confirmity = 'fail'
+
+    avg_7_days_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string='NABL', compute="_compute_avg_7_days_nabl",store=True)
+
+    @api.depends('avg_7_days','eln_ref','grade')
+    def _compute_avg_7_days_nabl(self):
+        
+        for record in self:
+            record.avg_7_days_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','658874seqa-bfaf-4667-aca6-b69c321af63b')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_7_days - record.avg_7_days*mu_value
+                    upper = record.avg_7_days + record.avg_7_days*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.avg_7_days_nabl = 'pass'
+                        break
+                    else:
+                        record.avg_7_days_nabl = 'fail'
+
+    avg_7_days_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_7_days_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_7_days_final_report", store=True)
+
+    @api.depends('avg_7_days_nabl', 'avg_7_days_report_type')
+    def _compute_avg_7_days_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_7_days_report_type == 'nabl':
+            rec.avg_7_days_final_report = 'nabl'
+
+        elif rec.avg_7_days_report_type == 'non_nabl':
+            rec.avg_7_days_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_7_days_nabl == 'pass':
+                rec.avg_7_days_final_report = 'nabl'
+            else:
+                rec.avg_7_days_final_report = 'non_nabl'  
+
+
+    avg_14_days_confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),('na', 'NA'),], string='Confirmity',compute="_compute_avg_14_days_confirmity")
+    
+    @api.depends('avg_14_days','eln_ref','grade')
+    def _compute_avg_14_days_confirmity(self):
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_14_days_confirmity = 'na'
+                continue
+            record.avg_14_days_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    lower = record.avg_14_days - record.avg_14_days*mu_value
+                    upper = record.avg_14_days + record.avg_14_days*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.avg_14_days_confirmity = 'pass'
+                        break
+                    else:
+                        record.avg_14_days_confirmity = 'fail'
+
+    avg_14_days_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string='NABL', compute="_compute_avg_14_days_nabl",store=True)
+
+    @api.depends('avg_14_days','eln_ref','grade')
+    def _compute_avg_14_days_nabl(self):
+        
+        for record in self:
+            record.avg_14_days_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_14_days - record.avg_14_days*mu_value
+                    upper = record.avg_14_days + record.avg_14_days*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.avg_14_days_nabl = 'pass'
+                        break
+                    else:
+                        record.avg_14_days_nabl = 'fail'
+
+
+    avg_14_days_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_14_days_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_14_days_final_report", store=True)
+
+    @api.depends('avg_14_days_nabl', 'avg_14_days_report_type')
+    def _compute_avg_14_days_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_14_days_report_type == 'nabl':
+            rec.avg_14_days_final_report = 'nabl'
+
+        elif rec.avg_14_days_report_type == 'non_nabl':
+            rec.avg_14_days_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_14_days_nabl == 'pass':
+                rec.avg_14_days_final_report = 'nabl'
+            else:
+                rec.avg_14_days_final_report = 'non_nabl'  
+
+
+    avg_28_days_confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),('na', 'NA'),], string='Confirmity',compute="_compute_avg_28_days_confirmity")
+    
+    @api.depends('avg_28_days','eln_ref','grade')
+    def _compute_avg_28_days_confirmity(self):
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_28_days_confirmity = 'na'
+                continue
+            record.avg_28_days_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d62e47c1-64b1-4589-b412-677f1e21377b')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d62e47c1-64b1-4589-b412-677f1e21377b')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    lower = record.avg_28_days - record.avg_28_days*mu_value
+                    upper = record.avg_28_days + record.avg_28_days*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.avg_28_days_confirmity = 'pass'
+                        break
+                    else:
+                        record.avg_28_days_confirmity = 'fail'
+
+    avg_28_days_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string='NABL', compute="_compute_avg_28_days_nabl",store=True)
+
+    @api.depends('avg_28_days','eln_ref','grade')
+    def _compute_avg_28_days_nabl(self):
+        
+        for record in self:
+            record.avg_28_days_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d62e47c1-64b1-4589-b412-677f1e21377b')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d62e47c1-64b1-4589-b412-677f1e21377b')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_28_days - record.avg_28_days*mu_value
+                    upper = record.avg_28_days + record.avg_28_days*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.avg_28_days_nabl = 'pass'
+                        break
+                    else:
+                        record.avg_28_days_nabl = 'fail'
+
+            
+    avg_28_days_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    avg_28_days_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_avg_28_days_final_report", store=True)
+
+    @api.depends('avg_28_days_nabl', 'avg_28_days_report_type')
+    def _compute_avg_28_days_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.avg_28_days_report_type == 'nabl':
+            rec.avg_28_days_final_report = 'nabl'
+
+        elif rec.avg_28_days_report_type == 'non_nabl':
+            rec.avg_28_days_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.avg_28_days_nabl == 'pass':
+                rec.avg_28_days_final_report = 'nabl'
+            else:
+                rec.avg_28_days_final_report = 'non_nabl'
+
+
+    # SPECIFIC GRAVITY OF Micro Silica
+
+    specific_gravity_name = fields.Char("Name",default="Specific Gravity of Micro Silica")
+    specific_gravity_visible = fields.Boolean("Specific Gravity of Micro Silica Visible",compute="_compute_visible")
+
+    specific_gravity_line_ids = fields.One2many(
+        "microsilica.specific.gravity.line",
+        "parent_id",
+        string="Trial Lines",
+    )
+
+    average_specific_gravity = fields.Float(
+        string="Average Specific Gravity",
+        compute="_compute_average_specific_gravity",
+        store=True,
+    )
+
+    @api.depends("specific_gravity_line_ids.specific_gravity")
+    def _compute_average_specific_gravity(self):
+        for rec in self:
+            values = rec.specific_gravity_line_ids.mapped("specific_gravity")
+            values = [v for v in values if v]
+
+            if values:
+                rec.average_specific_gravity = sum(values) / len(values)
+            else:
+                rec.average_specific_gravity = 0.0
+
+
+    average_specific_gravity_confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),('na', 'NA'),], string='Confirmity',compute="_compute_average_specific_gravity_confirmity")
+    
+    @api.depends('average_specific_gravity','eln_ref','grade')
+    def _compute_average_specific_gravity_confirmity(self):
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_specific_gravity_confirmity = 'na'
+                continue
+            record.average_specific_gravity_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    lower = record.average_specific_gravity - record.average_specific_gravity*mu_value
+                    upper = record.average_specific_gravity + record.average_specific_gravity*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.average_specific_gravity_confirmity = 'pass'
+                        break
+                    else:
+                        record.average_specific_gravity_confirmity = 'fail'
+
+    average_specific_gravity_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string='NABL', compute="_compute_average_specific_gravity_nabl",store=True)
+
+    @api.depends('average_specific_gravity','eln_ref','grade')
+    def _compute_average_specific_gravity_nabl(self):
+        
+        for record in self:
+            record.average_specific_gravity_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','658fgtrcd-80ef-4de0-96ba-a279f27b9ede')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.average_specific_gravity - record.average_specific_gravity*mu_value
+                    upper = record.average_specific_gravity + record.average_specific_gravity*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.average_specific_gravity_nabl = 'pass'
+                        break
+                    else:
+                        record.average_specific_gravity_nabl = 'fail'
+
+    specific_gravity_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    specific_gravity_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_specific_gravity_final_report", store=True)
+
+    @api.depends('average_specific_gravity_nabl', 'specific_gravity_report_type')
+    def _compute_specific_gravity_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.specific_gravity_report_type == 'nabl':
+            rec.specific_gravity_final_report = 'nabl'
+
+        elif rec.specific_gravity_report_type == 'non_nabl':
+            rec.specific_gravity_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.average_specific_gravity_nabl == 'pass':
+                rec.specific_gravity_final_report = 'nabl'
+            else:
+                rec.specific_gravity_final_report = 'non_nabl'
+
+   
+    
+    
+
+    # Compute Visible
+    @api.depends('eln_ref','sample_parameters')
+    def _compute_visible(self):
+
+        for record in self:
+            record.particles_retained_visible = False
+            record.compressive_visible = False
+            record.specific_gravity_visible = False
+
+        
+    
+
+
+
+        for sample in record.sample_parameters:
+                print("Samples internal id",sample.internal_id)
+                # import wdb;wdb.set_trace()
+
+
+                # particles retained
+                if sample.internal_id == '52147fgtre-5f8c-44a2-984b-6ad2a17d250c':
+                    record.particles_retained_visible = True
+
+                if sample.internal_id == '658798cvfd-889b-477c-a355-0476f6bcd0d7':
+                    record.compressive_visible = True
+
+                if sample.internal_id == '658fgtrcd-80ef-4de0-96ba-a279f27b9ede':
+                    record.specific_gravity_visible = True
+
+
+    def open_eln_page(self):
+        # parameter_based_assignment
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in technician_results:
+            # import wdb;wdb.set_trace()
+
+
+            # FINENESS BY WET SIEVING ( 45 MICRON ) 
+            if result.parameter.internal_id == '52147fgtre-5f8c-44a2-984b-6ad2a17d250c':
+                result.result_char = round(self.avg_percentage_passing,2)
+                result.calculated = True
+                if self.avg_percentage_passing_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            
+            # Compressive Strength
+            if result.parameter.internal_id == '658798cvfd-889b-477c-a355-0476f6bcd0d7':
+                result.calculated = True
+
+            # Compressive Strength (7 Days)
+            if result.parameter.internal_id == '658874seqa-bfaf-4667-aca6-b69c321af63b':
+                result.result_char = round(self.avg_7_days,2)
+                result.calculated = True
+                if self.avg_7_days_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            # Compressive Strength (14 Days)
+            if result.parameter.internal_id == '14785dfrte-42b6-4d86-9ac7-a2758b3f4e5a':
+                result.result_char = round(self.avg_14_days,2)
+                result.calculated = True
+                if self.avg_14_days_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            # Compressive Strength (28 Days)
+            if result.parameter.internal_id == 'd62e47c1-64b1-4589-b412-677f1e21377b':
+                result.result_char = round(self.avg_28_days,2)
+                result.calculated = True
+                if self.avg_28_days_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            # SPECIFIC GRAVITY OF Micro Silica							
+            if result.parameter.internal_id == '658fgtrcd-80ef-4de0-96ba-a279f27b9ede':
+                result.result_char = round(self.average_specific_gravity,2)
+                result.calculated = True
+                if self.average_specific_gravity_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+        return {
+                'view_mode': 'form',
+                'res_model': "lerm.eln",
+                'type': 'ir.actions.act_window',
+                'target': 'current',
+                'res_id': self.eln_ref.id,
+                
+            }            
+             
+                        
+    @api.model
+    def create(self, vals):
+        # import wdb;wdb.set_trace()
+        record = super(Microsilica, self).create(vals)
+        # record.get_all_fields()
+        record.eln_ref.write({'model_id':record.id})
+        return record
+    
+    
+    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
+    def _compute_sample_parameters(self):
+        current_user = self.env.user
+
+        for record in self:
+            if not record.eln_ref:
+                record.sample_parameters = [(6, 0, [])]
+                continue
+
+            # Check if user is in Lerm Admin group
+            if (
+                current_user.has_group('lerm_civil.kes_admin_access_group')
+                or current_user.has_group('lerm_civil.lerm_sample_verification')
+                or current_user.has_group('lerm_civil.lerm_sample_approval')
+            ):
+                # Admin sees all parameters
+                parameter_ids = record.eln_ref.parameters_result.mapped('parameter').ids
+            else:
+                # Other users only see parameters assigned to them
+                user_param_results = record.eln_ref.parameters_result.filtered(
+                    lambda r: r.technician and r.technician.id == current_user.id
+                )
+                parameter_ids = user_param_results.mapped('parameter').ids
+
+            record.sample_parameters = [(6, 0, parameter_ids)]
+    def get_all_fields(self):
+        record = self.env['mechanical.microsilica'].browse(self.ids[0])
+        field_values = {}
+        for field_name, field in record._fields.items():
+            field_value = record[field_name]
+            field_values[field_name] = field_value
+
+        return field_values
+
 
     notes_id = fields.One2many('mechanical.microsilica.notes', 'parent_id', string="Notes", default=lambda self: self._default_notes_lines())
 
@@ -581,186 +762,207 @@ class Microsilica(models.Model):
             (0, 0, {'sr_no': 'vi', 'notes': 'The laboratory assumes no responsibility for the purpose for which the test results are used or for any subsequent actions taken based on these results.'}),
         ]
 
-
-# ============================================================
-# Child Line Models
-# ============================================================
-
-class MicrosilicaWetSievingLine(models.Model):
-    _name = "microsilica.wet.sieving.line"
+    
+class MSParticlesRetainedLine(models.Model):
+    _name= "microsilica.particles.retained.line"
 
     parent_id = fields.Many2one('mechanical.microsilica', string="Parent Id")
 
-    sr_no = fields.Integer("S.No", readonly=True, copy=False, default=1)
-    sample_weight = fields.Float("Weight of Sample (Ws) (g)", default=100.0)
-    weight_retained = fields.Float("Weight of Residue Retained (Wr) (g)")
-    weight_passing = fields.Float("Weight of Material Passing (Ws - Wr) (g)", compute="_compute_weight_passing")
-    percent_passing = fields.Float("% of Material Passing", compute="_compute_percent_passing")
+    sr_no = fields.Integer(string="Sr.No.", readonly=True, copy=False, default=1)
 
-    @api.depends('sample_weight', 'weight_retained')
-    def _compute_weight_passing(self):
-        for rec in self:
-            rec.weight_passing = rec.sample_weight - rec.weight_retained
+    weight_sample = fields.Float(
+        string="Weight of Sample (Ws)"
+    )
 
-    @api.depends('weight_passing', 'sample_weight')
-    def _compute_percent_passing(self):
+    weight_residue = fields.Float(
+        string="Weight of Residue Retained (Wr)"
+    )
+
+    weight_material_passing = fields.Float(
+        string="Weight of Material Passing (Ws - Wr)",
+        compute="_compute_values",
+        store=True,
+        digits=(16, 2)
+    )
+
+    percentage_passing = fields.Float(
+        string="Percentage of Material Passing",
+        compute="_compute_values",
+        store=True,
+        digits=(16, 2)
+    )
+
+    @api.depends("weight_sample", "weight_residue")
+    def _compute_values(self):
         for rec in self:
-            if rec.sample_weight:
-                rec.percent_passing = (rec.weight_passing / rec.sample_weight) * 100
+
+            rec.weight_material_passing = (
+                rec.weight_sample - rec.weight_residue
+            )
+
+            if rec.weight_sample:
+                rec.percentage_passing = round(
+                    (rec.weight_material_passing / rec.weight_sample) * 100,
+                    2
+                )
             else:
-                rec.percent_passing = 0.0
+                rec.percentage_passing = 0.0
+
+
 
     @api.model
     def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
         if vals.get('parent_id'):
-            existing = self.search([('parent_id', '=', vals['parent_id'])])
-            vals['sr_no'] = (max(existing.mapped('sr_no')) + 1) if existing else 1
-        return super(MicrosilicaWetSievingLine, self).create(vals)
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sr_no'))
+                vals['sr_no'] = max_serial_no + 1
+
+        return super(MSParticlesRetainedLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.sr_no = index + 1
 
 
-class MicrosilicaCompressiveStrengthLine(models.Model):
-    _name = "microsilica.compressive.strength.line"
 
+class MSCompressiveCementLine(models.Model):
+    _name = "microsilica.compressive.line"
     parent_id = fields.Many2one('mechanical.microsilica', string="Parent Id")
 
-    sr_no = fields.Integer("S.No", readonly=True, copy=False, default=1)
-    age_days = fields.Selection([
-        ('7', '7 Days'),
-        ('14', '14 Days'),
-        ('28', '28 Days'),
-    ], string="Age in Days", default='7')
-    weight_g = fields.Float("Weight (g)")
-    density_g_cc = fields.Float("Density (g/cc)", compute="_compute_density", store=True)
-    load_kN = fields.Float("Load at Failure (kN)")
-    comp_strength = fields.Float("Compressive Strength (N/mm²)", compute="_compute_comp_strength", store=True)
+    serial_no = fields.Integer(string="Specimen No", readonly=True, copy=False, default=1)
 
-    CUBE_DIM_CM = 7.06
-    CUBE_DIM_MM = 70.6
+   
+    
+    dt_of_casting = fields.Date(string="Date of Casting ")
+    days = fields.Char(string="Age in Days")
+    dt_of_testing = fields.Date(string="Date of Testing")
+    wt_of_cube = fields.Float(string="Weight (g)")
+    density = fields.Float(string="Density (g/cc)",compute="_compute_density",store=True)
+    area = fields.Float(string="Area",compute="_compute_area",store=True)
+    load = fields.Float(string="Load at Failure (kN)")
+    compressive_strength = fields.Float(string="Compressive Strength of Individual Sample (f1) in (N/mm2)",compute="_compute_strength")
 
-    @api.depends('weight_g')
+    
+
+    @api.onchange('days')
+    def _onchange_days_set_testing_date(self):
+        if self.dt_of_casting and self.days:
+            self.dt_of_testing = self.dt_of_casting + timedelta(days=self.days)
+        else:
+            self.dt_of_testing = False
+
+    @api.depends('parent_id')
+    def _compute_area(self):
+        for rec in self:
+            rec.area = 70.6 * 70.6
+
+    
+
+    @api.depends('wt_of_cube')
     def _compute_density(self):
-        vol = self.CUBE_DIM_CM ** 3
-        for rec in self:
-            rec.density_g_cc = rec.weight_g / vol if vol else 0.0
+      volume = 7.06 * 7.06 * 7.06  
 
-    @api.depends('load_kN')
-    def _compute_comp_strength(self):
-        area = self.CUBE_DIM_MM ** 2
+      for rec in self:
+        rec.density = (rec.wt_of_cube or 0.0) / volume
+
+    @api.depends('load', 'area')
+    def _compute_strength(self):
         for rec in self:
-            rec.comp_strength = (rec.load_kN * 1000.0) / area if area else 0.0
+            if rec.area:
+                rec.compressive_strength = (rec.load * 1000) / rec.area
+            else:
+                rec.compressive_strength = 0.0
+
+
+
 
     @api.model
     def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
         if vals.get('parent_id'):
-            existing = self.search([('parent_id', '=', vals['parent_id'])])
-            vals['sr_no'] = (max(existing.mapped('sr_no')) + 1) if existing else 1
-        return super(MicrosilicaCompressiveStrengthLine, self).create(vals)
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(MSCompressiveCementLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
         records = self.sorted('id')
         for index, record in enumerate(records):
-            record.sr_no = index + 1
+            record.serial_no = index + 1
 
 
-class MicrosilicaSpecificGravityLine(models.Model):
+
+
+class MSSpecificGravityLine(models.Model):
     _name = "microsilica.specific.gravity.line"
+    _description = "Specific Gravity Trial"
 
     parent_id = fields.Many2one('mechanical.microsilica', string="Parent Id")
 
-    sr_no = fields.Integer("Trial", readonly=True, copy=False, default=1)
-    w1_microsilica = fields.Float("Weight of Micro Silica Sample - W1 (g)", default=64.0)
-    v1_initial = fields.Float("Initial Reading of Flask - V1 (ml)")
-    v2_final = fields.Float("Final Reading of Flask - V2 (ml)")
-    volume_silica = fields.Float("Volume of Micro Silica (V2-V1) (ml)", compute="_compute_volume_silica")
-    wt_equal_vol_water = fields.Float("Weight of Equal Volume of Water (g)", compute="_compute_wt_equal_vol_water")
-    spe_gravt_microsilica = fields.Float("Sp. Gravity of Micro Silica", compute="_compute_spe_gravt_microsilica")
+    serial_no = fields.Integer(string="Trail No.", readonly=True, copy=False, default=1)
 
-    @api.depends('v2_final', 'v1_initial')
-    def _compute_volume_silica(self):
-        for rec in self:
-            rec.volume_silica = rec.v2_final - rec.v1_initial
+    weight_cement = fields.Float(string="Weight of Micro Silica Sample W1 in (g)")
 
-    @api.depends('volume_silica')
-    def _compute_wt_equal_vol_water(self):
-        for rec in self:
-            rec.wt_equal_vol_water = rec.volume_silica * 1.0
+    initial_reading = fields.Float(string="Initial Reading of Flask V1 in (ml)")
 
-    @api.depends('w1_microsilica', 'wt_equal_vol_water')
-    def _compute_spe_gravt_microsilica(self):
+    final_reading = fields.Float(string="Final Reading of Flask V2 in (ml)")
+
+    volume_cement = fields.Float(string="Volume of Micro Silica (V2 - V1)",compute="_compute_values",store=True,)
+
+    weight_equal_volume_water = fields.Float(string="Weight of Equal Volume of water=(V2-V1)xSpecific gravity of Water	",compute="_compute_values",store=True,)
+
+    specific_gravity = fields.Float(string="Sp. Gravity of Micro Silica =W1/Weight of equal volume of Water",compute="_compute_values",store=True,)
+
+    @api.depends(
+        "weight_cement",
+        "initial_reading",
+        "final_reading",
+    )
+    def _compute_values(self):
         for rec in self:
-            if rec.wt_equal_vol_water:
-                rec.spe_gravt_microsilica = rec.w1_microsilica / rec.wt_equal_vol_water
+
+            rec.volume_cement = (
+                rec.final_reading - rec.initial_reading
+            )
+
+            # Specific gravity of water = 1 g/ml
+            rec.weight_equal_volume_water = rec.volume_cement * 1.0
+
+            if rec.weight_equal_volume_water:
+                rec.specific_gravity = (
+                    rec.weight_cement /
+                    rec.weight_equal_volume_water
+                )
             else:
-                rec.spe_gravt_microsilica = 0.0
+                rec.specific_gravity = 0.0
+
 
     @api.model
     def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
         if vals.get('parent_id'):
-            existing = self.search([('parent_id', '=', vals['parent_id'])])
-            vals['sr_no'] = (max(existing.mapped('sr_no')) + 1) if existing else 1
-        return super(MicrosilicaSpecificGravityLine, self).create(vals)
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(MSSpecificGravityLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
         records = self.sorted('id')
         for index, record in enumerate(records):
-            record.sr_no = index + 1
+            record.serial_no = index + 1
 
 
-class PozzolanicTestMixture7DaysLine(models.Model):
-    _name = "microsilica.pozzolanic.tm.line"
 
-    parent_id = fields.Many2one('mechanical.microsilica', string="Parent Id")
-
-    length = fields.Float("Length in mm")
-    width = fields.Float("Width in mm")
-    crosssectional_area = fields.Float("Crosssectional Area", compute="_compute_crosssectional_area")
-    wt_cube = fields.Float("wt of Cube in gm")
-    crushing_load = fields.Float("Crushing Load in KN")
-    compressive_strength = fields.Float("Compressive Strength (N/mm²)", compute="_compute_compressive_strength")
-
-    @api.depends('length', 'width')
-    def _compute_crosssectional_area(self):
-        for rec in self:
-            rec.crosssectional_area = rec.length * rec.width
-
-    @api.depends('crosssectional_area', 'crushing_load')
-    def _compute_compressive_strength(self):
-        for rec in self:
-            if rec.crosssectional_area:
-                rec.compressive_strength = (rec.crushing_load / rec.crosssectional_area) * 1000
-            else:
-                rec.compressive_strength = 0
-
-
-class PozzolanicControlSample7DaysLine(models.Model):
-    _name = "microsilica.pozzolanic.cs.line"
-
-    parent_id = fields.Many2one('mechanical.microsilica', string="Parent Id")
-
-    cs_length = fields.Float("Length in mm")
-    cs_width = fields.Float("Width in mm")
-    cs_crosssectional_area = fields.Float("Crosssectional Area", compute="_compute_cs_crosssectional_area")
-    cs_wt_cube = fields.Float("wt of Cube in gm")
-    cs_crushing_load = fields.Float("Crushing Load in KN")
-    cs_compressive_strength = fields.Float("Compressive Strength (N/mm²)", compute="_compute_cs_compressive_strength")
-
-    @api.depends('cs_length', 'cs_width')
-    def _compute_cs_crosssectional_area(self):
-        for rec in self:
-            rec.cs_crosssectional_area = rec.cs_length * rec.cs_width
-
-    @api.depends('cs_crosssectional_area', 'cs_crushing_load')
-    def _compute_cs_compressive_strength(self):
-        for rec in self:
-            if rec.cs_crosssectional_area:
-                rec.cs_compressive_strength = (rec.cs_crushing_load / rec.cs_crosssectional_area) * 1000
-            else:
-                rec.cs_compressive_strength = 0
 
 
 class MicrosilicaNotes(models.Model):

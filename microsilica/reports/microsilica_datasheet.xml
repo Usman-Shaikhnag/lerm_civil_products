@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="microsilica_datasheet">
+     <t t-call="web.html_container">
+
+	 <t t-call="lerm_civil.mechanical_data_sheet_header">
+		<div style="text-align:center;font-size:18px;font-weight: bold;">
+			Microsilica
+		</div>
+		<div class="container_eln" style="margin-top:5px">
+				<!--1 Accelerated pozzolanic activity index with portland cement , 7 Days in % -->
+			<table style="margin-top:20px">
+				
+				<tr cols="12">
+					<td colspan="4">Material: <span t-field="eln.material"></span>
+					</td>
+					
+				</tr>
+				<tr style="height:50px" cols="12">
+					<td colspan="4">Performed By :
+						<![CDATA[&nbsp;]]>
+						<span t-field="eln.technician.name"/>
+					</td>
+					<td colspan="4">Witness Name :
+						<![CDATA[&nbsp;]]>
+						<span t-field="eln.witness_name"/>
+					</td>
+					<td colspan="4">Witness Signature :
+						<![CDATA[&nbsp;]]>
+						<span style='padding:20px'></span>
+					</td>
+				</tr>
+					
+			</table>
+
+
+
+			<!-- Particles Retained On 45 Micron IS Sieve (Wet Sieving) -->
+
+					<div  t-if="data.particles_retained_visible">
+					<div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;margin-top: 15px">
+							Particles Retained On 45 Micron IS Sieve (Wet Sieving)
+						</div>
+
+						<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+							<thead>
+								<tr style="background-color: #f0f0f0;">
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Sr No.</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Weight of Sample (Ws)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Weight of Residue Retained (Wr)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Weight of Material Passing (Ws - Wr)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Percentage of Material Passing</th>
+								</tr>		
+
+							</thead>
+							<tbody>
+								<t t-set="k" t-value="0"/>
+								<tr t-foreach="data.particles_retained_line_ids" t-as="r" style="text-align: center;">
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="k + 1" />
+										<t t-set="k" t-value="k+1"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['weight_sample']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['weight_residue']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['weight_material_passing']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['percentage_passing']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									
+								</tr>
+							</tbody>
+						</table>
+
+						<table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;">
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Average Percentage Passing :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+									<span t-field="data.avg_percentage_passing" t-options='{"widget": "float", "precision": 3}'/>
+								</td>
+							</tr>
+						</table>
+
+						<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<!-- <div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div> -->
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<!-- <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div> -->
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+					</div>
+
+					<!-- Micro Silica Compressive Strength -->
+
+					<div  t-if="data.compressive_visible" style="page-break-before: always;" >
+					<div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;">
+							Micro Silica Compressive Strength
+						</div>
+
+						<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+							<thead>
+								<tr style="background-color: #f0f0f0; text-align: center;">
+									<th style="border: 1px solid #ccc; padding: 8px;text-align: center;" colspan="2">Specimen No</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align: center;" colspan="2">Age in Days</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align: center;" colspan="2">Weight (g)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align: center;" colspan="2">Density (g/cc)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align: center;" colspan="2">Load at Failure (kN)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align: center;" colspan="2">Compressive Strength of Individual Sample (f1) in (N/mm2)</th>
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="k" t-value="0"/>
+								<tr t-foreach="data.compressive_lines" t-as="r" style="text-align: center;">
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="k + 1" />
+										<t t-set="k" t-value="k+1"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['days']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['wt_of_cube']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['density']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['load']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['compressive_strength']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;">
+							
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Avg Compressive Strength (7 Days) :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+									<span t-field="data.avg_7_days" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Avg Compressive Strength (14 Days) :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+									<span t-field="data.avg_14_days" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Avg Compressive Strength (28 Days) :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+									<span t-field="data.avg_28_days" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+						</table>
+
+						<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<!-- <div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div> -->
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<!-- <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div> -->
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+					</div>
+
+
+
+					<!-- SPECIFIC GRAVITY OF Micro Silica -->
+
+					<div  t-if="data.specific_gravity_visible" style="page-break-before: always;" >
+					<div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;">
+							SPECIFIC GRAVITY OF Micro Silica
+						</div>
+
+						<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+							<thead>
+								<tr style="background-color: #f0f0f0; text-align: center;">
+									<th style="border: 1px solid #ccc; padding: 8px;text-align: center;" colspan="2">Trail No.</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align: center;" colspan="2">Weight of Micro Silica Sample W1 in (g)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align: center;" colspan="2">Initial Reading of Flask V1 in (ml)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align: center;" colspan="2">Final Reading of Flask V2 in (ml)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align: center;" colspan="2">Volume of Micro Silica (V2 - V1)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align: center;" colspan="2">Weight of Equal Volume of water=(V2-V1)xSpecific gravity of Water</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align: center;" colspan="2">Sp. Gravity of Micro Silica=W1/Weight of equal volume of Water</th>
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="k" t-value="0"/>
+								<tr t-foreach="data.specific_gravity_line_ids" t-as="r" style="text-align: center;">
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="k + 1" />
+										<t t-set="k" t-value="k+1"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['weight_cement']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['initial_reading']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['final_reading']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['volume_cement']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['weight_equal_volume_water']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['specific_gravity']" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;">
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Average Specific Gravity :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+									<span t-field="data.average_specific_gravity" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+						</table>
+
+						<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								<!-- <div style="height: 40px;">
+							<t t-if="eln.tested_by_signature_datasheet">
+
+								<div t-if="eln.sample_id.filled_by.employee_id.signature">
+									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+								</div>
+								
+							</t>
+						</div> -->
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<!-- <div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div> -->
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+					</div>
+
+			
+			
+
+
+
+
+
+
+
+				<!-- authorizeRowDataSheet -->
+				
+			<div class="authorizeRowDataSheet">
+				<div>
+					<div>
+						<b>
+							Tested By 
+						</b>
+						
+					</div>
+					<div style="height:40px">
+
+					</div>
+					<div>
+						<b>
+						<span t-esc="eln.sample_id.filled_by.name"/>
+						</b>
+					</div>
+					<div>
+						<b>
+							(<span t-esc="eln.sample_id.filled_by.job_title"/>)
+						</b>
+					</div>
+				</div>
+				
+				<div style="margin-left:500px">
+							
+					<div>
+						<b>
+							Checked By
+						</b>
+					</div>
+					<div style="height: 40px;">
+						<t t-if="eln.sample_id.checkby_signature_required">
+							<div t-if="eln.sample_id.check_by.employee_id.signature">
+								<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+							</div>
+							
+						</t>
+					</div>
+					<div>
+						<b>
+						<span t-esc="eln.sample_id.check_by.name"/>
+						</b>
+					</div>
+					
+					 <div>
+						<b>
+							(<span t-esc="eln.sample_id.check_by.job_title"/>)
+						</b>
+					</div>
+				</div>
+			</div>
+
+
+			
+
+		</div>
+
+	</t>
+</t>
+</template>
+</odoo>
