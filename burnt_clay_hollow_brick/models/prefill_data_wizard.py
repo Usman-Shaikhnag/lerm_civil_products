@@ -8,7 +8,7 @@ class BurntClayHollowBrickPrefillData(models.TransientModel):
 
     def prefill_data(self):
         current_product = self.env['mechanical.burnt.clay.hollow.brick'].search([('eln_ref.sample_id','=',self.sample_id.id)])
-        previous_product = self.env['mechanical.burnt.clay.hollow.brick'].search([('eln_ref.sample_id','!=',self.sample_id.id),('eln_ref.product_id','=',self.product_id.id)]).sorted(key=lambda r: r.id, reverse=True)
+        previous_product = self.env['mechanical.burnt.clay.hollow.brick'].search([('eln_ref.sample_id','!=',self.sample_id.id),('eln_ref.material','=',self.product_id.id)]).sorted(key=lambda r: r.id, reverse=True)
 
         previous_product = previous_product[0] if previous_product else None
 

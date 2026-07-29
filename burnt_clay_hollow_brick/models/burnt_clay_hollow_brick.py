@@ -489,8 +489,8 @@ class BurntClayHollowBrick(models.Model):
             'type': 'ir.actions.act_window',
             'view_id': view_id,
             'context': {
-                'default_product_id': self.eln_ref.product_id.id,
-                'default_sample_id': self.eln_ref.sample_id.id,
+                'default_product_id': self.eln_ref.sample_id.material_id.id,
+                'exclude_sample_id': self.eln_ref.sample_id.id,
             }
         }
 

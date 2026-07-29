@@ -21,14 +21,7 @@
                         <field name="eln_state" widget="badge" decoration-success="eln_state == 'approved'" decoration-info="eln_state == 'in-test' or eln_state == 'in-check'" decoration-danger="eln_state == 'rejected'" decoration-warning="eln_state == 'allotted'"/>
                    </group>
 
-                   <div class="d-flex justify-content-between align-items-center">
-                        <div class="d-flex">
-                            <button name="prefill_data" string="Prefill Data" type="object" class="btn btn-primary"/>
-                        </div>
-                        <div >
-                            <button name="open_eln_page" string="Submit" type="object"  class="btn btn-primary"/>
-                        </div>
-                    </div>
+                    <button name="prefill_data" string="Prefill Data" type="object" class="oe_highlight"/>
 
                     <group >
                        <field name="sample_parameters" nolabel="1" >
@@ -211,6 +204,12 @@
                         </page>
                     </notebook>
 
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <button name="open_eln_page" string="Submit" type="object" class="oe_highlight"/>
+                        </div>
+                    </div>
+
                 </sheet>
             </form>
         </field>
@@ -230,10 +229,10 @@
             <field name="name">burnt.clay.hollow.brick.prefill.data.form</field>
             <field name="model">burnt.clay.hollow.brick.prefill.data</field>
             <field name="arch" type="xml">
-                <form>
+                <form string="Prefill Data">
                     <group>
-                        <field name="product_id" readonly="1"/>
-                        <field name="sample_id" options="{'no_create': True, 'no_open': True}"/>
+                        <field name="product_id" readonly="1" style="width: 100%%;"/>
+                        <field name="sample_id" options="{'no_create': True, 'no_open': True}" style="width: 100%%;"/>
                     </group>
                     <footer>
                         <button name="prefill_data" string="Prefill Data" type="object" class="btn-primary"/>
