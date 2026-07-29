@@ -24,19 +24,19 @@ class ChemicalCrushedSand(models.Model):
         default_notes = [
             (0, 0, {
                 'sr_no': 'a',
-                'notes': 'The information marked with an # received from customer',
+                'notes': 'The Test Report(s) is/are valid only to the sample submitted to the laboratory.',
             }),
             (0, 0, {
                 'sr_no': 'b',
-                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+                'notes': 'Sample(s) was/were not drawn by laboratory.',
             }),
             (0, 0, {
                 'sr_no': 'c',
-                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+                'notes': 'This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.',
             }),
             (0, 0, {
                 'sr_no': 'd',
-                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+                'notes': '# - Information provided by the customer.',
             }),
         ]
 
@@ -426,28 +426,21 @@ class ChemicalCrushedSand(models.Model):
     chloride_name = fields.Char("Name",default="Chloride")
     chloride_visible = fields.Boolean("Chloride",compute="_compute_visible")
 
-    sample_wt_chloride = fields.Float("Sample Wt",digits=(16, 4))
-    volume_make_upto_chloride = fields.Float("Volume make Upto")
-    aliqote_taken_chloride = fields.Float("Aliqote taken")
-    volume_silver_nitrate_added = fields.Float("Volume of silver nitrate added")
-    volume_ammonia_blank = fields.Float("Volume of ammonia thiocynate for (Blank)")
-    volume_ammonia_sample = fields.Float("Volume of ammonia thiocynate for (Sample)")
-    # volume_ammonia_consumed = fields.Float("Volume of ammonia thiocynate consumed",compute="_compute_volume_ammonia_consumed")
-    volume_ammonia_consumed = fields.Float("Volume of ammonia thiocynate consumed", compute="_compute_volume_ammonia_consumed", store=True)
-    normality_of_ammonia = fields.Float("Normality of ammonia thiocynate (0.1)",digits=(16, 4))
-    # chloride_percent = fields.Float("Chloride %",compute="_compute_chloride_percent",digits=(16, 4))
-    chloride_percent = fields.Float("Chloride %", digits=(16, 4), compute="_compute_chloride_percent", store=True)
+    sample_wt_chloride = fields.Float("A)sample wt ",digits=(12,4))
+    volume_make_upto_chloride = fields.Float("B)Volume make upto",digits=(12,2))
+    aliqote_taken_chloride = fields.Float("C)Aliqote taken",digits=(12,2))
+    volume_silver_nitrate_added = fields.Float("D)Volume of silver nitrate added",digits=(12,2))
+    volume_ammonia_blank = fields.Float("G) Volume of ammonia thiosynate consumed",digits=(12,2))
+    volume_ammonia_sample = fields.Float("H) Normality of ammonia thiocynate (0.1)",digits=(12,4))
+    volume_ammonia_consumed = fields.Float("I) Chloride=0.003546*(1000/wt)*(D-(10*G*H)%",compute="_compute_chloride",digits=(12,4))
+    # normality_of_ammonia = fields.Float("Normality of ammonia thiocynate (0.1)",digits=(16, 4))
+    # volume_ammonia_consumed = fields.Float("Chloride %",compute="_compute_volume_ammonia_consumed",digits=(16, 4))
 
     # @api.depends('volume_ammonia_blank','volume_ammonia_blank')
     # def _compute_volume_ammonia_consumed(self):
     #     for record in self:
     #         record.volume_ammonia_consumed = record.volume_ammonia_blank - record.volume_ammonia_sample
 
-    # Volume of ammonia consumed calculation
-    @api.depends('volume_ammonia_blank', 'volume_ammonia_sample')
-    def _compute_volume_ammonia_consumed(self):
-        for record in self:
-            record.volume_ammonia_consumed = record.volume_ammonia_blank - record.volume_ammonia_sample
 
     # @api.depends('volume_ammonia_consumed','normality_of_ammonia','aliqote_taken_chloride')
     # def _compute_chloride_percent(self):
@@ -457,20 +450,32 @@ class ChemicalCrushedSand(models.Model):
     #         else:
     #             record.chloride_percent = 0
 
-    # Chloride percent calculation
-    @api.depends('volume_ammonia_consumed', 'normality_of_ammonia', 'aliqote_taken_chloride')
-    def _compute_chloride_percent(self):
-        for record in self:
-            if record.aliqote_taken_chloride != 0:
-                record.chloride_percent = (record.volume_ammonia_consumed * record.normality_of_ammonia * 0.03545 * 100) / record.aliqote_taken_chloride
+    @api.depends(
+        'sample_wt_chloride',
+        'volume_silver_nitrate_added',
+        'volume_ammonia_blank',
+        'volume_ammonia_sample'
+    )
+    def _compute_chloride(self):
+        for rec in self:
+            if rec.sample_wt_chloride:
+                rec.volume_ammonia_consumed = (
+                    0.003546 *
+                    (1000 / rec.sample_wt_chloride) *
+                    (
+                        rec.volume_silver_nitrate_added -
+                        (10 * rec.volume_ammonia_blank * rec.volume_ammonia_sample)
+                    )
+                )
             else:
-                record.chloride_percent = 0.0
+                rec.volume_ammonia_consumed = 0.0
+
 
     chloride_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail')], string="Conformity",compute="_compute_chloride_conformity", store=True)
 
-    @api.depends('chloride_percent','eln_ref','grade')
+    @api.depends('volume_ammonia_consumed','eln_ref','grade')
     def _compute_chloride_conformity(self):
         
         for record in self:
@@ -483,8 +488,8 @@ class ChemicalCrushedSand(models.Model):
                     req_max = material.req_max
                     mu_value = line.mu_value
                     
-                    lower = record.chloride_percent - record.chloride_percent*mu_value
-                    upper = record.chloride_percent + record.chloride_percent*mu_value
+                    lower = record.volume_ammonia_consumed - record.volume_ammonia_consumed*mu_value
+                    upper = record.volume_ammonia_consumed + record.volume_ammonia_consumed*mu_value
                     if lower >= req_min and upper <= req_max:
                         record.chloride_conformity = 'pass'
                         break
@@ -495,30 +500,10 @@ class ChemicalCrushedSand(models.Model):
         ('pass', 'NABL'),
         ('fail', 'Non-NABL')], string="NABL",compute="_compute_chloride_nabl", store=True)
 
-    # @api.depends('chloride_percent','eln_ref','grade')
-    # def _compute_chloride_nabl(self):
-        
-    #     for record in self:
-    #         record.chloride_nabl = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','83c6e99e-d967-4162-8124-93fc8240ae24')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','83c6e99e-d967-4162-8124-93fc8240ae24')]).parameter_table
-    #         for material in materials:
-    #             if material.grade.id == record.grade.id:
-    #                 lab_min = line.lab_min_value
-    #                 lab_max = line.lab_max_value
-    #                 mu_value = line.mu_value
-                    
-    #                 lower = record.chloride_percent - record.chloride_percent*mu_value
-    #                 upper = record.chloride_percent + record.chloride_percent*mu_value
-    #                 if lower >= lab_min and upper <= lab_max:
-    #                     record.chloride_nabl = 'pass'
-    #                     break
-    #                 else:
-    #                     record.chloride_nabl = 'fail'
-
+    
     
 
-    @api.depends('chloride_percent','eln_ref','grade')
+    @api.depends('volume_ammonia_consumed','eln_ref','grade')
     def _compute_chloride_nabl(self):
         
         for record in self:
@@ -530,8 +515,8 @@ class ChemicalCrushedSand(models.Model):
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.chloride_percent - record.chloride_percent*mu_value
-            upper = record.chloride_percent + record.chloride_percent*mu_value
+            lower = record.volume_ammonia_consumed - record.volume_ammonia_consumed*mu_value
+            upper = record.volume_ammonia_consumed + record.volume_ammonia_consumed*mu_value
             if lower >= lab_min and upper <= lab_max:
                 record.chloride_nabl = 'pass'
                 break
@@ -595,27 +580,7 @@ class ChemicalCrushedSand(models.Model):
         ('pass', 'NABL'),
         ('fail', 'Non-NABL')], string="NABL",compute="_compute_avrg_avrg_sulphate_nabl",  store=True)
 
-    # @api.depends('sulphate_percent','eln_ref','grade')
-    # def _compute_avrg_avrg_sulphate_nabl(self):
-        
-    #     for record in self:
-    #         record.avrg_avrg_sulphate_nabl = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8765b291-5596-4d10-9702-0e221e9379cd')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8765b291-5596-4d10-9702-0e221e9379cd')]).parameter_table
-    #         for material in materials:
-    #             if material.grade.id == record.grade.id:
-    #                 lab_min = line.lab_min_value
-    #                 lab_max = line.lab_max_value
-    #                 mu_value = line.mu_value
-                    
-    #                 lower = record.sulphate_percent - record.sulphate_percent*mu_value
-    #                 upper = record.sulphate_percent + record.sulphate_percent*mu_value
-    #                 if lower >= lab_min and upper <= lab_max:
-    #                     record.avrg_avrg_sulphate_nabl = 'pass'
-    #                     break
-    #                 else:
-    #                     record.avrg_avrg_sulphate_nabl = 'fail'
-
+    
     @api.depends('sulphate_percent','eln_ref','grade')
     def _compute_avrg_avrg_sulphate_nabl(self):
         
@@ -976,7 +941,7 @@ class ChemicalCrushedSand(models.Model):
             
             # Chloride
             if result.parameter.internal_id == '83c6e99e-d967-4162-8124-93fc8240ae24':
-                result.result_char = round(self.chloride_percent,2)
+                result.result_char = round(self.volume_ammonia_consumed,4)
                 result.calculated = True
                 if self.chloride_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -984,14 +949,16 @@ class ChemicalCrushedSand(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
             # Sulphate 
+
             if result.parameter.internal_id == '8765b291-5596-4d10-9702-0e221e9379cd':
-                result.result_char = round(self.sulphate_percent,2)
+                result.result_char = round(self.sulphate_percent,4)
                 result.calculated = True
                 if self.avrg_avrg_sulphate_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+            
             # Alkali Aggregate
             if result.parameter.internal_id == '98067b4a-3581-4712-b691-3df067e49a2c':
                 result.result_char = round(self.average_reduction_alkalinity,2)

@@ -61,6 +61,7 @@ class CementReportOpc43(models.AbstractModel):
             )
             qrcode_static = base64.b64encode(buffer.getvalue()).decode()
 
+
         # 🧩 QR Code तयार करा
         qr = qrcode.QRCode(
             version=1,

@@ -6,7 +6,7 @@
 		<t t-call="web.html_container">
 			<!-- <t t-call="web.basic_layout"> -->
 			
-			<t t-call="lerm_civil.custom_layout_header_footer_lerm_eln_general">
+			<t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
 				
 				<div class="container_eln">
 					<div t-foreach="eln" t-as="o">
@@ -165,7 +165,7 @@
 									<t t-set="i" t-value="i+1"/>
 								</td>
 								
-								<td  style="text-align: center;vertical-align: middle;">
+								<td  >
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','3a228b5d-5c83-4bb7-b6c7-2e7767b6181b')]).parameter_name"/>
 								</td>
 								
@@ -209,7 +209,7 @@
 								
 								
 
-								<td style="text-align: center;vertical-align: middle;">
+								<td >
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','98067b4a-3581-4712-b691-3df067e49a2c')]).parameter_name"/>
 								</td>
 								
@@ -253,13 +253,13 @@
 								</td>
 								
 								
-								<td  style="text-align: center;vertical-align: middle;">
+								<td  >
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','83c6e99e-d967-4162-8124-93fc8240ae24')]).parameter_name"/>
 								</td>
 								
 								<td style="text-align: center;">
 									<span>
-										<span t-field="data.chloride_percent" t-options='{"widget": "float", "precision": 4}'/>
+										<span t-field="data.volume_ammonia_consumed" t-options='{"widget": "float", "precision": 4}'/>
 									</span>									
 								</td>
 								<td style="text-align: center;">
@@ -296,7 +296,7 @@
 								</td>
 								
 								
-								<td  style="text-align: center;vertical-align: middle;">
+								<td  >
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','8765b291-5596-4d10-9702-0e221e9379cd')]).parameter_name"/>
 								</td>
 								
@@ -342,7 +342,7 @@
 									</span>
 								</td> -->
 								
-								<td  style="text-align: center;vertical-align: middle;">
+								<td  >
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','481fb826-5804-40f1-b7a1-54d435149afb')]).parameter_name"/>
 								</td>
 								
@@ -383,7 +383,7 @@
 									<t t-set="i" t-value="i+1"/>
 								</td>
 								
-								<td  style="text-align: center;vertical-align: middle;">
+								<td  >
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','3380972d-6290-4e34-aa61-6a707a4d788a')]).parameter_name"/>
 								</td>
 								
@@ -429,7 +429,7 @@
 									<t t-set="i" t-value="i+1"/>
 								</td>
 								
-								<td  style="text-align: center;vertical-align: middle;">
+								<td  >
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','ec3bb101-9088-4156-8af5-608a64fe4b7b')]).parameter_name"/>
 								</td>
 								
@@ -474,7 +474,7 @@
 									<t t-set="i" t-value="i+1"/>
 								</td>
 								
-								<td  style="text-align: center;vertical-align: middle;">
+								<td  >
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','338565ad-67d6-4795-880b-def72791b2c3')]).parameter_name"/>
 								</td>
 								
@@ -577,7 +577,7 @@
 						</div>
 						<div>
 							<div>
-								<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
+								<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
 							</div>
 							<div style="padding-top:5px">
 								Format No. <span t-esc="eln.material.test_format_no"/>
