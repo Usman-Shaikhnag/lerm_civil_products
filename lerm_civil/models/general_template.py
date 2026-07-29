@@ -194,17 +194,19 @@ class DataSheetReport(models.AbstractModel):
     def _get_report_values(self, docids, data):
         # eln = self.env['lerm.eln'].sudo().browse(docids)
         inreport_value = data.get('inreport', None)
-        print(data['context'])
+        print(data.get('context', {}))
         nabl = data.get('nabl')
         if data.get('report_wizard') == True:
             eln = self.env['lerm.eln'].sudo().search([('sample_id','=',data['sample'])])
+        elif data.get('eln_id'):
+            eln = self.env['lerm.eln'].sudo().browse(data['eln_id'])
         elif 'active_id' in data.get('context', {}):
             # stamp = data['context']['inreport']
             # print(stamp , 'stamp value')
             eln = self.env['lerm.eln'].sudo().search([('sample_id','=',data['context']['active_id'])])
         else:
             eln = self.env['lerm.eln'].sudo().browse(docids) 
-
+            
         qr_static = qrcode.QRCode(box_size=6, border=2)
         qr_static.add_data("https://www.lerm.in")
         qr_static.make(fit=True)
@@ -231,8 +233,13 @@ class DataSheetReport(models.AbstractModel):
         # Assign the base64 string to a field in the 'srf' object
         qr_code = qr_image_base64
         
-        model_id = eln.parameters_result.model_id
-        model_name = eln.parameters_result.parameter[0].ir_model.name
+        # model_id = eln.parameters_result.model_id
+        # model_name = eln.parameters_result.parameter[0].ir_model.name
+
+        first_param_result = eln.parameters_result[:1]
+        model_id = first_param_result.model_id
+        model_name = first_param_result.parameter[:1].ir_model.name
+        
         if model_name:
             general_data = self.env[model_name].sudo().browse(model_id)
             columns = self.get_visible_table_fields(model_name)
@@ -240,6 +247,8 @@ class DataSheetReport(models.AbstractModel):
             # import wdb;wdb.set_trace()
         else:
             general_data = self.env['lerm.eln'].sudo().browse(docids)
+            columns = []
+            resultfields = []
             # import wdb;wdb.set_trace()
         print('columns dataa',resultfields)
 
@@ -252,6 +261,7 @@ class DataSheetReport(models.AbstractModel):
             'qrcode_static': qr_static_b64,
             'nabl':nabl,
             'stamp' : inreport_value,
+            'parameter_name': first_param_result.parameter.parameter_name if first_param_result else '',
         }
     
 class GeneralReport(models.AbstractModel):
@@ -325,16 +335,19 @@ class GeneralReport(models.AbstractModel):
     def _get_report_values(self, docids, data):
         # eln = self.env['lerm.eln'].sudo().browse(docids)
         inreport_value = data.get('inreport', None)
-        print(data['context'])
+        print(data.get('context', {}))
         nabl = data.get('nabl')
         if data.get('report_wizard') == True:
             eln = self.env['lerm.eln'].sudo().search([('sample_id','=',data['sample'])])
+        elif data.get('eln_id'):
+            eln = self.env['lerm.eln'].sudo().browse(data['eln_id'])
         elif 'active_id' in data.get('context', {}):
             # stamp = data['context']['inreport']
             # print(stamp , 'stamp value')
             eln = self.env['lerm.eln'].sudo().search([('sample_id','=',data['context']['active_id'])])
         else:
             eln = self.env['lerm.eln'].sudo().browse(docids) 
+
 
         qr_static = qrcode.QRCode(box_size=6, border=2)
         qr_static.add_data("https://www.lerm.in")
@@ -362,8 +375,9 @@ class GeneralReport(models.AbstractModel):
         # Assign the base64 string to a field in the 'srf' object
         qr_code = qr_image_base64
         
-        model_id = eln.parameters_result.model_id
-        model_name = eln.parameters_result.parameter[0].ir_model.name
+        first_param_result = eln.parameters_result[:1]
+        model_id = first_param_result.model_id
+        model_name = first_param_result.parameter[:1].ir_model.name
         if model_name:
             general_data = self.env[model_name].sudo().browse(model_id)
             columns = self.get_visible_table_fields(model_name)
@@ -371,7 +385,8 @@ class GeneralReport(models.AbstractModel):
             # import wdb;wdb.set_trace()
         else:
             general_data = self.env['lerm.eln'].sudo().browse(docids)
-            # import wdb;wdb.set_trace()
+            columns = []
+            resultfields = []
         print('columns dataa',resultfields)
 
         return {
@@ -383,6 +398,7 @@ class GeneralReport(models.AbstractModel):
             'qrcode_static': qr_static_b64,
             'nabl':nabl,
             'stamp' : inreport_value,
+            'parameter_name': first_param_result.parameter.parameter_name if first_param_result else '',
         }
 
 class SteelTmtBar(models.AbstractModel):

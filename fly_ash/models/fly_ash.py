@@ -1497,7 +1497,7 @@ class FlyaschNormalConsistency(models.Model):
                 continue
 
             if result.parameter.internal_id == '2014fgr32-6bbe-4fdf-9571-a5a099be0293':
-                result.result_char = round(self.initial_setting_time_minutes_unrounded,2)
+                result.result_char = round(float(self.initial_setting_time_minutes_unrounded),2)
                 result.calculated = True
                 if self.initial_setting_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -1506,7 +1506,7 @@ class FlyaschNormalConsistency(models.Model):
                 continue
 
             if result.parameter.internal_id == '32145grte8-6526-4fcc-a5ec-18cc1ae10857':
-                result.result_char = round(self.final_setting_time_minutes_unrounded,2)
+                result.result_char = round(float(self.final_setting_time_minutes_unrounded),2)
                 result.calculated = True
                 if self.final_setting_nabl == 'pass':
                     result.nabl_status = 'nabl'
