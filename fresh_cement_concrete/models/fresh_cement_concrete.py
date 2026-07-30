@@ -987,7 +987,7 @@ class FCCWetDensityTestLine(models.Model):
     sample_no = fields.Integer(string="Sr No.", readonly=True, copy=False, default=1)
 
 
-    volume = fields.Float("Volume of Container (m³) (V)")
+    volume = fields.Float("Volume of Container (m³) (V)",digits=(16,5))
     weight_empty = fields.Float("Weight of Empty Container (kg) (W1)")
     weight_full = fields.Float("Weight of Container + Fresh Concrete (kg) (W2)")
 
