@@ -485,6 +485,52 @@
 								</tr>
 
 
+								<!-- Moisture Content  -->
+							<tr t-if="microsilica.moisture_content_visible and (microsilica.moisture_content_final_report == 'nabl' and nabl or microsilica.moisture_content_final_report == 'non_nabl' and not nabl)">
+									<t t-set="moisture" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','1cdb0934-82cb-4bf9-8a14-fcc1e4f982c3')])"/>
+									
+									<td style="text-align: center;">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td>
+										<span t-esc="moisture.parameter_name"/>
+									</td>
+
+                                    <td style="text-align: center;">
+										<span>
+											<span t-field="microsilica.average_moisture_content" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="moisture.unit.name"/>
+										</span>
+									</td>
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="moisture.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+                                    <td style="text-align: center;">
+										<span>
+											<t t-foreach="moisture.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+
 
 
 

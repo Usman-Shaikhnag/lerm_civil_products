@@ -591,6 +591,115 @@ class Microsilica(models.Model):
             else:
                 rec.specific_gravity_final_report = 'non_nabl'
 
+
+
+    # MOISTURE CONTENT OF Micro Silica
+
+    moisture_content_name = fields.Char("Name",default="Moisture Content")
+    moisture_content_visible = fields.Boolean("Moisture Content of Micro Silica Visible",compute="_compute_visible")
+
+    moisture_content_line_ids = fields.One2many(
+        "microsilica.moisture.test.line",
+        "parent_id",
+        string="Trial Lines",
+    )
+
+    average_moisture_content = fields.Float(
+        string="Average Moisture Content (%)",
+        compute="_compute_average_moisture_content",
+        store=True,
+    )
+
+    @api.depends("moisture_content_line_ids.moisture_content")
+    def _compute_average_moisture_content(self):
+        for rec in self:
+            values = rec.moisture_content_line_ids.mapped("moisture_content")
+            values = [v for v in values if v]
+
+            if values:
+                rec.average_moisture_content = sum(values) / len(values)
+            else:
+                rec.average_moisture_content = 0.0
+
+
+    average_moisture_content_confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),('na', 'NA'),], string='Confirmity',compute="_compute_average_moisture_content_confirmity")
+    
+    @api.depends('average_moisture_content','eln_ref','grade')
+    def _compute_average_moisture_content_confirmity(self):
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_moisture_content_confirmity = 'na'
+                continue
+            record.average_moisture_content_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1cdb0934-82cb-4bf9-8a14-fcc1e4f982c3')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1cdb0934-82cb-4bf9-8a14-fcc1e4f982c3')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    lower = record.average_moisture_content - record.average_moisture_content*mu_value
+                    upper = record.average_moisture_content + record.average_moisture_content*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.average_moisture_content_confirmity = 'pass'
+                        break
+                    else:
+                        record.average_moisture_content_confirmity = 'fail'
+
+    average_moisture_content_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string='NABL', compute="_compute_average_moisture_content_nabl",store=True)
+
+    @api.depends('average_moisture_content','eln_ref','grade')
+    def _compute_average_moisture_content_nabl(self):
+        
+        for record in self:
+            record.average_moisture_content_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1cdb0934-82cb-4bf9-8a14-fcc1e4f982c3')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1cdb0934-82cb-4bf9-8a14-fcc1e4f982c3')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.average_moisture_content - record.average_moisture_content*mu_value
+                    upper = record.average_moisture_content + record.average_moisture_content*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.average_moisture_content_nabl = 'pass'
+                        break
+                    else:
+                        record.average_moisture_content_nabl = 'fail'
+
+    moisture_content_report_type = fields.Selection([
+    ('auto', 'Auto'),
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+
+    moisture_content_final_report = fields.Selection([
+    ('nabl', 'NABL'),
+    ('non_nabl', 'Non-NABL'),], compute="_compute_moisture_content_final_report", store=True)
+
+    @api.depends('average_moisture_content_nabl', 'moisture_content_report_type')
+    def _compute_moisture_content_final_report(self):
+     for rec in self:
+
+        # Manual override
+        if rec.moisture_content_report_type == 'nabl':
+            rec.moisture_content_final_report = 'nabl'
+
+        elif rec.moisture_content_report_type == 'non_nabl':
+            rec.moisture_content_final_report = 'non_nabl'
+
+        # Automatic
+        else:
+            if rec.average_moisture_content_nabl == 'pass':
+                rec.moisture_content_final_report = 'nabl'
+            else:
+                rec.moisture_content_final_report = 'non_nabl'
+
    
     
     
@@ -603,6 +712,7 @@ class Microsilica(models.Model):
             record.particles_retained_visible = False
             record.compressive_visible = False
             record.specific_gravity_visible = False
+            record.moisture_content_visible = False
 
         
     
@@ -623,6 +733,9 @@ class Microsilica(models.Model):
 
                 if sample.internal_id == '658fgtrcd-80ef-4de0-96ba-a279f27b9ede':
                     record.specific_gravity_visible = True
+
+                if sample.internal_id == '1cdb0934-82cb-4bf9-8a14-fcc1e4f982c3':
+                    record.moisture_content_visible = True
 
 
     def open_eln_page(self):
@@ -689,6 +802,17 @@ class Microsilica(models.Model):
                 result.result_char = round(self.average_specific_gravity,2)
                 result.calculated = True
                 if self.average_specific_gravity_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            # MOISTURE CONTENT OF Micro Silica							
+            if result.parameter.internal_id == '1cdb0934-82cb-4bf9-8a14-fcc1e4f982c3':
+                result.result_char = round(self.average_moisture_content,2)
+                result.calculated = True
+                if self.average_moisture_content_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -954,6 +1078,62 @@ class MSSpecificGravityLine(models.Model):
                 vals['serial_no'] = max_serial_no + 1
 
         return super(MSSpecificGravityLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+
+class MSMoistureTestLine(models.Model):
+    _name = 'microsilica.moisture.test.line'
+    _description = 'Moisture Test Trial'
+
+    parent_id = fields.Many2one('mechanical.microsilica', string="Parent Id")
+
+    serial_no = fields.Integer(string="Trail No.", readonly=True, copy=False, default=1)
+
+    m0 = fields.Float(
+        string="Mass of Empty Container after the  dry in the oven & cool in the Desiccator Initial Mass  (M0)"
+    )
+
+    m1 = fields.Float(
+        string="Mass of Empty Container + Mass of Wet Sample (M1)"
+    )
+
+    m2 = fields.Float(
+        string="Mass of Container  + Dry  Weight of Sample (M2)"
+    )
+
+    moisture_content = fields.Float(
+        string="Moisture Content (%)",
+        compute="_compute_moisture",
+        store=True
+    )
+
+    @api.depends('m0', 'm1', 'm2')
+    def _compute_moisture(self):
+        for rec in self:
+            denominator = rec.m1 - rec.m0
+            if denominator:
+                rec.moisture_content = ((rec.m1 - rec.m2) / denominator) * 100
+            else:
+                rec.moisture_content = 0.0
+
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(MSMoistureTestLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines

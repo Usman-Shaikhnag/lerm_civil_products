@@ -303,6 +303,59 @@
                         </tbody>
                     </table>
 
+
+
+                    <!-- MOISTURE CONTENT  -->
+                      <div class="text-center" invisible="moisture_content_visible == False">
+                        <h1>
+                            <field name="moisture_content_name" readonly="1" nolabel="1"/>
+                            <field name="moisture_content_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+
+                    <div invisible = "moisture_content_visible == False" class="custom_table_borders">
+                        <field name="moisture_content_line_ids" nolabel="1">
+                            <tree editable="bottom">
+                                <field name='serial_no'/>
+                                <field name='m0'  class="blue-input" decoration-info="m0 != 0" />
+                                <field name='m1' class="blue-input" decoration-info="m1 != 0"/>
+                                <field name='m2' class="blue-input" decoration-info="m2 != 0"/>
+                                <field name='moisture_content'  />
+                            </tree>
+                        </field> 
+                    </div>
+
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not moisture_content_visible" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="average_moisture_content">Average Moisture Content (%)</label></td>
+                                <td><field name="average_moisture_content"/></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="average_moisture_content_confirmity">Conformity</label></td>
+                                <td>
+                                    <field name="average_moisture_content_confirmity"
+                                        decoration-success="average_moisture_content_confirmity == 'pass'" 
+                                        decoration-danger="average_moisture_content_confirmity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="average_moisture_content_nabl">NABL</label></td>
+                                <td>
+                                    <field name="average_moisture_content_nabl"
+                                        decoration-success="average_moisture_content_nabl == 'pass'" 
+                                        decoration-danger="average_moisture_content_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="moisture_content_report_type">Report Type</label></td>
+                                <td><field name="moisture_content_report_type" class="blue-input" decoration-info="moisture_content_report_type != 0"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
                    
 
                     
