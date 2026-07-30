@@ -51,6 +51,7 @@ class SampleRangeLine(models.Model):
         ('non_nabl', 'Non-NABL'),
     ], string='Scope', default='nabl')
     sample_description = fields.Text(string="Sample Description")
+    source_of_sample = fields.Text(string="Source Of Sample")
     group_ids = fields.Many2many('lerm_civil.group',string="Group Ids")
     material_ids = fields.Many2many('product.template',string="Material Ids")
     size_ids = fields.Many2many('lerm.size.line',string="Size Ids")

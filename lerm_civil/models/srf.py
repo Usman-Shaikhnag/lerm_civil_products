@@ -828,6 +828,7 @@ class SrfForm(models.Model):
             witness = samples[-1].witness
             scope = samples[-1].scope
             sample_description = samples[-1].sample_description
+            source_of_sample = samples[-1].source_of_sample
             sample_received_date = self.srf_date
             report_due_date = samples[-1].report_due_date
             # import wdb ; wdb.set_trace()
@@ -856,6 +857,7 @@ class SrfForm(models.Model):
                 # 'default_department_id':department_id,
                 'default_scope':scope,
                 'default_sample_description':sample_description,
+                'default_source_of_sample' :source_of_sample,
                 'default_sample_received_date':sample_received_date,
                 'default_report_due_date':report_due_date
             }
@@ -965,6 +967,7 @@ class CreateSampleWizard(models.TransientModel):
         ('non_nabl', 'Non-NABL'),
     ], string='Scope', default='nabl')
     sample_description = fields.Text(string="Sample Description")
+    source_of_sample = fields.Text(string="Source Of Sample")
     group_ids = fields.Many2many('lerm_civil.group',string="Group Ids")
     material_ids = fields.Many2many('product.template',string="Material Ids")
     client_sample_id = fields.Char(string="Client Sample Id")
@@ -1218,6 +1221,7 @@ class CreateSampleWizard(models.TransientModel):
         lab_no_value = self.lab_no_value
         # lab_l_id = self.lab_l_id.id
         sample_description =self.sample_description
+        source_of_sample =self.source_of_sample
         parameters = self.parameters
         discipline_id = self.discipline_id
         casting = self.casting
@@ -1264,6 +1268,7 @@ class CreateSampleWizard(models.TransientModel):
             # 'sample_range_id':sample_range.id,
             'size_id':size_id,
             'sample_description':sample_description,
+            'source_of_sample' :source_of_sample,
             'casting':casting,
             'date_casting':self.date_casting,
             'days_casting':self.days_casting,
@@ -1301,6 +1306,7 @@ class CreateSampleWizard(models.TransientModel):
             srf_id  = data['srf_id']
             parameters = data['parameter']
             sample_description = data['sample_description']
+            source_of_sample = data['source_of_sample']
             size_id = data['size_id']
             casting = data["casting"]
             days_casting = data["days_casting"]
@@ -1321,6 +1327,7 @@ class CreateSampleWizard(models.TransientModel):
                 'parameters':parameters,
                 'size_id':size_id,
                 'sample_description':sample_description,
+                'source_of_sample' :source_of_sample,
                 'casting':casting,
                 'date_casting':date_casting,
                 'days_casting':days_casting
@@ -1339,6 +1346,7 @@ class CreateSampleWizard(models.TransientModel):
                 'sample_range_id':sample_range.id,
                 'size_id':size_id,
                 'sample_description':sample_description,
+                'source_of_sample' :source_of_sample,
                 'casting':casting,
                 'date_casting':date_casting,
                 'days_casting':days_casting,
@@ -1373,6 +1381,7 @@ class CreateSampleWizard(models.TransientModel):
             # lab_l_id = self.lab_l_id.id
             scope = self.scope
             sample_description =self.sample_description
+            source_of_sample =self.source_of_sample
             parameters = self.parameters
             discipline_id = self.discipline_id
             casting = self.casting
@@ -1427,6 +1436,7 @@ class CreateSampleWizard(models.TransientModel):
                     'conformity':conformity,
                     'scope':scope,
                     'sample_description':sample_description,
+                    'source_of_sample' :source_of_sample,
                     'parameters':parameters,
                     'discipline_id':discipline_id.id,
                     'casting':casting,
@@ -1464,6 +1474,7 @@ class CreateSampleWizard(models.TransientModel):
                         'conformity':conformity,
                         'scope':scope,
                         'sample_description':sample_description,
+                        'source_of_sample' :source_of_sample,
                         'parameters':parameters,
                         'discipline_id':discipline_id.id,
                         'casting':casting,

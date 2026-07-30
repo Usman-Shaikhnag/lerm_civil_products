@@ -75,6 +75,7 @@
                                 <field name="sample_reject_reason" required="sample_condition == 'non_acceptable'" readonly="state != '1-allotment_pending'"/>
                                 <field name="scope" />
                                 <field name="sample_description" readonly="state != '1-allotment_pending'"/>
+                                <field name="source_of_sample" readonly="state != '1-allotment_pending'"/>
                                 <field name="filled_by" readonly="1"/>
                                 <field name="check_by" readonly="1"/>
                                 <field name="approved_by" readonly="1"/>
@@ -301,6 +302,7 @@
                       <field name="witness" optional="show"/>
                       <field name="scope" optional="show"/>
                       <field name="sample_description" optional="show"/>
+                      <field name="source_of_sample" optional="show"/>
                       <field name="state" optional="show" decoration-success= "state == '4-in_report'" decoration-warning= "state == '1-allotment_pending'" decoration-danger= "state == '6-cancelled'" decoration-info= "state == '3-pending_verification'" widget="badge"/>
                       <field name="invoice_status" optional="show" widget="badge"
                         decoration-success="invoice_status == '2-invoiced'"

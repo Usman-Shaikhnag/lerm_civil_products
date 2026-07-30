@@ -53,6 +53,7 @@ class LermSampleForm(models.Model):
         ('non_nabl', 'Non-NABL'),
     ], string='Scope', default='nabl')
     sample_description = fields.Text(string="Sample Description")
+    source_of_sample = fields.Text(string="Source Of Sample")
     group_ids = fields.Many2many('lerm_civil.group',string="Group Ids",compute="compute_group_ids")
     material_ids = fields.Many2many('product.template',string="Material Ids",compute="compute_material_ids")
     size_ids = fields.Many2many('lerm.size.line',string="Size Ids",compute="compute_size_ids")
@@ -269,6 +270,7 @@ class LermSampleForm(models.Model):
                 'default_witness':self.witness,
                 'default_scope':self.scope,
                 'default_sample_description':self.sample_description,
+                'deafult_source_of_sample' :self.source_of_sample,
                 'default_client_sample_id':self.client_sample_id,
                 'default_days_casting':self.days_casting,
                 'default_casting':self.casting,

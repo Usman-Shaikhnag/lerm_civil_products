@@ -210,10 +210,10 @@ class ConcreteCore(models.Model):
 
     avg_compressive_strength = fields.Float(string="Average Strength",compute="_compute_average_strength",store=True)
 
-    @api.depends('compressive_strength_table.compressive_strength')
+    @api.depends('compressive_strength_table.corrected_compressive_strength')
     def _compute_average_strength(self):
      for rec in self:
-        values = rec.compressive_strength_table.mapped('compressive_strength')
+        values = rec.compressive_strength_table.mapped('corrected_compressive_strength')
         rec.avg_compressive_strength = (
             sum(values) / len(values) if values else 0.0
         )
