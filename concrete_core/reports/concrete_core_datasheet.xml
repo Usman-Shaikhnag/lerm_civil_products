@@ -210,6 +210,10 @@
                                 </th>
                                 <th colspan="2"  style="text-align: center;border: 1px solid #ccc; padding: 8px;">Compressive Strength (N/mm²)
                                 </th>
+                                <th colspan="2"  style="text-align: center;border: 1px solid #ccc; padding: 8px;">Corrected Compressive Strength (N/mm²)
+                                </th>
+                                <th colspan="2"  style="text-align: center;border: 1px solid #ccc; padding: 8px;">Equivalent Cube strength (N/mm²)
+                                </th>
                             
                             </tr>
                             </thead>
@@ -256,6 +260,12 @@
                                 </td>
                                 <td colspan="2" style="text-align: center;border: 1px solid #ccc; padding: 6px;">
                                     <span t-esc="r['compressive_strength']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td colspan="2" style="text-align: center;border: 1px solid #ccc; padding: 6px;">
+                                    <span t-esc="r['corrected_compressive_strength']" t-options='{"widget": "float", "precision": 2}'/>
+                                </td>
+                                <td colspan="2" style="text-align: center;border: 1px solid #ccc; padding: 6px;">
+                                    <span t-esc="r['equivalent_cube_strength']" t-options='{"widget": "float", "precision": 2}'/>
                                 </td>
                              
                                

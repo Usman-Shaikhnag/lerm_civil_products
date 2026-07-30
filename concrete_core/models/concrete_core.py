@@ -512,7 +512,7 @@ class CoreCompressiveLine(models.Model):
 
     hd_ratio = fields.Float(string="H/D Ratio (n)",compute="_compute_values",store=True)
 
-    correction_factor = fields.Float(string="Correction factor f =0.11n+0.78 Where,  f= Correction factor,n= height to diameter ratio" , compute="_compute_values",store=True)
+    correction_factor = fields.Float(string="Correction factor f =0.11n+0.78 Where,  f= Correction factor,n= height to diameter ratio" , compute="_compute_values",store=True,digits=(12,3))
 
     area = fields.Float(string="Area (mm²) π r² ",compute="_compute_values",store=True,digits=(16,3))
 
@@ -530,6 +530,18 @@ class CoreCompressiveLine(models.Model):
 
     compressive_strength = fields.Float(
         string="Compressive Strength (N/mm²)",
+        compute="_compute_values",
+        store=True
+    )
+
+    corrected_compressive_strength = fields.Float(
+        string="Corrected Compressive Strength (N/mm²)",
+        compute="_compute_values",
+        store=True
+    )
+
+    equivalent_cube_strength = fields.Float(
+        string="Equivalent Cube strength (N/mm²)",
         compute="_compute_values",
         store=True
     )
@@ -552,9 +564,9 @@ class CoreCompressiveLine(models.Model):
 
             # Correction Factor
             # Use the formula if required
-            rec.correction_factor = round(
-                (0.11 * rec.hd_ratio) + 0.78,
-                2
+            rec.correction_factor = (
+                (0.11 * rec.hd_ratio) + 0.78
+                
             )
 
             # If you want exactly like Excel
@@ -572,11 +584,11 @@ class CoreCompressiveLine(models.Model):
                 rec.area = 0
 
             # Volume
-            rec.volume = (rec.area * rec.height) / 100
+            rec.volume = (rec.area * rec.height) 
 
             # Density
             if rec.volume:
-                rec.density = rec.weight / rec.volume
+                rec.density = (rec.weight / rec.volume) * 1000
             else:
                 rec.density = 0
 
@@ -586,6 +598,21 @@ class CoreCompressiveLine(models.Model):
                     rec.load  / rec.area) * 1000
             else:
                 rec.compressive_strength = 0
+
+            # Corrected Compressive Strength
+            if rec.correction_factor:
+                rec.corrected_compressive_strength = (
+                    rec.compressive_strength  * rec.correction_factor)
+            else:
+                rec.corrected_compressive_strength = 0
+
+
+            # Equivalent Cube Strength
+            if rec.corrected_compressive_strength:
+                rec.equivalent_cube_strength = (
+                    rec.corrected_compressive_strength)  * (5/4)
+            else:
+                rec.equivalent_cube_strength = 0
 
     
    

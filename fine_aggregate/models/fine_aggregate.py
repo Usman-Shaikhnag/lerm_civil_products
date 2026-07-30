@@ -1639,7 +1639,7 @@ class FineAggregate(models.Model):
     # SOUNDNESS (MAGNESIUM SULPHATE TEST)
     soundness_mgso4_name = fields.Char("Name",default="SOUNDNESS (MAGNESIUM SULPHATE TEST)")
     soundness_mgso4_visible = fields.Boolean("SOUNDNESS (MAGNESIUM SULPHATE TEST) Visible",compute="_compute_visible")
-
+ 
     soundness_mag_line_ids = fields.One2many(
         'fine.magnesium.sulphate.line',
         'parent_id',
