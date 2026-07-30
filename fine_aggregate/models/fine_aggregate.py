@@ -1519,11 +1519,13 @@ class FineAggregate(models.Model):
     @api.model
     def soundness_sod_line_ids_sizes(self):
         default_lines = [
-            (0, 0, {'passing_sieve': '10 mm','retained_sieve': '4.75 mm'}),
-            (0, 0, {'passing_sieve': '4.75 mm','retained_sieve': '2.36 mm'}),
-            (0, 0, {'passing_sieve': '2.36 mm','retained_sieve': '1.18 mm'}),
-            (0, 0, {'passing_sieve': '1.18 mm','retained_sieve': '600 µ'}),
+            (0, 0, {'passing_sieve': '150 µ','retained_sieve': '-'}),
+            (0, 0, {'passing_sieve': '300 µ','retained_sieve': '150 µ mm'}),
             (0, 0, {'passing_sieve': '600 µ','retained_sieve': '300 µ'}),
+            (0, 0, {'passing_sieve': '1.18 mm','retained_sieve': '600 um'}),
+            (0, 0, {'passing_sieve': '2.36 mm','retained_sieve': '1.18 mm'}),
+            (0, 0, {'passing_sieve': '4.75 mm','retained_sieve': '2.36 mm'}),
+            (0, 0, {'passing_sieve': '10 mm','retained_sieve': '4.75 mm'}),
         ]
         return default_lines 
     
@@ -1647,11 +1649,13 @@ class FineAggregate(models.Model):
     @api.model
     def soundness_mag_line_ids_sizes(self):
         default_lines = [
-            (0, 0, {'passing_sieve': '10 mm','retained_sieve': '4.75 mm'}),
-            (0, 0, {'passing_sieve': '4.75 mm','retained_sieve': '2.36 mm'}),
-            (0, 0, {'passing_sieve': '2.36 mm','retained_sieve': '1.18 mm'}),
-            (0, 0, {'passing_sieve': '1.18 mm','retained_sieve': '600 µ'}),
+            (0, 0, {'passing_sieve': '150 µ','retained_sieve': '-'}),
+            (0, 0, {'passing_sieve': '300 µ','retained_sieve': '150 µ mm'}),
             (0, 0, {'passing_sieve': '600 µ','retained_sieve': '300 µ'}),
+            (0, 0, {'passing_sieve': '1.18 mm','retained_sieve': '600 um'}),
+            (0, 0, {'passing_sieve': '2.36 mm','retained_sieve': '1.18 mm'}),
+            (0, 0, {'passing_sieve': '4.75 mm','retained_sieve': '2.36 mm'}),
+            (0, 0, {'passing_sieve': '10 mm','retained_sieve': '4.75 mm'}),
         ]
         return default_lines 
     

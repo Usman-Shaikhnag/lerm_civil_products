@@ -2145,7 +2145,7 @@ class CoarseAggregateMechanical(models.Model):
     @api.model
     def soundness_sod_line_ids_sizes(self):
         default_lines = [
-            (0, 0, {'passing_sieve': '60mm','retained_sieve': '40mm'}),
+            (0, 0, {'passing_sieve': '63mm','retained_sieve': '40mm'}),
             (0, 0, {'passing_sieve': '40mm','retained_sieve': '20mm'}),
             (0, 0, {'passing_sieve': '20mm','retained_sieve': '10mm'}),
             (0, 0, {'passing_sieve': '10mm','retained_sieve': '4.75mm'}),
@@ -2175,44 +2175,44 @@ class CoarseAggregateMechanical(models.Model):
             rec.total_percent_loss = sum(rec.soundness_sod_line_ids.mapped('percent_loss'))
             rec.total_weighted_avg = sum(rec.soundness_sod_line_ids.mapped('weighted_avg'))
 
-    soundness_sodtwo_line_ids = fields.One2many(
-        'sodium.sulphate.two.line',
-        'parent_id',
-        string="Soundness Na2SO4",default=lambda self: self.soundness_sodtwo_line_ids_sizes()
-    )
+    # soundness_sodtwo_line_ids = fields.One2many(
+    #     'sodium.sulphate.two.line',
+    #     'parent_id',
+    #     string="Soundness Na2SO4",default=lambda self: self.soundness_sodtwo_line_ids_sizes()
+    # )
 
-    @api.model
-    def soundness_sodtwo_line_ids_sizes(self):
-        default_lines = [
-            (0, 0, {'passing_sieve': '600mic','retained_sieve': '300mic'}),
-            (0, 0, {'passing_sieve': '1.18mm','retained_sieve': '600mic'}),
-            (0, 0, {'passing_sieve': '2.36mm','retained_sieve': '1.18mm'}),
-            (0, 0, {'passing_sieve': '4.75mm','retained_sieve': '2.36mm'}),
-            (0, 0, {'passing_sieve': '10mm','retained_sieve': '4.75mm'}),
+    # @api.model
+    # def soundness_sodtwo_line_ids_sizes(self):
+    #     default_lines = [
+    #         (0, 0, {'passing_sieve': '600mic','retained_sieve': '300mic'}),
+    #         (0, 0, {'passing_sieve': '1.18mm','retained_sieve': '600mic'}),
+    #         (0, 0, {'passing_sieve': '2.36mm','retained_sieve': '1.18mm'}),
+    #         (0, 0, {'passing_sieve': '4.75mm','retained_sieve': '2.36mm'}),
+    #         (0, 0, {'passing_sieve': '10mm','retained_sieve': '4.75mm'}),
             
-        ]
-        return default_lines 
+    #     ]
+    #     return default_lines 
     
-    total1_grading = fields.Float("Total (Grading of Original Sample (%)", compute="_compute_totally")
-    total1_weight_before = fields.Float("Total (Weight of Test Fraction Before Test (gm))", compute="_compute_totally")
-    total1_weight_after = fields.Float("Total (Weight of Test Fraction After Test (gm))", compute="_compute_totally")
-    total1_percent_loss = fields.Float("Total (Percentage Passing Finer Sieve After Test (Actual Percentage Loss))", compute="_compute_totally")
-    total1_weighted_avg = fields.Float("Final Result (Weighted Average  (Corrected Percent Loss))", compute="_compute_totally")
+    # total1_grading = fields.Float("Total (Grading of Original Sample (%)", compute="_compute_totally")
+    # total1_weight_before = fields.Float("Total (Weight of Test Fraction Before Test (gm))", compute="_compute_totally")
+    # total1_weight_after = fields.Float("Total (Weight of Test Fraction After Test (gm))", compute="_compute_totally")
+    # total1_percent_loss = fields.Float("Total (Percentage Passing Finer Sieve After Test (Actual Percentage Loss))", compute="_compute_totally")
+    # total1_weighted_avg = fields.Float("Final Result (Weighted Average  (Corrected Percent Loss))", compute="_compute_totally")
 
-    @api.depends(
-        'soundness_sodtwo_line_ids.grading_percent',
-        'soundness_sodtwo_line_ids.weight_before',
-        'soundness_sodtwo_line_ids.weight_after',
-        'soundness_sodtwo_line_ids.percent_loss',
-        'soundness_sodtwo_line_ids.weighted_avg'
-    )
-    def _compute_totally(self):
-        for rec in self:
-            rec.total1_grading = sum(rec.soundness_sodtwo_line_ids.mapped('grading_percent'))
-            rec.total1_weight_before = sum(rec.soundness_sodtwo_line_ids.mapped('weight_before'))
-            rec.total1_weight_after = sum(rec.soundness_sodtwo_line_ids.mapped('weight_after'))
-            rec.total1_percent_loss = sum(rec.soundness_sodtwo_line_ids.mapped('percent_loss'))
-            rec.total1_weighted_avg = sum(rec.soundness_sodtwo_line_ids.mapped('weighted_avg'))
+    # @api.depends(
+    #     'soundness_sodtwo_line_ids.grading_percent',
+    #     'soundness_sodtwo_line_ids.weight_before',
+    #     'soundness_sodtwo_line_ids.weight_after',
+    #     'soundness_sodtwo_line_ids.percent_loss',
+    #     'soundness_sodtwo_line_ids.weighted_avg'
+    # )
+    # def _compute_totally(self):
+    #     for rec in self:
+    #         rec.total1_grading = sum(rec.soundness_sodtwo_line_ids.mapped('grading_percent'))
+    #         rec.total1_weight_before = sum(rec.soundness_sodtwo_line_ids.mapped('weight_before'))
+    #         rec.total1_weight_after = sum(rec.soundness_sodtwo_line_ids.mapped('weight_after'))
+    #         rec.total1_percent_loss = sum(rec.soundness_sodtwo_line_ids.mapped('percent_loss'))
+    #         rec.total1_weighted_avg = sum(rec.soundness_sodtwo_line_ids.mapped('weighted_avg'))
 
     total_weighted_avg_conformity = fields.Selection([
             ('pass', 'Pass'),
@@ -2309,7 +2309,7 @@ class CoarseAggregateMechanical(models.Model):
     @api.model
     def soundness_mag_line_ids_sizes(self):
         default_lines = [
-            (0, 0, {'passing_sieve': '60mm','retained_sieve': '40mm'}),
+            (0, 0, {'passing_sieve': '63mm','retained_sieve': '40mm'}),
             (0, 0, {'passing_sieve': '40mm','retained_sieve': '20mm'}),
             (0, 0, {'passing_sieve': '20mm','retained_sieve': '10mm'}),
             (0, 0, {'passing_sieve': '10mm','retained_sieve': '4.75mm'}),
@@ -2339,44 +2339,44 @@ class CoarseAggregateMechanical(models.Model):
             rec.mag_total_percent_loss = sum(rec.soundness_mag_line_ids.mapped('percent_loss'))
             rec.mag_total_weighted_avg = sum(rec.soundness_mag_line_ids.mapped('weighted_avg'))
 
-    soundness_magtwo_line_ids = fields.One2many(
-        'magnesium.sulphate.two.line',
-        'parent_id',
-        string="Soundness MgSO4",default=lambda self: self.soundness_magtwo_line_ids_sizes()
-    )
+    # soundness_magtwo_line_ids = fields.One2many(
+    #     'magnesium.sulphate.two.line',
+    #     'parent_id',
+    #     string="Soundness MgSO4",default=lambda self: self.soundness_magtwo_line_ids_sizes()
+    # )
 
-    @api.model
-    def soundness_magtwo_line_ids_sizes(self):
-        default_lines = [
-            (0, 0, {'passing_sieve': '600mic','retained_sieve': '300mic'}),
-            (0, 0, {'passing_sieve': '1.18mm','retained_sieve': '600mic'}),
-            (0, 0, {'passing_sieve': '2.36mm','retained_sieve': '1.18mm'}),
-            (0, 0, {'passing_sieve': '4.75mm','retained_sieve': '2.36mm'}),
-            (0, 0, {'passing_sieve': '10mm','retained_sieve': '4.75mm'}),
+    # @api.model
+    # def soundness_magtwo_line_ids_sizes(self):
+    #     default_lines = [
+    #         (0, 0, {'passing_sieve': '600mic','retained_sieve': '300mic'}),
+    #         (0, 0, {'passing_sieve': '1.18mm','retained_sieve': '600mic'}),
+    #         (0, 0, {'passing_sieve': '2.36mm','retained_sieve': '1.18mm'}),
+    #         (0, 0, {'passing_sieve': '4.75mm','retained_sieve': '2.36mm'}),
+    #         (0, 0, {'passing_sieve': '10mm','retained_sieve': '4.75mm'}),
             
-        ]
-        return default_lines 
+    #     ]
+    #     return default_lines 
     
-    mag_total1_grading = fields.Float("Total (Grading of Original Sample (%))", compute="_compute_totallly")
-    mag_total1_weight_before = fields.Float("TTotal (Weight of Test Fraction Before Test (gm))", compute="_compute_totallly")
-    mag_total1_weight_after = fields.Float("Total (Weight of Test Fraction After Test (gm))", compute="_compute_totallly")
-    mag_total1_percent_loss = fields.Float("otal (Percentage Passing Finer Sieve After Test (Actual Percentage Loss))", compute="_compute_totallly")
-    mag_total1_weighted_avg = fields.Float("Final Result (Weighted Average  (Corrected Percent Loss))", compute="_compute_totallly")
+    # mag_total1_grading = fields.Float("Total (Grading of Original Sample (%))", compute="_compute_totallly")
+    # mag_total1_weight_before = fields.Float("TTotal (Weight of Test Fraction Before Test (gm))", compute="_compute_totallly")
+    # mag_total1_weight_after = fields.Float("Total (Weight of Test Fraction After Test (gm))", compute="_compute_totallly")
+    # mag_total1_percent_loss = fields.Float("otal (Percentage Passing Finer Sieve After Test (Actual Percentage Loss))", compute="_compute_totallly")
+    # mag_total1_weighted_avg = fields.Float("Final Result (Weighted Average  (Corrected Percent Loss))", compute="_compute_totallly")
 
-    @api.depends(
-        'soundness_magtwo_line_ids.grading_percent',
-        'soundness_magtwo_line_ids.weight_before',
-        'soundness_magtwo_line_ids.weight_after',
-        'soundness_magtwo_line_ids.percent_loss',
-        'soundness_magtwo_line_ids.weighted_avg'
-    )
-    def _compute_totallly(self):
-        for rec in self:
-            rec.mag_total1_grading = sum(rec.soundness_magtwo_line_ids.mapped('grading_percent'))
-            rec.mag_total1_weight_before = sum(rec.soundness_magtwo_line_ids.mapped('weight_before'))
-            rec.mag_total1_weight_after = sum(rec.soundness_magtwo_line_ids.mapped('weight_after'))
-            rec.mag_total1_percent_loss = sum(rec.soundness_magtwo_line_ids.mapped('percent_loss'))
-            rec.mag_total1_weighted_avg = sum(rec.soundness_magtwo_line_ids.mapped('weighted_avg'))
+    # @api.depends(
+    #     'soundness_magtwo_line_ids.grading_percent',
+    #     'soundness_magtwo_line_ids.weight_before',
+    #     'soundness_magtwo_line_ids.weight_after',
+    #     'soundness_magtwo_line_ids.percent_loss',
+    #     'soundness_magtwo_line_ids.weighted_avg'
+    # )
+    # def _compute_totallly(self):
+    #     for rec in self:
+    #         rec.mag_total1_grading = sum(rec.soundness_magtwo_line_ids.mapped('grading_percent'))
+    #         rec.mag_total1_weight_before = sum(rec.soundness_magtwo_line_ids.mapped('weight_before'))
+    #         rec.mag_total1_weight_after = sum(rec.soundness_magtwo_line_ids.mapped('weight_after'))
+    #         rec.mag_total1_percent_loss = sum(rec.soundness_magtwo_line_ids.mapped('percent_loss'))
+    #         rec.mag_total1_weighted_avg = sum(rec.soundness_magtwo_line_ids.mapped('weighted_avg'))
 
 
     mag_total_weighted_avg_conformity = fields.Selection([
@@ -4054,48 +4054,48 @@ class SodiumSulphateLine(models.Model):
         ) / 100
 
 
-class SodiumSulphateTwoLine(models.Model):
-    _name = "sodium.sulphate.two.line"
-    parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
+# class SodiumSulphateTwoLine(models.Model):
+#     _name = "sodium.sulphate.two.line"
+#     parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
 
-    sample_no = fields.Integer(string="Trial No", readonly=True, copy=False, default=1)
+#     sample_no = fields.Integer(string="Trial No", readonly=True, copy=False, default=1)
 
-    passing_sieve = fields.Char("Passing Sieve Size" )
-    retained_sieve = fields.Char("Retained Sieve Size" )
+#     passing_sieve = fields.Char("Passing Sieve Size" )
+#     retained_sieve = fields.Char("Retained Sieve Size" )
 
-    grading_percent = fields.Float("Grading of Original Sample (%)")
+#     grading_percent = fields.Float("Grading of Original Sample (%)")
 
-    weight_before = fields.Float("Weight of Test Fraction Before Test (gm)")
-    weight_after = fields.Float("Weight of Test Fraction After Test (gm)")
+#     weight_before = fields.Float("Weight of Test Fraction Before Test (gm)")
+#     weight_after = fields.Float("Weight of Test Fraction After Test (gm)")
 
-    percent_loss = fields.Float(
-        "Percentage Passing Finer Sieve After Test (Actual Percentage Loss)",
-        compute="_compute_loss",
-        store=True
-    )
+#     percent_loss = fields.Float(
+#         "Percentage Passing Finer Sieve After Test (Actual Percentage Loss)",
+#         compute="_compute_loss",
+#         store=True
+#     )
 
-    weighted_avg = fields.Float(
-        "Weighted Average  (Corrected Percent Loss)",
-        compute="_compute_weighted_avg",
-        store=True
-    )
+#     weighted_avg = fields.Float(
+#         "Weighted Average  (Corrected Percent Loss)",
+#         compute="_compute_weighted_avg",
+#         store=True
+#     )
 
-    @api.depends('weight_before', 'weight_after')
-    def _compute_loss(self):
-     for rec in self:
-        if rec.weight_before:
-            rec.percent_loss = (
-                (rec.weight_after / rec.weight_before)
-            ) * 100
-        else:
-            rec.percent_loss = 0
+#     @api.depends('weight_before', 'weight_after')
+#     def _compute_loss(self):
+#      for rec in self:
+#         if rec.weight_before:
+#             rec.percent_loss = (
+#                 (rec.weight_after / rec.weight_before)
+#             ) * 100
+#         else:
+#             rec.percent_loss = 0
 
-    @api.depends('grading_percent', 'percent_loss')
-    def _compute_weighted_avg(self):
-     for rec in self:
-        rec.weighted_avg = (
-            rec.grading_percent * rec.percent_loss
-        ) / 100
+#     @api.depends('grading_percent', 'percent_loss')
+#     def _compute_weighted_avg(self):
+#      for rec in self:
+#         rec.weighted_avg = (
+#             rec.grading_percent * rec.percent_loss
+#         ) / 100
 
 
 class MagnesiumSulphateLine(models.Model):
@@ -4139,45 +4139,45 @@ class MagnesiumSulphateLine(models.Model):
         ) / 100
 
 
-class MagnesiumSulphateTwoLine(models.Model):
-    _name = "magnesium.sulphate.two.line"
-    parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
+# class MagnesiumSulphateTwoLine(models.Model):
+#     _name = "magnesium.sulphate.two.line"
+#     parent_id = fields.Many2one('mechanical.coarse.aggregate',string="Parent Id")
 
-    sample_no = fields.Integer(string="Trial No", readonly=True, copy=False, default=1)
+#     sample_no = fields.Integer(string="Trial No", readonly=True, copy=False, default=1)
 
-    passing_sieve = fields.Char("Passing Sieve Size" )
-    retained_sieve = fields.Char("Retained Sieve Size" )
+#     passing_sieve = fields.Char("Passing Sieve Size" )
+#     retained_sieve = fields.Char("Retained Sieve Size" )
 
-    grading_percent = fields.Float("Grading of Original Sample (%)")
+#     grading_percent = fields.Float("Grading of Original Sample (%)")
 
-    weight_before = fields.Float("Weight of Test Fraction Before Test (gm)")
-    weight_after = fields.Float("Weight of Test Fraction After Test (gm)")
+#     weight_before = fields.Float("Weight of Test Fraction Before Test (gm)")
+#     weight_after = fields.Float("Weight of Test Fraction After Test (gm)")
 
-    percent_loss = fields.Float(
-        "Percentage Passing Finer Sieve After Test (Actual Percentage Loss)",compute="_compute_loss",store=True)
+#     percent_loss = fields.Float(
+#         "Percentage Passing Finer Sieve After Test (Actual Percentage Loss)",compute="_compute_loss",store=True)
 
-    weighted_avg = fields.Float(
-        "Weighted Average  (Corrected Percent Loss)",
-        compute="_compute_weighted_avg",
-        store=True
-    )
+#     weighted_avg = fields.Float(
+#         "Weighted Average  (Corrected Percent Loss)",
+#         compute="_compute_weighted_avg",
+#         store=True
+#     )
 
-    @api.depends('weight_before', 'weight_after')
-    def _compute_loss(self):
-     for rec in self:
-        if rec.weight_before:
-            rec.percent_loss = (
-                (rec.weight_after / rec.weight_before)
-            ) * 100
-        else:
-            rec.percent_loss = 0
+#     @api.depends('weight_before', 'weight_after')
+#     def _compute_loss(self):
+#      for rec in self:
+#         if rec.weight_before:
+#             rec.percent_loss = (
+#                 (rec.weight_after / rec.weight_before)
+#             ) * 100
+#         else:
+#             rec.percent_loss = 0
 
-    @api.depends('grading_percent', 'percent_loss')
-    def _compute_weighted_avg(self):
-     for rec in self:
-        rec.weighted_avg = (
-            rec.grading_percent * rec.percent_loss
-        ) / 100
+#     @api.depends('grading_percent', 'percent_loss')
+#     def _compute_weighted_avg(self):
+#      for rec in self:
+#         rec.weighted_avg = (
+#             rec.grading_percent * rec.percent_loss
+#         ) / 100
 
 class coarseNotes(models.Model):
     _name = "coarse.notes"
