@@ -188,7 +188,7 @@ Binder content
                                      </tbody>
                                  </table>
 
-                                 <t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','35789ght-7188-4086-b132-62b50e63f1247ui')], limit=1).technician"/>
+                                 <t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].sudo().search([('eln_id','=', eln.id), ('parameter.internal_id','=','35789ght-7188-4086-b132-62b50e63f1247ui')], limit=1).technician"/>
                                 <div class="signatureContainer girdgird">
 							<div>
 								<div>

@@ -93,7 +93,7 @@
                             </tr>
                         </table>
 
-                        <t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','ea70f185-651e-456c-83ec-253420b76855')], limit=1).technician"/>
+                        <t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].sudo().search([('eln_id','=', eln.id), ('parameter.internal_id','=','ea70f185-651e-456c-83ec-253420b76855')], limit=1).technician"/>
                         <div class="signatureContainer noPageBreak girdgird">
                             <div>
                                 <div>
@@ -192,7 +192,7 @@
                             </tr>
                         </table>
 
-                        <t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','df78443d-7cd6-425b-b647-58be1489a14e')], limit=1).technician"/>
+                        <t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].sudo().search([('eln_id','=', eln.id), ('parameter.internal_id','=','df78443d-7cd6-425b-b647-58be1489a14e')], limit=1).technician"/>
                         <div class="signatureContainer noPageBreak girdgird">
                             <div>
                                 <div>
@@ -309,7 +309,7 @@
                                 </td>
                             </tr>
                         </table>
-                        <t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','65a8f5a6-5915-49b9-8fdd-70dc724bab58')], limit=1).technician"/>
+                        <t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].sudo().search([('eln_id','=', eln.id), ('parameter.internal_id','=','65a8f5a6-5915-49b9-8fdd-70dc724bab58')], limit=1).technician"/>
                         <div class="signatureContainer noPageBreak girdgird">
                             <div>
                                 <div>
