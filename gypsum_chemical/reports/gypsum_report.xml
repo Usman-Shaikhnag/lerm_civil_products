@@ -182,6 +182,11 @@
 										
 									</span>
 							</th>
+							<th t-if="eln.conformity" rowspan="2">
+											<span>
+												Confirmity Status
+											</span>
+										</th>
 							</tr>
                             <tr cols="12">
 								<td colspan="1" style="border-top:none">
@@ -220,7 +225,7 @@
 									</span>
 									
 								</td> -->
-								<td >
+								<td colspan="2" >
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','a58cb5bc-d2d2-4756-81d2-6571ae81a813')]).parameter_name"/>
 								</td>
 								
@@ -266,6 +271,23 @@
                                         </t>
 									</span>
 								</td>
+								<!-- Example Fix (assuming the correct field name is 'specification') -->
+								<td t-if="eln.conformity" style="text-align: center;">
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','a58cb5bc-d2d2-4756-81d2-6571ae81a813')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if data.so3_conformity and data.so3_conformity.lower() == 'pass' else ('red' if data.so3_conformity and data.so3_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="data.so3_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
+									
+								</td>
 								
 								
 							</tr>
@@ -281,7 +303,7 @@
 									</span>
 									
 								</td> -->
-								<td >
+								<td colspan="2" >
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','df12ceda-8e7d-4cb0-af54-0561796f5fdf')]).parameter_name"/>
 								</td>
 								
@@ -328,6 +350,22 @@
                                         </t>
 									</span>
 								</td>
+								<td t-if="eln.conformity" style="text-align: center;">
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','df12ceda-8e7d-4cb0-af54-0561796f5fdf')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if data.loss_conformity and data.loss_conformity.lower() == 'pass' else ('red' if data.loss_conformity and data.loss_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="data.loss_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
+									
+								</td>
 								
 								
 							</tr>
@@ -346,7 +384,7 @@
 									</span>
 									
 								</td> -->
-								<td >
+								<td  colspan="2" >
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','80cbb8c4-5b52-4c0b-97f8-b5b66af79982')]).parameter_name"/>
 								</td>
 								
@@ -393,6 +431,23 @@
                                         </t>
 									</span>
 								</td>
+
+								<td t-if="eln.conformity" style="text-align: center;">
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','80cbb8c4-5b52-4c0b-97f8-b5b66af79982')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if data.cao1_conformity and data.cao1_conformity.lower() == 'pass' else ('red' if data.cao1_conformity and data.cao1_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="data.cao1_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
+									
+								</td>
 								
 								
 								
@@ -410,7 +465,7 @@
 									</span>
 									
 								</td> -->
-								<td >
+								<td  colspan="2" >
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','3ef8ce36-8db8-4557-ad95-14b199bc9ff0')]).parameter_name"/>
 								</td>
 								
@@ -456,6 +511,23 @@
                                         </t>
 									</span>
 								</td>
+
+								<td t-if="eln.conformity" style="text-align: center;">
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','3ef8ce36-8db8-4557-ad95-14b199bc9ff0')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if data.mgo_conformity1 and data.mgo_conformity1.lower() == 'pass' else ('red' if data.mgo_conformity1 and data.mgo_conformity1.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="data.mgo_conformity1"/>
+												</t>
+											</t>
+										</t>
+									</span>
+									
+								</td>
 								
 								
 							</tr>
@@ -472,7 +544,7 @@
 									</span>
 									
 								</td> -->
-								<td >
+								<td colspan="2" >
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','abc60d60-0e94-4a2a-a08f-04650534fa9f')]).parameter_name"/>
 								</td>
 								
@@ -518,6 +590,23 @@
                                         </t>
 									</span>
 								</td>
+
+								<td t-if="eln.conformity" style="text-align: center;">
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','abc60d60-0e94-4a2a-a08f-04650534fa9f')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if data.cao_conformity2 and data.cao_conformity2.lower() == 'pass' else ('red' if data.cao_conformity2 and data.cao_conformity2.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="data.cao_conformity2"/>
+												</t>
+											</t>
+										</t>
+									</span>
+									
+								</td>
 								
 								
 								
@@ -534,7 +623,7 @@
 									</span>
 									
 								</td> -->
-								<td >
+								<td  colspan="2" >
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','b3b623fc-ff8b-44b8-884b-869139ff0912')]).parameter_name"/>
 								</td>
 								
@@ -581,6 +670,22 @@
                                         </t>
 									</span>
 								</td>
+								<td t-if="eln.conformity" style="text-align: center;">
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','b3b623fc-ff8b-44b8-884b-869139ff0912')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if data.mgo_conformity2 and data.mgo_conformity2.lower() == 'pass' else ('red' if data.mgo_conformity2 and data.mgo_conformity2.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="data.mgo_conformity2"/>
+												</t>
+											</t>
+										</t>
+									</span>
+									
+								</td>
 								
 							</tr>
 							<tr t-if="data.free_lime_visible and (data.free_lime_nabl == 'pass' and nabl or data.free_lime_nabl == 'fail' and not nabl)">
@@ -594,7 +699,7 @@
 									</span>
 									
 								</td> -->
-								<td >
+								<td colspan="2" >
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','1959c613-48ed-494d-93a3-b4c831e37b51')]).parameter_name"/>
 								</td>
 								
@@ -640,6 +745,23 @@
                                         </t>
 									</span>
 								</td>
+
+								<td t-if="eln.conformity" style="text-align: center;">
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','1959c613-48ed-494d-93a3-b4c831e37b51')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if data.free_lime_conformity and data.free_lime_conformity.lower() == 'pass' else ('red' if data.free_lime_conformity and data.free_lime_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="data.free_lime_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
+									
+								</td>
 								
 								
 							</tr>
@@ -655,7 +777,7 @@
 									</span>
 									
 								</td> -->
-								<td >
+								<td colspan="2" >
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','e54abac7-52ff-41a2-8ef1-cd536cde4e2d')]).parameter_name"/>
 								</td>
 								
@@ -701,6 +823,23 @@
                                         </t>
 									</span>
 								</td>
+
+								<td t-if="eln.conformity" style="text-align: center;">
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','e54abac7-52ff-41a2-8ef1-cd536cde4e2d')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if data.soluble_sodium_conformity and data.soluble_sodium_conformity.lower() == 'pass' else ('red' if data.soluble_sodium_conformity and data.soluble_sodium_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="data.soluble_sodium_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
+									
+								</td>
 								
 								
 							</tr>
@@ -715,7 +854,7 @@
 									</span>
 									
 								</td> -->
-								<td >
+								<td colspan="2"  >
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','c3ac1330-a4d9-4526-9533-4130ff635bf6')]).parameter_name"/>
 								</td>
 								
@@ -761,6 +900,23 @@
                                         </t>
 									</span>
 								</td>
+
+								<td t-if="eln.conformity" style="text-align: center;">
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','c3ac1330-a4d9-4526-9533-4130ff635bf6')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if data.free_water_conformity and data.free_water_conformity.lower() == 'pass' else ('red' if data.free_water_conformity and data.free_water_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="data.free_water_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
+									
+								</td>
 								
 								
 							</tr>
@@ -775,7 +931,7 @@
 									</span>
 									
 								</td> -->
-								<td >
+								<td  colspan="2" >
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','1afa0443-8649-48a3-b73e-49f9fbb08d3d')]).parameter_name"/>
 								</td>
 								
@@ -821,6 +977,23 @@
                                         </t>
 									</span>
 								</td>
+
+								<td t-if="eln.conformity" style="text-align: center;">
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','1afa0443-8649-48a3-b73e-49f9fbb08d3d')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if data.combined_water_conformity and data.combined_water_conformity.lower() == 'pass' else ('red' if data.combined_water_conformity and data.combined_water_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="data.combined_water_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
+									
+								</td>
 								
 								
 							</tr>
@@ -837,7 +1010,7 @@
 									</span>
 									
 								</td> -->
-								<td >
+								<td  colspan="2" >
 									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','966341bc-cef0-49da-8f72-df520a8c702e')]).parameter_name"/>
 								</td>
 								
@@ -876,12 +1049,29 @@
 								</td>
 								<td colspan="1" style="text-align: center;">
 									<span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','1afa0443-8649-48a3-b73e-49f9fbb08d3d')]).parameter_table" t-as="parameter">
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','966341bc-cef0-49da-8f72-df520a8c702e')]).parameter_table" t-as="parameter">
                                             <t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.specification"/>
                                             </t>
                                         </t>
 									</span>
+								</td>
+
+								<td t-if="eln.conformity" style="text-align: center;">
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','966341bc-cef0-49da-8f72-df520a8c702e')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if data.calcium_oxide_conformity2 and data.calcium_oxide_conformity2.lower() == 'pass' else ('red' if data.calcium_oxide_conformity2 and data.calcium_oxide_conformity2.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="data.calcium_oxide_conformity2"/>
+												</t>
+											</t>
+										</t>
+									</span>
+									
 								</td>
 								
 								
