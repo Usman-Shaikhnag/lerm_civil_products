@@ -83,10 +83,9 @@
 
     </record>
 
-    <record id="test_sample_action" model="ir.actions.act_window">
-    <field name="name">lerm.srf.sample.tree.search</field>
-    <field name="model">lerm.srf.sample</field>
-    <field name="type">search</field>
+    <record id="srf_sample_tree_search_view" model="ir.ui.view">
+        <field name="name">lerm.srf.sample.tree.search</field>
+        <field name="model">lerm.srf.sample</field>
         <field name="arch" type="xml">
             <search>
                 <field name="srf_id" string="SRF ID" />

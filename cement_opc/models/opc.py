@@ -1266,7 +1266,8 @@ class CementNormalConsistency(models.Model):
 
 
             if result.parameter.internal_id == '40ce7425-30fe-4043-b518-015f5c60d916':
-                result.result_char = round(self.initial_setting_time_minutes_unrounded,2)
+                # result.result_char = round(self.initial_setting_time_minutes_unrounded,2)
+                result.result_char = round(float(self.initial_setting_time_minutes_unrounded), 2)
                 result.calculated = True
                 if self.initial_setting_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -1276,7 +1277,7 @@ class CementNormalConsistency(models.Model):
 
 
             if result.parameter.internal_id == 'd339933c-5e9c-4335-9ea2-2d87624c3061':
-                result.result_char = round(self.final_setting_time_minutes,2)
+                result.result_char = self.final_setting_time_minutes
                 result.calculated = True
                 if self.final_setting_nabl == 'pass':
                     result.nabl_status = 'nabl'
