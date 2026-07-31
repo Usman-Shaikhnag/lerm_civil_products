@@ -1266,8 +1266,7 @@ class CementNormalConsistency(models.Model):
 
 
             if result.parameter.internal_id == '40ce7425-30fe-4043-b518-015f5c60d916':
-                # result.result_char = round(self.initial_setting_time_minutes_unrounded,2)
-                result.result_char = round(float(self.initial_setting_time_minutes_unrounded), 2)
+                result.result_char = self.initial_setting_time_minutes_unrounded
                 result.calculated = True
                 if self.initial_setting_nabl == 'pass':
                     result.nabl_status = 'nabl'

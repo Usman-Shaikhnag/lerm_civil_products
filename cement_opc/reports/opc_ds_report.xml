@@ -1378,8 +1378,22 @@
 									</t>
 									</span>
 								</td>
-								<td t-if="eln.conformity">
-									<span t-field="cement.normal_consistency_conformity"/>
+								<td t-if="eln.conformity" style="text-align: center;">
+								
+
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','a9e97cea-372f-4775-9bcb-e9dd70e6e6df')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if data.normal_consistency_conformity and data.normal_consistency_conformity.lower() == 'pass' else ('red' if data.normal_consistency_conformity and data.normal_consistency_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="data.normal_consistency_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 								</td>
 							</tr>
 
@@ -1429,7 +1443,21 @@
 									</span>
 								</td>
 								<td t-if="eln.conformity">
-									<span t-field="cement.initial_setting_conformity"/>
+									
+
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','40ce7425-30fe-4043-b518-015f5c60d916')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if data.initial_setting_conformity and data.initial_setting_conformity.lower() == 'pass' else ('red' if data.initial_setting_conformity and data.initial_setting_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="data.initial_setting_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 								</td>
 								
 							</tr>

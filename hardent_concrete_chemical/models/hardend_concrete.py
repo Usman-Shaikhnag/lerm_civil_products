@@ -1,6 +1,7 @@
 from odoo import api, fields, models
 from odoo.exceptions import UserError,ValidationError
 import math
+from odoo.tools import float_round
 
 class ChemicalHasdenedConcrete(models.Model):
     _name = "chemical.hardened.concrete"
@@ -17,7 +18,6 @@ class ChemicalHasdenedConcrete(models.Model):
         ('1-draft', 'In-Test'),
         ('2-confirm', 'In-Check'),
     ], string='State',default='1-draft')
-
 
 
     notes_id = fields.One2many('hardend.notes', 'parent_id', string="Notes")
@@ -47,7 +47,6 @@ class ChemicalHasdenedConcrete(models.Model):
 
         res['notes_id'] = default_notes
         return res
-
 
 
     ph_name = fields.Char("Name",default="pH of 1 % Solution in water")
@@ -379,37 +378,68 @@ class ChemicalHasdenedConcrete(models.Model):
     chloride_name = fields.Char("Name",default="Chloride as Cl  BS 1881 Part 124:2015(prestressed concrete)")
     chloride_visible = fields.Boolean("Chloride as Cl  BS 1881 Part 124:2015(prestressed concrete)",compute="_compute_visible")
 
-    chloride_cube = fields.Float("A)Cube Density, Kg/m3")
-    chloride_mass = fields.Float("B) Mass of the concrete cube taken for analysis ( gm)",digits=(16, 4))
-    chloride_valume = fields.Float("C) Volume of 0.02 N (Silver nitrate added) in blank")
-    chloride_reading = fields.Float("D) Burette Reading of 0.1N Ammonium thiocynate  Consumed for  Sample) ( ml)")
-    chloride_normality = fields.Float("E) Normality of 0.1 N Ammonium thiocynate solution ( N)")
-    chloride_p = fields.Float("F)Chloride, % = ( C-D) x E x 0.03545 x 100/ B",compute="_compute_chloride_p",digits=(12, 3))
-    chloride_percent = fields.Float("G)Chloride, Kg/m3 = (F/100 x A)",compute="_compute_chloride_percent",digits=(12, 2))
+    chloride_cube = fields.Float("A)Cube Density, Kg/m3",store=True)
+    chloride_mass = fields.Float("B) Mass of the concrete cube taken for analysis ( gm)",digits=(16, 4),store=True)
+    chloride_valume = fields.Float("C) Volume of 0.02 N (Silver nitrate added) in blank",store=True,digits=(16, 2))
+    chloride_reading = fields.Float("D) Burette Reading of 0.1N Ammonium thiocynate  Consumed for  Sample) ( ml)",store=True,digits=(12, 2))
+    chloride_normality = fields.Float("E) Normality of 0.1 N Ammonium thiocynate solution ( N)",digits=(12, 4),store=True)
+    chloride_p = fields.Float("F)Chloride, % =  (D*E/0.1)",compute="_compute_chloride_p",digits=(12, 3),store=True)
+    chloride_percent = fields.Float("G) =C-F",compute="_compute_chloride_percent",digits=(12, 3),store=True)
+    chloride_eh = fields.Float("H) Chloride, % =  G*0.3545/B",digits=(12, 3),compute="_compute_chloride_eh",store=True)
+    chloride_i = fields.Float("I) Chloride, Kg/m3 = (H/100 x A)",digits=(12, 3),compute="_compute_chloride_i",store=True)
     # normality_of_ammonia = fields.Float("Normality of ammonia thiocynate (0.1)",digits=(16, 4))
     # chloride_percent = fields.Float("Chloride %",compute="_compute_chloride_percent",digits=(16, 4))
-    @api.depends('chloride_valume', 'chloride_reading', 'chloride_normality', 'chloride_mass')
+    # @api.depends('chloride_valume', 'chloride_reading', 'chloride_normality', 'chloride_mass')
+    # def _compute_chloride_p(self):
+    #     for record in self:
+    #         if record.chloride_mass != 0:
+    #             record.chloride_p = (record.chloride_valume - record.chloride_reading) * record.chloride_normality * 0.03545 * 100 / record.chloride_mass
+    #         else:
+    #             record.chloride_p = 0.0  
+
+    @api.depends('chloride_reading', 'chloride_normality')
     def _compute_chloride_p(self):
-        for record in self:
-            if record.chloride_mass != 0:
-                record.chloride_p = (record.chloride_valume - record.chloride_reading) * record.chloride_normality * 0.03545 * 100 / record.chloride_mass
+        for rec in self:
+            if rec.chloride_reading and rec.chloride_normality:
+                rec.chloride_p = (rec.chloride_reading * rec.chloride_normality) / 0.1
             else:
-                record.chloride_p = 0.0  
+                rec.chloride_p = 0.0
     
-    @api.depends('chloride_p', 'chloride_cube')
+    # @api.depends('chloride_p', 'chloride_cube')
+    # def _compute_chloride_percent(self):
+    #     for record in self:
+    #         if record.chloride_cube != 0:
+    #             record.chloride_percent = (record.chloride_p / 100) * record.chloride_cube
+    #         else:
+    #             record.chloride_percent = 0.0 
+
+    @api.depends('chloride_valume', 'chloride_p')
     def _compute_chloride_percent(self):
-        for record in self:
-            if record.chloride_cube != 0:
-                record.chloride_percent = (record.chloride_p / 100) * record.chloride_cube
+        for rec in self:  
+            rec.chloride_percent = float_round(
+                rec.chloride_valume - rec.chloride_p,
+                precision_digits=3
+            )
+    
+    @api.depends('chloride_percent', 'chloride_mass')
+    def _compute_chloride_eh(self):
+        for rec in self:
+            if rec.chloride_mass:
+                rec.chloride_eh = (rec.chloride_percent * 0.3545) / rec.chloride_mass
             else:
-                record.chloride_percent = 0.0 
+                rec.chloride_eh = 0.0
+
+    @api.depends('chloride_eh', 'chloride_cube')
+    def _compute_chloride_i(self):
+        for rec in self:
+            rec.chloride_i = (rec.chloride_eh * rec.chloride_cube) / 100
     
 
     chloride_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail')], string="Conformity",compute="_compute_chloride_conformity", store=True)
 
-    @api.depends('chloride_percent','eln_ref','grade')
+    @api.depends('chloride_i','eln_ref','grade')
     def _compute_chloride_conformity(self):
         
         for record in self:
@@ -422,8 +452,8 @@ class ChemicalHasdenedConcrete(models.Model):
                     req_max = material.req_max
                     mu_value = line.mu_value
                     
-                    lower = record.chloride_percent - record.chloride_percent*mu_value
-                    upper = record.chloride_percent + record.chloride_percent*mu_value
+                    lower = record.chloride_i - record.chloride_i*mu_value
+                    upper = record.chloride_i + record.chloride_i*mu_value
                     if lower >= req_min and upper <= req_max:
                         record.chloride_conformity = 'pass'
                         break
@@ -434,7 +464,7 @@ class ChemicalHasdenedConcrete(models.Model):
         ('pass', 'NABL'),
         ('fail', 'Non-NABL')], string="NABL",compute="_compute_chloride_nabl", store=True)
 
-    @api.depends('chloride_percent','eln_ref','grade')
+    @api.depends('chloride_i','eln_ref','grade')
     def _compute_chloride_nabl(self):
         
         for record in self:
@@ -447,8 +477,8 @@ class ChemicalHasdenedConcrete(models.Model):
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.chloride_percent - record.chloride_percent*mu_value
-            upper = record.chloride_percent + record.chloride_percent*mu_value
+            lower = record.chloride_i - record.chloride_i*mu_value
+            upper = record.chloride_i + record.chloride_i*mu_value
             if lower >= lab_min and upper <= lab_max:
                 record.chloride_nabl = 'pass'
                 break
@@ -546,8 +576,8 @@ class ChemicalHasdenedConcrete(models.Model):
 
     chloride_cube2 = fields.Float("A)Cube Density, Kg/m3")
     chloride_mass2 = fields.Float("B) Mass of the concrete cube taken for analysis ( gm)",digits=(16, 4))
-    chloride_valume2 = fields.Float("C) Volume of 0.02 N (Silver nitrate added) in blank")
-    chloride_reading2 = fields.Float("D) Burette Reading of 0.1N Ammonium thiocynate  Consumed for  Sample) ( ml)")
+    chloride_valume2 = fields.Float("C) Volume of 0.02 N (Silver nitrate added) in blank",digits=(16, 2))
+    chloride_reading2 = fields.Float("D) Burette Reading of 0.1N Ammonium thiocynate  Consumed for  Sample) ( ml)",digits=(12, 2))
     chloride_normality2 = fields.Float("E) Normality of 0.1 N Ammonium thiocynate solution ( N)")
     chloride_p2 = fields.Float("F)Chloride, % = ( C-D) x E x 0.03545 x 100/ B",compute="_compute_chloride_p2",digits=(12, 3))
     chloride_percent2 = fields.Float("G)Chloride, Kg/m3 = (F/100 x A)",compute="_compute_chloride_percent2",digits=(12, 3))
@@ -841,11 +871,11 @@ class ChemicalHasdenedConcrete(models.Model):
             ('pass', 'Pass'),
             ('fail', 'Fail')], string="Conformity",compute="_compute_cement_content_1_conformity", store=True)
 
-    @api.depends('cement_content','eln_ref','grade')
+    @api.depends('cement_content_1','eln_ref','grade')
     def _compute_cement_content_1_conformity(self):
         
         for record in self:
-            record.cement_content_conformity = 'fail'
+            record.cement_content_1_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','97527435-edbc-4d33-817f-9596b56b4cd0')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','97527435-edbc-4d33-817f-9596b56b4cd0')]).parameter_table
             for material in materials:
@@ -854,8 +884,8 @@ class ChemicalHasdenedConcrete(models.Model):
                     req_max = material.req_max
                     mu_value = line.mu_value
                     
-                    lower = record.cement_content - record.cement_content*mu_value
-                    upper = record.cement_content + record.cement_content*mu_value
+                    lower = record.cement_content_1 - record.cement_content_1*mu_value
+                    upper = record.cement_content_1 + record.cement_content_1*mu_value
                     if lower >= req_min and upper <= req_max:
                         record.cement_content_1_conformity = 'pass'
                         break
@@ -866,11 +896,11 @@ class ChemicalHasdenedConcrete(models.Model):
         ('pass', 'NABL'),
         ('fail', 'Non-NABL')], string="NABL",compute="_compute_cement_content_1_nabl",  store=True)
 
-    @api.depends('cement_content','eln_ref','grade')
+    @api.depends('cement_content_1','eln_ref','grade')
     def _compute_cement_content_1_nabl(self):
         
         for record in self:
-            record.cement_content_nabl = 'fail'
+            record.cement_content_1_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','97527435-edbc-4d33-817f-9596b56b4cd0')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','97527435-edbc-4d33-817f-9596b56b4cd0')]).parameter_table
             # for material in materials:
@@ -879,8 +909,8 @@ class ChemicalHasdenedConcrete(models.Model):
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.cement_content - record.cement_content*mu_value
-            upper = record.cement_content + record.cement_content*mu_value
+            lower = record.cement_content_1 - record.cement_content_1*mu_value
+            upper = record.cement_content_1 + record.cement_content_1*mu_value
             if lower >= lab_min and upper <= lab_max:
                 record.cement_content_1_nabl = 'pass'
                 break
@@ -1120,17 +1150,7 @@ class ChemicalHasdenedConcrete(models.Model):
             # ph 
             if result.parameter.internal_id == 'e9f2301d-bba0-42a2-bca8-ecbc5882a2b7':
                 result.result_char = round(self.ph_average,2)
-                result.calculated = True
                 if self.ph_average_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-
-            if result.parameter.internal_id == '9fa390be-1b85-4a6e-908d-cf3068e5ced4':
-                result.result_char = round(self.cement_content_aggregate_ratio,2)
-                result.calculated = True
-                if self.cement_aggregate_ratio_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -1138,7 +1158,6 @@ class ChemicalHasdenedConcrete(models.Model):
             # Dissolved Silica 
             if result.parameter.internal_id == 'e714e0ff-0fec-4367-86a6-1e89d42810e9':
                 result.result_char = round(self.average_dissolved_silica,2)
-                result.calculated = True
                 if self.average_dissolved_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1146,8 +1165,7 @@ class ChemicalHasdenedConcrete(models.Model):
                 continue
             # Chloride
             if result.parameter.internal_id == '034d2729-961c-40ae-a642-a26f03a2db5a':
-                result.result_char = round(self.chloride_percent,2)
-                result.calculated = True
+                result.result_char = round(self.chloride_i,2)
                 if self.chloride_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1156,7 +1174,6 @@ class ChemicalHasdenedConcrete(models.Model):
             # Sulphate 
             if result.parameter.internal_id == '7dfdb9dd-0d82-4c89-bab8-3853a78dbab3':
                 result.result_char = round(self.sulphate_percent,2)
-                result.calculated = True
                 if self.sulphate_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1165,7 +1182,6 @@ class ChemicalHasdenedConcrete(models.Model):
             # Alkali Aggregate
             if result.parameter.internal_id == '5ddb48f6-5260-4db7-a3a5-94f341db6d97':
                 result.result_char = round(self.average_reduction_alkalinity,2)
-                result.calculated = True
                 if self.average_reduction_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1174,7 +1190,6 @@ class ChemicalHasdenedConcrete(models.Model):
             # Chloride 1 
             if result.parameter.internal_id == 'f324e2d6-649f-4223-887e-aec3d85dffa9':
                 result.result_char = round(self.chloride_acide,2)
-                result.calculated = True
                 if self.chloride_nabl1 == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1183,7 +1198,6 @@ class ChemicalHasdenedConcrete(models.Model):
             # Chloride 2
             if result.parameter.internal_id == '98d321ee-f77f-434c-8bae-3711912c80f5':
                 result.result_char = round(self.chloride_percent2,2)
-                result.calculated = True
                 if self.chloride_nabl2 == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1192,7 +1206,6 @@ class ChemicalHasdenedConcrete(models.Model):
             # Cement Content
             if result.parameter.internal_id == 'd8bbd906-0f24-4c77-abc6-b2a8a00d91e6':
                 result.result_char = round(self.cement_content,2)
-                result.calculated = True
                 if self.cement_content_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1201,7 +1214,6 @@ class ChemicalHasdenedConcrete(models.Model):
             # Cement Content 1
             if result.parameter.internal_id == '97527435-edbc-4d33-817f-9596b56b4cd0':
                 result.result_char = round(self.cement_content_1,2)
-                result.calculated = True
                 if self.cement_content_1_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1210,7 +1222,6 @@ class ChemicalHasdenedConcrete(models.Model):
             # Lime
             if result.parameter.internal_id == 'ad567820-1a05-4d8b-bc7e-f58b42f78076':
                 result.result_char = round(self.lime_br_n_dilution,2)
-                result.calculated = True
                 if self.lime_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
@@ -1251,6 +1262,7 @@ class ChemicalHasdenedConcrete(models.Model):
     def _compute_grade_id(self):
         if self.eln_ref:
             self.grade = self.eln_ref.grade_id.id
+    
 
 
 

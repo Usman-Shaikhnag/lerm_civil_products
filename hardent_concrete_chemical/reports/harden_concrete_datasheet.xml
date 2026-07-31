@@ -113,7 +113,7 @@
                                 
 							</tr>
                             <tr cols="12" style="margin-top:20px">
-								<td colspan="6">Mass of the concrete cube taken for analysis :
+								<td colspan="6">Mass of the concrete cube taken for analysis ( gm) :
 									<![CDATA[&nbsp;]]>
 									
 								</td>
@@ -128,22 +128,22 @@
 									
 								</td>
                                 <td colspan="6">
-									<span t-field="data.chloride_valume"/>	
+									<span t-field="data.chloride_valume" t-options='{"widget": "float", "precision": 2}'/>	
 								</td>
                                 
 							</tr>
                             <tr cols="12" style="margin-top:20px">
-								<td colspan="6">Burette Reading of 0.1N Ammonium thiocynate  Consumed for  Sample :
+								<td colspan="6">Burette Reading of 0.1N Ammonium thiocynate  Consumed for  Sample ( ml):
 									<![CDATA[&nbsp;]]>
 									
 								</td>
                                 <td colspan="6">
-									<span t-field="data.chloride_reading"/>	
+									<span t-field="data.chloride_reading" t-options='{"widget": "float", "precision": 2}'/>	
 								</td>
                                 
 							</tr>
                             <tr cols="12" style="margin-top:20px">
-								<td colspan="6"> Normality of 0.1 N Ammonium thiocynate solution :
+								<td colspan="6"> Normality of 0.1 N Ammonium thiocynate solution ( N) :
 									<![CDATA[&nbsp;]]>
 									
 								</td>
@@ -153,7 +153,7 @@
                                 
 							</tr>
                             <tr cols="12" style="margin-top:20px">
-								<td colspan="6">Chloride % :
+								<td colspan="6">Chloride, % =  (D*E/0.1) :
 									<![CDATA[&nbsp;]]>
 									
 								</td>
@@ -163,12 +163,36 @@
                                 
 							</tr>
                             <tr cols="12" style="margin-top:20px">
-								<td colspan="6">Chloride, Kg/m3 :
+								<td colspan="6">G =C-F :
 									<![CDATA[&nbsp;]]>
 									
 								</td>
                                 <td colspan="6">
 									<span t-field="data.chloride_percent"/>	
+								</td>
+                                
+							</tr>
+
+
+
+							<tr cols="12" style="margin-top:20px">
+								<td colspan="6">Chloride, % =  G*0.3545/B :
+									<![CDATA[&nbsp;]]>
+									
+								</td>
+                                <td colspan="6">
+									<span t-field="data.chloride_eh"/>	
+								</td>
+                                
+							</tr>
+
+							<tr cols="12" style="margin-top:20px">
+								<td colspan="6">Chloride, Kg/m3 :
+									<![CDATA[&nbsp;]]>
+									
+								</td>
+                                <td colspan="6">
+									<span t-field="data.chloride_i"/>	
 								</td>
                                 
 							</tr>
@@ -212,7 +236,7 @@
 									
 								</td>
                                 <td colspan="6">
-									<span t-field="data.chloride_valume2"/>	
+									<span t-field="data.chloride_valume2" t-options='{"widget": "float", "precision": 2}'/>	
 								</td>
                                 
 							</tr>
@@ -222,7 +246,7 @@
 									
 								</td>
                                 <td colspan="6">
-									<span t-field="data.chloride_reading2"/>	
+									<span t-field="data.chloride_reading2" t-options='{"widget": "float", "precision": 2}'/>	
 								</td>
                                 
 							</tr>
@@ -1013,41 +1037,43 @@
 								</b>
 								
 							</div>
-							 <div style="height: 40px;">
-									<t t-if="eln.sample_id.testedby_signature_required">
-										<div t-if="eln.sample_id.filled_by.employee_id.signature">
-											<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-										</div>
-										
-									</t>
-								</div>
-							<div>
-								<b>
-								<span t-esc="eln.sample_id.filled_by.name"/>
-								</b>
-							</div>
-							<div>
-								<b>
-									(Jr. Chemist)
-								</b>
-							</div>
-						</div>
-						
-						<div style="margin-left:500px">
-									
-							<div>
-								<b>
-									Checked By
-								</b>
-							</div>
 							<div style="height: 40px;">
-									<t t-if="eln.sample_id.checkby_signature_required">
-										<div t-if="eln.sample_id.check_by.employee_id.signature">
-											<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-										</div>
-										
-									</t>
-								</div>
+						<!-- <t t-if="eln.sample_id.testedby_signature_required"> -->
+								<t t-if="eln.tested_by_signature_datasheet">
+
+									<div t-if="eln.sample_id.filled_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
 							<div>
 								<b>
 								<span t-esc="eln.sample_id.check_by.name"/>

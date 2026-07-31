@@ -191,23 +191,23 @@
                                  <tr>
 								    <td> Wt of sample (gm)</td>
                                     <td>
-									<span t-field="data.wt_of_sample_mgo1"/>
+									<span t-field="data.wt_of_sample_mgo1" t-options='{"widget": "float", "precision": 4}'/>
 									</td>
 								</tr>
 								<tr>
 								 <td> Wt of crucible + Residue after ignition (gm)</td>
                                     <td>
-									<span t-field="data.burette_mgo1"/>
+									<span t-field="data.burette_mgo1" t-options='{"widget": "float", "precision": 4}'/>
 									</td>
 								</tr>
 								<tr>
 								   <td>  Wt of empty Cruible (gm)</td>
-                                    <td><span t-field="data.normality_mgo1"/></td>
+                                    <td><span t-field="data.normality_mgo1" t-options='{"widget": "float", "precision": 4}'/></td>
 								</tr>
 								
 								<tr>
 								    <td>Diff. in weight (gm)</td>
-                                    <td><span t-field="data.dilution_mgo1" t-options='{"widget": "float", "precision": 4}'/></td>
+                                    <td><span t-field="data.dilution_mgo1"  t-options='{"widget": "float", "precision": 4}' /></td>
                                 </tr>
 								<tr>
 								    <td>Dilution</td>

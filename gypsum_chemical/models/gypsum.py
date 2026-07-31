@@ -305,8 +305,8 @@ class ChemicalGyspum(models.Model):
 
 
     wt_of_sample_mgo1 = fields.Float("A) Wt of Sample (gm)",digits=(16, 4))
-    burette_mgo1 = fields.Float("B) Wt of crucible + Residue after ignition (gm)")
-    normality_mgo1 = fields.Float("C) Wt of empty Cruible (gm)")
+    burette_mgo1 = fields.Float("B) Wt of crucible + Residue after ignition (gm)",digits=(16, 4))
+    normality_mgo1 = fields.Float("C) Wt of empty Cruible (gm)",digits=(16, 4))
     dilution_mgo1 = fields.Float("D) Diff. in weight (gm)", compute="_compute_dilution_mgo1",digits=(16,4), store=True)
     dilution_mgo2 = fields.Float("Dilution")
     mgo1 = fields.Float("MgO % = D x 36.21/ A", compute="_compute_mgo1", store=True)

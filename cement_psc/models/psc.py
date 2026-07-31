@@ -1272,7 +1272,7 @@ class CementPsc(models.Model):
 
 
             if result.parameter.internal_id == '40838d42-1926-4589-8a5e-88990875f55b':
-                result.result_char = round(self.initial_setting_time_minutes_unrounded,2)
+                result.result_char = self.initial_setting_time_minutes_unrounded
                 result.calculated = True
                 if self.initial_setting_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -1282,7 +1282,7 @@ class CementPsc(models.Model):
 
 
             if result.parameter.internal_id == '671e0153-725b-46d5-9f0f-616a562a2b15':
-                result.result_char = round(self.final_setting_time_minutes,2)
+                result.result_char = self.final_setting_time_minutes
                 result.calculated = True
                 if self.final_setting_nabl == 'pass':
                     result.nabl_status = 'nabl'
