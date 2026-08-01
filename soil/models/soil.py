@@ -16,6 +16,17 @@ from matplotlib.ticker import LogLocator, MultipleLocator
 import re
 from matplotlib.ticker import AutoMinorLocator
 from scipy.interpolate import PchipInterpolator
+from scipy.interpolate import PchipInterpolator
+from matplotlib.ticker import LogLocator, MultipleLocator, FuncFormatter
+import base64
+import numpy as np
+import matplotlib.pyplot as plt
+
+from matplotlib.ticker import (
+    MultipleLocator,
+    FormatStrFormatter,
+    NullFormatter,
+)
 
 from matplotlib.ticker import MultipleLocator, StrMethodFormatter
 
@@ -63,7 +74,7 @@ class Soil(models.Model):
 
     
 
-    # Grain Sieve Analysis
+    # Grain Sieve Analysis By Dry Sieving
     sieve_name = fields.Char("Name",default="Grain Sieve Analysis")
     sieve_visible = fields.Boolean("Grain Sieve Analysis Visible",compute="_compute_visible")
 
@@ -97,7 +108,7 @@ class Soil(models.Model):
     sand = fields.Float(string="%Sand",compute="_compute_sand")
     silt_clay = fields.Float(string="%Clay",compute="_compute_clay_fraction")
 
-    silt = fields.Float(string="%Silt",compute="_compute_silt")
+    silt = fields.Float(string="Silt And Clay",compute="_compute_silt")
 
     silt_clay_total = fields.Float(
     string="%Silt + Clay",
@@ -139,58 +150,103 @@ class Soil(models.Model):
             record.silt_clay = total  # Use a separate field for clay fraction
 
 
-    @api.depends('sieve_analysis_child_lines.passing_percent', 'sieve_analysis_child_lines.sieve_size')
-    def _compute_silt(self):
-        for record in self:
-            total = 0.0
-            for line in record.sieve_analysis_child_lines:
-                sieve_text = str(line.sieve_size).strip()
-                match = re.search(r'([\d\.]+)', sieve_text)
-                if not match:
-                    continue
-                try:
-                    size_value = float(match.group(1))
-                except ValueError:
-                    continue
+    # @api.depends('sieve_analysis_child_lines.passing_percent', 'sieve_analysis_child_lines.sieve_size')
+    # def _compute_silt(self):
+    #     for record in self:
+    #         total = 0.0
+    #         for line in record.sieve_analysis_child_lines:
+    #             sieve_text = str(line.sieve_size).strip()
+    #             match = re.search(r'([\d\.]+)', sieve_text)
+    #             if not match:
+    #                 continue
+    #             try:
+    #                 size_value = float(match.group(1))
+    #             except ValueError:
+    #                 continue
 
-                # µ ते mm convert करा
-                if 'µ' in sieve_text or 'mic' in sieve_text.lower():
-                    size_mm = size_value / 1000.0
-                else:
-                    size_mm = size_value
+    #             # µ ते mm convert करा
+    #             if 'µ' in sieve_text or 'mic' in sieve_text.lower():
+    #                 size_mm = size_value / 1000.0
+    #             else:
+    #                 size_mm = size_value
 
-                # range check (0.002 - 0.075 mm)
-                if 0.002 <= size_mm <= 0.075:
-                    total += line.passing_percent or 0.0
+    #             # range check (0.002 - 0.075 mm)
+    #             if 0.002 <= size_mm <= 0.075:
+    #                 total += line.passing_percent or 0.0
 
-            record.silt = total
+    #         record.silt = total
 
     # ---------- Gravel ----------
-    @api.depends('sieve_analysis_child_lines.percent_retained', 'sieve_analysis_child_lines.sieve_size')
+    # @api.depends('sieve_analysis_child_lines.percent_retained', 'sieve_analysis_child_lines.sieve_size')
+    # def _compute_gravel(self):
+    #     for record in self:
+    #         total = 0.0
+    #         for line in record.sieve_analysis_child_lines:
+    #             sieve_text = str(line.sieve_size).strip()
+    #             match = re.search(r'([\d\.]+)', sieve_text)
+    #             if not match:
+    #                 continue
+    #             try:
+    #                 size_value = float(match.group(1))
+    #             except ValueError:
+    #                 continue
+
+    #             # µ ते mm convert करा
+    #             if 'µ' in sieve_text or 'mic' in sieve_text.lower():
+    #                 size_mm = size_value / 1000.0
+    #             else:
+    #                 size_mm = size_value
+
+    #             # range check (4.75 - 80 mm)
+    #             if 4.75 <= size_mm <= 79.99:
+    #                 total += line.percent_retained or 0.0
+
+    #         record.gravel = total
+
+
+    
+    
+
+
+    @api.depends(
+    'sieve_analysis_child_lines.cumulative_retained',
+    'sieve_analysis_child_lines.sieve_size'
+)
     def _compute_gravel(self):
-        for record in self:
-            total = 0.0
-            for line in record.sieve_analysis_child_lines:
-                sieve_text = str(line.sieve_size).strip()
-                match = re.search(r'([\d\.]+)', sieve_text)
-                if not match:
-                    continue
-                try:
-                    size_value = float(match.group(1))
-                except ValueError:
-                    continue
+     for rec in self:
+        rec.gravel = 0.0
 
-                # µ ते mm convert करा
-                if 'µ' in sieve_text or 'mic' in sieve_text.lower():
-                    size_mm = size_value / 1000.0
-                else:
-                    size_mm = size_value
+        line = rec.sieve_analysis_child_lines.filtered(
+            lambda l: (l.sieve_size or '').strip().lower() == '4.75mm'
+        )
 
-                # range check (4.75 - 80 mm)
-                if 4.75 <= size_mm <= 79.99:
-                    total += line.percent_retained or 0.0
+        if line:
+            rec.gravel = line[0].cumulative_retained
 
-            record.gravel = total
+
+    @api.depends(
+    'sieve_analysis_child_lines.passing_percent',
+    'sieve_analysis_child_lines.sieve_size'
+)
+    def _compute_silt(self):
+     for rec in self:
+        rec.silt = 0.0
+
+        line = rec.sieve_analysis_child_lines.filtered(
+            lambda l: (l.sieve_size or '').strip().lower() in ('75µ', '75 μ', '75 µ')
+        )
+
+        if line:
+            rec.silt = line[0].passing_percent
+
+
+    @api.depends(
+    'gravel',
+    'silt'
+)
+    def _compute_sand(self):
+     for rec in self:
+        rec.sand = 100 - (rec.gravel + rec.silt)
 
     @api.depends('sieve_analysis_child_lines.percent_retained')
     def _compute_boulder(self):
@@ -214,10 +270,10 @@ class Soil(models.Model):
 
             record.boulder = boulder_sum
 
-    @api.depends('gravel', 'silt_clay')
-    def _compute_sand(self):
-        for record in self:
-            record.sand = 100 - ((record.gravel or 0.0) + (record.silt or 0.0))
+    # @api.depends('gravel', 'silt_clay')
+    # def _compute_sand(self):
+    #     for record in self:
+    #         record.sand = 100 - ((record.gravel or 0.0) + (record.silt or 0.0))
 
     d60 = fields.Float(string="D60 (mm)",compute="_compute_d60",digits=(12,5))
     d30 = fields.Float(string="D30 (mm)",compute="_compute_d30",digits=(12,5))
@@ -325,109 +381,7 @@ class Soil(models.Model):
             rec.cc = 0.0
 
 
-    # @api.depends('sieve_analysis_child_lines.sieve_size', 'sieve_analysis_child_lines.passing_percent')
-    # def _compute_d60(self):
-    #     for record in self:
-    #         # extract 16mm and 10mm lines
-    #         line_16 = next((l for l in record.sieve_analysis_child_lines if '16' in str(l.sieve_size)), None)
-    #         line_10 = next((l for l in record.sieve_analysis_child_lines if '10' in str(l.sieve_size)), None)
-
-    #         if line_16 and line_10 and line_16.passing_percent is not None and line_10.passing_percent is not None:
-    #             try:
-    #                 x1 = 16.0
-    #                 x2 = 10.0
-    #                 y1 = float(line_16.passing_percent)
-    #                 y2 = float(line_10.passing_percent)
-
-    #                 # Check to avoid division by zero
-    #                 if y2 != y1:
-    #                     # Linear interpolation to find D60
-    #                     d60_value = x1 + (x2 - x1) * ((60 - y1) / (y2 - y1))
-    #                 else:
-    #                     d60_value = 0.0
-
-    #                 record.d60 = d60_value
-    #             except Exception:
-    #                 record.d60 = 0.0
-    #         else:
-    #             record.d60 = 0.0
-
-    # @api.depends('sieve_analysis_child_lines.sieve_size', 'sieve_analysis_child_lines.passing_percent')
-    # def _compute_d30(self):
-    #     for record in self:
-    #         # extract 4.75mm and 2.00mm lines
-    #         line_4_75 = next((l for l in record.sieve_analysis_child_lines if '4.75' in str(l.sieve_size)), None)
-    #         line_2_36 = next((l for l in record.sieve_analysis_child_lines if '2.00' in str(l.sieve_size)), None)
-
-    #         if line_4_75 and line_2_36 and line_4_75.passing_percent is not None and line_2_36.passing_percent is not None:
-    #             try:
-    #                 x1 = 4.75
-    #                 x2 = 2.00
-    #                 y1 = float(line_4_75.passing_percent)
-    #                 y2 = float(line_2_36.passing_percent)
-
-    #                 # Linear interpolation for target percent = 10%
-    #                 target_percent = 30.0
-
-    #                 if y2 != y1:
-    #                     d30_value = x1 + (x2 - x1) * ((target_percent - y1) / (y2 - y1))
-    #                 else:
-    #                     d30_value = 0.0
-
-    #                 record.d30 = d30_value
-    #             except Exception:
-    #                 record.d30 = 0.0
-    #         else:
-    #             record.d30 = 0.0
-
-    # @api.depends('sieve_analysis_child_lines.sieve_size', 'sieve_analysis_child_lines.passing_percent')
-    # def _compute_d10(self):
-    #     for record in self:
-    #         # find lines 1.18 mm and 600 µ
-    #         line_1_18 = next((l for l in record.sieve_analysis_child_lines if '1.18' in str(l.sieve_size)), None)
-    #         line_600um = next((l for l in record.sieve_analysis_child_lines if '600' in str(l.sieve_size)), None)
-
-    #         if line_1_18 and line_600um and line_1_18.passing_percent is not None and line_600um.passing_percent is not None:
-    #             try:
-    #                 # Convert sieve sizes to mm
-    #                 x1 = 1.18
-    #                 x2 = 0.6  # 600 µm = 0.6 mm
-    #                 y1 = float(line_1_18.passing_percent)
-    #                 y2 = float(line_600um.passing_percent)
-
-    #                 target_percent = 10.0  # D10 corresponds to 10% passing
-
-    #                 if y2 != y1:
-    #                     d10_value = x1 + (x2 - x1) * ((target_percent - y1) / (y2 - y1))
-    #                 else:
-    #                     d10_value = 0.0
-
-    #                 record.d10 = d10_value
-    #             except Exception:
-    #                 record.d10 = 0.0
-    #         else:
-    #             record.d10 = 0.0
-
-
-    # # --- Compute Cu ---
-    # @api.depends('d60','d10')
-    # def _compute_cu(self):
-    #     for record in self:
-    #         if record.d10 and record.d10 != 0:
-    #             record.cu = record.d60 / record.d10
-    #         else:
-    #             record.cu = 0.0
-
-    # # --- Compute Cc ---
-    # @api.depends('d30','d10','d60')
-    # def _compute_cc_slive(self):
-    #     for record in self:
-    #         if record.d10 and record.d10 != 0 and record.d60 and record.d60 != 0:
-    #             record.cc = (record.d30 ** 2) / (record.d10 * record.d60)
-    #         else:
-    #             record.cc = 0.0
     
-
 
 
     @api.model
@@ -961,6 +915,460 @@ class Soil(models.Model):
     )
 
 
+
+    # Grain Sieve Analysis By Wet Sieving
+    wet_sieve_name = fields.Char("Name",default="Grain Sieve Analysis")
+    wet_sieve_visible = fields.Boolean("Grain Sieve Analysis Visible",compute="_compute_visible")
+
+
+    wet_report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="Report Type",
+        default='nabl',
+        required=True,
+    )
+
+    wet_sieve_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_wet_sieve_nabl",
+    store=True
+)
+
+    @api.depends('wet_report_type')
+    def _compute_wet_sieve_nabl(self):
+     for rec in self:
+        rec.wet_sieve_nabl = 'pass' if rec.wet_report_type == 'nabl' else 'fail'
+ 
+    wet_sieve_analysis_child_lines = fields.One2many('mechanical.soil.wet.sieve.analysis.line','parent_id',string="Sieve Analysis",default=lambda self: self._default_wet_sieve_analysis_child_lines())
+
+
+
+    @api.model
+    def _default_wet_sieve_analysis_child_lines(self):
+        default_lines = [
+            (0, 0, {'sieve_size': '4.75mm'}),
+            (0, 0, {'sieve_size': ' 2.00mm'}),
+            (0, 0, {'sieve_size': '0.425mm'}),
+            (0, 0, {'sieve_size': '0.075mm'}),
+        ]
+        return default_lines
+
+    sample_weight = fields.Float(
+        string="Weight of Sample (gms)"
+    )
+
+
+    gravel_percent = fields.Float(
+        string="Gravel (Soil Particles > 4.75mm)  ",
+        compute="_compute_gravel_percent",
+        store=True
+    )
+
+    sand_percent = fields.Float(
+        string="Sand (Soil Particles  4.75 mm to 0.075mm) ",
+        compute="_compute_sand_percent",
+        store=True
+    )
+
+    silt_clay_percent = fields.Float(
+        string="Silt & Clay (Soil Particles < 0.075mm) ",
+        compute="_compute_silt_clay_percent",
+        store=True
+    )
+
+    # @api.depends('wet_sieve_analysis_child_lines.cumulative_percent')
+    # def _compute_soil_classification(self):
+    #     for rec in self:
+    #         gravel = 0
+    #         passing_0075 = 0
+
+    #         for line in rec.wet_sieve_analysis_child_lines:
+    #             if line.sieve_size == 4.75:
+    #                 gravel = line.cumulative_percent
+    #             if line.sieve_size == 0.075:
+    #                 passing_0075 = line.passing_percent
+
+    #         rec.gravel_percent = gravel
+    #         rec.sand_percent = passing_0075 - gravel
+    #         rec.silt_clay_percent = passing_0075
+
+
+
+
+    @api.depends('wet_sieve_analysis_child_lines.passing_percent', 'wet_sieve_analysis_child_lines.sieve_size')
+    def _compute_silt_clay_percent(self):
+        for record in self:
+            total = 0.0
+            for line in record.wet_sieve_analysis_child_lines:
+                sieve_text = str(line.sieve_size).strip()
+                match = re.search(r'([\d\.]+)', sieve_text)
+                if not match:
+                    continue
+                try:
+                    size_value = float(match.group(1))
+                except ValueError:
+                    continue
+
+                # µ ते mm convert करा
+                if 'µ' in sieve_text or 'mic' in sieve_text.lower():
+                    size_mm = size_value / 1000.0
+                else:
+                    size_mm = size_value
+
+                # range check (0.002 - 0.075 mm)
+                if 0.002 <= size_mm <= 0.075:
+                    total += line.passing_percent or 0.0
+
+            record.silt_clay_percent = total
+
+    # ---------- Gravel ----------
+    @api.depends('wet_sieve_analysis_child_lines.percent_retained', 'wet_sieve_analysis_child_lines.sieve_size')
+    def _compute_gravel_percent(self):
+        for record in self:
+            total = 0.0
+            for line in record.wet_sieve_analysis_child_lines:
+                sieve_text = str(line.sieve_size).strip()
+                match = re.search(r'([\d\.]+)', sieve_text)
+                if not match:
+                    continue
+                try:
+                    size_value = float(match.group(1))
+                except ValueError:
+                    continue
+
+                # µ ते mm convert करा
+                if 'µ' in sieve_text or 'mic' in sieve_text.lower():
+                    size_mm = size_value / 1000.0
+                else:
+                    size_mm = size_value
+
+                # range check (4.75 - 80 mm)
+                if 4.75 <= size_mm <= 79.99:
+                    total += line.percent_retained or 0.0
+
+            record.gravel_percent = total
+
+
+    @api.depends('gravel_percent', 'silt_clay_percent')
+    def _compute_sand_percent(self):
+        for record in self:
+            record.sand_percent = 100 - ((record.gravel_percent or 0.0) + (record.silt_clay_percent or 0.0))
+
+
+
+    @api.onchange('wet_sieve_analysis_child_lines')
+    def _onchange_wet_sieve_analysis_child_lines(self):
+        for rec in self:
+            
+
+            target_sieves = [
+                '4.75mm',
+                '2.00mm', '0.25mm',
+                '0.075mm']
+
+            pan_line = None
+            total_retained = 0.0
+
+            for line in rec.wet_sieve_analysis_child_lines:
+               sieve = (line.sieve_size or '').strip().lower()
+ 
+               if sieve == 'pan':
+                 pan_line = line
+               elif sieve in [s.lower() for s in target_sieves]:
+                total_retained += line.weight_retained or 0.0
+
+            if pan_line:
+              pan_line.weight_retained = (rec.sample_weight or 0.0) - total_retained
+
+
+
+
+    def calculate_wet_sieve(self): 
+        for record in self:
+            previous_cumulative = 0  
+            for line in record.wet_sieve_analysis_child_lines:
+                print("Rows", str(line.percent_retained))
+                previous_line = line.serial_no - 1
+
+                # If this line is 'Pan', directly assign fixed values
+                if line.sieve_size and line.sieve_size.lower() == 'pan':
+                    line.write({
+                        'cumulative_percent': 100.00,
+                        'passing_percent': 0.00,
+                    })
+                    print("PAN LINE: cumulative_percent=100, passing_percent=0")
+                    continue  # skip rest of logic for pan
+
+                # Normal sieve calculation
+                if previous_line == 0:
+                    cumulative_percent = line.percent_retained
+                else:
+                    previous_line_record = self.env['mechanical.soil.wet.sieve.analysis.line'].sudo().search([
+                        ("serial_no", "=", previous_line),
+                        ("parent_id", "=", record.id)
+                    ], limit=1)
+                    
+                    if previous_line_record:
+                        previous_cumulative = previous_line_record.cumulative_percent
+                    cumulative_percent = previous_cumulative + line.percent_retained
+
+                passing_percent = 100 - cumulative_percent
+
+                # Write updated values
+                line.write({
+                    'cumulative_percent': round(cumulative_percent, 2),
+                    'passing_percent': round(passing_percent, 2),
+                })
+
+                print("Updated Cumulative Retained:", cumulative_percent)
+                print("Updated Passing Percent:", passing_percent)
+
+                previous_cumulative = cumulative_percent
+
+
+
+    graph_image_wet_slive = fields.Binary("Sieve Graph", store=True)
+    graph_wet_filename = fields.Char(
+        string="Graph Filename",
+        readonly=True
+    )
+
+    show_wet_sieve_graph = fields.Boolean(string="Show Sieve Graph",default=False)
+
+    def action_generate_wet_graph(self):
+        for rec in self:
+          rec.graph_image_wet_slive = rec.generate_line_chart_wet_slive()
+          rec.graph_wet_filename = "grain_size_analysis.png"
+          
+
+
+
+    def generate_line_chart_wet_slive(self):
+        self.ensure_one()
+
+        x_values = []
+        y_values = []
+
+        # -------------------------------
+        # Read child lines
+        # -------------------------------
+        for line in self.wet_sieve_analysis_child_lines:
+
+            if not line.sieve_size:
+                continue
+
+            text = str(line.sieve_size).strip().lower()
+
+            match = re.search(r'([\d.]+)', text)
+
+            if not match:
+                continue
+
+            try:
+                value = float(match.group(1))
+            except Exception:
+                continue
+
+            # micron to mm
+            if "µ" in text or "μ" in text:
+                value = value / 1000
+
+            x_values.append(value)
+            y_values.append(line.passing_percent or 0)
+
+        if len(x_values) < 2:
+            return False
+
+        # -------------------------------
+        # Sort
+        # -------------------------------
+        data = sorted(
+            zip(x_values, y_values),
+            key=lambda x: x[0]
+        )
+
+        unique = {}
+
+        for x, y in data:
+            unique[x] = y
+
+        x_values = np.array(list(unique.keys()))
+        y_values = np.array(list(unique.values()))
+
+        # -------------------------------
+        # Smooth curve
+        # -------------------------------
+        interpolator = PchipInterpolator(
+            x_values,
+            y_values
+        )
+
+        x_new = np.logspace(
+            np.log10(min(x_values)),
+            np.log10(max(x_values)),
+            400
+        )
+
+        y_new = interpolator(x_new)
+
+        # -------------------------------
+        # Figure
+        # -------------------------------
+        fig, ax = plt.subplots(
+            figsize=(10, 5)
+        )
+
+        fig.patch.set_facecolor("white")
+        ax.set_facecolor("white")
+
+        ax.set_axisbelow(True)
+
+        # -------------------------------
+        # Log scale
+        # -------------------------------
+        ax.set_xscale("log")
+
+        # -------------------------------
+        # Smooth line
+        # -------------------------------
+        ax.plot(
+            x_new,
+            y_new,
+            color="#5B9BD5",
+            linewidth=2
+        )
+
+        # -------------------------------
+        # Points
+        # -------------------------------
+        ax.scatter(
+            x_values,
+            y_values,
+            color="#5B9BD5",
+            edgecolors="#5B9BD5",
+            s=50,
+            zorder=5
+        )
+
+        # -------------------------------
+        # Axis Labels
+        # -------------------------------
+        ax.set_xlabel(
+            "IS Sieve (mm)",
+            fontsize=12,
+            fontweight="bold"
+        )
+
+        ax.set_ylabel(
+            "% Passing",
+            fontsize=12,
+            fontweight="bold"
+        )
+
+        # -------------------------------
+        # Limits
+        # -------------------------------
+        ax.set_xlim(0.01, 10)
+
+        ymin = max(
+            0,
+            min(y_values) - 2
+        )
+
+        ymax = min(
+            100,
+            max(y_values) + 2
+        )
+
+        ax.set_ylim(ymin, ymax)
+
+        # -------------------------------
+        # X ticks
+        # -------------------------------
+        ax.set_xticks([
+            0.01,
+            0.1,
+            1,
+            10
+        ])
+
+        ax.xaxis.set_major_formatter(
+            FuncFormatter(
+                lambda x, pos: f"{x:g}"
+            )
+        )
+
+        ax.xaxis.set_major_locator(
+            LogLocator(base=10)
+        )
+
+        ax.xaxis.set_minor_locator(
+            LogLocator(
+                base=10,
+                subs=np.arange(2, 10) * 0.1,
+                numticks=100
+            )
+        )
+
+        # -------------------------------
+        # Y ticks
+        # -------------------------------
+        ax.yaxis.set_major_locator(
+            MultipleLocator(1)
+        )
+
+        ax.yaxis.set_minor_locator(
+            MultipleLocator(0.2)
+        )
+
+        # -------------------------------
+        # Grid
+        # -------------------------------
+        ax.grid(
+            which="major",
+            color="#8c8c8c",
+            linewidth=0.8
+        )
+
+        ax.grid(
+            which="minor",
+            color="#d9d9d9",
+            linewidth=0.4
+        )
+
+        # -------------------------------
+        # Border
+        # -------------------------------
+        for spine in ax.spines.values():
+            spine.set_linewidth(1)
+            spine.set_color("black")
+
+        ax.set_title("")
+
+        plt.tight_layout()
+
+        # -------------------------------
+        # Save
+        # -------------------------------
+        buffer = io.BytesIO()
+
+        plt.savefig(
+            buffer,
+            format="png",
+            dpi=100,
+            bbox_inches="tight"
+        )
+
+        plt.close(fig)
+
+        buffer.seek(0)
+
+        return base64.b64encode(
+            buffer.read()
+        )
 
 
 
@@ -1728,6 +2136,10 @@ class Soil(models.Model):
     heavy_visible = fields.Boolean("Heavy Compaction-MDD Visible",compute="_compute_visible")
     heavy_table = fields.One2many('mechanical.heavy.compaction.line','parent_id',string="Heavy Compaction")
 
+    heavy_mould_no = fields.Char(string="Mould No.")
+    heavy_mould_weight = fields.Float(string="Wt. of Mould (A)")
+    heavy_mould_volume = fields.Float(string="Volume of Mould (V)")
+
     max_dry_density = fields.Float(string="Max Dry Density (g/cc)", compute="_compute_max_dry_density", store=True)
 
     omc = fields.Float(string="Optimum Moisture Content (OMC)", compute="_compute_max_density_and_omc", store=True)
@@ -2138,6 +2550,11 @@ class Soil(models.Model):
     omc_visible = fields.Boolean("omc Compaction-MDD Visible",compute="_compute_visible")
     omc_table = fields.One2many('mechanical.omc.compaction.line','parent_id',string="OMC Compaction")
 
+
+    light_mould_no = fields.Char(string="Mould No.")
+    light_mould_weight = fields.Float(string="Wt. of Mould (A)")
+    light_mould_volume = fields.Float(string="Volume of Mould (V)")
+
     max_dry_density1 = fields.Float(string="Max Dry Density (g/cc)", compute="_compute_max_dry_density1", store=True)
 
     omc1 = fields.Float(string="Optimum Moisture Content (OMC)", compute="_compute_max_density_and_omc1", store=True)
@@ -2335,8 +2752,7 @@ class Soil(models.Model):
 
 
     def generate_line_chart_light_omc1(self):
-
-
+    
       x = []
       y = []
 
@@ -2527,8 +2943,6 @@ class Soil(models.Model):
       return base64.b64encode(
         buffer.read()
     ).decode("utf-8")
-
-
         
 
     @api.depends('omc_table')
@@ -4138,7 +4552,7 @@ class Soil(models.Model):
       
         for record in self:
             record.sieve_visible = False
-            # water_content_visible = False
+            record.wet_sieve_visible = False
             record.liquid_limit_visible = False
             record.plastic_limit_visible = False
             record.shrinkage_limit_visible  = False 
@@ -4158,8 +4572,8 @@ class Soil(models.Model):
                 if sample.internal_id == '12014fgr-5c56-475b-9a89-93a59c9ee3a2':
                     record.sieve_visible = True
 
-                # if sample.internal_id == '800a2dc9-49fe-4dab-83e8-63758c7f351a':
-                #     record.water_content_visible = True
+                if sample.internal_id == '5ba6d17f-101b-4d71-bcb4-29ed3ef0b71b':
+                    record.wet_sieve_visible = True
                 
                 if sample.internal_id == '7abb5a01-2fa7-4c4a-ab6e-0f4112e3aea9':
                     record.moisture_content_visible = True
@@ -4209,8 +4623,12 @@ class Soil(models.Model):
 
 
         
-            # Sieve Analysis
+            # Sieve Analysis Dry
             if result.parameter.internal_id == '12014fgr-5c56-475b-9a89-93a59c9ee3a2':
+                result.calculated = True
+
+             # Sieve Analysis Wet
+            if result.parameter.internal_id == '5ba6d17f-101b-4d71-bcb4-29ed3ef0b71b':
                 result.calculated = True
 
             # Moisture Content
@@ -4616,6 +5034,9 @@ class SoilSieveAnalysisLine(models.Model):
                 line.cumulative_percent = total
 
 
+                
+
+
 
     # @api.depends('cumulative_retained')
     # def _compute_cum_retained(self):
@@ -4650,6 +5071,134 @@ class SoilSieveAnalysisLine(models.Model):
 
 
 
+class SoilWetSieveAnalysisLine(models.Model):
+    _name = "mechanical.soil.wet.sieve.analysis.line"
+    parent_id = fields.Many2one('mechanical.soil', string="Parent Id")
+    
+    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
+
+
+    sieve_size = fields.Char("IS Sieve (mm)")
+
+    weight_retained = fields.Float("Weight Retained (g)")
+
+    percent_retained = fields.Float(
+        string="% Weight Retained",
+        compute="_compute_percent_retained",
+        store=True
+    )
+
+    cumulative_percent = fields.Float(
+        string="% Cumulative Weight Retained",
+        compute="_compute_cumulative",
+        store=True
+    )
+
+    passing_percent = fields.Float(
+        string="% Passing",
+        compute="_compute_passing",
+        store=True
+    )
+
+    @api.depends('weight_retained', 'parent_id.sample_weight')
+    def _compute_percent_retained(self):
+        for rec in self:
+            if rec.parent_id.sample_weight:
+                rec.percent_retained = (
+                    rec.weight_retained /
+                    rec.parent_id.sample_weight
+                ) * 10
+            else:
+                rec.percent_retained = 0
+
+    @api.depends(
+    'percent_retained',
+    'parent_id.wet_sieve_analysis_child_lines.percent_retained',
+    'parent_id.wet_sieve_analysis_child_lines.serial_no'
+)
+    def _compute_cumulative(self):
+     for rec in self:
+        if not rec.parent_id:
+            rec.cumulative_percent = 0.0
+            continue
+
+        total = 0.0
+
+        lines = rec.parent_id.wet_sieve_analysis_child_lines.sorted(
+            key=lambda l: l.serial_no
+        )
+
+        for line in lines:
+            total += line.percent_retained or 0.0
+            line.cumulative_percent = round(total, 2)
+
+    @api.depends('cumulative_percent')
+    def _compute_passing(self):
+     for rec in self:
+        rec.passing_percent = round(100 - (rec.cumulative_percent or 0.0), 2)
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(SoilWetSieveAnalysisLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+    def write(self, vals):
+        # Handle row deletions and adjust serial numbers
+        if 'parent_id' in vals or 'weight_retained' in vals:
+            for record in self:
+                if record.parent_id and record.parent_id == vals.get('parent_id') and 'weight_retained' in vals:
+                    record.percent_retained = vals['weight_retained'] / record.parent_id.total * 100 if record.parent_id.total else 0
+
+            new_self = super(SoilWetSieveAnalysisLine, self).write(vals)
+
+            if 'weight_retained' in vals:
+                for record in self:
+                    # record.parent_id._compute_total()
+                    pass
+
+            return new_self
+
+        return super(SoilWetSieveAnalysisLine, self).write(vals)
+
+    def unlink(self):
+        # Get the parent_id before the deletion
+        parent_id = self[0].parent_id
+
+        res = super(SoilWetSieveAnalysisLine, self).unlink()
+
+        if parent_id:
+            parent_id.wet_sieve_analysis_child_lines._reorder_serial_numbers()
+
+        return res
+
+        
+    
+
+
+    def get_previous_record(self):
+        for record in self:
+            # import wdb; wdb.set_trace()
+            sorted_lines = sorted(record.parent_id.wet_sieve_analysis_child_lines, key=lambda r: r.id)
+            # index = sorted_lines.index(record)
+            # print("Working")
+
+
+
+   
 
 class LIQUIDLIMITLINE(models.Model):
     _name = "mechanical.liquid.limits.line"
@@ -4821,53 +5370,135 @@ class HEAVYCOMPACTIONLINE(models.Model):
 
     serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
 
-    amount_soil = fields.Float(string="Amount of soil (gm)")
-    amount_water = fields.Integer(string="Amount of water added (%)")
-    empty_wt_mould = fields.Integer(string="Empty weight of mould without collar, W1 (gm)")
-    wt_soil = fields.Float(string="Weight of soil compacted + mould, W2 (gm)")
-    wt_of_wet = fields.Integer(string="Weight of wet soil (W2-W1) (gm)",compute="_compute_wt_of_wet")
-    volume_mould = fields.Float(string="Volume of mould (V) (cm3)")
-    bulk_density = fields.Float(string=" Bulk density (ρ) (g/cc)",compute="_compute_bulk_density")
-    con_no = fields.Float(string="Container Number")
-    empty_wt = fields.Float(string="Empty weight of container (M1) (gm)")
-    wet_con_ovenwet= fields.Float(string="Weight of container + wet soil (M2) (gm)")
-    wet_con_ovendry= fields.Float(string="Weight of container + Weight of oven dry soil (M3) (gm)")
-    water_content = fields.Float(string="Water Content (%)",compute="_compute_water_and_dry_density")
-    dry_density = fields.Float(string="Dry Density (γd ) (g/cc)",compute="_compute_water_and_dry_density")
+
+    wet_soil_mould = fields.Float(string="Wt. of Wet Soil + Mould")
+
+    wet_soil = fields.Float(
+        string="Wt. of Wet Soil (E)",
+        compute="_compute_values",
+        store=True,
+    )
+
+    wet_density = fields.Float(
+        string="Wet Density (F)",
+        compute="_compute_values",
+        store=True,
+    )
+
+    container_no = fields.Float(string="Container No.")
+
+    container_weight = fields.Float(string="Wt. of Container (H)")
+
+    wet_soil_container = fields.Float(string="Wt. of Wet Soil + Container (I)")
+
+    dry_soil_container = fields.Float(string="Wt. of Dry Soil + Container (J)")
+
+    water_weight = fields.Float(
+        string="Wt. of Water (K)",
+        compute="_compute_values",
+        store=True,
+    )
+
+    dry_soil = fields.Float(
+        string="Wt. of Dry Soil (L)",
+        compute="_compute_values",
+        store=True,
+    )
+
+    water_content = fields.Float(
+        string="Water Content (%)",
+        compute="_compute_values",
+        store=True,
+    )
+
+    dry_density = fields.Float(
+        string="Dry Density",
+        compute="_compute_values",
+        store=True,
+    )
+
+    @api.depends(
+    'wet_soil_mould',
+    'container_weight',
+    'wet_soil_container',
+    'dry_soil_container',
+    'parent_id.heavy_mould_weight',
+    'parent_id.heavy_mould_volume',
+)
+    def _compute_values(self):
+     for rec in self:
+
+        # E
+        rec.wet_soil = rec.wet_soil_mould - (rec.parent_id.heavy_mould_weight or 0.0)
+
+        # F
+        volume = rec.parent_id.heavy_mould_volume or 0.0
+        rec.wet_density = rec.wet_soil / volume if volume else 0.0
+
+        # K
+        rec.water_weight = rec.wet_soil_container - rec.dry_soil_container
+
+        # L
+        rec.dry_soil = rec.dry_soil_container - rec.container_weight
+
+        # M
+        rec.water_content = (
+            (100 * rec.water_weight / rec.dry_soil)
+            if rec.dry_soil else 0.0
+        )
+
+        # N
+        rec.dry_density = (
+            (100 * rec.wet_density / (100 + rec.water_content))
+            if (100 + rec.water_content) else 0.0
+        )
+    # amount_soil = fields.Float(string="Amount of soil (gm)")
+    # amount_water = fields.Integer(string="Amount of water added (%)")
+    # empty_wt_mould = fields.Integer(string="Empty weight of mould without collar, W1 (gm)")
+    # wt_soil = fields.Float(string="Weight of soil compacted + mould, W2 (gm)")
+    # wt_of_wet = fields.Integer(string="Weight of wet soil (W2-W1) (gm)",compute="_compute_wt_of_wet")
+    # volume_mould = fields.Float(string="Volume of mould (V) (cm3)")
+    # bulk_density = fields.Float(string=" Bulk density (ρ) (g/cc)",compute="_compute_bulk_density")
+    # con_no = fields.Float(string="Container Number")
+    # empty_wt = fields.Float(string="Empty weight of container (M1) (gm)")
+    # wet_con_ovenwet= fields.Float(string="Weight of container + wet soil (M2) (gm)")
+    # wet_con_ovendry= fields.Float(string="Weight of container + Weight of oven dry soil (M3) (gm)")
+    # water_content = fields.Float(string="Water Content (%)",compute="_compute_water_and_dry_density")
+    # dry_density = fields.Float(string="Dry Density (γd ) (g/cc)",compute="_compute_water_and_dry_density")
 
 
-    @api.depends('wt_soil', 'empty_wt_mould')
-    def _compute_wt_of_wet(self):
-        for line in self:
-            line.wt_of_wet = line.wt_soil - line.empty_wt_mould
+    # @api.depends('wt_soil', 'empty_wt_mould')
+    # def _compute_wt_of_wet(self):
+    #     for line in self:
+    #         line.wt_of_wet = line.wt_soil - line.empty_wt_mould
 
 
 
-    @api.depends('wt_of_wet', 'volume_mould')
-    def _compute_bulk_density(self):
-        for line in self:
-            if line.volume_mould != 0:
-                line.bulk_density = line.wt_of_wet / line.volume_mould
-            else:
-                line.bulk_density = 0.0
+    # @api.depends('wt_of_wet', 'volume_mould')
+    # def _compute_bulk_density(self):
+    #     for line in self:
+    #         if line.volume_mould != 0:
+    #             line.bulk_density = line.wt_of_wet / line.volume_mould
+    #         else:
+    #             line.bulk_density = 0.0
 
 
-    @api.depends('wet_con_ovendry', 'wet_con_ovenwet', 'empty_wt', 'bulk_density')
-    def _compute_water_and_dry_density(self):
-        for rec in self:
-            m2 = rec.wet_con_ovenwet     # container + wet soil
-            m3 = rec.wet_con_ovendry         # container + oven dry soil
-            m1 = rec.empty_wt        # empty container
+    # @api.depends('wet_con_ovendry', 'wet_con_ovenwet', 'empty_wt', 'bulk_density')
+    # def _compute_water_and_dry_density(self):
+    #     for rec in self:
+    #         m2 = rec.wet_con_ovenwet     # container + wet soil
+    #         m3 = rec.wet_con_ovendry         # container + oven dry soil
+    #         m1 = rec.empty_wt        # empty container
 
-            if m2 and m3 and m1 and (m3 - m1) != 0:
-                rec.water_content = ((m2 - m3) / (m3 - m1)) * 100
-            else:
-                rec.water_content = 0.0
+    #         if m2 and m3 and m1 and (m3 - m1) != 0:
+    #             rec.water_content = ((m2 - m3) / (m3 - m1)) * 100
+    #         else:
+    #             rec.water_content = 0.0
 
-            if rec.bulk_density and rec.water_content is not None:
-                rec.dry_density = rec.bulk_density / (1 + (rec.water_content / 100))
-            else:
-                rec.dry_density = 0.0
+    #         if rec.bulk_density and rec.water_content is not None:
+    #             rec.dry_density = rec.bulk_density / (1 + (rec.water_content / 100))
+    #         else:
+    #             rec.dry_density = 0.0
 
 
   
@@ -4957,55 +5588,87 @@ class LIGHTCOMPACTIONLINE(models.Model):
 
     serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
 
-    amount_soil1 = fields.Float(string="Amount of soil (gm)")
-    amount_water1 = fields.Integer(string="Amount of water added (%)")
-    empty_wt_mould1 = fields.Integer(string="Empty weight of mould without collar, W1 (gm)")
-    wt_soil1 = fields.Float(string="Weight of soil compacted + mould, W2 (gm)")
-    wt_of_wet1 = fields.Integer(string="Weight of wet soil (W2-W1) (gm)",compute="_compute_wt_of_wet1")
-    volume_mould1 = fields.Float(string="Volume of mould (V) (cm3)")
-    bulk_density1 = fields.Float(string=" Bulk density (ρ) (g/cc)",compute="_compute_bulk_density1")
-    con_no1 = fields.Float(string="Container Number")
-    empty_wt1 = fields.Float(string="Empty weight of container (M1) (gm)")
-    wet_con_ovenwet1 = fields.Float(string="Weight of container + wet soil (M2) (gm)")
-    wet_con_ovendry1 = fields.Float(string="Weight of container + Weight of oven dry soil (M3) (gm)")
-    water_content1 = fields.Float(string="Water Content (%)",compute="_compute_water_and_dry_density1")
-    dry_density1 = fields.Float(string="Dry Density (γd ) (g/cc)",compute="_compute_water_and_dry_density1")
+    wet_soil_mould = fields.Float(string="Wt. of Wet Soil + Mould")
 
+    wet_soil = fields.Float(
+        string="Wt. of Wet Soil (E)",
+        compute="_compute_values",
+        store=True,
+    )
 
-    @api.depends('wt_soil1', 'empty_wt_mould1')
-    def _compute_wt_of_wet1(self):
-        for line in self:
-            line.wt_of_wet1 = line.wt_soil1 - line.empty_wt_mould1
+    wet_density = fields.Float(
+        string="Wet Density (F)",
+        compute="_compute_values",
+        store=True,
+    )
 
+    container_no = fields.Float(string="Container No.")
 
+    container_weight = fields.Float(string="Wt. of Container (H)")
 
-    @api.depends('wt_of_wet1', 'volume_mould1')
-    def _compute_bulk_density1(self):
-        for line in self:
-            if line.volume_mould1 != 0:
-                line.bulk_density1 = line.wt_of_wet1 / line.volume_mould1
-            else:
-                line.bulk_density1 = 0.0
+    wet_soil_container = fields.Float(string="Wt. of Wet Soil + Container (I)")
 
+    dry_soil_container = fields.Float(string="Wt. of Dry Soil + Container (J)")
 
-    @api.depends('wet_con_ovendry1', 'wet_con_ovenwet1', 'empty_wt1', 'bulk_density1')
-    def _compute_water_and_dry_density1(self):
-        for rec in self:
-            m2 = rec.wet_con_ovenwet1     # container + wet soil
-            m3 = rec.wet_con_ovendry1         # container + oven dry soil
-            m1 = rec.empty_wt1        # empty container
+    water_weight = fields.Float(
+        string="Wt. of Water (K)",
+        compute="_compute_values",
+        store=True,
+    )
 
-            if m2 and m3 and m1 and (m3 - m1) != 0:
-                rec.water_content1 = ((m2 - m3) / (m3 - m1)) * 100
-            else:
-                rec.water_content1 = 0.0
+    dry_soil = fields.Float(
+        string="Wt. of Dry Soil (L)",
+        compute="_compute_values",
+        store=True,
+    )
 
-            if rec.bulk_density1 and rec.water_content1 is not None:
-                rec.dry_density1 = rec.bulk_density1 / (1 + (rec.water_content1 / 100))
-            else:
-                rec.dry_density1 = 0.0
+    water_content1 = fields.Float(
+        string="Water Content (%)",
+        compute="_compute_values",
+        store=True,
+    )
 
+    dry_density1 = fields.Float(
+        string="Dry Density",
+        compute="_compute_values",
+        store=True,
+    )
 
+    @api.depends(
+    'wet_soil_mould',
+    'container_weight',
+    'wet_soil_container',
+    'dry_soil_container',
+    'parent_id.light_mould_weight',
+    'parent_id.light_mould_volume',
+)
+    def _compute_values(self):
+     for rec in self:
+
+        # E
+        rec.wet_soil = rec.wet_soil_mould - (rec.parent_id.light_mould_weight or 0.0)
+
+        # F
+        volume = rec.parent_id.light_mould_volume or 0.0
+        rec.wet_density = rec.wet_soil / volume if volume else 0.0
+
+        # K
+        rec.water_weight = rec.wet_soil_container - rec.dry_soil_container
+
+        # L
+        rec.dry_soil = rec.dry_soil_container - rec.container_weight
+
+        # M
+        rec.water_content1 = (
+            (100 * rec.water_weight / rec.dry_soil)
+            if rec.dry_soil else 0.0
+        )
+
+        # N
+        rec.dry_density1 = (
+            (100 * rec.wet_density / (100 + rec.water_content1))
+            if (100 + rec.water_content1) else 0.0
+        )
   
 
     @api.model

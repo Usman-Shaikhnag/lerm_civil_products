@@ -94,9 +94,8 @@
 							<tr>
 								<td colspan="1">Samples Description :-</td>
 								<td colspan="1">
-								      <t t-if="o.material and o.material.lab_name or o.sample_id.size_id">
-									       <span t-field="o.material.lab_name"/> <![CDATA[&nbsp;]]>
-											<span t-field="o.sample_id.size_id"/>   
+								      <t t-if="o.sample_id.sample_description">
+									       <span t-field="o.sample_id.sample_description"/> 
 										</t>
 									<t t-else="">NA</t>
 								</td>
@@ -115,8 +114,8 @@
 							<tr>
 								<td colspan="1">#Source of Sample	 :-</td>
 								<td colspan="1">
-								<t t-if="o.material.source_sample">
-											<span t-field="o.material.source_sample"/>
+								<t t-if="o.sample_id.source_of_sample">
+											<span t-field="o.sample_id.source_of_sample"/>
 										</t>
 									<t t-else="">NA</t>
 								</td>
@@ -394,6 +393,126 @@
 									<td style="text-align: center;">
 									 <span>
 											<span t-field="data.silt_clay_total" t-options='{"widget": "float", "precision": 2}'/>
+										</span>	
+								   </td>
+
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="sieve.unit.name"/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="sieve.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+
+								</t>
+
+
+
+					<t t-if="data.wet_sieve_visible and ((data.wet_report_type == 'nabl' and nabl) or (data.wet_report_type == 'non_nabl' and not nabl))">
+								
+
+								<tr t-if="data.wet_sieve_visible ">
+									<t t-set="sieve" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','5ba6d17f-101b-4d71-bcb4-29ed3ef0b71b')])"/>
+
+									<td rowspan="3" style="text-align: center;" colspan="1">
+										<div>
+											<span t-esc="i + 1" />
+											<t t-set="i" t-value="i+1"/>
+										</div>
+									</td>
+									
+									<td>
+							     		<span>Gravel</span>
+									</td>
+
+									<td style="text-align: center;">
+									 <span>
+											<span t-field="data.gravel_percent" t-options='{"widget": "float", "precision": 2}'/>
+										</span>	
+								   </td>
+
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="sieve.unit.name"/>
+										</span>
+									</td>
+									
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="sieve.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+									<td rowspan="3" style="text-align: center;vertical-align:middle;">
+										<span>
+											<t t-foreach="sieve.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+								<tr t-if="data.wet_sieve_visible ">
+									<t t-set="sieve" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','5ba6d17f-101b-4d71-bcb4-29ed3ef0b71b')])"/>
+									
+									<td>
+							     		<span>Sand</span>
+									</td>
+
+									<td style="text-align: center;">
+									 <span>
+											<span t-field="data.sand_percent" t-options='{"widget": "float", "precision": 2}'/>
+										</span>	
+								   </td>
+
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="sieve.unit.name"/>
+										</span>
+									</td>
+
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="sieve.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									
+								</tr>
+								<tr t-if="data.wet_sieve_visible ">
+									<t t-set="sieve" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','5ba6d17f-101b-4d71-bcb4-29ed3ef0b71b')])"/>
+									
+									<td>
+							     		<span>Silt and Clay</span>
+									</td>
+
+									<td style="text-align: center;">
+									 <span>
+											<span t-field="data.silt_clay_percent" t-options='{"widget": "float", "precision": 2}'/>
 										</span>	
 								   </td>
 
@@ -1168,14 +1287,43 @@
                   </div>
 				</t>
 
+
+				<t t-if="graph_wet_sieve">
+                   <div style="text-align:center; margin-top:20px;" t-if="data.wet_sieve_visible and ((data.wet_report_type == 'nabl' and nabl) or (data.wet_report_type == 'non_nabl' and not nabl))">
+                   <img t-att-src="'data:image/png;base64,%s' % graph_wet_sieve" style="max-width:100%; height:auto;"/>
+
+				   <div style="margin-top:10px" t-if="data.wet_sieve_visible">
+							<table style="width:100%;">
+									<tr> 
+									<td colspan="6">% Gravels :
+									</td>
+									<td style="font-weight:bold;" colspan="6">
+										<span t-esc="data.gravel_percent" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+									<tr> 
+									<td colspan="6">% Sand :
+									</td>
+									<td style="font-weight:bold;" colspan="6">
+										<span t-esc="data.sand_percent" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+									<tr> 
+									<td colspan="6">% Silt + Clay :
+									</td>
+									<td style="font-weight:bold;" colspan="6">
+										<span t-esc="data.silt_clay_percent" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+								
+							</table>
+							</div>
+
+                  </div>
+				</t>
+
 				<t t-if="graphliquid">
-                   <div style="text-align:center; margin-top:20px;" t-if="data.heavy_visible and (
-            ((data.dry_density_report_type == 'nabl' and nabl) or
-             (data.dry_density_report_type == 'non_nabl' and not nabl))
-            or
-            ((data.omc_final_report == 'nabl' and nabl) or
-             (data.omc_final_report == 'non_nabl' and not nabl))
-          )">
+                   <div style="text-align:center; margin-top:20px;" t-if="data.liquid_limit_final_report == 'nabl' and nabl or data.liquid_limit_final_report == 'non_nabl' and not nabl">
                        <img t-att-src="'data:image/png;base64,%s' % graphliquid" style="max-width:100%; height:auto;"/>
                   </div>
 				</t>

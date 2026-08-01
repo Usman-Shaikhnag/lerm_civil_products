@@ -123,6 +123,10 @@ class SoilReport(models.AbstractModel):
         if getattr(general_data, 'show_sieve_graph', False):
             graph_sieve = self.generate_line_chart_slive(general_data)
 
+        graph_wet_sieve = False
+        if getattr(general_data, 'show_wet_sieve_graph', False):
+            graph_wet_sieve = self.generate_line_chart_wet_slive(general_data)
+
         graph_liquid = False
         if getattr(general_data, 'show_liquid_graph', False):
             graph_liquid = self.generate_line_chart_liquid(general_data)
@@ -163,7 +167,8 @@ class SoilReport(models.AbstractModel):
             'qrcode_static': qr_static_b64,
             'stamp' : inreport_value,
             'nabl' : nabl,
-            'graphSieve': graph_sieve,  
+            'graphSieve': graph_sieve, 
+            'graph_wet_sieve': graph_wet_sieve, 
             'graphliquid': graph_liquid,  
             'graphHeavy' : graph_heavy,
             'heavyomc' : heavy_omc,
@@ -184,6 +189,215 @@ class SoilReport(models.AbstractModel):
             # 'load2': cbry_values[5] if len(cbry_values) > 5 else 0,
             # 'load5': cbry_values[8] if len(cbry_values) > 8 else 0,
         }
+
+
+    def generate_line_chart_wet_slive(self, soil):
+      import io
+      import re
+      import base64
+      import numpy as np
+      import matplotlib
+      matplotlib.use("Agg")
+
+      import matplotlib.pyplot as plt
+
+      from scipy.interpolate import PchipInterpolator
+      from matplotlib.ticker import (
+        LogLocator,
+        MultipleLocator,
+        FuncFormatter
+    )
+
+      soil.ensure_one()
+
+      x_values = []
+      y_values = []
+
+    # ----------------------------
+    # Read Data
+    # ----------------------------
+      for line in soil.wet_sieve_analysis_child_lines:
+
+        if not line.sieve_size:
+            continue
+
+        text = str(line.sieve_size).strip().lower()
+
+        match = re.search(r'([\d\.]+)', text)
+
+        if not match:
+            continue
+
+        value = float(match.group(1))
+
+        # micron → mm
+        if "µ" in text or "μ" in text:
+            value = value / 1000.0
+
+        x_values.append(value)
+        y_values.append(line.passing_percent or 0.0)
+
+      if len(x_values) < 2:
+        return False
+
+    # ----------------------------
+    # Sort Data
+    # ----------------------------
+      points = sorted(zip(x_values, y_values), key=lambda x: x[0])
+
+      unique = {}
+      for x, y in points:
+        unique[x] = y
+
+      x_values = np.array(list(unique.keys()))
+      y_values = np.array(list(unique.values()))
+
+    # ----------------------------
+    # Smooth Curve
+    # ----------------------------
+      interpolator = PchipInterpolator(x_values, y_values)
+
+      x_new = np.logspace(
+        np.log10(min(x_values)),
+        np.log10(max(x_values)),
+        400
+    )
+
+      y_new = interpolator(x_new)
+
+    # ----------------------------
+    # Figure
+    # ----------------------------
+      fig, ax = plt.subplots(figsize=(10, 6), dpi=100)
+
+      fig.patch.set_facecolor("white")
+      ax.set_facecolor("white")
+
+    # ----------------------------
+    # Log Scale
+    # ----------------------------
+      ax.set_xscale("log")
+
+    # ----------------------------
+    # Curve
+    # ----------------------------
+      ax.plot(
+        x_new,
+        y_new,
+        color="#5B9BD5",
+        linewidth=2.5
+    )
+
+    # ----------------------------
+    # Markers
+    # ----------------------------
+      ax.scatter(
+        x_values,
+        y_values,
+        color="#5B9BD5",
+        s=55,
+        zorder=5
+    )
+
+    # ----------------------------
+    # Labels
+    # ----------------------------
+      ax.set_xlabel(
+        "IS Sieve (mm)",
+        fontsize=12,
+        fontweight="bold"
+    )
+
+      ax.set_ylabel(
+        "% Passing",
+        fontsize=12,
+        fontweight="bold"
+    )
+
+    # ----------------------------
+    # Axis Limits
+    # ----------------------------
+      ax.set_xlim(0.01, 10)
+      ax.set_ylim(92, 100)
+
+    # ----------------------------
+    # X Ticks
+    # ----------------------------
+      ax.set_xticks([0.01, 0.1, 1, 10])
+
+      ax.xaxis.set_major_formatter(
+        FuncFormatter(lambda x, pos: f"{x:g}")
+    )
+
+      ax.xaxis.set_major_locator(
+        LogLocator(base=10)
+    )
+
+      ax.xaxis.set_minor_locator(
+        LogLocator(
+            base=10,
+            subs=np.arange(2, 10) * 0.1,
+            numticks=100
+        )
+    )
+
+    # ----------------------------
+    # Y Ticks
+    # ----------------------------
+      ax.yaxis.set_major_locator(
+        MultipleLocator(1)
+    )
+
+      ax.yaxis.set_minor_locator(
+        MultipleLocator(0.2)
+    )
+
+    # ----------------------------
+    # Grid (Excel Style)
+    # ----------------------------
+      ax.grid(
+        which="major",
+        color="#808080",
+        linewidth=0.8
+    )
+
+      ax.grid(
+        which="minor",
+        color="#D9D9D9",
+        linewidth=0.4
+    )
+
+    # ----------------------------
+    # Border
+    # ----------------------------
+      for spine in ax.spines.values():
+        spine.set_linewidth(1)
+        spine.set_color("black")
+
+      ax.tick_params(labelsize=10)
+
+      plt.tight_layout()
+
+    # ----------------------------
+    # Save
+    # ----------------------------
+      buffer = io.BytesIO()
+
+      plt.savefig(
+        buffer,
+        format="png",
+        dpi=100,
+        bbox_inches="tight",
+        facecolor="white"
+    )
+
+      plt.close(fig)
+
+      buffer.seek(0)
+
+      return base64.b64encode(
+        buffer.read()
+    ).decode("utf-8")
     
 
     def generate_line_chart_direct_shear(self, data):
