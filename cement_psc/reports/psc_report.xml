@@ -229,7 +229,20 @@
 									</span>
 								</td>
 								<td t-if="eln.conformity">
-									<span t-field="cement.normal_consistency_conformity"/>
+									
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','aba71b08-8839-4a61-a663-1d1e9da8f9a5')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.normal_consistency_conformity and cement.normal_consistency_conformity.lower() == 'pass' else ('red' if cement.normal_consistency_conformity and cement.normal_consistency_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.normal_consistency_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 								</td>
 							</tr>
 
@@ -276,7 +289,19 @@
 									</span>
 								</td>
 								<td t-if="eln.conformity">
-									<span t-field="cement.normal_consistency_conformity"/>
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','aba71b08-8839-4a61-a663-1d1e9da8f9a5')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.normal_consistency_conformity and cement.normal_consistency_conformity.lower() == 'pass' else ('red' if cement.normal_consistency_conformity and cement.normal_consistency_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.normal_consistency_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 								</td>
 							</tr>
 
@@ -325,7 +350,19 @@
 									</span>
 								</td>
 								<td t-if="eln.conformity">
-									<span t-field="cement.normal_consistency_conformity"/>
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','aba71b08-8839-4a61-a663-1d1e9da8f9a5')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.normal_consistency_conformity and cement.normal_consistency_conformity.lower() == 'pass' else ('red' if cement.normal_consistency_conformity and cement.normal_consistency_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.normal_consistency_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 								</td>
 							</tr>
 
@@ -375,7 +412,19 @@
 									</span>
 								</td>
 								<td t-if="eln.conformity">
-									<span t-field="cement.initial_setting_conformity"/>
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','40838d42-1926-4589-8a5e-88990875f55b')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.initial_setting_conformity and cement.initial_setting_conformity.lower() == 'pass' else ('red' if cement.initial_setting_conformity and cement.initial_setting_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.initial_setting_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 								</td>
 								
 							</tr>
@@ -423,7 +472,19 @@
 									</span>
 								</td>
 								<td t-if="eln.conformity">
-									<span t-field="cement.initial_setting_conformity"/>
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','40838d42-1926-4589-8a5e-88990875f55b')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.initial_setting_conformity and cement.initial_setting_conformity.lower() == 'pass' else ('red' if cement.initial_setting_conformity and cement.initial_setting_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.initial_setting_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 								</td>
 								
 							</tr>
@@ -472,7 +533,19 @@
 									</span>
 								</td>
 								<td t-if="eln.conformity">
-									<span t-field="cement.initial_setting_conformity"/>
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','40838d42-1926-4589-8a5e-88990875f55b')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.initial_setting_conformity and cement.initial_setting_conformity.lower() == 'pass' else ('red' if cement.initial_setting_conformity and cement.initial_setting_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.initial_setting_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 								</td>
 								
 							</tr>
@@ -523,7 +596,19 @@
 									</span>
 								</td>
 								<td t-if="eln.conformity">
-									<span t-field="cement.final_setting_conformity"/>
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','d671e0153-725b-46d5-9f0f-616a562a2b15')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.final_setting_conformity and cement.final_setting_conformity.lower() == 'pass' else ('red' if cement.final_setting_conformity and cement.final_setting_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.final_setting_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 								</td>
 							</tr>
 
@@ -571,7 +656,19 @@
 									</span>
 								</td>
 								<td t-if="eln.conformity">
-									<span t-field="cement.final_setting_conformity"/>
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','d671e0153-725b-46d5-9f0f-616a562a2b15')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.final_setting_conformity and cement.final_setting_conformity.lower() == 'pass' else ('red' if cement.final_setting_conformity and cement.final_setting_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.final_setting_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 								</td>
 							</tr>
 
@@ -619,7 +716,19 @@
 									</span>
 								</td>
 								<td t-if="eln.conformity">
-									<span t-field="cement.final_setting_conformity"/>
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','d671e0153-725b-46d5-9f0f-616a562a2b15')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.final_setting_conformity and cement.final_setting_conformity.lower() == 'pass' else ('red' if cement.final_setting_conformity and cement.final_setting_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.final_setting_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 								</td>
 							</tr>
 
@@ -668,7 +777,19 @@
 									</span>
 								</td>
 								<td t-if="eln.conformity">
-									<span t-field="cement.dry_seiving_conformity"/>
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','bbc6029a-ce81-4ccf-8a69-522ac5daf4b0')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.dry_seiving_conformity and cement.dry_seiving_conformity.lower() == 'pass' else ('red' if cement.dry_seiving_conformity and cement.dry_seiving_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.dry_seiving_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 								</td>
 							</tr>
 
@@ -715,7 +836,19 @@
 									</span>
 								</td>
 								<td t-if="eln.conformity">
-									<span t-field="cement.dry_seiving_conformity"/>
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','bbc6029a-ce81-4ccf-8a69-522ac5daf4b0')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.dry_seiving_conformity and cement.dry_seiving_conformity.lower() == 'pass' else ('red' if cement.dry_seiving_conformity and cement.dry_seiving_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.dry_seiving_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 								</td>
 							</tr>
 
@@ -762,7 +895,19 @@
 									</span>
 								</td>
 								<td t-if="eln.conformity">
-									<span t-field="cement.dry_seiving_conformity"/>
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','bbc6029a-ce81-4ccf-8a69-522ac5daf4b0')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.dry_seiving_conformity and cement.dry_seiving_conformity.lower() == 'pass' else ('red' if cement.dry_seiving_conformity and cement.dry_seiving_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.dry_seiving_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 								</td>
 							</tr>
 
@@ -811,7 +956,19 @@
 									</span>
 								</td>
 								<td t-if="eln.conformity">
-									<span t-field="cement.density_conformity"/>
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','3a524931-4407-4666-9465-007afbf0a510')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.density_conformity and cement.density_conformity.lower() == 'pass' else ('red' if cement.density_conformity and cement.density_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.density_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 								</td>
 							</tr>
 
@@ -858,7 +1015,19 @@
 									</span>
 								</td>
 								<td t-if="eln.conformity">
-									<span t-field="cement.density_conformity"/>
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','3a524931-4407-4666-9465-007afbf0a510')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.density_conformity and cement.density_conformity.lower() == 'pass' else ('red' if cement.density_conformity and cement.density_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.density_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 								</td>
 							</tr>
 
@@ -906,7 +1075,19 @@
 									</span>
 								</td>
 								<td t-if="eln.conformity">
-									<span t-field="cement.density_conformity"/>
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','3a524931-4407-4666-9465-007afbf0a510')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.density_conformity and cement.density_conformity.lower() == 'pass' else ('red' if cement.density_conformity and cement.density_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.density_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 								</td>
 							</tr>
 
@@ -956,7 +1137,19 @@
 									</span>
 								</td>
 								<td t-if="eln.conformity">
-									<span t-field="cement.soundness_conformity"/>
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','d0de3979-1010-49ff-bed2-38872eb24bde')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.soundness_conformity and cement.soundness_conformity.lower() == 'pass' else ('red' if cement.soundness_conformity and cement.soundness_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.soundness_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 								</td>
 							</tr>
 
@@ -1003,7 +1196,19 @@
 									</span>
 								</td>
 								<td t-if="eln.conformity">
-									<span t-field="cement.soundness_conformity"/>
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','d0de3979-1010-49ff-bed2-38872eb24bde')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.soundness_conformity and cement.soundness_conformity.lower() == 'pass' else ('red' if cement.soundness_conformity and cement.soundness_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.soundness_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 								</td>
 							</tr>
 
@@ -1050,7 +1255,19 @@
 									</span>
 								</td>
 								<td t-if="eln.conformity">
-									<span t-field="cement.soundness_conformity"/>
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','d0de3979-1010-49ff-bed2-38872eb24bde')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.soundness_conformity and cement.soundness_conformity.lower() == 'pass' else ('red' if cement.soundness_conformity and cement.soundness_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.soundness_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 								</td>
 							</tr>
 
@@ -1098,7 +1315,20 @@
 									</span>
 								</td>
 								<td t-if="eln.conformity">
-									<span t-field="cement.fineness_conformity"/>
+									
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','104a9e28-7eb8-4d40-9d0a-8b05eed98c11')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.fineness_conformity and cement.fineness_conformity.lower() == 'pass' else ('red' if cement.fineness_conformity and cement.fineness_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.fineness_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 								</td>
 							</tr>
 
@@ -1144,7 +1374,19 @@
 									</span>
 								</td>
 								<td t-if="eln.conformity">
-									<span t-field="cement.fineness_conformity"/>
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','104a9e28-7eb8-4d40-9d0a-8b05eed98c11')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.fineness_conformity and cement.fineness_conformity.lower() == 'pass' else ('red' if cement.fineness_conformity and cement.fineness_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.fineness_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 								</td>
 							</tr>
 
@@ -1191,7 +1433,19 @@
 									</span>
 								</td>
 								<td t-if="eln.conformity">
-									<span t-field="cement.fineness_conformity"/>
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','104a9e28-7eb8-4d40-9d0a-8b05eed98c11')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.fineness_conformity and cement.fineness_conformity.lower() == 'pass' else ('red' if cement.fineness_conformity and cement.fineness_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.fineness_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 								</td>
 							</tr>
 
@@ -1341,7 +1595,19 @@
 									</span>
 								</td>
 								<td t-if="eln.conformity">
-									<span t-field="cement.compressive_3days_conformity"/>
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','c59e9080-f1e5-4ef5-8ced-f1232704ab2d')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.compressive_3days_conformity and cement.compressive_3days_conformity.lower() == 'pass' else ('red' if cement.compressive_3days_conformity and cement.compressive_3days_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.compressive_3days_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 								</td>
 							</tr>
 
@@ -1391,7 +1657,19 @@
 									</span>
 								</td>
 								<td t-if="eln.conformity">
-									<span t-field="cement.compressive_3days_conformity"/>
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','c59e9080-f1e5-4ef5-8ced-f1232704ab2d')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.compressive_3days_conformity and cement.compressive_3days_conformity.lower() == 'pass' else ('red' if cement.compressive_3days_conformity and cement.compressive_3days_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.compressive_3days_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 								</td>
 							</tr>
 
@@ -1441,7 +1719,19 @@
 									</span>
 								</td>
 								<td t-if="eln.conformity">
-									<span t-field="cement.compressive_3days_conformity"/>
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','c59e9080-f1e5-4ef5-8ced-f1232704ab2d')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.compressive_3days_conformity and cement.compressive_3days_conformity.lower() == 'pass' else ('red' if cement.compressive_3days_conformity and cement.compressive_3days_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.compressive_3days_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 								</td>
 							</tr>
 
@@ -1493,7 +1783,19 @@
 									</span>
 								</td>
 								<td t-if="eln.conformity">
-									<span t-field="cement.compressive_7days_conformity"/>
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','a221eadd-b067-41ed-9c64-3180b0d2f644')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.compressive_7days_conformity and cement.compressive_7days_conformity.lower() == 'pass' else ('red' if cement.compressive_7days_conformity and cement.compressive_7days_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.compressive_7days_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 								</td>
 							</tr>
 
@@ -1543,7 +1845,19 @@
 									</span>
 								</td>
 								<td t-if="eln.conformity">
-									<span t-field="cement.compressive_7days_conformity"/>
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','a221eadd-b067-41ed-9c64-3180b0d2f644')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.compressive_7days_conformity and cement.compressive_7days_conformity.lower() == 'pass' else ('red' if cement.compressive_7days_conformity and cement.compressive_7days_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.compressive_7days_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 								</td>
 							</tr>
 
@@ -1593,7 +1907,19 @@
 									</span>
 								</td>
 								<td t-if="eln.conformity">
-									<span t-field="cement.compressive_7days_conformity"/>
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','a221eadd-b067-41ed-9c64-3180b0d2f644')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.compressive_7days_conformity and cement.compressive_7days_conformity.lower() == 'pass' else ('red' if cement.compressive_7days_conformity and cement.compressive_7days_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.compressive_7days_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 								</td>
 							</tr>
 
@@ -1644,7 +1970,19 @@
 										</span>
 									</td>
 									<td t-if="eln.conformity">
-										<span t-field="cement.compressive_28days_conformity"/>
+										<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','734c18a7-e665-44bc-89b7-ed512432bc9c')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.compressive_28days_conformity and cement.compressive_28days_conformity.lower() == 'pass' else ('red' if cement.compressive_28days_conformity and cement.compressive_28days_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.compressive_28days_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 									</td>
 								</tr>
 
@@ -1693,7 +2031,20 @@
 										</span>
 									</td>
 									<td t-if="eln.conformity">
-										<span t-field="cement.compressive_28days_conformity"/>
+										
+										<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','734c18a7-e665-44bc-89b7-ed512432bc9c')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.compressive_28days_conformity and cement.compressive_28days_conformity.lower() == 'pass' else ('red' if cement.compressive_28days_conformity and cement.compressive_28days_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.compressive_28days_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 									</td>
 								</tr>
 
@@ -1742,7 +2093,19 @@
 										</span>
 									</td>
 									<td t-if="eln.conformity">
-										<span t-field="cement.compressive_28days_conformity"/>
+										<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','734c18a7-e665-44bc-89b7-ed512432bc9c')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.compressive_28days_conformity and cement.compressive_28days_conformity.lower() == 'pass' else ('red' if cement.compressive_28days_conformity and cement.compressive_28days_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.compressive_28days_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 									</td>
 								</tr>
 								<tr t-if="cement.opc_soundness_visible and cement.avg_expantion_opc_nabl == 'pass' and nabl and not fromEln">
@@ -1789,7 +2152,20 @@
 									</span>
 								</td>
 								<td t-if="eln.conformity">
-									<span t-field="cement.avg_expantion_opc_conformity"/>
+									
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','a85138e1-99b3-40c5-a4aa-ffb96f2c9507')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.avg_expantion_opc_conformity and cement.avg_expantion_opc_conformity.lower() == 'pass' else ('red' if cement.avg_expantion_opc_conformity and cement.avg_expantion_opc_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.avg_expantion_opc_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 								</td>
 							</tr>
 							<tr t-if="cement.opc_soundness_visible and (cement.avg_expantion_opc_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln">
@@ -1835,7 +2211,19 @@
 									</span>
 								</td>
 								<td t-if="eln.conformity">
-									<span t-field="cement.avg_expantion_opc_conformity"/>
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','a85138e1-99b3-40c5-a4aa-ffb96f2c9507')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.avg_expantion_opc_conformity and cement.avg_expantion_opc_conformity.lower() == 'pass' else ('red' if cement.avg_expantion_opc_conformity and cement.avg_expantion_opc_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.avg_expantion_opc_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 								</td>
 							</tr>
 							</t>
@@ -1993,7 +2381,20 @@
 											</span>
 										</td>
 										<td t-if="eln.conformity">
-											<span t-field="cement.compressive_3days_conformity"/>
+											
+											<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','c59e9080-f1e5-4ef5-8ced-f1232704ab2d')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.compressive_3days_conformity and cement.compressive_3days_conformity.lower() == 'pass' else ('red' if cement.compressive_3days_conformity and cement.compressive_3days_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.compressive_3days_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 										</td>
 									</tr>
 
@@ -2044,7 +2445,19 @@
 											</span>
 										</td>
 										<td t-if="eln.conformity">
-											<span t-field="cement.compressive_3days_conformity"/>
+											<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','c59e9080-f1e5-4ef5-8ced-f1232704ab2d')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.compressive_3days_conformity and cement.compressive_3days_conformity.lower() == 'pass' else ('red' if cement.compressive_3days_conformity and cement.compressive_3days_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.compressive_3days_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 										</td>
 									</tr>
 									</t>
@@ -2095,7 +2508,19 @@
 											</span>
 										</td>
 										<td t-if="eln.conformity">
-											<span t-field="cement.compressive_3days_conformity"/>
+											<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','c59e9080-f1e5-4ef5-8ced-f1232704ab2d')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.compressive_3days_conformity and cement.compressive_3days_conformity.lower() == 'pass' else ('red' if cement.compressive_3days_conformity and cement.compressive_3days_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.compressive_3days_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 										</td>
 									</tr>
 
@@ -2147,7 +2572,19 @@
 											</span>
 										</td>
 										<td t-if="eln.conformity">
-											<span t-field="cement.compressive_7days_conformity"/>
+											<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','a221eadd-b067-41ed-9c64-3180b0d2f644')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.compressive_7days_conformity and cement.compressive_7days_conformity.lower() == 'pass' else ('red' if cement.compressive_7days_conformity and cement.compressive_7days_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.compressive_7days_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 										</td>
 									</tr>
 
@@ -2198,7 +2635,19 @@
 											</span>
 										</td>
 										<td t-if="eln.conformity">
-											<span t-field="cement.compressive_7days_conformity"/>
+											<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','a221eadd-b067-41ed-9c64-3180b0d2f644')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.compressive_7days_conformity and cement.compressive_7days_conformity.lower() == 'pass' else ('red' if cement.compressive_7days_conformity and cement.compressive_7days_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.compressive_7days_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 										</td>
 									</tr>
 									</t>
@@ -2249,7 +2698,19 @@
 											</span>
 										</td>
 										<td t-if="eln.conformity">
-											<span t-field="cement.compressive_7days_conformity"/>
+											<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','a221eadd-b067-41ed-9c64-3180b0d2f644')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.compressive_7days_conformity and cement.compressive_7days_conformity.lower() == 'pass' else ('red' if cement.compressive_7days_conformity and cement.compressive_7days_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.compressive_7days_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 										</td>
 									</tr>
 
@@ -2300,7 +2761,19 @@
 												</span>
 											</td>
 											<td t-if="eln.conformity">
-												<span t-field="cement.compressive_28days_conformity"/>
+												<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','734c18a7-e665-44bc-89b7-ed512432bc9c')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.compressive_28days_conformity and cement.compressive_28days_conformity.lower() == 'pass' else ('red' if cement.compressive_28days_conformity and cement.compressive_28days_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.compressive_28days_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 											</td>
 										</tr>
 
@@ -2350,7 +2823,19 @@
 												</span>
 											</td>
 											<td t-if="eln.conformity">
-												<span t-field="cement.compressive_28days_conformity"/>
+												<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','734c18a7-e665-44bc-89b7-ed512432bc9c')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.compressive_28days_conformity and cement.compressive_28days_conformity.lower() == 'pass' else ('red' if cement.compressive_28days_conformity and cement.compressive_28days_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.compressive_28days_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 											</td>
 										</tr>
 										</t>
@@ -2400,7 +2885,19 @@
 												</span>
 											</td>
 											<td t-if="eln.conformity">
-												<span t-field="cement.compressive_28days_conformity"/>
+												<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','734c18a7-e665-44bc-89b7-ed512432bc9c')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.compressive_28days_conformity and cement.compressive_28days_conformity.lower() == 'pass' else ('red' if cement.compressive_28days_conformity and cement.compressive_28days_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.compressive_28days_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
 											</td>
 										</tr>
 							</tbody>
