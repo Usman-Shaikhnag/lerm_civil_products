@@ -90,12 +90,12 @@
 							<tr>
 								<td colspan="1">Samples Description :-</td>
 								<td colspan="1">
-								      <t t-if="o.material and o.material.lab_name or o.sample_id.size_id">
-									       <span t-field="o.material.lab_name"/> <![CDATA[&nbsp;]]>
-											<span t-field="o.sample_id.size_id"/>   
+								      <t t-if="o.sample_id.sample_description">
+									       <span t-field="o.sample_id.sample_description"/> 
 										</t>
 									<t t-else="">NA</t>
 								</td>
+
 
                                 <td colspan="1">Date of Receipt :-</td>
 								<td colspan="1">
@@ -111,8 +111,8 @@
 							<tr>
 								<td colspan="1">#Source of Sample	 :-</td>
 								<td colspan="1">
-								<t t-if="o.material.source_sample">
-											<span t-field="o.material.source_sample"/>
+								<t t-if="o.sample_id.source_of_sample">
+											<span t-field="o.sample_id.source_of_sample"/>
 										</t>
 									<t t-else="">NA</t>
 								</td>
@@ -120,7 +120,7 @@
 								<td colspan="1">Date of Performance of Test :-</td>
 								<td colspan="1">
 									<t t-if="o.start_date and o.end_date">
-											<!-- <span t-field="o.start_date"/><![CDATA[&nbsp;]]> to <![CDATA[&nbsp;]]> <span t-field="o.end_date"/> -->
+											
 											<span t-field="o.start_date" t-options='{"widget": "date"}'/>
 											<span style="display:inline-block; padding:0 3px;">to</span>
 											<span t-field="o.end_date" t-options='{"widget": "date"}'/>

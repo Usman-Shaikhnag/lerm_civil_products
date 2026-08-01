@@ -200,7 +200,7 @@
 								<td colspan="1">Date of Performance of Test :-</td>
 								<td colspan="1">
 									<t t-if="o.start_date and o.end_date">
-											<!-- <span t-field="o.start_date"/><![CDATA[&nbsp;]]> to <![CDATA[&nbsp;]]> <span t-field="o.end_date"/> -->
+											
 											<span t-field="o.start_date" t-options='{"widget": "date"}'/>
 											<span style="display:inline-block; padding:0 3px;">to</span>
 											<span t-field="o.end_date" t-options='{"widget": "date"}'/>
