@@ -2735,6 +2735,10 @@ class GsbMechanical(models.Model):
     heavy_visible = fields.Boolean("Heavy Compaction-MDD Visible",compute="_compute_visible")
     heavy_table = fields.One2many('gsb.heavy.compaction.line','parent_id',string="Heavy Compaction")
 
+    heavy_mould_no = fields.Char(string="Mould No.")
+    heavy_mould_weight = fields.Float(string="Wt. of Mould (A)")
+    heavy_mould_volume = fields.Float(string="Volume of Mould (V)")
+
     max_dry_density = fields.Float(string="Max Dry Density (g/cc)", compute="_compute_max_dry_density", store=True)
 
     omc = fields.Float(string="Optimum Moisture Content (OMC)", compute="_compute_max_density_and_omc", store=True)
@@ -3308,6 +3312,10 @@ class GsbMechanical(models.Model):
     omc_name = fields.Char("Name",default="DETERMINATION OF Light Compaction - OMC AND MDD ")
     omc_visible = fields.Boolean("omc Compaction-MDD Visible",compute="_compute_visible")
     omc_table = fields.One2many('gsb.omc.compaction.line','parent_id',string="OMC Compaction")
+
+    light_mould_no = fields.Char(string="Mould No.")
+    light_mould_weight = fields.Float(string="Wt. of Mould (A)")
+    light_mould_volume = fields.Float(string="Volume of Mould (V)")
 
     max_dry_density1 = fields.Float(string="Max Dry Density (g/cc)", compute="_compute_max_dry_density1", store=True)
 
@@ -5653,53 +5661,87 @@ class GSBHEAVYCOMPACTIONLINE(models.Model):
 
     serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
 
-    amount_soil = fields.Float(string="Amount of soil (gm)")
-    amount_water = fields.Integer(string="Amount of water added (%)")
-    empty_wt_mould = fields.Integer(string="Empty weight of mould without collar, W1 (gm)")
-    wt_soil = fields.Float(string="Weight of soil compacted + mould, W2 (gm)")
-    wt_of_wet = fields.Integer(string="Weight of wet soil (W2-W1) (gm)",compute="_compute_wt_of_wet")
-    volume_mould = fields.Float(string="Volume of mould (V) (cm3)")
-    bulk_density = fields.Float(string=" Bulk density (ρ) (g/cc)",compute="_compute_bulk_density")
-    con_no = fields.Float(string="Container Number")
-    empty_wt = fields.Float(string="Empty weight of container (M1) (gm)")
-    wet_con_ovenwet= fields.Float(string="Weight of container + wet soil (M2) (gm)")
-    wet_con_ovendry= fields.Float(string="Weight of container + Weight of oven dry soil (M3) (gm)")
-    water_content = fields.Float(string="Water Content (%)",compute="_compute_water_and_dry_density")
-    dry_density = fields.Float(string="Dry Density (γd ) (g/cc)",compute="_compute_water_and_dry_density")
+    wet_soil_mould = fields.Float(string="Wt. of Wet Soil + Mould")
 
+    wet_soil = fields.Float(
+        string="Wt. of Wet Soil (E)",
+        compute="_compute_values",
+        store=True,
+    )
 
-    @api.depends('wt_soil', 'empty_wt_mould')
-    def _compute_wt_of_wet(self):
-        for line in self:
-            line.wt_of_wet = line.wt_soil - line.empty_wt_mould
+    wet_density = fields.Float(
+        string="Wet Density (F)",
+        compute="_compute_values",
+        store=True,
+    )
 
+    container_no = fields.Float(string="Container No.")
 
+    container_weight = fields.Float(string="Wt. of Container (H)")
 
-    @api.depends('wt_of_wet', 'volume_mould')
-    def _compute_bulk_density(self):
-        for line in self:
-            if line.volume_mould != 0:
-                line.bulk_density = line.wt_of_wet / line.volume_mould
-            else:
-                line.bulk_density = 0.0
+    wet_soil_container = fields.Float(string="Wt. of Wet Soil + Container (I)")
 
+    dry_soil_container = fields.Float(string="Wt. of Dry Soil + Container (J)")
 
-    @api.depends('wet_con_ovendry', 'wet_con_ovenwet', 'empty_wt', 'bulk_density')
-    def _compute_water_and_dry_density(self):
-        for rec in self:
-            m2 = rec.wet_con_ovenwet     # container + wet soil
-            m3 = rec.wet_con_ovendry         # container + oven dry soil
-            m1 = rec.empty_wt        # empty container
+    water_weight = fields.Float(
+        string="Wt. of Water (K)",
+        compute="_compute_values",
+        store=True,
+    )
 
-            if m2 and m3 and m1 and (m3 - m1) != 0:
-                rec.water_content = ((m2 - m3) / (m3 - m1)) * 100
-            else:
-                rec.water_content = 0.0
+    dry_soil = fields.Float(
+        string="Wt. of Dry Soil (L)",
+        compute="_compute_values",
+        store=True,
+    )
 
-            if rec.bulk_density and rec.water_content is not None:
-                rec.dry_density = rec.bulk_density / (1 + (rec.water_content / 100))
-            else:
-                rec.dry_density = 0.0
+    water_content = fields.Float(
+        string="Water Content (%)",
+        compute="_compute_values",
+        store=True,
+    )
+
+    dry_density = fields.Float(
+        string="Dry Density",
+        compute="_compute_values",
+        store=True,
+    )
+
+    @api.depends(
+    'wet_soil_mould',
+    'container_weight',
+    'wet_soil_container',
+    'dry_soil_container',
+    'parent_id.heavy_mould_weight',
+    'parent_id.heavy_mould_volume',
+)
+    def _compute_values(self):
+     for rec in self:
+
+        # E
+        rec.wet_soil = rec.wet_soil_mould - (rec.parent_id.heavy_mould_weight or 0.0)
+
+        # F
+        volume = rec.parent_id.heavy_mould_volume or 0.0
+        rec.wet_density = rec.wet_soil / volume if volume else 0.0
+
+        # K
+        rec.water_weight = rec.wet_soil_container - rec.dry_soil_container
+
+        # L
+        rec.dry_soil = rec.dry_soil_container - rec.container_weight
+
+        # M
+        rec.water_content = (
+            (100 * rec.water_weight / rec.dry_soil)
+            if rec.dry_soil else 0.0
+        )
+
+        # N
+        rec.dry_density = (
+            (100 * rec.wet_density / (100 + rec.water_content))
+            if (100 + rec.water_content) else 0.0
+        )
 
 
   
@@ -5728,53 +5770,88 @@ class GSBLIGHTCOMPACTIONLINE(models.Model):
 
     serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
 
-    amount_soil1 = fields.Float(string="Amount of soil (gm)")
-    amount_water1 = fields.Integer(string="Amount of water added (%)")
-    empty_wt_mould1 = fields.Integer(string="Empty weight of mould without collar, W1 (gm)")
-    wt_soil1 = fields.Float(string="Weight of soil compacted + mould, W2 (gm)")
-    wt_of_wet1 = fields.Integer(string="Weight of wet soil (W2-W1) (gm)",compute="_compute_wt_of_wet1")
-    volume_mould1 = fields.Float(string="Volume of mould (V) (cm3)")
-    bulk_density1 = fields.Float(string=" Bulk density (ρ) (g/cc)",compute="_compute_bulk_density1")
-    con_no1 = fields.Float(string="Container Number")
-    empty_wt1 = fields.Float(string="Empty weight of container (M1) (gm)")
-    wet_con_ovenwet1 = fields.Float(string="Weight of container + wet soil (M2) (gm)")
-    wet_con_ovendry1 = fields.Float(string="Weight of container + Weight of oven dry soil (M3) (gm)")
-    water_content1 = fields.Float(string="Water Content (%)",compute="_compute_water_and_dry_density1")
-    dry_density1 = fields.Float(string="Dry Density (γd ) (g/cc)",compute="_compute_water_and_dry_density1")
+    wet_soil_mould = fields.Float(string="Wt. of Wet Soil + Mould")
 
+    wet_soil = fields.Float(
+        string="Wt. of Wet Soil (E)",
+        compute="_compute_values",
+        store=True,
+    )
 
-    @api.depends('wt_soil1', 'empty_wt_mould1')
-    def _compute_wt_of_wet1(self):
-        for line in self:
-            line.wt_of_wet1 = line.wt_soil1 - line.empty_wt_mould1
+    wet_density = fields.Float(
+        string="Wet Density (F)",
+        compute="_compute_values",
+        store=True,
+    )
 
+    container_no = fields.Float(string="Container No.")
 
+    container_weight = fields.Float(string="Wt. of Container (H)")
 
-    @api.depends('wt_of_wet1', 'volume_mould1')
-    def _compute_bulk_density1(self):
-        for line in self:
-            if line.volume_mould1 != 0:
-                line.bulk_density1 = line.wt_of_wet1 / line.volume_mould1
-            else:
-                line.bulk_density1 = 0.0
+    wet_soil_container = fields.Float(string="Wt. of Wet Soil + Container (I)")
 
+    dry_soil_container = fields.Float(string="Wt. of Dry Soil + Container (J)")
 
-    @api.depends('wet_con_ovendry1', 'wet_con_ovenwet1', 'empty_wt1', 'bulk_density1')
-    def _compute_water_and_dry_density1(self):
-        for rec in self:
-            m2 = rec.wet_con_ovenwet1     # container + wet soil
-            m3 = rec.wet_con_ovendry1         # container + oven dry soil
-            m1 = rec.empty_wt1        # empty container
+    water_weight = fields.Float(
+        string="Wt. of Water (K)",
+        compute="_compute_values",
+        store=True,
+    )
 
-            if m2 and m3 and m1 and (m3 - m1) != 0:
-                rec.water_content1 = ((m2 - m3) / (m3 - m1)) * 100
-            else:
-                rec.water_content1 = 0.0
+    dry_soil = fields.Float(
+        string="Wt. of Dry Soil (L)",
+        compute="_compute_values",
+        store=True,
+    )
 
-            if rec.bulk_density1 and rec.water_content1 is not None:
-                rec.dry_density1 = rec.bulk_density1 / (1 + (rec.water_content1 / 100))
-            else:
-                rec.dry_density1 = 0.0
+    water_content1 = fields.Float(
+        string="Water Content (%)",
+        compute="_compute_values",
+        store=True,
+    )
+
+    dry_density1 = fields.Float(
+        string="Dry Density",
+        compute="_compute_values",
+        store=True,
+    )
+
+    @api.depends(
+    'wet_soil_mould',
+    'container_weight',
+    'wet_soil_container',
+    'dry_soil_container',
+    'parent_id.light_mould_weight',
+    'parent_id.light_mould_volume',
+)
+    def _compute_values(self):
+     for rec in self:
+
+        # E
+        rec.wet_soil = rec.wet_soil_mould - (rec.parent_id.light_mould_weight or 0.0)
+
+        # F
+        volume = rec.parent_id.light_mould_volume or 0.0
+        rec.wet_density = rec.wet_soil / volume if volume else 0.0
+
+        # K
+        rec.water_weight = rec.wet_soil_container - rec.dry_soil_container
+
+        # L
+        rec.dry_soil = rec.dry_soil_container - rec.container_weight
+
+        # M
+        rec.water_content1 = (
+            (100 * rec.water_weight / rec.dry_soil)
+            if rec.dry_soil else 0.0
+        )
+
+        # N
+        rec.dry_density1 = (
+            (100 * rec.wet_density / (100 + rec.water_content1))
+            if (100 + rec.water_content1) else 0.0
+        )
+  
 
 
   

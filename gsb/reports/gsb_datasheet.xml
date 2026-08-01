@@ -2546,6 +2546,27 @@
 								</span>
 							</div>
 
+							<table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;" t-if="data.heavy_visible">
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Mould No. :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+									<span t-field="data.heavy_mould_no" />
+								</td>
+							</tr>
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Wt. of Mould (A) :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+									<span t-field="data.heavy_mould_weight" />
+								</td>
+							</tr>
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Volume of Mould (V) :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+									<span t-field="data.heavy_mould_volume" />
+								</td>
+							</tr>
+						</table>
+
 							<table style="width: 100%; border-collapse: collapse; font-size: 14px;" t-if="data.heavy_visible">
 							<thead>
 								<tr style="background-color: #f0f0f0; text-align: center;">
@@ -2556,69 +2577,58 @@
 									</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">
 										<span>
-											Amount of soil (gm)
+											Wt. of Wet Soil + Mould
 										</span>
 									</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">
 										<span>
-											Amount of water added (%)
+											Wt. of Wet Soil (E)
 										</span>
 									</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">
 										<span>
-										Empty weight of mould without collar, W1 (gm)
+										Wet Density (F)
 										</span>
 									</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">
 										<span>
-										Weight of soil compacted + mould, W2 (gm)
+										Container No.
 										</span>
 									</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">
 										<span>
-											Weight of wet soil (W2-W1) (gm)
+											Wt. of Container (H)
 										</span>
 									</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">
 										<span>
-										Volume of mould (V) (cm3)
+										Wt. of Wet Soil + Container (I)
 										</span>
 									</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">
 										<span>
-											 Bulk density (ρ) (g/cc)
+											Wt. of Dry Soil + Container (J)
 										</span>
 									</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">
 										<span>
-											Container Number
+										Wt. of Water (K)
 										</span>
 									</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">
 										<span>
-										Empty weight of container (M1) (gm)
+										Wt. of Dry Soil (L)
 										</span>
 									</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">
 										<span>
-											Weight of container + wet soil (M2) (gm)
+											Water Content (%)
 
 										</span>
 									</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">
 										<span>
-											Weight of container + Weight of oven dry soil (M3) (gm)
-										</span>
-									</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">
-										<span>
-										Water Content (%)
-										</span>
-									</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">
-										<span>
-									Dry Density (γd ) (g/cc)   
-
+											Dry Density
 										</span>
 									</th>
 								</tr>
@@ -2633,37 +2643,31 @@
 										</div>
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r.amount_soil"/>
+										<span t-esc="r.wet_soil_mould"/>
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r.amount_water" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.wet_soil" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r.empty_wt_mould" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.wet_density" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r.wt_soil" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.container_no" />
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r.wt_of_wet" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.container_weight" />
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r.volume_mould" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.wet_soil_container" />
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r.bulk_density" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.dry_soil_container" />
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r.con_no" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.water_weight" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r.empty_wt" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r.wet_con_ovenwet"  t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r.wet_con_ovendry"  t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.dry_soil" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
 										<span t-esc="r.water_content"  t-options='{"widget": "float", "precision": 2}'/>
@@ -2674,7 +2678,6 @@
 								</tr>
 							</tbody>
 						</table>
-						
 						
 						</div>
 
@@ -2777,6 +2780,29 @@
 									</t>
 								</span>
 							</div>
+							<table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;" t-if="data.omc_visible">
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Mould No. :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+									<span t-field="data.light_mould_no" />
+								</td>
+							</tr>
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Wt. of Mould (A) :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+									<span t-field="data.light_mould_weight" />
+								</td>
+							</tr>
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Volume of Mould (V) :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+									<span t-field="data.light_mould_volume" />
+								</td>
+							</tr>
+						</table>
+
+
+
 							<table style="width: 100%; border-collapse: collapse; font-size: 14px;" t-if="data.omc_visible">
 							<thead>
 								<tr style="background-color: #f0f0f0; text-align: center;">
@@ -2787,69 +2813,58 @@
 									</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">
 										<span>
-											Amount of soil (gm)
+											Wt. of Wet Soil + Mould
 										</span>
 									</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">
 										<span>
-											Amount of water added (%)
+											Wt. of Wet Soil (E)
 										</span>
 									</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">
 										<span>
-										Empty weight of mould without collar, W1 (gm)
+										Wet Density (F)
 										</span>
 									</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">
 										<span>
-										Weight of soil compacted + mould, W2 (gm)
+										Container No.
 										</span>
 									</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">
 										<span>
-											Weight of wet soil (W2-W1) (gm)
+											Wt. of Container (H)
 										</span>
 									</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">
 										<span>
-										Volume of mould (V) (cm3)
+										Wt. of Wet Soil + Container (I)
 										</span>
 									</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">
 										<span>
-											 Bulk density (ρ) (g/cc)
+											Wt. of Dry Soil + Container (J)
 										</span>
 									</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">
 										<span>
-											Container Number
+										Wt. of Water (K)
 										</span>
 									</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">
 										<span>
-										Empty weight of container (M1) (gm)
+										Wt. of Dry Soil (L)
 										</span>
 									</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">
 										<span>
-											Weight of container + wet soil (M2) (gm)
+											Water Content (%)
 
 										</span>
 									</th>
 									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">
 										<span>
-											Weight of container + Weight of oven dry soil (M3) (gm)
-										</span>
-									</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">
-										<span>
-										Water Content (%)
-										</span>
-									</th>
-									<th style="border: 1px solid #ccc; padding: 8px;" colspan="2">
-										<span>
-									Dry Density (γd ) (g/cc)   
-
+											Dry Density
 										</span>
 									</th>
 								</tr>
@@ -2864,37 +2879,31 @@
 										</div>
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r.amount_soil1"/>
+										<span t-esc="r.wet_soil_mould"/>
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r.amount_water1" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.wet_soil" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r.empty_wt_mould1" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.wet_density" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r.wt_soil1" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.container_no" />
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r.wt_of_wet1" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.container_weight" />
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r.volume_mould1" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.wet_soil_container" />
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r.bulk_density1" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.dry_soil_container" />
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r.con_no1" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.water_weight" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r.empty_wt1" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r.wet_con_ovenwet1"  t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
-										<span t-esc="r.wet_con_ovendry1"  t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.dry_soil" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td style="border: 1px solid #ccc; padding: 6px;" colspan="2">
 										<span t-esc="r.water_content1"  t-options='{"widget": "float", "precision": 2}'/>

@@ -1295,7 +1295,11 @@
 									
 								</tr>
 
-								<tr t-if="data.heavy_visible and (data.dry_density_report_type == 'nabl' and nabl or data.dry_density_report_type == 'non_nabl' and not nabl)">
+								<tr t-if="data.heavy_visible and (data.dry_density_final_report == 'nabl' and nabl or data.dry_density_final_report == 'non_nabl' and not nabl)">
+
+								
+
+								
 									<td style="text-align: center;" colspan="1">
 										<div>
 											<span t-esc="i + 1" />

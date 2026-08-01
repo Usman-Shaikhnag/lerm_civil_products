@@ -1414,26 +1414,60 @@
                     
                    
                  
+                    <div class="d-flex gap-2">
+                      <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not heavy_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="heavy_mould_no">Mould No. </label></td>
+                                <td><field name="heavy_mould_no" class="blue-input" /></td>
+                               
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not heavy_visible">
+                        <tbody>
+                             <tr>
+                                 <td><label for="heavy_mould_weight">Wt. of Mould (A) </label></td>
+                                <td><field name="heavy_mould_weight" class="blue-input" /></td>
+                             </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not heavy_visible">
+                        <tbody>
+                             <tr>
+                                 <td><label for="heavy_mould_volume">Volume of Mould (V) </label></td>
+                                <td><field name="heavy_mould_volume" class="blue-input" /></td>
+                             </tr>
+                        </tbody>
+                    </table>
+                    </div>
+                    
+                   
+                 
                     <div invisible = "heavy_visible == False">
                         <field name="heavy_table">
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name="serial_no"/>
-                                <field name="amount_soil" class="blue-input" decoration-info="amount_soil != 0"/>
-                                <field name="amount_water" class="blue-input" decoration-info="amount_water != 0"/>
-                                <field name="empty_wt_mould" class="blue-input" decoration-info="empty_wt_mould != 0"/>
-                                <field name="wt_soil" class="blue-input" decoration-info="wt_soil != 0"/>
-                                <field name="wt_of_wet"/>
-                                <field name="volume_mould" class="blue-input" decoration-info="volume_mould != 0"/>
-                                <field name="bulk_density"/>
-                                <field name="con_no" class="blue-input" decoration-info="con_no != 0"/>
-                                <field name="empty_wt" class="blue-input" decoration-info="empty_wt != 0"/>
-                                <field name="wet_con_ovenwet" class="blue-input" decoration-info="wet_con_ovenwet != 0"/>
-                                <field name="wet_con_ovendry" class="blue-input" decoration-info="wet_con_ovendry != 0"/>
+                                <field name="wet_soil_mould" class="blue-input" decoration-info="wet_soil_mould != 0"/>
+                                <field name="wet_soil" />
+                                <field name="wet_density" />
+
+                                <field name="container_no" class="blue-input" decoration-info="container_no != 0"/>
+
+                                <field name="container_weight" class="blue-input" decoration-info="container_weight != 0"/>
+                                <field name="wet_soil_container" class="blue-input" decoration-info="wet_soil_container != 0"/>
+
+                                <field name="dry_soil_container" class="blue-input" decoration-info="dry_soil_container != 0"/>
+
+
+                                <field name="water_weight"/>
+                                <field name="dry_soil" />
                                 <field name="water_content"/>
                                 <field name="dry_density"/>
                             </tree>
                         </field>
                     </div>
+
 
                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not heavy_visible">
                         <tbody>
@@ -1518,23 +1552,56 @@
                     
                    
                  
+                    <div class="d-flex gap-2">
+                      <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not omc_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="light_mould_no">Mould No. </label></td>
+                                <td><field name="light_mould_no" class="blue-input" /></td>
+                               
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not omc_visible">
+                        <tbody>
+                             <tr>
+                                 <td><label for="light_mould_weight">Wt. of Mould (A) </label></td>
+                                <td><field name="light_mould_weight" class="blue-input" /></td>
+                             </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered w-50 custom_table_borders" invisible="not omc_visible">
+                        <tbody>
+                             <tr>
+                                 <td><label for="light_mould_volume">Volume of Mould (V) </label></td>
+                                <td><field name="light_mould_volume" class="blue-input" /></td>
+                             </tr>
+                        </tbody>
+                    </table>
+                    </div>
+                    
+                   
+                 
                     <div invisible = "omc_visible == False">
                         <field name="omc_table" style="width:100%">
                                 <tree editable="bottom" class="custom_table_borders">
                                     <field name="serial_no"/>
-                                    <field name="amount_soil1" class="blue-input" decoration-info="amount_soil1 != 0"/>
-                                    <field name="amount_water1" class="blue-input" decoration-info="amount_water1 != 0"/>
-                                    <field name="empty_wt_mould1" class="blue-input" decoration-info="empty_wt_mould1 != 0"/>
-                                    <field name="wt_soil1" class="blue-input" decoration-info="wt_soil1 != 0"/>
-                                    <field name="wt_of_wet1"/>
-                                    <field name="volume_mould1" class="blue-input" decoration-info="volume_mould1 != 0"/>
-                                    <field name="bulk_density1"/>
-                                    <field name="con_no1" class="blue-input" decoration-info="con_no1 != 0"/>
-                                    <field name="empty_wt1" class="blue-input" decoration-info="empty_wt1 != 0"/>
-                                    <field name="wet_con_ovenwet1" class="blue-input" decoration-info="wet_con_ovenwet1 != 0"/>
-                                    <field name="wet_con_ovendry1" class="blue-input" decoration-info="wet_con_ovendry1 != 0"/>
-                                    <field name="water_content1"/>
-                                    <field name="dry_density1"/>
+                                <field name="wet_soil_mould" class="blue-input" decoration-info="wet_soil_mould != 0"/>
+                                <field name="wet_soil" />
+                                <field name="wet_density" />
+
+                                <field name="container_no" class="blue-input" decoration-info="container_no != 0"/>
+
+                                <field name="container_weight" class="blue-input" decoration-info="container_weight != 0"/>
+                                <field name="wet_soil_container" class="blue-input" decoration-info="wet_soil_container != 0"/>
+
+                                <field name="dry_soil_container" class="blue-input" decoration-info="dry_soil_container != 0"/>
+
+
+                                <field name="water_weight"/>
+                                <field name="dry_soil" />
+                                <field name="water_content1"/>
+                                <field name="dry_density1"/>
                                 </tree>
                         </field>
                     </div>
