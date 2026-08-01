@@ -1342,7 +1342,7 @@ class CementPsc(models.Model):
 
 
             if result.parameter.internal_id == 'bbc6029a-ce81-4ccf-8a69-522ac5daf4b0':
-                result.result_char = round(self.fineness_dry_sieving)
+                result.result_char = round(self.fineness_dry_sieving,2)
                 result.calculated = True
                 if self.dry_seiving_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -1352,7 +1352,7 @@ class CementPsc(models.Model):
 
 
             if result.parameter.internal_id == '104a9e28-7eb8-4d40-9d0a-8b05eed98c11':
-                result.result_char = round(self.fineness_air_permeability)
+                result.result_char = round(self.fineness_air_permeability,2)
                 result.calculated = True
                 if self.fineness_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -1361,7 +1361,7 @@ class CementPsc(models.Model):
                 continue
 
             if result.parameter.internal_id == 'a85138e1-99b3-40c5-a4aa-ffb96f2c9507':
-                result.result_char = round(self.avg_expantion_opc)
+                result.result_char = round(self.avg_expantion_opc,3)
                 result.calculated = True
                 if self.avg_expantion_opc_nabl == 'pass':
                     result.nabl_status = 'nabl'

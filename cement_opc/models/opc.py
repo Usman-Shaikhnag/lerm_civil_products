@@ -1336,7 +1336,7 @@ class CementNormalConsistency(models.Model):
 
 
             if result.parameter.internal_id == 'ed89d6b3-783f-4044-aef7-d2dd847d3cce':
-                result.result_char = round(self.fineness_dry_sieving)
+                result.result_char = round(self.fineness_dry_sieving,2)
                 result.calculated = True
                 if self.dry_seiving_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -1346,7 +1346,7 @@ class CementNormalConsistency(models.Model):
 
 
             if result.parameter.internal_id == 'ca17d450-c526-4092-a3a7-6b0ff7e69c0a':
-                result.result_char = round(self.fineness_air_permeability)
+                result.result_char = round(self.fineness_air_permeability,2)
                 result.calculated = True
                 if self.fineness_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -1355,7 +1355,7 @@ class CementNormalConsistency(models.Model):
                 continue
 
             if result.parameter.internal_id == 'fh2234553c-5e9c-4335-9ea2-2d87624c23048':
-                result.result_char = round(self.avg_expantion_opc)
+                result.result_char = round(self.avg_expantion_opc,3)
                 result.calculated = True
                 if self.avg_expantion_opc_nabl == 'pass':
                     result.nabl_status = 'nabl'
