@@ -6,13 +6,13 @@ import math
 
 
 
-class BitumenConcrete(models.Model):
-    _name = "mechanical.bitumen.concrete"
+class DenseBituminousMacadam(models.Model):
+    _name = "mechanical.dense.bituminous.macadam"
     _inherit = "lerm.eln"
     _rec_name = "name_bitumen1"
 
 
-    name_bitumen1 = fields.Char("Name",default="Bituminous Concrete")
+    name_bitumen1 = fields.Char("Name",default="Dense Bituminous Macadam")
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
@@ -69,7 +69,7 @@ class BitumenConcrete(models.Model):
         rec.sieve_nabl = 'pass' if rec.report_type == 'nabl' else 'fail'
 
 
-    sieve_analysis_child_lines = fields.One2many('mechanical.bitumen.concrete..sieve.line','parent_id',string="Parameter")
+    sieve_analysis_child_lines = fields.One2many('mechanical.dense.bituminous.macadam..sieve.line','parent_id',string="Parameter")
     total_sieve_analysis = fields.Float(string="Total",compute="_compute_total_sieve")
 
 
@@ -110,35 +110,35 @@ class BitumenConcrete(models.Model):
         # Grade wise limits
         specific_limits_mapping = {
             'grade 1': [
-                '-',
-                '-',
                 '100',
-                '90-100',
-                '59-79',
-                '52-72',
-                '35-55',
-                '28-44',
-                '20-34',
-                '15-27',
-                '10-20',
-                '5-13',
+                '95-100',
+                '63-93',
+                '-',
+                '55-75',
+                '-',
+                '38-54',
+                '28-42',
+                '-',
+                '-',
+                '7-21',
+                '-',
                 '2-8',
                 '',
             ],
             'grade 2': [
                 '-',
-                '-',
-                '-',
                 '100',
                 '90-100',
-                '70-88',
-                '53-71',
-                '42-58',
-                '34-48',
-                '26-38',
-                '18-28',
-                '12-20',
-                '4-10',
+                '71-95',
+                '56-80',
+                '-',
+                '38-54',
+                '28-42',
+                '-',
+                '-',
+                '7-21',
+                '-',
+                '2-8',
                 '',
             ],
         }
@@ -165,37 +165,38 @@ class BitumenConcrete(models.Model):
 
         specific_limits_mapping = {
             'grade 1': [
-                '-',
-                '-',
                 '100',
-                '90-100',
-                '59-79',
-                '52-72',
-                '35-55',
-                '28-44',
-                '20-34',
-                '15-27',
-                '10-20',
-                '5-13',
+                '95-100',
+                '63-93',
+                '-',
+                '55-75',
+                '-',
+                '38-54',
+                '28-42',
+                '-',
+                '-',
+                '7-21',
+                '-',
                 '2-8',
                 '',
             ],
             'grade 2': [
                 '-',
-                '-',
-                '-',
                 '100',
                 '90-100',
-                '70-88',
-                '53-71',
-                '42-58',
-                '34-48',
-                '26-38',
-                '18-28',
-                '12-20',
-                '4-10',
+                '71-95',
+                '56-80',
+                '-',
+                '38-54',
+                '28-42',
+                '-',
+                '-',
+                '7-21',
+                '-',
+                '2-8',
                 '',
             ],
+        
         }
 
         limits = specific_limits_mapping.get(grade, [])
@@ -220,7 +221,7 @@ class BitumenConcrete(models.Model):
                         line.write({'cumulative_retained': round(line.percent_retained + line.percent_retained,2),
                                     'passing_percent': round(100 -line.percent_retained - line.percent_retained,2),})
                 else:
-                    previous_line_record = self.env['mechanical.bitumen.concrete..sieve.line'].sudo().search([("serial_no", "=", previous_line),("parent_id","=",self.id)]).cumulative_retained
+                    previous_line_record = self.env['mechanical.dense.bituminous.macadam..sieve.line'].sudo().search([("serial_no", "=", previous_line),("parent_id","=",self.id)]).cumulative_retained
                     line.write({'cumulative_retained': previous_line_record + line.percent_retained,
                                 'passing_percent': round(100-(previous_line_record + line.percent_retained),2),})
                     
@@ -272,7 +273,7 @@ class BitumenConcrete(models.Model):
             for sample in record.sample_parameters:
                 print("Internal Ids",sample.internal_id)
                
-                if sample.internal_id == "234587hjy-7188-4086-b132-62b50e63f1247ui":
+                if sample.internal_id == "bbf02220-dfcc-4dba-8019-1efe701f4a53":
                     record.sieve_visible = True
 
                 
@@ -301,7 +302,7 @@ class BitumenConcrete(models.Model):
 
         for result in technician_results:
 
-            if result.parameter.internal_id == '234587hjy-7188-4086-b132-62b50e63f1247ui':
+            if result.parameter.internal_id == 'bbf02220-dfcc-4dba-8019-1efe701f4a53':
                 result.calculated = True
           
         return {
@@ -317,7 +318,7 @@ class BitumenConcrete(models.Model):
     @api.model
     def create(self, vals):
         # import wdb;wdb.set_trace()
-        record = super(BitumenConcrete, self).create(vals)
+        record = super(DenseBituminousMacadam, self).create(vals)
         # record.get_all_fields()
         record.eln_ref.write({'model_id':record.id})
         return record
@@ -356,7 +357,7 @@ class BitumenConcrete(models.Model):
 
 
     def get_all_fields(self):
-        record = self.env['mechanical.bitumen.concrete'].browse(self.ids[0])
+        record = self.env['mechanical.dense.bituminous.macadam'].browse(self.ids[0])
         field_values = {}
         for field_name, field in record._fields.items():
             field_value = record[field_name]
@@ -370,7 +371,7 @@ class BitumenConcrete(models.Model):
             self.grade = self.eln_ref.grade_id.id
 
 
-    notes_id = fields.One2many('mechanical.bitumen.concrete.notes', 'parent_id', string="Notes", default=lambda self: self._default_notes_lines())
+    notes_id = fields.One2many('mechanical.dense.bituminous.macadam.notes', 'parent_id', string="Notes", default=lambda self: self._default_notes_lines())
 
     @api.model
     def _default_notes_lines(self):
@@ -387,9 +388,9 @@ class BitumenConcrete(models.Model):
 
 
 
-class BitumenConcreteSieveAnalysisLine(models.Model):
-    _name = "mechanical.bitumen.concrete..sieve.line"
-    parent_id = fields.Many2one('mechanical.bitumen.concrete', string="Parent Id")
+class DenseBituminousMacadamSieveAnalysisLine(models.Model):
+    _name = "mechanical.dense.bituminous.macadam..sieve.line"
+    parent_id = fields.Many2one('mechanical.dense.bituminous.macadam', string="Parent Id")
     
     serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
 
@@ -414,7 +415,7 @@ class BitumenConcreteSieveAnalysisLine(models.Model):
                 max_serial_no = max(existing_records.mapped('serial_no'))
                 vals['serial_no'] = max_serial_no + 1
 
-        return super(BitumenConcreteSieveAnalysisLine, self).create(vals)
+        return super(DenseBituminousMacadamSieveAnalysisLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines
@@ -429,18 +430,18 @@ class BitumenConcreteSieveAnalysisLine(models.Model):
                 if record.parent_id and record.parent_id == vals.get('parent_id') and 'wt_retained' in vals:
                     record.percent_retained = vals['wt_retained'] / record.parent_id.total * 100 if record.parent_id.total else 0
 
-            new_self = super(BitumenConcreteSieveAnalysisLine, self).write(vals)
+            new_self = super(DenseBituminousMacadamSieveAnalysisLine, self).write(vals)
             if 'wt_retained' in vals:
                 for record in self:
                     # record.parent_id._compute_total()
                     pass
             return new_self
-        return super(BitumenConcreteSieveAnalysisLine, self).write(vals)
+        return super(DenseBituminousMacadamSieveAnalysisLine, self).write(vals)
 
     def unlink(self):
         # Get the parent_id before the deletion
         parent_id = self[0].parent_id
-        res = super(BitumenConcreteSieveAnalysisLine, self).unlink()
+        res = super(DenseBituminousMacadamSieveAnalysisLine, self).unlink()
         if parent_id:
             parent_id.sieve_analysis_child_lines._reorder_serial_numbers()
         return res
@@ -476,9 +477,9 @@ class BitumenConcreteSieveAnalysisLine(models.Model):
 
 
 
-class BitumenConcreteNotes(models.Model):
-    _name = "mechanical.bitumen.concrete.notes"
+class DenseBituminousMacadamNotes(models.Model):
+    _name = "mechanical.dense.bituminous.macadam.notes"
 
-    parent_id = fields.Many2one('mechanical.bitumen.concrete', string="Parent Id")
+    parent_id = fields.Many2one('mechanical.dense.bituminous.macadam', string="Parent Id")
     sr_no = fields.Char("Sr. No.")
     notes = fields.Char("Notes")
