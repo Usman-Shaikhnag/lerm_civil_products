@@ -35,6 +35,7 @@
     # 'views/ftp_upload_wizard_views.xml',
     # 'views/ftp_upload_wizard_views.xml',
     # 'views/mechanical/sieve_analysis.xml',
+    'reports/paper_format.xml',
     'reports/eln_report_action.xml',
     'reports/eln_report_template.xml',
     'reports/general_report_template.xml',
