@@ -581,7 +581,7 @@ class SrfForm(models.Model):
             full_part = srf_parts[1]
 
             date_part = full_part[:6]
-            first_number = int(full_part[-3:])
+            first_number = int(full_part[-4:])
 
             total_samples = sum(rec.sample_range_table.mapped('sample_qty'))
             last_number = first_number + total_samples - 1
