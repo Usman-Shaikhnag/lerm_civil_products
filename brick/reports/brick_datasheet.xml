@@ -94,7 +94,7 @@
 							</tr>
 						</table>
 
-						<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')], limit=1).technician"/>
+						<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].sudo().search([('eln_id','=', eln.id), ('parameter.internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')], limit=1).technician"/>
 						<div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -205,7 +205,7 @@
 							</tr>
 						</table>
 
-						<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')], limit=1).technician"/>
+						<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].sudo().search([('eln_id','=', eln.id), ('parameter.internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')], limit=1).technician"/>
 						<div class="signatureContainer girdgird">
 							<div>
 								<div>

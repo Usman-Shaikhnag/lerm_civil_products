@@ -234,7 +234,7 @@
                                 </tbody>
                             </table>
 					<div class="authorizeRowDataSheet">
-						<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','301hjtre-17c1-48ac-8462-9671e4d3d09f')], limit=1).technician"/>
+						<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].sudo().search([('eln_id','=', eln.id), ('parameter.internal_id','=','301hjtre-17c1-48ac-8462-9671e4d3d09f')], limit=1).technician"/>
 						<div>
 							<div>
 									<b>
@@ -374,7 +374,7 @@
 								</td>
 							</tr>
 						</table>
-						<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','0124ytrg-eba3-4f15-b33d-679b39f73301')], limit=1).technician"/>
+						<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].sudo().search([('eln_id','=', eln.id), ('parameter.internal_id','=','0124ytrg-eba3-4f15-b33d-679b39f73301')], limit=1).technician"/>
 						<div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -505,7 +505,7 @@
 								
 							</table>
 
-							<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].search([('eln_id','=', eln.id), ('parameter.internal_id','=','1234jht-0268-46ef-ba88-9c0453210lkit1')], limit=1).technician"/>
+							<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].sudo().search([('eln_id','=', eln.id), ('parameter.internal_id','=','1234jht-0268-46ef-ba88-9c0453210lkit1')], limit=1).technician"/>
 							<div class="signatureContainer girdgird">
 							<div>
 								<div>
