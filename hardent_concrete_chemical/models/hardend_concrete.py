@@ -495,7 +495,7 @@ class ChemicalHasdenedConcrete(models.Model):
     chloride_reading1 = fields.Float("volume of 0.02N ammonium thiocynate  consumed")
     diff = fields.Float("Diff",compute="_compute_diff",digits=(12,1))
     chloride_calculation = fields.Float("Calculation",compute="_compute_chloride_calculation",digits=(12, 3))
-    chloride_acide = fields.Float("Acid soluble chloride as Cl Kg/m3",compute="_compute_chloride_acide",digits=(12, 2))
+    chloride_acide = fields.Float("Acid soluble chloride as Cl Kg/m3",compute="_compute_chloride_acide",digits=(12, 3))
     # normality_of_ammonia = fields.Float("Normality of ammonia thiocynate (0.1)",digits=(16, 4))
     # chloride_percent = fields.Float("Chloride %",compute="_compute_chloride_percent",digits=(16, 4))
 
@@ -589,17 +589,11 @@ class ChemicalHasdenedConcrete(models.Model):
     def _compute_chloride_p2(self):
         for rec in self:
             if rec.chloride_reading2 and rec.chloride_normality2:
-                rec.chloride_p2 = (rec.chloride_reading2 * rec.chloride_normality2) / 0.2
+                rec.chloride_p2 = (rec.chloride_reading2 * rec.chloride_normality2) / 0.1
             else:
                 rec.chloride_p2 = 0.0
     
-    # @api.depends('chloride_p', 'chloride_cube')
-    # def _compute_chloride_percent(self):
-    #     for record in self:
-    #         if record.chloride_cube != 0:
-    #             record.chloride_percent = (record.chloride_p / 100) * record.chloride_cube
-    #         else:
-    #             record.chloride_percent = 0.0 
+   
 
     @api.depends('chloride_valume2', 'chloride_p2')
     def _compute_chloride_percent2(self):
