@@ -494,7 +494,7 @@ class ChemicalHasdenedConcrete(models.Model):
     chloride_valume1 = fields.Float("volume of 0.02N silver nitrate added")
     chloride_reading1 = fields.Float("volume of 0.02N ammonium thiocynate  consumed")
     diff = fields.Float("Diff",compute="_compute_diff",digits=(12,1))
-    chloride_calculation = fields.Float("Calculation",compute="_compute_chloride_calculation",digits=(12, 3))
+    chloride_calculation = fields.Float("Calculation",compute="_compute_chloride_calculation",digits=(12, 4))
     chloride_acide = fields.Float("Acid soluble chloride as Cl Kg/m3",compute="_compute_chloride_acide",digits=(12, 3))
     # normality_of_ammonia = fields.Float("Normality of ammonia thiocynate (0.1)",digits=(16, 4))
     # chloride_percent = fields.Float("Chloride %",compute="_compute_chloride_percent",digits=(16, 4))
