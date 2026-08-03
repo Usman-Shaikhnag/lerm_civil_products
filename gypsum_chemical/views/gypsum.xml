@@ -75,47 +75,22 @@
                  
                     <group/>
 
-                    <div style="display:flex;" invisible="not so3_visible">
-                    <div style="width:33%;" invisible="not so3_visible">
+                    <div style="width:50%;" invisible="not so3_visible">
                      <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:98%;">
                         <tbody>
                           <tr>
                             <td><label for="wt_of_sample_so3">A. Wt of Sample (gm)</label></td>
                             <td> <field name="wt_of_sample_so3"/></td>
                           </tr>
-                          </tbody>
-                      </table>
-                    </div>
-
-                    <div style=" width:35%;" invisible="not so3_visible">
-                    <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:98%;">
-                        <tbody>
-                          <tr>
+                           <tr>
                             <td><label for="wt_cr_so3">B. Wt of crucible +Residue after ignition (gm)</label></td>
                             <td><field name="wt_cr_so3"/></td>
                           </tr>
-                          </tbody>
-                      </table>
-                    </div>
-
-                    <div style="width:33%;" invisible="not so3_visible">
-                    <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:100%;">
-                        <tbody>
-                          <tr>
+                           <tr>
                             <td><label for="wt_empty_co3">C. Wt of empty crucible (gm)</label></td>
                             <td><field name="wt_empty_co3"/></td>
                           </tr>
-                          </tbody>
-                      </table>
-                    </div>
-                    </div>
-
-
-                    <div style="display:flex;" invisible="not so3_visible">
-                    <div style="width:50%;" invisible="not so3_visible">
-                    <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:98%;">
-                        <tbody>
-                         <tr>
+                          <tr>
                             <td><label for="difference_co3">D. Diff. in weight(gm)=( B - C )</label></td>
                             <td><field name="difference_co3"/></td>
                           </tr>
@@ -123,9 +98,14 @@
                             <td><label for="so3">SO3 % = D x 34.30 / A</label></td>
                             <td><field name="so3"/></td>
                           </tr>
-                        </tbody>
+                          </tbody>
                       </table>
                     </div>
+
+                 
+
+
+                    
                     <div style="width:50%" invisible="not so3_visible">
                           <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                           <tbody>
@@ -138,12 +118,14 @@
                            </tr>
                            <tr>
                             <td><label for="so3_nabl">NABL</label></td>
-                            <td><field name='so3_nabl'/></td>
+                             <td><field name='so3_nabl'
+                               decoration-success="so3_nabl == 'pass'" 
+                               decoration-danger="so3_nabl == 'fail'" 
+                               readonly="1"/></td>
                            </tr>
                            </tbody>                     
                           </table>
                       </div> 
-                      </div>
                     <group/>
 
 
@@ -216,18 +198,7 @@
                             <td style="border: 1px solid black; padding: 8px;font-weight: bold;"><span>D. (Wt of empty weighing bottle + Sample) after ignition, (gm)</span></td>
                             <td style="border: 1px solid black; padding: 5px;"><field name="wt_of_sample_loi"/></td>
                           </tr>
-                          
-                       
-                        </tbody>
-                      </table>
-                    </div>
-
-                    
-                    <div style="width:50%;" invisible="not loi_visible">
-                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                        <tbody>
-                       
-                          <tr>
+                             <tr>
                             <td><label for="loi_in_wt">E. Diff. in weight = (B - D), gm</label></td>
                             <td><field name="loi_in_wt"/></td>
                           </tr>
@@ -235,9 +206,14 @@
                             <td><label for="loi">LOI % = E x 100 / C</label></td>
                             <td><field name="loi"/></td>
                           </tr>
+                          
+                       
                         </tbody>
                       </table>
                     </div>
+
+                    
+                   
                     </div>
                     <group/>
 
@@ -253,7 +229,10 @@
                            </tr>
                            <tr>
                             <td><label for="loss_nabl">NABL</label></td>
-                            <td><field name='loss_nabl'/></td>
+                             <td><field name='loss_nabl'
+                               decoration-success="loss_nabl == 'pass'" 
+                               decoration-danger="loss_nabl == 'fail'" 
+                               readonly="1"/></td>
                            </tr>
                            </tbody>                     
                           </table>
@@ -319,13 +298,7 @@
                             <td><label for="burette_cao1">B. Burrette reading (ml)</label></td>
                             <td><field name="burette_cao1"/></td>
                           </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                    <div style="width:50%;" invisible="not cao_visible">
-                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                        <tbody>
-                          <tr>
+                           <tr>
                             <td><label for="normality_cao1">C. Normality of 0.1N KMnO₄</label></td>
                             <td><field name="normality_cao1"/></td>
                           </tr>
@@ -336,6 +309,7 @@
                         </tbody>
                       </table>
                     </div>
+                   
                     </div>
 
                     <div invisible="not cao_visible">
@@ -350,7 +324,10 @@
                            </tr>
                            <tr>
                             <td><label for="cao1_nabl">NABL</label></td>
-                            <td><field name='cao1_nabl'/></td>
+                             <td><field name='cao1_nabl'
+                               decoration-success="cao1_nabl == 'pass'" 
+                               decoration-danger="cao1_nabl == 'fail'" 
+                               readonly="1"/></td>
                            </tr>
                            </tbody>
                           </table>
@@ -418,13 +395,7 @@
                             <td><label for="normality_mgo1">C. Wt of empty Cruible (gm)</label></td>
                             <td><field name="normality_mgo1"/></td>
                           </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                    <div style="width:50%;" invisible="not mgo_visible">
-                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                        <tbody>
-                          <tr>
+                            <tr>
                             <td><label for="dilution_mgo1">D. Diff. in weight (gm)</label></td>
                             <td><field name="dilution_mgo1"/></td>
                           </tr>
@@ -439,6 +410,7 @@
                         </tbody>
                       </table>
                     </div>
+                  
                     </div>
                     <group/>
 
@@ -454,7 +426,10 @@
                            </tr>
                            <tr>
                             <td ><label for="mgo_nabl1">NABL</label></td>
-                            <td><field name='mgo_nabl1'/></td>
+                             <td><field name='mgo_nabl1'
+                               decoration-success="mgo_nabl1 == 'pass'" 
+                               decoration-danger="mgo_nabl1 == 'fail'" 
+                               readonly="1"/></td>
                            </tr>
                            </tbody>
                           </table>
@@ -544,7 +519,10 @@
                            </tr>
                            <tr>
                             <td><label for="cao_nabl2">NABL</label></td>
-                            <td><field name='cao_nabl2'/></td>
+                             <td><field name='cao_nabl2'
+                               decoration-success="cao_nabl2 == 'pass'" 
+                               decoration-danger="cao_nabl2 == 'fail'" 
+                               readonly="1"/></td>
                            </tr>
                           </tbody>                     
                           </table>
@@ -638,7 +616,10 @@
                            </tr>
                            <tr>
                             <td><label for="mgo_nabl2">NABL</label></td>
-                            <td><field name='mgo_nabl2'/></td>
+                             <td><field name='mgo_nabl2'
+                               decoration-success="mgo_nabl2 == 'pass'" 
+                               decoration-danger="mgo_nabl2 == 'fail'" 
+                               readonly="1"/></td>
                            </tr>
                            </tbody>
                           </table>
@@ -702,14 +683,7 @@
                             <td><label for="free_lime_br">B. Burette reading (ml)</label></td>
                             <td><field name="free_lime_br"/></td>
                           </tr>
-                        </tbody>
-                      </table>
-                    </div>
-
-                    <div style="width:50%;" invisible="not free_lime_visible">
-                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                        <tbody>
-                          <tr>
+                           <tr>
                             <td><label for="free_lime_nor">C. Normality of 0.5N HCL</label></td>
                             <td><field name="free_lime_nor"/></td>
                           </tr>
@@ -720,6 +694,8 @@
                         </tbody>
                       </table>
                     </div>
+
+                 
                     </div>
                     <group/>
 
@@ -735,7 +711,10 @@
                            </tr>
                            <tr>
                             <td><label for="free_lime_nabl">NABL</label></td>
-                            <td><field name='free_lime_nabl'/></td>
+                            <td><field name='free_lime_nabl'
+                               decoration-success="free_lime_nabl == 'pass'" 
+                               decoration-danger="free_lime_nabl == 'fail'" 
+                               readonly="1"/></td>
                            </tr>
                            </tbody>                     
                           </table>
@@ -802,14 +781,7 @@
                             <td><label for="soluble_sodium_re">B. Reading</label></td>
                             <td> <field name="soluble_sodium_re"/></td>
                           </tr>
-                        </tbody>
-                      </table>
-                    </div>
-
-                    <div style="width:50%;" invisible="not soluble_sodium_visible">
-                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                        <tbody>
-                          <tr>
+                           <tr>
                             <td><label for="soluble_sodium_fa">C. Factor</label></td>
                             <td><field name="soluble_sodium_fa"/></td>
                           </tr>
@@ -820,6 +792,8 @@
                         </tbody>
                       </table>
                     </div>
+
+                 
                     </div>
 
                     <div invisible="not soluble_sodium_visible">
@@ -834,7 +808,10 @@
                            </tr>
                            <tr>
                             <td><label for="soluble_sodium_nabl">NABL</label></td>
-                            <td><field name='soluble_sodium_nabl'/></td>
+                            <td><field name='soluble_sodium_nabl'
+                               decoration-success="soluble_sodium_nabl == 'pass'" 
+                               decoration-danger="soluble_sodium_nabl == 'fail'" 
+                               readonly="1"/></td>
                            </tr>
                            </tbody>
                           </table>
@@ -885,8 +862,6 @@
                     </div>
                     <group/>
 
-                    <group/>
-                    <div style="display:flex;" invisible="not free_water_visible">
                     <div style="width:50%;" invisible="not free_water_visible">
                      <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:98%;">
                         <tbody>
@@ -902,14 +877,7 @@
                             <td><label for="wt_cs_water">C. Wt.of sample (B-A) ( gm )</label></td>
                             <td><field name="wt_cs_water"/></td>
                           </tr>
-                        </tbody>
-                      </table>
-                    </div>
-
-                    <div style="width:50%;" invisible="not free_water_visible">
-                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                        <tbody>
-                          <tr>
+                           <tr>
                             <td><label for="wt_of_sample_water">D. (Wt of empty weighing bottle + Sample) after ignition, (gm)</label></td>
                             <td><field name="wt_of_sample_water"/></td>
                           </tr>
@@ -924,7 +892,8 @@
                         </tbody>
                       </table>
                     </div>
-                    </div>
+
+              
 
                     <div invisible="not free_water_visible">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
@@ -938,7 +907,11 @@
                            </tr>
                            <tr>
                             <td><label for="free_water_nabl">NABL</label></td>
-                            <td><field name='free_water_nabl'/></td>
+                          
+                            <td><field name='free_water_nabl'
+                               decoration-success="free_water_nabl == 'pass'" 
+                               decoration-danger="free_water_nabl == 'fail'" 
+                               readonly="1"/></td>
                            </tr>
                            </tbody>                     
                           </table>
@@ -1032,7 +1005,10 @@
                            </tr>
                            <tr>
                             <td><label for="free_water_nabl">NABL</label></td>
-                            <td><field name='free_water_nabl'/></td>
+                            <td><field name='free_water_nabl'
+                               decoration-success="free_water_nabl == 'pass'" 
+                               decoration-danger="free_water_nabl == 'fail'" 
+                               readonly="1"/></td>
                            </tr>
                            </tbody>                     
                           </table>
@@ -1128,7 +1104,10 @@
                            </tr>
                            <tr>
                             <td><label for="calcium_oxide_nabl2">NABL</label></td>
-                            <td><field name='calcium_oxide_nabl2'/></td>
+                            <td><field name='calcium_oxide_nabl2'
+                               decoration-success="calcium_oxide_nabl2 == 'pass'" 
+                               decoration-danger="calcium_oxide_nabl2 == 'fail'" 
+                               readonly="1"/></td>
                            </tr>
                            </tbody>                     
                           </table>
