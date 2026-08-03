@@ -72,7 +72,7 @@ class LermSampleForm(models.Model):
     alias = fields.Char(string="Alias")
     product_alias = fields.Many2one('product.product',string="Product Alias")
     parameters = fields.Many2many('lerm.parameter.master',string="Parameter")
-    kes_no = fields.Char("UID",required=True,readonly=True, default=lambda self: 'New' ,tracking=True)
+    kes_no = fields.Char("UID",required=True, default=lambda self: 'New' ,tracking=True)
     casting_date = fields.Date(string="Casting Date")
     client_sample_id = fields.Char(string='Client Sample ID')
     
