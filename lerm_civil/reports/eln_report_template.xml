@@ -109,13 +109,21 @@
 					</div>
 
 					<div>
-						<img t-att-src="'data:image/png;base64,%s' % (qrcode_static or '')" style="width:75px; height:70px;"/>
+						<!-- <img t-att-src="'data:image/png;base64,%s' % (qrcode_static or '')" style="width:75px; height:70px;"/> -->
+
+						<t t-if="qrcode_static">
+							<img t-att-src="'data:image/png;base64,%s' % qrcode_static"
+								style="width:65px; height:60px; display:block; margin:auto;"/>
+						</t>
 					</div>
 				</div>
 				<!-- <div style="border-top: 1px solid black; margin: 10px 0;"></div> -->
+
 				<div style="width: 100%;">
 					<img t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.footer_image.decode('utf-8')" style="width: 100%; height: auto;" />
 				</div>
+
+				
             <!-- </div>	 -->
         </div>
 	</template>
