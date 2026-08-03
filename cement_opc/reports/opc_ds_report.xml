@@ -4,7 +4,7 @@
 <template id="opc_cement_datasheet">
 		<t t-call="web.html_container">
 			<!-- <t t-call="web.basic_layout"> -->
-			 <t t-call="lerm_civil.data_sheet_header_generaltemplate">
+			 <t t-call="lerm_civil.mechanical_data_sheet_header">
                 <div style="text-align:center;font-size:18px">
                     Cement
                 </div>
@@ -2507,6 +2507,64 @@
 									</span>
 									
 								</td>
+								<tr t-if="cement.opc_soundness_visible and (cement.avg_expantion_opc_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln">
+								<td>
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+									
+								</td>
+								<td>
+									<span>
+										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','a85138e1-99b3-40c5-a4aa-ffb96f2c9507')]).parameter_name"/>
+									</span>
+									
+								</td>
+								
+								
+								<td>
+									<span>
+										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','a85138e1-99b3-40c5-a4aa-ffb96f2c9507')]).unit.name"/>
+									</span>
+								</td>
+								<td>
+									<span>
+										<span t-field="cement.avg_expantion_opc"/>
+									</span>									
+								</td>
+								<td>
+									<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','a85138e1-99b3-40c5-a4aa-ffb96f2c9507')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.permissable_limit"/>
+                                        </t>
+									</t>
+									</span>
+								</td>
+								<td>
+									<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','a85138e1-99b3-40c5-a4aa-ffb96f2c9507')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+                                                <span t-field="parameter.specification"/>
+                                        </t>
+									</t>
+									</span>
+								</td>
+								<td t-if="eln.conformity">
+									<span>
+										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','a85138e1-99b3-40c5-a4aa-ffb96f2c9507')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
+													<span>--</span>
+												</t>
+												<t t-else="">
+													<span t-attf-style="color: #{'green' if cement.avg_expantion_opc_conformity and cement.avg_expantion_opc_conformity.lower() == 'pass' else ('red' if cement.avg_expantion_opc_conformity and cement.avg_expantion_opc_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+														t-esc="cement.avg_expantion_opc_conformity"/>
+												</t>
+											</t>
+										</t>
+									</span>
+								</td>
+							</tr>
 							</tr>
 
 						<t t-if="i &lt;= 4">
@@ -3168,123 +3226,7 @@
 									</span>
 									</td>
 								</tr>
-								<tr t-if="cement.opc_soundness_visible and cement.avg_expantion_opc_nabl == 'pass' and nabl and not fromEln">
-								<td>
-									<span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/>
-									
-								</td>
-								<td>
-									
-									<span>
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','fh2234553c-5e9c-4335-9ea2-2d87624c23048')]).parameter_name"/>
-									</span>
-									
-								</td>
-								<td>
-									<span>
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','fh2234553c-5e9c-4335-9ea2-2d87624c23048')]).unit.name"/>
-									</span>
-								</td>
 								
-								<td>
-									<span>
-										<span t-field="cement.avg_expantion_opc"/>
-									</span>									
-								</td>
-								
-								<td>
-									<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','fh2234553c-5e9c-4335-9ea2-2d87624c23048')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.permissable_limit"/>
-                                        </t>
-									</t>
-									</span>
-								</td>
-								<td>
-									<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','fh2234553c-5e9c-4335-9ea2-2d87624c23048')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-									</span>
-								</td>
-								<td t-if="eln.conformity">
-									<span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','fh2234553c-5e9c-4335-9ea2-2d87624c23048')]).parameter_table" t-as="parameter">
-											<t t-if="parameter.grade.id == eln.grade_id.id">
-												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
-													<span>--</span>
-												</t>
-												<t t-else="">
-													<span t-attf-style="color: #{'green' if cement.avg_expantion_opc_conformity and cement.avg_expantion_opc_conformity.lower() == 'pass' else ('red' if cement.avg_expantion_opc_conformity and cement.avg_expantion_opc_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
-														t-esc="cement.avg_expantion_opc_conformity"/>
-												</t>
-											</t>
-										</t>
-									</span>
-								</td>
-							</tr>
-							<tr t-if="cement.opc_soundness_visible and (cement.avg_expantion_opc_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl and not fromEln">
-								<td>
-									<span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/>
-									
-								</td>
-								<td>
-									<span>
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','fh2234553c-5e9c-4335-9ea2-2d87624c23048')]).parameter_name"/>
-									</span>
-									
-								</td>
-								
-								
-								<td>
-									<span>
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','fh2234553c-5e9c-4335-9ea2-2d87624c23048')]).unit.name"/>
-									</span>
-								</td>
-								<td>
-									<span>
-										<span t-field="cement.avg_expantion_opc"/>
-									</span>									
-								</td>
-								<td>
-									<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','fh2234553c-5e9c-4335-9ea2-2d87624c23048')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.permissable_limit"/>
-                                        </t>
-									</t>
-									</span>
-								</td>
-								<td>
-									<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','fh2234553c-5e9c-4335-9ea2-2d87624c23048')]).parameter_table" t-as="parameter">
-										<t t-if="parameter.grade.id == eln.grade_id.id">
-                                                <span t-field="parameter.specification"/>
-                                        </t>
-									</t>
-									</span>
-								</td>
-								<td t-if="eln.conformity">
-									<span>
-										<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','fh2234553c-5e9c-4335-9ea2-2d87624c23048')]).parameter_table" t-as="parameter">
-											<t t-if="parameter.grade.id == eln.grade_id.id">
-												<t t-if="parameter.permissable_limit and str(parameter.permissable_limit).strip() == '--'">
-													<span>--</span>
-												</t>
-												<t t-else="">
-													<span t-attf-style="color: #{'green' if cement.avg_expantion_opc_conformity and cement.avg_expantion_opc_conformity.lower() == 'pass' else ('red' if cement.avg_expantion_opc_conformity and cement.avg_expantion_opc_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
-														t-esc="cement.avg_expantion_opc_conformity"/>
-												</t>
-											</t>
-										</t>
-									</span>
-								</td>
-							</tr>
 							</t>
 
 							</tbody>

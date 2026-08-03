@@ -6,79 +6,46 @@ import math
 class MechanicalBricks(models.Model):
     _name = "mechanical.bricks"
     _inherit = "lerm.eln"
-    _description = 'mechanical.bricks'
     _rec_name = "name"
 
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
-    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
-    name = fields.Char("Name",default="Fly Ash Bricks")
+    name = fields.Char("Name",default="Brick")
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
-
-    def prefill_data(self):
-        # import wdb; wdb.set_trace()
-        return {
-            'name': 'Prefill Data',
-            'type': 'ir.actions.act_window',
-            'res_model': 'bricks.prefill.data',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {
-                'default_product_id': self.eln_ref.sample_id.material_id.id,
-                'exclude_sample_id': self.eln_ref.sample_id.id,
-                },
-        }
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     # child_lines = fields.One2many('mechanical.water.absorption.bricks.line','parent_id',string="Parameter")
     # test_start_date = fields.Date("Test Start Date")
     # test_end_date = fields.Date("Test End Date")
-   
-    length_in_mm = fields.Float(string="Length in mm")
-    width_in_mm = fields.Float(string="Width in mm")
-    height_in_mm = fields.Float(string="Height in mm")
 
-
-    # Initial Rate Of Absorption
-
-    ini_rate_absorption_visible = fields.Boolean("Initial Rate Of Absorption",compute="_compute_visible")
-    ini_rate_absorption_name = fields.Char("Name",default="Initial Rate Of Absorption")
+    notes_id = fields.One2many('bricks.notes', 'parent_id', string="Notes",ondelete='cascade')
     
-    absorption_line_ids = fields.One2many(
-        'brick.initial.rate.absorption.line',
-        'parent_id',
-        string="IRA Test Lines"
-    )
+    @api.model
+    def default_get(self, fields):
+        res = super(MechanicalBricks, self).default_get(fields)
 
-    average_ira = fields.Float(
-        string="Average Initial Rate of Absorption (g/min/100 cm²)",
-        compute="_compute_average_ira",
-        store=True
-    )
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The Test Report(s) is/are valid only to the sample submitted to the laboratory.',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'Sample(s) was/were not drawn by laboratory.',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': '# - Information provided by the customer.',
+            }),
+        ]
 
-    @api.depends('absorption_line_ids.initial_rate_absorp')
-    def _compute_average_ira(self):
-        for rec in self:
-            if rec.absorption_line_ids:
-                total = sum(rec.absorption_line_ids.mapped('initial_rate_absorp'))
-                rec.average_ira = total / len(rec.absorption_line_ids)
-            else:
-                rec.average_ira = 0
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        res['notes_id'] = default_notes
+        return res
+   
 
         #1------------ Compressive Strength
 
@@ -104,18 +71,18 @@ class MechanicalBricks(models.Model):
     area_3 = fields.Float(string="Area (mm²)", digits=(12,4),compute="_compute_area_3")
     area_4 = fields.Float(string="Area (mm²)", digits=(12,4),compute="_compute_area_4")
     area_5 = fields.Float(string="Area (mm²)", digits=(12,4),compute="_compute_area_5")
-    load = fields.Float(string=" Load in, Kn", digits=(12,1))
-    load_2 = fields.Float(string=" Load in, Kn", digits=(12,1))
-    load_3 = fields.Float(string=" Load in, Kn", digits=(12,1))
-    load_4 = fields.Float(string=" Load in, Kn", digits=(12,1))
-    load_5 = fields.Float(string=" Load in, Kn", digits=(12,1))
+    load = fields.Float(string=" Load in, KN", digits=(12,1))
+    load_2 = fields.Float(string=" Load in, KN", digits=(12,1))
+    load_3 = fields.Float(string=" Load in, KN", digits=(12,1))
+    load_4 = fields.Float(string=" Load in, KN", digits=(12,1))
+    load_5 = fields.Float(string=" Load in, KN", digits=(12,1))
     comp_strength_1 = fields.Float(string="Compressive strength MPa",compute="_compute_comp_strength_1")
     comp_strength_2 = fields.Float(string="Compressive strength MPa",compute="_compute_comp_strength_2")
     comp_strength_3 = fields.Float(string="Compressive strength MPa",compute="_compute_comp_strength_3")
     comp_strength_4 = fields.Float(string="Compressive strength MPa",compute="_compute_comp_strength_4")
     comp_strength_5 = fields.Float(string="Compressive strength MPa",compute="_compute_comp_strength_5")
     
-    avrg_compressive_strength = fields.Float(string="Average Compressive Strength",compute="_compute_avrg_compressive_strength", digits=(16, 3))
+    avrg_compressive_strength = fields.Float(string="Average Compressive Strength",compute="_compute_avrg_compressive_strength")
 
     comp_strength_confirmity = fields.Selection([
         ('pass', 'Pass'),
@@ -123,15 +90,17 @@ class MechanicalBricks(models.Model):
     ], string='Confirmity', default='fail',compute="_compute_comp_strength_conformity")
 
     comp_strength_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')],string="NABL",compute="_compute_comp_strength_nabl",store=True)
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')],string="NABL",compute="_compute_comp_strength_nabl",store=True)
+
+
 
     @api.depends('avrg_compressive_strength','eln_ref')
     def _compute_comp_strength_conformity(self):
         for record in self:
             record.comp_strength_confirmity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b0eecb4f-9287-48c7-a607-bf1b64a8115d')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b0eecb4f-9287-48c7-a607-bf1b64a8115d')]).parameter_table
             for material in materials:
                 
                     req_min = material.req_min
@@ -151,22 +120,21 @@ class MechanicalBricks(models.Model):
         
         for record in self:
             record.comp_strength_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.avrg_compressive_strength - record.avrg_compressive_strength*mu_value
-            upper = record.avrg_compressive_strength + record.avrg_compressive_strength*mu_value
-            # import wdb;wdb.set_trace()
-            if lower >= lab_min and upper <= lab_max:
-                record.comp_strength_nabl = 'pass'
-                break
-            else:
-                record.comp_strength_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b0eecb4f-9287-48c7-a607-bf1b64a8115d')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b0eecb4f-9287-48c7-a607-bf1b64a8115d')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.avrg_compressive_strength - record.avrg_compressive_strength*mu_value
+                    upper = record.avrg_compressive_strength + record.avrg_compressive_strength*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.comp_strength_nabl = 'pass'
+                        break
+                    else:
+                        record.comp_strength_nabl = 'fail'
 
     
 
@@ -262,11 +230,11 @@ class MechanicalBricks(models.Model):
         #-2----------Efflorescence Visual Observation 
     efflorescence_visible = fields.Boolean("Efflorescence Visible",compute="_compute_visible")
     visual_observation_name_efflorescence = fields.Char("Name",default="Efflorescence")
-    visual_observation_1 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
-    visual_observation_2 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
-    visual_observation_3 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
-    visual_observation_4 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
-    visual_observation_5 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
+    visual_observation_1 = fields.Selection([('like', 'Like'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
+    visual_observation_2 = fields.Selection([('like', 'Like'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
+    visual_observation_3 = fields.Selection([('like', 'Like'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
+    visual_observation_4 = fields.Selection([('like', 'Like'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
+    visual_observation_5 = fields.Selection([('like', 'Like'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
 
 
          #-3----------  Dimension As per IS: IS : 1077 -1992 
@@ -283,22 +251,22 @@ class MechanicalBricks(models.Model):
 
     water_absorbtion_visible = fields.Boolean("Water Absorption Visible",compute="_compute_visible")
     wt_absorption_name = fields.Char("Name",default="Water Absorption")
-    initial_wt = fields.Float(string="Dry wt (W1)")
-    initial_wt_2 = fields.Float(string="Dry wt (W1)")
-    initial_wt_3 = fields.Float(string="Dry wt (W1)")
-    initial_wt_4 = fields.Float(string="Dry wt (W1)")
-    initial_wt_5 = fields.Float(string="Dry wt (W1)")
-    final_wt = fields.Float(string="Wet wt (W2)")
-    final_wt_2 = fields.Float(string="Wet wt (W2)")
-    final_wt_3 = fields.Float(string="Wet wt (W2)")
-    final_wt_4 = fields.Float(string="Wet wt (W2)")
-    final_wt_5 = fields.Float(string="Wet wt (W2)")
+    initial_wt = fields.Float(string="Initial wt after 24 hr emersion water")
+    initial_wt_2 = fields.Float(string="Initial wt after 24 hr emersion water")
+    initial_wt_3 = fields.Float(string="Initial wt after 24 hr emersion water")
+    initial_wt_4 = fields.Float(string="Initial wt after 24 hr emersion water")
+    initial_wt_5 = fields.Float(string="Initial wt after 24 hr emersion water")
+    final_wt = fields.Float(string="Final wt after 24 hr oven")
+    final_wt_2 = fields.Float(string="Final wt after 24 hr oven")
+    final_wt_3 = fields.Float(string="Final wt after 24 hr oven")
+    final_wt_4 = fields.Float(string="Final wt after 24 hr oven")
+    final_wt_5 = fields.Float(string="Final wt after 24 hr oven")
     water_absorption = fields.Float(string="Water Absorption %", compute="_compute_water_absorption")
     water_absorption_2 = fields.Float(string="Water Absorption %", compute="_compute_water_absorption_2")
     water_absorption_3 = fields.Float(string="Water Absorption %", compute="_compute_water_absorption_3")
     water_absorption_4 = fields.Float(string="Water Absorption %", compute="_compute_water_absorption_4")
     water_absorption_5 = fields.Float(string="Water Absorption %", compute="_compute_water_absorption_5")
-    avrg_water_absorption = fields.Float(string="Average Water Absorption, %", compute="_compute_avrg_water_absorption", digits=(16, 3))
+    avrg_water_absorption = fields.Float(string="Average Water Absorption, %", compute="_compute_avrg_water_absorption")
 
     water_absorption_confirmity = fields.Selection([
         ('pass', 'Pass'),
@@ -306,16 +274,16 @@ class MechanicalBricks(models.Model):
     ], string='Confirmity', default='fail',compute="_compute_water_absorption_confirmity")
 
     water_absorption_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')],string="NABL",compute="_compute_water_absorption_nabl",store=True)
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')],string="NABL",compute="_compute_water_absorption_nabl",store=True)
 
 
     @api.depends('avrg_water_absorption','eln_ref')
     def _compute_water_absorption_confirmity(self):
         for record in self:
             record.water_absorption_confirmity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','537e20c5-f3ab-4b19-af25-91a4671baf5f')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','537e20c5-f3ab-4b19-af25-91a4671baf5f')]).parameter_table
             for material in materials:
                 
                     req_min = material.req_min
@@ -335,21 +303,21 @@ class MechanicalBricks(models.Model):
         
         for record in self:
             record.water_absorption_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.avrg_water_absorption - record.avrg_water_absorption*mu_value
-            upper = record.avrg_water_absorption + record.avrg_water_absorption*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.water_absorption_nabl = 'pass'
-                break
-            else:
-                record.water_absorption_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','537e20c5-f3ab-4b19-af25-91a4671baf5f')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','537e20c5-f3ab-4b19-af25-91a4671baf5f')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.avrg_water_absorption - record.avrg_water_absorption*mu_value
+                    upper = record.avrg_water_absorption + record.avrg_water_absorption*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.water_absorption_nabl = 'pass'
+                        break
+                    else:
+                        record.water_absorption_nabl = 'fail'
 
     @api.depends('water_absorption', 'water_absorption_2', 'water_absorption_3', 'water_absorption_4', 'water_absorption_5')
     def _compute_avrg_water_absorption(self):
@@ -377,7 +345,7 @@ class MechanicalBricks(models.Model):
     def _compute_water_absorption(self):
         for record in self:
             if record.final_wt != 0:
-                record.water_absorption = (record.final_wt - record.initial_wt) / record.initial_wt * 100
+                record.water_absorption = (record.initial_wt - record.final_wt) / record.final_wt * 100
             else:
                 record.water_absorption = 0
 
@@ -385,7 +353,7 @@ class MechanicalBricks(models.Model):
     def _compute_water_absorption_2(self):
         for record in self:
             if record.final_wt_2 != 0:
-                record.water_absorption_2 = (record.final_wt_2 - record.initial_wt_2) / record.initial_wt_2 * 100
+                record.water_absorption_2 = (record.initial_wt_2 - record.final_wt_2) / record.final_wt_2 * 100
             else:
                 record.water_absorption_2 = 0
 
@@ -393,7 +361,7 @@ class MechanicalBricks(models.Model):
     def _compute_water_absorption_3(self):
         for record in self:
             if record.final_wt_3 != 0:
-                record.water_absorption_3 = (record.final_wt_3 - record.initial_wt_3) / record.initial_wt_3 * 100
+                record.water_absorption_3 = (record.initial_wt_3 - record.final_wt_3) / record.final_wt_3 * 100
             else:
                 record.water_absorption_3 = 0
 
@@ -401,7 +369,7 @@ class MechanicalBricks(models.Model):
     def _compute_water_absorption_4(self):
         for record in self:
             if record.final_wt_4 != 0:
-                record.water_absorption_4 = (record.final_wt_4 - record.initial_wt_4) / record.initial_wt_4 * 100
+                record.water_absorption_4 = (record.initial_wt_4 - record.final_wt_4) / record.final_wt_4 * 100
             else:
                 record.water_absorption_4 = 0
 
@@ -409,7 +377,7 @@ class MechanicalBricks(models.Model):
     def _compute_water_absorption_5(self):
         for record in self:
             if record.final_wt_5 != 0:
-                record.water_absorption_5 = (record.final_wt_5 - record.initial_wt_5) / record.initial_wt_5 * 100
+                record.water_absorption_5 = (record.initial_wt_5 - record.final_wt_5) / record.final_wt_5 * 100
             else:
                 record.water_absorption_5 = 0
 
@@ -428,22 +396,17 @@ class MechanicalBricks(models.Model):
             record.water_absorbtion_visible = False
             record.efflorescence_visible = False
             record.dimension_visible = False
-            record.ini_rate_absorption_visible = False
 
             for sample in record.sample_parameters:
                 print("Internal Ids",sample.internal_id)
-                if sample.internal_id == "31478fghht-9287-48c7-a607-bf1b64a8115d":
+                if sample.internal_id == "b0eecb4f-9287-48c7-a607-bf1b64a8115d":
                     record.compressive_strength_visible = True
-                if sample.internal_id == "321475gfet1-f3ab-4b19-af25-91a4671baf5f":
+                if sample.internal_id == "537e20c5-f3ab-4b19-af25-91a4671baf5f":
                     record.water_absorbtion_visible = True
-                if sample.internal_id == "3214598fgrt-d27d-4ef9-9b27-e8eb4e7ae6ac":
+                if sample.internal_id == "baa9df3c-d27d-4ef9-9b27-e8eb4e7ae6ac":
                     record.efflorescence_visible = True
-                if sample.internal_id == "125478bvf3-8d5d-4f45-8afb-b911f9cafe41":
+                if sample.internal_id == "cf278290-8d5d-4f45-8afb-b911f9cafe41":
                     record.dimension_visible = True 
-                if sample.internal_id == "bd2bda15-78fa-400d-8643-d9d2b9551bcf":
-                    record.ini_rate_absorption_visible = True 
-
-
      
     def open_eln_page(self):
         # parameter_based_assignment
@@ -454,9 +417,9 @@ class MechanicalBricks(models.Model):
         )
 
         for result in technician_results:
-            
-            # Compressive Strength 
-            if result.parameter.internal_id == '31478fghht-9287-48c7-a607-bf1b64a8115d':
+
+
+            if result.parameter.internal_id == 'b0eecb4f-9287-48c7-a607-bf1b64a8115d':
                 result.result_char = round(self.avrg_compressive_strength,2)
                 result.calculated = True
                 if self.comp_strength_nabl == 'pass':
@@ -465,30 +428,42 @@ class MechanicalBricks(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
 
-            # water absorbtion
-            if result.parameter.internal_id == '321475gfet1-f3ab-4b19-af25-91a4671baf5f':
+            if result.parameter.internal_id == '537e20c5-f3ab-4b19-af25-91a4671baf5f':
                 result.result_char = round(self.avrg_water_absorption,2)
                 result.calculated = True
                 if self.water_absorption_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
-                continue 
+                continue
 
-            # Efflorence
-            if result.parameter.internal_id == '3214598fgrt-d27d-4ef9-9b27-e8eb4e7ae6ac':
-                # result.result_char = round(self.avrg_water_absorption,2)
-                result.calculated = True
 
-            # Dimension
-            if result.parameter.internal_id == '125478bvf3-8d5d-4f45-8afb-b911f9cafe41':
-                # result.result_char = round(self.avrg_water_absorption,2)
+            if result.parameter.internal_id == 'baa9df3c-d27d-4ef9-9b27-e8eb4e7ae6ac':
+                # result.result_char = self.initial_setting_time_minutes_unrounded
                 result.calculated = True
+                # if self.initial_setting_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+
+            if result.parameter.internal_id == 'cf278290-8d5d-4f45-8afb-b911f9cafe41':
+                # result.result_char = self.final_setting_time_minutes
+                result.calculated = True
+                # if self.final_setting_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
+
+
+           
+
+
             
-            # Rate Of Absorption
-            if result.parameter.internal_id == 'bd2bda15-78fa-400d-8643-d9d2b9551bcf':
-                # result.result_char = round(self.avrg_water_absorption,2)
-                result.calculated = True
+           
+            
 
         return {
                 'view_mode': 'form',
@@ -531,42 +506,11 @@ class MechanicalBricks(models.Model):
             field_values[field_name] = field_value
 
         return field_values
-    
 
 
-class BrickInitialRateAbsorptionLine(models.Model):
-    _name = "brick.initial.rate.absorption.line"
+class BricksNotes(models.Model):
+    _name = "bricks.notes"
+
     parent_id = fields.Many2one('mechanical.bricks',string="Parent Id")
-
-    serial_no = fields.Integer(string="sample", readonly=True, copy=False, default=1)
-    iW1 = fields.Float("Weight of dry brick (g) ")
-    W2 = fields.Float("Weight of brick after 1 minute immersion (g) ")
-    W2_W1 = fields.Float("Water Absorbed (W₂–W₁) g ",compute="_compute_initial_rate_absorp",
-        store=True)
-    area = fields.Float("Area of immersed surface (cm²) ",compute="_compute_area", store=True)
-    initial_rate_absorp = fields.Float("Initial Rate of Absorption (g/min/100 cm²)",compute="_compute_initial_rate_absorp",store=True)
-
-    @api.depends('parent_id.length_in_mm', 'parent_id.width_in_mm')
-    def _compute_area(self):
-        for rec in self:
-            length = rec.parent_id.length_in_mm or 0
-            breadth = rec.parent_id.width_in_mm or 0
-            rec.area = length * breadth
-
-    @api.depends('iW1', 'W2', 'area')
-    def _compute_initial_rate_absorp(self):
-        for rec in self:
-
-            # Water absorbed
-            rec.W2_W1 = rec.W2 - rec.iW1
-
-            # Initial Rate Absorption
-            if rec.area:
-                rec.initial_rate_absorp = (rec.W2_W1 * 100) / rec.area
-            else:
-                rec.initial_rate_absorp = 0
-
-    @api.model
-    def create(self, vals):
-     vals['serial_no'] = self.search_count([]) + 1
-     return super().create(vals)
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
