@@ -287,41 +287,21 @@
                         </h1>
                     </div>
 
-                    <div invisible="app_specific_visible == False" style="text-align:center">
-                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                       <tbody>
-                         <tr>
-                           <td style="font-weight:bold"><span>Sample No</span></td>
-                           <td  style="font-weight:bold"><span>Sample 1</span></td>
-                           <td  style="font-weight:bold"><span>Sample 2</span></td>
-                           <td  style="font-weight:bold"><span>Sample 3</span></td>
-                         </tr>
-                         <tr>
-                           <td><label for="sample1_dry_weight">Dry Weight (g)</label></td>
-                           <td><field  name="sample1_dry_weight"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample2_dry_weight"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample3_dry_weight"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                         </tr>
-                         <tr>
-                           <td><label for="sample1_suspended_weight">Suspended Weight (g)</label></td>
-                           <td><field  name="sample1_suspended_weight"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample2_suspended_weight"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample3_suspended_weight"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                         </tr>
-                         <tr>
-                           <td><label for="sample11_saturated_weight">Saturated Weight (g)</label></td>
-                           <td><field  name="sample11_saturated_weight"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample22_saturated_weight"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample33_saturated_weight"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                         </tr>
-                         <tr>
-                           <td><label for="sample1_apparent_specific_gravity">Apparent Specific Gravity</label></td>
-                           <td><field  name="sample1_apparent_specific_gravity"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample2_apparent_specific_gravity"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample3_apparent_specific_gravity"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                         </tr>
-                       </tbody>
-                     </table>
+                    <div invisible = "water_absorption_visible == False" >
+                        <field name="app_specific_ids">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no' />
+
+                                <field name='stone_description' class="blue-input" decoration-info="stone_description != 0" width="100"/>
+                                <field name='oven_dry_weight' 
+                                 class="blue-input" decoration-info="oven_dry_weight != 0"/>
+                                <field name="saturated_weight" class="blue-input" decoration-info="saturated_weight != 0"/>
+                                <field name='suspended_weight' class="blue-input" decoration-info="suspended_weight != 0"/>
+
+                                <field name='apparent_specific_gravity' />
+                                <field name='remarks' class="blue-input" decoration-info="remarks != 0" width="100"/>
+                            </tree>
+                        </field>
                     </div>
 
                                     
@@ -351,6 +331,10 @@
                                         decoration-danger="avg_apparent_specific_gravity_nabl == 'fail'"
                                         readonly="1"/>
                                 </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="apparent_specific_gravity_report_type">Report Type</label></td>
+                                <td><field name="apparent_specific_gravity_report_type" class="blue-input" decoration-info="apparent_specific_gravity_report_type != 0"/></td>
                             </tr>
                         </tbody>
                     </table>

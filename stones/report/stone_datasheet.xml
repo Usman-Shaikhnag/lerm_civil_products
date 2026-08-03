@@ -399,45 +399,64 @@
 								Apparent Specific Gravity
 							</div>
 						
-								
-								<table>
-											<tr>
-												<th style="text-align: center; font-weight: bold;">Sample No</th>
-												<th style="text-align: center; font-weight: bold;">Sample 1</th>
-												<th style="text-align: center; font-weight: bold;">Sample 2</th>
-                                                <th style="text-align: center; font-weight: bold;">Sample 3</th>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;text-align: center;">Dry Weight (g)</td>
-												<td style="text-align: center;"><span t-field="data.sample1_dry_weight"/></td>
-												<td style="text-align: center;"><span t-field="data.sample2_dry_weight"/></td>
-                                                <td style="text-align: center;"><span t-field="data.sample3_dry_weight"/></td>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;text-align: center;">Suspended Weight (g)</td>
-												<td style="text-align: center;"><span t-field="data.sample1_suspended_weight"/></td>
-												<td style="text-align: center;"><span t-field="data.sample2_suspended_weight"/></td>
-                                                <td style="text-align: center;"><span t-field="data.sample3_suspended_weight"/></td>
-											</tr>
-                                            <tr>
-												<td style="font-weight: bold;text-align: center;">Saturated Weight (g)</td>
-												<td style="text-align: center;"><span t-field="data.sample11_saturated_weight"/></td>
-												<td style="text-align: center;"><span t-field="data.sample22_saturated_weight"/></td>
-                                                <td style="text-align: center;"><span t-field="data.sample33_saturated_weight"/></td>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;text-align: center;">Apparent Specific Gravity</td>
-												<td style="text-align: center;"><span t-field="data.sample1_apparent_specific_gravity" t-options='{"widget": "float", "precision": 2}'/></td>
-												<td style="text-align: center;"><span t-field="data.sample2_apparent_specific_gravity" t-options='{"widget": "float", "precision": 2}'/></td>
-                                                <td style="text-align: center;"><span t-field="data.sample3_apparent_specific_gravity" t-options='{"widget": "float", "precision": 2}'/></td>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;text-align: center;">Average Apparent Specific Gravity</td>
-												<td colspan="3" style="text-align: center;"><span t-field="data.avg_apparent_specific_gravity" t-options='{"widget": "float", "precision": 2}'/></td>
-											</tr>
-										</table>
+							<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+							<thead>
+								<tr style="background-color: #f0f0f0;">
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Sr.No</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Description of Stone</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Oven Dry Weight Wd (g)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Saturated Weight Ws (g)</th>
+                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Suspended Weight in Water Ww (g)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Apparent Specific Gravity</th>
+                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Remarks</th>
+								</tr>		
 
-							<div t-if="data.water_absorption_visible" class="signatureContainer girdgird">
+							</thead>
+							<tbody>
+								<t t-set="k" t-value="0"/>
+								<tr t-foreach="data.app_specific_ids" t-as="r" style="text-align: center;">
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="k + 1" />
+										<t t-set="k" t-value="k+1"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['stone_description']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['oven_dry_weight']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['saturated_weight']" />
+									</td>
+                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['suspended_weight']" />
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['apparent_specific_gravity']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['remarks']" />
+									</td>
+									
+								</tr>
+							</tbody>
+						</table>
+
+
+						<table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;">
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Average Apparent Specific Gravity :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+									<span t-field="data.avg_apparent_specific_gravity" t-options='{"widget": "float", "precision": 3}'/>
+								</td>
+							</tr>
+						</table>
+						
+								
+								
+										
+
+							<div t-if="data.app_specific_visible" class="signatureContainer girdgird">
 							<div>
 								<div>
 									<b>
@@ -482,8 +501,6 @@
 					</div>
 									
 						</div>
-
-
                         
 
 

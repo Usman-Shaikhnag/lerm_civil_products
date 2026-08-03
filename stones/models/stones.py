@@ -403,124 +403,29 @@ class Stones(models.Model):
     app_specific_name = fields.Char("Name",default="Apparent Specific Gravity")
     app_specific_visible = fields.Boolean("Apparent Specific Gravity",compute="_compute_visible")
 
-    
-    # SAMPLE 1
-    sample1_dry_weight = fields.Float(string="Dry Weight")
-    sample1_suspended_weight = fields.Float(string="Suspended Weight")
-    sample11_saturated_weight = fields.Float(string="Saturated Weight")
 
-    sample1_apparent_specific_gravity = fields.Float(
-        string="Apparent Specific Gravity",
-        compute="_compute_apparent_specific_gravity",
-        store=True
-    )
+    app_specific_ids = fields.One2many("stone.apparent.specific.gravity.line", "parent_id", string="Test Readings")
 
-    # SAMPLE 2
-    sample2_dry_weight = fields.Float(string="Dry Weight")
-    sample2_suspended_weight = fields.Float(string="Suspended Weight")
-    sample22_saturated_weight = fields.Float(string="Saturated Weight")
 
-    sample2_apparent_specific_gravity = fields.Float(
-        string="Apparent Specific Gravity",
-        compute="_compute_apparent_specific_gravity",
-        store=True
-    )
-
-    # SAMPLE 3
-    sample3_dry_weight = fields.Float(string="Dry Weight")
-    sample3_suspended_weight = fields.Float(string="Suspended Weight")
-    sample33_saturated_weight = fields.Float(string="Saturated Weight")
-
-    sample3_apparent_specific_gravity = fields.Float(
-        string="Apparent Specific Gravity",
-        compute="_compute_apparent_specific_gravity",
-        store=True
-    )
-
-    # AVERAGE
     avg_apparent_specific_gravity = fields.Float(
-        string="Average Apparent Specific Gravity",
+        string="Average",
         compute="_compute_avg_apparent_specific_gravity",
-        store=True
+        store=True,
+        digits=(16, 2),
     )
 
-    # COMPUTE
-    @api.depends(
-        'sample1_dry_weight',
-        'sample1_suspended_weight',
-        'sample11_saturated_weight',
-
-        'sample2_dry_weight',
-        'sample2_suspended_weight',
-        'sample22_saturated_weight',
-
-        'sample3_dry_weight',
-        'sample3_suspended_weight',
-        'sample33_saturated_weight',
-    )
-    def _compute_apparent_specific_gravity(self):
-
-        def calculate(dry, suspended, saturated):
-
-            denominator = dry - (saturated - suspended)
-
-            if denominator != 0:
-                result = dry / denominator
-
-                return float(
-                    Decimal(str(result)).quantize(
-                        Decimal("0.0001"),
-                        rounding=ROUND_UP
-                    )
-                )
-
-            return 0.0
-
-        for rec in self:
-
-            rec.sample1_apparent_specific_gravity = calculate(
-                rec.sample1_dry_weight,
-                rec.sample1_suspended_weight,
-                rec.sample11_saturated_weight
-            )
-
-            rec.sample2_apparent_specific_gravity = calculate(
-                rec.sample2_dry_weight,
-                rec.sample2_suspended_weight,
-                rec.sample22_saturated_weight
-            )
-
-            rec.sample3_apparent_specific_gravity = calculate(
-                rec.sample3_dry_weight,
-                rec.sample3_suspended_weight,
-                rec.sample33_saturated_weight
-            )
-
-   
-    # AVERAGE
-    @api.depends(
-        'sample1_apparent_specific_gravity',
-        'sample2_apparent_specific_gravity',
-        'sample3_apparent_specific_gravity'
-    )
+    @api.depends("app_specific_ids.apparent_specific_gravity")
     def _compute_avg_apparent_specific_gravity(self):
-
         for rec in self:
-
-            avg = (
-                rec.sample1_apparent_specific_gravity +
-                rec.sample2_apparent_specific_gravity +
-                rec.sample3_apparent_specific_gravity
-            ) / 3
-
-            rec.avg_apparent_specific_gravity = float(
-                Decimal(str(avg)).quantize(
-                    Decimal("0.0001"),
-                    rounding=ROUND_UP
-                )
+            values = rec.app_specific_ids.mapped("apparent_specific_gravity")
+            values = [v for v in values if v]
+            rec.avg_apparent_specific_gravity = (
+                sum(values) / len(values)
+                if values else 0.0
             )
 
-
+    
+    
     avg_apparent_specific_gravity_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),
@@ -576,6 +481,34 @@ class Stones(models.Model):
                 record.avg_apparent_specific_gravity_nabl = 'fail'
 
 
+    apparent_specific_gravity_report_type = fields.Selection([
+            ('auto', 'Auto'),
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+        
+    apparent_specific_gravity_final_report = fields.Selection([
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], compute="_compute_apparent_specific_gravity_final_report", store=True)
+        
+    @api.depends('avg_apparent_specific_gravity_nabl', 'apparent_specific_gravity_report_type')
+    def _compute_apparent_specific_gravity_final_report(self):
+        for rec in self:
+        
+                # Manual override
+                if rec.apparent_specific_gravity_report_type == 'nabl':
+                    rec.apparent_specific_gravity_final_report = 'nabl'
+        
+                elif rec.apparent_specific_gravity_report_type == 'non_nabl':
+                    rec.apparent_specific_gravity_final_report = 'non_nabl'
+        
+                # Automatic
+                else:
+                    if rec.avg_apparent_specific_gravity_nabl == 'pass':
+                        rec.apparent_specific_gravity_final_report = 'nabl'
+                    else:
+                        rec.apparent_specific_gravity_final_report = 'non_nabl'
+
+
     
 
 
@@ -589,7 +522,6 @@ class Stones(models.Model):
             record.compressive_visible = False
             record.water_absorption_visible = False
             record.true_specific_visible = False
-
             record.app_specific_visible = False
 
             
@@ -606,7 +538,6 @@ class Stones(models.Model):
 
                 if sample.internal_id == "57r7896rg-41c5-4cb5-843a-e09590c77832547ewrv":
                     record.true_specific_visible = True
-
 
 
                 if sample.internal_id == "57r7896rg-41c5-4cb5-843a-e09590c7789rte143q":
@@ -930,6 +861,69 @@ class StonesTrueSpecificGravityLine(models.Model):
         for index, record in enumerate(records):
             record.serial_no = index + 1
 
+
+
+class StonesApparentSpecificGravityLine(models.Model):
+    _name = "stone.apparent.specific.gravity.line"
+    parent_id = fields.Many2one('mechanical.stones',string="Parent Id")
+
+    serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
+
+    stone_description = fields.Char("Description of Stone")
+
+    oven_dry_weight = fields.Float("Oven Dry Weight Wd (g)")
+
+    saturated_weight = fields.Float("Saturated Weight Ws (g)")
+
+    suspended_weight = fields.Float("Suspended Weight in Water Ww (g)")
+
+    apparent_specific_gravity = fields.Float(
+        string="Apparent Specific Gravity",
+        compute="_compute_specific_gravity",
+        store=True,
+        digits=(16, 2),
+    )
+
+    remarks = fields.Char("Remarks")
+
+    @api.depends(
+        "oven_dry_weight",
+        "saturated_weight",
+        "suspended_weight",
+    )
+    def _compute_specific_gravity(self):
+        for rec in self:
+            denominator = (
+                rec.saturated_weight
+                - rec.suspended_weight
+            )
+
+            if denominator:
+                rec.apparent_specific_gravity = (
+                    rec.oven_dry_weight
+                    / denominator
+                )
+            else:
+                rec.apparent_specific_gravity = 0.0
+
+   
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(StonesApparentSpecificGravityLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
 
 
 class StoneNotes(models.Model):
