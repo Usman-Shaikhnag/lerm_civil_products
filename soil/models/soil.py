@@ -74,9 +74,9 @@ class Soil(models.Model):
 
     
 
-    # Grain Sieve Analysis By Dry Sieving
-    sieve_name = fields.Char("Name",default="Grain Sieve Analysis")
-    sieve_visible = fields.Boolean("Grain Sieve Analysis Visible",compute="_compute_visible")
+    # Grain Size Analysis By Dry Sieving
+    sieve_name = fields.Char("Name",default="Grain Size Analysis")
+    sieve_visible = fields.Boolean("Grain Size Analysis Visible",compute="_compute_visible")
 
 
     report_type = fields.Selection(
@@ -916,9 +916,9 @@ class Soil(models.Model):
 
 
 
-    # Grain Sieve Analysis By Wet Sieving
-    wet_sieve_name = fields.Char("Name",default="Grain Sieve Analysis")
-    wet_sieve_visible = fields.Boolean("Grain Sieve Analysis Visible",compute="_compute_visible")
+    # Grain Size Analysis By Wet Sieving
+    wet_sieve_name = fields.Char("Name",default="Grain Size Analysis")
+    wet_sieve_visible = fields.Boolean("Grain Size Analysis Visible",compute="_compute_visible")
 
 
     wet_report_type = fields.Selection(

@@ -71,65 +71,39 @@ class Stones(models.Model):
      
     
 
-     # Compressive Strength in dry condition
+     # Compressive Strength 
 
-    compressive_dry_name = fields.Char("Name",default="Compressive Strength in dry condition  ")
-    compressive_dry_visible = fields.Boolean("Compressive Strength in dry condition   Visible",compute="_compute_visible")
+    compressive_name = fields.Char("Name",default="Compressive Strength   ")
+    compressive_visible = fields.Boolean("Compressive Strength Visible",compute="_compute_visible")
 
-    compressive_dry_ids = fields.One2many("mechanical.compressive.dry.line", "parent_id", string="Test Readings")
+    compressive_ids = fields.One2many("mechanical.compressive.dry.line", "parent_id", string="Test Readings")
 
-    
-    
-    @api.onchange('compressive_dry_ids')
-    def _onchange_limit_lines(self):
-        if len(self.compressive_dry_ids) > 5:
-            raise ValidationError("You cannot add more than 5 Test Reading lines.")
 
-    factor_a = fields.Float(string="Constant Factor A",  digits=(12, 4))
-    factor_b = fields.Float(string="Constant Factor B",  digits=(12, 4))
-
-    compressive_perpendiculer_avg = fields.Float(
-        string="Average Compressive Strength Perpendicular Dry (N/mm²)",
-        compute="_compute_average_strengths",
+    average_ucs = fields.Float(
+        string="Average UCS (MPa)",
+        compute="_compute_average_ucs",
         store=True,
-        digits=(12, 2)
     )
 
-    compressive_parallel_avg = fields.Float(
-        string="Average Compressive Strength Parallel Dry (N/mm²)",
-        compute="_compute_average_strengths",
-        store=True,
-        digits=(12, 2)
-    )
+    @api.depends("compressive_ids.ucs")
+    def _compute_average_ucs(self):
+        for rec in self:
+            ucs_values = rec.compressive_ids.mapped("ucs")
+            rec.average_ucs = sum(ucs_values) / len(ucs_values) if ucs_values else 0.0
 
-    @api.depends('compressive_dry_ids.compressive_perpendiculer1', 'compressive_dry_ids.compressive_parallel1')
-    def _compute_average_strengths(self):
-        for record in self:
-            perpend_vals = record.compressive_dry_ids.mapped('compressive_perpendiculer1')
-            parallel_vals = record.compressive_dry_ids.mapped('compressive_parallel1')
 
-            record.compressive_perpendiculer_avg = (
-                sum(perpend_vals) / len(perpend_vals)
-                if perpend_vals else 0.0
-            )
-            record.compressive_parallel_avg = (
-                sum(parallel_vals) / len(parallel_vals)
-                if parallel_vals else 0.0
-            )
-
-    compressive_perpendiculer_avg_conformity = fields.Selection([
+    average_ucs_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail'),
-    ('na', 'NA'),], string="Conformity", compute="_compute_compressive_perpendiculer_avg_conformity", store=True)
+            ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_average_ucs_conformity", store=True)
 
-    @api.depends('compressive_perpendiculer_avg','eln_ref','grade')
-    def _compute_compressive_perpendiculer_avg_conformity(self):
+    @api.depends('average_ucs','eln_ref','grade')
+    def _compute_average_ucs_conformity(self):
         
         for record in self:
             if not record.eln_ref or not record.eln_ref.conformity:
-                record.compressive_perpendiculer_avg_conformity = 'na'
+                record.average_ucs_conformity = 'na'
                 continue
-            record.compressive_perpendiculer_avg_conformity = 'fail'
+            record.average_ucs_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5478ttr5-41c5-4cb5-843a-e09590c7c5789hh')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5478ttr5-41c5-4cb5-843a-e09590c7c5789hh')]).parameter_table
             for material in materials:
@@ -138,23 +112,23 @@ class Stones(models.Model):
                     req_max = material.req_max
                     mu_value = line.mu_value
                     
-                    lower = record.compressive_perpendiculer_avg - record.compressive_perpendiculer_avg*mu_value
-                    upper = record.compressive_perpendiculer_avg + record.compressive_perpendiculer_avg*mu_value
+                    lower = record.average_ucs - record.average_ucs*mu_value
+                    upper = record.average_ucs + record.average_ucs*mu_value
                     if lower >= req_min and upper <= req_max:
-                        record.compressive_perpendiculer_avg_conformity = 'pass'
+                        record.average_ucs_conformity = 'pass'
                         break
                     else:
-                        record.compressive_perpendiculer_avg_conformity = 'fail'
+                        record.average_ucs_conformity = 'fail'
 
-    compressive_perpendiculer_avg_nabl = fields.Selection([
+    average_ucs_nabl = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_compressive_perpendiculer_avg_nabl", store=True)
+        ('fail', 'Fail')], string="NABL", compute="_compute_average_ucs_nabl", store=True)
 
-    @api.depends('compressive_perpendiculer_avg','eln_ref')
-    def _compute_compressive_perpendiculer_avg_nabl(self):
+    @api.depends('average_ucs','eln_ref','grade')
+    def _compute_average_ucs_nabl(self):
         
         for record in self:
-            record.compressive_perpendiculer_avg_nabl = 'fail'
+            record.average_ucs_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5478ttr5-41c5-4cb5-843a-e09590c7c5789hh')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5478ttr5-41c5-4cb5-843a-e09590c7c5789hh')]).parameter_table
             # for material in materials:
@@ -163,228 +137,47 @@ class Stones(models.Model):
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.compressive_perpendiculer_avg - record.compressive_perpendiculer_avg*mu_value
-            upper = record.compressive_perpendiculer_avg + record.compressive_perpendiculer_avg*mu_value
+            lower = record.average_ucs - record.average_ucs*mu_value
+            upper = record.average_ucs + record.average_ucs*mu_value
             if lower >= lab_min and upper <= lab_max:
-                record.compressive_perpendiculer_avg_nabl = 'pass'
+                record.average_ucs_nabl = 'pass'
                 break
             else:
-                record.compressive_perpendiculer_avg_nabl = 'fail'
+                record.average_ucs_nabl = 'fail'
 
 
-
-
-    compressive_parallel_avg_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),
-    ('na', 'NA'),], string="Conformity", compute="_compute_compressive_parallel_avg_conformity", store=True)
-
-    @api.depends('compressive_parallel_avg','eln_ref','grade')
-    def _compute_compressive_parallel_avg_conformity(self):
+    compressive_report_type = fields.Selection([
+            ('auto', 'Auto'),
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
         
-        for record in self:
-            if not record.eln_ref or not record.eln_ref.conformity:
-                record.compressive_parallel_avg_conformity = 'na'
-                continue
-            record.compressive_parallel_avg_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4f05fc75-0c6b-4f83-8380-621838762fb3')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4f05fc75-0c6b-4f83-8380-621838762fb3')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.compressive_parallel_avg - record.compressive_parallel_avg*mu_value
-                    upper = record.compressive_parallel_avg + record.compressive_parallel_avg*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.compressive_parallel_avg_conformity = 'pass'
-                        break
+    compressive_final_report = fields.Selection([
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], compute="_compute_compressive_final_report", store=True)
+        
+    @api.depends('average_ucs_nabl', 'compressive_report_type')
+    def _compute_compressive_final_report(self):
+        for rec in self:
+        
+                # Manual override
+                if rec.compressive_report_type == 'nabl':
+                    rec.compressive_final_report = 'nabl'
+        
+                elif rec.compressive_report_type == 'non_nabl':
+                    rec.compressive_final_report = 'non_nabl'
+        
+                # Automatic
+                else:
+                    if rec.average_ucs_nabl == 'pass':
+                        rec.compressive_final_report = 'nabl'
                     else:
-                        record.compressive_parallel_avg_conformity = 'fail'
-
-    compressive_parallel_avg_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_compressive_parallel_avg_nabl", store=True)
-
-    @api.depends('compressive_parallel_avg','eln_ref')
-    def _compute_compressive_parallel_avg_nabl(self):
-        
-        for record in self:
-            record.compressive_parallel_avg_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4f05fc75-0c6b-4f83-8380-621838762fb3')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4f05fc75-0c6b-4f83-8380-621838762fb3')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.compressive_parallel_avg - record.compressive_parallel_avg*mu_value
-            upper = record.compressive_parallel_avg + record.compressive_parallel_avg*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.compressive_parallel_avg_nabl = 'pass'
-                break
-            else:
-                record.compressive_parallel_avg_nabl = 'fail'
-
-
-    # Compressive Strength in Satuarted Condition
-    compressive_wet_name = fields.Char("Name",default=" Compressive Strength in Satuarted Condition")
-    compressive_wet_visible = fields.Boolean(" Compressive Strength in Satuarted Condition Visible",compute="_compute_visible")
-
-    compressive_wet_ids = fields.One2many("mechanical.compressive.wet.line", "parent_id", string="Test Readings")
+                        rec.compressive_final_report = 'non_nabl'
 
     
-    @api.onchange('compressive_wet_ids')
-    def _onchange_limits_lines(self):
-        if len(self.compressive_wet_ids) > 5:
-            raise ValidationError("You cannot add more than 5 Test Reading lines.")
+    
+    
 
-    wet_factor_a = fields.Float(string="Constant Factor A",  digits=(12, 4))
-    wet_factor_b = fields.Float(string="Constant Factor B",  digits=(12, 4))
-
-    compressive_perpendiculer_wet_avg = fields.Float(
-        string="Average Compressive Strength Perpendicular Wet (N/mm²)",
-        compute="_compute_average_strengths_wet",
-        store=True,
-        digits=(12, 2)
-    )
-
-    compressive_parallel_wet_avg = fields.Float(
-        string="Average Compressive Strength Parallel Wet (N/mm²)",
-        compute="_compute_average_strengths_wet",
-        store=True,
-        digits=(12, 2)
-    )
-
-    @api.depends('compressive_wet_ids.compressive_perpendiculer1', 'compressive_wet_ids.compressive_parallel1')
-    def _compute_average_strengths_wet(self):
-        for record in self:
-            perpend_vals = record.compressive_wet_ids.mapped('compressive_perpendiculer1')
-            parallel_vals = record.compressive_wet_ids.mapped('compressive_parallel1')
-
-            record.compressive_perpendiculer_wet_avg = (
-                sum(perpend_vals) / len(perpend_vals)
-                if perpend_vals else 0.0
-            )
-            record.compressive_parallel_wet_avg = (
-                sum(parallel_vals) / len(parallel_vals)
-                if parallel_vals else 0.0
-            )
-
-    compressive_perpendiculer_wet_avg_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),
-    ('na', 'NA'),], string="Conformity", compute="_compute_compressive_perpendiculer_wet_avg_conformity", store=True)
-
-    @api.depends('compressive_perpendiculer_wet_avg','eln_ref','grade')
-    def _compute_compressive_perpendiculer_wet_avg_conformity(self):
-        
-        for record in self:
-            if not record.eln_ref or not record.eln_ref.conformity:
-                record.compressive_perpendiculer_wet_avg_conformity = 'na'
-                continue
-            record.compressive_perpendiculer_wet_avg_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','547896rg-41c5-4cb5-843a-e09590c7c57878tt')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','547896rg-41c5-4cb5-843a-e09590c7c57878tt')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.compressive_perpendiculer_wet_avg - record.compressive_perpendiculer_wet_avg*mu_value
-                    upper = record.compressive_perpendiculer_wet_avg + record.compressive_perpendiculer_wet_avg*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.compressive_perpendiculer_wet_avg_conformity = 'pass'
-                        break
-                    else:
-                        record.compressive_perpendiculer_wet_avg_conformity = 'fail'
-
-    compressive_perpendiculer_wet_avg_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_compressive_perpendiculer_wet_avg_nabl", store=True)
-
-    @api.depends('compressive_perpendiculer_wet_avg','eln_ref')
-    def _compute_compressive_perpendiculer_wet_avg_nabl(self):
-        
-        for record in self:
-            record.compressive_perpendiculer_wet_avg_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','547896rg-41c5-4cb5-843a-e09590c7c57878tt')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','547896rg-41c5-4cb5-843a-e09590c7c57878tt')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.compressive_perpendiculer_wet_avg - record.compressive_perpendiculer_wet_avg*mu_value
-            upper = record.compressive_perpendiculer_wet_avg + record.compressive_perpendiculer_wet_avg*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.compressive_perpendiculer_wet_avg_nabl = 'pass'
-                break
-            else:
-                record.compressive_perpendiculer_wet_avg_nabl = 'fail'
-
-
-    compressive_parallel_wet_avg_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),
-    ('na', 'NA'),], string="Conformity", compute="_compute_compressive_parallel_wet_avg_conformity", store=True)
-
-    @api.depends('compressive_parallel_wet_avg','eln_ref','grade')
-    def _compute_compressive_parallel_wet_avg_conformity(self):
-        
-        for record in self:
-            if not record.eln_ref or not record.eln_ref.conformity:
-                record.compressive_parallel_wet_avg_conformity = 'na'
-                continue
-            record.compressive_parallel_wet_avg_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','592c1732-40d8-41da-8d57-002c86390370')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','592c1732-40d8-41da-8d57-002c86390370')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.compressive_parallel_wet_avg - record.compressive_parallel_wet_avg*mu_value
-                    upper = record.compressive_parallel_wet_avg + record.compressive_parallel_wet_avg*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.compressive_parallel_wet_avg_conformity = 'pass'
-                        break
-                    else:
-                        record.compressive_parallel_wet_avg_conformity = 'fail'
-
-    compressive_parallel_wet_avg_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_compressive_parallel_wet_avg_nabl", store=True)
-
-    @api.depends('compressive_parallel_wet_avg','eln_ref')
-    def _compute_compressive_parallel_wet_avg_nabl(self):
-        
-        for record in self:
-            record.compressive_parallel_wet_avg_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','592c1732-40d8-41da-8d57-002c86390370')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','592c1732-40d8-41da-8d57-002c86390370')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.compressive_parallel_wet_avg - record.compressive_parallel_wet_avg*mu_value
-            upper = record.compressive_parallel_wet_avg + record.compressive_parallel_wet_avg*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.compressive_parallel_wet_avg_nabl = 'pass'
-                break
-            else:
-                record.compressive_parallel_wet_avg_nabl = 'fail'
-
-
-
-
+    
 
                 
     # Water Absorption
@@ -392,135 +185,22 @@ class Stones(models.Model):
     water_absorption_name = fields.Char("Name",default="Water Absorption")
     water_absorption_visible = fields.Boolean("Water Absorption",compute="_compute_visible")
 
-    # SAMPLE 1
-    sample1_oven_weight = fields.Float(
-        string="Oven Dried Weight",
-        digits=(12, 4)
-    )
+    water_absorption_ids = fields.One2many("stone.water.absorption.line", "parent_id", string="Test Readings")
 
-    sample1_saturated_weight = fields.Float(
-        string="Saturated Surface Dry Weight",
-        digits=(12, 4)
-    )
 
-    sample1_water_absorption = fields.Float(
-        string="Water Absorption (%)",
-        digits=(12, 2),
-        compute="_compute_water_absorption",
-        store=True
-    )
-
-    # SAMPLE 2
-    sample2_oven_weight = fields.Float(
-        string="Oven Dried Weight",
-        digits=(12, 4)
-    )
-
-    sample2_saturated_weight = fields.Float(
-        string="Saturated Surface Dry Weight",
-        digits=(12, 4)
-    )
-
-    sample2_water_absorption = fields.Float(
-        string="Water Absorption (%)",
-        digits=(12, 2),
-        compute="_compute_water_absorption",
-        store=True
-    )
-
-   
-    # SAMPLE 3
-    sample3_oven_weight = fields.Float(
-        string="Oven Dried Weight",
-        digits=(12, 4)
-    )
-
-    sample3_saturated_weight = fields.Float(
-        string="Saturated Surface Dry Weight",
-        digits=(12, 4)
-    )
-
-    sample3_water_absorption = fields.Float(
-        string="Water Absorption (%)",
-        digits=(12, 2),
-        compute="_compute_water_absorption",
-        store=True
-    )
-
-   
-    # AVERAGE
     avg_water_absorption = fields.Float(
         string="Average Water Absorption (%)",
-        digits=(12, 2),
         compute="_compute_avg_water_absorption",
-        store=True
+        store=True,
     )
 
-    
-    # WATER ABSORPTION 
-    @api.depends(
-        'sample1_oven_weight',
-        'sample1_saturated_weight',
-        'sample2_oven_weight',
-        'sample2_saturated_weight',
-        'sample3_oven_weight',
-        'sample3_saturated_weight'
-    )
-    def _compute_water_absorption(self):
-
-        def calculate_absorption(oven, saturated):
-            if oven > 0:
-                result = ((saturated - oven) / oven) * 100
-
-                return float(
-                    Decimal(str(result)).quantize(
-                        Decimal("0.01"),
-                        rounding=ROUND_UP
-                    )
-                )
-            return 0.0
-
-        for rec in self:
-
-            rec.sample1_water_absorption = calculate_absorption(
-                rec.sample1_oven_weight or 0.0,
-                rec.sample1_saturated_weight or 0.0
-            )
-
-            rec.sample2_water_absorption = calculate_absorption(
-                rec.sample2_oven_weight or 0.0,
-                rec.sample2_saturated_weight or 0.0
-            )
-
-            rec.sample3_water_absorption = calculate_absorption(
-                rec.sample3_oven_weight or 0.0,
-                rec.sample3_saturated_weight or 0.0
-            )
-
-    
-    # AVERAGE COMPUTE
-    @api.depends(
-        'sample1_water_absorption',
-        'sample2_water_absorption',
-        'sample3_water_absorption'
-    )
+    @api.depends("water_absorption_ids.water_absorption")
     def _compute_avg_water_absorption(self):
-
         for rec in self:
+            values = rec.water_absorption_ids.mapped("water_absorption")
+            rec.avg_water_absorption = sum(values) / len(values) if values else 0.0
 
-            avg = (
-                (rec.sample1_water_absorption or 0.0) +
-                (rec.sample2_water_absorption or 0.0) +
-                (rec.sample3_water_absorption or 0.0)
-            ) / 3
-
-            rec.avg_water_absorption = float(
-                Decimal(str(avg)).quantize(
-                    Decimal("0.01"),
-                    rounding=ROUND_UP
-                )
-            )
-
+    
     avg_water_absorption_conformity = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail'),
@@ -574,6 +254,148 @@ class Stones(models.Model):
                 break
             else:
                 record.avg_water_absorption_nabl = 'fail'
+
+
+    water_absorption_report_type = fields.Selection([
+            ('auto', 'Auto'),
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+        
+    water_absorption_final_report = fields.Selection([
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], compute="_compute_water_absorption_final_report", store=True)
+        
+    @api.depends('avg_water_absorption_nabl', 'water_absorption_report_type')
+    def _compute_water_absorption_final_report(self):
+        for rec in self:
+        
+                # Manual override
+                if rec.water_absorption_report_type == 'nabl':
+                    rec.water_absorption_final_report = 'nabl'
+        
+                elif rec.water_absorption_report_type == 'non_nabl':
+                    rec.water_absorption_final_report = 'non_nabl'
+        
+                # Automatic
+                else:
+                    if rec.avg_water_absorption_nabl == 'pass':
+                        rec.water_absorption_final_report = 'nabl'
+                    else:
+                        rec.water_absorption_final_report = 'non_nabl'
+
+
+    # True Specific Gravity
+
+    true_specific_name = fields.Char("Name",default="True Specific Gravity")
+    true_specific_visible = fields.Boolean("True Specific Gravity",compute="_compute_visible")
+
+    true_specific_ids = fields.One2many("stone.true.specific.gravity.line", "parent_id", string="Test Readings")
+
+
+
+    avg_true_specific_gravity = fields.Float(
+        string="Average True Specific Gravity",
+        compute="_compute_average",
+        store=True,
+    )
+
+    @api.depends("true_specific_ids.true_specific_gravity")
+    def _compute_average(self):
+        for rec in self:
+            values = rec.true_specific_ids.mapped("true_specific_gravity")
+            values = [v for v in values if v]
+            rec.avg_true_specific_gravity = (
+                sum(values) / len(values)
+                if values else 0.0
+            )
+
+
+
+    avg_true_specific_gravity_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),
+    ('na', 'NA'),], string="Conformity", compute="_compute_avg_true_specific_gravity_conformity", store=True)
+
+    @api.depends('avg_true_specific_gravity','eln_ref','grade')
+    def _compute_avg_true_specific_gravity_conformity(self):
+        
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_true_specific_gravity_conformity = 'na'
+                continue
+            record.avg_true_specific_gravity_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','57r7896rg-41c5-4cb5-843a-e09590c77832547ewrv')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','57r7896rg-41c5-4cb5-843a-e09590c77832547ewrv')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_true_specific_gravity - record.avg_true_specific_gravity*mu_value
+                    upper = record.avg_true_specific_gravity + record.avg_true_specific_gravity*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.avg_true_specific_gravity_conformity = 'pass'
+                        break
+                    else:
+                        record.avg_true_specific_gravity_conformity = 'fail'
+
+    avg_true_specific_gravity_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')], string="NABL", compute="_compute_avg_true_specific_gravity_nabl", store=True)
+
+    @api.depends('avg_true_specific_gravity','eln_ref')
+    def _compute_avg_true_specific_gravity_nabl(self):
+        
+        for record in self:
+            record.avg_true_specific_gravity_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','57r7896rg-41c5-4cb5-843a-e09590c77832547ewrv')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','57r7896rg-41c5-4cb5-843a-e09590c77832547ewrv')]).parameter_table
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.avg_true_specific_gravity - record.avg_true_specific_gravity*mu_value
+            upper = record.avg_true_specific_gravity + record.avg_true_specific_gravity*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.avg_true_specific_gravity_nabl = 'pass'
+                break
+            else:
+                record.avg_true_specific_gravity_nabl = 'fail'
+
+
+    true_specific_gravity_report_type = fields.Selection([
+            ('auto', 'Auto'),
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+        
+    true_specific_gravity_final_report = fields.Selection([
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], compute="_compute_true_specific_gravity_final_report", store=True)
+        
+    @api.depends('avg_true_specific_gravity_nabl', 'true_specific_gravity_report_type')
+    def _compute_true_specific_gravity_final_report(self):
+        for rec in self:
+        
+                # Manual override
+                if rec.true_specific_gravity_report_type == 'nabl':
+                    rec.true_specific_gravity_final_report = 'nabl'
+        
+                elif rec.true_specific_gravity_report_type == 'non_nabl':
+                    rec.true_specific_gravity_final_report = 'non_nabl'
+        
+                # Automatic
+                else:
+                    if rec.avg_true_specific_gravity_nabl == 'pass':
+                        rec.true_specific_gravity_final_report = 'nabl'
+                    else:
+                        rec.true_specific_gravity_final_report = 'non_nabl'
+
+
+                
+
 
 
     # Apparent Specific Gravity
@@ -754,236 +576,7 @@ class Stones(models.Model):
                 record.avg_apparent_specific_gravity_nabl = 'fail'
 
 
-    # True Specific Gravity
-
-    true_specific_name = fields.Char("Name",default="True Specific Gravity")
-    true_specific_visible = fields.Boolean("True Specific Gravity",compute="_compute_visible")
-
-    # SAMPLE 1
-    sample1_w1 = fields.Float(
-        string="Empty Bottle Weight (W1)",
-        digits=(12, 4)
-    )
-
-    sample1_w2 = fields.Float(
-        string="Bottle + Powder Weight (W2)",
-        digits=(12, 4)
-    )
-
-    sample1_w3 = fields.Float(
-        string="Bottle + Powder + Water Weight (W3)",
-        digits=(12, 4)
-    )
-
-    sample1_w4 = fields.Float(
-        string="Bottle + Water Weight (W4)",
-        digits=(12, 4)
-    )
-
-    sample1_true_specific_gravity = fields.Float(
-        string="True Specific Gravity",
-        digits=(12, 4),
-        compute="_compute_true_specific_gravity",
-        store=True
-    )
-
-  
-    # SAMPLE 2
-    sample2_w1 = fields.Float(
-        string="Empty Bottle Weight (W1)",
-        digits=(12, 4)
-    )
-
-    sample2_w2 = fields.Float(
-        string="Bottle + Powder Weight (W2)",
-        digits=(12, 4)
-    )
-
-    sample2_w3 = fields.Float(
-        string="Bottle + Powder + Water Weight (W3)",
-        digits=(12, 4)
-    )
-
-    sample2_w4 = fields.Float(
-        string="Bottle + Water Weight (W4)",
-        digits=(12, 4)
-    )
-
-    sample2_true_specific_gravity = fields.Float(
-        string="True Specific Gravity",
-        digits=(12, 4),
-        compute="_compute_true_specific_gravity",
-        store=True
-    )
-
-    # SAMPLE 3
-    sample3_w1 = fields.Float(
-        string="Empty Bottle Weight (W1)",
-        digits=(12, 4)
-    )
-
-    sample3_w2 = fields.Float(
-        string="Bottle + Powder Weight (W2)",
-        digits=(12, 4)
-    )
-
-    sample3_w3 = fields.Float(
-        string="Bottle + Powder + Water Weight (W3)",
-        digits=(12, 4)
-    )
-
-    sample3_w4 = fields.Float(
-        string="Bottle + Water Weight (W4)",
-        digits=(12, 4)
-    )
-
-    sample3_true_specific_gravity = fields.Float(
-        string="True Specific Gravity",
-        digits=(12, 4),
-        compute="_compute_true_specific_gravity",
-        store=True
-    )
-
-    # AVERAGE
-    avg_true_specific_gravity = fields.Float(
-        string="Average True Specific Gravity",
-        digits=(12, 4),
-        compute="_compute_avg_true_specific_gravity",
-        store=True
-    )
-
-    # COMPUTE TRUE SPECIFIC GRAVITY
-    @api.depends(
-        'sample1_w1', 'sample1_w2', 'sample1_w3', 'sample1_w4',
-        'sample2_w1', 'sample2_w2', 'sample2_w3', 'sample2_w4',
-        'sample3_w1', 'sample3_w2', 'sample3_w3', 'sample3_w4'
-    )
-    def _compute_true_specific_gravity(self):
-
-        def calculate(w1, w2, w3, w4):
-
-            denominator = ((w4 - w1) - (w3 - w2))
-
-            if denominator != 0:
-
-                result = (w2 - w1) / denominator
-
-                return float(
-                    Decimal(str(result)).quantize(
-                        Decimal("0.000001"),
-                        rounding=ROUND_UP
-                    )
-                )
-
-            return 0.0
-
-        for rec in self:
-
-            # SAMPLE 1
-            rec.sample1_true_specific_gravity = calculate(
-                rec.sample1_w1,
-                rec.sample1_w2,
-                rec.sample1_w3,
-                rec.sample1_w4
-            )
-
-            # SAMPLE 2
-            rec.sample2_true_specific_gravity = calculate(
-                rec.sample2_w1,
-                rec.sample2_w2,
-                rec.sample2_w3,
-                rec.sample2_w4
-            )
-
-            # SAMPLE 3
-            rec.sample3_true_specific_gravity = calculate(
-                rec.sample3_w1,
-                rec.sample3_w2,
-                rec.sample3_w3,
-                rec.sample3_w4
-            )
-
-    # COMPUTE AVERAGE
-    @api.depends(
-        'sample1_true_specific_gravity',
-        'sample2_true_specific_gravity',
-        'sample3_true_specific_gravity'
-    )
-    def _compute_avg_true_specific_gravity(self):
-
-        for rec in self:
-
-            avg = (
-                (rec.sample1_true_specific_gravity or 0.0) +
-                (rec.sample2_true_specific_gravity or 0.0) +
-                (rec.sample3_true_specific_gravity or 0.0)
-            ) / 3
-
-            rec.avg_true_specific_gravity = float(
-                Decimal(str(avg)).quantize(
-                    Decimal("0.000001"),
-                    rounding=ROUND_UP
-                )
-            )
-
-
-    avg_true_specific_gravity_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),
-    ('na', 'NA'),], string="Conformity", compute="_compute_avg_true_specific_gravity_conformity", store=True)
-
-    @api.depends('avg_true_specific_gravity','eln_ref','grade')
-    def _compute_avg_true_specific_gravity_conformity(self):
-        
-        for record in self:
-            if not record.eln_ref or not record.eln_ref.conformity:
-                record.avg_true_specific_gravity_conformity = 'na'
-                continue
-            record.avg_true_specific_gravity_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','57r7896rg-41c5-4cb5-843a-e09590c77832547ewrv')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','57r7896rg-41c5-4cb5-843a-e09590c77832547ewrv')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.avg_true_specific_gravity - record.avg_true_specific_gravity*mu_value
-                    upper = record.avg_true_specific_gravity + record.avg_true_specific_gravity*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.avg_true_specific_gravity_conformity = 'pass'
-                        break
-                    else:
-                        record.avg_true_specific_gravity_conformity = 'fail'
-
-    avg_true_specific_gravity_nabl = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_avg_true_specific_gravity_nabl", store=True)
-
-    @api.depends('avg_true_specific_gravity','eln_ref')
-    def _compute_avg_true_specific_gravity_nabl(self):
-        
-        for record in self:
-            record.avg_true_specific_gravity_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','57r7896rg-41c5-4cb5-843a-e09590c77832547ewrv')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','57r7896rg-41c5-4cb5-843a-e09590c77832547ewrv')]).parameter_table
-            # for material in materials:
-            #     if material.grade.id == record.grade.id:
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = record.avg_true_specific_gravity - record.avg_true_specific_gravity*mu_value
-            upper = record.avg_true_specific_gravity + record.avg_true_specific_gravity*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.avg_true_specific_gravity_nabl = 'pass'
-                break
-            else:
-                record.avg_true_specific_gravity_nabl = 'fail'
-
-
-                
-
+    
 
 
 
@@ -993,30 +586,33 @@ class Stones(models.Model):
     def _compute_visible(self):
         
         for record in self:
-            record.compressive_dry_visible = False
-            record.compressive_wet_visible = False
+            record.compressive_visible = False
             record.water_absorption_visible = False
-            record.app_specific_visible = False
             record.true_specific_visible = False
+
+            record.app_specific_visible = False
 
             
             for sample in record.sample_parameters:
                 print("Internal Ids",sample.internal_id)
 
                 if sample.internal_id == "5478ttr5-41c5-4cb5-843a-e09590c7c5789hh":
-                    record.compressive_dry_visible = True
+                    record.compressive_visible = True
 
-                if sample.internal_id == "547896rg-41c5-4cb5-843a-e09590c7c57878tt":
-                    record.compressive_wet_visible = True
+               
 
                 if sample.internal_id == "57r7896rg-41c5-4cb5-843a-e09590c74578trew8":
                     record.water_absorption_visible = True
 
+                if sample.internal_id == "57r7896rg-41c5-4cb5-843a-e09590c77832547ewrv":
+                    record.true_specific_visible = True
+
+
+
                 if sample.internal_id == "57r7896rg-41c5-4cb5-843a-e09590c7789rte143q":
                     record.app_specific_visible = True
 
-                if sample.internal_id == "57r7896rg-41c5-4cb5-843a-e09590c77832547ewrv":
-                    record.true_specific_visible = True
+                
 
 
 
@@ -1039,44 +635,15 @@ class Stones(models.Model):
             
             # Compressive dry - Perpendicular
             if result.parameter.internal_id == '5478ttr5-41c5-4cb5-843a-e09590c7c5789hh':
-                result.result_char = round(self.compressive_perpendiculer_avg,2)
+                result.result_char = round(self.average_ucs,2)
                 result.calculated = True
-                if self.compressive_perpendiculer_avg_nabl == 'pass':
+                if self.average_ucs_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
 
-            # Compressive dry - Parallel
-            if result.parameter.internal_id == '4f05fc75-0c6b-4f83-8380-621838762fb3':
-                result.result_char = round(self.compressive_parallel_avg,2)
-                result.calculated = True
-                if self.compressive_parallel_avg_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-
-            # Compressive wet - Perpendicular
-            if result.parameter.internal_id == '547896rg-41c5-4cb5-843a-e09590c7c57878tt':
-                result.result_char = round(self.compressive_perpendiculer_wet_avg,2)
-                result.calculated = True
-                if self.compressive_perpendiculer_wet_avg_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-
-            # Compressive wet - Parallel
-            if result.parameter.internal_id == '592c1732-40d8-41da-8d57-002c86390370':
-                result.result_char = round(self.compressive_parallel_wet_avg,2)
-                result.calculated = True
-                if self.compressive_parallel_wet_avg_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
-                
+            
 
             # Water Absorption
             if result.parameter.internal_id == '57r7896rg-41c5-4cb5-843a-e09590c74578trew8':
@@ -1188,103 +755,51 @@ class CompressiveDryLine(models.Model):
 
     serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
 
-    # sr_no = fields.Integer(string="Test", readonly=True, copy=False, default=1)
-    blue_input = fields.Boolean(default=True,invisible=True)
-    date = fields.Date(string="Date")
-    room_temp = fields.Float(string="Room temperature (deg)", digits=(12,2))
-    relative_humidity = fields.Float(string="Relative Humidity (%) ", digits=(12,2))
-    functional_check = fields.Char(string="Functional Checks ")
-    stone_type = fields.Char(string="Type of stone) ")
-    shape_stone = fields.Char(string="Shape of test piece (Cube/Cylinder) ")
-    height_shape = fields.Float(string="Height of sample(H), mm ", digits=(12,2))
-    width_stone = fields.Float(string="Width/Diameter of sample(D), mm ", digits=(12,2))
-    test_conditin = fields.Char(string="Test condition (Dry/Saturated) ",default="Dry")
-    load_perpendiculer = fields.Float(string="Load Perpendicular to plane of Anisotropy KN", digits=(12,2))
-    load_parallel = fields.Float(string="Load Parallel to plane of Anisotropy KN ", digits=(12,2))
-    load_perpendiculer_n = fields.Float(string="Load  Perpendicular to plane of Anisotropy N ", digits=(12,2),compute="_compute_loads_in_newton",store=True)
-    load_parallel_n = fields.Float(string="Load  Parallel to plane of Anisotropy N ", digits=(12,2),compute="_compute_loads_in_newton",store=True)
-    duration_test = fields.Float(string="Duration of test (sec) ", digits=(12,2))
-    appearance_stone = fields.Float(string="Appearance/any unusual features at failure ", digits=(12,2))
-    hd_stone = fields.Float(string="H/d ", digits=(12,2),compute="_compute_stone_values",store=True)
-    area_stone = fields.Float(string="Area of sample (mm2) ", digits=(12,2),compute="_compute_stone_values",store=True)
-    compressive_perpendiculer = fields.Float(string="Compressive Strength Perpendicular to plane of Anisotropy (N/mm2)  ", digits=(12,2), compute="_compute_compressive_strength",store=True)
-    compressive_parallel = fields.Float(string="Compressive Parallel to plane of Anisotropy (N/mm2)  ", digits=(12,2),compute="_compute_compressive_strength",store=True)
-    stress_perpendiculer = fields.Float(string="Stress rate Perpendicular to plane of Anisotropy(MPa/s)  ",digits=(12,2),compute="_compute_stress_rate",store=True)
-    stress_parallel = fields.Float(string="Stress rate Parallel to plane of Anisotropy(MPa/s)   ", digits=(12,2),compute="_compute_stress_rate",store=True)
+    sr_no = fields.Integer(string="Sr.No")
 
-    compressive_perpendiculer1 = fields.Float(string="Compressive Strength Perpendicular to plane of Anisotropy (N/mm2)  ",compute="_compute_corrected_strength", digits=(12,4),store=True)
-    compressive_parallel1 = fields.Float(string="Compressive Parallel to plane of Anisotropy (N/mm2)  ",compute="_compute_corrected_strength", digits=(12,4),store=True)
+    specimen_id = fields.Char(string="Specimen ID")
 
-   
+    diameter = fields.Float(string="Diameter (mm)")
 
+    width = fields.Float(string="Width (mm)")
 
-    @api.depends('load_perpendiculer', 'load_parallel')
-    def _compute_loads_in_newton(self):
-        for record in self:
-            record.load_perpendiculer_n = (record.load_perpendiculer or 0.0) * 1000
-            record.load_parallel_n = (record.load_parallel or 0.0) * 1000
+    thickness = fields.Float(string="Thickness/Height (mm)")
 
-    @api.depends('height_shape', 'width_stone')
-    def _compute_stone_values(self):
-        for record in self:
-            if record.width_stone:
-                record.hd_stone = record.height_shape / record.width_stone
-            else:
-                record.hd_stone = 0.0
-
-            record.area_stone = (record.height_shape or 0.0) * (record.width_stone or 0.0)
-
-
-    @api.depends('load_perpendiculer_n', 'load_parallel_n', 'area_stone')
-    def _compute_compressive_strength(self):
-        for record in self:
-            if record.area_stone:
-                record.compressive_perpendiculer = record.load_perpendiculer_n / record.area_stone
-                record.compressive_parallel = record.load_parallel_n / record.area_stone
-            else:
-                record.compressive_perpendiculer = 0.0
-                record.compressive_parallel = 0.0
-
-    @api.depends('compressive_perpendiculer', 'compressive_parallel', 'duration_test')
-    def _compute_stress_rate(self):
-        for record in self:
-            if record.duration_test:
-                record.stress_perpendiculer = record.compressive_perpendiculer / record.duration_test
-                record.stress_parallel = record.compressive_parallel / record.duration_test
-            else:
-                record.stress_perpendiculer = 0.0
-                record.stress_parallel = 0.0
-
-
-    @api.depends(
-        'compressive_perpendiculer',
-        'compressive_parallel',
-        'hd_stone',
-        'width_stone',
-        'height_shape',
-        'parent_id.factor_a',
-        'parent_id.factor_b'
+    cross_section_area = fields.Float(
+        string="Cross-sectional Area  (mm²)",
+        compute="_compute_area",
+        store=True,
     )
-    def _compute_corrected_strength(self):
+
+    max_load = fields.Float(string="Maximum Load at Failure (kN)")
+
+    ucs = fields.Float(
+        string="UCS (MPa = Load × 1000 / Area)",
+        compute="_compute_ucs",
+        store=True,
+    )
+
+    failure_description = fields.Char(string="Failure Description")
+
+    @api.depends("diameter")
+    def _compute_area(self):
         for rec in self:
-            # सुरक्षितपणे parent factors घ्या
-            a = rec.parent_id.factor_a
-            b = rec.parent_id.factor_b
-
-            ratio = (a + b * (rec.width_stone / rec.height_shape)) if rec.height_shape else 1
-
-            if rec.hd_stone == 1:
-                rec.compressive_perpendiculer1 = rec.compressive_perpendiculer
-                rec.compressive_parallel1 = rec.compressive_parallel
+            if rec.diameter:
+                rec.cross_section_area = (
+                    3.1416 * rec.diameter * rec.diameter / 4
+                )
             else:
-                rec.compressive_perpendiculer1 = rec.compressive_perpendiculer / ratio if ratio else 0.0
-                rec.compressive_parallel1 = rec.compressive_parallel / ratio if ratio else 0.0
+                rec.cross_section_area = 0.0
 
-
-    
-    
-    
-
+    @api.depends("max_load", "cross_section_area")
+    def _compute_ucs(self):
+        for rec in self:
+            if rec.cross_section_area:
+                rec.ucs = (
+                    rec.max_load * 1000
+                ) / rec.cross_section_area
+            else:
+                rec.ucs = 0.0
 
    
 
@@ -1306,104 +821,42 @@ class CompressiveDryLine(models.Model):
             record.serial_no = index + 1
 
 
-
-
-class CompressiveWetLine(models.Model):
-    _name = "mechanical.compressive.wet.line"
+class StonesWaterAbsorptionLine(models.Model):
+    _name = "stone.water.absorption.line"
     parent_id = fields.Many2one('mechanical.stones',string="Parent Id")
 
     serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
-    blue_input = fields.Boolean(default=True,invisible=True)
 
-    # sr_no = fields.Integer(string="Test", readonly=True, copy=False, default=1)
-    date = fields.Date(string="Date")
-    room_temp = fields.Float(string="Room temperature (deg)", digits=(12,2))
-    relative_humidity = fields.Float(string="Relative Humidity (%) ", digits=(12,2))
-    functional_check = fields.Char(string="Functional Checks ")
-    stone_type = fields.Char(string="Type of stone) ")
-    shape_stone = fields.Char(string="Shape of test piece (Cube/Cylinder) ")
-    height_shape = fields.Float(string="Height of sample(H), mm ", digits=(12,2))
-    width_stone = fields.Float(string="Width/Diameter of sample(D), mm ", digits=(12,2))
-    test_conditin = fields.Char(string="Test condition (Dry/Saturated) ",default="Saturated")
-    load_perpendiculer = fields.Float(string="Load Perpendicular to plane of Anisotropy KN", digits=(12,2))
-    load_parallel = fields.Float(string="Load Parallel to plane of Anisotropy KN ", digits=(12,2))
-    load_perpendiculer_n = fields.Float(string="Load  Perpendicular to plane of Anisotropy N ", digits=(12,2),compute="_compute_loads_in_newton",store=True)
-    load_parallel_n = fields.Float(string="Load  Parallel to plane of Anisotropy N ", digits=(12,2),compute="_compute_loads_in_newton",store=True)
-    duration_test = fields.Float(string="Duration of test (sec) ", digits=(12,2))
-    appearance_stone = fields.Float(string="Appearance/any unusual features at failure ", digits=(12,2))
-    hd_stone = fields.Float(string="H/d ", digits=(12,2),compute="_compute_stone_values",store=True)
-    area_stone = fields.Float(string="Area of sample (mm2) ", digits=(12,2),compute="_compute_stone_values",store=True)
-    compressive_perpendiculer = fields.Float(string="Compressive Strength Perpendicular to plane of Anisotropy (N/mm2)  ", digits=(12,2), compute="_compute_compressive_strength",store=True)
-    compressive_parallel = fields.Float(string="Compressive Parallel to plane of Anisotropy (N/mm2)  ", digits=(12,2),compute="_compute_compressive_strength",store=True)
-    stress_perpendiculer = fields.Float(string="Stress rate Perpendicular to plane of Anisotropy(MPa/s)  ",digits=(12,2),compute="_compute_stress_rate",store=True)
-    stress_parallel = fields.Float(string="Stress rate Parallel to plane of Anisotropy(MPa/s)   ", digits=(12,2),compute="_compute_stress_rate",store=True)
+    description = fields.Char("Description of Stone")
 
-    compressive_perpendiculer1 = fields.Float(string="Compressive Strength Perpendicular to plane of Anisotropy (N/mm2)  ",compute="_compute_corrected_strength", digits=(12,4),store=True)
-    compressive_parallel1 = fields.Float(string="Compressive Parallel to plane of Anisotropy (N/mm2)  ",compute="_compute_corrected_strength", digits=(12,4),store=True)
-
-
-
-    @api.depends('load_perpendiculer', 'load_parallel')
-    def _compute_loads_in_newton(self):
-        for record in self:
-            record.load_perpendiculer_n = (record.load_perpendiculer or 0.0) * 1000
-            record.load_parallel_n = (record.load_parallel or 0.0) * 1000
-
-    @api.depends('height_shape', 'width_stone')
-    def _compute_stone_values(self):
-        for record in self:
-            if record.width_stone:
-                record.hd_stone = record.height_shape / record.width_stone
-            else:
-                record.hd_stone = 0.0
-
-            record.area_stone = (record.height_shape or 0.0) * (record.width_stone or 0.0)
-
-
-    @api.depends('load_perpendiculer_n', 'load_parallel_n', 'area_stone')
-    def _compute_compressive_strength(self):
-        for record in self:
-            if record.area_stone:
-                record.compressive_perpendiculer = record.load_perpendiculer_n / record.area_stone
-                record.compressive_parallel = record.load_parallel_n / record.area_stone
-            else:
-                record.compressive_perpendiculer = 0.0
-                record.compressive_parallel = 0.0
-
-    @api.depends('compressive_perpendiculer', 'compressive_parallel', 'duration_test')
-    def _compute_stress_rate(self):
-        for record in self:
-            if record.duration_test:
-                record.stress_perpendiculer = record.compressive_perpendiculer / record.duration_test
-                record.stress_parallel = record.compressive_parallel / record.duration_test
-            else:
-                record.stress_perpendiculer = 0.0
-                record.stress_parallel = 0.0
-
-    @api.depends(
-        'compressive_perpendiculer',
-        'compressive_parallel',
-        'hd_stone',
-        'width_stone',
-        'height_shape',
-        'parent_id.wet_factor_a',
-        'parent_id.wet_factor_b'
+    oven_dry_weight = fields.Float(
+        string="Oven Dry Weight, Wd (g)"
     )
-    def _compute_corrected_strength(self):
+
+    saturated_weight = fields.Float(
+        string="Saturated Weight, Ws (g)"
+    )
+
+    water_absorption = fields.Float(
+        string="Water Absorption (%)",
+        compute="_compute_water_absorption",
+        store=True,
+    )
+
+    remarks = fields.Char(string="Remarks")
+
+    @api.depends("oven_dry_weight", "saturated_weight")
+    def _compute_water_absorption(self):
         for rec in self:
-            # सुरक्षितपणे parent factors घ्या
-            a = rec.parent_id.wet_factor_a
-            b = rec.parent_id.wet_factor_b
-
-            ratio = (a + b * (rec.width_stone / rec.height_shape)) if rec.height_shape else 1
-
-            if rec.hd_stone == 1:
-                rec.compressive_perpendiculer1 = rec.compressive_perpendiculer
-                rec.compressive_parallel1 = rec.compressive_parallel
+            if rec.oven_dry_weight:
+                rec.water_absorption = (
+                    (rec.saturated_weight - rec.oven_dry_weight)
+                    / rec.oven_dry_weight
+                ) * 100
             else:
-                rec.compressive_perpendiculer1 = rec.compressive_perpendiculer / ratio if ratio else 0.0
-                rec.compressive_parallel1 = rec.compressive_parallel / ratio if ratio else 0.0
+                rec.water_absorption = 0.0
 
+   
 
     @api.model
     def create(self, vals):
@@ -1414,13 +867,69 @@ class CompressiveWetLine(models.Model):
                 max_serial_no = max(existing_records.mapped('serial_no'))
                 vals['serial_no'] = max_serial_no + 1
 
-        return super(CompressiveWetLine, self).create(vals)
+        return super(StonesWaterAbsorptionLine, self).create(vals)
 
     def _reorder_serial_numbers(self):
         # Reorder the serial numbers based on the positions of the records in child_lines
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.serial_no = index + 1
+
+
+class StonesTrueSpecificGravityLine(models.Model):
+    _name = "stone.true.specific.gravity.line"
+    parent_id = fields.Many2one('mechanical.stones',string="Parent Id")
+
+    serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
+
+    w1 = fields.Float(string="W1 Empty Bottle (g)")
+
+    w2 = fields.Float(string="W2 Bottle + Powder (g)")
+
+    w3 = fields.Float(string="W3 Bottle + Powder + Water (g)")
+
+    w4 = fields.Float(string="W4 Bottle + Water (g)")
+
+    true_specific_gravity = fields.Float(
+        string="True Specific Gravity",
+        compute="_compute_tsg",
+        store=True,
+        digits=(16, 2),
+    )
+
+    remarks = fields.Char(string="Remarks")
+
+    @api.depends("w1", "w2", "w3", "w4")
+    def _compute_tsg(self):
+        for rec in self:
+
+            numerator = rec.w2 - rec.w1
+            denominator = (rec.w4 - rec.w1) - (rec.w3 - rec.w2)
+
+            if denominator:
+                rec.true_specific_gravity = numerator / denominator
+            else:
+                rec.true_specific_gravity = 0.0
+
+   
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(StonesTrueSpecificGravityLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
 
 
 class StoneNotes(models.Model):

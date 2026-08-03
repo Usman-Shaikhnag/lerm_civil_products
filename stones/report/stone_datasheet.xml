@@ -52,150 +52,79 @@
 					</table>
 
 
-					<div t-if="data.compressive_dry_visible" style="margin-top:20px">
+                    <!-- Compressive Strength -->
 
-                        <div style="text-align:center; font-size:18px; font-weight:bold; text-decoration:underline; margin-bottom:10px;">
-                              DRY CONDITION
-                        </div>
+                    <div t-if="data.compressive_visible" style="margin-top:20px">
+							<div style="text-align:center;font-size:18px;margin-bottom:10px;">
+								Compressive Strength
+							</div>
+
+							<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+							<thead>
+								<tr style="background-color: #f0f0f0;">
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Sr.No</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Specimen ID</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Diameter (mm)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Width (mm)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Thickness/Height (mm)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Cross-sectional Area  (mm²)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Maximum Load at Failure (kN)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">UCS (MPa = Load × 1000 / Area)</th>
+                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Failure Description</th>
+								</tr>		
+
+							</thead>
+							<tbody>
+								<t t-set="k" t-value="0"/>
+								<tr t-foreach="data.compressive_ids" t-as="r" style="text-align: center;">
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="k + 1" />
+										<t t-set="k" t-value="k+1"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['specimen_id']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['diameter']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['width']" />
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['thickness']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['cross_section_area']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['max_load']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['ucs']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['failure_description']" />
+									</td>
+									
+								</tr>
+							</tbody>
+						</table>
 
 
-					  <table>
-                            <tr cols="12" style="background-color:#f9f9f9;">
-                                <td rowspan="2" style="text-align: center;"><b>Sr No</b></td>
-								<td rowspan="2" style="text-align: center;"><b>Date</b></td>
-								<td rowspan="2" style="text-align: center;"><b>Room temperature (deg)</b></td>
-                                <td rowspan="2" style="text-align: center;"><b>Relative Humidity (%)</b></td>
-                                
-                                <td rowspan="2" style="text-align: center;"><b>Functional Checks</b></td>
-                                <td rowspan="2" style="text-align: center;"><b>Type of stone</b></td>
-                                <td rowspan="2" style="text-align: center;"><b>Shape of test piece (Cube/Cylinder)</b></td>
-                                <td rowspan="2" style="text-align: center;"><b>Height of sample(H), mm</b></td>
-								 <td rowspan="2" style="text-align: center;"><b>Width/Diameter of sample(D), mm</b></td>
-                                <td rowspan="2" style="text-align: center;"><b>Test condition (Dry/Saturated)</b></td>
-                                <td colspan="2" style="text-align: center;"><b>Load at failure (kN)</b></td>
-								<td colspan="2" style="text-align: center;"><b>Load at failure (N)</b></td>
-								<td rowspan="2" style="text-align: center;"><b>Duration of test (sec)</b></td>
-								<td rowspan="2" style="text-align: center;"><b>Appearance/any unusual features at failure</b></td>
-								<td rowspan="2" style="text-align: center;"><b>H/d</b></td>
-                                <td rowspan="2" style="text-align: center;"><b>Area of sample (mm2)</b></td>
-                                <td colspan="2" style="text-align: center;"><b>Compressive Strength(N/mm2) </b></td>
-                                <td colspan="2" style="text-align: center;"><b>Stress rate (MPa/s)</b></td>
-                               
-                                </tr>
-
-                                 <tr style="background-color:#f9f9f9;"> 
-                                 <td colspan="1" style="text-align: center;"><b>Perpendicular to plane of Anisotropy</b></td>
-                                <td colspan="1" style="text-align: center;"><b>Parallel to plane of Anisotropy</b></td>
-
-                                 <td colspan="1" style="text-align: center;"><b>Perpendicular to plane of Anisotropy</b></td>
-                                <td colspan="1" style="text-align: center;"><b>Parallel to plane of Anisotropy</b></td>
-
-                                 <td colspan="1" style="text-align: center;"><b>Perpendicular to plane of Anisotropy</b></td>
-                                <td colspan="1" style="text-align: center;"><b>Parallel to plane of Anisotropy</b></td>
-                                <td colspan="1" style="text-align: center;"><b>Perpendicular to plane of Anisotropy</b></td>
-                                <td colspan="1" style="text-align: center;"><b>Parallel to plane of Anisotropy</b></td>
-                              
+						<table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;">
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Average UCS (MPa) :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+									<span t-field="data.average_ucs" t-options='{"widget": "float", "precision": 3}'/>
+								</td>
+							</tr>
+						</table>
+						
 								
-                            </tr>
-
-                            <t t-set="f" t-value="0"/>
-                            <tr t-foreach="data.compressive_dry_ids" t-as="r">
-                                <td   style="text-align: center;">
-                                    <div>
-                                        <span t-esc="f + 1" />
-                                        <t t-set="f" t-value="f + 1"/>
-                                    </div>
-                                </td>
-								<td   style="text-align: center;">
-                                    <span t-esc="r['date']"/>
-                                </td>
-								<td   style="text-align: center;">
-                                    <span t-esc="r['room_temp']"/>
-                                </td>
 								
-                                <td   style="text-align: center;">
-                                    <span t-esc="r['relative_humidity']"/>
-                                </td>
-                               
-                             
-                                 <td   style="text-align: center;">
-                                    <span t-esc="r['functional_check']" />
-                                </td>
-                                <td   style="text-align: center;">
-                                    <span t-esc="r['stone_type']" />
-                                </td>
-								<td   style="text-align: center;">
-                                    <span t-esc="r['shape_stone']" />
-                                </td>
-								<td   style="text-align: center;">
-                                    <span t-esc="r['height_shape']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>   
-								<td   style="text-align: center;">
-                                    <span t-esc="r['width_stone']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-									<td   style="text-align: center;">
-                                    <span t-esc="r['test_conditin']"/>
-                                </td>   
-								
-								<td   style="text-align: center;">
-                                    <span t-esc="r['load_perpendiculer']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>   
-								<td   style="text-align: center;">
-                                    <span t-esc="r['load_parallel']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>    
-								<td   style="text-align: center;">
-                                    <span t-esc="r['load_perpendiculer_n']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>   
+										
 
-								<td   style="text-align: center;">
-                                    <span t-esc="r['load_parallel_n']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>   
-								<td   style="text-align: center;">
-                                    <span t-esc="r['duration_test']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>  
-								<td   style="text-align: center;">
-                                    <span t-esc="r['appearance_stone']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>  
-								<td   style="text-align: center;">
-                                    <span t-esc="r['hd_stone']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>  
-
-								<td   style="text-align: center;">
-                                    <span t-esc="r['area_stone']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								<td   style="text-align: center;">
-                                    <span t-esc="r['compressive_perpendiculer']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-
-                                <td   style="text-align: center;">
-                                    <span t-esc="r['compressive_parallel']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>    
-                                <td colspan="1"  style="text-align: center;">
-                                    <span t-esc="r['stress_perpendiculer']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>    
-                                <td colspan="1"  style="text-align: center;">
-                                    <span t-esc="r['stress_parallel']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>    
-								
-                                
-                            </tr>
-                        </table>
-
-                         <table   style="margin-top:20px;">
-                            <tbody>
-                            <tr>
-                                <td><span>Average Compressive Strength Perpendicular Dry  (N/mm²)</span></td>
-								<td><span t-field="data.compressive_perpendiculer_avg" t-options='{"widget":"float","precision":2}'/></td>
-                            </tr>
-                            <tr>
-                                <td><span>Average Compressive Strength Parallel Dry (N/mm²)</span></td>
-								<td><span t-field="data.compressive_parallel_avg" t-options='{"widget":"float","precision":2}'/></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                
-
-                    <div t-if="data.compressive_dry_visible" class="signatureContainer girdgird">
+							<div t-if="data.compressive_visible" class="signatureContainer girdgird">
 							<div>
 								<div>
 									<b>
@@ -238,238 +167,71 @@
 							
 						</div>
 					</div>
-                    </div>
-                
-
-
-                    <div t-if="data.compressive_wet_visible" style="margin-top:20px;page-break-before: always;">
-
-                       <div style="text-align:center; font-size:18px; font-weight:bold; text-decoration:underline; margin-bottom:10px;">
-                           SATURATED CONDITION
-                       </div>
-
-
-					  <table>
-                            <tr cols="12" style="background-color:#f9f9f9;">
-                                <td rowspan="2" style="text-align: center;"><b>Sr No</b></td>
-								<td rowspan="2" style="text-align: center;"><b>Date</b></td>
-								<td rowspan="2" style="text-align: center;"><b>Room temperature (deg)</b></td>
-                                <td rowspan="2" style="text-align: center;"><b>Relative Humidity (%)</b></td>
-                                
-                                <td rowspan="2" style="text-align: center;"><b>Functional Checks</b></td>
-                                <td rowspan="2" style="text-align: center;"><b>Type of stone</b></td>
-                                <td rowspan="2" style="text-align: center;"><b>Shape of test piece (Cube/Cylinder)</b></td>
-                                <td rowspan="2" style="text-align: center;"><b>Height of sample(H), mm</b></td>
-								 <td rowspan="2" style="text-align: center;"><b>Width/Diameter of sample(D), mm</b></td>
-                                <td rowspan="2" style="text-align: center;"><b>Test condition (Dry/Saturated)</b></td>
-                                <td colspan="2" style="text-align: center;"><b>Load at failure (kN)</b></td>
-								<td colspan="2" style="text-align: center;"><b>Load at failure (N)</b></td>
-								<td rowspan="2" style="text-align: center;"><b>Duration of test (sec)</b></td>
-								<td rowspan="2" style="text-align: center;"><b>Appearance/any unusual features at failure</b></td>
-								<td rowspan="2" style="text-align: center;"><b>H/d</b></td>
-                                <td rowspan="2" style="text-align: center;"><b>Area of sample (mm2)</b></td>
-                                <td colspan="2" style="text-align: center;"><b>Compressive Strength(N/mm2) </b></td>
-                                <td colspan="2" style="text-align: center;"><b>Stress rate (MPa/s)</b></td>
-                               
-                                </tr>
-
-                                 <tr style="background-color:#f9f9f9;"> 
-                                 <td colspan="1" style="text-align: center;"><b>Perpendicular to plane of Anisotropy</b></td>
-                                <td colspan="1" style="text-align: center;"><b>Parallel to plane of Anisotropy</b></td>
-
-                                 <td colspan="1" style="text-align: center;"><b>Perpendicular to plane of Anisotropy</b></td>
-                                <td colspan="1" style="text-align: center;"><b>Parallel to plane of Anisotropy</b></td>
-
-                                 <td colspan="1" style="text-align: center;"><b>Perpendicular to plane of Anisotropy</b></td>
-                                <td colspan="1" style="text-align: center;"><b>Parallel to plane of Anisotropy</b></td>
-                                <td colspan="1" style="text-align: center;"><b>Perpendicular to plane of Anisotropy</b></td>
-                                <td colspan="1" style="text-align: center;"><b>Parallel to plane of Anisotropy</b></td>
-                              
-								
-                            </tr>
-
-                            <t t-set="f" t-value="0"/>
-                            <tr t-foreach="data.compressive_wet_ids" t-as="r">
-                                <td   style="text-align: center;">
-                                    <div>
-                                        <span t-esc="f + 1" />
-                                        <t t-set="f" t-value="f + 1"/>
-                                    </div>
-                                </td>
-								<td   style="text-align: center;">
-                                    <span t-esc="r['date']"/>
-                                </td>
-								<td   style="text-align: center;">
-                                    <span t-esc="r['room_temp']"/>
-                                </td>
-								
-                                <td   style="text-align: center;">
-                                    <span t-esc="r['relative_humidity']"/>
-                                </td>
-                               
-                             
-                                 <td   style="text-align: center;">
-                                    <span t-esc="r['functional_check']" />
-                                </td>
-                                <td   style="text-align: center;">
-                                    <span t-esc="r['stone_type']" />
-                                </td>
-								<td   style="text-align: center;">
-                                    <span t-esc="r['shape_stone']" />
-                                </td>
-								<td   style="text-align: center;">
-                                    <span t-esc="r['height_shape']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>   
-								<td   style="text-align: center;">
-                                    <span t-esc="r['width_stone']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-									<td   style="text-align: center;">
-                                    <span t-esc="r['test_conditin']"/>
-                                </td>   
-								
-								<td   style="text-align: center;">
-                                    <span t-esc="r['load_perpendiculer']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>   
-								<td   style="text-align: center;">
-                                    <span t-esc="r['load_parallel']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>    
-								<td   style="text-align: center;">
-                                    <span t-esc="r['load_perpendiculer_n']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>   
-
-								<td   style="text-align: center;">
-                                    <span t-esc="r['load_parallel_n']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>   
-								<td   style="text-align: center;">
-                                    <span t-esc="r['duration_test']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>  
-								<td   style="text-align: center;">
-                                    <span t-esc="r['appearance_stone']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>  
-								<td   style="text-align: center;">
-                                    <span t-esc="r['hd_stone']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>  
-
-								<td   style="text-align: center;">
-                                    <span t-esc="r['area_stone']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-								<td   style="text-align: center;">
-                                    <span t-esc="r['compressive_perpendiculer']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>     
-
-                                <td   style="text-align: center;">
-                                    <span t-esc="r['compressive_parallel']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>    
-                                <td colspan="1"  style="text-align: center;">
-                                    <span t-esc="r['stress_perpendiculer']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>    
-                                <td colspan="1"  style="text-align: center;">
-                                    <span t-esc="r['stress_parallel']" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>    
-								
-                                
-                            </tr>
-                        </table>
-
-
-                          <table   style="margin-top:20px;">
-                            <tbody>
-                            <tr>
-                                <td><span>Average Compressive Strength Perpendicular Dry  (N/mm²)</span></td>
-								<td><span t-field="data.compressive_perpendiculer_wet_avg" t-options='{"widget":"float","precision":2}'/></td>
-                            </tr>
-                            <tr>
-                                <td><span>Average Compressive Strength Parallel Dry (N/mm²)</span></td>
-								<td><span t-field="data.compressive_parallel_wet_avg" t-options='{"widget":"float","precision":2}'/></td>
-                            </tr>
-                            </tbody>
-                        </table>
-
-                        
-
-					<div t-if="data.compressive_dry_visible" class="signatureContainer girdgird">
-							<div>
-								<div>
-									<b>
-										Prepared By
-									</b>
-								</div>
-								
-                            <div>
-                                <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
-                                </b>
-                            </div>
-                            <div>
-                                <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
-                                </b>
-                            </div>
-                        </div>
-                        
-                        <div style="margin-left:600px">
-                                    
-                            <div>
-                                <b>
-                                    Checked By
-                                </b>
-                            </div>
-						
-								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
-							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
-								
-							
+									
 						</div>
-					</div>
-                    </div>
+						
+
+
 
                     <!-- Water Absorption -->
 
-                        <div t-if="data.water_absorption_visible" style = "page-break-before: always;margin-top:20px;">
+                        <div t-if="data.water_absorption_visible" style="margin-top:20px">
 							<div style="text-align:center;font-size:18px;margin-bottom:10px;">
 								Water Absorption
 							</div>
+
+							<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+							<thead>
+								<tr style="background-color: #f0f0f0;">
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Sr.No</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Description of Stone</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Oven Dry Weight, Wd (g)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Saturated Weight, Ws (g)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Water Absorption (%)</th>
+                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Remarks</th>
+								</tr>		
+
+							</thead>
+							<tbody>
+								<t t-set="k" t-value="0"/>
+								<tr t-foreach="data.water_absorption_ids" t-as="r" style="text-align: center;">
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="k + 1" />
+										<t t-set="k" t-value="k+1"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['description']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['oven_dry_weight']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['saturated_weight']" />
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['water_absorption']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['remarks']" />
+									</td>
+									
+								</tr>
+							</tbody>
+						</table>
+
+
+						<table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;">
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Average Water Absorption (%) :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+									<span t-field="data.avg_water_absorption" t-options='{"widget": "float", "precision": 3}'/>
+								</td>
+							</tr>
+						</table>
 						
 								
-								<table>
-											<tr>
-												<th style="text-align: center; font-weight: bold;">Sample No</th>
-												<th style="text-align: center; font-weight: bold;">Sample 1</th>
-												<th style="text-align: center; font-weight: bold;">Sample 2</th>
-                                                <th style="text-align: center; font-weight: bold;">Sample 3</th>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;text-align: center;">Oven Dried Weight (g)</td>
-												<td style="text-align: center;"><span t-field="data.sample1_oven_weight"/></td>
-												<td style="text-align: center;"><span t-field="data.sample2_oven_weight"/></td>
-                                                <td style="text-align: center;"><span t-field="data.sample3_oven_weight"/></td>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;text-align: center;">Saturated Surface Dry Weight (g)</td>
-												<td style="text-align: center;"><span t-field="data.sample1_saturated_weight"/></td>
-												<td style="text-align: center;"><span t-field="data.sample2_saturated_weight"/></td>
-                                                <td style="text-align: center;"><span t-field="data.sample3_saturated_weight"/></td>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;text-align: center;">Water Absorption</td>
-												<td style="text-align: center;"><span t-field="data.sample1_water_absorption" t-options='{"widget": "float", "precision": 2}'/></td>
-												<td style="text-align: center;"><span t-field="data.sample2_water_absorption" t-options='{"widget": "float", "precision": 2}'/></td>
-                                                <td style="text-align: center;"><span t-field="data.sample3_water_absorption" t-options='{"widget": "float", "precision": 2}'/></td>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;text-align: center;">Average Water Absorption</td>
-												<td colspan="3" style="text-align: center;"><span t-field="data.avg_water_absorption" t-options='{"widget": "float", "precision": 2}'/></td>
-											</tr>
-										</table>
+								
+										
 
 							<div t-if="data.water_absorption_visible" class="signatureContainer girdgird">
 							<div>
@@ -516,6 +278,118 @@
 					</div>
 									
 						</div>
+
+
+                        <!-- True Specific Gravity -->
+
+                        <div t-if="data.true_specific_visible" style="margin-top:20px">
+							<div style="text-align:center;font-size:18px;margin-bottom:10px;">
+								True Specific Gravity
+							</div>
+
+							<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+							<thead>
+								<tr style="background-color: #f0f0f0;">
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Sr.No</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">W1 Empty Bottle (g)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">W2 Bottle + Powder (g)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">W3 Bottle + Powder + Water (g)</th>
+                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">W4 Bottle + Water (g)</th>
+									<th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">True Specific Gravity</th>
+                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Remarks</th>
+								</tr>		
+
+							</thead>
+							<tbody>
+								<t t-set="k" t-value="0"/>
+								<tr t-foreach="data.true_specific_ids" t-as="r" style="text-align: center;">
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="k + 1" />
+										<t t-set="k" t-value="k+1"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['w1']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['w2']"/>
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['w3']" />
+									</td>
+                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['w4']" />
+									</td>
+									<td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['true_specific_gravity']" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+										<span t-esc="r['remarks']" />
+									</td>
+									
+								</tr>
+							</tbody>
+						</table>
+
+
+						<table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;">
+							<tr style="font-weight: bold; background-color: #f9f9f9;">
+								<td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Average True Specific Gravity :</td>
+								<td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+									<span t-field="data.avg_true_specific_gravity" t-options='{"widget": "float", "precision": 3}'/>
+								</td>
+							</tr>
+						</table>
+						
+								
+								
+										
+
+							<div t-if="data.true_specific_visible" class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Prepared By
+									</b>
+								</div>
+								
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+						
+								<div>
+									<b>
+									<span t-esc="eln.sample_id.approved_by.name"/>
+									</b>
+								</div>
+							
+								<div>
+									<b>
+										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+									</b>
+								</div>
+								
+							
+						</div>
+					</div>
+									
+						</div>
+						
 
 
                 <!-- Apparent Specific Gravity -->
@@ -610,60 +484,7 @@
 						</div>
 
 
-                        <!-- True Specific Gravity -->
-
-                        <div t-if="data.true_specific_visible" style = "page-break-before: always;margin-top:20px;">
-							<div style="text-align:center;font-size:18px;margin-bottom:10px;">
-								True Specific Gravity
-							</div>
-						
-								
-								<table>
-											<tr>
-												<th style="text-align: center; font-weight: bold;">Sample No</th>
-												<th style="text-align: center; font-weight: bold;">Sample 1</th>
-												<th style="text-align: center; font-weight: bold;">Sample 2</th>
-                                                <th style="text-align: center; font-weight: bold;">Sample 3</th>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;text-align: center;">Empty Bottle Weight (W1) (g)</td>
-												<td style="text-align: center;"><span t-field="data.sample1_w1"/></td>
-												<td style="text-align: center;"><span t-field="data.sample2_w1"/></td>
-                                                <td style="text-align: center;"><span t-field="data.sample3_w1"/></td>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;text-align: center;">Bottle + Powder Weight (W2) (g)</td>
-												<td style="text-align: center;"><span t-field="data.sample1_w2"/></td>
-												<td style="text-align: center;"><span t-field="data.sample2_w2"/></td>
-                                                <td style="text-align: center;"><span t-field="data.sample3_w2"/></td>
-											</tr>
-                                            <tr>
-												<td style="font-weight: bold;text-align: center;">Bottle + Powder + Water Weight (W3) (g)</td>
-												<td style="text-align: center;"><span t-field="data.sample1_w3"/></td>
-												<td style="text-align: center;"><span t-field="data.sample2_w3"/></td>
-                                                <td style="text-align: center;"><span t-field="data.sample3_w3"/></td>
-											</tr>
-                                            <tr>
-												<td style="font-weight: bold;text-align: center;">Bottle + Water Weight (W4) (g)</td>
-												<td style="text-align: center;"><span t-field="data.sample1_w4"/></td>
-												<td style="text-align: center;"><span t-field="data.sample2_w4"/></td>
-                                                <td style="text-align: center;"><span t-field="data.sample3_w4"/></td>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;text-align: center;">True Specific Gravity</td>
-												<td style="text-align: center;"><span t-field="data.sample1_true_specific_gravity" t-options='{"widget": "float", "precision": 2}'/></td>
-												<td style="text-align: center;"><span t-field="data.sample2_true_specific_gravity" t-options='{"widget": "float", "precision": 2}'/></td>
-                                                <td style="text-align: center;"><span t-field="data.sample3_true_specific_gravity" t-options='{"widget": "float", "precision": 2}'/></td>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;text-align: center;">Average True Specific Gravity</td>
-												<td colspan="3" style="text-align: center;"><span t-field="data.avg_true_specific_gravity" t-options='{"widget": "float", "precision": 2}'/></td>
-											</tr>
-										</table>
-
-							
-									
-						</div>
+                        
 
 
 

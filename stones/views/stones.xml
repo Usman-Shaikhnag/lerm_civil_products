@@ -91,277 +91,61 @@
                         </table>
                     </div>
 
-                     <!-- Compressive Strength in dry condition -->
-
-                    <div invisible = "compressive_dry_visible == False">
+                       <!-- Compressive Strength-->
+                    <div invisible = "compressive_visible == False">
                         <h1 class="text-center">
-                            <field name="compressive_dry_name" readonly="1" nolabel="1"/>
-                            <field name="compressive_dry_visible" invisible="1"/>
+                            <field name="compressive_name" readonly="1" nolabel="1"/>
+                            <field name="compressive_visible" invisible="1"/>
                         </h1>
                     </div>
-
-                    <div class="d-flex gap-2" invisible = "compressive_dry_visible == False">
-                        
-
-                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                            <tr>
-                                <td><span>Constant Factor A</span></td>
-                                <td><field name='factor_a' col="1" class="blue-input"/></td>
-                            </tr>
-                            
-                            
-                            </tbody>
-                        </table>
-
-
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                            <tr>
-                                <td><span>Constant Factor B</span></td>
-                                <td><field name='factor_b' col="1" class="blue-input"/></td>
-                            </tr>
-                           
-                            </tbody>
-                        </table>
-                    </div>
-                        
-                     <div invisible = "compressive_dry_visible == False">
-                        
-                        <field name="compressive_dry_ids">
+                    
+                 
+                    <div invisible = "compressive_visible == False" >
+                        <field name="compressive_ids">
                             <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no' />
 
-                                
-                                <field name="serial_no"  />
-                                    <field name="date"  class="blue-input" decoration-info="date != 0"/>
-                                    <field name="room_temp" width="100"  class="blue-input" decoration-info="room_temp != 0"/>
-                                    <field name="relative_humidity" width="100" class="blue-input" decoration-info="relative_humidity != 0"/>
-                                    
-                                    <!-- ✅ Wrap long text fields -->
-                                    <field name="functional_check" width="180" widget="char" style="white-space: normal;" class="blue-input" />
-                                    <field name="stone_type" width="150" style="white-space: normal;" class="blue-input" decoration-info="stone_type != 0"/>
-                                    <field name="shape_stone" width="160" style="white-space: normal;" class="blue-input" decoration-info="shape_stone != 0"/>
-                                   
+                                <field name='specimen_id' class="blue-input" decoration-info="specimen_id != 0" width="100"/>
+                                <field name='diameter' 
+                                 class="blue-input" decoration-info="diameter != 0"/>
+                                <field name="width" class="blue-input" decoration-info="width != 0"/>
+                                <field name='thickness' class="blue-input" decoration-info="thickness != 0"/>
+                                <field name='cross_section_area' />
+                                <field name='max_load' class="blue-input" decoration-info="max_load != 0"/>
 
-                                    <field name="height_shape" width="100"  class="blue-input" decoration-info="height_shape != 0"/>
-                                    <field name="width_stone" width="100"  class="blue-input" decoration-info="width_stone != 0"/>
-                                     <field name="test_conditin" width="150" style="white-space: normal;" />
-                                    <field name="load_perpendiculer" width="150" class="blue-input" decoration-info="load_perpendiculer != 0"/>
-                                    <field name="load_parallel" width="150" class="blue-input" decoration-info="load_parallel != 0"/>
-                                    <field name="load_perpendiculer_n" width="150" class="blue-input" decoration-info="load_perpendiculer_n != 0"/>
-                                    <field name="load_parallel_n" width="150" />
-                                    <field name="duration_test" width="120" class="blue-input" decoration-info="duration_test != 0"/>
-                                    <field name="appearance_stone" width="180" class="blue-input" decoration-info="appearance_stone != 0"/>
-                                    <field name="hd_stone" width="100"/>
-                                    <field name="area_stone" width="120"/>
-                                    <field name="compressive_perpendiculer" width="200"/>
-                                    <field name="compressive_parallel" width="200"/>
-                                    <field name="stress_perpendiculer" width="180"/>
-                                    <field name="stress_parallel" width="180"/>
-                                     <field name="compressive_perpendiculer1" width="180"/>
-                                      <field name="compressive_parallel1" width="180"/>
+                                <field name='ucs' />
 
-
+                                <field name='failure_description' class="blue-input" decoration-info="failure_description != 0" width="100"/>
                             </tree>
                         </field>
                     </div>
 
-                    <div class="d-flex gap-2" invisible = "compressive_dry_visible == False">
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                 <tr>
-                                 <td><label class="text-bold" for="compressive_perpendiculer_avg">Average Compressive Strength Parallel Dry (N/mm²)</label></td>
-                                <td><field name='compressive_perpendiculer_avg' col="1"/></td>
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not compressive_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="average_ucs">Average UCS (MPa)</label></td>
+                                <td><field name="average_ucs"/></td>
                             </tr>
                             <tr>
-                                <td><label class="text-bold" for="compressive_perpendiculer_avg_conformity">Conformity</label></td>
-                                <td>
-                                    <field name="compressive_perpendiculer_avg_conformity"
-                                        decoration-success="compressive_perpendiculer_avg_conformity == 'pass'"
-                                        decoration-danger="compressive_perpendiculer_avg_conformity == 'fail'"
-                                        readonly="1"/>
-                                </td>
+                                <td><label for="average_ucs_conformity"></label></td>
+                                <td><field  name="average_ucs_conformity"
+                                            decoration-success="average_ucs_conformity == 'pass'" 
+                                            decoration-danger="average_ucs_conformity == 'fail'" 
+                                            readonly="1" /></td>
                             </tr>
                             <tr>
-                                <td><label class="text-bold" for="compressive_perpendiculer_avg_nabl">NABL</label></td>
-                                <td>
-                                    <field name="compressive_perpendiculer_avg_nabl"
-                                        decoration-success="compressive_perpendiculer_avg_nabl == 'pass'"
-                                        decoration-danger="compressive_perpendiculer_avg_nabl == 'fail'"
-                                        readonly="1"/>
-                                </td>
-                            </tr>
-                               
-                            </tbody>
-                        </table>
-                        
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                <td><label class="text-bold" for="compressive_parallel_avg">Average Compressive Strength Parallel Dry (N/mm²)</label></td>
-                                <td> <field name='compressive_parallel_avg' col="1"/></td>
+                                <td><label for="average_ucs_nabl"></label></td>
+                                <td><field name="average_ucs_nabl"
+                                            decoration-success="average_ucs_nabl == 'pass'" 
+                                            decoration-danger="average_ucs_nabl == 'fail'" 
+                                            readonly="1" /></td>
                             </tr>
                             <tr>
-                                <td><label class="text-bold" for="compressive_parallel_avg_conformity">Conformity</label></td>
-                                <td>
-                                    <field name="compressive_parallel_avg_conformity"
-                                        decoration-success="compressive_parallel_avg_conformity == 'pass'"
-                                        decoration-danger="compressive_parallel_avg_conformity == 'fail'"
-                                        readonly="1"/>
-                                </td>
+                                <td><label class="fw-bold" for="compressive_report_type">Report Type</label></td>
+                                <td><field name="compressive_report_type" class="blue-input" decoration-info="compressive_report_type != 0"/></td>
                             </tr>
-                            <tr>
-                                <td><label class="text-bold" for="compressive_parallel_avg_nabl">NABL</label></td>
-                                <td>
-                                    <field name="compressive_parallel_avg_nabl"
-                                        decoration-success="compressive_parallel_avg_nabl == 'pass'"
-                                        decoration-danger="compressive_parallel_avg_nabl == 'fail'"
-                                        readonly="1"/>
-                                </td>
-                            </tr>
-                               
-                            </tbody>
-                        </table>
-                    </div>
-
-
-
-
-                     <!-- Compressive Strength in wet condition -->
-
-                    <div invisible = "compressive_wet_visible == False">
-                        <h1 class="text-center">
-                            <field name="compressive_wet_name" readonly="1" nolabel="1"/>
-                            <field name="compressive_wet_visible" invisible="1"/>
-                        </h1>
-                    </div>
-
-                    <div class="d-flex gap-2" invisible="compressive_wet_visible == False">
-                        
-
-                         <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                            <tr>
-                                <td><span>Constant Factor A</span></td>
-                                <td><field name='wet_factor_a' col="1" class="blue-input"/></td>
-                            </tr>
-                            
-                            
-                            </tbody>
-                        </table>
-
-
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                            <tr>
-                                <td><span>Constant Factor B</span></td>
-                                <td><field name='wet_factor_b' col="1" class="blue-input"/></td>
-                            </tr>
-                           
-                            </tbody>
-                        </table>
-                    </div>
-
-                 
-
-
-        
-                      
-                     <div invisible="compressive_wet_visible == False">
-                            <field name="compressive_wet_ids">
-                                <tree editable="bottom" class="custom_table_borders" string="Compressive Wet Test Readings">
-                                
-                                    <field name="serial_no"/>
-                                    <field name="date"   class="blue-input" decoration-info="date != 0"/>
-                                    <field name="room_temp" width="100" class="blue-input" decoration-info="room_temp != 0"/>
-                                    <field name="relative_humidity" width="100" class="blue-input" decoration-info="relative_humidity != 0"/>
-                                    
-                                    <!-- ✅ Wrap long text fields -->
-                                    <field name="functional_check" width="180" widget="char" style="white-space: normal;" class="blue-input" />
-                                    <field name="stone_type" width="150" style="white-space: normal;" class="blue-input" decoration-info="stone_type != 0"/>
-                                    <field name="shape_stone" width="160" style="white-space: normal;" class="blue-input" decoration-info="shape_stone != 0"/>
-                                    
-
-                                    <field name="height_shape" width="100" class="blue-input" decoration-info="height_shape != 0"/>
-                                    <field name="width_stone" width="100" class="blue-input" decoration-info="width_stone != 0"/>
-                                    <field name="test_conditin" width="150" style="white-space: normal;" />
-                                    <field name="load_perpendiculer" width="150" class="blue-input" decoration-info="load_perpendiculer != 0"/>
-                                    <field name="load_parallel" width="150" class="blue-input" decoration-info="load_parallel != 0"/>
-                                    <field name="load_perpendiculer_n" width="150"/>
-                                    <field name="load_parallel_n" width="150"/>
-                                    <field name="duration_test" width="120" class="blue-input" decoration-info="duration_test != 0"/>
-                                    <field name="appearance_stone" width="180" class="blue-input" decoration-info="appearance_stone != 0"/>
-                                    <field name="hd_stone" width="100"/>
-                                    <field name="area_stone" width="120"/>
-                                    <field name="compressive_perpendiculer" width="200"/>
-                                    <field name="compressive_parallel" width="200"/>
-                                    <field name="stress_perpendiculer" width="180"/>
-                                    <field name="stress_parallel" width="180"/>
-
-                                    <field name="compressive_perpendiculer1" width="180"/>
-                                    <field name="compressive_parallel1" width="180"/>
-                                </tree>
-                            </field>
-                        </div>
-
-                        <div class="d-flex gap-2" invisible = "compressive_wet_visible == False">
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                 <tr>
-                                 <td><label class="text-bold" for="compressive_perpendiculer_wet_avg">Average Compressive Strength Perpendicular Wet (N/mm²)</label></td>
-                                <td><field name='compressive_perpendiculer_wet_avg' col="1"/></td>
-                            </tr>
-                            <tr>
-                                <td><label class="text-bold" for="compressive_perpendiculer_wet_avg_conformity">Conformity</label></td>
-                                <td>
-                                    <field name="compressive_perpendiculer_wet_avg_conformity"
-                                        decoration-success="compressive_perpendiculer_wet_avg_conformity == 'pass'"
-                                        decoration-danger="compressive_perpendiculer_wet_avg_conformity == 'fail'"
-                                        readonly="1"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><label class="text-bold" for="compressive_perpendiculer_wet_avg_nabl">NABL</label></td>
-                                <td>
-                                    <field name="compressive_perpendiculer_wet_avg_nabl"
-                                        decoration-success="compressive_perpendiculer_wet_avg_nabl == 'pass'"
-                                        decoration-danger="compressive_perpendiculer_wet_avg_nabl == 'fail'"
-                                        readonly="1"/>
-                                </td>
-                            </tr>
-                               
-                            </tbody>
-                        </table>
-                        
-                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                            <tbody>
-                                <tr>
-                                <td><label class="text-bold" for="compressive_parallel_wet_avg">Average Compressive Strength Parallel Wet (N/mm²)</label></td>
-                                <td> <field name='compressive_parallel_wet_avg' col="1"/></td>
-                            </tr>
-                            <tr>
-                                <td><label class="text-bold" for="compressive_parallel_wet_avg_conformity">Conformity</label></td>
-                                <td>
-                                    <field name="compressive_parallel_wet_avg_conformity"
-                                        decoration-success="compressive_parallel_wet_avg_conformity == 'pass'"
-                                        decoration-danger="compressive_parallel_wet_avg_conformity == 'fail'"
-                                        readonly="1"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><label class="text-bold" for="compressive_parallel_wet_avg_nabl">NABL</label></td>
-                                <td>
-                                    <field name="compressive_parallel_wet_avg_nabl"
-                                        decoration-success="compressive_parallel_wet_avg_nabl == 'pass'"
-                                        decoration-danger="compressive_parallel_wet_avg_nabl == 'fail'"
-                                        readonly="1"/>
-                                </td>
-                            </tr>
-                               
-                            </tbody>
-                        </table>
-                    </div>
-
+                        </tbody>
+                    </table>
 
 
                         
@@ -376,39 +160,22 @@
                         </h1>
                     </div>
 
-                    <div invisible="water_absorption_visible == False" style="text-align:center">
-                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                       <tbody>
-                         <tr>
-                           <td style="font-weight:bold"><span>Sample No</span></td>
-                           <td  style="font-weight:bold"><span>Sample 1</span></td>
-                           <td  style="font-weight:bold"><span>Sample 2</span></td>
-                           <td  style="font-weight:bold"><span>Sample 3</span></td>
-                         </tr>
-                         <tr>
-                           <td><label for="sample1_oven_weight">Oven Dried Weight (g)</label></td>
-                           <td><field  name="sample1_oven_weight"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample2_oven_weight"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample3_oven_weight"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                         </tr>
-                         <tr>
-                           <td><label for="sample1_saturated_weight">Saturated Surface Dry Weight (g)</label></td>
-                           <td><field  name="sample1_saturated_weight"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample2_saturated_weight"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample3_saturated_weight"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                         </tr>
-                         <tr>
-                           <td><label for="sample1_water_absorption">Water Absorption (%)</label></td>
-                           <td><field  name="sample1_water_absorption"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample2_water_absorption"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample3_water_absorption"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                         </tr>
-                       </tbody>
-                     </table>
-                    </div>
+                    <div invisible = "water_absorption_visible == False" >
+                        <field name="water_absorption_ids">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no' />
 
-                                    
-                    
+                                <field name='description' class="blue-input" decoration-info="description != 0" width="100"/>
+                                <field name='oven_dry_weight' 
+                                 class="blue-input" decoration-info="oven_dry_weight != 0"/>
+                                <field name="saturated_weight" class="blue-input" decoration-info="saturated_weight != 0"/>
+                                <field name='water_absorption' />
+
+                                <field name='remarks' class="blue-input" decoration-info="remarks != 0" width="100"/>
+                            </tree>
+                        </field>
+                    </div>
+                               
                     <table class="table o_form_table w-50 mt-2 custom_table_borders" invisible="not water_absorption_visible">
                         <tbody>
                             <tr>
@@ -435,8 +202,80 @@
                                         readonly="1"/>
                                 </td>
                             </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="water_absorption_report_type">Report Type</label></td>
+                                <td><field name="water_absorption_report_type" class="blue-input" decoration-info="water_absorption_report_type != 0"/></td>
+                            </tr>
                         </tbody>
                     </table>
+
+
+
+                    
+                    <!-- True Specific Gravity -->
+
+                    <div invisible="true_specific_visible == False" style="text-align:center">
+                        <h1>
+                          <field name="true_specific_name" readonly="1" nolabel="1"/>
+                          <field name="true_specific_visible" invisible='1'/>
+                        </h1>
+                    </div>
+
+                    <div invisible = "water_absorption_visible == False" >
+                        <field name="true_specific_ids">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no' />
+
+                                <field name='w1' class="blue-input" decoration-info="w1 != 0" width="100"/>
+                                <field name='w2' 
+                                 class="blue-input" decoration-info="w2 != 0"/>
+                                <field name="w3" class="blue-input" decoration-info="w3 != 0"/>
+                                <field name='w4' class="blue-input" decoration-info="w4 != 0"/>
+
+                                <field name='true_specific_gravity' />
+                                <field name='remarks' class="blue-input" decoration-info="remarks != 0" width="100"/>
+                            </tree>
+                        </field>
+                    </div>
+     
+                    
+                    <table class="table o_form_table w-50 mt-2 custom_table_borders" invisible="not true_specific_visible">
+                        <tbody>
+                            <tr>
+                                <td><label class="text-bold" for="avg_true_specific_gravity">Average True Specific Gravity</label></td>
+                                <td>
+                                    <field name="avg_true_specific_gravity"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="text-bold" for="avg_true_specific_gravity_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="avg_true_specific_gravity_conformity"
+                                        decoration-success="avg_true_specific_gravity_conformity == 'pass'"
+                                        decoration-danger="avg_true_specific_gravity_conformity == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="text-bold" for="avg_true_specific_gravity_nabl">NABL</label></td>
+                                <td>
+                                    <field name="avg_true_specific_gravity_nabl"
+                                        decoration-success="avg_true_specific_gravity_nabl == 'pass'"
+                                        decoration-danger="avg_true_specific_gravity_nabl == 'fail'"
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="true_specific_gravity_report_type">Report Type</label></td>
+                                <td><field name="true_specific_gravity_report_type" class="blue-input" decoration-info="true_specific_gravity_report_type != 0"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+
+
+
 
 
                     <!-- Apparent Specific Gravity -->
@@ -515,93 +354,6 @@
                             </tr>
                         </tbody>
                     </table>
-
-
-                    <!-- True Specific Gravity -->
-
-                    <div invisible="true_specific_visible == False" style="text-align:center">
-                        <h1>
-                          <field name="true_specific_name" readonly="1" nolabel="1"/>
-                          <field name="true_specific_visible" invisible='1'/>
-                        </h1>
-                    </div>
-
-                    <div invisible="true_specific_visible == False" style="text-align:center">
-                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                       <tbody>
-                         <tr>
-                           <td style="font-weight:bold"><span>Sample No</span></td>
-                           <td  style="font-weight:bold"><span>Sample 1</span></td>
-                           <td  style="font-weight:bold"><span>Sample 2</span></td>
-                           <td  style="font-weight:bold"><span>Sample 3</span></td>
-                         </tr>
-                         <tr>
-                           <td><label for="sample1_w1">Empty Bottle Weight (W1) (g)</label></td>
-                           <td><field  name="sample1_w1"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample2_w1"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample3_w1"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                         </tr>
-                         <tr>
-                           <td><label for="sample1_w2">Bottle + Powder Weight (W2) (g)</label></td>
-                           <td><field  name="sample1_w2"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample2_w2"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample3_w2"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                         </tr>
-                         <tr>
-                           <td><label for="sample1_w3">Bottle + Powder + Water Weight (W3) (g)</label></td>
-                           <td><field  name="sample1_w3"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample2_w3"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample3_w3"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                         </tr>
-                         <tr>
-                           <td><label for="sample1_w4">Bottle + Water Weight (W4) (g)</label></td>
-                           <td><field  name="sample1_w4"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample2_w4"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample3_w4"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                         </tr>
-                         <tr>
-                           <td><label for="sample1_true_specific_gravity">True Specific Gravity</label></td>
-                           <td><field  name="sample1_true_specific_gravity"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample2_true_specific_gravity"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                           <td><field  name="sample3_true_specific_gravity"  colspan="1"  nolabel="1" class="blue-input"/></td>
-                         </tr>
-                       </tbody>
-                     </table>
-                    </div>
-
-                                    
-                    
-                    <table class="table o_form_table w-50 mt-2 custom_table_borders" invisible="not true_specific_visible">
-                        <tbody>
-                            <tr>
-                                <td><label class="text-bold" for="avg_true_specific_gravity">Average True Specific Gravity</label></td>
-                                <td>
-                                    <field name="avg_true_specific_gravity"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><label class="text-bold" for="avg_true_specific_gravity_conformity">Conformity</label></td>
-                                <td>
-                                    <field name="avg_true_specific_gravity_conformity"
-                                        decoration-success="avg_true_specific_gravity_conformity == 'pass'"
-                                        decoration-danger="avg_true_specific_gravity_conformity == 'fail'"
-                                        readonly="1"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><label class="text-bold" for="avg_true_specific_gravity_nabl">NABL</label></td>
-                                <td>
-                                    <field name="avg_true_specific_gravity_nabl"
-                                        decoration-success="avg_true_specific_gravity_nabl == 'pass'"
-                                        decoration-danger="avg_true_specific_gravity_nabl == 'fail'"
-                                        readonly="1"/>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-
-
 
 
                   
