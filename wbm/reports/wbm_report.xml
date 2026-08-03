@@ -10,7 +10,7 @@
 
 						<table style="margin-top:10px;">
 							<tr>
-								<td colspan="12">Customer Party Name :
+								<td colspan="12">#Customer Party Name :
 																		<![CDATA[&nbsp;]]>
 									<span t-field="o.srf_id.customer.name"/>
 									<br/>
@@ -24,12 +24,12 @@
 								</td>
 							</tr>
 							<tr>
-								<td colspan="12">Project / Site Address : 									<![CDATA[&nbsp;]]>
+								<td colspan="12">#Project / Site Address :<![CDATA[&nbsp;]]>
 									<span t-field="o.srf_id.name_work"/>
 								</td>
 							</tr>
 							<tr>
-								<td colspan="12">Sample Description : 									<![CDATA[&nbsp;]]>
+								<td colspan="12">#Sample Description :<![CDATA[&nbsp;]]>
 									<span t-field="o.sample_id.sample_description"/>
 								</td>
 							</tr>
@@ -38,81 +38,63 @@
 
 						<table>
 							<tr>
-								<td colspan="6">Test Start Date :									<![CDATA[&nbsp;]]>
+								<td colspan="6">Test Start Date :<![CDATA[&nbsp;]]>
 									<span t-field="o.start_date"/>
 								</td>
-								<td colspan="6">Test End Date :									<![CDATA[&nbsp;]]>
+								<td colspan="6">Test End Date :<![CDATA[&nbsp;]]>
 									<span t-field="o.end_date"/>
 								</td>
 							</tr>
 							<tr>
-								<td colspan="6">Sample Id Mark: 									<![CDATA[&nbsp;]]>
+								<td colspan="6">#Sample Id Mark:<![CDATA[&nbsp;]]>
 									<span t-field="o.sample_id.client_sample_id"/>
 								</td>
-								<td colspan="6">Sample Receipt Date :									<![CDATA[&nbsp;]]>
+								<td colspan="6">Sample Receipt Date :<![CDATA[&nbsp;]]>
 									<span t-field="o.sample_id.sample_received_date"/>
 								</td>
 							</tr>
 							<tr>
-								<td colspan="6">Size :
-																		<![CDATA[&nbsp;]]>
+								<td colspan="6">#Size :<![CDATA[&nbsp;]]>
 									<span t-field="o.sample_id.size_id.size"/>
 								</td>
-								<td colspan="6">Grade :
-																		<![CDATA[&nbsp;]]>
+								<td colspan="6">#Grade :<![CDATA[&nbsp;]]>
 									<span t-field="o.sample_id.grade_id.grade"/>
 								</td>
 							</tr>
 							<tr>
-								<td colspan="6">Brand :
-																		<![CDATA[&nbsp;]]>
+								<td colspan="6">#Brand :<![CDATA[&nbsp;]]>
 									<span t-field="o.sample_id.brand"/>
 								</td>
-								<td colspan="6">Consultant Name :
+								<td colspan="6">#Consultant Name :
 									<![CDATA[&nbsp;]]>
 									<span t-field="o.srf_id.consultant_name1"/>
 								</td>
 							</tr>
 							<tr>
-								<td colspan="6">Client Name :
+								<td colspan="6">#Client Name :
 		                      	<![CDATA[&nbsp;]]>
 								<span t-field="o.srf_id.client"/>
 								</td>
-								<td colspan="6">Client Reference :
-																		<![CDATA[&nbsp;]]>
+								<td colspan="6">#Client Reference :<![CDATA[&nbsp;]]>
 									<span t-field="o.srf_id.client_refrence"/>
 								</td>
 							</tr>
 							<tr>
-								<td colspan="6">Discipline :
-																		<![CDATA[&nbsp;]]>
+								<td colspan="6">Discipline :<![CDATA[&nbsp;]]>
 									<span t-field="o.discipline.discipline"/>
 								</td>
-								<td colspan="6">Group :
-																		<![CDATA[&nbsp;]]>
+								<td colspan="6">Group :<![CDATA[&nbsp;]]>
 									<span t-field="o.group.group"/>
 								</td>
 							</tr>
 							<tr>
-								<td colspan="6">Material/Test Name :
-																		<![CDATA[&nbsp;]]>
+								<td colspan="6">Material/Test Name :<![CDATA[&nbsp;]]>
 									<span t-field="o.material.name"/>
 								</td>
-								<td colspan="6">Job Ref No :
-																		<![CDATA[&nbsp;]]>
+								<td colspan="6">Job Ref No :<![CDATA[&nbsp;]]>
 									<span t-field="o.kes_no"/>
 								</td>
 							</tr>
-								<!-- Source of Sample (only if value exists) -->
-								<tr t-if="o.material.source_sample">
-									<td colspan="12">Source of Sample: <![CDATA[&nbsp;]]><span t-field="o.material.source_sample"/></td>
-								</tr>
-
-								<!-- Test method adopted (only if value exists) -->
-								<tr t-if="o.material.test_method_adopted">
-									<td colspan="12">Test method adopted: <![CDATA[&nbsp;]]>
-									<span t-field="o.material.test_method_adopted"/></td>
-								</tr>
 						</table> 
 					</div>
 

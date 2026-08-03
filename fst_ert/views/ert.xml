@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="ert_parent_view" model="ir.ui.view">
+            <field name="name">lerm.ert.parent.form</field>
+            <field name="model">lerm.ert.parent</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="print_report"
+                            string="Print Project Report"
+                            type="object"
+                            class="btn-primary"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <field name="name" />
+                            <field name="rec_date"/>
+                        </group>
+
+                        <button
+                            type="object"
+                            class="oe_highlight"
+                            name="create_ert"
+                            string="Create ERT"
+                            />
+
+                        <field name="ert_lines" readonly="1">
+                            <tree editable="bottom">
+                                <field name="soil_resistivity_id" widget="many2one" options="{'no_open': False}"/>
+                                <field name="create_date" readonly="1"/>
+                                <button name="action_duplicate_ert" string="Duplicate" type="object" icon="fa-copy" class="btn-secondary me-5"/>
+                                <button name="action_delete_line" string="Delete" type="object" icon="fa-trash" class="btn-danger" confirm="Are you sure you want to delete this line?"/>
+                            </tree>
+                        </field>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="ert_parent_tree_view" model="ir.ui.view">
+            <field name="name">lerm.ert.parent.tree</field>
+            <field name="model">lerm.ert.parent</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name='name'/>
+                    <field name="rec_date" optional="show" />
+                    <button name="action_duplicate_parent" string="Duplicate Project" type="object" class="btn-secondary" icon="fa-copy"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_print_report" model="ir.actions.server">
+            <field name="name">Print Report</field>
+            <field name="model_id" ref="model_lerm_ert_parent"/>
+            <field name="binding_model_id" ref="model_lerm_ert_parent"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">records.print_report()</field>
+        </record>
+
+        <record id="lerm_ert_parent_action" model="ir.actions.act_window">
+            <field name="name">ERT</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">lerm.ert.parent</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">ERT</p>
+            </field>
+        </record>
+
+        <record id="action_lerm_ert_parent" model="ir.actions.act_window">
+            <field name="name">ERTs</field>
+            <field name="res_model">lerm.ert.parent</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Inject ERT card into FST dashboard -->
+        <record id="ert_dashboard_card" model="ir.ui.view">
+            <field name="name">fst.dashboard.ert.card</field>
+            <field name="model">lerm.ert.dashboard</field>
+            <field name="inherit_id" ref="fst.view_ert_dashboard"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[contains(@class, 'card-box')][last()]" position="after">
+                    <div class="card-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+                        <h3 class="title">ERTs</h3>
+                        <a type="action"
+                        name="%(action_lerm_ert_parent)d"
+                        class="btn btn-lg"
+                        style="background:#4b0082; color:#fff;">
+                            Create ERT
+                        </a>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

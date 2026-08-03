@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+
+        <record id="view_temp_monitoring_form" model="ir.ui.view">
+            <field name="name">lerm.temp.monitoring.form</field>
+            <field name="model">lerm.temp.monitoring</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        
+                        <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_form"
+                            string="Open Form"
+                            />
+                        <group>
+                            <group>
+                                <field name="grade"/>
+                                <field name="eln_ref"/>
+                                <field name="thickness"/>
+                                <field name="reference"/>
+
+                                
+                            </group>
+                            <group>
+                                <field name="size"/>
+                                <field name="data_logger_label"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    
+                </form>
+            </field>
+        </record>
+
+        <record id="action_temp_monitoring" model="ir.actions.act_window">
+            <field name="name">Temperature Monitoring</field>
+            <field name="res_model">lerm.temp.monitoring</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_temp_monitoring"
+            name="Temperature Monitoring"
+            parent="fst.fst_root"
+            action="action_temp_monitoring"
+            sequence="10"/>
+
+        <!-- Inject Temperature Monitoring card into FST dashboard -->
+        <record id="temp_monitoring_dashboard_card" model="ir.ui.view">
+            <field name="name">fst.dashboard.temp_monitoring.card</field>
+            <field name="model">lerm.ert.dashboard</field>
+            <field name="inherit_id" ref="fst.view_ert_dashboard"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[contains(@class, 'card-box')][last()]" position="after">
+                    <div class="card-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+                        <h3 class="title">Temperature Monitoring</h3>
+                        <a type="action"
+                        name="%(action_temp_monitoring)d"
+                        class="btn btn-lg"
+                        style="background:#ffb300; color:#000;">
+                            Records
+                        </a>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>
