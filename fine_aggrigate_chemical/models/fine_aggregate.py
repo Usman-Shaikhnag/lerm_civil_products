@@ -13,6 +13,35 @@ class ChemicalFineAggregate(models.Model):
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
+    notes_id = fields.One2many('chemical.fine.aggregate.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(ChemicalFineAggregate, self).default_get(fields)
+
+        default_notes = [
+             (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The Test Report(s) is/are valid only to the sample submitted to the laboratory.',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'Sample(s) was/were not drawn by laboratory.',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': '# - Information provided by the customer.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
+
 
     ph_name = fields.Char("Name",default="pH of 1 % Solution in water")
     ph_visible = fields.Boolean("pH",compute="_compute_visible")
@@ -336,35 +365,55 @@ class ChemicalFineAggregate(models.Model):
     chloride_name = fields.Char("Name",default="Chloride")
     chloride_visible = fields.Boolean("Chloride",compute="_compute_visible")
 
-    sample_wt_chloride = fields.Float("Sample Wt")
-    volume_make_upto_chloride = fields.Float("Volume make Upto")
-    aliqote_taken_chloride = fields.Float("Aliqote taken")
-    volume_silver_nitrate_added = fields.Float("Volume of silver nitrate added")
-    volume_ammonia_blank = fields.Float("Volume of ammonia thiocynate for (Blank)")
-    volume_ammonia_sample = fields.Float("Volume of ammonia thiocynate for (Sample)")
-    volume_ammonia_consumed = fields.Float("Volume of ammonia thiocynate consumed",compute="_compute_volume_ammonia_consumed")
-    normality_of_ammonia = fields.Float("Normality of ammonia thiocynate (0.1)",digits=(16, 4))
-    chloride_percent = fields.Float("Chloride %",compute="_compute_chloride_percent",digits=(16, 4))
+    sample_wt_chloride = fields.Float("A)sample wt ",digits=(12,4))
+    volume_make_upto_chloride = fields.Float("B)Volume make upto",digits=(12,2))
+    aliqote_taken_chloride = fields.Float("C)Aliqote taken",digits=(12,2))
+    volume_silver_nitrate_added = fields.Float("D)Volume of silver nitrate added",digits=(12,2))
+    volume_ammonia_blank = fields.Float("G) Volume of ammonia thiosynate consumed",digits=(12,2))
+    volume_ammonia_sample = fields.Float("H) Normality of ammonia thiocynate (0.1)",digits=(12,4))
+    volume_ammonia_consumed = fields.Float("I) Chloride=0.003546*(1000/wt)*(D-(10*G*H)%",compute="_compute_chloride",digits=(12,4))
+    # normality_of_ammonia = fields.Float("Normality of ammonia thiocynate (0.1)",digits=(16, 4))
+    # volume_ammonia_consumed = fields.Float("Chloride %",compute="_compute_volume_ammonia_consumed",digits=(16, 4))
 
-    @api.depends('volume_ammonia_blank','volume_ammonia_blank')
-    def _compute_volume_ammonia_consumed(self):
-        for record in self:
-            record.volume_ammonia_consumed = record.volume_ammonia_blank - record.volume_ammonia_sample
+    # @api.depends('volume_ammonia_blank','volume_ammonia_blank')
+    # def _compute_volume_ammonia_consumed(self):
+    #     for record in self:
+    #         record.volume_ammonia_consumed = record.volume_ammonia_blank - record.volume_ammonia_sample
 
 
-    @api.depends('volume_ammonia_consumed','normality_of_ammonia','aliqote_taken_chloride')
-    def _compute_chloride_percent(self):
-        for record in self:
-            if record.aliqote_taken_chloride != 0:
-                record.chloride_percent = (record.volume_ammonia_consumed * record.normality_of_ammonia * 0.03545 * 100)/record.aliqote_taken_chloride
+    # @api.depends('volume_ammonia_consumed','normality_of_ammonia','aliqote_taken_chloride')
+    # def _compute_chloride_percent(self):
+    #     for record in self:
+    #         if record.aliqote_taken_chloride != 0:
+    #             record.chloride_percent = (record.volume_ammonia_consumed * record.normality_of_ammonia * 0.03545 * 100)/record.aliqote_taken_chloride
+    #         else:
+    #             record.chloride_percent = 0
+
+    @api.depends(
+        'sample_wt_chloride',
+        'volume_silver_nitrate_added',
+        'volume_ammonia_blank',
+        'volume_ammonia_sample'
+    )
+    def _compute_chloride(self):
+        for rec in self:
+            if rec.sample_wt_chloride:
+                rec.volume_ammonia_consumed = (
+                    0.003546 *
+                    (1000 / rec.sample_wt_chloride) *
+                    (
+                        rec.volume_silver_nitrate_added -
+                        (10 * rec.volume_ammonia_blank * rec.volume_ammonia_sample)
+                    )
+                )
             else:
-                record.chloride_percent = 0
+                rec.volume_ammonia_consumed = 0.0
 
     chloride_percent_conformity_fine = fields.Selection([
             ('pass', 'Pass'),
             ('fail', 'Fail')], string="Conformity",compute="_compute_chloride_percent_conformity_fine", store=True)
 
-    @api.depends('chloride_percent','eln_ref','grade')
+    @api.depends('volume_ammonia_consumed','eln_ref','grade')
     def _compute_chloride_percent_conformity_fine(self):
         
         for record in self:
@@ -377,8 +426,8 @@ class ChemicalFineAggregate(models.Model):
                     req_max = material.req_max
                     mu_value = line.mu_value
                     
-                    lower = record.chloride_percent - record.chloride_percent*mu_value
-                    upper = record.chloride_percent + record.chloride_percent*mu_value
+                    lower = record.volume_ammonia_consumed - record.volume_ammonia_consumed*mu_value
+                    upper = record.volume_ammonia_consumed + record.volume_ammonia_consumed*mu_value
                     if lower >= req_min and upper <= req_max:
                         record.chloride_percent_conformity_fine = 'pass'
                         break
@@ -389,7 +438,7 @@ class ChemicalFineAggregate(models.Model):
         ('pass', 'NABL'),
         ('fail', 'Non-NABL')], string="NABL",compute="_compute_chloride_percent_nabl_fine", store=True)
 
-    @api.depends('chloride_percent','eln_ref','grade')
+    @api.depends('volume_ammonia_consumed','eln_ref','grade')
     def _compute_chloride_percent_nabl_fine(self):
         
         for record in self:
@@ -402,8 +451,8 @@ class ChemicalFineAggregate(models.Model):
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.chloride_percent - record.chloride_percent*mu_value
-            upper = record.chloride_percent + record.chloride_percent*mu_value
+            lower = record.volume_ammonia_consumed - record.volume_ammonia_consumed*mu_value
+            upper = record.volume_ammonia_consumed + record.volume_ammonia_consumed*mu_value
             if lower >= lab_min and upper <= lab_max:
                 record.chloride_percent_nabl_fine = 'pass'
                 break
@@ -760,6 +809,100 @@ class ChemicalFineAggregate(models.Model):
                     record.k2O_name_visible = True
                 if sample.internal_id == '0510b578-b3de-4045-bd55-5f54198e9dc8':
                     record.total_alkali_content_visible = True
+
+
+    def open_eln_page(self):
+        # import wdb; wdb.set_trace()
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        technician_results = self.eln_ref.parameters_result.filtered(
+            lambda r: r.technician == current_user
+        )
+
+        for result in self.eln_ref.parameters_result:
+            # ph 
+            if result.parameter.internal_id == '628cf04d-645d-4794-a0fd-3daabff4b044':
+                result.result_char = round(self.ph_average,2)
+                result.calculated = True
+                if self.ph_average_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'c87d2fa3-ba0b-4e64-84d1-e3b23f19dafa':
+                result.result_char = round(self.volume_ammonia_consumed,2)
+                result.calculated = True
+                if self.chloride_percent_nabl_fine == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'f605daf3-ffb4-48c2-aa20-fffb1d556c07':
+                result.result_char = round(self.sulphate_percent,2)
+                result.calculated = True
+                if self.sulphate_percent_nabl_fine == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '0437ea07-5283-4248-9430-e5d89866d3c5':
+                result.result_char = round(self.average_reduction_alkalinity,2)
+                result.calculated = True
+                if self.average_reduction_alkalinity_nabl_fine == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'fa80a69f-bf0f-4aa3-a9d3-70767e7bf24a':
+                result.result_char = round(self.average_dissolved_silica,2)
+                result.calculated = True
+                if self.average_dissolved_silica_nabl_fine == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '03507018-bb06-4362-a2e7-6d70ec7d8870':
+                result.result_char = round(self.na2O,2)
+                result.calculated = True
+                if self.na2O_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '3997903d-8a2e-49fc-baa1-531f0b805cac':
+                result.result_char = round(self.k2O,2)
+                result.calculated = True
+                if self.k2O_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '0510b578-b3de-4045-bd55-5f54198e9dc8':
+                result.result_char = round(self.total_alkali_content,2)
+                result.calculated = True
+                if self.total_alkali_content_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            
+
+        return {
+                'view_mode': 'form',
+                'res_model': "lerm.eln",
+                'type': 'ir.actions.act_window',
+                'target': 'current',
+                'res_id': self.eln_ref.id,
+                
+            }
                     	
 
     
@@ -797,4 +940,12 @@ class ChemicalFineAggregate(models.Model):
     def _compute_grade_id(self):
         if self.eln_ref:
             self.grade = self.eln_ref.grade_id.id
+
+
+class FineAggregateCNotes(models.Model):
+    _name = "chemical.fine.aggregate.notes"
+
+    parent_id = fields.Many2one('chemical.fine.aggregate',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
     

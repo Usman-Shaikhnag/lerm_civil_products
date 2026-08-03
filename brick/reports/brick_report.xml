@@ -12,11 +12,31 @@
 				</div> -->
 
 
-				<div class="container_eln" style="">
+				<div class="container_eln">
 					
 					<div t-foreach="eln" t-as="o">
-					<table>
-						<tr>
+						<!-- <table>
+							<tr>
+								<td colspan="3">Report no :
+								</td>
+								<td colspan="3">
+									<span t-field="o.kes_no"/>
+								</td>
+								<td colspan="3">Report Date :
+								<span t-field="o.end_date"/>
+								</td>
+								<td colspan="3">
+									<span t-field="o.srf_date"/>
+								</td>
+								<td colspan="3" t-if="nabl">ULR NO :
+								</td>
+								<td colspan="3" t-if="nabl">
+									<span t-field="o.sample_id.ulr_no"/>
+								</td>
+							</tr>
+						</table> -->
+						<table style="margin-top:10px;">
+							<tr>
 								<td colspan="12">#Customer Party Name :
 									<![CDATA[&nbsp;]]>
 									<span t-field="o.srf_id.customer.name"/><br/>
@@ -105,240 +125,607 @@
 								</td>
 							</tr>
 						</table>
-
 					</div>
-					<div style="text-align:center;">
-						<h4 class="mb-0" style="text-decoration: underline;">Results</h4>
-					</div>
-						<!-- <table style="margin-top:10px; width: 100%;">
-							<tbody>
-								<tr>
-									<td colspan="12">
-										<strong>Customer Party Name:</strong>
-										<span t-field="o.srf_id.customer.name"/>
-										<br/>
-										<span t-field="o.srf_id.customer.street"/>
-										<span t-field="o.srf_id.customer.street2"/>
-										<span t-field="o.srf_id.customer.city"/>
-										<span t-if="o.srf_id.customer.zip"> - <span t-field="o.srf_id.customer.zip"/></span>,
-										<span t-field="o.srf_id.customer.state_id"/> ,
-										<span t-field="o.srf_id.customer.country_id"/>
-									</td>
-								</tr>
 
-								<tr>
-									<td colspan="12">
-										<strong>Project / Site Address:</strong>
-										<span t-field="o.srf_id.name_work"/>
-									</td>
-								</tr>
 
-								<tr>
-									<td colspan="12">
-										<strong>Sample Description:</strong>
-										<span t-field="o.sample_id.sample_description"/>
-									</td>
-								</tr>
-							</tbody>
-						</table>
+					<!-- 1 Compressive strength  -->
 
-						<table style="width: 100%; margin-top:10px;">
-							<tbody>
-								<tr>
-									<td colspan="6">
-										<strong>Test Start Date:</strong>
-										<span t-field="o.start_date"/>
-									</td>
-									<td colspan="6">
-										<strong>Test End Date:</strong>
-										<span t-field="o.end_date"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="6">
-										<strong>Sample Id Mark:</strong>
-										<span t-field="o.sample_id.client_sample_id"/>
-									</td>
-									<td colspan="6">
-										<strong>Sample Receipt Date:</strong>
-										<span t-field="o.sample_id.sample_received_date"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="6">
-										<strong>Size:</strong>
-										<span t-field="o.sample_id.size_id.size"/>
-									</td>
-									<td colspan="6">
-										<strong>Grade:</strong>
-										<span t-field="o.sample_id.grade_id.grade"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="6">
-										<strong>Brand:</strong>
-										<span t-field="o.sample_id.brand"/>
-									</td>
-									<td colspan="6">
-										<strong>Consultant Name:</strong>
-										<span t-field="o.srf_id.consultant_name1"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="6">
-										<strong>Client Name:</strong>
-										<span t-field="o.srf_id.client"/>
-									</td>
-									<td colspan="6">
-										<strong>Client Reference:</strong>
-										<span t-field="o.srf_id.client_refrence"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="6">
-										<strong>Discipline:</strong>
-										<span t-field="o.discipline.discipline"/>
-									</td>
-									<td colspan="6">
-										<strong>Group:</strong>
-										<span t-field="o.group.group"/>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="12">
-										<strong>Material/Test Name:</strong>
-										<span t-field="o.material.name"/>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div> -->
-					
-					<div>
-						<table class="table table-bordered" style="width:100%; text-align:center;">
+					<div t-if="brick.compressive_strength_visible and (brick.comp_strength_nabl == 'pass' and nabl or (brick.comp_strength_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)" style="margin-top:20px;">
+						<td>
+							<span>
+								<strong>Compressive strength :</strong><![CDATA[&nbsp;]]>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','b0eecb4f-9287-48c7-a607-bf1b64a8115d')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+						</td>
+
+						<table t-if="brick.compressive_strength_visible" style="margin-top:30px;">
+							<t t-set="i" t-value="0"/>
 							<thead>
 								<tr>
-									<th>Description</th>
-									<th style="text-align: center;">Dimensions</th>
-									<th colspan="3">Requirements <span t-field="eln.material.test_method_adopted"></span></th>
+									<th style="text-align: center;">
+										<span style="font-weight: bold;">
+											Sr No
+										</span>
+									</th>
+									<th style="text-align: center;max-width:200px">
+										<span style="font-weight: bold;">
+											Crushing Load, KN
+										</span>
+									</th>
+
+									<th style="text-align: center;max-width:100px">
+										<span style="font-weight: bold;">
+											Area of Brick, mm2
+										</span>
+									</th>
+									<th style="text-align: center;">
+										<span style="font-weight: bold;">
+											Compressive Strength,  N/mm²
+										</span>
+									</th>
+									
+									<th style="text-align: center;font-weight: bold;">
+										Test Method
+									</th>
+									<th style="text-align: center;" t-if="eln.conformity">
+										<span style="font-weight: bold;">
+										Confirmity Status
+										</span>
+									</th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr>
-									<td>Length (mm)</td>
-									<td style="text-align: center;" t-esc="brick.length_in_mm"/>
-									<td rowspan="3" style="text-align: center; vertical-align: middle;"><span t-field="eln.material.test_method_adopted"></span></td>
-									<td rowspan="3" style="text-align: center; vertical-align: middle;">20 No's</td>
-									<td>4600±80mm</td>
+
+								<tr t-if="brick.compressive_strength_visible">
+									<td style="text-align: center;padding:0px">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td style="text-align: center;max-width:200px">
+										<span style="text-align: center;">
+											<span t-field="brick.load" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;max-width:100px">
+										<span style="text-align: center;">
+											<span t-field="brick.area" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+									<td style="text-align: center;">
+										<span style="text-align: center;">
+											<span t-field="brick.comp_strength_1" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+									
+									<td rowspan="5" style="text-align: center; vertical-align: middle;">
+										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','b0eecb4f-9287-48c7-a607-bf1b64a8115d')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<span t-field="parameter.specification"/>
+											</t>
+										</t>
+									</td>
+									<td rowspan="5" style="text-align: center; vertical-align: middle;" t-if="eln.conformity">
+										<span t-esc="brick.comp_strength_confirmity"/>
+									</td>
 								</tr>
-								<tr>
-									<td>Breadth (mm)</td>
-									<td style="text-align: center;" t-esc="brick.width_in_mm"/>
-									<td>2200±40mm</td>
+
+								<tr t-if="brick.compressive_strength_visible">
+									<td style="text-align: center;padding:0px">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td style="text-align: center;max-width:200px">
+										<span style="text-align: center;">
+											<span t-field="brick.load_2" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;max-width:100px">
+										<span style="text-align: center;">
+											<span t-field="brick.area_2" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+									<td style="text-align: center;">
+										<span style="text-align: center;">
+											<span t-field="brick.comp_strength_2" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
 								</tr>
-								<tr>
-									<td>Height (mm)</td>
-									<td style="text-align: center;" t-esc="brick.height_in_mm"/>
-									<td>1400±40mm</td>
+
+								<tr t-if="brick.compressive_strength_visible">
+									<td style="text-align: center;padding:0px">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td style="text-align: center;max-width:200px">
+										<span style="text-align: center;">
+											<span t-field="brick.load_3" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;max-width:100px">
+										<span style="text-align: center;">
+											<span t-field="brick.area_3" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+									<td style="text-align: center;">
+										<span style="text-align: center;">
+											<span t-field="brick.comp_strength_3" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+								</tr>
+
+								<tr t-if="brick.compressive_strength_visible">
+									<td style="text-align: center;padding:0px">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td style="text-align: center;max-width:200px">
+										<span style="text-align: center;">
+											<span t-field="brick.load_4" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;max-width:100px">
+										<span style="text-align: center;">
+											<span t-field="brick.area_4" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+									<td style="text-align: center;">
+										<span style="text-align: center;">
+											<span t-field="brick.comp_strength_4" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+								</tr>
+
+								<tr t-if="brick.compressive_strength_visible">
+									<td style="text-align: center;padding:0px">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td style="text-align: center;max-width:200px">
+										<span style="text-align: center;">
+											<span t-field="brick.load_5" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;max-width:100px">
+										<span style="text-align: center;">
+											<span t-field="brick.area_5" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+									<td style="text-align: center;">
+										<span style="text-align: center;">
+											<span t-field="brick.comp_strength_5" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
 								</tr>
 							</tbody>
 						</table>
-						<!-- 1 Compressive strength  -->
-						<table class="table table-bordered" style="width: 100%; text-align: center; border: 1px solid black; border-collapse: collapse;">
-							<thead>
-								<tr>
-									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle;">S.No</th>
-									<th colspan="3" style="border: 1px solid black; text-align: center; vertical-align: middle;">Dimensions<br/>
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','125478bvf3-8d5d-4f45-8afb-b911f9cafe41')]).test_method.test_method"/>
-										</th>
-									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle;">Compressive Strength,
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')]).unit.name"/><br/>
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','31478fghht-9287-48c7-a607-bf1b64a8115d')]).test_method.test_method"/>
-									</th>
-									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle;">Water Absorption, 
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')]).unit.name"/><br/>
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','321475gfet1-f3ab-4b19-af25-91a4671baf5f')]).test_method.test_method"/>
-									</th>
-									<th rowspan="2" style="border: 1px solid black; text-align: center; vertical-align: middle;">Efflorescence<br/>
-										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3214598fgrt-d27d-4ef9-9b27-e8eb4e7ae6ac')]).test_method.test_method"/>
-									</th>
-								</tr>
-								<tr>
-									<th style="border: 1px solid black; text-align: center;">Length</th>
-									<th style="border: 1px solid black; text-align: center;">Breadth</th>
-									<th style="border: 1px solid black; text-align: center;">Height</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td style="border: 1px solid black; text-align: center;">1</td>
-									<td t-esc="brick.length" style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.width" style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.height" style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.comp_strength_1" t-options='{"widget": "float", "precision": 2}' style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.water_absorption" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
-									<td t-esc="brick.visual_observation_1" style="border: 1px solid black; text-align: center;"/>
-								</tr>
-								<tr>
-									<td style="border: 1px solid black; text-align: center;">2</td>
-									<td t-esc="brick.length_2" style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.width_2" style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.height_2" style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.comp_strength_2" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
-									<td t-esc="brick.water_absorption_2" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
-									<td t-esc="brick.visual_observation_2" style="border: 1px solid black; text-align: center;"/>
-								</tr>
-								<tr>
-									<td style="border: 1px solid black; text-align: center;">3</td>
-									<td t-esc="brick.length_3" style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.width_3" style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.height_3" style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.comp_strength_3" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
-									<td t-esc="brick.water_absorption_3" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
-									<td t-esc="brick.visual_observation_3" style="border: 1px solid black; text-align: center;"/>
-								</tr>
-								<tr>
-									<td style="border: 1px solid black; text-align: center;">4</td>
-									<td t-esc="brick.length_4" style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.width_4" style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.height_4" style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.comp_strength_4" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
-									<td t-esc="brick.water_absorption_4" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
-									<td t-esc="brick.visual_observation_4" style="border: 1px solid black; text-align: center;"/>
-								</tr>
-								<tr>
-									<td style="border: 1px solid black; text-align: center;">5</td>
-									<td t-esc="brick.length_5" style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.width_5" style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.height_5" style="border: 1px solid black; text-align: center;"/>
-									<td t-esc="brick.comp_strength_5" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
-									<td t-esc="brick.water_absorption_5" style="border: 1px solid black; text-align: center;" t-options='{"widget": "float", "precision": 2}'/>
-									<td t-esc="brick.visual_observation_5" style="border: 1px solid black; text-align: center;"/>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-					<div style="margin-top:20px; page-break-inside: avoid;" class="noteContainer">
-						<table class="table table-bordered">
+						<table t-if="brick.compressive_strength_visible" style="margin-top: 20px;max-width:400px">
 							<tr>
-								<td style="padding: 5px; font-style: italic; font-size: 12px;">
-									<b>Note:-</b>
-									&#160;&#160;(i) The results relate only to the items tested 
-									&#160;&#160;(ii) This test report should not be reproduced except in full, without written approval of this Laboratory 
-									&#160;&#160;(iii) Any corrections invalidate the test reports 
-									&#160;&#160;(iv) Any Query regarding the report must be reported immediately. 
-									&#160;&#160;(v) * mark indicate tests which are not in the scope of NABL. 
-									&#160;&#160;(vi) # mark indicates Details given by Client.
-									<t t-if="eln.has_witness">
-										&#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
-									</t>
-									<t t-if="eln.remarks">
-										&#160;&#160;<span t-esc="eln.remarks"/>
-									</t>
+								<td style="font-weight: bold;">Average Compressive Strength</td>
+								<td style="text-align: center;">
+									<span t-field="brick.avrg_compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
 								</td>
 							</tr>
 						</table>
 					</div>
+
+					<!-- Efflorence -->
+					<div t-if="brick.efflorescence_visible" style="margin-top:50px;page-break-inside: avoid;">
+
+						<td>
+							<span>
+								<strong>Efflorescence :</strong><![CDATA[&nbsp;]]>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','baa9df3c-d27d-4ef9-9b27-e8eb4e7ae6ac')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+						</td>
+
+						<table style="margin-top:30px;">
+							<t t-set="i" t-value="0"/>
+							<thead>
+								<tr>
+									<th style="text-align: center;">
+										<span style="font-weight: bold;">
+											Sr No
+										</span>
+									</th>
+									<th style="text-align: center;max-width:200px">
+										<span style="font-weight: bold;">
+											1 Observation
+										</span>
+									</th>
+									<th style="text-align: center;max-width:100px">
+										<span style="font-weight: bold;">
+											2 Observation
+										</span>
+									</th>
+									<th style="text-align: center;">
+										<span style="font-weight: bold;">
+											3 Observation
+										</span>
+									</th>
+									<th style="text-align: center;">
+										<span style="font-weight: bold;">
+											4 Observation
+										</span>
+									</th>
+									<th style="text-align: center;">
+										<span style="font-weight: bold;">
+											5 Observation
+										</span>
+
+									</th>
+									<!-- <th>
+										<span style="font-weight: bold;">
+											Specification
+										</span>
+									</th> -->
+									<th>
+										<span style="font-weight: bold;">
+											Test Method
+										</span>
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+
+								<tr t-if="brick.efflorescence_visible">
+									<td style="text-align: center;padding:0px">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td style="text-align: center;max-width:200px">
+										<span style="text-align: center;">
+											<span t-field="brick.visual_observation_1"/>
+										</span>
+									</td>
+
+									<td style="text-align: center;max-width:100px">
+										<span style="text-align: center;">
+											<span t-field="brick.visual_observation_2"/>
+										</span>
+									</td>
+									<td style="text-align: center;">
+										<span style="text-align: center;">
+											<span t-field="brick.visual_observation_3"/>
+										</span>
+									</td>
+									<td style="text-align: center;">
+										<span style="text-align: center;">
+											<span t-field="brick.visual_observation_4"/>
+										</span>
+									</td>
+									<td style="text-align: center;">
+										<span style="text-align: center;">
+											<span t-field="brick.visual_observation_5"/>
+										</span>
+									</td>
+									
+									<td style="text-align: center; vertical-align: middle;">
+										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','baa9df3c-d27d-4ef9-9b27-e8eb4e7ae6ac')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<span t-field="parameter.specification"/>
+											</t>
+										</t>
+									</td>
+								</tr>
+
+							</tbody>
+						</table>
+					</div>
+
+					<!-- Dimension -->
+					<div t-if="brick.dimension_visible" style="margin-top:20px; page-break-inside: avoid;">
+						<td>
+							<span>
+								<strong>Dimension :</strong><![CDATA[&nbsp;]]>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','cf278290-8d5d-4f45-8afb-b911f9cafe41')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+						</td>
+
+						<table style="margin-top:30px;">
+							<t t-set="i" t-value="0"/>
+							<thead>
+								<tr>
+									<th style="text-align: center;">
+										<span style="font-weight: bold;">
+											Sr No
+										</span>
+									</th>
+									<th style="text-align: center;max-width:200px">
+										<span style="font-weight: bold;">
+											Length in mm
+										</span>
+									</th>
+									<th style="text-align: center;max-width:100px">
+										<span style="font-weight: bold;">
+											Width in mm
+										</span>
+									</th>
+									<th style="text-align: center;">
+										<span style="font-weight: bold;">
+											Height in mm
+										</span>
+									</th>
+									<!-- <th style="text-align: center;">
+										<span style="font-weight: bold;">
+											Specification
+										</span>
+									</th> -->
+									<th style="text-align: center;">
+										<span style="font-weight: bold;">
+											Test Method
+										</span>
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+
+								<tr t-if="brick.dimension_visible">
+									<td style="text-align: center;padding:0px">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td style="text-align: center;max-width:200px">
+										<span style="text-align: center;">
+											<span t-field="brick.avrg_length"/>
+										</span>
+									</td>
+
+									<td style="text-align: center;max-width:100px">
+										<span style="text-align: center;">
+											<span t-field="brick.avrg_width"/>
+										</span>
+									</td>
+									<td style="text-align: center;">
+										<span style="text-align: center;">
+											<span t-field="brick.avrg_height"/>
+										</span>
+									</td>
+									
+									<td style="text-align: center; vertical-align: middle;">
+										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','cf278290-8d5d-4f45-8afb-b911f9cafe41')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<span t-field="parameter.specification"/>
+											</t>
+										</t>
+									</td>
+								</tr>
+
+
+							</tbody>
+						</table>
+					</div>
+
+					<!-- Water Absorption -->
+					<div t-if="brick.water_absorbtion_visible" style="margin-top:20px; page-break-inside: avoid;">
+
+						<td t-if="brick.water_absorbtion_visible and (brick.water_absorption_nabl == 'pass' and nabl or brick.water_absorption_nabl == 'fail' and not nabl)">
+							<span>
+								<strong>Water Absorption :</strong><![CDATA[&nbsp;]]>
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','537e20c5-f3ab-4b19-af25-91a4671baf5f')]).parameter_table" t-as="parameter">
+									<t t-if="parameter.grade.id == eln.grade_id.id">
+										<span t-field="parameter.specification"/>
+									</t>
+								</t>
+							</span>
+						</td>
+
+						<table style="margin-top:30px;" t-if="brick.water_absorbtion_visible and (brick.water_absorption_nabl == 'pass' and nabl or brick.water_absorption_nabl == 'fail' and not nabl)">
+							<t t-set="i" t-value="0"/>
+							<thead>
+								<tr>
+									<th style="text-align: center;">
+										<span style="font-weight: bold;">
+											Sr No
+										</span>
+									</th>
+									<th style="text-align: center;max-width:200px">
+										<span style="font-weight: bold;">
+											Dry Weight (after 24 hour in oven)
+										</span>
+									</th>
+									<th style="text-align: center;max-width:100px">
+										<span style="font-weight: bold;">
+											Weight (wt. after 24 hour emersion in water)
+										</span>
+									</th>
+									<th style="text-align: center;">
+										<span style="font-weight: bold;">
+											Water Absorption, %
+										</span>
+									</th>
+									
+									<th style="text-align: center;font-weight: bold;">
+										Test Method
+									</th>
+									<th style="text-align: center;" t-if="eln.conformity">
+										<span style="font-weight: bold;">
+										Confirmity Status
+										</span>
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+
+								<tr t-if="brick.water_absorbtion_visible and (brick.water_absorption_nabl == 'pass' and nabl or brick.water_absorption_nabl == 'fail' and not nabl)">
+									<td style="text-align: center;padding:0px">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td style="text-align: center;max-width:200px">
+										<span style="text-align: center;">
+											<span t-field="brick.final_wt" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;max-width:100px">
+										<span style="text-align: center;">
+											<span t-field="brick.initial_wt" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+									<td style="text-align: center;">
+										<span style="text-align: center;">
+											<span t-field="brick.water_absorption" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+									
+									<td rowspan="5" style="text-align: center; vertical-align: middle;">
+										<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','537e20c5-f3ab-4b19-af25-91a4671baf5f')]).parameter_table" t-as="parameter">
+											<t t-if="parameter.grade.id == eln.grade_id.id">
+												<span t-field="parameter.specification"/>
+											</t>
+										</t>
+									</td>
+									<td rowspan="5" style="text-align: center; vertical-align: middle;" t-if="eln.conformity">
+										<span t-esc="brick.water_absorption_confirmity"/>
+									</td>
+								</tr>
+
+								<tr t-if="brick.water_absorbtion_visible and (brick.water_absorption_nabl == 'pass' and nabl or brick.water_absorption_nabl == 'fail' and not nabl)">
+									<td style="text-align: center;padding:0px">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td style="text-align: center;max-width:200px">
+										<span style="text-align: center;">
+											<span t-field="brick.final_wt_2" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;max-width:100px">
+										<span style="text-align: center;">
+											<span t-field="brick.initial_wt_2" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+									<td style="text-align: center;">
+										<span style="text-align: center;">
+											<span t-field="brick.water_absorption_2" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+								</tr>
+
+								<tr t-if="brick.water_absorbtion_visible and (brick.water_absorption_nabl == 'pass' and nabl or brick.water_absorption_nabl == 'fail' and not nabl)">
+									<td style="text-align: center;padding:0px">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td style="text-align: center;max-width:200px">
+										<span style="text-align: center;">
+											<span t-field="brick.final_wt_3" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;max-width:100px">
+										<span style="text-align: center;">
+											<span t-field="brick.initial_wt_3" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+									<td style="text-align: center;">
+										<span style="text-align: center;">
+											<span t-field="brick.water_absorption_3" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+								</tr>
+
+								<tr t-if="brick.water_absorbtion_visible and (brick.water_absorption_nabl == 'pass' and nabl or brick.water_absorption_nabl == 'fail' and not nabl)">
+									<td style="text-align: center;padding:0px">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td style="text-align: center;max-width:200px">
+										<span style="text-align: center;">
+											<span t-field="brick.final_wt_4" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;max-width:100px">
+										<span style="text-align: center;">
+											<span t-field="brick.initial_wt_4" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+									<td style="text-align: center;">
+										<span style="text-align: center;">
+											<span t-field="brick.water_absorption_4" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+								</tr>
+
+								<tr t-if="brick.water_absorbtion_visible and (brick.water_absorption_nabl == 'pass' and nabl or brick.water_absorption_nabl == 'fail' and not nabl)">
+									<td style="text-align: center;padding:0px">
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</td>
+									<td style="text-align: center;max-width:200px">
+										<span style="text-align: center;">
+											<span t-field="brick.final_wt_5" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+
+									<td style="text-align: center;max-width:100px">
+										<span style="text-align: center;">
+											<span t-field="brick.initial_wt_5" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+									<td style="text-align: center;">
+										<span style="text-align: center;">
+											<span t-field="brick.water_absorption_5" t-options='{"widget": "float", "precision": 2}'/>
+										</span>
+									</td>
+								</tr>
+
+							</tbody>
+						</table>
+
+						<table style="margin-top: 20px;max-width:400px" t-if="brick.water_absorbtion_visible and (brick.water_absorption_nabl == 'pass' and nabl or brick.water_absorption_nabl == 'fail' and not nabl)">
+							<tr>
+								<td style="font-weight: bold;">Average Water Absorption, %</td>
+								<td style="text-align: center;">
+									<span t-field="brick.avrg_water_absorption" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<div>
+
+					</div>
+					<!-- <div style="margin-top:20px; page-break-inside: avoid;" class="noteContainer"> -->
+						<div style="page-break-inside: avoid;">
+								<div style="page-break-inside: avoid; margin-top: 20px;" class="noteContainer">
+									<ul>
+										<t t-if="brick.notes_id">
+											<t t-foreach="brick.notes_id" t-as="n">
+												<li>
+													<span t-esc="n.sr_no"/>. <span t-esc="n.notes"/>
+												</li>
+											</t>
+										</t>
+										<li t-if="eln.has_witness">
+											Test witnessed by : <span t-esc="eln.witness_name"/>
+										</li>
+										<li t-if="eln.remarks">
+											<span t-esc="eln.remarks"/>
+										</li>
+									</ul>
+								</div>
+							</div>
+
 
 					<div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
 						<div>
@@ -347,9 +734,14 @@
 								Checked By
 								</b>
 							</div>
-							<div style="height:40px">
-
-							</div>
+							<div style="height: 40px;">
+									<t t-if="eln.sample_id.checkby_signature_required">
+										<div t-if="eln.sample_id.check_by.employee_id.signature">
+											<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+										</div>
+										
+									</t>
+								</div>
 
 							<div>
 								<b>
@@ -359,32 +751,31 @@
 
 							<div>
 								<b>
-									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+										(<span t-esc="eln.sample_id.check_by.job_title"/>)
 								</b>
 							</div>
 						</div>
-
 						<div>
-						<div>
-							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
+							<div>
+								<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
+							</div>
+							<div style="padding-top:5px">
+									Format No. <span t-esc="eln.material.test_format_no"/>
+							</div>
 						</div>
-						<div style="padding-top:5px">
-							Format No. <span t-esc="eln.material.test_format_no"/>
-						</div>
-					</div>
-
-
-
-
-
 						<div>
 							<div>
 								<b>
-									Approved By
+										Approved By
 								</b>
 							</div>
-							<div style="height:40px">
-
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.approveby_signature_required">
+									<div t-if="eln.sample_id.approved_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.approved_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
 							</div>
 							<div>
 								<b>
@@ -397,25 +788,19 @@
 									(<span t-esc="eln.sample_id.approved_by.job_title"/>)
 								</b>
 							</div>
-							<!-- <div>
+							<div>
 								<b>
-									(<span t-esc="eln.sample_id.approved_by.job_title"/>)
+										(Authorized Signatory)
 								</b>
-							</div> -->
+							</div>
 						</div>
 					</div>
 					
 				<!-- </div> -->
-
-				
-
-
-
-				
 			</div>
 
 			<div style="margin-top: 10px; text-align: center;">
-				<p style="padding-top: 10px;">
+				<p style="border-top: 1px dashed #000; padding-top: 10px;">
 						...... End Of Report......
 				</p>
 			</div>

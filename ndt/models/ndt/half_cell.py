@@ -74,8 +74,53 @@ class HalfCell(models.Model):
     #         if not self._is_temp_within_range(record.temp):
     #             raise UserError("Temperature should be between 22.2°C and 27.7°C.")
 
-    def button_press_action(self):
+    # def button_press_action(self):
 
+    #     if self.temperature < 22.2:
+    #         correction = 22.2 - self.temperature
+    #         mv = correction * (-0.91)
+    #     elif self.temperature > 27.7:
+    #         correction = self.temperature - 27.7
+    #         mv = correction * (-0.91)
+    #     else:
+    #         mv = 0
+    #         print("No Factor Needed")
+        
+    #     # import wdb; wdb.set_trace()
+
+
+    #     for line1 in self.child_lines_1:
+    #         # import wdb; wdb.set_trace()
+    #         # Find or create the corresponding record in child_lines_2 using the 'member' and 'location' fields
+    #         # corresponding_line2 = self.child_lines_2.filtered(lambda line2: line2.member == line1.member and line2.location == line1.location)
+    #         corresponding_line2 = self.child_lines_2.filtered(lambda line2:line1.level == line2.level)
+
+    #         if corresponding_line2:
+    #             # Update the existing record in child_lines_2
+    #             corresponding_line2.write({
+    #                 'r1': round((line1.r1 + mv),3),
+    #                 'r2': round((line1.r2 + mv),3),
+    #                 'r3': round((line1.r3 + mv),3),
+    #                 'r4': round((line1.r4 + mv),3),
+    #                 'r5': round((line1.r5 + mv),3),
+    #                 'r6': round((line1.r6 + mv),3),
+    #             })
+    #         else:
+    #             # Create a new record in child_lines_2
+    #             self.env['ndt.half.cell.two'].create({
+    #                 'parent_id': self.id,
+    #                 'member': line1.member,
+    #                 'location': line1.location,
+    #                 'level': line1.level,
+    #                 'r1': round((line1.r1 + mv),3),
+    #                 'r2': round((line1.r2 + mv),3),
+    #                 'r3': round((line1.r3 + mv),3),
+    #                 'r4': round((line1.r4 + mv),3),
+    #                 'r5': round((line1.r5 + mv),3),
+    #                 'r6': round((line1.r6 + mv),3),
+    #             })       
+    def button_press_action(self):
+        # Calculate the correction factor based on the temperature
         if self.temperature < 22.2:
             correction = 22.2 - self.temperature
             mv = correction * (-0.91)
@@ -85,40 +130,23 @@ class HalfCell(models.Model):
         else:
             mv = 0
             print("No Factor Needed")
-        
-        # import wdb; wdb.set_trace()
 
-
+        # Process each record in child_lines_1 and create corresponding records in child_lines_2
         for line1 in self.child_lines_1:
-            # import wdb; wdb.set_trace()
-            # Find or create the corresponding record in child_lines_2 using the 'member' and 'location' fields
-            # corresponding_line2 = self.child_lines_2.filtered(lambda line2: line2.member == line1.member and line2.location == line1.location)
-            corresponding_line2 = self.child_lines_2.filtered(lambda line2:line1.level == line2.level)
-
-            if corresponding_line2:
-                # Update the existing record in child_lines_2
-                corresponding_line2.write({
-                    'r1': round((line1.r1 + mv),3),
-                    'r2': round((line1.r2 + mv),3),
-                    'r3': round((line1.r3 + mv),3),
-                    'r4': round((line1.r4 + mv),3),
-                    'r5': round((line1.r5 + mv),3),
-                    'r6': round((line1.r6 + mv),3),
-                })
-            else:
-                # Create a new record in child_lines_2
-                self.env['ndt.half.cell.two'].create({
-                    'parent_id': self.id,
-                    'member': line1.member,
-                    'location': line1.location,
-                    'level': line1.level,
-                    'r1': round((line1.r1 + mv),3),
-                    'r2': round((line1.r2 + mv),3),
-                    'r3': round((line1.r3 + mv),3),
-                    'r4': round((line1.r4 + mv),3),
-                    'r5': round((line1.r5 + mv),3),
-                    'r6': round((line1.r6 + mv),3),
-                })            
+            # Create a new record in child_lines_2 for each line1 record
+            self.env['ndt.half.cell.two'].create({
+                'parent_id': self.id,
+                'member': line1.member,
+                'location': line1.location,
+                'level': line1.level,
+                'r1': round((line1.r1 + mv), 3),
+                'r2': round((line1.r2 + mv), 3),
+                'r3': round((line1.r3 + mv), 3),
+                'r4': round((line1.r4 + mv), 3),
+                'r5': round((line1.r5 + mv), 3),
+                'r6': round((line1.r6 + mv), 3),
+            })
+     
 
 class HalfCellLineOne(models.Model):
     _name = "ndt.half.cell.one"

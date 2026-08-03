@@ -113,7 +113,7 @@
 									
 								</td>
                                 <td colspan="6">
-									<span t-field="data.wt_blank_crucible_after_ignition" t-options='{"widget": "float", "precision": 2}'/>
+									<span t-field="data.wt_blank_crucible_after_ignition" t-options='{"widget": "float", "precision": 4}'/>
 									
 								</td>
 							</tr>
@@ -124,7 +124,7 @@
 									
 								</td>
                                 <td colspan="6">
-									<span t-field="data.wt_blank_crucible_after_hf" t-options='{"widget": "float", "precision": 2}'/>
+									<span t-field="data.wt_blank_crucible_after_hf" t-options='{"widget": "float", "precision": 4}'/>
 									
 								</td>
 							</tr>
@@ -134,7 +134,7 @@
 									
 								</td>
                                 <td colspan="6">
-									<span t-field="data.diff_in_wt_of_silica_blank" t-options='{"widget": "float", "precision": 2}'/>
+									<span t-field="data.diff_in_wt_of_silica_blank" t-options='{"widget": "float", "precision": 4}'/>
 									
 								</td>
 							</tr>
@@ -150,13 +150,13 @@
 									
 								</td>
                                 <td colspan="2">
-									<span t-field="data.wt_crucible_after_ignition_a" t-options='{"widget": "float", "precision": 2}'/>	
+									<span t-field="data.wt_crucible_after_ignition_a" t-options='{"widget": "float", "precision": 4}'/>	
 								</td>
                                 <td colspan="2">
-									<span t-field="data.wt_crucible_after_ignition_b" t-options='{"widget": "float", "precision": 2}'/>	
+									<span t-field="data.wt_crucible_after_ignition_b" t-options='{"widget": "float", "precision": 4}'/>	
 								</td>
                                 <td colspan="2">
-									<span t-field="data.wt_crucible_after_ignition_c" t-options='{"widget": "float", "precision": 2}'/>	
+									<span t-field="data.wt_crucible_after_ignition_c" t-options='{"widget": "float", "precision": 4}'/>	
 								</td>
 							</tr>
 
@@ -166,13 +166,13 @@
 									
 								</td>
                                 <td colspan="2">
-									<span t-field="data.wt_crucible_after_hf_a" t-options='{"widget": "float", "precision": 2}'/>	
+									<span t-field="data.wt_crucible_after_hf_a" t-options='{"widget": "float", "precision": 4}'/>	
 								</td>
                                 <td colspan="2">
-									<span t-field="data.wt_crucible_after_hf_b" t-options='{"widget": "float", "precision": 2}'/>	
+									<span t-field="data.wt_crucible_after_hf_b" t-options='{"widget": "float", "precision": 4}'/>	
 								</td>
                                 <td colspan="2">
-									<span t-field="data.wt_crucible_after_hf_c" t-options='{"widget": "float", "precision": 2}'/>	
+									<span t-field="data.wt_crucible_after_hf_c" t-options='{"widget": "float", "precision": 4}'/>	
 								</td>
 							</tr>
                             
@@ -183,13 +183,13 @@
 									
 								</td>
                                 <td colspan="2">
-									<span t-field="data.diff_in_wt_of_silica_a" t-options='{"widget": "float", "precision": 2}'/>	
+									<span t-field="data.diff_in_wt_of_silica_a" t-options='{"widget": "float", "precision": 4}'/>	
 								</td>
                                 <td colspan="2">
-									<span t-field="data.diff_in_wt_of_silica_b" t-options='{"widget": "float", "precision": 2}'/>	
+									<span t-field="data.diff_in_wt_of_silica_b" t-options='{"widget": "float", "precision": 4}'/>	
 								</td>
                                 <td colspan="2">
-									<span t-field="data.diff_in_wt_of_silica_c" t-options='{"widget": "float", "precision": 2}'/>	
+									<span t-field="data.diff_in_wt_of_silica_c" t-options='{"widget": "float", "precision": 4}'/>	
 								</td>
 							</tr>
 
@@ -351,7 +351,7 @@
 
                         <table style="margin-top:20px">
                             <tr cols="12" style="margin-top:20px">
-								<td colspan="6">Sample Wt :
+								<td colspan="6">Sample wt :
 									<![CDATA[&nbsp;]]>
 									
 								</td>
@@ -420,26 +420,7 @@
 								</td>
                                 
 							</tr>
-                            <tr cols="12" style="margin-top:20px">
-								<td colspan="6">Normality of ammonia thiocynate (0.1) :
-									<![CDATA[&nbsp;]]>
-									
-								</td>
-                                <td colspan="6">
-									<span t-field="data.normality_of_ammonia" t-options='{"widget": "float", "precision": 2}'/>	
-								</td>
-                                
-							</tr>
-                            <tr cols="12" style="margin-top:20px">
-								<td colspan="6">Chloride % :
-									<![CDATA[&nbsp;]]>
-									
-								</td>
-                                <td colspan="6">
-									<span t-field="data.chloride_percent" t-options='{"widget": "float", "precision": 2}'/>	
-								</td>
-                                
-							</tr>
+                           
                         </table>
                 </div>
 
@@ -461,7 +442,7 @@
 									
 								</td>
                                 <td colspan="6">
-									<span t-field="data.sample_wt_sulphate"/>	
+									<span t-field="data.sample_wt_sulphate" t-options='{"widget": "float", "precision": 4}'/>	
 								</td>
                                 
 							</tr>
@@ -491,7 +472,7 @@
 									
 								</td>
                                 <td colspan="6">
-									<span t-field="data.wt_empty_crucible_after_ignition" t-options='{"widget": "float", "precision": 2}'/>	
+									<span t-field="data.wt_empty_crucible_after_ignition" t-options='{"widget": "float", "precision": 4}'/>	
 								</td>
                                 
 							</tr>
@@ -501,7 +482,7 @@
 									
 								</td>
                                 <td colspan="6">
-									<span t-field="data.wt_empty_crucible" t-options='{"widget": "float", "precision": 2}'/>	
+									<span t-field="data.wt_empty_crucible" t-options='{"widget": "float", "precision": 4}'/>	
 								</td>
                                 
 							</tr>
@@ -511,7 +492,7 @@
 									
 								</td>
                                 <td colspan="6">
-									<span t-field="data.difference_in_wt_sulphate" t-options='{"widget": "float", "precision": 2}'/>	
+									<span t-field="data.difference_in_wt_sulphate" t-options='{"widget": "float", "precision": 4}'/>	
 								</td>
                                 
 							</tr>
@@ -521,7 +502,7 @@
 									
 								</td>
                                 <td colspan="6">
-									<span t-field="data.sulphate_percent" t-options='{"widget": "float", "precision": 2}'/>	
+									<span t-field="data.sulphate_percent" t-options='{"widget": "float", "precision": 4}'/>	
 								</td>
                                 
 							</tr>

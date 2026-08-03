@@ -1,0 +1,1058 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<template id="ppc_cement_datasheet">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			 <t t-call="lerm_civil.data_sheet_header_generaltemplate">
+                <div style="text-align:center;font-size:18px">
+                    Cement
+                </div>
+				<div class="container_eln" style="margin-top:5px">
+					<div t-if="data.normal_consistency_visible">
+					
+
+						<div style="text-align:center;font-size:18px">
+							Normal Consistency
+						</div>
+						
+				
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Temperature :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.temp_percent_normal"/>
+								</td>
+								<td colspan="6">Test Start Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="eln.start_date"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Humidity :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.humidity_percent_normal"/>
+								</td>
+								<td colspan="6">Test End Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="eln.end_date" />
+								</td>
+							</tr>
+							<tr cols="12" style="margin-top:20px">
+								<td colspan="6">Weight of Cement(g) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.wt_of_cement_trial1"/>
+									
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Weight of Water Required(g) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.wt_of_water_req_trial1"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Penetraion of vicat's Plunger (mm) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.penetration_of_vicat_plunger_trial1"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Normal Consistency (%) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.normal_consistency_trial1"/>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<!-- Setting time  -->
+
+					<div t-if="data.initial_setting_time_visible">
+						<div style="text-align:center;font-size:18px">
+							Setting Time
+						</div>
+						<table>
+							
+							<tr cols="12">
+								<td colspan="6">Weight of Cement(g) :
+									<![CDATA[&nbsp;]]>
+									<!-- <span t-field="data.material.name"/> -->
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.wt_of_cement_setting_time"/>
+								</td>
+							</tr>
+
+							<tr cols="12">
+								<td colspan="12">
+									<h6>
+										<span t-field="data.setting_time_name"/>
+									</h6>
+								</td>
+							</tr>
+
+							<tr cols="12">
+								<td colspan="6">The Time When water is added to cement (t1) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.time_water_added"/>
+								</td>
+							</tr>
+							
+
+							<tr cols="12">
+								<td colspan="6">The time at which needle fails to penetrate the test block to a point 5 ± 0.5 mm (t2) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.time_needle_fails"/>
+								</td>
+							</tr>
+							
+							<tr cols="12">
+								<td colspan="6">Initial Setting Time (t2-t1) (Hours) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.initial_setting_time_hours"/>
+								</td>
+							</tr>
+
+							<tr cols="12">
+								<td colspan="6">Initial Setting Time Minutes :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.initial_setting_time_minutes_unrounded"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Initial Setting Time Minutes (Rounded):
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.initial_setting_time_minutes"/>
+								</td>
+							</tr>
+						</table>
+						<table  t-if="data.final_setting_time_visible">
+							<tr cols="12">
+								<td colspan="12">
+									<h6>
+										<span t-field="data.final_setting_time_name"/>
+									</h6>
+								</td>
+							</tr>
+
+							<tr cols="12">
+								<td colspan="6">The Time at which the needle make an impression on the surface of test block while attachment fails to do (t3) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.time_needle_make_impression"/>
+								</td>
+							</tr>
+							
+
+							<tr cols="12">
+								<td colspan="6">Final Setting Time (t2-t1) (Hours) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.final_setting_time_hours"/>
+								</td>
+							</tr>
+							
+							<tr cols="12">
+								<td colspan="6">Final Setting Time :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.final_setting_time_minutes_unrounded"/>
+								</td>
+							</tr>
+
+
+							<tr cols="12">
+								<td colspan="6">Final Setting Time (Rounded):
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.final_setting_time_minutes"/>
+								</td>
+							</tr>
+
+							
+						</table>
+					</div>
+
+					<!-- Density  -->
+					<div t-if="data.density_visible" style="margin-top:20px">
+						<div style="text-align:center;font-size:18px">
+							Density
+						</div>
+						
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Trial 1
+								</td>
+								<td colspan="6">Trial 2
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Wt. of Cement(g) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.wt_of_cement_density_trial1"/>
+								</td>
+								<td colspan="6">Wt. of Cement(g) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.wt_of_cement_density_trial2"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Initial Volume of kerosine (ml)V1 :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.initial_volume_kerosene_trial1"/>
+								</td>
+								<td colspan="6">Initial Volume of kerosine (ml)V1 :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.initial_volume_kerosene_trial2"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Final Volume of kerosine and Cement (After immersion in constant water bath) (ml) V2 :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.final_volume_kerosene_trial1"/>
+								</td>
+								<td colspan="6">Final Volume of kerosine and Cement (After immersion in constant water bath) (ml) V2 :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.final_volume_kerosene_trial2"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Displaced volume (cm³) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.displaced_volume_trial1"/>
+								</td>
+								<td colspan="6">Displaced volume (cm³) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.displaced_volume_trial2"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Density (g/cm³) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.density_trial1"/>
+								</td>
+								<td colspan="6">Density (g/cm³) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.density_trial2"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Average :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.average_density"/>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<!-- Soundness  -->
+
+
+					<div t-if="data.soundness_visible" style="margin-top:20px">
+						<div style="text-align:center;font-size:18px">
+							Soundness by Le-Chatelier Method
+						</div>
+						
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Weight of Cement(g) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.wt_of_cement_soundness"/>
+								</td>
+								<td colspan="6">Weight of water required(g) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.wt_of_water_req_soundness"/>
+								</td>
+							</tr>
+						</table>
+						<table style="margin-top:20px">
+
+							<tr cols="12">
+								<td colspan="3">Sr no 
+								</td>
+								<td colspan="3">Intial distance separating the indicator points (L1).mm 
+								</td>
+								<td colspan="3">Final distance separating the indicator points (L2).mm
+								</td>
+								<td colspan="3">Expansion
+								</td>
+							</tr>
+
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.soundness_table" t-as="r">
+								<td colspan="3">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+                  				</td>
+								<td colspan="3">
+									<span t-esc="r['initial_distance']"/>
+								</td>
+								<td colspan="3">
+									<span t-esc="r['final_distance']"/>
+								</td>
+								<td colspan="3">
+									<span t-esc="r['expansion']"/>
+								</td>
+							</tr>
+						</table>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Average :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.average_soundness" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td colspan="6">Expansion :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.expansion_soundness" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<!-- Dry sieving  -->
+
+					<div t-if="data.dry_sieving_visible" style="margin-top:20px">
+						<div style="text-align:center;font-size:18px">
+							Fineness by Dry Sieving
+						</div>
+						
+						
+						<table style="margin-top:20px">
+
+							<tr cols="12">
+								<td colspan="3">Sr no 
+								</td>
+								<td colspan="3">Sample Weight(g) 
+								</td>
+								<td colspan="3">Retained Weight on 90 mic sieve (g)
+								</td>
+								<td colspan="3">Fineness by dry sieving %
+								</td>
+							</tr>
+
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.dry_sieving_table" t-as="r">
+								<td colspan="3">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+                  				</td>
+								<td colspan="3">
+									<span t-esc="r['sample_weight_fineness']"/>
+								</td>
+								<td colspan="3">
+									<span t-esc="r['retained_weight']"/>
+								</td>
+								<td colspan="3">
+									<span t-esc="r['fineness']"/>
+								</td>
+							</tr>
+						</table>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Average :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.average_fineness"/>
+								</td>
+								<td colspan="6">Fineness by dry sieving % :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.fineness_dry_sieving"/>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<!-- Compressive Strength  -->
+
+					<div t-if="data.compressive_3_visible or data.compressive_7_visible or data.compressive_28_visible" style="margin-top:20px">
+						<div style="text-align:center;font-size:18px">
+							Compressive Strength
+						</div>
+						
+						<table style="margin-top:20px">
+							
+							<tr cols="12">
+								<td colspan="6">Wt. of Cement(g) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.wt_of_cement_compressive"/>
+								</td>
+								
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Weight of Standard Sand (g) Grade-I :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.wt_of_standard_sand_grade1"/>
+								</td>
+								
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Weight of Standard Sand (g) Grade-II :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.wt_of_standard_sand_grade2"/>
+								</td>
+								
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Weight of Standard Sand (g) Grade-III :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.wt_of_standard_sand_grade3"/>
+								</td>
+								
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Total Weight :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.total_weight"/>
+								</td>
+								
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Quantity of Water :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<span t-field="data.quantity_of_water"/>
+								</td>
+								
+							</tr>
+						</table>
+
+
+						<!-- 3 days  -->
+
+
+						<div style="text-align:center;font-size:18px;margin-top:20px" t-if="data.status_3days">
+							3 Days
+						</div>
+						<table style="margin-top:20px" t-if="data.status_3days">
+						<tr cols="12">
+								<td colspan="6">Date of Casting :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.casting_date_3days"/>
+								</td>
+								<td colspan="6">Date of Testing :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.testing_date_3days"/>
+								</td>
+							</tr>
+						</table>
+						
+						<table style="margin-top:20px" t-if="data.status_3days">
+							<tr cols="12">
+								<td colspan="1">Sr no 
+								</td>
+								<td colspan="1">Length in mm 
+								</td>
+								<td colspan="1">Width in mm
+								</td>
+								<td colspan="2">Crosssectional Area
+								</td>
+								<td colspan="2">wt of Cement Cube in gm
+								</td>
+								<td colspan="2">Crushing Load in KN
+								</td>
+								<td colspan="3">Compressive Strength (N/mm²)
+								</td>
+							</tr>
+
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.casting_3_days_tables" t-as="r">
+								<td colspan="1">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+                  				</td>
+								<td colspan="1">
+									<span t-esc="r['length']"/>
+								</td>
+								<td colspan="1">
+									<span t-esc="r['width']"/>
+								</td>
+								<td colspan="2">
+									<span t-esc="r['crosssectional_area']"/>
+								</td>
+								<td colspan="2">
+									<span t-esc="r['wt_of_cement_cube']"/>
+								</td>
+								<td colspan="2">
+									<span t-esc="r['crushing_load']"/>
+								</td>
+								<td colspan="3">
+									<span t-esc="r['compressive_strength']"/>
+								</td>
+							</tr>
+						</table>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Average :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.average_casting_3days" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td colspan="6">Compressive Strength :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.compressive_strength_3_days" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+						</table>
+
+
+						<!-- 7 Days  -->
+
+						<div style="text-align:center;font-size:18px;margin-top:20px" t-if="data.status_7days">
+							7 Days
+						</div>
+						<table style="margin-top:20px" t-if="data.status_7days">
+						<tr cols="12">
+								<td colspan="6">Date of Casting :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.casting_date_7days"/>
+								</td>
+								<td colspan="6">Date of Testing :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.testing_date_7days"/>
+								</td>
+							</tr>
+						</table>
+						
+						<table style="margin-top:20px" t-if="data.status_7days">
+							<tr cols="12">
+								<td colspan="1">Sr no 
+								</td>
+								<td colspan="1">Length in mm 
+								</td>
+								<td colspan="1">Width in mm
+								</td>
+								<td colspan="2">Crosssectional Area
+								</td>
+								<td colspan="2">wt of Cement Cube in gm
+								</td>
+								<td colspan="2">Crushing Load in KN
+								</td>
+								<td colspan="3">Compressive Strength (N/mm²)
+								</td>
+							</tr>
+
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.casting_7_days_tables" t-as="r">
+								<td colspan="1">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+                  				</td>
+								<td colspan="1">
+									<span t-esc="r['length']"/>
+								</td>
+								<td colspan="1">
+									<span t-esc="r['width']"/>
+								</td>
+								<td colspan="2">
+									<span t-esc="r['crosssectional_area']"/>
+								</td>
+								<td colspan="2">
+									<span t-esc="r['wt_of_cement_cube']"/>
+								</td>
+								<td colspan="2">
+									<span t-esc="r['crushing_load']"/>
+								</td>
+								<td colspan="3">
+									<span t-esc="r['compressive_strength']"/>
+								</td>
+							</tr>
+						</table>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Average :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.average_casting_7days" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td colspan="6">Compressive Strength :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.compressive_strength_7_days" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+						</table>
+
+						<!-- 28 Days  -->
+
+						<div style="text-align:center;font-size:18px;margin-top:20px" t-if="data.status_28days">
+							28 Days
+						</div>
+						<table style="margin-top:20px" t-if="data.status_28days">
+						<tr cols="12">
+								<td colspan="6">Date of Casting :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.casting_date_28days"/>
+								</td>
+								<td colspan="6">Date of Testing :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.testing_date_28days"/>
+								</td>
+							</tr>
+						</table>
+						
+						<table style="margin-top:20px" t-if="data.status_28days">
+							<tr cols="12">
+								<td colspan="1">Sr no 
+								</td>
+								<td colspan="1">Length in mm 
+								</td>
+								<td colspan="1">Width in mm
+								</td>
+								<td colspan="2">Crosssectional Area
+								</td>
+								<td colspan="2">wt of Cement Cube in gm
+								</td>
+								<td colspan="2">Crushing Load in KN
+								</td>
+								<td colspan="3">Compressive Strength (N/mm²)
+								</td>
+							</tr>
+
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.casting_28_days_tables" t-as="r">
+								<td colspan="1">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+                  				</td>
+								<td colspan="1">
+									<span t-esc="r['length']"/>
+								</td>
+								<td colspan="1">
+									<span t-esc="r['width']"/>
+								</td>
+								<td colspan="2">
+									<span t-esc="r['crosssectional_area']"/>
+								</td>
+								<td colspan="2">
+									<span t-esc="r['wt_of_cement_cube']"/>
+								</td>
+								<td colspan="2">
+									<span t-esc="r['crushing_load']"/>
+								</td>
+								<td colspan="3">
+									<span t-esc="r['compressive_strength']"/>
+								</td>
+							</tr>
+						</table>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Average :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.average_casting_28days" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+								<td colspan="6">Compressive Strength :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.compressive_strength_28_days" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+						</table>
+						
+					</div>
+
+					<!-- Fineness By Blaine Air Permeability Method -->
+					<div t-if="data.fineness_blaine_visible" style="margin-top:20px">
+						<div style="text-align:center;font-size:18px">
+							Fineness By Blaine Air Permeability Method (m²/kg)
+						</div>
+						
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Observation
+								</td>
+								<td colspan="3">Trial 1
+								</td>
+								<td colspan="3">Trial 2
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Weight of mercury before placing the sample in the permeability cell  (m₁),g. :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="3">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.weight_of_mercury_before_trial1"/>
+								</td>
+								<td colspan="3">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.weight_of_mercury_before_trial2"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Weight of mercury after placing the sample in the permeability cell  (m₂),g.
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="3">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.weight_of_mercury_after_trail1"/>
+								</td>
+								<td colspan="3">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.weight_of_mercury_after_trail2"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Density of mercury :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.density_of_mercury"/>
+								</td>
+								
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Bed Volume (V=m₂-m₁/D),cm3. :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="3">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.bed_volume_trial1"/>
+								</td>
+								<td colspan="3">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.bed_volume_trial2"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Average Bed Volume (cm3) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.average_bed_volume"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Difference between the two Values :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.difference_between_2_values"/>
+								</td>
+							</tr>
+							
+						</table>
+						<div style="text-align:center;font-size:15px;margin-top:20px" t-if="data.fineness_blaine_visible">
+							Determination of Apparatus Constant (k)
+						</div>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Density :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.density_fineness_reference"/>
+								</td>
+								<td colspan="6">Mass of Sample taken(g)
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.mass_of_sample_taken_fineness_reference"/>
+								</td>
+							</tr>
+						</table>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Time(t),sec. :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="2">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.time_fineness_trial1"/>
+								</td>
+								<td colspan="2">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.time_fineness_trial2"/>
+								</td>
+								<td colspan="2">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.time_fineness_trial3"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Average :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.average_time_fineness" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+						</table>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">S0 is the Specific surface of reference sample (m²/kg) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.specific_surface_of_reference_sample"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">ɳₒ is the Air viscosity at the mean of the three temperatures :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.air_viscosity_of_three_temp"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">ρ0 is the Density of reference sample  (g/cm3) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.density_of_reference_sample"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">t0 is the Mean of three measured times (sec) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.mean_of_three_measured_times" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Apparatus Constant(k) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.apparatus_constant"/>
+								</td>
+							</tr>
+						</table>
+						<div style="text-align:center;font-size:15px;margin-top:20px" t-if="data.fineness_blaine_visible">
+							Determination of Fineness
+						</div>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Density :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.density_fineness_calculated"/>
+								</td>
+								<td colspan="6">Mass of Sample taken(g)
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.mass_of_sample_taken_fineness_calculated"/>
+								</td>
+							</tr>
+						</table>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Time(t),sec. :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="2">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.time_sample_trial1"/>
+								</td>
+								<td colspan="2">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.time_sample_trial2"/>
+								</td>
+								<td colspan="2">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.time_sample_trial3"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Average :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.average_sample_time" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
+							</tr>
+						</table>
+						<table style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Fineness of Sample :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.fineness_of_sample"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Fineness By Blaine Air Permeability Method (m2/kg) :
+									<![CDATA[&nbsp;]]>
+								</td>
+								<td colspan="6">
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.fineness_air_permeability"/>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<div t-if="data.opc_soundness_visible" style="margin-top:20px">
+						<div style="text-align:center;font-size:18px">
+                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','fh2234553c-5e9c-4335-9ea2-2d87624c23048')]).parameter_name"/>
+                         
+                        </div>
+
+						<table t-if="data.opc_soundness_visible" style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Wt. of Cement (g) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.wt_cement_opc"/>
+								</td>
+								
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Wt.of water required (g) :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.water_required_opc"/>
+								</td>
+								
+							</tr>
+						</table>
+						
+						
+						<table style="margin-top:20px">
+
+							<tr cols="12">
+								<td colspan="3">Sr no 
+								</td>
+								<td colspan="3">Intial Length (L1) 
+								</td>
+								<td colspan="3">Final Length(L2)
+								</td>
+								<td colspan="3">Expansion ((L2-L1)/L1)x 100, %
+								</td>
+							</tr>
+
+							<t t-set="i" t-value="0"/>
+							<tr t-foreach="data.opc_soundness_table" t-as="r">
+								<td colspan="3">
+									<div>
+										<span t-esc="i + 1" />
+										<t t-set="i" t-value="i+1"/>
+									</div>
+                  				</td>
+								<td colspan="3">
+									<span t-esc="r['intial_length']"/>
+								</td>
+								<td colspan="3">
+									<span t-esc="r['final_length']"/>
+								</td>
+								<td colspan="3">
+									<span t-esc="r['expantion']"  t-options='{"widget": "float", "precision": 3}'/>
+								</td>
+							</tr>
+						</table>
+						<table t-if="data.opc_soundness_visible" style="margin-top:20px">
+							<tr cols="12">
+								<td colspan="6">Average Expansion % :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.avg_expantion_opc"  t-options='{"widget": "float", "precision": 3}'/>
+								</td>
+								
+							</tr>
+						</table>
+					</div>
+
+
+					<div class="authorizeRowDataSheet">
+
+                        <div>
+                            <div>
+                                <b>
+                                    Tested By 
+                                </b>
+                                
+                            </div>
+							 <div style="height:40px">
+								<t t-if="eln.tested_by_signature_datasheet">
+									<div t-if="eln.technician and eln.technician.employee_id and eln.technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,%s' % eln.technician.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+                            </div>
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checkby_signature_required or eln.sample_id.checkby_signature_required">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,%s' % eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.check_by.name"/>
+                                </b>
+                            </div>
+                            
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.check_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+						
+					</div>
+				</div>
+			</t>
+		</t>
+	</template>
+</odoo>
+
+

@@ -13,6 +13,40 @@ class ChemicalGyspum(models.Model):
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
+    state = fields.Selection([
+        ('1-draft', 'In-Test'),
+        ('2-confirm', 'In-Check'),
+    ], string='State',default='1-draft')
+
+
+    notes_id = fields.One2many('chemical.gyspum.notes', 'parent_id', string="Notes")
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(ChemicalGyspum, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The Test Report(s) is/are valid only to the sample submitted to the laboratory.',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'Sample(s) was/were not drawn by laboratory.',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': '# - Information provided by the customer.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+
 
 
     # %Sulphur trioxide (SO3)
@@ -271,8 +305,8 @@ class ChemicalGyspum(models.Model):
 
 
     wt_of_sample_mgo1 = fields.Float("A) Wt of Sample (gm)",digits=(16, 4))
-    burette_mgo1 = fields.Float("B) Wt of crucible + Residue after ignition (gm)")
-    normality_mgo1 = fields.Float("C) Wt of empty Cruible (gm)")
+    burette_mgo1 = fields.Float("B) Wt of crucible + Residue after ignition (gm)",digits=(16, 4))
+    normality_mgo1 = fields.Float("C) Wt of empty Cruible (gm)",digits=(16, 4))
     dilution_mgo1 = fields.Float("D) Diff. in weight (gm)", compute="_compute_dilution_mgo1",digits=(16,4), store=True)
     dilution_mgo2 = fields.Float("Dilution")
     mgo1 = fields.Float("MgO % = D x 36.21/ A", compute="_compute_mgo1", store=True)
@@ -969,6 +1003,119 @@ class ChemicalGyspum(models.Model):
                 if sample.internal_id == '966341bc-cef0-49da-8f72-df520a8c702e':
                     record.calcium_oxide_visible2 = True
 
+    def open_eln_page(self):
+        # import wdb; wdb.set_trace()
+        for result in self.eln_ref.parameters_result:
+            # ph 
+            if result.parameter.internal_id == 'a58cb5bc-d2d2-4756-81d2-6571ae81a813':
+                result.result_char = round(self.so3,2)
+                result.calculated = True
+                if self.so3_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'df12ceda-8e7d-4cb0-af54-0561796f5fdf':
+                result.result_char = round(self.loi,2)
+                result.calculated = True
+                if self.loss_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            # Dissolved Silica 
+            if result.parameter.internal_id == '80cbb8c4-5b52-4c0b-97f8-b5b66af79982':
+                result.result_char = round(self.cao1,2)
+                result.calculated = True
+                if self.cao1_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            # Chloride
+            if result.parameter.internal_id == '3ef8ce36-8db8-4557-ad95-14b199bc9ff0':
+                result.result_char = round(self.mgo1,2)
+                result.calculated = True
+                if self.mgo_nabl1 == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            # Sulphate 
+            if result.parameter.internal_id == 'abc60d60-0e94-4a2a-a08f-04650534fa9f':
+                result.result_char = round(self.cao2,2)
+                result.calculated = True
+                if self.cao_nabl2 == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            # Alkali Aggregate
+            if result.parameter.internal_id == 'b3b623fc-ff8b-44b8-884b-869139ff0912':
+                result.result_char = round(self.mgo2,2)
+                result.calculated = True
+                if self.mgo_nabl2 == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            # Chloride 1 
+            if result.parameter.internal_id == '1959c613-48ed-494d-93a3-b4c831e37b51':
+                result.result_char = round(self.free_lime,2)
+                result.calculated = True
+                if self.free_lime_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            # Chloride 2
+            if result.parameter.internal_id == 'e54abac7-52ff-41a2-8ef1-cd536cde4e2d':
+                result.result_char = round(self.soluble_sodium,2)
+                result.calculated = True
+                if self.soluble_sodium_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            # Cement Content
+            if result.parameter.internal_id == 'c3ac1330-a4d9-4526-9533-4130ff635bf6':
+                result.result_char = round(self.free_water,2)
+                result.calculated = True
+                if self.free_water_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            # Cement Content 1
+            if result.parameter.internal_id == '1afa0443-8649-48a3-b73e-49f9fbb08d3d':
+                result.result_char = round(self.combined_water,2)
+                result.calculated = True
+                if self.combined_water_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            # Lime
+            if result.parameter.internal_id == '966341bc-cef0-49da-8f72-df520a8c702e':
+                result.result_char = round(self.calcium_oxide,2)
+                result.calculated = True
+                if self.calcium_oxide_nabl2 == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+        return {
+                'view_mode': 'form',
+                'res_model': "lerm.eln",
+                'type': 'ir.actions.act_window',
+                'target': 'current',
+                'res_id': self.eln_ref.id,
+                
+            }
+
 
 
 
@@ -1012,5 +1159,13 @@ class ChemicalGyspum(models.Model):
     def _compute_grade_id(self):
         if self.eln_ref:
             self.grade = self.eln_ref.grade_id.id
+
+
+class GyspumNotes(models.Model):
+    _name = "chemical.gyspum.notes"
+
+    parent_id = fields.Many2one('chemical.gyspum',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")
     
 

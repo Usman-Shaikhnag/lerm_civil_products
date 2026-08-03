@@ -38,7 +38,7 @@
                     </div>
                     <group/>
 
-                    <div>
+                    <div invisible="not ph_visible">
                       <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                          <tbody>
                            <tr>
@@ -58,7 +58,7 @@
                     </div>
                     <group/>
 
-                    <div>
+                    <div invisible="not ph_visible">
                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                       <tbody>
                       <tr>
@@ -74,411 +74,19 @@
                          </tr>
                          <tr>
                          <td><span>NABL</span></td>
-                         <td><field name='ph_average_nabl'/></td>
+                         
+                         <td><field name='ph_average_nabl'
+                               decoration-success="ph_average_nabl == 'pass'" 
+                               decoration-danger="ph_average_nabl == 'fail'" 
+                               readonly="1"/></td>
                          </tr>
                      </tbody>
                       </table>
                     </div>
                     <group/>
-                            
-                    
-                    <!-- <group invisible="not ph_visible">
-                        <label for="ph_1_percent_a" string="pH of 1 % Solution in water" />
-                        <div class="address_format " >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="ph_1_percent_a" string="A" />
-                            <field  name="ph_1_percent_a"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1"  class="oe_inline">
-                            <label for="ph_1_percent_b" string="B" />
-                            <field  name="ph_1_percent_b"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1"  class="oe_inline">
-                            <label for="ph_1_percent_c" string="C" />
-                            <field  name="ph_1_percent_c"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group> 
-                    <group invisible="not ph_visible">
-                      <field name="ph_average"/>
-                    </group>  
-                    <group invisible="not ph_visible">
-                          
-                        <field name='ph_average_conformity'
-                               decoration-success="ph_average_conformity == 'pass'" 
-                               decoration-danger="ph_average_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name='ph_average_nabl'/> 
-                    </group>  -->
-
-                        <!-- Chloride  -->
-
-                    <div invisible="not chloride_visible">
-                        <h1>
-                            <field name="chloride_name" readonly="1" nolabel="1"/>
-                            <field name="chloride_visible" invisible="1"/>
-                        </h1>
-                    </div>
-                    <group/>
-
-                     <div>
-                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                        <tbody>
-                          <tr>
-                            <td><span>A. Cube Density, Kg/m3</span></td>
-                            <td><field name="chloride_cube"/></td>
-                          </tr>
-                          <tr>
-                            <td><span>B. Mass of the concrete cube taken for analysis ( gm)</span></td>
-                            <td><field name="chloride_mass"/></td>
-                          </tr>
-                          <tr>
-                            <td><span>C. Volume of 0.02 N (Silver nitrate added) in blank</span></td>
-                            <td><field name="chloride_valume"/></td>
-                          </tr>
-                          <tr>
-                            <td><span>D. Burette Reading of 0.1N Ammonium thiocynate Consumed for Sample ( ml)</span></td>
-                            <td><field name="chloride_reading"/></td>
-                          </tr>
-                          <tr>
-                            <td><span>E. Normality of 0.1 N Ammonium thiocynate solution ( N)</span></td>
-                            <td><field name="chloride_normality"/></td>
-                          </tr>
-                          <tr>
-                            <td><span>F. Chloride, % = ( C-D) x E x 0.03545 x 100/ B</span></td>
-                            <td><field name="chloride_p"/></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                    
-                    <div>
-                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                        <tbody>
-                          <tr>
-                            <td><span>G. Chloride, Kg/m3 = (F/100 x A)</span></td>
-                            <td> <field name="chloride_percent"/></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-
-                    <div>
-                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                             <tbody>
-                           <tr>
-                            <td><span>Conformity</span></td>
-                            <td><field name='chloride_conformity'
-                               decoration-success="chloride_conformity == 'pass'" 
-                               decoration-danger="chloride_conformity == 'fail'" 
-                               readonly="1"/></td>
-                           </tr>
-                           <tr>
-                            <td><span>NABL</span></td>
-                            <td><field name='chloride_nabl'/></td>
-                           </tr>
-                        </tbody>
-                          </table>
-                      </div> 
-                    <group/>
 
 
-                    <!-- <group invisible="not chloride_visible">
-                      <group style="white-space:nowrap; width:70%">
-                            <field name="chloride_cube"/>
-                            <field name="chloride_mass"/>
-                            <field name="chloride_valume"/>
-                            <field name="chloride_reading"/>
-                              <field name="chloride_normality"/>
-                            <field name="chloride_p"/>
-                            <field name="chloride_percent"/>
-                       </group>
-                    </group>
-                      <group invisible="not chloride_visible">
-                        <field name='chloride_conformity'
-                               decoration-success="chloride_conformity == 'pass'" 
-                               decoration-danger="chloride_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name='chloride_nabl'/>
-                    </group>  -->
-
-                      <!-- Chloride  -->
-
-                    <div invisible="not chloride_visible2">
-                        <h1>
-                            <field name="chloride_name2" readonly="1" nolabel="1"/>
-                            <field name="chloride_visible2" invisible="1"/>
-                        </h1>
-                    </div>
-                    <group/>
-
-                    <div>
-                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">>
-                        <tbody>
-                          <tr>
-                            <td><span>A. Cube Density, Kg/m3</span></td>
-                            <td><field name="chloride_cube2"/></td>
-                          </tr>
-                          <tr>
-                            <td><span>B. Mass of the concrete cube taken for analysis ( gm)</span></td>
-                            <td><field name="chloride_mass2"/></td>
-                          </tr>
-                          <tr>
-                            <td><span>C. Volume of 0.02 N (Silver nitrate added) in blank</span></td>
-                            <td><field name="chloride_valume2"/></td>
-                          </tr>
-                          <tr>
-                            <td><span>D. Burette Reading of 0.1N Ammonium thiocynate Consumed for Sample ( ml)</span></td>
-                            <td><field name="chloride_reading2"/></td>
-                          </tr>
-                          <tr>
-                            <td><span>E. Normality of 0.1 N Ammonium thiocynate solution ( N)</span></td>
-                            <td><field name="chloride_normality2"/></td>
-                          </tr>
-                          <tr>
-                            <td><span>F. Chloride, % = ( C-D) x E x 0.03545 x 100/ B</span></td>
-                            <td><field name="chloride_p2"/></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-
-                    <div>
-                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                        <tbody>
-                          <tr>
-                            <td><span>G. Chloride, Kg/m3 = (F/100 x A)</span></td>
-                            <td><field name="chloride_percent2"/></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-
-                    <div>
-                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                             <tbody>
-                           <tr>
-                            <td><span>Conformity</span></td>
-                            <td><field name='chloride_conformity2'
-                               decoration-success="chloride_conformity2 == 'pass'" 
-                               decoration-danger="chloride_conformity2 == 'fail'" 
-                               readonly="1"/></td>
-                           </tr>
-                           <tr>
-                            <td><span>NABL</span></td>
-                            <td><field name='chloride_nabl2'/></td>
-                           </tr>
-                        </tbody>
-                          </table>
-                      </div> 
-                    <group/>
-
-
-                    <!-- <group invisible="not chloride_visible2">
-                      <group style="white-space:nowrap; width:70%">
-                            <field name="chloride_cube2"/>
-                            <field name="chloride_mass2"/>
-                            <field name="chloride_valume2"/>
-                            <field name="chloride_reading2"/>
-                              <field name="chloride_normality2"/>
-                            <field name="chloride_p2"/>
-                            <field name="chloride_percent2"/>
-                       </group>
-                    </group>
-                      <group invisible="not chloride_visible2">
-                          
-                        <field name='chloride_conformity2'
-                               decoration-success="chloride_conformity2 == 'pass'" 
-                               decoration-danger="chloride_conformity2 == 'fail'" 
-                               readonly="1"/>
-                        <field name='chloride_nabl2'/>
-                    </group>  -->
-
-
-                      <!-- Chloride 2 -->
-
-                    <div invisible="not chloride_visible1">
-                        <h1>
-                            <field name="chloride_name1" readonly="1" nolabel="1"/>
-                            <field name="chloride_visible1" invisible="1"/>
-                        </h1>
-                    </div>
-                    <group/>
-
-                    <div>
-                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                        <tbody>
-                          <tr>
-                            <td><span>Density</span></td>
-                            <td><field name="chloride_density"/></td>
-                          </tr>
-                          <tr>
-                            <td><span>Mass of concrete sample taken</span></td>
-                            <td><field name="chloride_mass1"/></td>
-                          </tr>
-                          <tr>
-                            <td><span>volume of 0.02N silver nitrate added</span></td>
-                            <td><field name="chloride_valume1"/></td>
-                          </tr>
-                          <tr>
-                            <td><span>volume of 0.02N ammonium thiocynate consumed</span></td>
-                            <td><field name="chloride_reading1"/></td>
-                          </tr>
-                          <tr>
-                            <td><span>Diff</span></td>
-                            <td> <field name="diff"/></td>
-                          </tr>
-                          <tr>
-                            <td><span>Calculation</span></td>
-                            <td><field name="chloride_calculation"/></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-
-                    <div>
-                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                        <tbody>
-                          <tr>
-                            <td><span>Acid soluble chloride as Cl Kg/m3</span></td>
-                            <td><field name="chloride_acide"/></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-
-                    <div>
-                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                             <tbody>  
-                           <tr>
-                            <td><span>Conformity</span></td>
-                            <td><field name='chloride_conformity1'
-                               decoration-success="chloride_conformity1 == 'pass'" 
-                               decoration-danger="chloride_conformity1 == 'fail'" 
-                               readonly="1"/></td>
-                           </tr>
-                           <tr>
-                            <td><span>NABL</span></td>
-                            <td><field name='chloride_nabl1'/></td>
-                           </tr>
-                        </tbody>
-                          </table>
-                      </div> 
-                    <group/>
-
-                    <!-- <group invisible="not chloride_visible1">
-                      <group style="white-space:nowrap; width:60%">
-                            <field name="chloride_density"/>
-                            <field name="chloride_mass1"/>
-                            <field name="chloride_valume1"/>
-                            <field name="chloride_reading1"/>
-                              <field name="diff"/>
-                            <field name="chloride_calculation"/>
-                            <field name="chloride_acide"/>
-                       </group>
-                    </group>
-                      <group invisible="not chloride_visible1">
-                          
-                        <field name='chloride_conformity1'
-                               decoration-success="chloride_conformity1 == 'pass'" 
-                               decoration-danger="chloride_conformity1 == 'fail'" 
-                               readonly="1"/>
-                        <field name='chloride_nabl1'/>
-                    </group>  -->
-
-
-                  <!-- Sulphate  -->
-                    <div invisible="not sulphate_visible">
-                        <h1>
-                            <field name="sulphate_name" readonly="1" nolabel="1"/>
-                            <field name="sulphate_visible" invisible="1"/>
-                        </h1>
-                    </div>
-                    <group/>
-
-                    <div>
-                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                        <tbody>
-                          <tr>
-                            <td><span>A. Cement Content in concete %</span></td>
-                            <td><field name="sample_wt_sulphate"/></td>
-                          </tr>
-                          <tr>
-                            <td><span>B. Mass of the concrete cube sample taken for analysis ( gm)</span></td>
-                            <td><field name="volume_make_upto_sulphate"/></td>
-                          </tr>
-                          <tr>
-                            <td><span>C. Wt. of Empty crusible gm</span></td>
-                            <td><field name="wt_empty_crucible_after_ignition"/></td>
-                          </tr>
-                          <tr>
-                            <td><span>D. Wt. of Empty crusible + Residue wt gm</span></td>
-                            <td><field name="wt_empty_crucible"/></td>
-                          </tr>
-                          <tr>
-                            <td><span>E. Residue Wt, gm = ( D - C )</span></td>
-                            <td><field name="difference_in_wt_sulphate"/></td>
-                          </tr>
-                          <tr>
-                            <td><span>F. %Sulphate as SO3 = E x 34.3/B</span></td>
-                            <td> <field name="sulphate_so3"/></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-
-                    <div>
-                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                        <tbody>
-                          <tr>
-                            <td><span>G. Sulphate as SO3 on the basis of Cement content (F)*100/A</span></td>
-                            <td><field name="sulphate_percent"/></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-
-                    <div>
-                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                             <tbody>
-                           <tr>
-                            <td><span>Conformity</span></td>
-                            <td><field name='sulphate_conformity'
-                               decoration-success="sulphate_conformity == 'pass'" 
-                               decoration-danger="sulphate_conformity == 'fail'" 
-                               readonly="1"/></td>
-                           </tr>
-                           <tr>
-                            <td><span>NABL</span></td>
-                            <td><field name='sulphate_nabl'/></td>
-                           </tr>
-                        </tbody>
-                          </table>
-                      </div> 
-                    <group/>
-
-
-                    <!-- <group invisible="not sulphate_visible">
-                      <group style="white-space:nowrap; width:60%">
-                      <field name="sample_wt_sulphate"/>
-                      <field name="volume_make_upto_sulphate"/>
-                      <field name="wt_empty_crucible_after_ignition"/>
-                      <field name="wt_empty_crucible"/>
-                      <field name="difference_in_wt_sulphate"/>
-                      <field name="sulphate_so3"/>
-                      <field name="sulphate_percent"/>
-                      </group>
-                    </group>
-                      <group invisible="not sulphate_visible">
-                          
-                        <field name='sulphate_conformity'
-                               decoration-success="sulphate_conformity == 'pass'" 
-                               decoration-danger="sulphate_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name='sulphate_nabl'/>
-                    </group>  -->
-
-                    <!-- Dissolved Silica  -->
+                     <!-- Dissolved Silica  -->
                     <div invisible="not alkali_aggregate_dissolved_visible">
                         <h1>
                             <field name="alkali_aggregate_reactivity_dissolved_name" readonly="1" nolabel="1"/>
@@ -487,19 +95,19 @@
                     </div>
                     <group/>
 
-                    <div>
+                    <div invisible="not alkali_aggregate_dissolved_visible">
                       <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                          <tbody>
                            <tr>
-                           <td><span>Wt of Crucible + Blank residue after igniation (gm) (A)</span></td>
+                           <td><label for="wt_blank_crucible_after_ignition"></label></td>
                              <td><field name="wt_blank_crucible_after_ignition"/></td>
                            </tr>
                            <tr>
-                             <td><span>Wt of Cruciable +Blank residue after HF (gm) (B)</span></td>
+                             <td><label for="wt_blank_crucible_after_hf"></label></td>
                              <td><field name="wt_blank_crucible_after_hf"/></td>
                            </tr>
                            <tr>
-                             <td><span>Diff. in Wt of silica in Blank (gm) = A - B</span></td>
+                             <td><label for="diff_in_wt_of_silica_blank"></label></td>
                              <td><field name="diff_in_wt_of_silica_blank"/></td>
                            </tr>
                          </tbody>
@@ -507,8 +115,8 @@
                     </div>
                     <group/>
 
-                    <div>
-                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                    <div invisible="not alkali_aggregate_dissolved_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders" style="table-layout: fixed;">
                         <tbody>
                           <tr>
                             <td><span>Wt of Crucible + Sample residue after igniation (gm) (A)</span></td>
@@ -527,8 +135,8 @@
                     </div>
                       <group/>
 
-                      <div>
-                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                      <div invisible="not alkali_aggregate_dissolved_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders" style="table-layout: fixed;">
                         <tbody>
                           <tr>
                             <td><span>Wt of Cruciable +Sample residue after HF (gm) (B)</span></td>
@@ -547,8 +155,8 @@
                     </div>
                       <group/>
 
-                       <div>
-                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                       <div invisible="not alkali_aggregate_dissolved_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders" style="table-layout: fixed;">
                         <tbody>
                           <tr>
                             <td><span>Diff. in Wt of silica in Sample (gm) = A - B</span></td>
@@ -567,8 +175,8 @@
                     </div>
                       <group/>
 
-                       <div>
-                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                       <div invisible="not alkali_aggregate_dissolved_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders" style="table-layout: fixed;">
                         <tbody>
                           <tr>
                             <td><span>Dissolved Silica</span></td>
@@ -587,7 +195,7 @@
                     </div>
                       <group/>
 
-                      <div>
+                      <div invisible="not alkali_aggregate_dissolved_visible">
                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                         <tbody>
                           <tr>
@@ -598,7 +206,7 @@
                       </table>
                     </div>
 
-                       <div>
+                       <div invisible="not alkali_aggregate_dissolved_visible">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                              <tbody>
                            <tr>
@@ -610,104 +218,18 @@
                            </tr>
                            <tr>
                             <td><span>NABL</span></td>
-                            <td><field name='average_dissolved_nabl'/></td>
+                           
+                             <td><field name='average_dissolved_nabl'
+                               decoration-success="average_dissolved_nabl == 'pass'" 
+                               decoration-danger="average_dissolved_nabl == 'fail'" 
+                               readonly="1"/></td>
                            </tr>
                         </tbody>
                           </table>
                       </div> 
                     <group/>
 
-
-                    <!-- <group invisible="not alkali_aggregate_dissolved_visible" style="white-space:nowrap; width:50%">
-                        <field name="wt_blank_crucible_after_ignition"/>
-                        <field name="wt_blank_crucible_after_hf"/>
-                        <field name="diff_in_wt_of_silica_blank"/>
-                    </group>
-
-                    <group invisible="not alkali_aggregate_dissolved_visible">
-                        <label for="wt_crucible_after_ignition_a" string="Wt of Crucible + Sample residue after igniation (gm) (A)" />
-                        <div class="address_format " >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="wt_crucible_after_ignition_a" string="A" />
-                            <field  name="wt_crucible_after_ignition_a"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1"  class="oe_inline">
-                            <label for="wt_crucible_after_ignition_b" string="B" />
-                            <field  name="wt_crucible_after_ignition_b"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1"  class="oe_inline">
-                            <label for="wt_crucible_after_ignition_c" string="C" />
-                            <field  name="wt_crucible_after_ignition_c"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group> -->
-
-                    <!-- <group invisible="not alkali_aggregate_dissolved_visible">
-                        <label for="wt_crucible_after_hf_a" string="Wt of  Cruciable +Sample residue after HF (gm) (B)" />
-                        <div class="address_format " >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="wt_crucible_after_hf_a" string="A"  />
-                            <field  name="wt_crucible_after_hf_a"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1"  class="oe_inline">
-                            <label for="wt_crucible_after_hf_b" string="B" />
-                            <field  name="wt_crucible_after_hf_a"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1"  class="oe_inline">
-                            <label for="wt_crucible_after_hf_c" string="C" />
-                            <field  name="wt_crucible_after_hf_c"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>     -->
-
-                    <!-- <group invisible="not alkali_aggregate_dissolved_visible">
-                        <label for="diff_in_wt_of_silica_a" string="Diff. in Wt of silica in Sample (gm)  = A - B" />
-                        <div class="address_format " >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="diff_in_wt_of_silica_a" string="A" />
-                            <field  name="diff_in_wt_of_silica_a"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1"  class="oe_inline">
-                            <label for="diff_in_wt_of_silica_b" string="B" />
-                            <field  name="diff_in_wt_of_silica_b"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1"  class="oe_inline">
-                            <label for="diff_in_wt_of_silica_c" string="C" />
-                            <field  name="diff_in_wt_of_silica_c"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>           
-
-                    <group invisible="not alkali_aggregate_dissolved_visible">
-                        <label for="dissolved_silica_a" string="Dissolved Silica" />
-                        <div class="address_format " cols='12' >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="dissolved_silica_a" string="A"  />
-                            <field  name="dissolved_silica_a"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1"  class="oe_inline">
-                            <label for="dissolved_silica_b" string="B" />
-                            <field  name="dissolved_silica_b"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1"  class="oe_inline">
-                            <label for="dissolved_silica_c" string="C" />
-                            <field  name="dissolved_silica_c"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>   -->
-
-                    <!-- <group invisible="not alkali_aggregate_dissolved_visible">
-                      <field name="average_dissolved_silica"/>
-                    </group>
-                      <group invisible="not alkali_aggregate_dissolved_visible">
-                          
-                        <field name='average_dissolved_conformity'
-                               decoration-success="average_dissolved_conformity == 'pass'" 
-                               decoration-danger="average_dissolved_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name='average_dissolved_nabl'/>
-                    </group>        -->
-                  <!-- Reduction in Alkalinity  -->
+                     <!-- Reduction in Alkalinity  -->
                     <div invisible="not alkali_aggregate_alkalinity_visible">
                         <h1>
                             <field name="alkali_aggregate_reactivity_alkalinity_name" readonly="1" nolabel="1"/>
@@ -716,8 +238,8 @@
                     </div>
                     <group/>
 
-                     <div>
-                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                     <div invisible="not alkali_aggregate_alkalinity_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders" style="table-layout: fixed;">
                         <tbody>
                           <tr>
                             <td><span>Blank Reading (ml) (A)</span></td>
@@ -736,8 +258,8 @@
                     </div>
                       <group/>
 
-                      <div>
-                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                      <div invisible="not alkali_aggregate_alkalinity_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders" style="table-layout: fixed;">
                         <tbody>
                           <tr>
                             <td><span>Burette Reading (sample) (ml) (B)</span></td>
@@ -756,8 +278,8 @@
                     </div>
                       <group/>
 
-                      <div>
-                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                      <div invisible="not alkali_aggregate_alkalinity_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders" style="table-layout: fixed;">
                         <tbody>
                           <tr>
                             <td><span>Diff in Reading (ml) (A-B)</span></td>
@@ -776,8 +298,8 @@
                     </div>
                       <group/>
 
-                      <div>
-                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                      <div invisible="not alkali_aggregate_alkalinity_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders" style="table-layout: fixed;">
                       <tbody>
                           <tr>
                             <td><span>Normality of 0.05N HCL</span></td>
@@ -796,8 +318,8 @@
                     </div>
                       <group/>
 
-                      <div>
-                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                      <div invisible="not alkali_aggregate_alkalinity_visible">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders" style="table-layout: fixed;">
                         <tbody>
                           <tr>
                             <td><span>Reduction in Alkalinity</span></td>
@@ -816,7 +338,7 @@
                     </div>
                       <group/>
 
-                      <div>
+                      <div invisible="not alkali_aggregate_alkalinity_visible">
                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
                           <tr>
@@ -827,7 +349,7 @@
                       </table>
                     </div>
 
-                       <div>
+                       <div invisible="not alkali_aggregate_alkalinity_visible">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                              <tbody>
                            <tr>
@@ -839,7 +361,240 @@
                            </tr>
                            <tr>
                             <td><span>NABL</span></td>
-                            <td><field name='average_reduction_nabl'/></td>
+                            <td><field name='average_reduction_conformity'
+                               decoration-success="average_reduction_conformity == 'pass'" 
+                               decoration-danger="average_reduction_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                        </tbody>
+                          </table>
+                      </div> 
+                    <group/>
+
+                            
+                    
+                
+                        <!-- Chloride  -->
+
+                    <div invisible="not chloride_visible">
+                        <h1>
+                            <field name="chloride_name" readonly="1" nolabel="1"/>
+                            <field name="chloride_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <group/>
+
+                     <div invisible="not chloride_visible">
+                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                        <tbody>
+                          <tr>
+                            <td><label for="chloride_cube"></label></td>
+                            <td><field name="chloride_cube"/></td>
+                          </tr>
+                          <tr>
+                            <td><label for="chloride_mass"></label></td>
+                            <td><field name="chloride_mass"/></td>
+                          </tr>
+                          <tr>
+                            <td><label for="chloride_valume"></label></td>
+                            <td><field name="chloride_valume"/></td>
+                          </tr>
+                          <tr>
+                            <td><label for="chloride_reading"></label></td>
+                            <td><field name="chloride_reading"/></td>
+                          </tr>
+                          <tr>
+                            <td><label for="chloride_normality"></label></td>
+                            <td><field name="chloride_normality"/></td>
+                          </tr>
+                          <tr>
+                            <td><label for="chloride_p"></label></td>
+                            <td><field name="chloride_p"/></td>
+                          </tr>
+                           <tr>
+                            <td><label for="chloride_percent"></label></td>
+                            <td><field name="chloride_percent"/></td>
+                          </tr>
+                            <tr>
+                            <td><label for="chloride_eh"></label></td>
+                            <td><field name="chloride_eh"/></td>
+                          </tr>
+                            <tr>
+                            <td><label for="chloride_i"></label></td>
+                            <td><field name="chloride_i"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    
+                   
+
+                    <div invisible="not chloride_visible">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                             <tbody>
+                           <tr>
+                            <td><span>Conformity</span></td>
+                            <td><field name='chloride_conformity'
+                               decoration-success="chloride_conformity == 'pass'" 
+                               decoration-danger="chloride_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><span>NABL</span></td>
+                             <td><field name='chloride_nabl'
+                               decoration-success="chloride_nabl == 'pass'" 
+                               decoration-danger="chloride_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                        </tbody>
+                          </table>
+                      </div> 
+                    <group/>
+
+                     <div invisible="not chloride_visible1">
+                        <h1>
+                            <field name="chloride_name1" readonly="1" nolabel="1"/>
+                            <field name="chloride_visible1" invisible="1"/>
+                        </h1>
+                    </div>
+                    <group/>
+
+                    <div invisible="not chloride_visible1">
+                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                        <tbody>
+                          <tr>
+                            <td><label for="chloride_density"></label></td>
+                            <td><field name="chloride_density"/></td>
+                          </tr>
+                          <tr>
+                            <td><label for="chloride_mass1"></label></td>
+                            <td><field name="chloride_mass1"/></td>
+                          </tr>
+                          <tr>
+                            <td><label for="chloride_valume1"></label></td>
+                            <td><field name="chloride_valume1"/></td>
+                          </tr>
+                          <tr>
+                            <td><label for="chloride_reading1"></label></td>
+                            <td><field name="chloride_reading1"/></td>
+                          </tr>
+                          <tr>
+                            <td><label for="diff"></label></td>
+                            <td> <field name="diff"/></td>
+                          </tr>
+                          <tr>
+                            <td><label for="chloride_calculation"></label></td>
+                            <td><field name="chloride_calculation"/></td>
+                          </tr>
+                           <tr>
+                            <td><label for="chloride_acide"></label></td>
+                            <td><field name="chloride_acide"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                  
+
+                    <div invisible="not chloride_visible1">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                             <tbody>  
+                           <tr>
+                            <td><span>Conformity</span></td>
+                            <td><field name='chloride_conformity1'
+                               decoration-success="chloride_conformity1 == 'pass'" 
+                               decoration-danger="chloride_conformity1 == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><span>NABL</span></td>
+
+                             <td><field name='chloride_nabl1'
+                               decoration-success="chloride_nabl1 == 'pass'" 
+                               decoration-danger="chloride_nabl1 == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                        </tbody>
+                          </table>
+                      </div> 
+                    <group/>
+
+                
+
+
+                  
+
+                      <!-- Chloride  -->
+
+                    <div invisible="not chloride_visible2">
+                        <h1>
+                            <field name="chloride_name2" readonly="1" nolabel="1"/>
+                            <field name="chloride_visible2" invisible="1"/>
+                        </h1>
+                    </div>
+                    <group/>
+
+                    <div invisible="not chloride_visible2">
+                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                        <tbody>
+                          <tr>
+                            <td><label for="chloride_cube2"></label></td>
+                            <td><field name="chloride_cube2"/></td>
+                          </tr>
+                          <tr>
+                            <td><label for="chloride_mass2"></label></td>
+                            <td><field name="chloride_mass2"/></td>
+                          </tr>
+                          <tr>
+                            <td><label for="chloride_valume2"></label></td>
+                            <td><field name="chloride_valume2"/></td>
+                          </tr>
+                          <tr>
+                            <td><label for="chloride_reading2"></label></td>
+                            <td><field name="chloride_reading2"/></td>
+                          </tr>
+                          <tr>
+                            <td><label for="chloride_normality2"></label></td>
+                            <td><field name="chloride_normality2"/></td>
+                          </tr>
+                          <tr>
+                            <td><label for="chloride_p2"></label></td>
+                            <td><field name="chloride_p2"/></td>
+                          </tr>
+                           <tr>
+                            <td><label for="chloride_percent2"></label></td>
+                            <td><field name="chloride_percent2"/></td>
+                          </tr>
+                            <tr>
+                            <td><label for="chloride_eh2"></label></td>
+                            <td><field name="chloride_eh2"/></td>
+                          </tr>
+                            <tr>
+                            <td><label for="chloride_i_2"></label></td>
+                            <td><field name="chloride_i_2"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                 
+
+                    <div invisible="not chloride_visible2">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                             <tbody>
+                           <tr>
+                            <td><span>Conformity</span></td>
+                            <td><field name='chloride_conformity2'
+                               decoration-success="chloride_conformity2 == 'pass'" 
+                               decoration-danger="chloride_conformity2 == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><span>NABL</span></td>
+                             <td><field name='chloride_nabl2'
+                               decoration-success="chloride_nabl2 == 'pass'" 
+                               decoration-danger="chloride_nabl2 == 'fail'" 
+                               readonly="1"/></td>
                            </tr>
                         </tbody>
                           </table>
@@ -847,115 +602,81 @@
                     <group/>
 
 
-                    <!-- <group invisible="not alkali_aggregate_alkalinity_visible">
-
-                        <label for="blank_reading1" string="Blank Reading (ml) (A)" />
-                        <div class="address_format " cols='12' >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="blank_reading1" string="A"  />
-                            <field  name="blank_reading1"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1"  class="oe_inline">
-                            <label for="blank_reading2" string="B" />
-                            <field  name="blank_reading2"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1"  class="oe_inline">
-                            <label for="blank_reading3" string="C" />
-                            <field  name="blank_reading3"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>  
-
-                    <group invisible="not alkali_aggregate_alkalinity_visible">
-
-                        <label for="burette_reading1" string="Burette Reading (sample) (ml) (B)" />
-                        <div class="address_format " cols='12' >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="burette_reading1" string="A"  />
-                            <field  name="burette_reading1"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1"  class="oe_inline">
-                            <label for="burette_reading2" string="B" />
-                            <field  name="burette_reading2"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1"  class="oe_inline">
-                            <label for="burette_reading3" string="C" />
-                            <field  name="burette_reading3"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>   -->
 
 
-                    <!-- <group invisible="not alkali_aggregate_alkalinity_visible">
+                  <!-- Sulphate  -->
+                    <div invisible="not sulphate_visible">
+                        <h1>
+                            <field name="sulphate_name" readonly="1" nolabel="1"/>
+                            <field name="sulphate_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <group/>
 
-                        <label for="diff_in_reading1" string="Diff in Reading (ml) (A-B)" />
-                        <div class="address_format " cols='12' >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="diff_in_reading1" string="A"  />
-                            <field  name="diff_in_reading1"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1"  class="oe_inline">
-                            <label for="diff_in_reading2" string="B" />
-                            <field  name="diff_in_reading2"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1"  class="oe_inline">
-                            <label for="diff_in_reading3" string="C" />
-                            <field  name="diff_in_reading3"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>  
+                    <div invisible="not sulphate_visible">
+                     <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
+                        <tbody>
+                          <tr>
+                            <td><label for="sample_wt_sulphate"></label></td>
+                            <td><field name="sample_wt_sulphate"/></td>
+                          </tr>
+                          <tr>
+                            <td><label for="volume_make_upto_sulphate"></label></td>
+                            <td><field name="volume_make_upto_sulphate"/></td>
+                          </tr>
+                          <tr>
+                            <td><label for="wt_empty_crucible_after_ignition"></label></td>
+                            <td><field name="wt_empty_crucible_after_ignition"/></td>
+                          </tr>
+                          <tr>
+                            <td><label for="wt_empty_crucible"></label></td>
+                            <td><field name="wt_empty_crucible"/></td>
+                          </tr>
+                          <tr>
+                            <td><label for="difference_in_wt_sulphate"></label></td>
+                            <td><field name="difference_in_wt_sulphate"/></td>
+                          </tr>
+                          <tr>
+                            <td><label for="sulphate_so3"></label></td>
+                            <td> <field name="sulphate_so3"/></td>
+                          </tr>
+                            <tr>
+                            <td><label for="sulphate_percent"></label></td>
+                            <td> <field name="sulphate_percent"/></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
 
-                    <group invisible="not alkali_aggregate_alkalinity_visible">
+                   
 
-                        <label for="normality1" string="Normality of 0.05N HCL" />
-                        <div class="address_format " cols='12' >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="normality1" string="A"  />
-                            <field  name="normality1"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1"  class="oe_inline">
-                            <label for="normality2" string="B" />
-                            <field  name="normality2"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1"  class="oe_inline">
-                            <label for="normality3" string="C" />
-                            <field  name="normality3"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>  
-
-                    <group invisible="not alkali_aggregate_alkalinity_visible">
-
-                        <label for="reduction_in_alkalinity1" string="Reduction in Alkalinity" />
-                        <div class="address_format " cols='12' >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="reduction_in_alkalinity1" string="A"  />
-                            <field  name="reduction_in_alkalinity1"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1"  class="oe_inline">
-                            <label for="reduction_in_alkalinity2" string="B" />
-                            <field  name="reduction_in_alkalinity2"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1"  class="oe_inline">
-                            <label for="reduction_in_alkalinity3" string="C" />
-                            <field  name="reduction_in_alkalinity3"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>   -->
-                    <!-- <group invisible="not alkali_aggregate_alkalinity_visible">
-                      <field name="average_reduction_alkalinity"/>
-                    </group>
-                      <group invisible="not alkali_aggregate_alkalinity_visible">
-                          
-                        <field name='average_reduction_conformity'
-                               decoration-success="average_reduction_conformity == 'pass'" 
-                               decoration-danger="average_reduction_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name='average_reduction_nabl'/>
-                    </group>  -->
+                    <div invisible="not sulphate_visible">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                             <tbody>
+                           <tr>
+                            <td><span>Conformity</span></td>
+                            <td><field name='sulphate_conformity'
+                               decoration-success="sulphate_conformity == 'pass'" 
+                               decoration-danger="sulphate_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><span>NABL</span></td>
+                             <td><field name='sulphate_nabl'
+                               decoration-success="sulphate_nabl == 'pass'" 
+                               decoration-danger="sulphate_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                        </tbody>
+                          </table>
+                      </div> 
+                    <group/>
 
 
+                 
 
+
+                 
                      <!-- cement_content  -->
                     <div invisible="not cement_conten_visible">
                         <h1>
@@ -965,45 +686,45 @@
                     </div>
                     <group/>
 
-                    <div>
+                    <div invisible="not cement_conten_visible">
                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
                           <tr>
-                            <td><span>Mass of Sample taken</span></td>
+                            <td><label for="cement_content_mass"></label></td>
                             <td><field name="cement_content_mass"/></td>
                           </tr>
                           <tr>
-                            <td><span>Wt of crucible+ignited residue</span></td>
+                            <td><label for="cement_content_residue"></label></td>
                             <td><field name="cement_content_residue"/></td>
                           </tr>
                           <tr>
-                            <td><span>Wt of crucible+After HF residue</span></td>
+                            <td><label for="cement_content_residue_af"></label></td>
                             <td><field name="cement_content_residue_af"/></td>
                           </tr>
                           <tr>
-                            <td><span>Diff=A2-A3</span></td>
+                            <td><label for="cement_content_diff"></label></td>
                             <td><field name="cement_content_diff"/></td>
                           </tr>
                           <tr>
-                            <td><span>Sio2=A4*100/A1</span></td>
+                            <td><label for="cement_content_sio2"></label></td>
                             <td><field name="cement_content_sio2"/></td>
                           </tr>
                         </tbody>
                       </table>
                     </div>
 
-                    <div>
+                    <div invisible="not cement_conten_visible">
                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
                           <tr>
-                            <td><span>Cement Content=A5/0.2140</span></td>
+                            <td><label for="cement_content"></label></td>
                             <td><field name="cement_content"/></td>
                           </tr>
                         </tbody>
                       </table>
                     </div>
 
-                    <div>
+                    <div invisible="not cement_conten_visible">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                              <tbody>
                            <tr>
@@ -1015,7 +736,10 @@
                            </tr>
                            <tr>
                             <td><span>NABL</span></td>
-                            <td><field name='cement_content_nabl'/></td>
+                             <td><field name='cement_content_nabl'
+                               decoration-success="cement_content_nabl == 'pass'" 
+                               decoration-danger="cement_content_nabl == 'fail'" 
+                               readonly="1"/></td>
                            </tr>
                         </tbody>
                           </table>
@@ -1036,45 +760,45 @@
                     </div>
                     <group/>
 
-                    <div>
+                    <div invisible="not cement_content_1_visible">
                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
                           <tr>
-                            <td><span>Wt of Sample (gm)</span></td>
+                            <td><label for="cement_content_wt_sample"></label></td>
                             <td><field name="cement_content_wt_sample"/></td>
                           </tr>
                           <tr>
-                            <td><span>BR of 0.01N EDTA</span></td>
+                            <td><label for="cement_content_br"></label></td>
                             <td><field name="cement_content_br"/></td>
                           </tr>
                           <tr>
-                            <td><span>Normality of EDTA</span></td>
+                            <td><label for="cement_content_normality"></label></td>
                             <td><field name="cement_content_normality"/></td>
                           </tr>
                           <tr>
-                            <td><span>Dilution</span></td>
+                            <td><label for="cement_content_dilution"></label></td>
                             <td><field name="cement_content_dilution"/></td>
                           </tr>
                           <tr>
-                            <td><span>BR *0.05608*N*100*dilution/S.wt</span></td>
+                            <td><label for="cement_content_br_n_dilution"></label></td>
                             <td><field name="cement_content_br_n_dilution"/></td>
                           </tr>
                         </tbody>
                       </table>
                     </div>
 
-                    <div>
+                    <div invisible="not cement_content_1_visible">
                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
                           <tr>
-                            <td><span>Cement Content</span></td>
+                            <td><label for="cement_content_1"></label></td>
                             <td><field name="cement_content_1"/></td>
                           </tr>
                         </tbody>
                       </table>
                     </div>
 
-                    <div>
+                    <div invisible="not cement_content_1_visible">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                              <tbody>
                            <tr>
@@ -1086,7 +810,10 @@
                            </tr>
                            <tr>
                             <td><span>NABL</span></td>
-                            <td><field name='cement_content_1_nabl'/></td>
+                             <td><field name='cement_content_1_nabl'
+                               decoration-success="cement_content_1_nabl == 'pass'" 
+                               decoration-danger="cement_content_1_nabl == 'fail'" 
+                               readonly="1"/></td>
                            </tr>
                         </tbody>
                           </table>
@@ -1094,28 +821,9 @@
                     <group/>
 
 
-                    <!-- <group invisible="not cement_content_1_visible">
-                      <group style="white-space:nowrap; width:60%">
-                      <field name="cement_content_wt_sample"/>
-                      <field name="cement_content_br"/>
-                      <field name="cement_content_normality"/>
-                      <field name="cement_content_dilution"/>
-                      <field name="cement_content_br_n_dilution"/>
-                      <field name="cement_content_1"/> -->
-                      <!-- demo code -->
-                      <!-- </group>
-                    </group>
-                      <group invisible="not cement_content_1_visible">
-                        <field name='cement_content_1_conformity'
-                               decoration-success="cement_content_1_conformity == 'pass'" 
-                               decoration-danger="cement_content_1_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name='cement_content_1_nabl'/>
-                    </group>  -->
-
-
+                
                     <!-- Lime -->
-                <div>
+                <div invisible="not lime_visible">
                         <h1>
                             <field name="lime_name" readonly="1" nolabel="1"/>
                             <field name="lime_visible" invisible="1"/>
@@ -1123,34 +831,34 @@
                   </div>
                     <group/>
 
-                    <div>
+                    <div invisible="not lime_visible">
                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
                           <tr>
-                            <td><span>Wt of Sample (gm)</span></td>
+                            <td><label for="lime_wt_sample"></label></td>
                             <td><field name="lime_wt_sample"/></td>
                           </tr>
                           <tr>
-                            <td><span>BR of 0.01N EDTA</span></td>
+                            <td><label for="lime_br"></label></td>
                             <td> <field name="lime_br"/></td>
                           </tr>
                           <tr>
-                            <td><span>Normality of EDTA</span></td>
+                            <td><label for="lime_normality"></label></td>
                             <td><field name="lime_normality"/></td>
                           </tr>
                           <tr>
-                            <td><span>Dilution</span></td>
+                            <td><label for="lime_dilution"></label></td>
                             <td><field name="lime_dilution"/></td>
                           </tr>
                           <tr>
-                            <td><span>BR *0.05608*N*100*dilution/S.wt</span></td>
+                            <td><label for="lime_br_n_dilution"></label></td>
                             <td><field name="lime_br_n_dilution"/></td>
                           </tr>
                         </tbody>
                       </table>
                     </div>
 
-                    <div>
+                    <div invisible="not lime_visible">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                              <tbody>
                            <tr>
@@ -1162,30 +870,18 @@
                            </tr>
                            <tr>
                             <td><span>NABL</span></td>
-                            <td><field name='lime_nabl'/></td>
+
+                            <td><field name='lime_nabl'
+                               decoration-success="lime_nabl == 'pass'" 
+                               decoration-danger="lime_nabl == 'fail'" 
+                               readonly="1"/></td>
                            </tr>
                         </tbody>
                           </table>
                       </div> 
                     <group/>
 
-                    <!-- <group invisible="not lime_visible">
-                      <group style="white-space:nowrap; width:60%">
-                      <field name="lime_wt_sample"/>
-                      <field name="lime_br"/>
-                      <field name="lime_normality"/>
-                      <field name="lime_dilution"/>
-                      <field name="lime_br_n_dilution"/>
-                      </group>
-                    </group>
-                      <group invisible="not lime_visible">
-                        <field name='lime_conformity'
-                               decoration-success="lime_conformity == 'pass'" 
-                               decoration-danger="lime_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name='lime_nabl'/>
-                    </group>  -->
-
+                  
                   <!-- Cement Aggregate Ratio   -->
                 <div invisible="not cement_aggregate_ratio_visible">
                         <h1>
@@ -1196,57 +892,57 @@
                     <group/>
                     
 
-                    <div>
+                    <div invisible="not cement_aggregate_ratio_visible">
                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
                           <tr>
-                            <td><span>Wt of Sample (gm)</span></td>
+                            <td><label for="cement_aggregate_ratio_wt_sample"></label></td>
                             <td><field name="cement_aggregate_ratio_wt_sample"/></td>
                           </tr>
                           <tr>
-                            <td><span>BR of 0.01N EDTA</span></td>
+                            <td><label for="cement_aggregate_ratio_br"></label></td>
                             <td><field name="cement_aggregate_ratio_br"/></td>
                           </tr>
                           <tr>
-                            <td><span>Normality of EDTA</span></td>
+                            <td><label for="cement_aggregate_ratio_normality"></label></td>
                             <td> <field name="cement_aggregate_ratio_normality"/></td>
                           </tr>
                           <tr>
-                            <td><span>Dilution</span></td>
+                            <td><label for="cement_aggregate_ratio_dilution"></label></td>
                             <td><field name="cement_aggregate_ratio_dilution"/></td>
                           </tr>
                         </tbody>
                       </table>
                     </div>
 
-                    <div>
+                    <div invisible="not cement_aggregate_ratio_visible">
                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
                         <tbody>
                           <tr>
-                            <td><span>BR *0.05608*N*100*dilution/S.wt</span></td>
+                            <td><label for="cement_aggregate_ratio_br_n_dilution"></label></td>
                             <td><field name="cement_aggregate_ratio_br_n_dilution"/></td>
                           </tr>
                           <tr>
-                            <td><span>Cement Content</span></td>
+                            <td><label for="cement_content_aggregate_ratio"></label></td>
                             <td><field name="cement_content_aggregate_ratio"/></td>
                           </tr>
                           <tr>
-                            <td><span>Aggregate %</span></td>
+                            <td><label for="cement_aggregate_percent"></label></td>
                             <td><field name="cement_aggregate_percent"/></td>
                           </tr>
                           <tr>
-                            <td><span>Ratio</span></td>
+                            <td><label for="cement_aggregate_ratio"></label></td>
                             <td><field name="cement_aggregate_ratio"/></td>
                           </tr>
                           <tr>
-                            <td><span>Cement Content Ratio 1:H</span></td>
+                            <td><label for="cement_aggregate_ratio_result"></label></td>
                             <td><field name="cement_aggregate_ratio_result"/></td>
                           </tr>
                         </tbody>
                       </table>
                     </div>
 
-                    <div>
+                    <div invisible="not cement_aggregate_ratio_visible">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                              <tbody>
                            <tr>
@@ -1258,7 +954,10 @@
                            </tr>
                            <tr>
                             <td><span>NABL</span></td>
-                            <td><field name='cement_aggregate_ratio_nabl'/></td>
+                            <td><field name='cement_aggregate_ratio_nabl'
+                               decoration-success="cement_aggregate_ratio_nabl == 'pass'" 
+                               decoration-danger="cement_aggregate_ratio_nabl == 'fail'" 
+                               readonly="1"/></td>
                            </tr>
                         </tbody>
                           </table>
@@ -1267,29 +966,7 @@
 
 
 
-                    <!-- <group invisible="not cement_aggregate_ratio_visible">
-                      <group style="white-space:nowrap; width:60%">
-                      <field name="cement_aggregate_ratio_wt_sample"/>
-                      <field name="cement_aggregate_ratio_br"/>
-                      <field name="cement_aggregate_ratio_normality"/>
-                      <field name="cement_aggregate_ratio_dilution"/>
-                       
-                      <field name="cement_aggregate_ratio_br_n_dilution"/>
-                       
-                      <field name="cement_content_aggregate_ratio"/>
-                      <field name="cement_aggregate_percent"/>
-                      <field name="cement_aggregate_ratio"/>
-                      <field name="cement_aggregate_ratio_result"/>
-                      </group>
-                    </group>
-                      <group invisible="not cement_aggregate_ratio_visible">
-                          
-                        <field name='cement_aggregate_ratio_conformity'
-                               decoration-success="cement_aggregate_ratio_conformity == 'pass'" 
-                               decoration-danger="cement_aggregate_ratio_conformity == 'fail'" 
-                               readonly="1"/>
-                        <field name='cement_aggregate_ratio_nabl'/>
-                    </group> -->
+                   
                    <notebook>
 
                         <page string="Notes">

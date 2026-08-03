@@ -78,228 +78,125 @@
                             
 
                             <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
-                                    <tbody>
+                                <tbody>
+                                    <tr>
+                                        <td><label for="diameter"></label></td>
+                                        <td><field name="diameter"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="lentgh"></label></td>
+                                        <td><field name="lentgh"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="weight"></label></td>
+                                        <td><field name="weight"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="crossectional_area"></label></td>
+                                        <td><field name="crossectional_area"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="gauge_length"></label></td>
+                                        <td><field name="gauge_length"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="elongated_gauge_length"></label></td>
+                                        <td><field name="elongated_gauge_length"/></td>
+                                    </tr>
+                                    <div invisible="elongation_visible == False" >
                                         <tr>
-                                            <td><label for="diameter"></label></td>
-                                            <td><field name="diameter"/></td>
+                                            <td><label for="percent_elongation"></label></td>
+                                            <td><field name="percent_elongation" /></td>
+                                            <field name="elongation_visible" invisible="1"/>
                                         </tr>
-                                        
-                                    
-                                    </tbody>
-                                </table>
+                                        <tr>
+                                            <td><label for="requirement_elongation"></label></td>
+                                            <td><field name="requirement_elongation" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label for="elongation_nabl"></label></td>
+                                            <td><field name='elongation_nabl'
+                                            decoration-success="elongation_nabl == 'pass'" 
+                                            decoration-danger="elongation_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label for="elongation_conformity"></label></td>
+                                            <td><field name='elongation_conformity'
+                                            decoration-success="elongation_conformity == 'pass'" 
+                                            decoration-danger="elongation_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                                        </tr>
+                                    </div>
+                                    <div invisible="weight_per_meter_visible == False" >
+                                        <tr>
+                                            <td><label for="weight_per_meter"></label></td>
+                                            <td><field name="weight_per_meter" /></td>
+                                            <field name="weight_per_meter_visible" invisible="1"/>
+                                        </tr>
+                                        <tr>
+                                            <td><label for="requirement_weight_per_meter"></label></td>
+                                            <td><field name="requirement_weight_per_meter" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label for="weight_per_meter_nabl"></label></td>
+                                            <td><field name='weight_per_meter_nabl'
+                                            decoration-success="weight_per_meter_nabl == 'pass'" 
+                                            decoration-danger="weight_per_meter_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label for="weight_per_meter_conformity"></label></td>
+                                            <td><field name='weight_per_meter_conformity'
+                                            decoration-success="weight_per_meter_conformity == 'pass'" 
+                                            decoration-danger="weight_per_meter_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                                        </tr>
+                                    </div>
+                                    <tr>
+                                        <td><label for="yeild_load"></label></td>
+                                        <td><field name="yeild_load"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="ultimate_load"></label></td>
+                                        <td><field name="ultimate_load"/></td>
+                                    </tr>
+                                    <div invisible="yield_visible == False" >
+                                        <tr>
+                                            <td><label for="proof_yeid_stress"></label></td>
+                                            <td><field name="proof_yeid_stress" /></td>
+                                            <field name="yield_visible" invisible="1"/>
+                                        </tr>
+                                        <tr>
+                                            <td><label for="requirement_yield"></label></td>
+                                            <td><field name="requirement_yield" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label for="yield_nabl"></label></td>
+                                            <td><field name='yield_nabl'
+                                            decoration-success="yield_nabl == 'pass'" 
+                                            decoration-danger="yield_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label for="yield_conformity"></label></td>
+                                            <td><field name='yield_conformity'
+                                            decoration-success="yield_conformity == 'pass'" 
+                                            decoration-danger="yield_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                                        </tr>
+                                    </div>
+
+                                </tbody>
+                            </table>
                           
-
-                            <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
-                                    <tbody>
-                                        <tr>
-                                            <td><label for="lentgh"></label></td>
-                                            <td><field name="lentgh"/></td>
-                                        </tr>
-                                        
-                                    
-                                    </tbody>
-                                </table>
-                           
-                             <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
-                                    <tbody>
-                                        <tr>
-                                            <td><label for="weight"></label></td>
-                                            <td><field name="weight"/></td>
-                                        </tr>
-                                        
-                                    
-                                    </tbody>
-                                </table>
-                           
-
-                              <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
-                                    <tbody>
-                                        <tr>
-                                            <td><label for="crossectional_area"></label></td>
-                                            <td><field name="crossectional_area"/></td>
-                                        </tr>
-                                        
-                                    
-                                    </tbody>
-                                </table>
-                           
-                             <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
-                                    <tbody>
-                                        <tr>
-                                            <td><label for="gauge_length"></label></td>
-                                            <td><field name="gauge_length"/></td>
-                                        </tr>
-                                        
-                                    
-                                    </tbody>
-                                </table>
-                         
-
-                               <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
-                                    <tbody>
-                                        <tr>
-                                            <td><label for="elongated_gauge_length"></label></td>
-                                            <td><field name="elongated_gauge_length"/></td>
-                                        </tr>
-                                        
-                                    
-                                    </tbody>
-                                </table>
-                        
-
-                             <div class="d-flex gap-2" invisible="elongation_visible == False" >
-                            <table class="table table-sm o_form_table table-bordered w-25 custom_table_borders">
-                                <tbody>
-                                    <tr>
-                                        <td><label for="percent_elongation"></label></td>
-                                        <td><field name="percent_elongation" /></td>
-                                        <field name="elongation_visible" invisible="1"/>
-                                    </tr>
-                                
-                                </tbody>
-                            </table>
-                            
-                            <table class="table table-sm o_form_table table-bordered w-25 custom_table_borders">
-                                <tbody>
-                                    <tr>
-                                        <td><label for="requirement_elongation"></label></td>
-                                        <td><field name="requirement_elongation" /></td>
-                                    </tr>
-                                
-                                </tbody>
-                            </table>
-                            <table class="table table-sm o_form_table table-bordered w-25 custom_table_borders">
-                                <tbody>
-                                    <tr>
-                                        <td><label for="elongation_nabl"></label></td>
-                                        <td><field name='elongation_nabl'
-                                        decoration-success="elongation_nabl == 'pass'" 
-                                        decoration-danger="elongation_nabl == 'fail'" 
-                                        readonly="1" /></td>
-                                    </tr>
-                                
-                                </tbody>
-                            </table>
-
-                            <table class="table table-sm o_form_table table-bordered w-25 custom_table_borders">
-                                <tbody>
-                                    <tr>
-                                        <td><label for="elongation_conformity"></label></td>
-                                        <td><field name='elongation_conformity'
-                                        decoration-success="elongation_conformity == 'pass'" 
-                                        decoration-danger="elongation_conformity == 'fail'" 
-                                        readonly="1" /></td>
-                                    </tr>
-                                
-                                </tbody>
-                            </table>
-                        </div>
-                           
-                            <div class="d-flex gap-2" invisible="weight_per_meter_visible == False" >
-                            <table class="table table-sm o_form_table table-bordered w-25 custom_table_borders">
-                                <tbody>
-                                    <tr>
-                                        <td><label for="weight_per_meter"></label></td>
-                                        <td><field name="weight_per_meter" /></td>
-                                        <field name="weight_per_meter_visible" invisible="1"/>
-                                    </tr>
-                                
-                                </tbody>
-                            </table>
-                            
-                            <table class="table table-sm o_form_table table-bordered w-25 custom_table_borders">
-                                <tbody>
-                                    <tr>
-                                        <td><label for="requirement_weight_per_meter"></label></td>
-                                        <td><field name="requirement_weight_per_meter" /></td>
-                                    </tr>
-                                
-                                </tbody>
-                            </table>
-                            <table class="table table-sm o_form_table table-bordered w-25 custom_table_borders">
-                                <tbody>
-                                    <tr>
-                                        <td><label for="weight_per_meter_nabl"></label></td>
-                                        <td><field name='weight_per_meter_nabl'
-                                        decoration-success="weight_per_meter_nabl == 'pass'" 
-                                        decoration-danger="weight_per_meter_nabl == 'fail'" 
-                                        readonly="1" /></td>
-                                    </tr>
-                                
-                                </tbody>
-                            </table>
-
-                            <table class="table table-sm o_form_table table-bordered w-25 custom_table_borders">
-                                <tbody>
-                                    <tr>
-                                        <td><label for="weight_per_meter_conformity"></label></td>
-                                        <td><field name='weight_per_meter_conformity'
-                                        decoration-success="weight_per_meter_conformity == 'pass'" 
-                                        decoration-danger="weight_per_meter_conformity == 'fail'" 
-                                        readonly="1" /></td>
-                                    </tr>
-                                
-                                </tbody>
-                            </table>
-                        </div>
-
-                              <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
-                                    <tbody>
-                                        <tr>
-                                            <td><label for="yeild_load"></label></td>
-                                            <td><field name="yeild_load"/></td>
-                                        </tr>
-                                        
-                                    
-                                    </tbody>
-                                </table>
-
-                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
-                            <tbody>
-                                <tr>
-                                    <td><label for="ultimate_load"></label></td>
-                                    <td><field name="ultimate_load"/></td>
-                                </tr>
-                                
-                               
-                            </tbody>
-                          </table>
-                           
 
 
                             <div class="d-flex gap-2" invisible="yield_visible == False" >
-                            <table class="table table-sm o_form_table table-bordered w-25 custom_table_borders">
-                                <tbody>
-                                    <tr>
-                                        <td><label for="proof_yeid_stress"></label></td>
-                                        <td><field name="proof_yeid_stress" /></td>
-                                        <field name="yield_visible" invisible="1"/>
-                                    </tr>
-                                
-                                </tbody>
-                            </table>
                             
-                            <table class="table table-sm o_form_table table-bordered w-25 custom_table_borders">
-                                <tbody>
-                                    <tr>
-                                        <td><label for="requirement_yield"></label></td>
-                                        <td><field name="requirement_yield" /></td>
-                                    </tr>
-                                
-                                </tbody>
-                            </table>
-                            <table class="table table-sm o_form_table table-bordered w-25 custom_table_borders">
-                                <tbody>
-                                    <tr>
-                                        <td><label for="yield_nabl"></label></td>
-                                        <td><field name='yield_nabl'
-                                        decoration-success="yield_nabl == 'pass'" 
-                                        decoration-danger="yield_nabl == 'fail'" 
-                                        readonly="1" /></td>
-                                    </tr>
-                                
-                                </tbody>
-                            </table>
+                            
+                            
+                            
 
                             <table class="table table-sm o_form_table table-bordered w-25 custom_table_borders">
                                 <tbody>

@@ -7,9 +7,20 @@ class ContactsInherited(models.Model):
     contractor_table = fields.One2many('lerm.contractor.line','partner_id',string="Contractor")
     signature = fields.Binary(string="Signature")
     stamp = fields.Binary(string="Stamps")
+    # global_location_number = fields.Char(string="Global Location Number")
+    # billing_customers = fields.Many2many(
+    #     'res.partner',
+    #     relation='res_partner_billing_customer_rel',
+    #     column1='partner_id',
+    #     column2='billing_customer_id',
+    #     string='Billing Customer'
+    # )
 
 
-
+    user_type = fields.Selection([
+        ('employee', 'Employee'),
+        ('seller', 'Seller'),
+    ], string='User Type', default='seller')
 
 class ContractorLine(models.Model):
     _name = 'lerm.contractor.line'

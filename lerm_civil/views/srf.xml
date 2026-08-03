@@ -93,7 +93,6 @@
                             <field name="casting"/>
                             <field name="sample_received_date"/>
                             <field name="sample_description"/>
-                            <field name="quantity"/>
                             <button name="edit_sample" groups="lerm_civil.lerm_access_update_srf" string="Edit" type="object" class="btn-primary"/>
                             <button name="reallocate_sample" string="Reallocate" type="object" groups="lerm_civil.lerm_job_allocation" class="btn-primary"/>
                         </tree>
@@ -230,29 +229,7 @@
                         <field name="sample_description"/>
                     </group>
                     
-                    <group>
-                        <!-- <field name="volume"/> -->
-                        <field name="quantity"/>
-                    </group>
-
-                    <table class="table table-sm">
-                        <thead>
-                            <tr>
-                                <th>Sample Quantity</th>
-                                <th>Received</th>
-                                <th>Consumed</th>
-                                <th>Balance</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><field name="uom_id"/></td>
-                                <td><field name="quantity_received"/></td>
-                                <td><field name="quantity_consumed"/></td>
-                                <td><field name="quantity_balance"/></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    
 
                     <group style="width:50%">
                         <field name="days_casting" string="Days of Testing" invisible="show_days_casting == False"/>

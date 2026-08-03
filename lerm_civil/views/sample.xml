@@ -59,7 +59,7 @@
                         <group>
                             <group>
                                 <field name="srf_id" readonly="1"/>
-                                <field name="department_id"/>
+                                <field name="department_id" readonly="1"/>
                                 <field name="discipline_id" readonly="state != '1-allotment_pending'"/>
                                 <field name="group_id" domain="[('id', 'in', group_ids)]" readonly="state != '1-allotment_pending'"/>
                                 <field name="material_id" domain="[('id', 'in', material_ids)]" readonly="state != '1-allotment_pending'"/>
@@ -148,28 +148,6 @@
                             </group>
                            
                         </group>
-                        
-                        <table class="table table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Sample Quantity</th>
-                                    <th>Received</th>
-                                    <th>Consumed</th>
-                                    <th>Discarded</th>
-                                    <th>Balance</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><field name="uom_id" readonly="1"/></td>
-                                    <td><field name="quantity_received" readonly="1"/></td>
-                                    <td><field name="quantity_consumed" readonly="1"/></td>
-                                    <td><field name="quantity_discarded" readonly="1"/></td>
-                                    <td><field name="quantity_balance" readonly="1"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        
                         
                         
                             <!-- <field name="invoice_number" invisible="state != '4-in_report' and invoice_status != '2-invoiced'"/> -->
@@ -309,41 +287,6 @@
             </tree>
         </field>
 
-    </record>
-
-    <record id="lerm_civil_sample_search_view" model="ir.ui.view">
-    <field name="name">lerm.srf.sample.search.view</field>
-    <field name="model">lerm.srf.sample</field>
-    <field name="type">search</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="srf_id" string="SRF ID" />
-                <field name="casting" string="Casting" />
-                <field name="discipline_id" string="Discipline" />
-                <field name="kes_no" string="SSL NO" />
-                <field name="lab_no_value" optional="show" invisible="1"/>
-                <!-- <field name="lab_l_id" string="Discipline" /> -->
-                <field name="group_id" string="Group" />
-                <field name="material_id" string="Material" />
-                <field name="sample_qty" string="Sample Quantity" />
-                <field name="sample_condition" string="Sample Condition" />
-                <field name="technicians" string="Technicians" />
-                <field name="location" string="Location" />
-                <field name="scope" string="Scope" />
-                <field name="days_casting" string="Days of Testing" />
-                <field name="customer_id" string="Customer" />
-                <field name="status" string="Status" />
-                <field name="state" string="State" />
-                <field name="conformity" string="Conformity" />
-
-                
-
-
-                 <searchpanel>
-                        <field name="state" enable_counters="1"/>
-                </searchpanel>
-            </search>
-        </field>
     </record>
 
     <record id="srf_sample_allotment_wizard" model="ir.ui.view">

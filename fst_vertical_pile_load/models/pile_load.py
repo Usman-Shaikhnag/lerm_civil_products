@@ -1,16 +1,27 @@
 from odoo import api, fields, models
+from odoo.modules.module import get_module_resource
 from datetime import timedelta
 from odoo.exceptions import UserError, ValidationError
 import base64
+import json
+import hmac
+import hashlib
 import io
+from io import BytesIO
 import math
 import re
 import matplotlib.pyplot as plt
+import xlsxwriter
+from openpyxl import load_workbook
+from pytz import timezone
+import qrcode
+
+
+india_tz = timezone('Asia/Kolkata')
 
 # Constants for graph styling
 GRAPH_MAJOR_GRID_COLOR = '#d28b5c'
 GRAPH_MINOR_GRID_COLOR = '#f0c7a0'
-
 
 class PileLoadTestParent(models.Model):
     _name = "pile.load.test.parent"
@@ -19,8 +30,12 @@ class PileLoadTestParent(models.Model):
 
     work_name = fields.Char("Name of Work")
 
-    client = fields.Char(string="Client")
-    contractor = fields.Char(string="Contractor")
+    client = fields.Many2one("res.partner", string="Client")
+    contractor = fields.Many2one(
+        "lerm.contractor.line",
+        string="Contractor",
+        domain="[('partner_id', '=', client)]"
+    )
 
     cover_image = fields.Binary("Cover Image")
 
@@ -120,6 +135,194 @@ class PileLoadTestParent(models.Model):
     )
 
     analysis_text = fields.Text("Analysis of Test Results")
+    dial_gauge_count = fields.Integer(string="No. of Dial Gauges",default=4)
+    incremental_load = fields.Float(string="Incremental Load (Tonne)")
+    test_load = fields.Integer(string="Test Load (Tonne)")
+    diameter = fields.Float(string="Diameter of pile (mm)")
+    qr_code = fields.Binary(
+        "QR Code",
+        attachment=True,
+    )
+    @api.model
+    def create(self, vals):
+        rec = super().create(vals)
+
+        if not rec.introduction:
+            rec.introduction = rec._default_introduction()
+
+        if not rec.objective:
+            rec.objective = rec._default_objective()
+
+        if not rec.test_procedure:
+            rec.test_procedure = rec._default_test_procedure()
+
+        rec.generate_ids()
+
+        return rec
+    def _default_introduction(self):
+        return (
+            f"The Initial Vertical Pile Load Test was conducted on behalf of "
+            f"{self.contractor.partner_id.name if self.contractor else ''} "
+            f"for the project {self.work_name or ''}."
+        )
+
+    def _default_test_procedure(self):
+        return (
+            f"""Vertical load test (compression) was done as per IS 2911 (PART -IV) 2013 in which compression load was applied to the pile top (after preparation of the pile top) by means of a hydraulic jack against rolled steel joist capable of providing reaction and the settlement was recorded by {self.dial_gauge_count} dial gauges of 0.01 mm sensitivity, each positioned at equal distance around the pile and held by datum bars resting on immovable supports at minimum distance of 3D from the edge of the pile, Where D is the pile stem diameter of circular pile. The reaction for the jack was obtained from a kentledge placed on a plateform supported clear of the test pile. The center of gravity of the kentledge was tried to be kept on the axis of the pile and the load applied by the jack was also made co-axial with this pile. The test was carried out by applying a series of vertical downward incremental each load of {self.incremental_load:.2f} Tons."""
+        )
+
+    def _default_objective(self):
+        return ("""The main objective of the test was to determine the ultimate load capacity and a safe load by application of factor of safety and also to get an idea of suitability of piling system. This test will also provide guide lines for setting up the limits of acceptance for routine test.""")
+
+    def generate_ids(self):
+        self.content_ids = [
+                (0, 0, {
+                    'sequence': 1.01,
+                    'description': 'INTRODUCTION',
+                }),
+                (0, 0, {
+                    'sequence': 1.02,
+                    'description': 'OBJECTIVE',
+                }),
+                (0, 0, {
+                    'sequence': 1.03,
+                    'description': 'TEST EQUIPMENTS',
+                }),
+                (0, 0, {
+                    'sequence': 1.04,
+                    'description': 'TEST PROCEDURE',
+                }),
+                (0, 0, {
+                    'sequence': 2.01,
+                    'description': 'TABLE 1 : BASIC DATA',
+                }),
+                (0, 0, {
+                    'sequence': 2.02,
+                    'description': 'INTERPRETATION',
+                }),
+                (0, 0, {
+                    'sequence': 2.03,
+                    'description': 'TABLE 2 A : DIAL GAUSE READING CORRESPONDING TO LOADING',
+                }),
+                (0, 0, {
+                    'sequence': 2.04,
+                    'description': 'TABLE 2 B : DIAL GAUSE READING CORRESPONDING TO UNLOADING',
+                }),
+                (0, 0, {
+                    'sequence': 2.05,
+                    'description': 'FIG 1 : LOAD SETTLEMENT GRAPH FROM FIELD DATA',
+                }),
+                (0, 0, {
+                    'sequence': 2.06,
+                    'description': 'ANALYSIS OF TEST RESULTS',
+                }),
+            ]
+
+
+        self.basic_data_ids = [
+                (0, 0, {
+                    'sr_no': 1,
+                    'parameter': 'Test Pile No.',
+                    'value': self.pile_no or '',
+                }),
+                (0, 0, {
+                    'sr_no': 2,
+                    'parameter': 'Diameter of pile',
+                    'value': f'{self.diameter:.0f} mm' if self.diameter else '',
+                }),
+                (0, 0, {
+                    'sr_no': 3,
+                    'parameter': 'Date of Casting',
+                    'value': '',
+                }),
+                (0, 0, {
+                    'sr_no': 4,
+                    'parameter': 'Date of Test',
+                    'value': '',
+                }),
+                (0, 0, {
+                    'sr_no': 5,
+                    'parameter': 'Type of Test',
+                    'value': '',
+                }),
+                (0, 0, {
+                    'sr_no': 6,
+                    'parameter': 'Type of  Pile',
+                    'value': '',
+                }),
+                (0, 0, {
+                    'sr_no': 7,
+                    'parameter': 'Length of Pile',
+                    'value': '',
+                }),
+                (0, 0, {
+                    'sr_no': 8,
+                    'parameter': 'Estimated safe load',
+                    'value': '',
+                }),
+                (0, 0, {
+                    'sr_no': 9,
+                    'parameter': 'Test Load',
+                    'value': f'{self.test_load} Tonne' if self.test_load else '',
+                }),
+                (0, 0, {
+                    'sr_no': 10,
+                    'parameter': 'Material of Pile',
+                    'value': '',
+                }),
+            ]
+
+    def _compute_qr_code(self):
+        self.ensure_one()
+        secret_key = self._get_secret_key()
+
+        data = {
+            "model": self._name,
+            "record_id": self.id,
+            "uid": self.env.user.id,
+        }
+
+        payload = json.dumps(data, separators=(',', ':'))
+        signature = hmac.new(
+            secret_key.encode(),
+            payload.encode(),
+            hashlib.sha256
+        ).hexdigest()
+
+        token = base64.urlsafe_b64encode(
+            json.dumps({"data": data, "sig": signature}).encode()
+        ).decode()
+
+        base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
+
+        # return {
+        #     "type": "ir.actions.act_url",
+        #     "url": f"{base_url}/react/report?token={token}",
+        #     "target": "new",
+        # }
+        # base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+
+        for rec in self:
+            if not rec.id:
+                rec.qr_code = False
+                continue
+
+            url = f"{base_url}/react/report?token={token}"
+
+            qr = qrcode.QRCode(
+                version=1,
+                box_size=8,
+                border=2,
+            )
+            qr.add_data(url)
+            qr.make(fit=True)
+
+            img = qr.make_image(fill_color="black", back_color="white")
+
+            buffer = BytesIO()
+            img.save(buffer, format="PNG")
+
+            rec.qr_code = base64.b64encode(buffer.getvalue())
 
     def action_generate_report_no(self):
         for rec in self:
@@ -146,11 +349,11 @@ class PileLoadTestParent(models.Model):
                 lab.ulr_sequence.code
             )
 
-            # import wdb;wdb.set_trace()
             # Extract only the numeric part (with optional suffix like F)
             match = re.search(r'(\d+F?)$', seq_raw)
             seq = match.group(1) if match else ''
 
+            # import wdb;wdb.set_trace()
             rec.ulr = f"{cert}{year}{loc}{seq}"
 
     @api.depends('loading_reading_ids.mean_mm', 'unloading_reading_ids.mean_mm')
@@ -363,6 +566,7 @@ class PileLoadTestParent(models.Model):
             # 3️⃣ Force recompute of parent computed fields
             rec._compute_settlement_values()
             rec._compute_max_settlement()
+            rec._compute_qr_code()
 
 
 
@@ -438,6 +642,245 @@ class PileLoadTestParent(models.Model):
             dates = rec.loading_reading_ids.mapped('reading_datetime')
             dates = [d for d in dates if d]
             rec.last_reading_datetime = max(dates) if dates else False
+
+
+    def action_open_import_wizard(self):
+
+        self.ensure_one()
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Import Excel',
+            'res_model': 'pile.load.import.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_parent_id': self.id,
+            }
+        }
+
+    def action_download_excel_template(self):
+        self.ensure_one()
+
+        output = io.BytesIO()
+
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+
+        header_format = workbook.add_format({
+            'bold': True,
+            'align': 'center',
+            'valign': 'vcenter',
+            'border': 1,
+        })
+
+        date_format = workbook.add_format({
+            'num_format': 'dd/mm/yyyy',
+            'border': 1,
+        })
+
+        time_format = workbook.add_format({
+            'num_format': 'hh:mm AM/PM',
+            'border': 1,
+        })
+
+        normal_format = workbook.add_format({
+            'border': 1,
+        })
+
+        headers = [
+            'Date',
+            'Time',
+            'Load',
+            'Dial A',
+            'Dial B',
+            'Dial C',
+            'Dial D',
+        ]
+
+        for sheet_name in ['Loading', 'Unloading']:
+
+            sheet = workbook.add_worksheet(sheet_name)
+
+            # Column widths
+            sheet.set_column(0, 0, 15)  # Date
+            sheet.set_column(1, 1, 12)  # Time
+            sheet.set_column(2, 6, 15)  # Numeric columns
+
+            # Headers
+            for col, header in enumerate(headers):
+                sheet.write(0, col, header, header_format)
+
+            # Empty sample numeric cells
+            for col in range(1, 6):
+                sheet.write(1, col, None, normal_format)
+
+        instructions_sheet = workbook.add_worksheet('Instructions')
+        instructions_sheet.set_column(0, 0, 30)
+        instructions_sheet.set_column(1, 1, 80)
+
+        instructions_sheet.write(0, 0, 'Field', header_format)
+        instructions_sheet.write(0, 1, 'Requirement', header_format)
+
+        instructions_sheet.write(1, 0, 'Date')
+        instructions_sheet.write(
+            1, 1,
+            'Required. Must be a valid Excel date. Example: 09/06/2026'
+        )
+
+        instructions_sheet.write(2, 0, 'Time')
+        instructions_sheet.write(
+            2, 1,
+            'Required. Must be a valid Excel time. Example: 14:30'
+        )
+
+        instructions_sheet.write(3, 0, 'Load')
+        instructions_sheet.write(
+            3, 1,
+            'Required. Numeric value in tonnes.'
+        )
+
+        instructions_sheet.write(4, 0, 'Dial A')
+        instructions_sheet.write(
+            4, 1,
+            'Required. Numeric reading in mm.'
+        )
+
+        instructions_sheet.write(5, 0, 'Dial B')
+        instructions_sheet.write(
+            5, 1,
+            'Required. Numeric reading in mm.'
+        )
+
+        instructions_sheet.write(6, 0, 'Dial C')
+        instructions_sheet.write(
+            6, 1,
+            'Required. Numeric reading in mm.'
+        )
+
+        instructions_sheet.write(7, 0, 'Dial D')
+        instructions_sheet.write(
+            7, 1,
+            'Required. Numeric reading in mm.'
+        )
+
+        instructions_sheet.write(10, 0, 'Important Notes', header_format)
+
+        instructions_sheet.write(
+            11, 0,
+            '1. Do not rename the sheets "Loading" and "Unloading".'
+        )
+
+        instructions_sheet.write(
+            12, 0,
+            '2. Do not change the column headers.'
+        )
+
+        instructions_sheet.write(
+            13, 0,
+            '3. Date, Time, Load, Dial A, Dial B, Dial C and Dial D cannot be blank.'
+        )
+
+        instructions_sheet.write(
+            14, 0,
+            '4. Date and Time must be entered using Excel date/time format.'
+        )
+
+        instructions_sheet.write(
+            15, 0,
+            '5. One reading per row.'
+        )
+
+        instructions_sheet.write(
+            16, 0,
+            '6. Duplicate date and time entries will update existing records.'
+        )
+        
+        workbook.close()
+
+        output.seek(0)
+
+        file_data = base64.b64encode(output.read())
+
+        attachment = self.env['ir.attachment'].create({
+            'name': 'Pile_Load_Template.xlsx',
+            'type': 'binary',
+            'datas': file_data,
+            'mimetype': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        })
+
+        return {
+            'type': 'ir.actions.act_url',
+            'url': f'/web/content/{attachment.id}?download=true',
+            'target': 'self',
+        }
+
+    def action_generate_analysis(self):
+        for rec in self:
+
+            gross = rec.gross_settlement or 0
+
+            if gross < 12:
+                rec.analysis_text = (
+                    f"1) Settlement upto 12 mm is not achieved during the test. "
+                    f"Gross Settlement is evaluated {gross:.2f} mm.\n"
+                    f"2) 50 percent of the final load at 10 % of the pile diameter "
+                    f"i.e.{rec.diameter / 10:.2f} mm not reached.\n"
+                    f"Hence allowable load is considered as two third of test load "
+                    f"i.e. ⅔ × {rec.test_load} Tonne or say {round(rec.test_load * 2 / 3, 2)} Tonne."
+                )
+            else:
+                rec.analysis_text = (
+                    f"1) Two-thirds of the final load at 12 mm settlement = "
+                    f"⅔ × {rec.test_load} Tonne or say {rec.test_load / 2:.2f} Tonne.\n"
+                    f"2) 50 percent of the final load at 10 % of the pile diameter "
+                    f"i.e. {rec.diameter / 10:.2f} mm = 50 % of {rec.test_load} Tonne or say {rec.test_load / 2:.2f} Tonne.\n"
+                    f"Hence allowable load is considered {rec.test_load / 2:.2f} Tonne."
+                )
+
+    def action_reset_readings(self):
+        for rec in self:
+            rec.write({
+                'loading_reading_ids': [(5, 0, 0)],
+                'unloading_reading_ids': [(5, 0, 0)],
+                'graph_image': False,
+            })
+
+    def _get_secret_key(self):
+        key = self.env['ir.config_parameter'].sudo().get_param('pile_load_report_secret_key')
+        if not key:
+            raise ValueError("Set 'pile_load_report_secret_key' in system parameters.")
+        return key
+
+    def print_react_report(self):
+        self.ensure_one()
+        secret_key = self._get_secret_key()
+
+        data = {
+            "model": self._name,
+            "record_id": self.id,
+            "uid": self.env.user.id,
+        }
+
+        payload = json.dumps(data, separators=(',', ':'))
+        signature = hmac.new(
+            secret_key.encode(),
+            payload.encode(),
+            hashlib.sha256
+        ).hexdigest()
+
+        token = base64.urlsafe_b64encode(
+            json.dumps({"data": data, "sig": signature}).encode()
+        ).decode()
+
+        base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
+
+        return {
+            "type": "ir.actions.act_url",
+            "url": f"{base_url}/react/report?token={token}",
+            "target": "new",
+        }
+
+
 
 # NEW: Separate Loading Model
 class PileLoadReadingLoading(models.Model):
@@ -560,9 +1003,14 @@ class PileLoadReadingLoading(models.Model):
     def _compute_split_dt(self):
         for rec in self:
             if rec.reading_datetime:
-                dt = fields.Datetime.context_timestamp(rec, rec.reading_datetime)
+                dt = fields.Datetime.context_timestamp(
+                    rec,
+                    rec.reading_datetime
+                )
+
                 rec.reading_date_str = dt.strftime("%d/%m/%y")
-                rec.reading_time_str = dt.strftime("%H:%M")
+                rec.reading_time_str = dt.strftime("%I:%M %p")
+
             else:
                 rec.reading_date_str = False
                 rec.reading_time_str = False
@@ -664,9 +1112,14 @@ class PileLoadReadingUnloading(models.Model):
     def _compute_split_dt(self):
         for rec in self:
             if rec.reading_datetime:
-                dt = fields.Datetime.context_timestamp(rec, rec.reading_datetime)
+                dt = fields.Datetime.context_timestamp(
+                    rec,
+                    rec.reading_datetime
+                )
+
                 rec.reading_date_str = dt.strftime("%d/%m/%y")
-                rec.reading_time_str = dt.strftime("%H:%M")
+                rec.reading_time_str = dt.strftime("%I:%M %p")
+
             else:
                 rec.reading_date_str = False
                 rec.reading_time_str = False
@@ -726,3 +1179,30 @@ class PileLoadTestImage(models.Model):
     sequence = fields.Integer("Sr No", default=1)
     image = fields.Binary("Site Photograph", required=True)
     caption = fields.Char("Caption / Description")
+
+class VerticalPileLoadReport(models.AbstractModel):
+    _name = "report.fst.vertical_pile_load_report"
+    _description = "Vertical Pile Load Report"
+
+    @api.model
+    def _get_report_values(self, docids, data=None):
+
+        docs = self.env["pile.load.test.parent"].browse(docids)
+        def img_to_base64(filename):
+            path = get_module_resource(
+                        'fst',
+                        'static',
+                        'src',
+                        'img',
+                        filename
+                    )
+            with open(path, 'rb') as f:
+                return 'data:image/png;base64,' + base64.b64encode(f.read()).decode()
+        return {
+            "doc_ids": docs.ids,
+            "doc_model": "pile.load.test.parent",
+            "docs": docs,
+            "cover_image": img_to_base64('cover_bg.png'),
+            "footer_image": img_to_base64('footer.png'),
+            "header_image": img_to_base64('header_watermark.png'),
+        }

@@ -67,7 +67,7 @@
 			<!-- <t t-call="web.basic_layout"> -->
 			 <t t-call="lerm_civil.data_sheet_header_generaltemplate">
                 <div style="text-align:center;font-size:18px">
-                    <span t-field="data.parameter_id.parameter.parameter_name"/>
+                   <span t-esc="parameter_name"/>
                 </div>
 				<div class="container_eln" style="margin-top:5px">
 					<div t-foreach="eln" t-as="o">
@@ -118,7 +118,7 @@
 							<tr>
 								<td>Test Method :	
 									<span>
-										<t t-foreach="o.parameters_result.parameter[0].parameter_table" t-as="parameter">
+										<t t-foreach="o.parameters_result[:1].parameter[:1].parameter_table" t-as="parameter">
 											<t t-if="parameter.grade.id == o.grade_id.id">
 													<span t-field="parameter.specification"/>
 											</t>
