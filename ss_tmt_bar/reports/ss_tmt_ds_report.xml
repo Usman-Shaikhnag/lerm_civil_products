@@ -9,72 +9,80 @@
 				</div> -->
 				<div class="container_eln" style="padding-top:20px">
 					<div t-foreach="eln" t-as="o">
-						<table style="margin-top:10px; border:none">
+						<table >
 							<tr>
-								<td colspan="2" style=" font-weight: bold;">Client Details:</td>
-								<td colspan="10">
-									<span t-field="o.srf_id.customer.name"/><br />
+								<td style="font-size:12px;width:100%" >#Customer Party Name :<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.customer.name"/>
 									<span t-field="o.srf_id.customer.street"/>
 									<span t-field="o.srf_id.customer.street2"/>
 									<span t-field="o.srf_id.customer.city"/>
 									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
 									<span t-field="o.srf_id.customer.state_id"/>
-									,
 									<span t-field="o.srf_id.customer.country_id"/>
 								</td>
 							</tr>
 							<tr>
-								<td colspan="2" style=" font-weight: bold;">Client Reference:</td>
-								<td colspan="10"><span t-field="o.srf_id.client_refrence"/></td>
+								<td style="font-size:12px;width:100%" >#Project / Site Address : 																		<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.name_work"/>
+								</td>
 							</tr>
-
+						</table>
+						<table>
 							<tr>
-								<td colspan="2" style=" font-weight: bold;">Name of Work:</td>
-								<td colspan="10"><span t-field="o.srf_id.name_work"/></td>
-							</tr>
-							<tr>
-								<td colspan="2" style=" font-weight: bold;">Date of Testing:</td>
-								<td colspan="10">
-									<span t-field="o.start_date"/> to <span t-field="o.end_date"/>
+								<td style="font-size:12px;width:30%;" colspan="3">Test Start Date :																		<![CDATA[&nbsp;]]>
+									<span t-field="o.start_date"/>
+								</td>
+								<td style="font-size:12px;width:30%;" colspan="3">Test End Date :																		<![CDATA[&nbsp;]]>
+									<span t-field="o.end_date"/>
+								</td>
+								<td style="font-size:12px;width:40%;" colspan="4">Sample Receipt Date :																		<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_received_date"/>
 								</td>
 							</tr>
 							<tr>
-								<td colspan="2" style="font-weight: bold;">Size:</td>
-								<td colspan="10">
-									<span t-field="o.sample_id.size_id"/>
+								<td style="font-size:12px;width:30%;" colspan="3">#Grade :<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.grade_id.grade"/>
+								</td>
+								<td style="font-size:12px;width:30%;" colspan="3">#Size :<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.size_id.size"/>
+								</td>
+								<td style="font-size:12px;width:40%;" colspan="4">#Sample Id Mark: 																		<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.client_sample_id"/>
 								</td>
 							</tr>
 							<tr>
-								<td colspan="2" style="font-weight: bold;">Grade:</td>
-								<td colspan="10">
-									<span t-field="o.grade_id.grade"/>
+								<td style="font-size:12px;width:30%;" colspan="3">#Consultant :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.consultant_name1"/>
+								</td>
+								<td style="font-size:12px;width:30%4" colspan="3">#Client :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client"/>
+								</td>
+								<td style="font-size:12px;width:40%;" colspan="4">#Client Ref :<![CDATA[&nbsp;]]>
+									<span t-field="o.srf_id.client_refrence"/>
 								</td>
 							</tr>
 							<tr>
-								<td colspan="2" style="font-weight: bold;">Material/Test Name:</td>
-								<td colspan="10">
+								<td style="font-size:12px;" colspan="3">#Brand :
+									<span t-field="o.sample_id.brand"/>
+								</td>
+								<td style="font-size:12px;" colspan="3">Discipline :
+									<span t-field="o.discipline.discipline"/>
+								</td>
+								<td style="font-size:12px;" colspan="3">Group :
+									<span t-field="o.group.group"/>
+								</td>
+							</tr>
+							<tr>
+								<td style="font-size:12px;width:50%;" colspan="6">Material/Test Name :<![CDATA[&nbsp;]]>
 									<span t-field="o.material.name"/>
 								</td>
-							</tr>
-
-							<!-- Source of Sample (only if value exists) -->
-							<tr t-if="o.material.source_sample">
-								<td colspan="2" style="font-weight: bold;">Source of Sample</td>
-								<td colspan="10">
-									<span t-field="o.material.source_sample"/>
+								<td style="font-size:12px;width:50%;" colspan="6">#Sample Description :<![CDATA[&nbsp;]]>
+									<span t-field="o.sample_id.sample_description"/>
 								</td>
 							</tr>
-
-							<!-- Test method adopted (only if value exists) -->
-							<tr t-if="o.material.test_method_adopted">
-								<td colspan="2" style="font-weight: bold;">Test method adopted:</td>
-								<td colspan="10">
-									<span t-field="o.material.test_method_adopted"/>
-								</td>
-							</tr>
-
 						</table>
-
 					</div>
 				
 					<div style="">

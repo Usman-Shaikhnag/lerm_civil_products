@@ -1,0 +1,1526 @@
+from odoo import models, fields, api
+from odoo.tools import float_round
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+from matplotlib.projections.polar import PolarAxes
+from matplotlib.projections import register_projection
+from matplotlib.patches import RegularPolygon
+from matplotlib.spines import Spine
+from matplotlib.path import Path
+from matplotlib.transforms import Affine2D
+import matplotlib
+from matplotlib.ticker import LogLocator, MultipleLocator , ScalarFormatter 
+from scipy import stats
+import numpy as np
+import io, base64
+from math import sqrt, pi
+import math
+from decimal import Decimal, ROUND_HALF_UP,InvalidOperation
+from scipy.interpolate import interp1d
+# from grainpy import Sample
+
+from PIL import Image, ImageEnhance
+import io, base64, math, logging
+from matplotlib import patches as mpatches
+import matplotlib.pyplot as plt
+
+_logger = logging.getLogger(__name__)
+
+PATTERN_MAP_FOR_LEGEND = {
+    "GW": ("#B8B8A0", "."),
+    "GP": ("#B8B8A0", "o"),
+    "GM": ("#A0A080", "/."),
+    "GC": ("#909070", "+"),
+    "SW": ("#FFFF99", "\\\\"),
+    "SP": ("#FFFF66", "....."),
+    "SM": ("#E0E0A0", ".-"),
+    "SC": ("#DDAA88", "-."),
+    "ML": ("#D3D3D3", ":"),
+    "CL": ("#ADD8E6", "----"),
+    "OL": ("#7B68EE", "/-"),
+    "MH": ("#B0C4DE", "|||"),
+    "CH": ("#5D8AA8", "x"),
+    "OH": ("#4B371C", "/"),
+    "PT": ("#556B2F", "v"),
+    "HR": ("#666666", "xx"),
+    "SR": ("#B0A080", "\\"),
+    "MI": ("#B0C4DE", "|||"),
+    "CI": ("#ADD8E6", "----"),
+    "CL-ML": ("#ADD8E6", "----"),
+    "Inorganic-Clays": ("#5D8AA8", "x"),
+    "Organic-Clays": ("#4B371C", "/"),
+    "Peat": ("#556B2F", "v"),
+    "DEFAULT": ("white", None),
+}
+
+
+def make_legend_image(legend_items):
+    if not legend_items:
+        return None
+    n = len(legend_items)
+    row_h = 0.32
+    fig_w = 3.6
+    fig_h = max(1.2, row_h * n)
+    fig, ax = plt.subplots(figsize=(fig_w, fig_h))
+    ax.axis('off')
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, n)
+    for i, (facecolor, hatch, label) in enumerate(legend_items):
+        y = n - 1 - i
+        rect = mpatches.Rectangle(
+            (0.04, y + 0.28), 0.10, 0.44,
+            facecolor=facecolor, edgecolor='black',
+            hatch=hatch or '', linewidth=0.8
+        )
+        ax.add_patch(rect)
+        ax.text(0.27, y + 0.5, label, va='center', ha='left', fontsize=8.5)
+    buf = io.BytesIO()
+    fig.savefig(buf, format='png', dpi=120, bbox_inches='tight', facecolor='white')
+    plt.close(fig)
+    buf.seek(0)
+    return Image.open(buf).convert('RGB')
+
+
+class SoilBoreholeParent(models.Model):
+    _name = "soil.borehole.parent"
+    _rec_name = "name"
+
+    name = fields.Char("Project Name")
+    borehole_lines = fields.One2many('soil.borehole.lines', 'parent_id', string="Borehole Lines", copy=False)
+    rec_date = fields.Date("Date")
+
+    combined_images = fields.One2many(
+        'soil.borehole.parent.image',
+        'parent_id',
+        string="Combined Graph Image",
+        compute="_compute_combined_images",
+        store=True,
+        copy=False,
+    )
+
+    def copy_data(self, default=None):
+        data = super().copy_data(default)[0]
+        data['borehole_lines'] = []
+        return [data]
+
+    def action_duplicate_parent(self):
+        for record in self:
+            new_parent = record.with_context(skip_auto_copy=True).copy({
+                'name': f"{record.name} Copy",
+                'borehole_lines': False,
+            })
+            for line in record.borehole_lines:
+                borehole = line.soil_borehole_id
+                if not borehole:
+                    continue
+                new_borehole = borehole.with_context(skip_auto_copy=True).copy({
+                    'name': f"{borehole.name} Copy",
+                })
+                self.env['soil.borehole.lines'].create({
+                    'parent_id': new_parent.id,
+                    'soil_borehole_id': new_borehole.id,
+                })
+        return True
+
+    def create_ert(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'res_model': 'soil.borehole',
+            'target': 'current',
+            'context': {
+                'default_parent_id': self.id
+            }
+        }
+
+    def print_report(self):
+        report = self.env.ref('fst.borehole_report_py3o')
+        return report.report_action(self, config={'report_name': self.name or 'ERT'})
+
+    def print_cross_hatching(self):
+        report = self.env.ref('fst.cross_hatching_report_py3o')
+        return report.report_action(self, config={'report_name': self.name or 'Cross Hatching'})
+
+    def print_corrected_spt(self):
+        report = self.env.ref('fst.corrected_spt_report_py3o')
+        return report.report_action(self, config={'report_name': self.name or 'Corrected N value'})
+
+    def print_grain_size(self):
+        report = self.env.ref('fst.grain_size_report_py3o')
+        return report.report_action(self, config={'report_name': self.name or 'Grain Size'})
+
+    def print_direct_shear(self):
+        report = self.env.ref('fst.direct_shear_report_py3o')
+        return report.report_action(self, config={'report_name': self.name or 'Direct Shear'})
+
+    @api.depends('borehole_lines')
+    def _compute_combined_images(self):
+        CLASSIFICATION_INFO = {
+            'Poorly_Graded': ("Poorly graded sand", "SP"),
+            'Well_Graded': ("Well graded sand", "SW"),
+            'Well-Graded Gravel': ("Well-graded gravels", "GW"),
+            'Poorly-Graded-Gravel': ("Poorly graded gravels", "GP"),
+            'Silty-Gravel': ("Silty gravels", "GM"),
+            'Clayey-Gravel': ("Clayey gravels", "GC"),
+            'Silty-Sand': ("Silty sands", "SM"),
+            'Clayey-Sand': ("Clayey sands", "SC"),
+            'Inorganic-Silt-FS': ("Inorganic silts & very fine sands", "ML"),
+            'Inorganic-Clays-LM': ("Inorganic clays (low - med plasticity)", "CL"),
+            'Organic-Silt': ("Organic silts", "OL"),
+            'Inorganic-Silt': ("Inorganic silts", "MH"),
+            'Inorganic-Clay': ("Inorganic clays (high plasticity)", "CH"),
+            'Organic-Clay': ("Organic clays", "OH"),
+            'Peat': ("Peat", "PT"),
+            'Hard-Rock': ("Hard Rock", "HR"),
+            'Soft-Rock': ("Soft Rock", "SR"),
+            'Inorganic-Silt-M': ("Inorganic silts of medium plasticity", "MI"),
+            'Inorganic-Clay-M': ("Inorganic clays of medium plasticity", "CI"),
+            'Silty-Clay-Border': ("Silty clay / clayey silt (CL-ML)", "CL-ML"),
+        }
+        ImageModel = self.env['soil.borehole.parent.image']
+        GRID_COLS = 5
+        TARGET_WIDTH = 350
+        MAX_HEIGHT = 1400
+        ROW_GAP = 20
+        COL_GAP = 20
+        for record in self:
+            record.combined_images.unlink()
+            images = []
+            used_classifications = set()
+            for line in record.borehole_lines:
+                borehole = line.soil_borehole_id
+                if not borehole:
+                    continue
+                for nv in borehole.nvalue_ids:
+                    if nv.classification:
+                        used_classifications.add(nv.classification)
+                    elif nv.symbol:
+                        for cls_code, (_, info_symbol) in CLASSIFICATION_INFO.items():
+                            if info_symbol == nv.symbol:
+                                used_classifications.add(cls_code)
+                                break
+                if borehole.graph_image:
+                    try:
+                        img_data = base64.b64decode(borehole.graph_image)
+                        img = Image.open(io.BytesIO(img_data)).convert("RGB")
+                        images.append(img)
+                    except Exception as e:
+                        _logger.warning(f"Skipping invalid image: {e}")
+            if not images:
+                continue
+            legend_items = []
+            for cls_code in sorted(used_classifications):
+                friendly, symbol = CLASSIFICATION_INFO.get(cls_code, (cls_code, None))
+                if symbol:
+                    facecolor, hatch = PATTERN_MAP_FOR_LEGEND.get(
+                        symbol, PATTERN_MAP_FOR_LEGEND["DEFAULT"]
+                    )
+                    label = f"{symbol} - {friendly}"
+                else:
+                    facecolor, hatch = PATTERN_MAP_FOR_LEGEND["DEFAULT"]
+                    label = friendly
+                legend_items.append((facecolor, hatch, label))
+            legend_img = make_legend_image(legend_items) if legend_items else None
+            max_per_page = GRID_COLS * 4
+            chunks = [images[i:i + max_per_page] for i in range(0, len(images), max_per_page)]
+            for page_idx, group in enumerate(chunks, start=1):
+                resized = []
+                for img in group:
+                    orig_w, orig_h = img.size
+                    scale = TARGET_WIDTH / orig_w
+                    new_w = TARGET_WIDTH
+                    new_h = int(orig_h * scale)
+                    if new_h > MAX_HEIGHT:
+                        new_h = MAX_HEIGHT
+                        new_w = int(orig_w * (new_h / orig_h))
+                    img = img.resize((new_w, new_h), Image.LANCZOS)
+                    img = ImageEnhance.Sharpness(img).enhance(1.3)
+                    resized.append(img)
+                rows = math.ceil(len(resized) / GRID_COLS)
+                row_heights = []
+                for r in range(rows):
+                    row_imgs = resized[r * GRID_COLS:(r + 1) * GRID_COLS]
+                    row_heights.append(max(img.height for img in row_imgs))
+                combined_w = GRID_COLS * TARGET_WIDTH + (GRID_COLS - 1) * COL_GAP
+                combined_h = sum(row_heights) + (rows - 1) * ROW_GAP
+                combined_img = Image.new("RGB", (combined_w, combined_h), (255, 255, 255))
+                y_cursor = 0
+                idx = 0
+                for r, row_h in enumerate(row_heights):
+                    x_cursor = 0
+                    for c in range(GRID_COLS):
+                        if idx >= len(resized):
+                            break
+                        img = resized[idx]
+                        y_offset = y_cursor + (row_h - img.height) // 2
+                        combined_img.paste(img, (x_cursor, y_offset))
+                        x_cursor += TARGET_WIDTH + COL_GAP
+                        idx += 1
+                    y_cursor += row_h + ROW_GAP
+                if legend_img:
+                    lg_w, lg_h = legend_img.size
+                    final_img = Image.new("RGB", (combined_w, combined_h + lg_h + 20), (255, 255, 255))
+                    final_img.paste(combined_img, (0, 0))
+                    final_img.paste(legend_img, (combined_w - lg_w - 10, combined_h + 10))
+                else:
+                    final_img = combined_img
+                buffer = io.BytesIO()
+                final_img.save(buffer, format="PNG")
+                img_base64 = base64.b64encode(buffer.getvalue())
+                ImageModel.create({
+                    'parent_id': record.id,
+                    'sequence': page_idx,
+                    'image': img_base64,
+                })
+
+
+class SoilBoreholeParentImage(models.Model):
+    _name = "soil.borehole.parent.image"
+    _description = "Grouped Combined Images"
+
+    parent_id = fields.Many2one('soil.borehole.parent', ondelete='cascade')
+    sequence = fields.Integer("Page")
+    image = fields.Binary("Combined Graph Image")
+
+
+class SoilBoreholeLines(models.Model):
+    _name = "soil.borehole.lines"
+
+    parent_id = fields.Many2one('soil.borehole.parent', copy=False)
+    soil_borehole_id = fields.Many2one('soil.borehole', copy=False)
+
+    def action_duplicate_borehole(self):
+        for record in self:
+            if not record.soil_borehole_id:
+                raise models.ValidationError("No Borehole is linked to duplicate.")
+            original_name = record.soil_borehole_id.name
+            record.soil_borehole_id.copy({
+                'name': f"{original_name} Copy",
+                'parent_id': record.parent_id.id,
+            })
+        return True
+
+    def action_delete_line(self):
+        for rec in self:
+            rec.unlink()
+
+class ERTBorehole(models.Model):
+    _name = "soil.borehole"
+
+    name = fields.Char(string="Name", required=True)
+    parent_id = fields.Many2one('soil.borehole.parent')
+    location = fields.Char(string="Location")
+    client = fields.Char(string="Client")
+    type_of_boring = fields.Char(string="Type of Boring")
+    dia_of_boring = fields.Char(string="Diameter of Boring")
+    date_started = fields.Date(string="Date Started")
+    date_completed = fields.Char(string="Date Completed")
+    # line_ids = fields.One2many("soil.borehole.line", "borehole_id", string="SBC Lines")
+    nvalue_ids = fields.One2many("soil.borehole.nvalue", "borehole_id", string="N-Vlaues",copy=False)
+    graph_image = fields.Binary("Borehole Graph")
+
+    # Add these three One2many fields
+    spt_n_value_ids = fields.One2many("spt.n.value", "borehole_id", string="Corrected SPT N-Values",copy=False)
+    hammer_energy = fields.Integer(string="HAMMER ENERGY Ne")
+    corrected_spt_graph = fields.Binary("Correct SPT Graph")
+    
+    direct_shear_ids = fields.One2many("direct.shear.test", "borehole_id", string="Direct Shear Tests",copy=False)
+    direct_shear_graph = fields.Binary("Direct Shear Graph", store=True)
+    cohesion = fields.Float(string='Cohesion (C) (Kg/cm²)',store=True,digits=(16, 3))
+    angle_of_internal_friction = fields.Float(string='Angle of Internal Friction (\u03C6) (\u00b0)',store=True,digits=(16, 2))
+    tan_phi = fields.Float(string='tan(phi) (Slope)',store=True,digits=(16, 3))
+
+    # Link to the Grain Size Analysis test records (One2many)
+    grain_size_ids = fields.One2many("grain.size.analysis", "borehole_id", string="Grain Size Analysis Tests",copy=False) 
+    grain_size_graph = fields.Binary("Grain Size Graph", store=True)
+    weight = fields.Integer("Weight")
+    
+    @api.onchange('date_started')
+    def _onchange_date_started(self):
+        if self.date_started:
+            try:
+                self.date_started = self.date_started.strftime('%d-%m-%y')
+            except:
+                pass
+
+    @api.onchange('date_completed')
+    def _onchange_date_completed(self):
+        if self.date_completed:
+            try:
+                d = fields.Date.to_date(self.date_completed)
+                self.date_completed = d.strftime('%d-%m-%y')
+            except:
+                pass
+
+    @api.model
+    def create(self, vals):
+        record = super().create(vals)
+        if not self.env.context.get('skip_auto_copy') and record.parent_id:
+            # Only auto-link when NOT duplicating
+            self.env['soil.borehole.lines'].sudo().create({
+                'parent_id': record.parent_id.id,
+                'soil_borehole_id': record.id
+            })
+        return record
+
+    def copy(self, default=None):
+        """Safe duplication with deep-copy only once"""
+        default = dict(default or {})
+        new_borehole = super().copy(default)
+
+        # Deep copy child tables
+        for rec in self.nvalue_ids:
+            rec.copy({'borehole_id': new_borehole.id})
+        for rec in self.spt_n_value_ids:
+            rec.copy({'borehole_id': new_borehole.id})
+        for rec in self.direct_shear_ids:
+            rec.copy({'borehole_id': new_borehole.id})
+        for rec in self.grain_size_ids:
+            rec.copy({'borehole_id': new_borehole.id})
+
+        return new_borehole
+
+    
+    
+    def generate_borehole_graph(self):
+        for borehole in self:
+            if not borehole.nvalue_ids:
+                borehole.graph_image = False
+                continue
+
+            # 1. Sort the records by top_depth
+            # Assume borehole.nvalue_ids are objects with attributes like top_depth, bottom_depth, etc.
+            all_records = sorted(borehole.nvalue_ids, key=lambda l: l.top_depth)
+            
+            # --- START OF NEW DATA PROCESSING (Merging Logic) ---
+            
+            # Identify the records that define segment boundaries (SPT or UDS).
+            # This logic must be safe even if 'sample_type' is None or missing.
+            def is_sample_record(record):
+                sample_type = record.sample_type.strip().upper() if record.sample_type else ""
+                return sample_type != "DRILLING"
+                
+            sample_records = [rec for rec in all_records if is_sample_record(rec)]
+            
+            lines_to_plot = []
+            
+            if not sample_records:
+                # If no samples, plot raw data (or a single default layer)
+                lines_to_plot = all_records
+            else:
+                # Get the true overall max depth
+                max_borehole_depth = all_records[-1].bottom_depth if all_records else 0.0
+                layer_top_depth = 0.0 # Start at ground level
+                
+                # Iterate through sample records to define layers
+                for i, current_sample in enumerate(sample_records):
+                    
+                    current_sample_top = current_sample.top_depth
+                    
+                    # --- A. Plot the layer ABOVE the current sample ---
+                    # The properties for this segment (layer_top_depth to current_sample_top)
+                    # should be taken from the PREVIOUSLY defined layer.
+                    
+                    # 1. Handle the layer from 0.0m down to the FIRST sample
+                    if i == 0 and current_sample_top > 0.0:
+                        # Use the properties of the first sample for the layer above it (Common practice)
+                        preceding_layer_props = current_sample
+                        
+                    # 2. Handle layers BETWEEN samples
+                    elif i > 0 and current_sample_top > layer_top_depth:
+                        # Use properties from the PREVIOUS sample (which defined the layer above)
+                        preceding_layer_props = sample_records[i-1]
+                    else:
+                        preceding_layer_props = None
+
+
+                    if preceding_layer_props:
+                        preceding_layer = type('obj', (object,), {
+                            'top_depth': layer_top_depth,
+                            'bottom_depth': current_sample_top,
+                            'n_value': 0, 
+                            'sample_type': 'DRILLING',
+                            'classification': preceding_layer_props.classification,
+                            'symbol': preceding_layer_props.symbol,
+                        })()
+                        lines_to_plot.append(preceding_layer)
+                    
+                    
+                    # --- B. Plot the layer starting at the current sample's top depth ---
+                    
+                    # This layer extends from the current sample's top depth down to:
+                    if i < len(sample_records) - 1:
+                        # The top depth of the NEXT sample
+                        layer_bottom_depth = sample_records[i+1].top_depth
+                    else:
+                        # The very bottom of the borehole
+                        layer_bottom_depth = max_borehole_depth
+
+                    # Only plot if the segment has positive length
+                    if layer_bottom_depth > current_sample_top:
+                        new_line = type('obj', (object,), {
+                            'top_depth': current_sample_top,
+                            'bottom_depth': layer_bottom_depth,
+                            'n_value': current_sample.n_value,
+                            'sample_type': current_sample.sample_type,
+                            'classification': current_sample.classification,
+                            'symbol': current_sample.symbol,
+                        })()
+                        lines_to_plot.append(new_line)
+                    
+                    # Set the start of the next layer to the bottom of the current merged segment
+                    layer_top_depth = layer_bottom_depth 
+
+            lines = lines_to_plot # Use the new list of merged segments
+            # --- END OF REVISED DATA PROCESSING ---
+            DEPTH_SCALE = 0.30  # inches per meter (tweak 0.25–0.35)
+            min_height = 4
+            max_height = 18
+
+            # Ensure max_depth is calculated from the last segment's bottom depth
+            # The structure of the previous logic handles the max_depth correctly:
+            if all_records:
+                max_depth = all_records[-1].top_depth
+            else:
+                max_depth = 0.0 # Handle case where all_records is empty
+            min_depth = 0.0
+            
+            fig_height = max(min_height, min(max_height, max_depth * DEPTH_SCALE))
+            fig, ax = plt.subplots(figsize=(2.2, fig_height))
+            
+            # Draw log rectangle outline with high zorder to be on top
+            ax.plot([0, 0], [min_depth, max_depth], color="black", zorder=3)
+            ax.plot([1, 1], [min_depth, max_depth], color="black", zorder=3)
+            ax.plot([0, 1], [min_depth, min_depth], color="black", zorder=3)
+            ax.plot([0, 1], [max_depth, max_depth], color="black", zorder=3)
+
+            # Map classification to hatches
+            pattern_map = {
+                # --- COARSE GRAINED SOILS (Gravels) ---
+                # GW (Well-graded Gravel): Small dots or fine grain pattern
+                "GW": ("#B8B8A0", "."),      # Light grey-brown, fine stippling
+                
+                # GP (Poorly graded Gravel): Sparse dots or lines
+                "GP": ("#B8B8A0", "o"),      # Light grey-brown, sparse circles
+                
+                # GM (Silty Gravel): Dots and slashes/lines
+                "GM": ("#A0A080", "/."),     # Grey-brown, slash + dot combination
+                
+                # GC (Clayey Gravel): Dots and X-hatching/dashes
+                "GC": ("#909070", "+"),      # Darker brown-grey, plus signs/crosses
+                
+                # --- COARSE GRAINED SOILS (Sands) ---
+                # SW (Well-graded Sand): Diagonal lines
+                "SW": ("#FFFF99", "\\\\"),   # Pale yellow, diagonal hatching
+                
+                # SP (Poorly graded Sand): Stippling (dots)
+                "SP": ("#FFFF66", "....."),  # Bright yellow, dense stippling (your current setting)
+                
+                # SM (Silty Sand): Stipple and line/slash combination
+                "SM": ("#E0E0A0", ".-"),     # Light gray/yellow, line + dot combination (your current setting)
+                
+                # SC (Clayey Sand): Stipple and horizontal dashes
+                "SC": ("#DDAA88", "-."),     # Sandy-brown, dash + dot combination
+                
+                # --- FINE GRAINED SOILS (Silts and Clays) ---
+                # ML (Silt): Sparse dots or colons
+                "ML": ("#D3D3D3", ":"),      # Light grey, sparse dots (your current setting)
+                
+                # CL (Clay of Low Plasticity): Horizontal dashes
+                "CL": ("#ADD8E6", "----"),   # Light blue, horizontal lines (your current setting)
+                
+                # OL (Organic Silt): Dashes and diagonal slashes
+                "OL": ("#7B68EE", "/-"),     # Medium purple/blue, slash + dash combination
+                
+                # MH (Elastic/Micaceous Silt): Vertical lines
+                "MH": ("#B0C4DE", "|||"),    # Light slate gray, vertical lines
+                
+                # CH (Clay of High Plasticity): Cross-hatching (X)
+                "CH": ("#5D8AA8", "x"),      # Sky blue/slate blue, cross hatching
+                
+                # OH (Organic Clay): Dark color, solid fill or specific hatch
+                # Note: Changed from solid fill to a hatch for clarity/printing.
+                "OH": ("#4B371C", "/"),      # Dark brown, simple slash
+                
+                # --- HIGHLY ORGANIC SOILS ---
+                # PT (Peat): Wavy lines or distinctive pattern
+                "PT": ("#556B2F", "v"),      # Olive drab/dark green, 'v' for organic matter
+                # MI: Inorganic silt (medium plasticity) → reuse MH style
+                "MI": ("#B0C4DE", "|||"),
+
+                # CI: Inorganic clay (medium plasticity) → reuse CL style
+                "CI": ("#ADD8E6", "----"),
+
+                # CL-ML: Borderline silty clay / clayey silt → clay-dominant pattern
+                "CL-ML": ("#ADD8E6", "----"),
+                # --- DEFAULT/CUSTOM KEYS ---
+                "Inorganic-Clays": ("#5D8AA8", "x"), # Maps to CH pattern
+                "Organic-Clays": ("#4B371C", "/"),   # Maps to OH pattern
+                "Peat": ("#556B2F", "v"),            # Maps to PT pattern
+                "HR": ("#666666", "xx"),   # Hard Rock - dark + heavy crosshatch
+                "SR": ("#B0A080", "\\"),   # Soft Rock - lighter + single diagonal hatch
+                "DEFAULT": ("white", None),          # Default for unclassified or missing
+            }
+            
+            # The MIN_SEGMENT_LINE_DRAW_LENGTH variable is no longer needed/relevant
+            
+            # --- The placeholder logic is now simplified/handled by the new lines_to_plot list ---
+            
+            # Soil segments and patterns
+            for line in lines:
+                # Use the USCS symbol from your line object, defaulting to 'DEFAULT'
+                uscs_symbol = (line.symbol or line.classification or "DEFAULT").strip().upper() 
+                color, hatch_style = pattern_map.get(uscs_symbol, pattern_map["DEFAULT"])
+                
+                segment_length = line.bottom_depth - line.top_depth
+                
+                # Draw the segment rectangle
+                rect = mpatches.Rectangle(
+                    (0, line.top_depth),
+                    1.0,
+                    segment_length,
+                    # Draw a distinct boundary for the soil layer
+                    edgecolor="black", 
+                    linewidth=0.5,
+                    
+                    # Apply the pattern map values
+                    facecolor=color,
+                    hatch=hatch_style,
+                    
+                    zorder=2
+                )
+                ax.add_patch(rect)
+                
+                x_start_top = 0.0 if line.top_depth == min_depth else -0.2
+                ax.plot([0, 1], [line.top_depth, line.top_depth], color="black", linewidth=0.5, zorder=3)
+                ax.plot([0, 1], [line.bottom_depth, line.bottom_depth], color="black", linewidth=0.5, zorder=3)
+
+            # Define a small vertical offset to move labels slightly up (towards 0m)
+            VERTICAL_OFFSET = 0.11
+            
+            for line in lines:
+                # Place N-Value labels at the top depth, moved upwards by the offset
+                if line.sample_type and "UDS" in line.sample_type.strip().upper():
+                    ax.text(-0.05, line.top_depth - VERTICAL_OFFSET, "UDS", ha="right", va="center",
+                             fontsize=9, color="black")
+                elif line.n_value:
+                    ax.text(-0.05, line.top_depth - VERTICAL_OFFSET, str(line.n_value), ha="right", va="center",
+                             fontsize=9, color="brown", fontweight="bold")
+                
+                # Place UDS label at the top depth, moved upwards by the offset
+
+            # Depth labels on right (using the new merged segment boundaries)
+            segment_depths = set()
+            segment_depths.add(min_depth) 
+                
+            for line in lines:
+                segment_depths.add(line.top_depth)
+                segment_depths.add(line.bottom_depth)
+                
+            for d in sorted(list(segment_depths)):
+                if d >= min_depth and d <= max_depth:
+                    ax.text(1.02, d - VERTICAL_OFFSET, f"{d:.1f}m", fontsize=8, ha="left", va="center")
+
+            # N-Value label + straight arrow
+            ax.text(-0.20, -0.4, "N-Value", color="blue", fontsize=10,
+                    ha="center", fontweight="bold")
+            ax.annotate("",
+                        xy=(-0.20, 0.1), xytext=(-0.20, -0.35),
+                        arrowprops=dict(facecolor='red', arrowstyle="->"))
+
+            # Borehole name top center
+            ax.text(0.5, -0.45, borehole.name or "", color="red", fontsize=12,
+                    ha="center", va="bottom", fontweight="bold")
+
+            ax.set_xlim(-0.3, 1.3)
+            ax.set_ylim(max_depth, -0.5)
+            ax.axis("off")
+
+            buf = io.BytesIO()
+            plt.savefig(buf, format="png", bbox_inches="tight", dpi=300)
+            plt.close(fig)
+            borehole.graph_image = base64.b64encode(buf.getvalue())
+
+    def generate_corrected_spt_graph(self):
+        self.ensure_one()
+
+        if not self.spt_n_value_ids:
+            self.corrected_spt_graph = False
+            return
+
+        sorted_spt_values = sorted(self.spt_n_value_ids, key=lambda r: r.depth)
+
+        depths = [r.depth for r in sorted_spt_values]
+        observed_n_values = [r.observed_n_value for r in sorted_spt_values]
+        corrected_n_values = [r.corrected_n_value for r in sorted_spt_values]
+
+        # Create the plot
+        plt.style.use('seaborn-v0_8-whitegrid')
+        fig, ax = plt.subplots(figsize=(10, 8))
+
+        # Plot the data
+        ax.plot(observed_n_values, depths, marker='D', linestyle='-', color='b', label='Observed N value')
+        ax.plot(corrected_n_values, depths, marker='s', linestyle='-', color='r', label='Corrected N value')
+
+        # Format the plot
+        # ax.set_xlabel('SPT BLOWS PER 30 CM PENETRATION')
+        ax.xaxis.set_label_position('top')
+        ax.xaxis.tick_top()
+        ax.set_ylabel('DEPTH BELOW GROUND LEVEL m.')
+        ax.set_title('SPT BLOWS PER 30 CM PENETRATION', y=1.05)
+        ax.invert_yaxis()
+        ax.set_xlim(left=0)
+        ax.set_xticks(range(0, 180, 10))
+        ax.legend(loc='lower center', bbox_to_anchor=(0.5, -0.15), fancybox=True, shadow=True, ncol=2)
+        plt.tight_layout(rect=[0, 0.1, 1, 1])
+
+        # Save the plot to a BytesIO object
+        buffer = io.BytesIO()
+        plt.savefig(buffer, format='png')
+        plt.close(fig)
+
+        # Store the graph as base64-encoded binary data
+        self.corrected_spt_graph = base64.b64encode(buffer.getvalue())
+        buffer.close()
+    # @api.depends('direct_shear_ids.applied_normal_stress', 'direct_shear_ids.shear_stress')
+    def generate_shear_parameters(self):
+        for borehole in self:
+            # 1. Collect Data Points
+            if not borehole.direct_shear_ids or len(borehole.direct_shear_ids) < 2:
+                # Need at least 2 points to draw a line, 3 is standard for reliability
+                borehole.cohesion = 0.0
+                borehole.angle_of_internal_friction = 0.0
+                borehole.direct_shear_graph = False
+                continue
+
+            # Assuming all direct_shear_ids records belong to a single failure envelope
+            normal_stresses = [test.applied_normal_stress for test in borehole.direct_shear_ids]
+            shear_stresses = [test.shear_stress for test in borehole.direct_shear_ids]
+            
+            x = np.array(normal_stresses)
+            y = np.array(shear_stresses)
+
+            # 2. Perform Linear Regression (y = m*x + c)
+            # slope (m) = tan(phi), intercept (c) = cohesion
+            slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+            
+            # 3. Calculate Cohesion (c) and Angle of Internal Friction (phi)
+            cohesion = intercept
+            tan_phi_value = slope  # Capture the slope explicitly for the new field
+            angle_phi_radians = math.atan(slope)
+            angle_phi_degrees = round(math.degrees(angle_phi_radians), 2)
+            
+            # Store the calculated values
+            borehole.cohesion = cohesion
+            borehole.tan_phi = tan_phi_value  # Assign the calculated tan(phi)
+            borehole.angle_of_internal_friction = angle_phi_degrees
+
+            # 4. Generate the Plot
+            plt.style.use('seaborn-v0_8-whitegrid')
+            fig, ax = plt.subplots(figsize=(8, 6))
+
+            # Plot the raw data points
+            ax.scatter(x, y, color='red', marker='s')
+
+            # Plot the best-fit line (Failure Envelope)
+            # Extend the line slightly beyond the last point
+            x_max = np.max(x)
+            x_fit = np.linspace(0, x_max + (x_max * 0.1), 10) 
+            y_fit = slope * x_fit + intercept
+            
+            ax.plot(x_fit, y_fit, color='blue', linestyle='-', 
+                    label=f'C={cohesion:.2f} $\\frac{{kg}}{{cm^2}}$, $\\phi$={angle_phi_degrees:.2f}\u00b0')
+
+            # Format the plot
+            ax.set_title(f'Direct Shear Test Results ({borehole.name})', pad=20)
+            ax.set_xlabel('Normal Stress ($\u03C3$) [kg/cm\u00b2]')
+            ax.set_ylabel('Shear Stress ($\u03C4$) [kg/cm\u00b2]')
+            
+            # Set the origin to (0,0)
+            ax.set_xlim(left=0) 
+            ax.set_ylim(bottom=0)
+            
+            ax.legend()
+            ax.grid(True)
+            plt.tight_layout()
+
+            # 5. Save and Store the Graph
+            buffer = io.BytesIO()
+            plt.savefig(buffer, format='png')
+            plt.close(fig)
+
+            borehole.direct_shear_graph = base64.b64encode(buffer.getvalue())
+            buffer.close()
+
+    # @api.depends('grain_size_ids.line_ids.passing_percent', 'grain_size_ids.line_ids.sieve_size')
+    def generate_grain_size_parameters(self):
+        for borehole in self:
+            borehole.grain_size_graph = False
+            first_analysis_params = {'d10': 0.0, 'd30': 0.0, 'd60': 0.0, 'cu': 0.0, 'cc': 0.0}
+            first_analysis_found = False
+
+            if not borehole.grain_size_ids:
+                continue
+
+            # Ensure D-values are precomputed
+            borehole.grain_size_ids._compute_d_values()
+            borehole.grain_size_ids._onchange_sample_name_link_nvalue()
+
+            plt.style.use('seaborn-v0_8-whitegrid')
+            fig, ax = plt.subplots(figsize=(12, 9.5))
+
+            for analysis in borehole.grain_size_ids:
+                valid_lines = []
+
+                # --- Parse sieve sizes and percent passing ---
+                for line in analysis.line_ids:
+                    if not line.sieve_size or line.passing_percent is None:
+                        continue
+                    sieve_str = str(line.sieve_size).strip().lower()
+                    try:
+                        if 'mm' in sieve_str:
+                            sieve_val = float(sieve_str.replace('mm','').strip())
+                        elif 'µ' in sieve_str or 'micron' in sieve_str:
+                            sieve_val = float(sieve_str.replace('µ','').replace('micron','').strip()) / 1000
+                        elif sieve_str == 'pan':
+                            continue  # skip pan
+                        else:
+                            sieve_val = float(sieve_str)
+                        valid_lines.append((sieve_val, line.passing_percent))
+                    except:
+                        continue
+
+                if len(valid_lines) < 2:
+                    continue
+
+                # Sort by sieve size ascending
+                valid_lines.sort(key=lambda x: x[0])
+                sieve_sizes = np.array([v[0] for v in valid_lines])
+                percent_passing = np.array([v[1] for v in valid_lines])
+
+                # Plot line graph
+                ax.semilogx(sieve_sizes, percent_passing, marker='o', linestyle='-', label=analysis.sample_name)
+
+                # Store first valid D-values for annotation
+                if not first_analysis_found and analysis.d10 > 0:
+                    first_analysis_params.update({
+                        'd10': analysis.d10,
+                        'd30': analysis.d30,
+                        'd60': analysis.d60,
+                        'cu': analysis.cu,
+                        'cc': analysis.cc
+                    })
+                    first_analysis_found = True
+
+            if not first_analysis_found:
+                plt.close(fig)
+                continue
+
+            # --- Axis settings ---
+            ax.set_ylim(-2, 110)
+            ax.set_ylabel('Percent Passing (%)')
+            ax.set_xlabel('Sieve Size (mm) [Log Scale]')
+            ax.set_title(f'Grain Size Distribution Curve ({borehole.name})', pad=20)
+
+            custom_xticks = np.array([0.001, 0.01, 0.1, 1.0, 10.0, 100.0])
+            ax.set_xlim(custom_xticks.min(), custom_xticks.max())
+            ax.set_xticks(custom_xticks)
+            ax.xaxis.set_minor_locator(LogLocator(subs=np.arange(2, 10)*0.1, numticks=10))
+            ax.get_xaxis().set_major_formatter(ScalarFormatter())
+
+            # Grid
+            ax.set_yticks(np.arange(0, 101, 10), minor=False)
+            ax.set_yticks(np.arange(0, 101, 5), minor=True)
+            ax.grid(True, which='major', axis='both', ls='-', linewidth=0.8)
+            ax.grid(True, which='minor', axis='x', ls='--', linewidth=0.5)
+            ax.grid(True, which='minor', axis='y', ls='--', linewidth=0.5)
+
+            # Legend
+            ax.legend(
+                loc='upper center',
+                bbox_to_anchor=(0.5, -0.05), # Keep this or adjust slightly if needed
+                ncol=min(len(borehole.grain_size_ids), 7),
+                fancybox=True, shadow=True, fontsize=9
+            )
+
+            # --- D-value Annotations ---
+            d10 = first_analysis_params['d10']
+            d30 = first_analysis_params['d30']
+            d60 = first_analysis_params['d60']
+
+            # Horizontal guide lines
+            ax.axhline(y=10, color='red', linestyle='--', linewidth=0.8)
+            ax.axhline(y=30, color='red', linestyle='--', linewidth=0.8)
+            ax.axhline(y=60, color='red', linestyle='--', linewidth=0.8)
+
+            # Keep rect as is, or slightly adjust if the legend seems too squashed
+            plt.tight_layout(rect=[0, 0.05, 1, 1]) # Keep this or adjust slightly if needed
+
+            # Save figure to binary and encode
+            buffer = io.BytesIO()
+            plt.savefig(buffer, format='png')
+            plt.close(fig)
+            borehole.grain_size_graph = base64.b64encode(buffer.getvalue())
+            buffer.close()
+
+class SoilBoreholeParent(models.Model):
+    _name = "soil.borehole.line.parent"
+    _description = "Borehole Parent Details"
+
+    name = fields.Char("Project / Site Name", required=True)
+    location = fields.Char("Location")
+    client = fields.Char("Client")
+    boring_type = fields.Char("Type of boring")
+    machine = fields.Char("Drilling Machine")
+    bore_diameter = fields.Float("Bore Diameter (mm)")
+    date_started = fields.Date("Date Started")
+    date_completed = fields.Date("Date Completed")
+
+    borehole_ids = fields.One2many("soil.borehole", "parent_id", string="Boreholes")
+
+
+class SoilBoreholeNValue(models.Model):
+    _name = "soil.borehole.nvalue"
+    _description = "Borehole N-Values"
+
+    SYMBOL_TO_CLASSIFICATION = {
+        'SW': 'Well_Graded',
+        'SP': 'Poorly_Graded',
+        'GW': 'Well-Graded Gravel',
+        'GP': 'Poorly-Graded-Gravel',
+        'GM': 'Silty-Gravel',
+        'GC': 'Clayey-Gravel',
+        
+        'SM': 'Silty-Sand',
+        'SC': 'Clayey-Sand',
+        
+        'ML': 'Inorganic-Silt-FS',
+        'CL': 'Inorganic-Clays-LM',
+        'OL': 'Organic-Silt',
+        'MH': 'Inorganic-Silt',
+        'CH': 'Inorganic-Clay',
+        'OH': 'Organic-Clay',
+        
+        'PT': 'Peat',
+
+        'HR': 'Hard-Rock',
+        'SR': 'Soft-Rock',
+        'MI': 'Inorganic-Silt-M',
+        'CI': 'Inorganic-Clay-M',
+        'CL-ML': 'Silty-Clay-Border',
+    }
+
+    # Reverse mapping
+    CLASSIFICATION_TO_SYMBOL = {v: k for k, v in SYMBOL_TO_CLASSIFICATION.items()}
+
+
+    borehole_id = fields.Many2one("soil.borehole", ondelete="cascade")
+    sample_type = fields.Char("Sample Type")
+    symbol = fields.Selection([
+            ('SW', 'SW'), ('SP', 'SP'), ('GW', 'GW'), ('GP', 'GP'), ('GM', 'GM'), ('GC', 'GC'),
+            ('SM', 'SM'), ('SC', 'SC'),
+            ('ML', 'ML'), ('CL', 'CL'), ('OL', 'OL'), ('MH', 'MH'), ('CH', 'CH'), ('OH', 'OH'),
+            ('PT', 'PT'), ('HR','HR'), ('SR','SR'),('MI', 'MI'),('CI', 'CI'),('CL-ML', 'CL-ML'),
+        ], string="Symbol")
+
+    classification = fields.Selection([
+        ('Poorly_Graded','Poorly Graded Sand'),
+        ('Well_Graded','Well Graded Sand'),
+        ('Well-Graded Gravel', 'Well-graded gravels'),
+        ('Poorly-Graded-Gravel', 'Poorly graded gravels'),
+        ('Silty-Gravel', 'Silty gravels'),
+        ('Clayey-Gravel', 'Clayey gravels'),
+        ('Silty-Sand', 'Silty sands'),
+        ('Clayey-Sand', 'Clayey sands'),
+        ('Inorganic-Silt-FS', 'Inorganic silts and very fine sands'),
+        ('Inorganic-Clays-LM', 'Inorganic clays of low to medium plasticity'),
+        ('Organic-Silt', 'Organic silts'),
+        ('Inorganic-Silt', 'Inorganic silts'),
+        ('Inorganic-Clay', 'Inorganic clays of high plasticity'),
+        ('Organic-Clay', 'Organic clays'),
+        ('Peat', 'Peat'),
+        ('Hard-Rock', 'Hard Rock'),
+        ('Soft-Rock', 'Soft Rock'),
+        ('Inorganic-Silt-M', 'Inorganic silts of medium plasticity'),
+        ('Inorganic-Clay-M', 'Inorganic clays of medium plasticity'),
+        ('Silty-Clay-Border', 'Silty clay / clayey silt (CL-ML)'),
+    ], string="Classification")
+
+    @api.onchange('symbol')
+    def _onchange_symbol(self):
+        for rec in self:
+            if rec.symbol in self.SYMBOL_TO_CLASSIFICATION:
+                rec.classification = self.SYMBOL_TO_CLASSIFICATION[rec.symbol]
+
+    @api.onchange('classification')
+    def _onchange_classification(self):
+        for rec in self:
+            if rec.classification in self.CLASSIFICATION_TO_SYMBOL:
+                rec.symbol = self.CLASSIFICATION_TO_SYMBOL[rec.classification]
+
+    top_depth = fields.Float("Top Depth (m)")
+    bottom_depth = fields.Float("Bottom Depth (m)")
+    n15 = fields.Char("N @ 15 cm")
+    n30 = fields.Char("N @ 30 cm")
+    n45 = fields.Char("N @ 45 cm")
+    n_value = fields.Char("Total N Value", compute="_compute_n_value", store=True)
+
+    core_recovery = fields.Char("Core recovery",default="--")
+    rqd = fields.Char("RQD",default="--")
+
+    @api.depends('n15', 'n30', 'n45')
+    def _compute_n_value(self):
+        for rec in self:
+            n15 = (rec.n15 or '').strip()
+
+            # Case 1: refusal / high value at 15 cm  (e.g. "105", ">100")
+            # -> n30 = "--", n45 = "--", n_value = n15
+            if n15.startswith('>') or (n15.isdigit() and int(n15) >= 100):
+                rec.n30 = "--"
+                rec.n45 = "--"
+                rec.n_value = n15
+                continue
+
+            # Case 2: normal case -> n_value = n30 + n45 (numeric)
+            def to_int(val):
+                val = (val or '').strip()
+                return int(val) if val.isdigit() else 0
+
+            n30_int = to_int(rec.n30)
+            n45_int = to_int(rec.n45)
+            total = n30_int + n45_int
+
+            rec.n_value = str(total) if total else ''
+
+
+
+
+class CorrectedSptNValue(models.Model):
+    _name = 'spt.n.value'
+    _description = 'Corrected SPT (N) Value'
+
+    borehole_id = fields.Many2one('soil.borehole', string='Borehole', ondelete='cascade')
+    sr_no = fields.Integer(string="Sr.No", readonly=True, copy=False, default=1)
+    depth = fields.Float(string='Depth (m)')
+    type_of_soil = fields.Selection([
+        ('Plastic','Plastic'),
+        ('Non-Plastic','Non-Plastic')
+    ],"Type of Soil")
+    bulk_den = fields.Float(string='Bulk Density (T/m2)')
+    overburden_pressure = fields.Char(string='Overburden Pressure (T/m2)', compute="_compute_overburden_pressure", store=True)
+    pore_water_pressure = fields.Char(string="Pore Water Pressure from layer", compute="_compute_pore_water_pressure", store=True)
+    total_pore_water_pressure = fields.Char(string="Total Pore Water Pressure", compute="_compute_total_pore_water_pressure", store=True)
+    effective_overburden_pressure = fields.Char(string='Effective Overburden Pressure (T/m2)', compute="_compute_effective_overburden_pressure", store=True)
+    effective_overburden_pressure_kg = fields.Char(string='Effective Overburden Pressure (kg/cm2)', compute="_compute_effective_overburden_pressure_kg", store=True)
+    overburden_correction_factor = fields.Char(string="OVERBURDEN CORRECTION FACTOR", compute="_compute_overburden_correction_factor", store=True)
+    hammer_energy = fields.Integer("HAMMER ENERGY Ne",related="borehole_id.hammer_energy")
+    observed_n_value = fields.Char(string='Observed SPT N Value',compute="_compute_observed_n_value",readonly=False)
+    corrected_n_value = fields.Char(string='Corrected SPT (N\') Value',compute="_compute_corrected_n_value",readonly=False)
+    spt_n_dilatancy = fields.Float(string="SPT (N') Value After Dilatancy Correction ('N')",compute="_compute_spt_n_dilatancy",store=True,readonly=False,)
+    
+
+    @api.depends('hammer_energy', 'corrected_n_value')
+    def _compute_spt_n_dilatancy(self):
+        for record in self:
+            if record.hammer_energy and record.corrected_n_value:
+                record.spt_n_dilatancy = record.hammer_energy * int(record.corrected_n_value)
+            else:
+                record.spt_n_dilatancy = record.corrected_n_value or 0.0
+
+
+    @api.model
+    def create(self, vals):
+        if vals.get('borehole_id'):
+            existing_records = self.search([('borehole_id', '=', vals['borehole_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sr_no'))
+                vals['sr_no'] = max_serial_no + 1
+        return super().create(vals)  # ✅ must return
+
+    @api.depends('depth', 'borehole_id')
+    def _compute_pore_water_pressure(self):
+        for record in self:
+            record.pore_water_pressure = 0.0  # default
+
+            if not record.borehole_id or record.depth is None:
+                continue
+
+            # fetch all records of this borehole sorted by depth
+            borehole_records = self.search(
+                [('borehole_id', '=', record.borehole_id.id)],
+                order="depth asc"
+            )
+
+            prev_depth = 0.0
+            for rec in borehole_records:
+                if rec.id == record.id:
+                    record.pore_water_pressure = record.depth - prev_depth
+                    break
+                prev_depth = rec.depth
+
+
+    @api.depends('pore_water_pressure', 'borehole_id')
+    def _compute_total_pore_water_pressure(self):
+        for record in self:
+            record.total_pore_water_pressure = "0.000"
+            if not record.borehole_id:
+                continue
+
+            borehole_records = self.search([('borehole_id','=',record.borehole_id.id)], order='depth asc')
+            cumulative = Decimal('0.000')
+            for rec in borehole_records:
+                pw = Decimal(str(rec.pore_water_pressure or 0.0))
+                cumulative += pw
+                if rec.id == record.id:
+                    record.total_pore_water_pressure = str(cumulative.quantize(Decimal('0.001'), rounding=ROUND_HALF_UP))
+                    break
+
+
+
+    @api.depends('depth', 'bulk_den', 'borehole_id')
+    def _compute_overburden_pressure(self):
+        for record in self:
+            record.overburden_pressure = "0.000"  # default
+            if not record.borehole_id or record.depth is None or record.bulk_den is None:
+                continue
+
+            borehole_records = self.search([('borehole_id','=',record.borehole_id.id)], order='depth asc')
+            cumulative = Decimal('0.000')
+            prev_depth = Decimal('0.000')
+
+            for rec in borehole_records:
+                rec_depth = Decimal(str(rec.depth))
+                rec_bulk = Decimal(str(rec.bulk_den))
+                if rec.id == record.id:
+                    if prev_depth == 0:
+                        cumulative = rec_depth * rec_bulk
+                    else:
+                        cumulative += (rec_depth - prev_depth) * rec_bulk
+                    record.overburden_pressure = str(cumulative.quantize(Decimal('0.001'), rounding=ROUND_HALF_UP))
+                    break
+                else:
+                    if prev_depth == 0:
+                        cumulative = rec_depth * rec_bulk
+                    else:
+                        cumulative += (rec_depth - prev_depth) * rec_bulk
+                    prev_depth = rec_depth
+
+
+
+    @api.depends('overburden_pressure', 'total_pore_water_pressure')
+    def _compute_effective_overburden_pressure(self):
+        for record in self:
+            over = Decimal(str(record.overburden_pressure or '0.000'))
+            pore = Decimal(str(record.total_pore_water_pressure or '0.000'))
+            eff = over - pore
+            record.effective_overburden_pressure = str(eff.quantize(Decimal('0.001'), rounding=ROUND_HALF_UP))
+
+
+    @api.depends('effective_overburden_pressure')
+    def _compute_effective_overburden_pressure_kg(self):
+        for record in self:
+            eff = Decimal(str(record.effective_overburden_pressure or '0.000'))
+            eff_kg = eff / Decimal('10')
+            record.effective_overburden_pressure_kg = str(eff_kg.quantize(Decimal('0.001'), rounding=ROUND_HALF_UP))
+
+        
+    @api.depends('borehole_id', 'depth')
+    def _compute_observed_n_value(self):
+        for rec in self:
+            value = ''
+            if rec.borehole_id and rec.depth:
+                borehole_record = self.env['soil.borehole.nvalue'].search([
+                    ('borehole_id', '=', rec.borehole_id.id),
+                    ('top_depth', '=', rec.depth),
+                ], limit=1)
+
+                raw_val = (borehole_record.n_value or '').strip()
+
+                # Convert ">100" → 100
+                if raw_val.startswith('>'):
+                    raw_val = raw_val[1:]  # remove ">"
+                
+                # Replace non-digit values (like "--") with "0"
+                if not raw_val.isdigit():
+                    raw_val = "0"
+
+                value = raw_val
+
+            rec.observed_n_value = value
+    
+    
+    @api.depends('effective_overburden_pressure_kg')
+    def _compute_overburden_correction_factor(self):
+        for record in self:
+            record.overburden_correction_factor = "0.000"
+
+            v = Decimal(str(record.effective_overburden_pressure_kg or '0.000'))
+            if v <= 0:
+                continue
+
+            val = Decimal('0.77') * Decimal(math.log10(20.0 / float(v)))
+
+            # Round to 3 decimals
+            val = val.quantize(Decimal('0.001'), rounding=ROUND_HALF_UP)
+
+            # 🔥 Hard cap at 2.000
+            capped_val = min(val, Decimal('2.000'))
+
+            record.overburden_correction_factor = str(
+                capped_val.quantize(Decimal('0.001'), rounding=ROUND_HALF_UP)
+            )
+
+
+    
+    
+    @api.depends('overburden_correction_factor','observed_n_value')
+    def _compute_corrected_n_value(self):
+        for record in self:
+            # convert factor to Decimal
+            factor = Decimal(record.overburden_correction_factor or '0.0')
+            n = record.observed_n_value or 0
+            corrected = factor * Decimal(n)
+            # round to nearest integer
+            record.corrected_n_value = int(corrected.to_integral_value(rounding=ROUND_HALF_UP))
+
+
+
+class DirectShearTest(models.Model):
+    _name = 'direct.shear.test'
+    _description = 'Direct Shear Test'
+
+    borehole_id = fields.Many2one('soil.borehole', string='Borehole', ondelete='cascade')
+    applied_normal_stress = fields.Integer(string='Applied Normal Stress (Kg/cm²)')
+    no_of_divisions = fields.Integer(string='No. of Divisions of Proving ring dial Gauge')
+    proving_ring_correction_factor = fields.Float(string='Proving ring correction factor (kg/division)')
+    shear_load = fields.Float(string='Shear Load (kg)',compute="_compute_shear_load")
+    area_of_specimen = fields.Float(string='Area of specimen before starting the test (cm2) (A0)')
+    displacement_dial = fields.Integer(string='Displacement dial gauge reading')
+    displacement = fields.Float(string='Displacement in cm (δ)',compute="_compute_displacement", digits=(16, 3))
+    corrected_area = fields.Float(string='Corrected Area \n (A0-( δ *6)) or A0 (1- δ /6) in cm2 (A)',compute="_compute_corrected_area")
+    shear_stress = fields.Float(string='Shear Stress (Kg/cm²)',compute="_compute_shear_stress")
+
+    @api.depends('proving_ring_correction_factor','no_of_divisions')
+    def _compute_shear_load(self):
+        for record in self:
+            record.shear_load = round(
+                (record.proving_ring_correction_factor or 0.0) * (record.no_of_divisions or 0), 
+                2
+            )
+
+    @api.depends('displacement_dial')
+    def _compute_displacement(self):
+        for record in self:
+            record.displacement = round((record.displacement_dial or 0) / 1000, 3)
+
+    @api.depends('area_of_specimen','displacement')
+    def _compute_corrected_area(self):
+        for record in self:
+            if record.area_of_specimen:
+                record.corrected_area = round(
+                    record.area_of_specimen * (1 - (record.displacement or 0) / 6), 
+                    2
+                )
+            else:
+                record.corrected_area = 0.0
+
+    @api.depends('shear_load', 'corrected_area')
+    def _compute_shear_stress(self):
+        for record in self:
+            if record.corrected_area:  # not zero or None
+                record.shear_stress = round(record.shear_load / record.corrected_area, 3)
+            else:
+                record.shear_stress = 0.0
+
+
+class GrainSizeAnalysisLine(models.Model):
+    _name = 'grain.size.analysis.line'
+    
+    analysis_id = fields.Many2one('grain.size.analysis', string='Analysis', ondelete='cascade')
+    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
+    sieve_size = fields.Char(string="IS Sieve Size mm")
+    weight = fields.Integer("Weight",related="analysis_id.weight")
+    percent_retained = fields.Float(string='% of Weight Retained')
+    wt_retained = fields.Float(string="Wt. Retained in gms",compute="_compute_wt_retained")
+    cumulative_retained = fields.Float(string="% of Cumulative Wt. Retained",compute="_compute_cumulative_retained")
+    passing_percent = fields.Float(string="% of wt passing",compute="_compute_passing_percent")
+
+    @api.model
+    def create(self, vals):
+        if vals.get('analysis_id'):
+            existing_records = self.search([('analysis_id', '=', vals['analysis_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(GrainSizeAnalysisLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+    def unlink(self):
+        # Get the parent_id before the deletion
+        analysis_id = self[0].analysis_id
+
+        res = super(GrainSizeAnalysisLine, self).unlink()
+
+        if analysis_id:
+            analysis_id.line_ids._reorder_serial_numbers()
+
+        return res
+
+    @api.depends('percent_retained','weight')
+    def _compute_wt_retained(self):
+        for record in self:
+            record.wt_retained = (record.percent_retained * record.weight) / 100
+
+    @api.depends('percent_retained', 'analysis_id.line_ids.percent_retained')
+    def _compute_cumulative_retained(self):
+        for record in self:
+            record.cumulative_retained = 0.0  # ✅ default, ensures all records get a value
+            if not record.analysis_id:
+                continue
+
+            # Get all lines of same analysis ordered by serial_no
+            lines = record.analysis_id.line_ids.sorted('serial_no')
+            cumulative = 0.0
+            for line in lines:
+                cumulative += line.percent_retained
+                if line.id == record.id:
+                    record.cumulative_retained = cumulative
+                    break
+
+
+    @api.depends('cumulative_retained')
+    def _compute_passing_percent(self):
+        for record in self:
+            record.passing_percent = max(0.0, 100 - record.cumulative_retained)
+
+
+class GrainSizeAnalysis(models.Model):
+    _name = 'grain.size.analysis'
+    _description = 'Grain Size Analysis Test'
+    
+    borehole_id = fields.Many2one('soil.borehole', string='Borehole', ondelete='cascade')
+    sample_name = fields.Char(string='Sample ID/Depth', required=True)
+    weight = fields.Integer("Weight",related="borehole_id.weight")
+    boulder = fields.Float(string="Boulder", compute="_compute_particle_distribution", store=True)
+    gravel = fields.Float(string="Gravel", compute="_compute_particle_distribution", store=True)
+    sand = fields.Float(string="Sand", compute="_compute_particle_distribution", store=True)
+    silt = fields.Float(string="Silt", compute="_compute_particle_distribution", store=True)
+    clay = fields.Float(string="Clay", compute="_compute_particle_distribution", store=True)
+
+    d10 = fields.Float(string='D10 (mm)', compute='_compute_d_values', store=True, digits=(12, 4))
+    d30 = fields.Float(string='D30 (mm)', compute='_compute_d_values', store=True, digits=(12, 4))
+    d60 = fields.Float(string='D60 (mm)', compute='_compute_d_values', store=True, digits=(12, 4))
+    cu = fields.Float(string='Coefficient of Uniformity (Cu)', compute='_compute_d_values', store=True, digits=(12, 4))
+    cc = fields.Float(string='Coefficient of Curvature (Cc)', compute='_compute_d_values', store=True, digits=(12, 4))
+    top_depth = fields.Float("Top Depth (m)")
+    bottom_depth = fields.Float("Bottom Depth (m)")
+    classification = fields.Selection([
+        ('Poorly_Graded','Poorly Graded Sand'),
+        ('Well_Graded','Well Graded Sand'),
+
+        ('Well-Graded Gravel', 'Well-graded gravels'),
+        ('Poorly-Graded-Gravel', 'Poorly graded gravels'),
+        ('Silty-Gravel', 'Silty gravels'),
+        ('Clayey-Gravel', 'Clayey gravels'),
+        
+        ('Silty-Sand', 'Silty sands'),
+        ('Clayey-Sand', 'Clayey sands'),
+        
+        ('Inorganic-Silt-FS', 'Inorganic silts and very fine sands'),
+        ('Inorganic-Clays-LM', 'Inorganic clays of low to medium plasticity'),
+        ('Organic-Silt', 'Organic silts'),
+        ('Inorganic-Silt', 'Inorganic silts'),
+        ('Inorganic-Clay', 'Inorganic clays of high plasticity'),
+        ('Organic-Clay', 'Organic clays'),
+        
+        ('Peat', 'Peat'),
+    ])
+    line_ids = fields.One2many("grain.size.analysis.line", "analysis_id", string="Sieve Analysis Data")
+
+
+    STANDARD_SIEVE_SIZES = [100.0, 75.0, 19.0, 4.75, 2.0, 0.425, 0.075,0.002, 0.001,'Pan']
+    
+    def _compute_d_values(self):
+        for record in self:
+            sieve_sizes = []
+            passing_percents = []
+
+            # Parse sieve sizes
+            for line in record.line_ids:
+                if not line.sieve_size or line.passing_percent is None:
+                    continue
+                s = str(line.sieve_size).strip().lower()
+                try:
+                    if 'mm' in s:
+                        sieve_val = float(s.replace('mm','').strip())
+                    elif 'µ' in s or 'micron' in s:
+                        sieve_val = float(s.replace('µ','').replace('micron','').strip()) / 1000
+                    elif s == 'pan':
+                        continue
+                    else:
+                        sieve_val = float(s)
+                    sieve_sizes.append(sieve_val)
+                    passing_percents.append(line.passing_percent)
+                except:
+                    continue
+
+            sieve_sizes = np.array(sieve_sizes)
+            passing_percents = np.array(passing_percents)
+
+            record.d10 = record.d30 = record.d60 = record.cu = record.cc = 0.0
+
+            if sieve_sizes.size < 2 or sieve_sizes.size != passing_percents.size:
+                continue
+
+            # Sort by sieve size ascending
+            sort_idx = np.argsort(sieve_sizes)
+            sieve_sizes = sieve_sizes[sort_idx]
+            passing_percents = passing_percents[sort_idx]
+
+            # --- Logarithmic interpolation helper ---
+            def log_interp(target):
+                if target < passing_percents.min() or target > passing_percents.max():
+                    return 0.0
+                return 10**np.interp(target, passing_percents, np.log10(sieve_sizes))
+
+            record.d10 = log_interp(10.0)
+            record.d30 = log_interp(30.0)
+            record.d60 = log_interp(60.0)
+
+            # Cu and Cc
+            if record.d10 > 0 and record.d60 > 0:
+                record.cu = record.d60 / record.d10
+                record.cc = (record.d30**2) / (record.d10 * record.d60) if record.d30 > 0 else 0.0
+
+    @api.onchange('sample_name')
+    def _onchange_sample_name_populate_lines(self):
+        """
+        Creates default lines when the record is manually created in the UI,
+        triggered by setting the sample_name.
+        """
+        if not self.line_ids and self.sample_name:
+            new_lines_commands = []
+            
+            for sieve_size in self.STANDARD_SIEVE_SIZES:
+                new_lines_commands.append(
+                    (0, 0, {
+                        'sieve_size': sieve_size,
+                        'passing_percent': 0.0, 
+                        # Add other default line data here if necessary
+                    })
+                )
+            
+            self.line_ids = new_lines_commands
+    
+    # def copy(self, default=None):
+    #     default = dict(default or {})        
+    #     new_analysis = super(GrainSizeAnalysis, self).copy(default)
+    #     return new_analysis
+
+    def copy(self, default=None):
+        default = dict(default or {})
+        
+        original_line_ids = self.line_ids
+        default['line_ids'] = [] 
+        new_analysis = super(GrainSizeAnalysis, self).copy(default)
+        for line in original_line_ids:
+            line.copy({
+                'analysis_id': new_analysis.id,
+            })
+
+        return new_analysis
+
+
+
+    @api.onchange('line_ids')
+    def _onchange_update_pan_percent(self):
+        for rec in self:
+            pan_line = None
+            total_percent_other = 0.0
+
+            for line in rec.line_ids:
+                if str(line.sieve_size).strip().lower() == 'pan':
+                    pan_line = line
+                else:
+                    total_percent_other += line.percent_retained or 0.0
+
+            if pan_line:
+                # Automatically update Pan line percent
+                pan_line.percent_retained = max(0.0, 100.0 - total_percent_other)
+
+    @api.depends('line_ids.sieve_size', 'line_ids.percent_retained')
+    def _compute_particle_distribution(self):
+        for record in self:
+            boulder = gravel = sand = silt = clay = 0.0
+
+            for line in record.line_ids:
+                sieve_text = (line.sieve_size or "").strip().lower().replace('mm', '').strip()
+                
+                if not sieve_text:
+                    continue
+
+                if sieve_text == 'pan':
+                    sieve_size = 0.0
+                else:
+                    try:
+                        sieve_size = float(sieve_text)
+                    except ValueError:
+                        continue
+
+                percent = line.percent_retained or 0.0
+
+                if sieve_size > 80:
+                    boulder += percent
+                elif 80 >= sieve_size >= 4.75:
+                    gravel += percent
+                elif 4.75 > sieve_size >= 0.075:
+                    sand += percent
+                elif 0.075 > sieve_size >= 0.002:
+                    silt += percent
+                elif sieve_size < 0.002:
+                    clay += percent
+
+
+            # Assign results
+            record.boulder = boulder
+            record.gravel = gravel
+            record.sand = sand
+            record.silt = silt
+            record.clay = clay
+
+
+
+    def action_recompute_particle_distribution(self):
+        for record in self:
+            record._compute_particle_distribution()
+            record._onchange_sample_name_link_nvalue()
+
+    @api.onchange('sample_name', 'borehole_id')
+    def _onchange_sample_name_link_nvalue(self):
+        """
+        Match Grain Size sample_name like 'SPT - 1, 1.5 mm' with NValue sample_type 'SPT - 1'
+        and copy top_depth, bottom_depth, classification.
+        """
+        for rec in self:
+            if not rec.sample_name or not rec.borehole_id:
+                continue
+
+            # Extract "SPT - X" from the sample_name
+            spt_prefix = rec.sample_name.split(',')[0].strip()  # "SPT - 1" part
+
+            # Search for matching NValue record
+            nvalue_rec = rec.env['soil.borehole.nvalue'].search([
+                ('borehole_id', '=', rec.borehole_id.id),
+                ('sample_type', '=', spt_prefix)
+            ], limit=1)
+
+            # If found, update fields
+            if nvalue_rec:
+                rec.top_depth = nvalue_rec.top_depth
+                rec.bottom_depth = nvalue_rec.bottom_depth
+                rec.classification = nvalue_rec.classification

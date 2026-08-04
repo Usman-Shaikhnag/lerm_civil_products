@@ -103,56 +103,52 @@
                                         <td><label for="elongated_gauge_length"></label></td>
                                         <td><field name="elongated_gauge_length"/></td>
                                     </tr>
-                                    <div invisible="elongation_visible == False" >
-                                        <tr>
-                                            <td><label for="percent_elongation"></label></td>
-                                            <td><field name="percent_elongation" /></td>
-                                            <field name="elongation_visible" invisible="1"/>
-                                        </tr>
-                                        <tr>
-                                            <td><label for="requirement_elongation"></label></td>
-                                            <td><field name="requirement_elongation" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td><label for="elongation_nabl"></label></td>
-                                            <td><field name='elongation_nabl'
-                                            decoration-success="elongation_nabl == 'pass'" 
-                                            decoration-danger="elongation_nabl == 'fail'" 
-                                            readonly="1" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td><label for="elongation_conformity"></label></td>
-                                            <td><field name='elongation_conformity'
-                                            decoration-success="elongation_conformity == 'pass'" 
-                                            decoration-danger="elongation_conformity == 'fail'" 
-                                            readonly="1" /></td>
-                                        </tr>
-                                    </div>
-                                    <div invisible="weight_per_meter_visible == False" >
-                                        <tr>
-                                            <td><label for="weight_per_meter"></label></td>
-                                            <td><field name="weight_per_meter" /></td>
-                                            <field name="weight_per_meter_visible" invisible="1"/>
-                                        </tr>
-                                        <tr>
-                                            <td><label for="requirement_weight_per_meter"></label></td>
-                                            <td><field name="requirement_weight_per_meter" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td><label for="weight_per_meter_nabl"></label></td>
-                                            <td><field name='weight_per_meter_nabl'
-                                            decoration-success="weight_per_meter_nabl == 'pass'" 
-                                            decoration-danger="weight_per_meter_nabl == 'fail'" 
-                                            readonly="1" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td><label for="weight_per_meter_conformity"></label></td>
-                                            <td><field name='weight_per_meter_conformity'
-                                            decoration-success="weight_per_meter_conformity == 'pass'" 
-                                            decoration-danger="weight_per_meter_conformity == 'fail'" 
-                                            readonly="1" /></td>
-                                        </tr>
-                                    </div>
+                                    <tr invisible="elongation_visible == False">
+                                        <td><label for="percent_elongation"></label></td>
+                                        <td><field name="percent_elongation" /></td>
+                                        <field name="elongation_visible" invisible="1"/>
+                                    </tr>
+                                    <tr invisible="elongation_visible == False">
+                                        <td><label for="requirement_elongation"></label></td>
+                                        <td><field name="requirement_elongation" /></td>
+                                    </tr>
+                                    <tr invisible="elongation_visible == False">
+                                        <td><label for="elongation_nabl"></label></td>
+                                        <td><field name='elongation_nabl'
+                                        decoration-success="elongation_nabl == 'pass'" 
+                                        decoration-danger="elongation_nabl == 'fail'" 
+                                        readonly="1" /></td>
+                                    </tr>
+                                    <tr invisible="elongation_visible == False">
+                                        <td><label for="elongation_conformity"></label></td>
+                                        <td><field name='elongation_conformity'
+                                        decoration-success="elongation_conformity == 'pass'" 
+                                        decoration-danger="elongation_conformity == 'fail'" 
+                                        readonly="1" /></td>
+                                    </tr>
+                                    <tr invisible="weight_per_meter_visible == False"> 
+                                        <td><label for="weight_per_meter"></label></td>
+                                        <td><field name="weight_per_meter" /></td>
+                                        <field name="weight_per_meter_visible" invisible="1"/>
+                                    </tr>
+                                    <tr invisible="weight_per_meter_visible == False">
+                                        <td><label for="requirement_weight_per_meter"></label></td>
+                                        <td><field name="requirement_weight_per_meter" /></td>
+                                    </tr>
+                                    <tr invisible="weight_per_meter_visible == False">
+                                        <td><label for="weight_per_meter_nabl"></label></td>
+                                        <td><field name='weight_per_meter_nabl'
+                                        decoration-success="weight_per_meter_nabl == 'pass'" 
+                                        decoration-danger="weight_per_meter_nabl == 'fail'" 
+                                        readonly="1" /></td>
+                                    </tr>
+                                    <tr invisible="weight_per_meter_visible == False">
+                                        <td><label for="weight_per_meter_conformity"></label></td>
+                                        <td><field name='weight_per_meter_conformity'
+                                        decoration-success="weight_per_meter_conformity == 'pass'" 
+                                        decoration-danger="weight_per_meter_conformity == 'fail'" 
+                                        readonly="1" /></td>
+                                    </tr>
                                     <tr>
                                         <td><label for="yeild_load"></label></td>
                                         <td><field name="yeild_load"/></td>
@@ -161,81 +157,75 @@
                                         <td><label for="ultimate_load"></label></td>
                                         <td><field name="ultimate_load"/></td>
                                     </tr>
-                                    <div invisible="yield_visible == False" >
-                                        <tr>
-                                            <td><label for="proof_yeid_stress"></label></td>
-                                            <td><field name="proof_yeid_stress" /></td>
-                                            <field name="yield_visible" invisible="1"/>
-                                        </tr>
-                                        <tr>
-                                            <td><label for="requirement_yield"></label></td>
-                                            <td><field name="requirement_yield" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td><label for="yield_nabl"></label></td>
-                                            <td><field name='yield_nabl'
-                                            decoration-success="yield_nabl == 'pass'" 
-                                            decoration-danger="yield_nabl == 'fail'" 
-                                            readonly="1" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td><label for="yield_conformity"></label></td>
-                                            <td><field name='yield_conformity'
-                                            decoration-success="yield_conformity == 'pass'" 
-                                            decoration-danger="yield_conformity == 'fail'" 
-                                            readonly="1" /></td>
-                                        </tr>
-                                    </div>
-                                    <div invisible="uts_visible == False" >
-                                        <tr>
-                                            <td><label for="ult_tens_strgth"></label></td>
-                                            <td><field name="ult_tens_strgth" /></td>
-                                            <field name="uts_visible" invisible="1"/>
-                                        </tr>
-                                        <tr>
-                                            <td><label for="requirement_utl"></label></td>
-                                            <td><field name="requirement_utl" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td><label for="uts_nabl"></label></td>
-                                            <td><field name='uts_nabl'
-                                            decoration-success="uts_nabl == 'pass'" 
-                                            decoration-danger="uts_nabl == 'fail'" 
-                                            readonly="1" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td><label for="uts_conformity"></label></td>
-                                            <td><field name='uts_conformity'
-                                            decoration-success="uts_conformity == 'pass'" 
-                                            decoration-danger="uts_conformity == 'fail'" 
-                                            readonly="1" /></td>
-                                        </tr>
-                                    </div>
-                                    <div invisible="ts_ys_visible == False" >
-                                        <tr>
-                                            <td><label for="ts_ys_ratio"></label></td>
-                                            <td><field name="ts_ys_ratio" /></td>
-                                            <field name="ts_ys_visible" invisible="1"/>
-                                        </tr>
-                                        <tr>
-                                            <td><label for="requirement_ts_ys"></label></td>
-                                            <td><field name="requirement_ts_ys" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td><label for="ts_ys_nabl"></label></td>
-                                            <td><field name='ts_ys_nabl'
-                                            decoration-success="ts_ys_nabl == 'pass'" 
-                                            decoration-danger="ts_ys_nabl == 'fail'" 
-                                            readonly="1" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td><label for="ts_ys_conformity"></label></td>
-                                            <td><field name='ts_ys_conformity'
-                                            decoration-success="ts_ys_conformity == 'pass'" 
-                                            decoration-danger="ts_ys_conformity == 'fail'" 
-                                            readonly="1" /></td>
-                                        </tr>
-                                    </div>
+                                    <tr invisible="yield_visible == False">
+                                        <td><label for="proof_yeid_stress"></label></td>
+                                        <td><field name="proof_yeid_stress" /></td>
+                                        <field name="yield_visible" invisible="1"/>
+                                    </tr>
+                                    <tr invisible="yield_visible == False">
+                                        <td><label for="requirement_yield"></label></td>
+                                        <td><field name="requirement_yield" /></td>
+                                    </tr>
+                                    <tr invisible="yield_visible == False">
+                                        <td><label for="yield_nabl"></label></td>
+                                        <td><field name='yield_nabl'
+                                        decoration-success="yield_nabl == 'pass'" 
+                                        decoration-danger="yield_nabl == 'fail'" 
+                                        readonly="1" /></td>
+                                    </tr>
+                                    <tr invisible="yield_visible == False">
+                                        <td><label for="yield_conformity"></label></td>
+                                        <td><field name='yield_conformity'
+                                        decoration-success="yield_conformity == 'pass'" 
+                                        decoration-danger="yield_conformity == 'fail'" 
+                                        readonly="1" /></td>
+                                    </tr>
+                                    <tr invisible="uts_visible == False" >
+                                        <td><label for="ult_tens_strgth"></label></td>
+                                        <td><field name="ult_tens_strgth" /></td>
+                                        <field name="uts_visible" invisible="1"/>
+                                    </tr>
+                                    <tr invisible="uts_visible == False" >
+                                        <td><label for="requirement_utl"></label></td>
+                                        <td><field name="requirement_utl" /></td>
+                                    </tr>
+                                    <tr invisible="uts_visible == False" >
+                                        <td><label for="uts_nabl"></label></td>
+                                        <td><field name='uts_nabl'
+                                        decoration-success="uts_nabl == 'pass'" 
+                                        decoration-danger="uts_nabl == 'fail'" 
+                                        readonly="1" /></td>
+                                    </tr>
+                                    <tr invisible="uts_visible == False" >
+                                        <td><label for="uts_conformity"></label></td>
+                                        <td><field name='uts_conformity'
+                                        decoration-success="uts_conformity == 'pass'" 
+                                        decoration-danger="uts_conformity == 'fail'" 
+                                        readonly="1" /></td>
+                                    </tr>
+                                    <tr invisible="ts_ys_visible == False" >
+                                        <td><label for="ts_ys_ratio"></label></td>
+                                        <td><field name="ts_ys_ratio" /></td>
+                                        <field name="ts_ys_visible" invisible="1"/>
+                                    </tr>
+                                    <tr invisible="ts_ys_visible == False" >
+                                        <td><label for="requirement_ts_ys"></label></td>
+                                        <td><field name="requirement_ts_ys" /></td>
+                                    </tr>
+                                    <tr invisible="ts_ys_visible == False" >
+                                        <td><label for="ts_ys_nabl"></label></td>
+                                        <td><field name='ts_ys_nabl'
+                                        decoration-success="ts_ys_nabl == 'pass'" 
+                                        decoration-danger="ts_ys_nabl == 'fail'" 
+                                        readonly="1" /></td>
+                                    </tr>
+                                    <tr invisible="ts_ys_visible == False" >
+                                        <td><label for="ts_ys_conformity"></label></td>
+                                        <td><field name='ts_ys_conformity'
+                                        decoration-success="ts_ys_conformity == 'pass'" 
+                                        decoration-danger="ts_ys_conformity == 'fail'" 
+                                        readonly="1" /></td>
+                                    </tr>
                                     <tr>
                                         <field name="bend_visible" invisible="1"/>
                                         <td><label for="bend_test1"></label></td>

@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="action_fst_lateral_pile_load_test" model="ir.actions.act_window">
+        <field name="name">Lateral Pile Load Tests</field>
+        <field name="res_model">fst.lateral.pile.load.test</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="inject_lateral_card_into_fst_dashboard" model="ir.ui.view">
+        <field name="name">lerm.ert.dashboard.inherit.lateral</field>
+        <field name="model">lerm.ert.dashboard</field>
+        <field name="inherit_id" ref="fst.view_ert_dashboard"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('card-box')][last()]" position="after">
+                <div class="card-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+                    <h3 class="title">Lateral Pile Load Test</h3>
+                    <a type="action"
+                    name="%(action_fst_lateral_pile_load_test)d"
+                    class="btn btn-lg"
+                    style="background:#00bcd4; color:#000;">
+                        Records
+                    </a>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_fst_lateral_pile_load_test_tree" model="ir.ui.view">
+        <field name="name">fst.lateral.pile.load.test.tree</field>
+        <field name="model">fst.lateral.pile.load.test</field>
+        <field name="arch" type="xml">
+            <tree string="Lateral Pile Load Test Reports">
+
+                <field name="name"/>
+                <button
+                    name="action_duplicate_parent"
+                    type="object"
+                    string="Duplicate"
+                    icon="fa-copy"
+                    class="btn-secondary"
+                />
+
+                <button 
+                    name="action_delete_line" 
+                    string="Delete" 
+                    type="object" 
+                    icon="fa-trash" 
+                    class="btn-danger" 
+                    confirm="Are you sure you want to delete this line?"
+                />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_fst_lateral_pile_load_test_form" model="ir.ui.view">
+        <field name="name">fst.lateral.pile.load.test.form</field>
+        <field name="model">fst.lateral.pile.load.test</field>
+        <field name="arch" type="xml">
+
+            <form string="Initial Lateral Pile Load Test Report">
+                <header>
+                    <button name="action_generate_ulr_no" string="Generate ULR No" type="object" class="btn-primary"/>
+                    <button name="action_generate_report_no" string="Generate Report No" type="object" class="btn-primary"/>
+                    <button name="print_report" string="Print Report" type="object" class="btn-primary"/>
+                    <!-- <button name="print_react_report" string="Print Report" type="object" class="btn-primary"/> -->
+                    <button name="action_download_excel_template" type="object" string="Download Template" class="btn-secondary"/>
+                    <button name="action_open_import_wizard" type="object" string="Upload Excel" class="btn-primary"/>
+                </header>
+
+                <sheet>
+
+                    <div style="text-align:center; margin-top:30px; margin-bottom:40px;">
+                        <h1 style="font-size:26px;">
+                            <field name="name" style="width:100%; display:block; text-align:center; font-size:26px; letter-spacing:1px;"/>
+                        </h1>
+                        <h2>INITIAL LATERAL PILE LOAD TEST</h2>
+                        <h2 style="margin-top:10px;">
+                            OF PILE NO -
+                            <field name="pile_no" nolabel="1"/>
+                        </h2>
+                    </div>
+
+                    <group col="2" style="margin-bottom:30px;">
+                        <field name="work_name"/>
+                        <field name="client"/>
+                        <field name="contractor"/>
+                        <field name="ulr"/>
+                        <field name="report_no"/>
+                        <field name="rec_date"/>
+                        <field name="test_standard"/>
+                        <field name="site_location" colspan="2"/>
+                    </group>
+
+                    <div style="margin-top:30px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            CONTENTS
+                        </h3>
+                    </div>
+
+                    <field name="content_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="sequence"/>
+                            <field name="description"/>
+                            <field name="page_no"/>
+                        </tree>
+                    </field>
+
+                    <div style="margin-top:30px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            01. General Philosophy
+                        </h3>
+                    </div>
+
+                    <div style="border:1px solid #ccc; padding:12px;">
+                        <field name="general_philosophy" widget="text" nolabel="1"/>
+                    </div>
+
+                    <div style="margin-top:30px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            02. Methodology for Lateral Pile Load Testing
+                        </h3>
+                    </div>
+
+                    <div style="margin-top:30px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            2.1 Scope of Works
+                        </h3>
+                    </div>
+
+                    <div style="border:1px solid #ccc; padding:12px;">
+                        <field name="scope_of_works" widget="text" nolabel="1"/>
+                    </div>
+
+                    <div style="margin-top:30px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            2.2 Reference
+                        </h3>
+                    </div>
+
+                    <div style="border:1px solid #ccc; padding:12px;">
+                        <field name="reference" widget="text" nolabel="1"/>
+                    </div>
+
+                    <div style="margin-top:30px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            2.3 Equipment Used
+                        </h3>
+                    </div>
+
+                    <div style="border:1px solid #ccc; padding:12px;">
+                        <field name="test_equipment" widget="text" nolabel="1"/>
+                    </div>
+
+                    <div style="margin-top:30px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            2.4 Setting up of Testing Apparatus
+                        </h3>
+                    </div>
+
+                    <div style="border:1px solid #ccc; padding:12px;">
+                        <field name="setup_apparatus" widget="text" nolabel="1"/>
+                    </div>
+
+                    <div style="margin-top:30px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            2.5 Load Test Procedure
+                        </h3>
+                    </div>
+
+                    <div style="border:1px solid #ccc; padding:12px;">
+                        <field name="test_procedure" widget="text" nolabel="1"/>
+                    </div>
+
+                    <div style="margin-top:30px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            2.6 Preparation of Test Report
+                        </h3>
+                    </div>
+
+                    <div style="border:1px solid #ccc; padding:12px;">
+                        <field name="preparation_report" widget="text" nolabel="1"/>
+                    </div>
+
+                    <group col="2">
+                        <field name="test_load"/>
+                        <field name="incremental_load"/>
+                        <field name="dial_gauge_count"/>
+                        <field name="allowable_capacity"/>
+                    </group>
+
+                    <!-- ================= TABLE 1 : BASIC DATA ================= -->
+                    <div style="margin-top:35px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            TABLE 1 : BASIC DATA
+                        </h3>
+                    </div>
+
+                    <field name="basic_data_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="sr_no"/>
+                            <field name="parameter"/>
+                            <field name="value"/>
+                        </tree>
+                    </field>
+
+                    <div style="margin-top:35px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            TABLE 2A : DIAL GAUGE READING CORRESPONDING TO LOADING
+                        </h3>
+                    </div>
+
+                    <field name="last_reading_datetime" invisible="1"/>
+                    <field name="loading_reading_ids"
+                            nolabel="1"
+                            context="{'default_parent_id': id}">
+                        <tree editable="bottom" limit="50" default_order="id">
+                            <field name="reading_datetime" 
+                                    widget="datetime"
+                                    options="{'format': 'dd/MM/yy HH:mm'}"/>
+                            <field name="load_tonne"/>
+                            <field name="applied_pressure"/>
+                            <field name="pressure_under_plate"/>
+                            <field name="dial_a"/>
+                            <field name="dial_b"/>
+                            <field name="dial_c"/>
+                        </tree>
+                    </field>
+
+                    <div style="margin-top:35px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            TABLE 2A &amp; 2B : BULK UPLOAD FROM EXCEL
+                        </h3>
+                    </div>
+
+                    <div style="margin-bottom:8px;">
+                        <button name="%(action_lateral_pile_load_excel_upload)d"
+                            type="action"
+                            string="Upload from Excel"
+                            class="btn-primary"
+                            context="{'default_parent_id': active_id}"/>
+                    </div>
+
+                    <div style="margin-top:35px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            TABLE 2B : DIAL GAUGE READING CORRESPONDING TO UNLOADING
+                        </h3>
+                    </div>
+
+                    <field name="unloading_reading_ids"
+                            nolabel="1"
+                            context="{'default_parent_id': id}">
+                        <tree editable="bottom" limit="50" default_order="id">
+                            <field name="reading_datetime" 
+                                    widget="datetime"
+                                    options="{'format': 'dd/MM/yy HH:mm'}"/>
+                            <field name="load_tonne"/>
+                            <field name="applied_pressure"/>
+                            <field name="pressure_under_plate"/>
+                            <field name="dial_a"/>
+                            <field name="dial_b"/>
+                            <field name="dial_c"/>
+                        </tree>
+                    </field>
+
+                    <div style="margin-top:35px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            TABLE 2A(i) : LOAD ON PLATE vs AVERAGE SETTLEMENT vs CUMULATIVE SETTLEMENT
+                        </h3>
+                    </div>
+
+                    <field name="loading_summary_ids"
+                            nolabel="1">
+                        <tree editable="false" limit="50" default_order="sequence">
+                            <field name="sequence" string="Sr No"/>
+                            <field name="load_tonne" string="Load on Plate (t)"/>
+                            <field name="avg_settlement" string="Average Settlement (mm)"/>
+                            <field name="cumulative_settlement" string="Cumulative Settlement (mm)"/>
+                        </tree>
+                    </field>
+
+                    <button name="action_generate_graph"
+                            type="object"
+                            string="Generate Graph"
+                            class="btn-primary"/>
+                    <button name="action_recompute_all"
+                            type="object"
+                            string="Recompute All"
+                            class="btn-secondary"/>
+
+                    <div style="margin-top:35px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            ANNOTATION SETTINGS
+                        </h3>
+                    </div>
+
+                    <group>
+                        <field name="target_settlement" string="Target Settlement (mm)"/>
+                        <field name="allowable_load" string="Allowable Load (t)"/>
+                    </group>
+
+                    <div style="margin-top:35px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            LOAD - DISPLACEMENT GRAPH
+                        </h3>
+                    </div>
+
+                    <field name="graph_image" widget="image"/>
+
+                    <div style="margin-top:20px; font-weight:bold;">
+                        Gross Displacement =
+                        <field name="gross_settlement" readonly="1"/> mm<br/>
+                        Net Displacement =
+                        <field name="net_settlement" readonly="1"/> mm<br/>
+                        Rebound =
+                        <field name="rebound" readonly="1"/> mm
+                    </div>
+
+                    <div style="margin-top:35px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            2.7 Conclusion
+                        </h3>
+                    </div>
+
+                    <div style="border:1px solid #ccc; padding:12px;">
+                        <field name="conclusion" widget="text" nolabel="1"/>
+                    </div>
+
+                    <div style="margin-top:40px;">
+                        <h3 style="border-bottom:2px solid #000;">
+                            SITE PHOTOGRAPHS
+                        </h3>
+                    </div>
+
+                    <field name="site_image_ids" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="sequence"/>
+                            <field name="image" widget="image" options="{'size': [80, 80]}"/>
+                            <field name="caption"/>
+                        </tree>
+                    </field>
+
+                </sheet>
+            </form>
+
+        </field>
+    </record>
+
+</odoo>

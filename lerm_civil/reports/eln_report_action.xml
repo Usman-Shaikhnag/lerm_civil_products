@@ -171,27 +171,7 @@
     <field name="binding_type">report</field>
 </record>
 
-<record id="fine_agg_datasheet_ssl_action" model="ir.actions.report">
-    <field name="name">Fine Aggregate Datasheet</field>
-    <field name="model">lerm.eln</field>
-    <field name="report_type">qweb-pdf</field>
-    <field name="report_name">fine_aggregate.fine_agg_datasheet_ssl</field>
-    <field name="report_file">fine_aggregate.fine_agg_datasheet_ssl</field>
-    <field name="binding_model_id" ref="model_lerm_eln"/>
-    <!--   <field name="binding_model_id" eval="False"/>   -->
-    <field name="binding_type">report</field>
-</record>
 
-<record id="fineaggregate_report_ssl_action" model="ir.actions.report">
-    <field name="name">Fine Aggregate Report</field>
-    <field name="model">lerm.eln</field>
-    <field name="report_type">qweb-pdf</field>
-    <field name="report_name">fine_aggregate.fineaggregate_report_ssl</field>
-    <field name="report_file">fine_aggregate.fineaggregate_report_ssl</field>
-    <field name="binding_model_id" ref="model_lerm_eln"/>
-    <!--   <field name="binding_model_id" eval="False"/>   -->
-    <field name="binding_type">report</field>
-</record>
 
 <record id="soil_datasheet_ssl_action" model="ir.actions.report">
     <field name="name">Soil DataSheet</field>
@@ -1202,6 +1182,27 @@
         <field name="binding_model_id" eval="False"/>
         <field name="binding_type">report</field>
     </record>
+
+
+    <record id="fine_aggregate_datasheet_action" model="ir.actions.report">
+    <field name="name">Fine Aggregate DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">fine_aggregate.fine_aggregate_datasheet</field>
+    <field name="report_file">fine_aggregate.fine_aggregate_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="fine_aggregate_report_action" model="ir.actions.report">
+    <field name="name">Fine Aggregate Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">fine_aggregate.fine_aggregate_report</field>
+    <field name="report_file">fine_aggregate.fine_aggregate_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
 
 
 

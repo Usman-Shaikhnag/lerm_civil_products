@@ -10,31 +10,23 @@
 				<div class="container_eln">
 					<div t-foreach="eln" t-as="o">
 						
-						<table >
+						<table>
 							<tr>
-								<td style="font-size:12px;width:100%" >#Customer Party Name :
-																											<![CDATA[&nbsp;]]>
+								<td style="font-size:12px;width:100%" >#Customer Party Name :<![CDATA[&nbsp;]]>
 									<span t-field="o.srf_id.customer.name"/>
-									
 									<span t-field="o.srf_id.customer.street"/>
 									<span t-field="o.srf_id.customer.street2"/>
 									<span t-field="o.srf_id.customer.city"/>
 									<span t-if="o.srf_id.customer.zip" t-field="o.srf_id.customer.zip"/>
 									<span t-field="o.srf_id.customer.state_id"/>
-								
 									<span t-field="o.srf_id.customer.country_id"/>
 								</td>
-								
-								
 							</tr>
 							<tr>
-							<td style="font-size:12px;width:100%" >#Project / Site Address : 																		<![CDATA[&nbsp;]]>
+								<td style="font-size:12px;width:100%" >#Project / Site Address : 																		<![CDATA[&nbsp;]]>
 									<span t-field="o.srf_id.name_work"/>
 								</td>
 							</tr>
-								
-						
-							
 						</table>
 						<table>
 							<tr>
@@ -49,21 +41,16 @@
 								</td>
 							</tr>
 							<tr>
-								<td style="font-size:12px;width:30%;" colspan="3">#Grade :
-																											<![CDATA[&nbsp;]]>
+								<td style="font-size:12px;width:30%;" colspan="3">#Grade :<![CDATA[&nbsp;]]>
 									<span t-field="o.sample_id.grade_id.grade"/>
 								</td>
-								<td style="font-size:12px;width:30%;" colspan="3">#Size :
-																											<![CDATA[&nbsp;]]>
+								<td style="font-size:12px;width:30%;" colspan="3">#Size :<![CDATA[&nbsp;]]>
 									<span t-field="o.sample_id.size_id.size"/>
 								</td>
 								<td style="font-size:12px;width:40%;" colspan="4">#Sample Id Mark: 																		<![CDATA[&nbsp;]]>
 									<span t-field="o.sample_id.client_sample_id"/>
 								</td>
-								
 							</tr>
-							
-							
 							<tr>
 								<td style="font-size:12px;width:30%;" colspan="3">#Consultant :
 									<![CDATA[&nbsp;]]>
@@ -73,8 +60,7 @@
 									<![CDATA[&nbsp;]]>
 									<span t-field="o.srf_id.client"/>
 								</td>
-								<td style="font-size:12px;width:40%;" colspan="4">#Client Ref :
-																											<![CDATA[&nbsp;]]>
+								<td style="font-size:12px;width:40%;" colspan="4">#Client Ref :<![CDATA[&nbsp;]]>
 									<span t-field="o.srf_id.client_refrence"/>
 								</td>
 							</tr>
@@ -85,21 +71,17 @@
 								<td style="font-size:12px;" colspan="3">Discipline :
 									<span t-field="o.discipline.discipline"/>
 								</td>
-								
 								<td style="font-size:12px;" colspan="3">Group :
 									<span t-field="o.group.group"/>
 								</td>
 							</tr>
-
 							<tr>
-								<td style="font-size:12px;width:50%;" colspan="6">Material/Test Name :
-																											<![CDATA[&nbsp;]]>
+								<td style="font-size:12px;width:50%;" colspan="6">Material/Test Name :<![CDATA[&nbsp;]]>
 									<span t-field="o.material.name"/>
 								</td>
 								<td style="font-size:12px;width:50%;" colspan="6">#Sample Description : 																		<![CDATA[&nbsp;]]>
 									<span t-field="o.sample_id.sample_description"/>
 								</td>
-							
 							</tr>
 						</table>
 					</div>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="action_ert_dashboard" model="ir.actions.act_window">
+            <field name="name">FST Dashboard</field>
+            <field name="res_model">lerm.ert.dashboard</field>
+            <field name="view_mode">kanban</field>
+            <field name="target">current</field>
+            <field name="limit">1</field>
+        </record>
+
+
+        <menuitem id="fst_root"
+            name="FST"
+            sequence="11"
+            action="action_ert_dashboard"
+            />
+
+        <record id="view_ert_dashboard" model="ir.ui.view">
+            <field name="name">lerm.ert.dashboard.view</field>
+            <field name="model">lerm.ert.dashboard</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_dashboard o_kanban_dashboard_background" create="false" delete="false">
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div style="width:100%; max-width:100%; display:grid; grid-template-columns:repeat(auto-fit,minmax(350px,1fr)); gap:15px;">
+                                <div class="card-box d-none" style="display:none;"/>
+                            </div>
+
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Ensure one record exists -->
+        <record id="lerm_ert_dashboard_record" model="lerm.ert.dashboard"/>
+
+
+    </data>
+</odoo>

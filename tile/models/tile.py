@@ -72,7 +72,7 @@ class Tile(models.Model):
 # remark
 
 
-    notes_id = fields.One2many('cube.notes', 'parent_id', string="Notes")
+    notes_id = fields.One2many('tile.notes', 'parent_id', string="Notes")
     
     @api.model
     def default_get(self, fields):
