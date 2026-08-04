@@ -2127,7 +2127,7 @@ class FineAggregate(models.Model):
 
             
             # Soundness na2so4
-            if internal_id == "a0e7aaf3-68ff-4e75-830d-91ae04c98f5796":
+            if result.parameter.internal_id == "a0e7aaf3-68ff-4e75-830d-91ae04c98f5796":
                 result.result_char = round(self.total_weighted_avg, 2)
                 result.calculated = True
                 if self.total_weighted_avg_nabl == 'pass':
@@ -2137,7 +2137,7 @@ class FineAggregate(models.Model):
                 continue
 
             # Soundness mgso4
-            if internal_id == "ace97d80-fdf8-45ed-8762-8ec73805ea68":
+            if result.parameter.internal_id == "ace97d80-fdf8-45ed-8762-8ec73805ea68":
                 result.result_char = round(self.mag_total_weighted_avg, 2)
                 result.calculated = True
                 if self.mag_total_weighted_avg_nabl == 'pass':

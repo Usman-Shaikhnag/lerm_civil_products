@@ -195,10 +195,13 @@ class WbmReport1(models.AbstractModel):
 
     def generate_cbr_chart(self, data):
 
-      lines = self.env['wbm.cbr.line'].search(
-        [('parent_id', '=', data.id)],
-        order='penetration asc'
-    )
+    #   lines = self.env['wbm.cbr.line'].search(
+    #     [('parent_id', '=', data.id)],
+    #     order='penetration asc'
+    # )
+
+    
+      lines = data.sudo().soil_table
 
       import io
       import base64

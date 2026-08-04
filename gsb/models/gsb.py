@@ -4050,8 +4050,20 @@ class GsbMechanical(models.Model):
 
     @api.depends('omc_table')
     def _compute_graph_image_density_omc_light1(self):
-     for record in self:
-        record.graph_image_density1 = record.generate_line_chart_light_omc1()
+        try:
+            for record in self:
+                chart_image_light_omc1 = record.generate_line_chart_light_omc1()
+                record.graph_image_density1 = chart_image_light_omc1
+        except:
+            pass 
+
+
+    
+    
+    # @api.depends('omc_table')
+    # def _compute_graph_image_density_omc_light1(self):
+    #  for record in self:
+    #     record.graph_image_density1 = record.generate_line_chart_light_omc1()
 
 
 
