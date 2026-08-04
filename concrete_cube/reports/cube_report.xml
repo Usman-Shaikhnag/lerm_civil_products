@@ -132,22 +132,32 @@
 								<tr>
 									<th rowspan="2" style="text-align: center; font-weight: bold; width: 4%;">Sr. No</th>
 									<th rowspan="2" style="text-align: center; font-weight: bold; white-space: nowrap;">Identification Mark</th>
-									<th colspan="3" style="text-align: center; font-weight: bold;">Dimension of Specimen (mm)</th>
-									<th rowspan="2" style="text-align: center; font-weight: bold; width: 10%;">Area (m²)</th>
-									<th rowspan="2" style="text-align: center; font-weight: bold; width: 10%;">Weight of  Specimen (gms)</th>
+									<t t-if="sector_type != 'non_govt'">
+										<th colspan="3" style="text-align: center; font-weight: bold;">Dimension of Specimen (mm)</th>
+									</t>
+									<t t-if="sector_type == 'normal'">
+										<th rowspan="2" style="text-align: center; font-weight: bold; width: 10%;">Area (mm²)</th>
+									</t>
+									<t t-if="sector_type != 'non_govt'">
+										<th rowspan="2" style="text-align: center; font-weight: bold; width: 10%;">Weight of  Specimen (gms)</th>
+									</t>
 									<th rowspan="2" style="text-align: center; font-weight: bold; width: 9%;">Density (Kg/m³)</th>
-									<th rowspan="2" style="text-align: center; font-weight: bold; width: 9%;">Maximum Load(KN)</th>
+									<t t-if="sector_type != 'non_govt'">
+										<th rowspan="2" style="text-align: center; font-weight: bold; width: 9%;">Maximum Load(KN)</th>
+									</t>
 									<!-- <th style="text-align: center; font-weight: bold; width: 9%;">Date of casting</th>
 									<th style="text-align: center; font-weight: bold; width: 9%;">Date of Testing</th> -->
 									<!-- <th style="text-align: center; font-weight: bold; width: 6%;">Load (kN)</th> -->
 									<th rowspan="2" style="text-align: center; font-weight: bold; width: 13%;">Comp. Strength (N/mm2)</th>
 									<th rowspan="2" style="text-align: center; font-weight: bold; width: 15%;">Avg. Comp. Strength (N/mm2)</th>
 								</tr>
+								<t t-if="sector_type != 'non_govt'">
 								<tr>
 								  <th colspan="1" style="text-align: center; font-weight: bold;">Length (mm)</th>
 								  <th colspan="1" style="text-align: center; font-weight: bold;">Breadth (mm)</th>
 								  <th colspan="1" style="text-align: center; font-weight: bold;">Height (mm)</th>
 								</tr>
+								</t>
 							</thead>
 
 							<tbody>
@@ -157,14 +167,21 @@
 								<tr>
 									<td style="text-align: center;"><span t-esc="r.sr_no"/></td>
 									<td style="text-align: center; white-space: nowrap;"><span t-esc="r.id_mark"/></td>
-									<td style="text-align: center;"><span t-esc="r.length"/></td>
-									<td style="text-align: center;"><span t-esc="r.breadth"/></td>
-									<td style="text-align: center;"><span t-esc="r.height"/></td>
-									<td style="text-align: center;"><span t-esc="r.area"/></td>
-									<td style="text-align: center;"><span t-esc="r.wt_sample"/></td>
+									<t t-if="sector_type != 'non_govt'">
+										<td style="text-align: center;"><span t-esc="r.length"/></td>
+										<td style="text-align: center;"><span t-esc="r.breadth"/></td>
+										<td style="text-align: center;"><span t-esc="r.height"/></td>
+									</t>
+									<t t-if="sector_type == 'normal'">
+										<td style="text-align: center;"><span t-esc="r.area"/></td>
+									</t>
+									<t t-if="sector_type != 'non_govt'">
+										<td style="text-align: center;"><span t-esc="r.wt_sample"/></td>
+									</t>
 									<td style="text-align: center;"><span t-esc="r.density"/></td>
-									
-									<td style="text-align: center;"><span t-esc="r.load"/></td>
+									<t t-if="sector_type != 'non_govt'">
+										<td style="text-align: center;"><span t-esc="r.load"/></td>
+									</t>
 									<td style="text-align: center;">
 										<span t-esc="r.compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
 									</td>

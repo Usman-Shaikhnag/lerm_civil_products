@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_cube_report_wizard_form" model="ir.ui.view">
+        <field name="name">cube.report.wizard.form</field>
+        <field name="model">cube.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Cube Compressive Report">
+                <group>
+                    <field name="sample_id" readonly="1"/>
+                    <field name="nabl" invisible="1"/>
+                    <field name="sector_type" widget="radio" options="{'horizontal': true}"/>
+                </group>
+                <footer>
+                    <button name="print_report" string="Print Report" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -112,6 +112,7 @@ class ConcreteCubeCompresiveReport(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         data = data or {}
         nabl = data.get('nabl', False)
+        sector_type = data.get('sector_type', 'non_govt')
 
         # 🧩 ELN Record मिळवा
         if data.get('report_wizard'):
@@ -165,6 +166,7 @@ class ConcreteCubeCompresiveReport(models.AbstractModel):
             'data' : general_data,
             'qrcode': qr_code,
             'nabl' : nabl,
+            'sector_type': sector_type,
             'qrcode_static': qr_static_b64,
             # 'stamp' : inreport_value,
             'nabl' : nabl

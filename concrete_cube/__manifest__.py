@@ -14,6 +14,7 @@ This module contains all the common features of Sales Management and eCommerce.
     'data': [
                  'security/ir.model.access.csv',
                  'views/concrete_cube.xml',
+                 'views/report_wizard.xml',
                  'reports/cube_datasheet.xml',
                  'reports/cube_report.xml'
     ],
