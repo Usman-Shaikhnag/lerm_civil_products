@@ -204,14 +204,6 @@ class SoilReport(models.AbstractModel):
             'graphDirect': graph_direct,
 
             
-            
-            # 'graphLight' : graph_image1,
-            
-            # 'mdd': max_y if cbry_values else 0,
-            # 'omc': max_x if cbrx_values else 0,
-            # 'graphCbr': cbr_graph_image,
-            # 'load2': cbry_values[5] if len(cbry_values) > 5 else 0,
-            # 'load5': cbry_values[8] if len(cbry_values) > 8 else 0,
         }
     
 
@@ -613,10 +605,12 @@ class SoilReport(models.AbstractModel):
     # Read CBR Data
     # ---------------------------------------
 
-     lines = self.env['mechanical.cbr.line'].search(
-        [('parent_id', '=', data.id)],
-        order='penetration asc'
-    )
+    #  lines = self.env['mechanical.cbr.line'].search(
+    #     [('parent_id', '=', data.id)],
+    #     order='penetration asc'
+    # )
+
+     lines = data.sudo().soil_table
 
      if len(lines) < 2:
         return False
