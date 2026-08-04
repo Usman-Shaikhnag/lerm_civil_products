@@ -7,49 +7,37 @@ import math
 class GypsumPlaster(models.Model):
     _name = "mechanical.gypsum.plaster"
     _inherit = "lerm.eln"
-    _description = 'mechanical.gypsum.plaster'
     _rec_name = "name"
 
     name = fields.Char("Name",default="GYPSUM PLASTER BOARD")
-    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
-    @api.depends('eln_ref')
-    def _compute_grade_id(self):
-        if self.eln_ref:
-            self.grade = self.eln_ref.grade_id.id
-
-
-
-
-
-            # remark
-
-    notes_id = fields.One2many('gypsum.notes', 'parent_id', string="Notes")
+    notes_id = fields.One2many('mechanical.gypsum.plaster.notes', 'parent_id', string="Notes")
     
     @api.model
     def default_get(self, fields):
         res = super(GypsumPlaster, self).default_get(fields)
 
         default_notes = [
-            (0, 0, {
+             (0, 0, {
                 'sr_no': 'a',
-                'notes': 'The information marked with an # received from customer',
+                'notes': 'The Test Report(s) is/are valid only to the sample submitted to the laboratory.',
             }),
             (0, 0, {
                 'sr_no': 'b',
-                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+                'notes': 'Sample(s) was/were not drawn by laboratory.',
             }),
             (0, 0, {
                 'sr_no': 'c',
-                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+                'notes': 'This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.',
             }),
             (0, 0, {
                 'sr_no': 'd',
-                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+                'notes': '# - Information provided by the customer.',
             }),
         ]
 
@@ -57,10 +45,10 @@ class GypsumPlaster(models.Model):
         return res
 
 
-
-
-
-
+    @api.depends('eln_ref')
+    def _compute_grade_id(self):
+        if self.eln_ref:
+            self.grade = self.eln_ref.grade_id.id
 
 
 
@@ -102,8 +90,8 @@ class GypsumPlaster(models.Model):
         
         for record in self:
             record.average_density_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3587lpiy-7a9c-4616-bad5-88eb1b260747')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3587lpiy-7a9c-4616-bad5-88eb1b260747')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','75454b28-7a9c-4616-bad5-88eb1b260747')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','75454b28-7a9c-4616-bad5-88eb1b260747')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
@@ -127,8 +115,8 @@ class GypsumPlaster(models.Model):
         
         for record in self:
             record.average_density_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3587lpiy-7a9c-4616-bad5-88eb1b260747')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3587lpiy-7a9c-4616-bad5-88eb1b260747')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','75454b28-7a9c-4616-bad5-88eb1b260747')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','75454b28-7a9c-4616-bad5-88eb1b260747')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -184,8 +172,8 @@ class GypsumPlaster(models.Model):
         
         for record in self:
             record.average_water_absorption_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','34597lpuy-f555-4f7c-beae-9547435d852a')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','34597lpuy-f555-4f7c-beae-9547435d852a')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7ebc1578-f555-4f7c-beae-9547435d852a')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7ebc1578-f555-4f7c-beae-9547435d852a')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
@@ -209,8 +197,8 @@ class GypsumPlaster(models.Model):
         
         for record in self:
             record.average_water_absorption_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','34597lpuy-f555-4f7c-beae-9547435d852a')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','34597lpuy-f555-4f7c-beae-9547435d852a')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7ebc1578-f555-4f7c-beae-9547435d852a')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7ebc1578-f555-4f7c-beae-9547435d852a')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -265,8 +253,8 @@ class GypsumPlaster(models.Model):
         
         for record in self:
             record.average_flexural_tranverse_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6587plyr2-b6bb-4100-bf91-24e750389f25')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6587plyr2-b6bb-4100-bf91-24e750389f25')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','891abc35-b6bb-4100-bf91-24e750389f25')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','891abc35-b6bb-4100-bf91-24e750389f25')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
@@ -290,8 +278,8 @@ class GypsumPlaster(models.Model):
         
         for record in self:
             record.average_flexural_tranverse_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6587plyr2-b6bb-4100-bf91-24e750389f25')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6587plyr2-b6bb-4100-bf91-24e750389f25')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','891abc35-b6bb-4100-bf91-24e750389f25')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','891abc35-b6bb-4100-bf91-24e750389f25')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -346,8 +334,8 @@ class GypsumPlaster(models.Model):
         
         for record in self:
             record.average_flexural_longitudinal_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','g1578pu2-cd1c-4fe1-804a-541a8e9ff19d')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','g1578pu2-cd1c-4fe1-804a-541a8e9ff19d')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a8876025-cd1c-4fe1-804a-541a8e9ff19d')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a8876025-cd1c-4fe1-804a-541a8e9ff19d')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
@@ -371,8 +359,8 @@ class GypsumPlaster(models.Model):
         
         for record in self:
             record.average_flexural_longitudinal_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','g1578pu2-cd1c-4fe1-804a-541a8e9ff19d')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','g1578pu2-cd1c-4fe1-804a-541a8e9ff19d')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a8876025-cd1c-4fe1-804a-541a8e9ff19d')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a8876025-cd1c-4fe1-804a-541a8e9ff19d')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -414,37 +402,33 @@ class GypsumPlaster(models.Model):
                 print("Internal Ids",sample.internal_id)
 
                
-                if sample.internal_id == "3587lpiy-7a9c-4616-bad5-88eb1b260747":
+                if sample.internal_id == "75454b28-7a9c-4616-bad5-88eb1b260747":
                     record.density_visible = True
 
-                if sample.internal_id == "34597lpuy-f555-4f7c-beae-9547435d852a":
+                if sample.internal_id == "7ebc1578-f555-4f7c-beae-9547435d852a":
                     record.water_absorption_visible = True
 
-                if sample.internal_id == "6587plyr2-b6bb-4100-bf91-24e750389f25":
+                if sample.internal_id == "891abc35-b6bb-4100-bf91-24e750389f25":
                     record.flexural_tranverse_visible = True
 
-                if sample.internal_id == "g1578pu2-cd1c-4fe1-804a-541a8e9ff19d":
+                if sample.internal_id == "a8876025-cd1c-4fe1-804a-541a8e9ff19d":
                     record.flexural_longitudinal_visible = True
 
                
 
 
 
-    # def open_eln_page(self):
-        # import wdb; wdb.set_trace()
-
     def open_eln_page(self):
-        # parameter_based_assignment
+        # import wdb; wdb.set_trace()
         current_user = self.env.user
         # 🔹 Only results assigned to current technician
         technician_results = self.eln_ref.parameters_result.filtered(
             lambda r: r.technician == current_user
         )
 
-        for result in technician_results:
-          
-            
-            if result.parameter.internal_id == '3587lpiy-7a9c-4616-bad5-88eb1b260747':
+        for result in self.eln_ref.parameters_result:
+            # ph 
+            if result.parameter.internal_id == '75454b28-7a9c-4616-bad5-88eb1b260747':
                 result.result_char = round(self.average_density,2)
                 result.calculated = True
                 if self.average_density_nabl == 'pass':
@@ -453,8 +437,7 @@ class GypsumPlaster(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
 
-
-            if result.parameter.internal_id == '34597lpuy-f555-4f7c-beae-9547435d852a':
+            if result.parameter.internal_id == '7ebc1578-f555-4f7c-beae-9547435d852a':
                 result.result_char = round(self.average_water_absorption,2)
                 result.calculated = True
                 if self.average_water_absorption_nabl == 'pass':
@@ -463,19 +446,16 @@ class GypsumPlaster(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
 
-
-
-            if result.parameter.internal_id == '6587plyr2-b6bb-4100-bf91-24e750389f25':
+            if result.parameter.internal_id == '891abc35-b6bb-4100-bf91-24e750389f25':
                 result.result_char = round(self.average_flexural_tranverse,2)
                 result.calculated = True
                 if self.average_flexural_tranverse_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
-                continue 
+                continue
 
-
-            if result.parameter.internal_id == 'g1578pu2-cd1c-4fe1-804a-541a8e9ff19d':
+            if result.parameter.internal_id == 'a8876025-cd1c-4fe1-804a-541a8e9ff19d':
                 result.result_char = round(self.average_flexural_longitudinal,2)
                 result.calculated = True
                 if self.average_flexural_longitudinal_nabl == 'pass':
@@ -484,7 +464,7 @@ class GypsumPlaster(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
 
-
+            
 
         return {
                 'view_mode': 'form',
@@ -493,7 +473,7 @@ class GypsumPlaster(models.Model):
                 'target': 'current',
                 'res_id': self.eln_ref.id,
                 
-            }           
+            } 
 
 
     @api.model
@@ -693,96 +673,9 @@ class FlexuralLongitudinalLine(models.Model):
 
 
 
-from odoo import models , fields,api
-import json
-import base64
-import qrcode
-from io import BytesIO
-from lxml import etree
-
-class GypsumPlasterDatasheet1(models.AbstractModel):
-        _name = 'report.gypsum_plaster_board.gypsum_plaster_board_datasheet'
-        _description = 'Gypsum Plaster Board DataSheet '
-    
-        @api.model
-        def _get_report_values(self, docids, data):
-            if data['fromsample'] == True:
-                 if 'active_id' in data['context']:
-                     eln = self.env['lerm.eln'].sudo().search([('sample_id','=',data['context']['active_id'])])
-                 else:
-                     eln = self.env['lerm.eln'].sudo().browse(docids) 
-            else:
-                if data['report_wizard'] == True:
-                    eln = self.env['lerm.eln'].sudo().search([('id','=',data['eln'])])
-                else:
-                    eln = self.env['lerm.eln'].sudo().browse(data['eln_id'])
-            model_id = eln.model_id
-            # differnt location for product based
-            # model_name = eln.material.product_based_calculation[0].ir_model.name 
-            model_name = eln.material.product_based_calculation.filtered(lambda record: record.grade.id == eln.grade_id.id).ir_model.name
-            if model_name:
-                general_data = self.env[model_name].sudo().browse(model_id)
-            else:
-                general_data = self.env['lerm.eln'].sudo().browse(docids)
-            return {
-                'eln': eln,
-                'data' : general_data
-            }
-
-
-class GypsumPlastereport(models.AbstractModel):
-    _name = 'report.gypsum_plaster_board.gypsum_plaster_report'
-    _description = 'Gypsum Plaster Board Report '
-    
-    @api.model
-    def _get_report_values(self, docids, data):
-        # eln = self.env['lerm.eln'].sudo().browse(docids)
-        inreport_value = data.get('inreport', None)
-        nabl = data.get('nabl')
-        if 'active_id' in data['context']:
-            eln = self.env['lerm.eln'].sudo().search([('sample_id','=',data['context']['active_id'])])
-        else:
-            eln = self.env['lerm.eln'].sudo().browse(docids) 
-        qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
-        qr.add_data(eln.kes_no)
-        qr.make(fit=True)
-        qr_image = qr.make_image()
-
-        # Convert the QR code image to base64 string
-        buffered = BytesIO()
-        qr_image.save(buffered, format="PNG")
-        qr_image_base64 = base64.b64encode(buffered.getvalue()).decode()
-
-        # Assign the base64 string to a field in the 'srf' object
-        qr_code = qr_image_base64
-        model_id = eln.model_id
-        # differnt location for product based
-
-        
-        model_name = eln.material.product_based_calculation[0].ir_model.name 
-        if model_name:
-            general_data = self.env[model_name].sudo().browse(model_id)
-        else:
-            general_data = self.env['lerm.eln'].sudo().browse(docids)
-        return {
-            'eln': eln,
-            'data' : general_data,
-            'qrcode': qr_code,
-            'stamp' : inreport_value,
-            'nabl' : nabl
-        }
-
-
-
-
-
-class gypsumNotes(models.Model):
-    _name = "gypsum.notes"
+class GypsumPlasterNotes(models.Model):
+    _name = "mechanical.gypsum.plaster.notes"
 
     parent_id = fields.Many2one('mechanical.gypsum.plaster',string="Parent Id")
     sr_no = fields.Char("Sr. No.")
     notes = fields.Char("Notes")
-
-
-
-

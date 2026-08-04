@@ -12,6 +12,7 @@ class ChemicalFineAggregate(models.Model):
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
     notes_id = fields.One2many('chemical.fine.aggregate.notes', 'parent_id', string="Notes")
     
@@ -50,7 +51,7 @@ class ChemicalFineAggregate(models.Model):
     ph_1_percent_b = fields.Float("pH of 1 % Solution in water")
     ph_1_percent_c = fields.Float("pH of 1 % Solution in water")
     ph_average = fields.Float("Average",compute="_compute_ph_average")
-    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
+    
 
 
     @api.depends("ph_1_percent_a",'ph_1_percent_b','ph_1_percent_c')
