@@ -19,8 +19,9 @@ class ContactsInherited(models.Model):
 
     user_type = fields.Selection([
         ('employee', 'Employee'),
-        ('seller', 'Seller'),
-    ], string='User Type', default='seller')
+        ('supplier', 'Supplier'),
+        ('customer', 'Customer'),
+    ], string='User Type', default='supplier')
 
 class ContractorLine(models.Model):
     _name = 'lerm.contractor.line'

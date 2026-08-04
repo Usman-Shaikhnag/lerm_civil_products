@@ -31,6 +31,9 @@ class Material(models.Model):
     product_based_calculation = fields.One2many('lerm.product.based.calculation','product_id',string="Product Based Calculation")
     sop = fields.Html(string='SOP')
 
+    grade_based_title = fields.Boolean(string="Grade Based Title")
+    grade_title_table = fields.One2many('product.grade.title','parent_id',string="Titles")
+
     show_lerm_tabs = fields.Boolean(compute="_compute_visibility_flags", store=False)
     show_product_based_tab = fields.Boolean(compute="_compute_visibility_flags", store=False)
 
@@ -322,3 +325,17 @@ class ProductProduct(models.Model):
 #     # def _compute_pricelist(self):
 #     #     # import wdb; wdb.set_trace();
 #     #     self.pricelist_id = self.move_id.pricelist_id.id 
+
+
+class ProductGradeTitleTable(models.Model):
+    _name = 'product.grade.title'
+
+    parent_id = fields.Many2one('product.template',string="Product")
+
+    grade = fields.Many2one('lerm.grade.line',string="Grade")
+    test_parameter = fields.Char("Test Column Title")
+    results = fields.Char("Result Column Title")
+    specifications = fields.Char("Specifications Column Title")
+    unit = fields.Char("Unit Column Title")
+    method_reference = fields.Char("Method Reference Column Title")
+    result_remark = fields.Char("Results Remark Column Title")
