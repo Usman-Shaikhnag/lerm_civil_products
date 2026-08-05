@@ -12,9 +12,6 @@
 				</div>
 				
 			</div>
-			<div t-if="report_type == 'pdf'" class="row backgroundimage" style="opacity:0.1; font-size:100px; width:100%; text-align:center;top:0; left:0; right:0; bottom:0; display:flex;align-items:center;justify-content:center; position: fixed; z-index:99;">
-				<img t-if="eln.sample_id.lab_location and eln.sample_id.lab_location.watermark_image" t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.watermark_image.decode('utf-8')" style="width:100%; margin-top:200px"/>
-			</div>
 
 			
 			<div style="width:100%;text-align:center;">
@@ -46,6 +43,12 @@
 							</td>
 						</tr>
 					</table>
+			</div>
+			<div t-if="report_type == 'pdf'" class="row backgroundimage" style="opacity:0.1; font-size:100px; width:100%; text-align:center;top:0; left:0; right:0; bottom:0; display:flex;align-items:center;justify-content:center; position: fixed; z-index:99;">
+				<img t-if="eln.sample_id.lab_location and eln.sample_id.lab_location.watermark_image" t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.watermark_image.decode('utf-8')" style="width:85%;"/>
+			</div>
+			<div t-if="report_type != 'pdf'" class="row backgroundimage" style="opacity:0.1; font-size:100px; width:100%; text-align:center;top:0; left:0; right:0; height:100vh; display:flex;align-items:center;justify-content:center; position: absolute; z-index:99;">
+				<img t-if="eln.sample_id.lab_location and eln.sample_id.lab_location.watermark_image" t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.watermark_image.decode('utf-8')" style="width:85%;"/>
 			</div>
         </div>
 	
