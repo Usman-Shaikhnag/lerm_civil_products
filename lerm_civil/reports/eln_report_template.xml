@@ -85,17 +85,16 @@
 						</tr>
 					</table>
 			</div>
-			<div t-if="report_type == 'pdf'" style="position: fixed;top: 0;left: 0;right: 0;bottom: 0;display: flex;align-items: center;justify-content: center;z-index: 99;opacity: 0.1;pointer-events: none;">
-				<img t-if="eln.sample_id.lab_location and eln.sample_id.lab_location.watermark_image" t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.watermark_image.decode('utf-8')" style="width: 90%;" />
-			</div>
-			<div t-if="report_type != 'pdf'" style="position: absolute;top: 0;left: 0;right: 0;height: 100vh;display: flex;align-items: center;justify-content: center;z-index: 99;opacity: 0.1;pointer-events: none;">
-				<img t-if="eln.sample_id.lab_location and eln.sample_id.lab_location.watermark_image" t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.watermark_image.decode('utf-8')" style="width: 90%;" />
-			</div>
 			
         </div>
 		
-        <div t-attf-class="article" t-att-style="report_header_style">
-			
+        <div t-attf-class="article" t-att-style="report_header_style" style="position: relative;">
+			<div t-if="report_type == 'pdf'" style="position: fixed;top: 0;left: 0;right: 0;bottom: 0;display: flex;align-items: center;justify-content: center;z-index: 99;opacity: 0.1;pointer-events: none;">
+				<img t-if="eln.sample_id.lab_location and eln.sample_id.lab_location.watermark_image" t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.watermark_image.decode('utf-8')" style="width: 90%;" />
+			</div>
+			<div t-if="report_type != 'pdf'" style="position: absolute;top: 45%;display: flex;align-items: center;justify-content: center;z-index: 99;opacity: 0.1;pointer-events: none;width:100%">
+				<img t-if="eln.sample_id.lab_location and eln.sample_id.lab_location.watermark_image" t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.watermark_image.decode('utf-8')" style="width: 100%;" />
+			</div>
             <t t-out="0"/>
 				
         </div>
