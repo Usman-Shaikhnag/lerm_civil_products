@@ -179,21 +179,41 @@
                       </table>
                     </div>
 
-                     <div invisible="not specific_gravity_visible">
+                     <div class="d-flex gap-2" invisible="not specific_gravity_visible">
                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                           <tbody>
                            <tr>
-                            <td><label for="specific_gravity_conformity">Conformity</label></td>
+                            <td><label for="specific_gravity_conformity"></label></td>
                             <td><field name='specific_gravity_conformity'
                                decoration-success="specific_gravity_conformity == 'pass'" 
                                decoration-danger="specific_gravity_conformity == 'fail'" 
                                readonly="1"/></td>
                            </tr>
                            <tr>
-                            <td><label for="specific_gravity_nabl">NABL</label></td>
+                            <td><label for="specific_gravity_nabl"></label></td>
                             <td><field name='specific_gravity_nabl'
                                decoration-success="specific_gravity_nabl == 'pass'" 
                                decoration-danger="specific_gravity_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+
+
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="water_absorption_conformity"></label></td>
+                            <td><field name='water_absorption_conformity'
+                               decoration-success="water_absorption_conformity == 'pass'" 
+                               decoration-danger="water_absorption_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="water_absorption_nabl"></label></td>
+                            <td><field name='water_absorption_nabl'
+                               decoration-success="water_absorption_nabl == 'pass'" 
+                               decoration-danger="water_absorption_nabl == 'fail'" 
                                readonly="1"/></td>
                            </tr>
                            </tbody>                     
