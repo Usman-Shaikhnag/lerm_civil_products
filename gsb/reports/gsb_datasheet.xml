@@ -44,11 +44,13 @@
                 </tr>
 			</table>
 
-			<!--  -->
+			
 			
 
+				
+				<!-- Dry Gradation -->
 					<div  t-if="data.dry_gradation_visible" style="margin-top: 30px;">
-					<div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;">
+					   <div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;">
 							 Dry Gradation
 						</div>
 					
@@ -120,27 +122,52 @@
 						
 					</table>
 
-				
-
-
-
-
-				 	<div class="signatureContainer girdgird">
+				<div class="signatureContainer girdgird">
 							<div>
 								<div>
 									<b>
-										Prepared By
+										Tested By
 									</b>
 								</div>
-								
+								<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '214578fgtr-560e-41f9-9f7e-3455c9b2925d')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
+
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+							</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '214578fgtr-560e-41f9-9f7e-3455c9b2925d')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+								
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '214578fgtr-560e-41f9-9f7e-3455c9b2925d')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
                                 </b>
                             </div>
                         </div>
@@ -152,18 +179,25 @@
                                     Checked By
                                 </b>
                             </div>
-						
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
 								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
 							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
 								
 							
 						</div>
@@ -219,26 +253,48 @@
 							<div>
 								<div>
 									<b>
-										Prepared By
+										Tested By
 									</b>
 								</div>
-								<!-- <div style="height: 40px;">
-							<t t-if="eln.tested_by_signature_datasheet">
+								<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == 'f2bd9fcd-01ce-4cef-84ce-adc109f8064e')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
 
-								<div t-if="eln.sample_id.filled_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
-								
-							</t>
-						</div> -->
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+							</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == 'f2bd9fcd-01ce-4cef-84ce-adc109f8064e')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+								
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == 'f2bd9fcd-01ce-4cef-84ce-adc109f8064e')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
                                 </b>
                             </div>
                         </div>
@@ -250,29 +306,28 @@
                                     Checked By
                                 </b>
                             </div>
-							<!-- <div style="height: 40px;">
+							<div style="height: 40px;">
 								<t t-if="eln.sample_id.checked_by_signature_datasheet">
 									<div t-if="eln.sample_id.check_by.employee_id.signature">
 										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
 									</div>
 									
 								</t>
-							</div> -->
+							</div>
 								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
 							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
 								
 							
 						</div>
-					</div>
 					</div>
 					</div>
 
@@ -280,7 +335,7 @@
 					<!-- Rodded Bulk Density -->
 
 					<div t-if="data.rodded_bulk_density_visible" style="margin-top:20px; page-break-before: always;">
-					<div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;">
+					    <div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;">
 							Rodded Bulk Density
 						</div>
 
@@ -326,26 +381,48 @@
 							<div>
 								<div>
 									<b>
-										Prepared By
+										Tested By
 									</b>
 								</div>
-								<!-- <div style="height: 40px;">
-							<t t-if="eln.tested_by_signature_datasheet">
+								<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '00dc34ce-3314-441d-8c8e-1910f46a5a3e')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
 
-								<div t-if="eln.sample_id.filled_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
-								
-							</t>
-						</div> -->
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+							</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '00dc34ce-3314-441d-8c8e-1910f46a5a3e')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+								
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '00dc34ce-3314-441d-8c8e-1910f46a5a3e')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
                                 </b>
                             </div>
                         </div>
@@ -357,25 +434,25 @@
                                     Checked By
                                 </b>
                             </div>
-							<!-- <div style="height: 40px;">
+							<div style="height: 40px;">
 								<t t-if="eln.sample_id.checked_by_signature_datasheet">
 									<div t-if="eln.sample_id.check_by.employee_id.signature">
 										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
 									</div>
 									
 								</t>
-							</div> -->
+							</div>
 								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
 							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
 								
 							
 						</div>
@@ -385,7 +462,7 @@
 					<!-- Crushing Value -->
 
 					<div t-if="data.crushing_visible " style="margin-top:20px; page-break-before: always;">
-					<div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;">
+					    <div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;">
 							Crushing Value
 						</div>
 
@@ -437,26 +514,48 @@
 							<div>
 								<div>
 									<b>
-										Prepared By
+										Tested By
 									</b>
 								</div>
-								<!-- <div style="height: 40px;">
-							<t t-if="eln.tested_by_signature_datasheet">
+								<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == 'e8db15b2-e58b-4658-a552-453337919d64')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
 
-								<div t-if="eln.sample_id.filled_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
-								
-							</t>
-						</div> -->
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+							</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == 'e8db15b2-e58b-4658-a552-453337919d64')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+								
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == 'e8db15b2-e58b-4658-a552-453337919d64')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
                                 </b>
                             </div>
                         </div>
@@ -468,25 +567,25 @@
                                     Checked By
                                 </b>
                             </div>
-							<!-- <div style="height: 40px;">
+							<div style="height: 40px;">
 								<t t-if="eln.sample_id.checked_by_signature_datasheet">
 									<div t-if="eln.sample_id.check_by.employee_id.signature">
 										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
 									</div>
 									
 								</t>
-							</div> -->
+							</div>
 								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
 							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
 								
 							
 						</div>
@@ -496,7 +595,7 @@
 					<!-- Elongation and Flakiness -->
 
 					<div t-if="data.elongation_fl_visible " style="margin-top:20px; page-break-before: always;">
-					<div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;">
+					    <div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;">
 							Elongation and Flakiness
 						</div>
 
@@ -587,26 +686,48 @@
 							<div>
 								<div>
 									<b>
-										Prepared By
+										Tested By
 									</b>
 								</div>
-								<!-- <div style="height: 40px;">
-							<t t-if="eln.tested_by_signature_datasheet">
+								<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == 'af0b6e47-50d9-41db-b2c6-877194422810')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
 
-								<div t-if="eln.sample_id.filled_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
-								
-							</t>
-						</div> -->
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+							</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == 'af0b6e47-50d9-41db-b2c6-877194422810')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+								
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == 'af0b6e47-50d9-41db-b2c6-877194422810')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
                                 </b>
                             </div>
                         </div>
@@ -618,25 +739,25 @@
                                     Checked By
                                 </b>
                             </div>
-							<!-- <div style="height: 40px;">
+							<div style="height: 40px;">
 								<t t-if="eln.sample_id.checked_by_signature_datasheet">
 									<div t-if="eln.sample_id.check_by.employee_id.signature">
 										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
 									</div>
 									
 								</t>
-							</div> -->
+							</div>
 								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
 							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
 								
 							
 						</div>
@@ -712,27 +833,52 @@
 						
 					</table>
 
-				</div>
-
-
-
-
-				 	<div class="signatureContainer girdgird">
+				<div class="signatureContainer girdgird">
 							<div>
 								<div>
 									<b>
-										Prepared By
+										Tested By
 									</b>
 								</div>
-								
+								<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == 'cc010a64-e76b-4fa1-bd30-b7d56118b833')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
+
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+							</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == 'cc010a64-e76b-4fa1-bd30-b7d56118b833')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+								
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == 'cc010a64-e76b-4fa1-bd30-b7d56118b833')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
                                 </b>
                             </div>
                         </div>
@@ -744,21 +890,29 @@
                                     Checked By
                                 </b>
                             </div>
-						
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
 								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
 							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
 								
 							
 						</div>
+					</div>
 					</div>
 
 
@@ -817,26 +971,48 @@
 							<div>
 								<div>
 									<b>
-										Prepared By
+										Tested By
 									</b>
 								</div>
-								<!-- <div style="height: 40px;">
-							<t t-if="eln.tested_by_signature_datasheet">
+								<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '48741f82-b0be-427f-8038-eeac7d99899b')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
 
-								<div t-if="eln.sample_id.filled_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
-								
-							</t>
-						</div> -->
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+							</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '48741f82-b0be-427f-8038-eeac7d99899b')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+								
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '48741f82-b0be-427f-8038-eeac7d99899b')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
                                 </b>
                             </div>
                         </div>
@@ -848,25 +1024,25 @@
                                     Checked By
                                 </b>
                             </div>
-							<!-- <div style="height: 40px;">
+							<div style="height: 40px;">
 								<t t-if="eln.sample_id.checked_by_signature_datasheet">
 									<div t-if="eln.sample_id.check_by.employee_id.signature">
 										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
 									</div>
 									
 								</t>
-							</div> -->
+							</div>
 								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
 							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
 								
 							
 						</div>
@@ -947,26 +1123,48 @@
 							<div>
 								<div>
 									<b>
-										Prepared By
+										Tested By
 									</b>
 								</div>
-								<!-- <div style="height: 40px;">
-							<t t-if="eln.tested_by_signature_datasheet">
+								<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '3f1c03ec-3034-4ecd-aa8a-44d540970d68')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
 
-								<div t-if="eln.sample_id.filled_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
-								
-							</t>
-						</div> -->
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+							</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '3f1c03ec-3034-4ecd-aa8a-44d540970d68')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+								
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '3f1c03ec-3034-4ecd-aa8a-44d540970d68')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
                                 </b>
                             </div>
                         </div>
@@ -978,25 +1176,25 @@
                                     Checked By
                                 </b>
                             </div>
-							<!-- <div style="height: 40px;">
+							<div style="height: 40px;">
 								<t t-if="eln.sample_id.checked_by_signature_datasheet">
 									<div t-if="eln.sample_id.check_by.employee_id.signature">
 										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
 									</div>
 									
 								</t>
-							</div> -->
+							</div>
 								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
 							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
 								
 							
 						</div>
@@ -1056,26 +1254,48 @@
 							<div>
 								<div>
 									<b>
-										Prepared By
+										Tested By
 									</b>
 								</div>
-								<!-- <div style="height: 40px;">
-							<t t-if="eln.tested_by_signature_datasheet">
+								<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '12310d78-738f-4df3-99d6-c139d25a3460')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
 
-								<div t-if="eln.sample_id.filled_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
-								
-							</t>
-						</div> -->
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+							</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '12310d78-738f-4df3-99d6-c139d25a3460')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+								
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '12310d78-738f-4df3-99d6-c139d25a3460')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
                                 </b>
                             </div>
                         </div>
@@ -1087,25 +1307,25 @@
                                     Checked By
                                 </b>
                             </div>
-							<!-- <div style="height: 40px;">
+							<div style="height: 40px;">
 								<t t-if="eln.sample_id.checked_by_signature_datasheet">
 									<div t-if="eln.sample_id.check_by.employee_id.signature">
 										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
 									</div>
 									
 								</t>
-							</div> -->
+							</div>
 								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
 							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
 								
 							
 						</div>
@@ -1161,30 +1381,52 @@
 							</tr>
 						</table>
 
-						<div class="signatureContainer girdgird">
+					<div class="signatureContainer girdgird">
 							<div>
 								<div>
 									<b>
-										Prepared By
+										Tested By
 									</b>
 								</div>
-								<!-- <div style="height: 40px;">
-							<t t-if="eln.tested_by_signature_datasheet">
+								<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == 'edf666d6-cdb9-4083-b7ce-cc741c8faea9')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
 
-								<div t-if="eln.sample_id.filled_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
-								
-							</t>
-						</div> -->
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+							</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == 'edf666d6-cdb9-4083-b7ce-cc741c8faea9')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+								
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == 'edf666d6-cdb9-4083-b7ce-cc741c8faea9')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
                                 </b>
                             </div>
                         </div>
@@ -1196,25 +1438,25 @@
                                     Checked By
                                 </b>
                             </div>
-							<!-- <div style="height: 40px;">
+							<div style="height: 40px;">
 								<t t-if="eln.sample_id.checked_by_signature_datasheet">
 									<div t-if="eln.sample_id.check_by.employee_id.signature">
 										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
 									</div>
 									
 								</t>
-							</div> -->
+							</div>
 								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
 							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
 								
 							
 						</div>
@@ -1273,26 +1515,48 @@
 							<div>
 								<div>
 									<b>
-										Prepared By
+										Tested By
 									</b>
 								</div>
-								<!-- <div style="height: 40px;">
-							<t t-if="eln.tested_by_signature_datasheet">
+								<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == 'a77bd03b-206d-4fc2-8562-4daabebed424')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
 
-								<div t-if="eln.sample_id.filled_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
-								
-							</t>
-						</div> -->
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+							</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == 'a77bd03b-206d-4fc2-8562-4daabebed424')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+								
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == 'a77bd03b-206d-4fc2-8562-4daabebed424')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
                                 </b>
                             </div>
                         </div>
@@ -1304,31 +1568,30 @@
                                     Checked By
                                 </b>
                             </div>
-							<!-- <div style="height: 40px;">
+							<div style="height: 40px;">
 								<t t-if="eln.sample_id.checked_by_signature_datasheet">
 									<div t-if="eln.sample_id.check_by.employee_id.signature">
 										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
 									</div>
 									
 								</t>
-							</div> -->
+							</div>
 								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
 							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
 								
 							
 						</div>
 					</div>
 					</div>
-
 
 
 
@@ -1384,30 +1647,52 @@
 							</tr>
 						</table>
 
-						<div class="signatureContainer girdgird">
+					<div class="signatureContainer girdgird">
 							<div>
 								<div>
 									<b>
-										Prepared By
+										Tested By
 									</b>
 								</div>
-								<!-- <div style="height: 40px;">
-							<t t-if="eln.tested_by_signature_datasheet">
+								<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '4c7cff6b-c7b2-4b1f-8219-9bbb80208066')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
 
-								<div t-if="eln.sample_id.filled_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
-								
-							</t>
-						</div> -->
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+							</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '4c7cff6b-c7b2-4b1f-8219-9bbb80208066')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+								
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '4c7cff6b-c7b2-4b1f-8219-9bbb80208066')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
                                 </b>
                             </div>
                         </div>
@@ -1419,33 +1704,30 @@
                                     Checked By
                                 </b>
                             </div>
-							<!-- <div style="height: 40px;">
+							<div style="height: 40px;">
 								<t t-if="eln.sample_id.checked_by_signature_datasheet">
 									<div t-if="eln.sample_id.check_by.employee_id.signature">
 										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
 									</div>
 									
 								</t>
-							</div> -->
+							</div>
 								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
 							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
 								
 							
 						</div>
 					</div>
 					</div>
-
-
-
 
 
 
@@ -1508,30 +1790,52 @@
 							</tr>
 						</table>
 
-						<div class="signatureContainer girdgird">
+					<div class="signatureContainer girdgird">
 							<div>
 								<div>
 									<b>
-										Prepared By
+										Tested By
 									</b>
 								</div>
-								<!-- <div style="height: 40px;">
-							<t t-if="eln.tested_by_signature_datasheet">
+								<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '0d3dbe3c-7ee1-40f4-8b91-02ef6ca7fbb3')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
 
-								<div t-if="eln.sample_id.filled_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
-								
-							</t>
-						</div> -->
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+							</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '0d3dbe3c-7ee1-40f4-8b91-02ef6ca7fbb3')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+								
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '0d3dbe3c-7ee1-40f4-8b91-02ef6ca7fbb3')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
                                 </b>
                             </div>
                         </div>
@@ -1543,25 +1847,25 @@
                                     Checked By
                                 </b>
                             </div>
-							<!-- <div style="height: 40px;">
+							<div style="height: 40px;">
 								<t t-if="eln.sample_id.checked_by_signature_datasheet">
 									<div t-if="eln.sample_id.check_by.employee_id.signature">
 										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
 									</div>
 									
 								</t>
-							</div> -->
+							</div>
 								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
 							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
 								
 							
 						</div>
@@ -1624,30 +1928,52 @@
 							</tr>
 						</table>
 
-						<div class="signatureContainer girdgird">
+					<div class="signatureContainer girdgird">
 							<div>
 								<div>
 									<b>
-										Prepared By
+										Tested By
 									</b>
 								</div>
-								<!-- <div style="height: 40px;">
-							<t t-if="eln.tested_by_signature_datasheet">
+								<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '91eddfbd-1b05-448d-a664-b2f88ecea17f')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
 
-								<div t-if="eln.sample_id.filled_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
-								
-							</t>
-						</div> -->
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+							</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '91eddfbd-1b05-448d-a664-b2f88ecea17f')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+								
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '91eddfbd-1b05-448d-a664-b2f88ecea17f')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
                                 </b>
                             </div>
                         </div>
@@ -1659,31 +1985,30 @@
                                     Checked By
                                 </b>
                             </div>
-							<!-- <div style="height: 40px;">
+							<div style="height: 40px;">
 								<t t-if="eln.sample_id.checked_by_signature_datasheet">
 									<div t-if="eln.sample_id.check_by.employee_id.signature">
 										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
 									</div>
 									
 								</t>
-							</div> -->
+							</div>
 								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
 							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
 								
 							
 						</div>
 					</div>
 					</div>
-
 
 					<!-- Soundness Na2So4 -->
 
@@ -1770,30 +2095,52 @@
 
 						
 
-						<div class="signatureContainer girdgird">
+					<div class="signatureContainer girdgird">
 							<div>
 								<div>
 									<b>
-										Prepared By
+										Tested By
 									</b>
 								</div>
-								<!-- <div style="height: 40px;">
-							<t t-if="eln.tested_by_signature_datasheet">
+								<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '207b6832-433e-4150-970d-e76f3bbde6c0')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
 
-								<div t-if="eln.sample_id.filled_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
-								
-							</t>
-						</div> -->
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+							</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '207b6832-433e-4150-970d-e76f3bbde6c0')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+								
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '207b6832-433e-4150-970d-e76f3bbde6c0')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
                                 </b>
                             </div>
                         </div>
@@ -1805,25 +2152,25 @@
                                     Checked By
                                 </b>
                             </div>
-							<!-- <div style="height: 40px;">
+							<div style="height: 40px;">
 								<t t-if="eln.sample_id.checked_by_signature_datasheet">
 									<div t-if="eln.sample_id.check_by.employee_id.signature">
 										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
 									</div>
 									
 								</t>
-							</div> -->
+							</div>
 								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
 							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
 								
 							
 						</div>
@@ -1914,30 +2261,52 @@
 							</tr>
 						</table>
 
-					<div class="signatureContainer girdgird">
+				<div class="signatureContainer girdgird">
 							<div>
 								<div>
 									<b>
-										Prepared By
+										Tested By
 									</b>
 								</div>
-								<!-- <div style="height: 40px;">
-							<t t-if="eln.tested_by_signature_datasheet">
+								<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == 'bd7dcce4-7e94-4287-9a17-18f2486de277')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
 
-								<div t-if="eln.sample_id.filled_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
-								
-							</t>
-						</div> -->
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+							</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == 'bd7dcce4-7e94-4287-9a17-18f2486de277')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+								
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == 'bd7dcce4-7e94-4287-9a17-18f2486de277')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
                                 </b>
                             </div>
                         </div>
@@ -1949,31 +2318,30 @@
                                     Checked By
                                 </b>
                             </div>
-							<!-- <div style="height: 40px;">
+							<div style="height: 40px;">
 								<t t-if="eln.sample_id.checked_by_signature_datasheet">
 									<div t-if="eln.sample_id.check_by.employee_id.signature">
 										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
 									</div>
 									
 								</t>
-							</div> -->
+							</div>
 								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
 							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
 								
 							
 						</div>
 					</div>
 					</div>
-
 
 					<!-- CBR -->
 					<div t-if="data.soil_visible">
@@ -2111,30 +2479,52 @@
                             </tbody>
                         </table>
 
-						<div class="signatureContainer girdgird">
+					<div class="signatureContainer girdgird">
 							<div>
 								<div>
 									<b>
-										Prepared By
+										Tested By
 									</b>
 								</div>
-								<!-- <div style="height: 40px;">
-							<t t-if="eln.tested_by_signature_datasheet">
+								<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '06364151-a0b5-40f9-a97b-1526c5640de3')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
 
-								<div t-if="eln.sample_id.filled_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
-								
-							</t>
-						</div> -->
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+							</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '06364151-a0b5-40f9-a97b-1526c5640de3')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+								
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '06364151-a0b5-40f9-a97b-1526c5640de3')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
                                 </b>
                             </div>
                         </div>
@@ -2146,25 +2536,25 @@
                                     Checked By
                                 </b>
                             </div>
-							<!-- <div style="height: 40px;">
+							<div style="height: 40px;">
 								<t t-if="eln.sample_id.checked_by_signature_datasheet">
 									<div t-if="eln.sample_id.check_by.employee_id.signature">
 										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
 									</div>
 									
 								</t>
-							</div> -->
+							</div>
 								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
 							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
 								
 							
 						</div>
@@ -2172,7 +2562,7 @@
 					</div>
 
 
-					<!--  -->
+					<!-- Liquid Limit -->
 					<div t-if="data.liquid_limit_visible" style="page-break-before: always;">
 						
 							<div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;">
@@ -2289,35 +2679,52 @@
 						
 
 						
-					
-
-						<!-- <div t-if="data.graph_image_liquid" style="margin-top: 20px;">
-								<img t-att-src="'data:image/png;base64,' + data.graph_image_liquid.decode('utf-8')" style="max-width: 100%;"/>
-						</div> -->
-						<div class="signatureContainer girdgird">
+					<div class="signatureContainer girdgird">
 							<div>
 								<div>
 									<b>
-										Prepared By
+										Tested By
 									</b>
 								</div>
-								<!-- <div style="height: 40px;">
-							<t t-if="eln.tested_by_signature_datasheet">
+								<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == 'e0681461-e800-4bf1-a15d-4ce41d944673')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
 
-								<div t-if="eln.sample_id.filled_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
-								
-							</t>
-						</div> -->
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+							</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == 'e0681461-e800-4bf1-a15d-4ce41d944673')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+								
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == 'e0681461-e800-4bf1-a15d-4ce41d944673')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
                                 </b>
                             </div>
                         </div>
@@ -2329,34 +2736,33 @@
                                     Checked By
                                 </b>
                             </div>
-							<!-- <div style="height: 40px;">
+							<div style="height: 40px;">
 								<t t-if="eln.sample_id.checked_by_signature_datasheet">
 									<div t-if="eln.sample_id.check_by.employee_id.signature">
 										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
 									</div>
 									
 								</t>
-							</div> -->
+							</div>
 								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
 							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
 								
 							
 						</div>
 					</div>
+					</div>
 
-						</div>
 
-
-						<!--  -->
+						<!-- Plastic Limit -->
  
 
 					<div t-if="data.plastic_limit_visible" style="page-break-before: always;">
@@ -2472,30 +2878,52 @@
 
 						
 						
-						<div class="signatureContainer girdgird">
+					<div class="signatureContainer girdgird">
 							<div>
 								<div>
 									<b>
-										Prepared By
+										Tested By
 									</b>
 								</div>
-								<!-- <div style="height: 40px;">
-							<t t-if="eln.tested_by_signature_datasheet">
+								<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '9e11f392-8e76-4dbd-9f73-5355e2568ca1')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
 
-								<div t-if="eln.sample_id.filled_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
-								
-							</t>
-						</div> -->
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+							</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '9e11f392-8e76-4dbd-9f73-5355e2568ca1')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+								
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '9e11f392-8e76-4dbd-9f73-5355e2568ca1')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
                                 </b>
                             </div>
                         </div>
@@ -2507,25 +2935,25 @@
                                     Checked By
                                 </b>
                             </div>
-							<!-- <div style="height: 40px;">
+							<div style="height: 40px;">
 								<t t-if="eln.sample_id.checked_by_signature_datasheet">
 									<div t-if="eln.sample_id.check_by.employee_id.signature">
 										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
 									</div>
 									
 								</t>
-							</div> -->
+							</div>
 								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
 							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
 								
 							
 						</div>
@@ -2533,7 +2961,7 @@
 					</div>
 
 
-						<!-- Heavy -->
+						<!-- Heavy MDD And OMC -->
 				<div t-if="data.heavy_visible" style="page-break-before: always;margin-top:5px;padding-top:50px;">
 							<div style="text-align: center; font-size: 20px;margin-bottom: 15px;">
 								<p style="font-size:20px"><b><span t-field="data.heavy_name"/></b></p>
@@ -2679,7 +3107,7 @@
 							</tbody>
 						</table>
 						
-						</div>
+						
 
 						<table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;" t-if="data.heavy_visible">
 							<tr style="font-weight: bold; background-color: #f9f9f9;">
@@ -2696,37 +3124,52 @@
 							</tr>
 						</table>
 						
-					<div style="margin-top:10px" t-if="data.heavy_visible">
-							
-
-							<!-- <div t-if="data.graph_image_density" style="margin-top: 20px;">
-								<img t-att-src="'data:image/png;base64,' + data.graph_image_density.decode('utf-8')" style="max-width: 100%;"/>
-							</div> -->
-
-							<div class="signatureContainer girdgird">
+					<div class="signatureContainer girdgird">
 							<div>
 								<div>
 									<b>
-										Prepared By
+										Tested By
 									</b>
 								</div>
-								<!-- <div style="height: 40px;">
-							<t t-if="eln.tested_by_signature_datasheet">
+								<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '1cbef6a9-91f0-4394-97af-03d6db3be962')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
 
-								<div t-if="eln.sample_id.filled_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
-								
-							</t>
-						</div> -->
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+							</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '1cbef6a9-91f0-4394-97af-03d6db3be962')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+								
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == '1cbef6a9-91f0-4394-97af-03d6db3be962')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
                                 </b>
                             </div>
                         </div>
@@ -2738,31 +3181,30 @@
                                     Checked By
                                 </b>
                             </div>
-							<!-- <div style="height: 40px;">
+							<div style="height: 40px;">
 								<t t-if="eln.sample_id.checked_by_signature_datasheet">
 									<div t-if="eln.sample_id.check_by.employee_id.signature">
 										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
 									</div>
 									
 								</t>
-							</div> -->
+							</div>
 								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
 							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
 								
 							
 						</div>
 					</div>
-
-						</div>
+					</div>
 
 
 						<!-- Light MDD AND OMC -->
@@ -2930,34 +3372,52 @@
 							</tr>
 						</table>
 
-						<!-- <div t-if="data.graph_image_density1" style="margin-top: 20px;">
-                        <img t-att-src="'data:image/png;base64,' + data.graph_image_density1.decode('utf-8')" style="max-width: 100%;"/>
-                     </div> -->
-
-					 <div class="signatureContainer girdgird">
+					<div class="signatureContainer girdgird">
 							<div>
 								<div>
 									<b>
-										Prepared By
+										Tested By
 									</b>
 								</div>
-								<!-- <div style="height: 40px;">
-							<t t-if="eln.tested_by_signature_datasheet">
+								<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == 'e9fc09d6-d2a3-4165-8359-cc4724ae660b')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
 
-								<div t-if="eln.sample_id.filled_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
-								
-							</t>
-						</div> -->
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+							</div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == 'e9fc09d6-d2a3-4165-8359-cc4724ae660b')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+								
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == 'e9fc09d6-d2a3-4165-8359-cc4724ae660b')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
                                 </b>
                             </div>
                         </div>
@@ -2969,110 +3429,32 @@
                                     Checked By
                                 </b>
                             </div>
-							<!-- <div style="height: 40px;">
+							<div style="height: 40px;">
 								<t t-if="eln.sample_id.checked_by_signature_datasheet">
 									<div t-if="eln.sample_id.check_by.employee_id.signature">
 										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
 									</div>
 									
 								</t>
-							</div> -->
+							</div>
 								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
 							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
 								
 							
 						</div>
 					</div>
-
-						
-						</div>
-					
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+					</div>
 				
 
-
-
-               
-
-				<div class="authorizeRowDataSheet">
-				<div>
-					<div>
-						<b>
-							Tested By 
-						</b>
-						
-					</div>
-					<div style="height:30px">
-
-					</div>
-					<div>
-						<b>
-						<span t-esc="eln.sample_id.filled_by.name"/>
-						</b>
-					</div>
-					<div>
-						<b>
-							(<span t-esc="eln.sample_id.filled_by.job_title"/>)
-						</b>
-					</div>
-				</div>
-				
-				<div style="margin-left:500px">
-							
-					<div>
-						<b>
-							Checked By
-						</b>
-					</div>
-					<div style="height:30px">
-
-					</div>
-					<div>
-						<b>
-						<span t-esc="eln.sample_id.check_by.name"/>
-						</b>
-					</div>
-					
-					 <div>
-						<b>
-							(<span t-esc="eln.sample_id.check_by.job_title"/>)
-						</b>
-					</div>
-				</div>
 			</div>
 			
 			</t>
