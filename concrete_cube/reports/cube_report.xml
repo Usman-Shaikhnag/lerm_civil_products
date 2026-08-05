@@ -131,7 +131,7 @@
 							<thead>
 								<tr>
 									<th rowspan="2" style="text-align: center; font-weight: bold; width: 5%; white-space: nowrap;">Sr. No</th>
-									<th rowspan="2" style="text-align: center; font-weight: bold; white-space: nowrap;">Identification Mark</th>
+									<th rowspan="2" style="text-align: center; font-weight: bold; width: 12%; word-wrap: break-word;">Identification Mark</th>
 									<t t-if="sector_type != 'non_govt'">
 										<th colspan="3" style="text-align: center; font-weight: bold;">Dimension of Specimen (mm)</th>
 									</t>
@@ -166,7 +166,7 @@
 								<t t-foreach="lines" t-as="r">
 								<tr>
 									<td style="text-align: center;"><span t-esc="r.sr_no"/></td>
-									<td style="text-align: center; white-space: nowrap;"><span t-esc="r.id_mark"/></td>
+									<td style="text-align: center; word-wrap: break-word; overflow-wrap: break-word; padding: 4px;"><span t-esc="r.id_mark"/></td>
 									<t t-if="sector_type != 'non_govt'">
 										<td style="text-align: center;"><span t-esc="r.length"/></td>
 										<td style="text-align: center;"><span t-esc="r.breadth"/></td>
