@@ -651,7 +651,18 @@ class SrfForm(models.Model):
                     sample_no = self.env['ir.sequence'].next_by_code('lerm.srf.sample') or 'New'
 
                     # KES (already date_range based)
-                    kes_no = self.env['ir.sequence'].next_by_code('lerm.kes.main.seq')
+                    # kes_no = self.env['ir.sequence'].next_by_code('lerm.kes.main.seq')
+                    # last_kes_no = kes_no
+
+                    kes_raw = self.env['ir.sequence'].next_by_code('lerm.kes.main.seq')
+                    dept_name = sample.department_id or ''
+                    if dept_name:
+                        kes_parts = kes_raw.split('/')
+                        # Insert department after prefix parts: LERM/TR -> LERM/TR/DEPT
+                        kes_parts.insert(-1, dept_name)
+                        kes_no = '/'.join(kes_parts)
+                    else:
+                        kes_no = kes_raw
                     last_kes_no = kes_no
 
                     # ULR
