@@ -64,7 +64,11 @@ class ChemicalHasdenedConcrete(models.Model):
 
     ph_average_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_ph_average_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_ph_average_conformity", store=True)
+
+    
 
     @api.depends('ph_average','eln_ref','grade')
     def _compute_ph_average_conformity(self):
@@ -77,13 +81,18 @@ class ChemicalHasdenedConcrete(models.Model):
                 materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e9f2301d-bba0-42a2-bca8-ecbc5882a2b7')]).parameter_table
                 for material in materials:
                     if material.grade.id == record.grade.id:
+                        # Check if permissible limit is '--' or empty
+                        if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                            record.ph_average_conformity = '--'
+                            break
+                        
                         req_min = material.req_min
                         req_max = material.req_max
                         mu_value = line.mu_value
                         
                         lower = record.ph_average - record.ph_average*mu_value
                         upper = record.ph_average + record.ph_average*mu_value
-                        if lower >= req_min and upper <= req_max:
+                        if req_min <= lower <= req_max and req_min <= upper <= req_max:
                             record.ph_average_conformity = 'pass'
                             break
                         else:
@@ -200,7 +209,9 @@ class ChemicalHasdenedConcrete(models.Model):
 
     average_dissolved_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_average_dissolved_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity",compute="_compute_average_dissolved_conformity", store=True)
 
   
     @api.depends('average_dissolved_silica','eln_ref','grade')
@@ -212,6 +223,11 @@ class ChemicalHasdenedConcrete(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e714e0ff-0fec-4367-86a6-1e89d42810e9')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                            record.average_dissolved_conformity = '--'
+                            break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -323,7 +339,9 @@ class ChemicalHasdenedConcrete(models.Model):
 
     average_reduction_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_average_reduction_conformity",  store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity",compute="_compute_average_reduction_conformity",  store=True)
 
     @api.depends('average_reduction_alkalinity','eln_ref','grade')
     def _compute_average_reduction_conformity(self):
@@ -334,6 +352,12 @@ class ChemicalHasdenedConcrete(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5ddb48f6-5260-4db7-a3a5-94f341db6d97')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_reduction_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -437,7 +461,9 @@ class ChemicalHasdenedConcrete(models.Model):
 
     chloride_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_chloride_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity",compute="_compute_chloride_conformity", store=True)
 
     @api.depends('chloride_i','eln_ref','grade')
     def _compute_chloride_conformity(self):
@@ -448,6 +474,12 @@ class ChemicalHasdenedConcrete(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','034d2729-961c-40ae-a642-a26f03a2db5a')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.chloride_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -521,7 +553,9 @@ class ChemicalHasdenedConcrete(models.Model):
 
     chloride_conformity1 = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_chloride_conformity1", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity",compute="_compute_chloride_conformity1", store=True)
 
     @api.depends('chloride_acide','eln_ref','grade')
     def _compute_chloride_conformity1(self):
@@ -532,6 +566,12 @@ class ChemicalHasdenedConcrete(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f324e2d6-649f-4223-887e-aec3d85dffa9')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.chloride_conformity1 = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -620,7 +660,9 @@ class ChemicalHasdenedConcrete(models.Model):
 
     chloride_conformity2 = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_chloride_conformity2", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity",compute="_compute_chloride_conformity2", store=True)
 
     @api.depends('chloride_i_2','eln_ref','grade')
     def _compute_chloride_conformity2(self):
@@ -631,6 +673,12 @@ class ChemicalHasdenedConcrete(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','98d321ee-f77f-434c-8bae-3711912c80f5')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.chloride_conformity2 = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -711,7 +759,9 @@ class ChemicalHasdenedConcrete(models.Model):
   
     sulphate_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_sulphate_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity",compute="_compute_sulphate_conformity", store=True)
 
     @api.depends('sulphate_percent','eln_ref','grade')
     def _compute_sulphate_conformity(self):
@@ -722,6 +772,12 @@ class ChemicalHasdenedConcrete(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7dfdb9dd-0d82-4c89-bab8-3853a78dbab3')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.sulphate_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -799,7 +855,9 @@ class ChemicalHasdenedConcrete(models.Model):
 
     cement_content_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_cement_content_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity",compute="_compute_cement_content_conformity", store=True)
 
     @api.depends('cement_content','eln_ref','grade')
     def _compute_cement_content_conformity(self):
@@ -810,6 +868,12 @@ class ChemicalHasdenedConcrete(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d8bbd906-0f24-4c77-abc6-b2a8a00d91e6')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.cement_content_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -853,7 +917,7 @@ class ChemicalHasdenedConcrete(models.Model):
 
     cement_content_wt_sample = fields.Float("Wt of Sample (gm)")
     cement_content_br = fields.Float("BR of 0.01N EDTA")
-    cement_content_normality = fields.Float("Normality of EDTA")
+    cement_content_normality = fields.Float("Normality of EDTA",digits=(12, 4))
     cement_content_dilution = fields.Float("Dilution")
     cement_content_br_n_dilution = fields.Float("BR *0.05608*N*100*dilution/S.wt " , compute="_compute_cement_content_br_n_dilution")
     cement_content_1 = fields.Float("Cement Content", compute="_compute_cement_content_1")
@@ -887,7 +951,9 @@ class ChemicalHasdenedConcrete(models.Model):
 
     cement_content_1_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_cement_content_1_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity",compute="_compute_cement_content_1_conformity", store=True)
 
     @api.depends('cement_content_1','eln_ref','grade')
     def _compute_cement_content_1_conformity(self):
@@ -898,6 +964,12 @@ class ChemicalHasdenedConcrete(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','97527435-edbc-4d33-817f-9596b56b4cd0')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.cement_content_1_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -949,7 +1021,9 @@ class ChemicalHasdenedConcrete(models.Model):
 
     lime_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_lime_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity",compute="_compute_lime_conformity", store=True)
 
     @api.depends('cement_content','eln_ref','grade')
     def _compute_lime_conformity(self):
@@ -960,6 +1034,12 @@ class ChemicalHasdenedConcrete(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ad567820-1a05-4d8b-bc7e-f58b42f78076')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.lime_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -1052,7 +1132,9 @@ class ChemicalHasdenedConcrete(models.Model):
 
     cement_aggregate_ratio_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_cement_aggregate_ratio_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity",compute="_compute_cement_aggregate_ratio_conformity", store=True)
 
     @api.depends('cement_content_aggregate_ratio','eln_ref','grade')
     def _compute_cement_aggregate_ratio_conformity(self):
@@ -1063,6 +1145,12 @@ class ChemicalHasdenedConcrete(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','9fa390be-1b85-4a6e-908d-cf3068e5ced4')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.cement_aggregate_ratio_conformity = '--'
+                        break
+                        
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value

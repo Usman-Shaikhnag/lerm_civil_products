@@ -343,12 +343,16 @@
                                 </td>
                                 <td style="text-align: center;" t-if="eln.conformity">
 
+                                	<span t-attf-style="color: #{'green' if data.specific_gravity_conformity and data.specific_gravity_conformity.lower() == 'pass' else ('red' if data.specific_gravity_conformity and data.specific_gravity_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+										t-esc="data.specific_gravity_conformity"/>
+											
+
                                 </td>
                             </tr>
 
 
 
-                            <tr t-if="data.specific_gravity_visible and (data.specific_gravity_nabl == 'pass' and nabl or (data.specific_gravity_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+                            <tr t-if="data.specific_gravity_visible and (data.water_absorption_nabl == 'pass' and nabl or (data.water_absorption_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
                                 <td colspan="1" style="text-align: center;">
                                     <div>
                                         <span t-esc="i + 1" />
@@ -392,7 +396,8 @@
                                     </t>
                                 </td>
                                 <td style="text-align: center;" t-if="eln.conformity">
-
+                                    <span t-attf-style="color: #{'green' if data.water_absorption_conformity and data.water_absorption_conformity.lower() == 'pass' else ('red' if data.water_absorption_conformity and data.water_absorption_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+										t-esc="data.water_absorption_conformity"/>
                                 </td>
                             </tr>
                             </table>
@@ -444,6 +449,8 @@
 
                                 
                                 <td style="text-align: center;" t-if="eln.conformity">
+                                <span t-attf-style="color: #{'green' if data.loose_bulk_density_conformity and data.loose_bulk_density_conformity.lower() == 'pass' else ('red' if data.loose_bulk_density_conformity and data.loose_bulk_density_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+										t-esc="data.loose_bulk_density_conformity"/>
 
                                 </td>
                             </tr>
@@ -492,6 +499,9 @@
 
                                 
                                 <td style="text-align: center;" t-if="eln.conformity">
+
+                                <span t-attf-style="color: #{'green' if data.rodded_bulk_density_conformity and data.rodded_bulk_density_conformity.lower() == 'pass' else ('red' if data.rodded_bulk_density_conformity and data.rodded_bulk_density_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+										t-esc="data.rodded_bulk_density_conformity"/>
 
                                 </td>
                             </tr>
@@ -542,6 +552,9 @@
                                 
                                 <td style="text-align: center;" t-if="eln.conformity">
 
+                                <span t-attf-style="color: #{'green' if data.moisture_content_conformity and data.moisture_content_conformity.lower() == 'pass' else ('red' if data.moisture_content_conformity and data.moisture_content_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+										t-esc="data.moisture_content_conformity"/>
+
                                 </td>
                             </tr>
 
@@ -590,6 +603,8 @@
 
                                 
                                 <td style="text-align: center;" t-if="eln.conformity">
+                                <span t-attf-style="color: #{'green' if data.soundness_mgso4_conformity and data.soundness_mgso4_conformity.lower() == 'pass' else ('red' if data.soundness_mgso4_conformity and data.soundness_mgso4_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+										t-esc="data.soundness_mgso4_conformity"/>
 
                                 </td>
                             </tr>
@@ -638,6 +653,8 @@
 
                                 
                                 <td style="text-align: center;" t-if="eln.conformity">
+                                <span t-attf-style="color: #{'green' if data.soundness_na2so4_conformity and data.soundness_na2so4_conformity.lower() == 'pass' else ('red' if data.soundness_na2so4_conformity and data.soundness_na2so4_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+										t-esc="data.soundness_na2so4_conformity"/>
 
                                 </td>
                             </tr>
@@ -686,6 +703,8 @@
 
                                 
                                 <td style="text-align: center;" t-if="eln.conformity">
+                                <span t-attf-style="color: #{'green' if data.clay_lumps_percent_conformity and data.clay_lumps_percent_conformity.lower() == 'pass' else ('red' if data.clay_lumps_percent_conformity and data.clay_lumps_percent_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+										t-esc="data.clay_lumps_percent_conformity"/>
 
                                 </td>
                             </tr>
@@ -735,6 +754,8 @@
 
                                 
                                 <td style="text-align: center;" t-if="eln.conformity">
+                                <span t-attf-style="color: #{'green' if data.light_weight_percent_conformity and data.light_weight_percent_conformity.lower() == 'pass' else ('red' if data.light_weight_percent_conformity and data.light_weight_percent_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+										t-esc="data.light_weight_percent_conformity"/>
 
                                 </td>
                             </tr>
@@ -783,6 +804,8 @@
 
                                 
                                 <td style="text-align: center;" t-if="eln.conformity">
+                                <span t-attf-style="color: #{'green' if data.material_finer75_conformity and data.material_finer75_conformity.lower() == 'pass' else ('red' if data.material_finer75_conformity and data.material_finer75_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+										t-esc="data.material_finer75_conformity"/>
 
                                 </td>
 							</tr>

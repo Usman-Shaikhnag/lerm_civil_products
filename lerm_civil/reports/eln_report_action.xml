@@ -1204,7 +1204,25 @@
     <field name="binding_type">report</field>
 </record>
 
+<record id="ss_round_datasheet_action" model="ir.actions.report">
+    <field name="name">Structural Steel Round DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">ss_round.ss_round_datasheet</field>
+    <field name="report_file">ss_round.ss_round_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
 
+<record id="ss_round_report_action" model="ir.actions.report">
+    <field name="name">Structural Steel Round Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">ss_round.ss_round_report</field>
+    <field name="report_file">ss_round.ss_round_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
 
 
 </odoo>

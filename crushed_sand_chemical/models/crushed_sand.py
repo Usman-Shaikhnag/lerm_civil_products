@@ -60,7 +60,9 @@ class ChemicalCrushedSand(models.Model):
 
     ph_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_ph_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_ph_conformity", store=True)
 
     @api.depends('ph_average','eln_ref','grade')
     def _compute_ph_conformity(self):
@@ -73,6 +75,12 @@ class ChemicalCrushedSand(models.Model):
                 materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','481fb826-5804-40f1-b7a1-54d435149afb')]).parameter_table
                 for material in materials:
                     if material.grade.id == record.grade.id:
+
+                        # Check if permissible limit is '--' or empty
+                        if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                            record.ph_conformity = '--'
+                            break
+
                         req_min = material.req_min
                         req_max = material.req_max
                         mu_value = line.mu_value
@@ -210,7 +218,9 @@ class ChemicalCrushedSand(models.Model):
 
     dissolved_silica_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_dissolved_silica_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity",compute="_compute_dissolved_silica_conformity", store=True)
 
     @api.depends('average_dissolved_silica','eln_ref','grade')
     def _compute_dissolved_silica_conformity(self):
@@ -221,6 +231,12 @@ class ChemicalCrushedSand(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3a228b5d-5c83-4bb7-b6c7-2e7767b6181b')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.dissolved_silica_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -351,7 +367,9 @@ class ChemicalCrushedSand(models.Model):
 
     reduction_alkalinity_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_reduction_alkalinity_conformity",  store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity",compute="_compute_reduction_alkalinity_conformity",  store=True)
 
     @api.depends('average_reduction_alkalinity','eln_ref','grade')
     def _compute_reduction_alkalinity_conformity(self):
@@ -362,6 +380,12 @@ class ChemicalCrushedSand(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','98067b4a-3581-4712-b691-3df067e49a2c')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.reduction_alkalinity_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -473,7 +497,9 @@ class ChemicalCrushedSand(models.Model):
 
     chloride_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_chloride_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity",compute="_compute_chloride_conformity", store=True)
 
     @api.depends('volume_ammonia_consumed','eln_ref','grade')
     def _compute_chloride_conformity(self):
@@ -484,6 +510,12 @@ class ChemicalCrushedSand(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','83c6e99e-d967-4162-8124-93fc8240ae24')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.chloride_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -553,7 +585,10 @@ class ChemicalCrushedSand(models.Model):
 
     sulphate_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_sulphate_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity",compute="_compute_sulphate_conformity", store=True)
+
 
     @api.depends('sulphate_percent','eln_ref','grade')
     def _compute_sulphate_conformity(self):
@@ -564,6 +599,12 @@ class ChemicalCrushedSand(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8765b291-5596-4d10-9702-0e221e9379cd')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.sulphate_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -647,7 +688,10 @@ class ChemicalCrushedSand(models.Model):
 
     na2O_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_na2O_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity",compute="_compute_na2O_conformity", store=True)
+
 
     @api.depends('na2O','eln_ref','grade')
     def _compute_na2O_conformity(self):
@@ -658,6 +702,12 @@ class ChemicalCrushedSand(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3380972d-6290-4e34-aa61-6a707a4d788a')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.na2O_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -738,7 +788,9 @@ class ChemicalCrushedSand(models.Model):
 
     k2O_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_k2O_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity",compute="_compute_k2O_conformity", store=True)
 
     @api.depends('k2O','eln_ref','grade')
     def _compute_k2O_conformity(self):
@@ -749,6 +801,12 @@ class ChemicalCrushedSand(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ec3bb101-9088-4156-8af5-608a64fe4b7b')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.k2O_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -805,7 +863,9 @@ class ChemicalCrushedSand(models.Model):
 
     total_alkali_content_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_total_alkali_content_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity",compute="_compute_total_alkali_content_conformity", store=True)
 
     @api.depends('total_alkali_content','eln_ref','grade')
     def _compute_total_alkali_content_conformity(self):
@@ -816,6 +876,12 @@ class ChemicalCrushedSand(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','338565ad-67d6-4795-880b-def72791b2c3')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.total_alkali_content_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value

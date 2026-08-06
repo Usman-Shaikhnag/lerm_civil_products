@@ -61,7 +61,9 @@ class ChemicalFineAggregate(models.Model):
 
     ph_average_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_ph_average_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_ph_average_conformity", store=True)
 
     @api.depends('ph_average','eln_ref','grade')
     def _compute_ph_average_conformity(self):
@@ -74,6 +76,12 @@ class ChemicalFineAggregate(models.Model):
                 materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','628cf04d-645d-4794-a0fd-3daabff4b044')]).parameter_table
                 for material in materials:
                     if material.grade.id == record.grade.id:
+
+                        # Check if permissible limit is '--' or empty
+                        if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                            record.ph_average_conformity = '--'
+                            break
+
                         req_min = material.req_min
                         req_max = material.req_max
                         mu_value = line.mu_value
@@ -190,7 +198,10 @@ class ChemicalFineAggregate(models.Model):
 
     average_dissolved_silica_conformity_fine = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_average_dissolved_silica_conformity_fine", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity",compute="_compute_average_dissolved_silica_conformity_fine", store=True)
+
 
     @api.depends('average_dissolved_silica','eln_ref','grade')
     def _compute_average_dissolved_silica_conformity_fine(self):
@@ -201,6 +212,12 @@ class ChemicalFineAggregate(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','fa80a69f-bf0f-4aa3-a9d3-70767e7bf24a')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_dissolved_silica_conformity_fine = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -311,7 +328,10 @@ class ChemicalFineAggregate(models.Model):
 
     average_reduction_alkalinity_conformity_fine = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_average_reduction_alkalinity_conformity_fine",  store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity",compute="_compute_average_reduction_alkalinity_conformity_fine",  store=True)
+
 
     @api.depends('average_reduction_alkalinity','eln_ref','grade')
     def _compute_average_reduction_alkalinity_conformity_fine(self):
@@ -322,6 +342,12 @@ class ChemicalFineAggregate(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0437ea07-5283-4248-9430-e5d89866d3c5')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_reduction_alkalinity_conformity_fine = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -412,7 +438,10 @@ class ChemicalFineAggregate(models.Model):
 
     chloride_percent_conformity_fine = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_chloride_percent_conformity_fine", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity",compute="_compute_chloride_percent_conformity_fine", store=True)
+
 
     @api.depends('volume_ammonia_consumed','eln_ref','grade')
     def _compute_chloride_percent_conformity_fine(self):
@@ -423,6 +452,12 @@ class ChemicalFineAggregate(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c87d2fa3-ba0b-4e64-84d1-e3b23f19dafa')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.chloride_percent_conformity_fine = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -490,7 +525,9 @@ class ChemicalFineAggregate(models.Model):
 
     sulphate_percent_conformity_fine = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_sulphate_percent_conformity_fine", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity",compute="_compute_sulphate_percent_conformity_fine", store=True)
 
     @api.depends('sulphate_percent','eln_ref','grade')
     def _compute_sulphate_percent_conformity_fine(self):
@@ -501,6 +538,12 @@ class ChemicalFineAggregate(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f605daf3-ffb4-48c2-aa20-fffb1d556c07')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.sulphate_percent_conformity_fine = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -573,7 +616,9 @@ class ChemicalFineAggregate(models.Model):
 
     na2O_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_na2O_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity",compute="_compute_na2O_conformity", store=True)
 
     @api.depends('na2O','eln_ref','grade')
     def _compute_na2O_conformity(self):
@@ -584,6 +629,12 @@ class ChemicalFineAggregate(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','03507018-bb06-4362-a2e7-6d70ec7d8870')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.na2O_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -660,7 +711,9 @@ class ChemicalFineAggregate(models.Model):
 
     k2O_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_k2O_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity",compute="_compute_k2O_conformity", store=True)
 
     @api.depends('k2O','eln_ref','grade')
     def _compute_k2O_conformity(self):
@@ -672,6 +725,12 @@ class ChemicalFineAggregate(models.Model):
             
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.k2O_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -728,7 +787,10 @@ class ChemicalFineAggregate(models.Model):
 
     total_alkali_content_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity",compute="_compute_total_alkali_content_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity",compute="_compute_total_alkali_content_conformity", store=True)
+
 
     @api.depends('total_alkali_content','eln_ref','grade')
     def _compute_total_alkali_content_conformity(self):
@@ -739,6 +801,12 @@ class ChemicalFineAggregate(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0510b578-b3de-4045-bd55-5f54198e9dc8')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.total_alkali_content_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value

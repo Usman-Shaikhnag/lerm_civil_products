@@ -80,7 +80,9 @@ class ChemicalGyspum(models.Model):
   
     so3_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_so3_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_so3_conformity", store=True)
 
     @api.depends('so3','eln_ref','grade')
     def _compute_so3_conformity(self):
@@ -91,6 +93,12 @@ class ChemicalGyspum(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a58cb5bc-d2d2-4756-81d2-6571ae81a813')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.so3_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -166,7 +174,9 @@ class ChemicalGyspum(models.Model):
 
     loss_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_loss_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_loss_conformity", store=True)
 
     @api.depends('loi','eln_ref','grade')
     def _compute_loss_conformity(self):
@@ -177,6 +187,11 @@ class ChemicalGyspum(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','df12ceda-8e7d-4cb0-af54-0561796f5fdf')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.loss_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -243,7 +258,9 @@ class ChemicalGyspum(models.Model):
 
     cao1_conformity = fields.Selection([
            ('pass', 'Pass'),
-           ('fail', 'Fail')], string="Conformity", compute="_compute_cao1_conformity", store=True)
+           ('fail', 'Fail'),
+           ('--', '--')
+           ], string="Conformity", compute="_compute_cao1_conformity", store=True)
 
     @api.depends('cao1','eln_ref','grade')
     def _compute_cao1_conformity(self):
@@ -254,6 +271,12 @@ class ChemicalGyspum(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','80cbb8c4-5b52-4c0b-97f8-b5b66af79982')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.cao1_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -327,7 +350,9 @@ class ChemicalGyspum(models.Model):
   
     mgo_conformity1 = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_mgo_conformity1", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_mgo_conformity1", store=True)
 
     @api.depends('mgo1','eln_ref','grade')
     def _compute_mgo_conformity1(self):
@@ -338,6 +363,12 @@ class ChemicalGyspum(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3ef8ce36-8db8-4557-ad95-14b199bc9ff0')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.mgo_conformity1 = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -404,7 +435,9 @@ class ChemicalGyspum(models.Model):
 
     cao_conformity2 = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_cao_conformity2", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_cao_conformity2", store=True)
 
     @api.depends('cao2','eln_ref','grade')
     def _compute_cao_conformity2(self):
@@ -415,6 +448,12 @@ class ChemicalGyspum(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','abc60d60-0e94-4a2a-a08f-04650534fa9f')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.cao_conformity2 = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -481,7 +520,9 @@ class ChemicalGyspum(models.Model):
   
     mgo_conformity2 = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_mgo_conformity2", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_mgo_conformity2", store=True)
 
     @api.depends('mgo2','eln_ref','grade')
     def _compute_mgo_conformity2(self):
@@ -492,6 +533,12 @@ class ChemicalGyspum(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b3b623fc-ff8b-44b8-884b-869139ff0912')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.mgo_conformity2 = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -558,7 +605,9 @@ class ChemicalGyspum(models.Model):
   
     free_lime_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_free_lime_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_free_lime_conformity", store=True)
 
     @api.depends('free_lime','eln_ref','grade')
     def _compute_free_lime_conformity(self):
@@ -569,6 +618,12 @@ class ChemicalGyspum(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1959c613-48ed-494d-93a3-b4c831e37b51')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.free_lime_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -637,7 +692,9 @@ class ChemicalGyspum(models.Model):
   
     soluble_sodium_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_soluble_sodium_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_soluble_sodium_conformity", store=True)
 
     @api.depends('soluble_sodium','eln_ref','grade')
     def _compute_soluble_sodium_conformity(self):
@@ -648,6 +705,12 @@ class ChemicalGyspum(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','e54abac7-52ff-41a2-8ef1-cd536cde4e2d')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.soluble_sodium_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -747,7 +810,9 @@ class ChemicalGyspum(models.Model):
   
     free_water_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_free_water_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_free_water_conformity", store=True)
 
     @api.depends('free_water','eln_ref','grade')
     def _compute_free_water_conformity(self):
@@ -758,6 +823,12 @@ class ChemicalGyspum(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c3ac1330-a4d9-4526-9533-4130ff635bf6')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.free_water_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -830,7 +901,9 @@ class ChemicalGyspum(models.Model):
   
     combined_water_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_combined_water_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_combined_water_conformity", store=True)
 
     @api.depends('combined_water','eln_ref','grade')
     def _compute_combined_water_conformity(self):
@@ -841,6 +914,12 @@ class ChemicalGyspum(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1afa0443-8649-48a3-b73e-49f9fbb08d3d')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.combined_water_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -910,7 +989,9 @@ class ChemicalGyspum(models.Model):
 
     calcium_oxide_conformity2 = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_calcium_oxide_conformity2", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_calcium_oxide_conformity2", store=True)
 
     @api.depends('calcium_oxide','eln_ref','grade')
     def _compute_calcium_oxide_conformity2(self):
@@ -921,6 +1002,12 @@ class ChemicalGyspum(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','966341bc-cef0-49da-8f72-df520a8c702e')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.calcium_oxide_conformity2 = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value

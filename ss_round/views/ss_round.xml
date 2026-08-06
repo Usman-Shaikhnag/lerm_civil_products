@@ -2,290 +2,224 @@
 <odoo>
     <data>
 
-        <record id="structural_steel_round_view" model="ir.ui.view">
+        <record id="ss_round_view" model="ir.ui.view">
         <field name="name">structural.steel.round.form</field>
         <field name="model">structural.steel.round</field>
         <field name="arch" type="xml">
             <form>
+
                 <sheet>
                    <group>
-                        <field name='eln_ref' invisible="1"/>
-                        <field name='name' readonly="1"/>
+                       
+                       
+                         <field name='eln_ref' readonly="1"/>
+                          <field name='name' readonly="1"/>
                     </group>
                          
-                           
-                               
                             <group>
-                                <group>
-                                    <field name='grade'/>
-                                </group>
-                                <group>
-                                    <field name='size'/>
-                                </group>
-                            </group>
                                 
-                          
-                              <group>
-                                    <field name="srf_id" invisible="1"/>
-                                    <field name="sample_id" readonly="1"/>
-                                    <field name="eln_ref" readonly="1"/>
-                                    <!-- <field name="parameter_id" invisible="1"/> -->
-                              </group>
-                            <group>
+                               
+                                
+                            </group>
+
+                             <div class="d-flex gap-2" >
+                            <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                <tbody>
+                                    <tr>
+                                        <td><label for="grade"></label></td>
+                                        <td><field name="grade" /></td>
+                                        <field name="eln_state" />
+                                    </tr>
+                                
+                                </tbody>
+                            </table>
+                            
+                            <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                <tbody>
+                                    <tr>
+                                        <td><label for="size"></label></td>
+                                        <td><field name="size" /></td>
+                                    </tr>
+                                
+                                </tbody>
+                            </table>
+                            </div>
+                             <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+                           <div class="custom_table_borders">
                                 <field name="sample_parameters">
                                     <tree>
                                         <field name="parameter_name"/>
                                         <field name="test_method"/>
                                     </tree>
                                 </field>
-                            </group>
-
-
-                    <group>
-                        <label for="dia1" string="Dia mm" />
-                        <div class="address_format " >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="dia1" string="Observation-1" />
-                            <field  name="dia1"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="dia2" string="Observation-2" />
-                            <field  name="dia2"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>
-                     <group>
-                        <label for="area1" string="AREA mm²" />
-                        <div class="address_format " >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="area1" string="" />
-                            <field  name="area1"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="area2" string="" />
-                            <field  name="area2"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>
-                     <group>
-                        <label for="gauge_length1" string="Gauge Length mm" />
-                        <div class="address_format " >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="gauge_length1" string="" />
-                            <field  name="gauge_length1"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="gauge_length2" string="" />
-                            <field  name="gauge_length2"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>
-                    <group>
-                        <label for="final_length1" string="FINAL LENGTH mm" />
-                        <div class="address_format " >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="final_length1" string="" />
-                            <field  name="final_length1"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="final_length2" string="" />
-                            <field  name="final_length2"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>
-                    <group>
-                        <label for="yeild_load1" string="0.2% proof Load / Yield Load, KN" />
-                        <div class="address_format " >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="yeild_load1" string="" />
-                            <field  name="yeild_load1"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="yeild_load2" string="" />
-                            <field  name="yeild_load2"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>
-                    <group>
-                        <label for="ultimate_load1" string="Ultimate Load, KN" />
-                        <div class="address_format " >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="ultimate_load1" string="" />
-                            <field  name="ultimate_load1"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="ultimate_load2" string="" />
-                            <field  name="ultimate_load2"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>
-                    <group>
-                        <label for="proof_yeid_stress1" string="0.2% Proof Stress / Yield Stress N/mm2" />
-                        <div class="address_format " >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="proof_yeid_stress1" string="" />
-                            <field  name="proof_yeid_stress1"  colspan="3"  nolabel="1"/>
+                            </div>
                             
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="proof_yeid_stress2" string="" />
-                            <field  name="proof_yeid_stress2"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>
+                            
+                            <field name="bend_visible" invisible="1"/>
+                            <field name="fracture_visible" invisible="1"/>
+                            <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                <tbody>
+                                    <tr>
+                                        <td><span>Parameters</span></td>
+                                        <td><span>Observation 1</span></td>
+                                        <td><span>Parameters</span></td>
+                                        <td><span>Observation 2</span></td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        <td><label for="dia1"></label></td>
+                                        <td><field name="dia1"/></td>
+                                        <td><label for="dia2"></label></td>
+                                        <td><field name="dia2"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="area1"></label></td>
+                                        <td><field name="area1"/></td>
+                                        <td><label for="area2"></label></td>
+                                        <td><field name="area2"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="gauge_length1"></label></td>
+                                        <td><field name="gauge_length1"/></td>
+                                        <td><label for="gauge_length2"></label></td>
+                                        <td><field name="gauge_length2"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="final_length1"></label></td>
+                                        <td><field name="final_length1"/></td>
+                                        <td><label for="final_length2"></label></td>
+                                        <td><field name="final_length2"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="yeild_load1"></label></td>
+                                        <td><field name="yeild_load1"/></td>
+                                        <td><label for="yeild_load2"></label></td>
+                                        <td><field name="yeild_load2"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="ultimate_load1"></label></td>
+                                        <td><field name="ultimate_load1"/></td>
+                                        <td><label for="ultimate_load2"></label></td>
+                                        <td><field name="ultimate_load2"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="proof_yeid_stress1"></label></td>
+                                        <td><field name="proof_yeid_stress1"/></td>
+                                        <td><label for="proof_yeid_stress2"></label></td>
+                                        <td><field name="proof_yeid_stress2"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="ult_tens_strgth1"></label></td>
+                                        <td><field name="ult_tens_strgth1"/></td>
+                                        <td><label for="ult_tens_strgth2"></label></td>
+                                        <td><field name="ult_tens_strgth2"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="elongation1"></label></td>
+                                        <td><field name="elongation1"/></td>
+                                        <td><label for="elongation2"></label></td>
+                                        <td><field name="elongation2"/></td>
+                                    </tr>
+                                    <tr invisible="bend_visible == False">
+                                        <td><label for="bend_test"/></td>
+                                        <td><field name="bend_test"/></td>
+                                        <td><label for="bend_test2"/></td>
+                                        <td><field name="bend_test2"/></td>
+                                    </tr>
+
+                                    <tr invisible="fracture_visible == False">
+                                        <td><label for="fracture1"/></td>
+                                        <td><field name="fracture1"/></td>
+                                        <td><label for="fracture2"/></td>
+                                        <td><field name="fracture2"/></td>
+                                    </tr>
+                                    
+
+                                </tbody>
+                            </table>
+                            <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                <tbody>
+                                    <tr>
+                                        <td><label for="requirement_yield1"></label></td>
+                                        <td><field name="requirement_yield1" string="Proof Yield Stress Requirement"/></td>
+                                        <td><label for="proof_yeid_stress1_nabl"></label></td>
+                                        <td><field name="proof_yeid_stress1_nabl" string="Proof Yield Stress NABL"
+                                            decoration-success="proof_yeid_stress1_nabl == 'pass'"
+                                            decoration-danger="proof_yeid_stress1_nabl == 'fail'"
+                                            readonly="1"/></td>
+                                        <td><label for="proof_yeid_stress1_confirmity"></label></td>
+                                        <td><field name="proof_yeid_stress1_confirmity" string="Proof Yield Stress Confirmity"
+                                                decoration-success="proof_yeid_stress1_confirmity == 'pass'"
+                                                decoration-danger="proof_yeid_stress1_confirmity == 'fail'"
+                                                readonly="1"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="requirement_utl1"></label></td>
+                                        <td><field name="requirement_utl1" string="UTS Requirement"/></td>
+                                        <td><label for="ult_tens_strgth1_nabl"></label></td>
+                                        <td>
+                                            <field name="ult_tens_strgth1_nabl" string="UTS NABL"
+                                                decoration-success="ult_tens_strgth1_nabl == 'pass'"
+                                                decoration-danger="ult_tens_strgth1_nabl == 'fail'"
+                                                readonly="1"/>
+                                        </td>
+                                        <td><label for="ult_tens_strgth1_confirmity"></label></td>
+                                        <td>
+                                            <field name="ult_tens_strgth1_confirmity" string="UTS Confirmity"
+                                                decoration-success="ult_tens_strgth1_confirmity == 'pass'"
+                                                decoration-danger="ult_tens_strgth1_confirmity == 'fail'"
+                                                readonly="1"/>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><label for="requirement_elongation1"></label></td>
+                                        <td><field name="requirement_elongation1" string="Elongation Requirement"/></td>
+                                        <td><label for="elongation1_nabl"></label></td>
+                                        <td>
+                                            <field name="elongation1_nabl" string="Elongation NABL"
+                                                decoration-success="elongation1_nabl == 'pass'"
+                                                decoration-danger="elongation1_nabl == 'fail'"
+                                                readonly="1"/>
+                                        </td>
+                                        <td><label for="elongation1_confirmity"></label></td>
+                                        <td>
+                                            <field name="elongation1_confirmity" string="Elongation Confirmity"
+                                                decoration-success="elongation1_confirmity == 'pass'"
+                                                decoration-danger="elongation1_confirmity == 'fail'"
+                                                readonly="1"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                          
+
+                        
+
                     
-                    <group>
-                        <label for="ult_tens_strgth1" string="Ultimate Tensile Strength, N/mm2" />
-                        <div class="address_format " >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="ult_tens_strgth1" string="" />
-                            <field  name="ult_tens_strgth1"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="ult_tens_strgth2" string="" />
-                            <field  name="ult_tens_strgth2"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>
 
-                    <group>
-                        <label for="elongation1" string="% Elongation" />
-                        <div class="address_format " >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="elongation1" string="" />
-                            <field  name="elongation1"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="elongation2" string="" />
-                            <field  name="elongation2"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group>
-
-                    
-
-                    
-
-                     <!-- <group>
-                        <label for="re_bend_test" string="Re-Bend Test" />
-                        <div class="address_format " >
-                          <group colspan="1"  class="oe_inline">
-                            <label for="re_bend_test" string="" />
-                            <field  name="re_bend_test"  colspan="3"  nolabel="1"/>
-                          </group>
-                          <group colspan="1" class="oe_inline"  >
-                            <label for="re_bend_test2" string="" />
-                            <field  name="re_bend_test2"  colspan="3"  nolabel="1"/>
-                          </group>
-                        </div>
-                    </group> -->
-                       <field name="bend_visible" invisible="1"/>
-                            <group attrs="{'invisible': [('bend_visible', '=', False)]}">
-                                <label for="bend_test" string="Bend Test" />
-                                <div class="address_format">
-                                    <group colspan="1" class="oe_inline">
-                                        <label for="bend_test" string="" />
-                                        <field name="bend_test" colspan="3" nolabel="1"/>
-                                    </group>
-                                    <group colspan="1" class="oe_inline">
-                                        <label for="bend_test2" string="" />
-                                        <field name="bend_test2" colspan="3" nolabel="1"/>
-                                    </group>
-                                </div>
-                            </group>
-
-                       <field name="fracture_visible" invisible="1"/>
-                            <group attrs="{'invisible': [('fracture_visible', '=', False)]}">
-                                <label for="fracture1" string="Fracture (Within Gauge Length)" />
-                                <div class="address_format">
-                                    <group colspan="1" class="oe_inline">
-                                        <label for="fracture1" string="" />
-                                        <field name="fracture1" colspan="3" nolabel="1"/>
-                                    </group>
-                                    <group colspan="1" class="oe_inline">
-                                        <label for="fracture2" string="" />
-                                        <field name="fracture2" colspan="3" nolabel="1"/>
-                                    </group>
-                                </div>
-                            </group>
-
-
-
-
-                     <group >
-                      <label for="proof_yeid_stress1" string="0.2% Proof Stress / Yield Stress N/mm2" /> 
-                          <group style="width:25%">
-                          <!-- <field name='proof_yeid_stress'/> -->
-                          </group>
-                          <group style="width:25%">
-                          <field name='requirement_yield1'/>
-                          </group>
-                          <group style="width:25%">
-                          <!-- <field name='yield_nabl'/> -->
-                          <field name="proof_yeid_stress1_nabl"  style="color: green;" attrs="{'invisible': [('proof_yeid_stress1_nabl','!=','pass')]}"/>
-                          <field name="proof_yeid_stress1_nabl"  style="color: red;" attrs="{'invisible': [('proof_yeid_stress1_nabl','!=','fail')]}"/>
-                          </group>
-                          <group style="width:25%">
-                          <!-- <field name='yield_conformity'/> -->
-                          <field name="proof_yeid_stress1_confirmity"  style="color: red;" attrs="{'invisible': [('proof_yeid_stress1_confirmity','!=','fail')]}"/>
-                          <field name="proof_yeid_stress1_confirmity"  style="color: green;" attrs="{'invisible': [('proof_yeid_stress1_confirmity','!=','pass')]}"/>
-                          </group>
-                      </group>
-
-                      <group>
-                      </group>
-                      <group >
-                      <label for="ult_tens_strgth1" string="Ultimate Tensile Strength, N/mm2" /> 
-                          <group style="width:25%">
-                          <!-- <field name='proof_yeid_stress'/> -->
-                          </group>
-                          <group style="width:25%">
-                          <field name='requirement_utl1'/>
-                          </group>
-                          <group style="width:25%">
-                          <!-- <field name='yield_nabl'/> -->
-                          <field name="ult_tens_strgth1_nabl"  style="color: green;" attrs="{'invisible': [('ult_tens_strgth1_nabl','!=','pass')]}"/>
-                          <field name="ult_tens_strgth1_nabl"  style="color: red;" attrs="{'invisible': [('ult_tens_strgth1_nabl','!=','fail')]}"/>
-                          </group>
-                          <group style="width:25%">
-                          <!-- <field name='yield_conformity'/> -->
-                          <field name="ult_tens_strgth1_confirmity"  style="color: red;" attrs="{'invisible': [('ult_tens_strgth1_confirmity','!=','fail')]}"/>
-                          <field name="ult_tens_strgth1_confirmity"  style="color: green;" attrs="{'invisible': [('ult_tens_strgth1_confirmity','!=','pass')]}"/>
-                          </group>
-                      </group>
-
-                      <group>
-                      </group>
-
-                       <group >
-                      <label for="elongation1" string="% Elongation" /> 
-                          <group style="width:25%">
-                          <!-- <field name='proof_yeid_stress'/> -->
-                          </group>
-                          <group style="width:25%">
-                          <field name='requirement_elongation1'/>
-                          </group>
-                          <group style="width:25%">
-                          <!-- <field name='yield_nabl'/> -->
-                          <field name="elongation1_nabl"  style="color: green;" attrs="{'invisible': [('elongation1_nabl','!=','pass')]}"/>
-                          <field name="elongation1_nabl"  style="color: red;" attrs="{'invisible': [('elongation1_nabl','!=','fail')]}"/>
-                          </group>
-                          <group style="width:25%">
-                          <!-- <field name='yield_conformity'/> -->
-                          <field name="elongation1_confirmity"  style="color: red;" attrs="{'invisible': [('elongation1_confirmity','!=','fail')]}"/>
-                          <field name="elongation1_confirmity"  style="color: green;" attrs="{'invisible': [('elongation1_confirmity','!=','pass')]}"/>
-                          </group>
-                      </group>
-                      <button
+                            <button
                             type="object"
                             class="oe_highlight" 
                             name="open_eln_page"
                             string="Submit"
                             />
-
-                    
-
-                          
               
 
                 </sheet>

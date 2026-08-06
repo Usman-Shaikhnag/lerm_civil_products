@@ -63,7 +63,9 @@ class FineAggregate(models.Model):
 
     loose_bulk_density_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_loose_bulk_density_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_loose_bulk_density_conformity", store=True)
 
     @api.depends('loose_bulk_density','eln_ref','grade')
     def _compute_loose_bulk_density_conformity(self):
@@ -74,6 +76,12 @@ class FineAggregate(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a90cdbd7-3fa3-4b83-ae31-9d281767188c')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.loose_bulk_density_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -142,7 +150,9 @@ class FineAggregate(models.Model):
 
     rodded_bulk_density_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_rodded_bulk_density_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_rodded_bulk_density_conformity", store=True)
 
     @api.depends('rodded_bulk_density1','eln_ref','grade')
     def _compute_rodded_bulk_density_conformity(self):
@@ -153,6 +163,12 @@ class FineAggregate(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','769b7052-d658-4d14-a5cc-c21dbedeb760')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.rodded_bulk_density_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -223,9 +239,69 @@ class FineAggregate(models.Model):
     specific_gravity = fields.Float(string="SPECIFIC GRAVITY", compute="_compute_specific_gravity")
     water_absorption = fields.Float(string="Water Absorption %",compute="_compute_water_absorption")
 
+    water_absorption_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Water Absorption Conformity", compute="_compute_water_absorption_conformity", store=True)
+
+    @api.depends('water_absorption','eln_ref','grade')
+    def _compute_water_absorption_conformity(self):
+        
+        for record in self:
+            record.water_absorption_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f8088f5b-226c-42ce-a78a-572391879ab4')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f8088f5b-226c-42ce-a78a-572391879ab4')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.water_absorption_conformity = '--'
+                        break
+
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.water_absorption - record.water_absorption*mu_value
+                    upper = record.water_absorption + record.water_absorption*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.water_absorption_conformity = 'pass'
+                        break
+                    else:
+                        record.water_absorption_conformity = 'fail'
+
+    water_absorption_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="Water Absorption NABL", compute="_compute_water_absorption_nabl", store=True)
+
+    @api.depends('water_absorption','eln_ref','grade')
+    def _compute_water_absorption_nabl(self):
+        
+        for record in self:
+            record.water_absorption_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f8088f5b-226c-42ce-a78a-572391879ab4')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f8088f5b-226c-42ce-a78a-572391879ab4')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.water_absorption - record.water_absorption*mu_value
+                    upper = record.water_absorption + record.water_absorption*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.water_absorption_nabl = 'pass'
+                        break
+                    else:
+                        record.water_absorption_nabl = 'fail'
+
     specific_gravity_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_specific_gravity_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')], string="SPECIFIC GRAVITY Conformity", compute="_compute_specific_gravity_conformity", store=True)
+
 
     @api.depends('specific_gravity','eln_ref','grade')
     def _compute_specific_gravity_conformity(self):
@@ -236,6 +312,12 @@ class FineAggregate(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7f3b339f-4d39-4c11-94c3-7029e238b76b')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.specific_gravity_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -250,7 +332,7 @@ class FineAggregate(models.Model):
 
     specific_gravity_nabl = fields.Selection([
         ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_specific_gravity_nabl", store=True)
+        ('fail', 'Non-NABL')], string="SPECIFIC GRAVITY NABL", compute="_compute_specific_gravity_nabl", store=True)
 
     @api.depends('specific_gravity','eln_ref','grade')
     def _compute_specific_gravity_nabl(self):
@@ -447,7 +529,9 @@ class FineAggregate(models.Model):
 
     soundness_na2so4_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_soundness_na2so4_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_soundness_na2so4_conformity", store=True)
 
     @api.depends('soundness_na2so4','eln_ref','grade')
     def _compute_soundness_na2so4_conformity(self):
@@ -458,6 +542,11 @@ class FineAggregate(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','7b921a25-4dc4-4752-a247-d8a223ffbec0')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.soundness_na2so4_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -531,7 +620,10 @@ class FineAggregate(models.Model):
 
     soundness_mgso4_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_soundness_mgso4_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_soundness_mgso4_conformity", store=True)
+
 
     @api.depends('soundness_mgso4','eln_ref','grade')
     def _compute_soundness_mgso4_conformity(self):
@@ -542,6 +634,12 @@ class FineAggregate(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a0e7aaf3-68ff-4e75-830d-91ae04c98f32')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.soundness_mgso4_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -618,7 +716,9 @@ class FineAggregate(models.Model):
 
     material_finer75_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_material_finer75_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_material_finer75_conformity", store=True)
 
     @api.depends('material_finer75','eln_ref','grade')
     def _compute_material_finer75_conformity(self):
@@ -629,6 +729,12 @@ class FineAggregate(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','237ca3ca-3db7-4782-b863-1dc33be92bc2')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.material_finer75_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -688,7 +794,9 @@ class FineAggregate(models.Model):
 
     clay_lumps_percent_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_clay_lumps_percent_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_clay_lumps_percent_conformity", store=True)
 
     @api.depends('clay_lumps_percent','eln_ref','grade')
     def _compute_clay_lumps_percent_conformity(self):
@@ -699,6 +807,12 @@ class FineAggregate(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','02d32c6b-9881-4152-9e79-9a660e2dda39')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.clay_lumps_percent_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -756,7 +870,9 @@ class FineAggregate(models.Model):
 
     light_weight_percent_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_light_weight_percent_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_light_weight_percent_conformity", store=True)
 
     @api.depends('light_weight_percent','eln_ref','grade')
     def _compute_light_weight_percent_conformity(self):
@@ -767,6 +883,12 @@ class FineAggregate(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c0340cb7-3f4a-4c15-a453-d63694b71f1d')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.light_weight_percent_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -831,7 +953,10 @@ class FineAggregate(models.Model):
 
     moisture_content_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_moisture_content_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_moisture_content_conformity", store=True)
+
 
     @api.depends('vdd','eln_ref','grade')
     def _compute_moisture_content_conformity(self):
@@ -842,6 +967,12 @@ class FineAggregate(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','d77f5a84-a7b2-47c9-852a-1289ac09ef23')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.moisture_content_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -914,6 +1045,7 @@ class FineAggregate(models.Model):
             record.loose_bulk_visible = False
             record.rodded_bulk_visible = False
             record.specific_gravity_visible = False
+            record.specific_gravity_visible = False
             record.sieve_visible = False
             record.soundness_na2so4_visible = False
             record.soundness_mgso4_visible = False
@@ -933,6 +1065,9 @@ class FineAggregate(models.Model):
                     record.rodded_bulk_visible = True
 
                 if sample.internal_id == "7f3b339f-4d39-4c11-94c3-7029e238b76b":
+                    record.specific_gravity_visible = True
+
+                if sample.internal_id == "f8088f5b-226c-42ce-a78a-572391879ab4":
                     record.specific_gravity_visible = True
 
                
@@ -1049,6 +1184,15 @@ class FineAggregate(models.Model):
                 result.result_char = round(self.vdd,2)
                 result.calculated = True
                 if self.moisture_content_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == 'f8088f5b-226c-42ce-a78a-572391879ab4':
+                result.result_char = round(self.water_absorption,2)
+                result.calculated = True
+                if self.water_absorption_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'

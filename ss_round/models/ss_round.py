@@ -26,6 +26,7 @@ class StructuralSteelRound(models.Model):
     proof_yeid_stress1 = fields.Float(string="0.2% Proof Stress / Yield Stress N/mm2", compute="_compute_proof_yield_stress", store=True,digits=(12,2))
     ult_tens_strgth1 = fields.Float(string="Ultimate Tensile Strength, N/mm2", compute="_compute_ultimate_tensile_strength", store=True,digits=(12,2))
     elongation1 = fields.Float(string="% Elongation", compute="_compute_elongation", store=True,digits=(12,2))
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
     @api.depends('dia1')
     def _compute_area(self):
