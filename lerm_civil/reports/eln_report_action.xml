@@ -1308,12 +1308,35 @@
         <field name="binding_type">report</field>
     </record>
 
-    <record id="rasphalt_mix_report_action" model="ir.actions.report">
+    <record id="asphalt_mix_report_action" model="ir.actions.report">
         <field name="name">Asphalt Mix Report</field>
         <field name="model">lerm.eln</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">asphalt_mix.asphalt_mix_report</field>
         <field name="report_file">asphalt_mix.asphalt_mix_report</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <!-- <field name="paperformat_id" ref="paperformat_makeinfra_report"/> -->
+        <field name="binding_type">report</field>
+    </record>
+
+
+    <record id="hsd_steel_bars_datasheet_action" model="ir.actions.report">
+        <field name="name">HSD Steel Bars Datasheet</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hsd_steel_bars.hsd_steel_bars_datasheet</field>
+        <field name="report_file">hsd_steel_bars.hsd_steel_bars_datasheet</field>
+        <field name="binding_model_id" ref="model_lerm_eln"/>
+        <!--  <field name="binding_model_id" eval="False"/>  -->
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="hsd_steel_bars_report_action" model="ir.actions.report">
+        <field name="name">HSD Steel Bars Report</field>
+        <field name="model">lerm.eln</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hsd_steel_bars.hsd_steel_bars_report</field>
+        <field name="report_file">hsd_steel_bars.hsd_steel_bars_report</field>
         <field name="binding_model_id" ref="model_lerm_eln"/>
         <!-- <field name="paperformat_id" ref="paperformat_makeinfra_report"/> -->
         <field name="binding_type">report</field>
