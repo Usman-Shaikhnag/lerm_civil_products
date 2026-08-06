@@ -983,27 +983,20 @@
                     </div>
 
 
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not specific_gravity_visible">
-                        <tbody>
-                            <tr>
-                                <td><label for="m1">Mass of Density Bottle (M1)</label></td>
-                                <td><field name="m1" class="blue-input"/>g</td>
-                            </tr>
-                            <tr>
-                                <td><label for="m2">Mass of Bottle &amp; Dry Soil (M2)</label></td>
-                                <td><field name="m2" class="blue-input"/>g</td>
-                            </tr>
-                            <tr>
-                                <td><label for="m3">Mass of Bottle, Soil &amp; Liquid (M3)</label></td>
-                                <td><field name="m3" class="blue-input"/>g</td>
-                            </tr>
-                             <tr>
-                                <td><label for="m4">Mass of Bottle Full of Liquid (M4) </label></td>
-                                <td><field name="m4" class="blue-input"/>g</td>
-                            </tr>
-                            
-                        </tbody>
-                    </table>
+                    <div invisible = "specific_gravity_visible == False">
+                        <field name="specific_gravity_table">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no'/>
+                                <field name='w1' class="blue-input" decoration-info="w1 != 0"/>
+                                <field name='w2' class="blue-input" decoration-info="w2 != 0"/>
+                                <field name='w3' class="blue-input" decoration-info="w3 != 0"/>
+                                <field name='w4' class="blue-input" decoration-info="w4 != 0"/>
+                                <field name='weight_of_soil'/>
+                                <field name='specific_gravity' />
+                              
+                            </tree>
+                        </field>
+                    </div>
 
                     <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not specific_gravity_visible">
                             <tbody>
@@ -1263,6 +1256,108 @@
                             </tr>
                             </tbody>
                         </table>
+
+
+
+                           <!-- Liquid Limit-->
+                    <div invisible = "cone_liquid_limit_visible == False">
+                        <h1 class="text-center">
+                            <field name="cone_liquid_limit_name" readonly="1" nolabel="1"/>
+                            <field name="cone_liquid_limit_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    
+                 
+                    <div invisible = "cone_liquid_limit_visible == False" >
+                        <field name="cone_liquid_limit_ids">
+                            <tree editable="bottom" class="custom_table_borders">
+                                <field name='serial_no' />
+
+                                <field name='container_no' class="blue-input" decoration-info="container_no != 0" width="100px"/>
+                                <field name='w1'  class="blue-input" decoration-info="w1 != 0"/>
+                                <field name="w2" class="blue-input" decoration-info="w2 != 0"/>
+                                <field name='w3' class="blue-input" decoration-info="w3 != 0"/>
+                                <field name='moisture_weight' />
+                                <field name='dry_soil_weight'/>
+
+                                <field name='moisture_content' />
+
+                                <field name='penetration' class="blue-input" decoration-info="penetration != 0"/>
+                            </tree>
+                        </field>
+                    </div>
+
+                    <button invisible="cone_liquid_limit_visible == False" name="action_generate_cone_liquid_graph" string="Generate Graph" type="object" class="btn-primary"/>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not cone_liquid_limit_visible">
+                        <tbody>
+                            <tr>
+                                <td style="width:10%;"><label for="show_cone_liquid_graph">Print Graph</label></td>
+                                <td style="width:10%;"><field name="show_cone_liquid_graph" class="blue-input" decoration-info="show_cone_liquid_graph != 0"/></td>
+                            </tr>
+                       </tbody>
+                    </table>
+                   
+
+                    <div invisible = "cone_liquid_limit_visible == False" class="custom_table_borders text-center">
+                        <field name="cone_liquid_graph_image" widget="image" readonly="1"/>
+                    </div>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not cone_liquid_limit_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="cone_liquid_limit">Liquid Limit</label></td>
+                                <td><field name="cone_liquid_limit"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="cone_liquid_limit_conformity"></label></td>
+                                <td><field  name="cone_liquid_limit_conformity"
+                                            decoration-success="cone_liquid_limit_conformity == 'pass'" 
+                                            decoration-danger="cone_liquid_limit_conformity == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                            <tr>
+                                <td><label for="cone_liquid_limit_nabl"></label></td>
+                                <td><field name="cone_liquid_limit_nabl"
+                                            decoration-success="cone_liquid_limit_nabl == 'pass'" 
+                                            decoration-danger="cone_liquid_limit_nabl == 'fail'" 
+                                            readonly="1" /></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="cone_liquid_limit_report_type">Report Type</label></td>
+                                <td><field name="cone_liquid_limit_report_type" class="blue-input" decoration-info="cone_liquid_limit_report_type != 0"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                <div class="d-flex gap-2" invisible="not cone_liquid_limit_visible">
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not cone_liquid_limit_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="cone_plastic_limit">Plastic Limit (%)</label></td>
+                                <td><field name="cone_plastic_limit" class="blue-input" decoration-info="cone_plastic_limit != 0"/></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="cone_plastic_limit_report_type">Report Type</label></td>
+                                <td><field name="cone_plastic_limit_report_type" class="blue-input" decoration-info="cone_plastic_limit_report_type != 0"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not cone_liquid_limit_visible">
+                        <tbody>
+                            <tr>
+                                <td><label for="cone_plasticity_index">Plasticity Index (%)</label></td>
+                                <td><field name="cone_plasticity_index" class="blue-input" decoration-info="cone_plasticity_index != 0"/></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="cone_plasticity_index_report_type">Report Type</label></td>
+                                <td><field name="cone_plasticity_index_report_type" class="blue-input" decoration-info="cone_plasticity_index_report_type != 0"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
 
 
                  

@@ -155,6 +155,10 @@ class SoilReport(models.AbstractModel):
         if getattr(general_data, 'show_liquid_graph', False):
             graph_liquid = self.generate_line_chart_liquid(general_data)
 
+        graph_cone_liquid = False
+        if getattr(general_data, 'show_cone_liquid_graph', False):
+            graph_cone_liquid = self.action_generate_cone_liquid_graph(general_data)
+
         graph_heavy = False
         heavy_omc = 0
         heavy_mdd = 0
@@ -193,7 +197,8 @@ class SoilReport(models.AbstractModel):
             'nabl' : nabl,
             'graphSieve': graph_sieve, 
             'graph_wet_sieve': graph_wet_sieve, 
-            'graphliquid': graph_liquid,  
+            'graphliquid': graph_liquid, 
+            'graph_cone_liquid' : graph_cone_liquid, 
             'graphHeavy' : graph_heavy,
             'heavyomc' : heavy_omc,
             'heavymdd' : heavy_mdd,
@@ -205,6 +210,60 @@ class SoilReport(models.AbstractModel):
 
             
         }
+
+
+    def action_generate_cone_liquid_graph(self, rec):
+
+      lines = rec.cone_liquid_limit_ids.filtered(
+        lambda l: l.penetration > 0 and l.moisture_content > 0
+    ).sorted(key=lambda l: l.penetration)
+
+      if len(lines) < 2:
+        return False
+
+      x = np.array([l.penetration for l in lines], dtype=float)
+      y = np.array([l.moisture_content for l in lines], dtype=float)
+
+      fig, ax = plt.subplots(figsize=(10, 5))
+
+      log_x = np.log10(x)
+      m, c = np.polyfit(log_x, y, 1)
+
+      x_fit = np.logspace(np.log10(min(x)), np.log10(max(x)), 200)
+      y_fit = m * np.log10(x_fit) + c
+
+      ax.plot(x_fit, y_fit, color="#5B9BD5", linewidth=2)
+      ax.scatter(x, y, color="#5B9BD5", s=35, zorder=5)
+
+      ax.set_xscale("log")
+      ax.set_xlim(1, 100)
+      ax.set_ylim(0, 35)
+
+      ax.set_xticks([1, 10, 100])
+      ax.get_xaxis().set_major_formatter(ticker.ScalarFormatter())
+
+      ax.xaxis.set_minor_locator(
+        ticker.LogLocator(base=10, subs=np.arange(2, 10) * 0.1)
+    )
+
+      ax.set_yticks(np.arange(0, 36, 5))
+
+      ax.grid(which="major", color="gray", linewidth=0.8, alpha=0.7)
+      ax.grid(which="minor", color="gray", linewidth=0.3, alpha=0.7)
+      ax.yaxis.grid(True)
+
+      ax.set_xlabel("No. of Penetration (mm)")
+      ax.set_ylabel("Moisture Content (%)")
+
+      plt.tight_layout()
+
+      buffer = io.BytesIO()
+      plt.savefig(buffer, format="png", dpi=100, bbox_inches="tight")
+      plt.close(fig)
+
+      image = base64.b64encode(buffer.getvalue()).decode("utf-8")
+
+      return image
     
 
 

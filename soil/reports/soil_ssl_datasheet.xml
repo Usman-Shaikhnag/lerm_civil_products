@@ -1907,40 +1907,85 @@
 							</div>
 
 							<div style="margin-top:20px" t-if="data.specific_gravity_visible">
-							<table>
-								
-								<tr cols="12">
-									<td colspan="6">Mass of Density Bottle (M1) :
-										<![CDATA[&nbsp;]]>
-										<span t-field="data.m1"  t-options='{"widget": "float", "precision": 3}'/>
+							<table style="margin-top:30px;">
+							<thead>
+								<tr>
+									<th>
+										<span>
+											Sr. No
+										</span>
+									</th>
+									<th>
+										<span>
+											Weight of Density Bottle with Lid (W1)
+										</span>
+									</th>
+									<th>
+										<span>
+											Weight of Density Bottle + Dry Soil (W2)
+										</span>
+									</th>
+									<th>
+										<span>
+										Weight of Density Bottle + Soil + Water (W3)
+										</span>
+									</th>
+									<th>
+										<span>
+										Weight of Density Bottle + Water (W4)
+										</span>
+									</th>
+									<th>
+										<span>
+										Weight of Soil (W2-W1)
+										</span>
+									</th>
+									<th>
+										<span>
+										Specific Gravity of Sample = [(W2−W1)/((W4−W1)−(W3−W2))​]
+										</span>
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="n" t-value="0"/>
+								<tr t-foreach="data.specific_gravity_table" t-as="r">
+									<td>
+										<div>
+											<span t-esc="n + 1" />
+											<t t-set="n" t-value="n+1"/>
+										</div>
+									</td>
+									<td>
+										<span t-esc="r.w1"/>
+									</td>
+									<td>
+										<span t-esc="r.w2"/>
+									</td>
+									<td>
+										<span t-esc="r.w3"  />
+									</td>
+									<td>
+										<span t-esc="r.w4"  />
+									</td>
+									<td>
+										<span t-esc="r.weight_of_soil"  t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td>
+										<span t-esc="r.specific_gravity"  t-options='{"widget": "float", "precision": 3}'/>
 									</td>
 								</tr>
-								<tr cols="12">
-									<td colspan="6">Mass of Bottle &amp; Dry Soil (M2) :
-										<![CDATA[&nbsp;]]>
-										<span t-field="data.m2"  t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-								</tr>
-								<tr cols="12">
-									<td colspan="6">Mass of Bottle, Soil &amp; Liquid (M3) :
-										<![CDATA[&nbsp;]]>
-										<span t-field="data.m3"  t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-								</tr>
-								<tr cols="12">
-									<td colspan="6">Mass of Bottle Full of Liquid (M4) :
-										<![CDATA[&nbsp;]]>
-										<span t-field="data.m4"  t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-								</tr>
-							</table>
+							</tbody>
+						</table>
 						  </div>
 							<div style="margin-top:20px" t-if="data.specific_gravity_visible">
 							<table>
 								
 								<tr cols="12">
-									<td colspan="6">Specific Gravity (G) :
-										<![CDATA[&nbsp;]]>
+									<td colspan="6" style="text-align:right;">Specific Gravity (G) :
+										
+									</td>
+									<td colspan="6" style="text-align:left;">
 										<span t-field="data.specific_gravity"  t-options='{"widget": "float", "precision": 3}'/>
 									</td>
 								</tr>
@@ -2511,6 +2556,214 @@
 						</div>
 					</div>
 					</div>
+
+
+					<!-- Liquid Limit -->
+					<div t-if="data.cone_liquid_limit_visible" style="page-break-before: always;">
+						
+							<div style="text-align:center;margin-top: 20px;">
+								<p style="font-size:15px"><b><span t-field="data.cone_liquid_limit_name"/></b></p>
+								<span>
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','daed9902-75e2-43f5-ae40-e4390af80eb4')]).parameter_table" t-as="parameter">
+										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t> -->
+									</t>
+								</span>
+							</div>
+							
+					
+						<table style="margin-top:30px;">
+							<thead>
+								<tr>
+									<th>
+										<span>
+											Sr. No
+										</span>
+									</th>
+									<th>
+										<span>
+										Container No.
+										</span>
+									</th>
+										<th>
+										<span>
+										Empty Wt. of Container (W1) (gm)
+										</span>
+									</th>
+									<th>
+										<span>
+										Container + Wet Soil (W2) (gm)
+										</span>
+									</th>
+									<th>
+										<span>
+											Container + Dry Soil (W3) (gm)
+										</span>
+									</th>
+									<th>
+										<span>
+										Weight of Moisture (W4) (gm)
+										</span>
+									</th>
+									<th>
+										<span>
+										Weight of Dry Soil (W5) (gm)
+										</span>
+									</th>
+									<th>
+										<span>
+										Moisture Content  w = 100*(W4/W5) (%)
+										</span>
+									</th>
+									<th>
+										<span>
+											No. of Penetration in (mm)
+										</span>
+									</th>
+
+								
+								</tr>
+							</thead>
+							<tbody>
+								<t t-set="m" t-value="0"/>
+								<tr t-foreach="data.cone_liquid_limit_ids" t-as="r">
+									<td>
+										<div>
+											<span t-esc="m + 1" />
+											<t t-set="m" t-value="m+1"/>
+										</div>
+									</td>
+									<td>
+										<span t-esc="r.container_no"/>
+									</td>
+									<td>
+										<span t-esc="r.w1"/>
+									</td>
+									<td>
+										<span t-esc="r.w2" />
+									</td>
+									<td>
+										<span t-esc="r.w3" />
+									</td>
+									<td>
+										<span t-esc="r.moisture_weight" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.dry_soil_weight"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.moisture_content"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.penetration"   />
+									</td>
+									
+								</tr>
+							</tbody>
+						</table>
+						<div style="margin-top:20px" t-if="data.cone_liquid_limit_visible">
+							<table>
+								<tr cols="12">
+									<td colspan="6" style="text-align:right;">Liquid Limit :
+										
+									</td>
+									<td colspan="6" style="text-align:left;">
+										<span t-field="data.cone_liquid_limit"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+							</table>
+						</div>
+
+						
+					
+
+						<div t-if="data.graph_image_liquid" style="margin-top: 20px;">
+								<img t-att-src="'data:image/png;base64,' + data.graph_image_liquid.decode('utf-8')" style="max-width: 100%;"/>
+						</div>
+					<div class="signatureContainer girdgird">
+							<div>
+								<div>
+									<b>
+										Tested By
+									</b>
+								</div>
+								<div style="height: 40px;">
+								<!-- <t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == 'daed9902-75e2-43f5-ae40-e4390af80eb4')"/>
+    
+								<t t-set="active_technician" t-value="false"/>
+								<t t-if="param_line" t-set="active_technician" t-value="param_line[0].technician"/>
+								<t t-if="not param_line" t-set="active_technician" t-value="eln.technician"/>
+
+								<t t-if="eln.sample_id.tested_by_signature_datasheet">
+									<div t-if="active_technician and active_technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + active_technician.employee_id.signature.decode('utf-8')" 
+											style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+							</div>
+                            <div>
+                                <b>
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+								<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == 'daed9902-75e2-43f5-ae40-e4390af80eb4')"/>
+        
+                              <span t-if="param_line" t-esc="param_line[0].technician.name"/>
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.name"/>
+								
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    <!-- (<span t-esc="eln.sample_id.filled_by.job_title"/>) -->
+									<t t-set="param_line" t-value="eln.parameters_result.filtered(lambda p: p.parameter.internal_id == 'daed9902-75e2-43f5-ae40-e4390af80eb4')"/>
+        
+                              (<span t-if="param_line" t-esc="param_line[0].technician.job_title"/>)
+        
+                               <span t-if="not param_line and eln.technician" t-esc="eln.technician.job_title"/>
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+								<div>
+								<b>
+								<span t-esc="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							
+							<div>
+								<b>
+									(<span t-esc="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+								
+							
+						</div>
+					</div>
+					</div>
+
+
 
 				</div>
 				

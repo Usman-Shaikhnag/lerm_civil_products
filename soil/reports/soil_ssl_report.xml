@@ -542,6 +542,8 @@
 						
 
 
+					<!-- Liquid/Plastic Limit -->
+					
 					<t t-set="show_liquid_limit" t-value="data.liquid_limit_final_report == 'nabl' and nabl or data.liquid_limit_final_report == 'non_nabl' and not nabl"/>
 					
 					<t t-set="show_plastic_limit" t-value="data.plastic_limit_final_report == 'nabl' and nabl or data.plastic_limit_final_report == 'non_nabl' and not nabl"/>
@@ -560,9 +562,18 @@
 							<t t-set="i" t-value="i+1"/>
 						</td>
 
-						<td  colspan="5">
+						<td  colspan="4">
 						 <span t-esc="atterberg.parameter_name"/>
 						</td>	
+						<td  style="text-align: center;vertical-align:middle;" t-att-rowspan="rowspan_count">
+										<span>
+											<t t-foreach="atterberg.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>
 
 					</tr>
 
@@ -595,7 +606,7 @@
 										</span>
 									</td>
 
-									<td  style="text-align: center;vertical-align:middle;">
+									<!-- <td  style="text-align: center;vertical-align:middle;" t-att-rowspan="rowspan_count">
 										<span>
 											<t t-foreach="liquid_limit.parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -603,13 +614,13 @@
 												</t>
 											</t>
 										</span>
-									</td>
+									</td> -->
 									
 								</tr>
 
 								<!-- Plastic Limit -->
 								
-								<tr t-if="data.plastic_limit_visible and show_liquid_limit ">
+								<tr t-if="data.plastic_limit_visible and show_plastic_limit ">
 									<t t-set="plastic_limit" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','120vbf14-2ff0-4b81-aca1-0e07dab7cd87')])"/>
 									
 									
@@ -642,15 +653,15 @@
 											</t>
 										</span>
 									</td>
-									<td  style="text-align: center;vertical-align:middle;">
+									<!-- <td  style="text-align: center;vertical-align:middle;">
 										<span>
-											<t t-foreach="liquid_limit.parameter_table" t-as="parameter">
+											<t t-foreach="plastic_limit.parameter_table" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
 													<span t-field="parameter.specification"/>
 												</t>
 											</t>
 										</span>
-									</td>
+									</td> -->
 									
 								</tr>
 
@@ -702,6 +713,186 @@
 									</td>
 
 								</tr> -->
+
+
+								<!-- Liquid/Plastic Limit -->
+					
+					<t t-set="show_cone_liquid_limit" t-value="data.cone_liquid_limit_final_report == 'nabl' and nabl or data.cone_liquid_limit_final_report == 'non_nabl' and not nabl"/>
+
+					<!-- <t t-if="data.sieve_visible and ((data.report_type == 'nabl' and nabl) or (data.report_type == 'non_nabl' and not nabl))"> -->
+					
+					<t t-set="show_cone_plastic_limit" t-value="data.cone_plastic_limit_report_type == 'nabl' and nabl or data.cone_plastic_limit_report_type == 'non_nabl' and not nabl"/>
+
+					<t t-set="show_cone_plasticity_index" t-value="data.cone_plasticity_index_report_type == 'nabl' and nabl or data.cone_plasticity_index_report_type == 'non_nabl' and not nabl"/>
+
+					<t t-set="rowspan_count" t-value="1 + int(show_cone_liquid_limit) + int(show_cone_plastic_limit) + int(show_cone_plasticity_index) "/>
+
+					<t t-set="rowspan_count1" t-value="int(show_cone_liquid_limit) + int(show_cone_plastic_limit) + int(show_cone_plasticity_index)"/>
+
+					<tr t-if="(data.cone_liquid_limit_visible) and (show_cone_liquid_limit or show_cone_plastic_limit or show_cone_plasticity_index)">
+
+
+						<t t-set="atterbergg" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','daed9902-75e2-43f5-ae40-e4390af80eb4')])"/>
+
+						 <td t-att-rowspan="rowspan_count"  style="vertical-align:middle;text-align: center;">
+						    <span t-esc="i + 1"/>
+							<t t-set="i" t-value="i+1"/>
+						</td>
+
+						<td  colspan="4">
+						 <span t-esc="atterbergg.parameter_name"/>
+						</td>
+
+						<td  style="text-align: center;vertical-align:middle;" t-att-rowspan="rowspan_count">
+										<span>
+											<t t-foreach="atterbergg.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td>	
+
+					</tr>
+
+								<tr t-if="data.cone_liquid_limit_visible and show_cone_liquid_limit">
+									<t t-set="liquid_limits" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','6188571f-d595-45aa-9b9b-1f69fd85af56')])"/>
+									
+									<td >
+										<span t-esc="liquid_limits.parameter_name"/>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-field="data.cone_liquid_limit" t-options='{"widget": "float", "precision": 2}'/>
+										</span>									
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="liquid_limits.unit.name"/>
+										</span>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="liquid_limits.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+
+									<!-- <td t-att-rowspan="rowspan_count"  style="text-align: center;vertical-align:middle;">
+										<span>
+											<t t-foreach="liquid_limits.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td> -->
+									
+								</tr>
+
+								<!-- Plastic Limit -->
+								
+								<tr t-if="data.cone_liquid_limit_visible and show_cone_plastic_limit ">
+									<t t-set="plastic_limits" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','38450531-a91a-4d07-9418-8067bc7c2253')])"/>
+									
+									
+									<td>
+										<span t-esc="plastic_limits.parameter_name"/>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-field="data.cone_plastic_limit" />
+										</span>									
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="plastic_limits.unit.name"/>
+										</span>
+									</td>
+
+									
+									
+									
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="plastic_limits.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									<!-- <td  style="text-align: center;vertical-align:middle;">
+										<span>
+											<t t-foreach="plastic_limits.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td> -->
+									
+								</tr>
+
+
+								<!-- Plasticity Index  -->
+								
+								<tr t-if="data.cone_liquid_limit_visible and show_cone_plasticity_index ">
+									<t t-set="plasticity_index" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','c0f1fc84-d5c1-4d53-a942-20468b7ae9a6')])"/>
+									
+									
+									<td>
+										<span t-esc="plasticity_index.parameter_name"/>
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-field="data.cone_plasticity_index" />
+										</span>									
+									</td>
+
+									<td style="text-align: center;">
+										<span>
+											<span t-esc="plasticity_index.unit.name"/>
+										</span>
+									</td>
+
+									
+									
+									
+									
+									<td style="text-align: center;">
+										<span>
+											<t t-foreach="plasticity_index.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.permissable_limit"/>
+												</t>
+											</t>
+										</span>
+									</td>
+									<!-- <td  style="text-align: center;vertical-align:middle;">
+										<span>
+											<t t-foreach="plasticity_index.parameter_table" t-as="parameter">
+												<t t-if="parameter.grade.id == eln.grade_id.id">
+													<span t-field="parameter.specification"/>
+												</t>
+											</t>
+										</span>
+									</td> -->
+									
+								</tr>
+
+
+								
 
 
 								<tr t-if="data.shrinkage_limit_visible and (data.shrinkage_final_report == 'nabl' and nabl or data.shrinkage_final_report == 'non_nabl' and not nabl)">
@@ -1327,6 +1518,12 @@
 				<t t-if="graphliquid">
                    <div style="text-align:center; margin-top:20px;" t-if="data.liquid_limit_final_report == 'nabl' and nabl or data.liquid_limit_final_report == 'non_nabl' and not nabl">
                        <img t-att-src="'data:image/png;base64,%s' % graphliquid" style="max-width:100%; height:auto;"/>
+                  </div>
+				</t>
+
+				<t t-if="graph_cone_liquid">
+                   <div style="text-align:center; margin-top:20px;" t-if="data.cone_liquid_limit_final_report == 'nabl' and nabl or data.cone_liquid_limit_final_report == 'non_nabl' and not nabl">
+                       <img t-att-src="'data:image/png;base64,%s' % graph_cone_liquid" style="max-width:100%; height:auto;"/>
                   </div>
 				</t>
 

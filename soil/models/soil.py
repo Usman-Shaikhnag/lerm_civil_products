@@ -3809,30 +3809,25 @@ class Soil(models.Model):
     specific_gravity_name = fields.Char("Name",default="Specific Gravity")
     specific_gravity_visible = fields.Boolean("Specific Gravity Visible",compute="_compute_visible")
 
-    m1 = fields.Float(string="Mass of Density Bottle (M1) ", digits=(12,2))
-    m2 = fields.Float(string="Mass of Bottle & Dry Soil (M2) ", digits=(12,2))
-    m3 = fields.Float(string="Mass of Bottle, Soil & Liquid (M3) ", digits=(12,2))
-    m4 = fields.Float(string="Mass of Bottle Full of Liquid (M4) ", digits=(12,2))
+    specific_gravity_table = fields.One2many('soil.specific.gravity.line','parent_id',string="Parameter")
 
     specific_gravity = fields.Float(
-        string="Specific Gravity (G)",
+        string="Average",
         compute="_compute_specific_gravity",
         store=True,
-        digits=(12,2)
+        digits=(16, 3),
     )
 
-    @api.depends("m1","m2","m3","m4")
+    @api.depends("specific_gravity_table.specific_gravity")
     def _compute_specific_gravity(self):
         for rec in self:
-            try:
-                numerator = rec.m2 - rec.m1
-                denominator = (rec.m4 - rec.m1) - (rec.m3 - rec.m2)
-                if denominator != 0:
-                    rec.specific_gravity = round(numerator / denominator, 2)
-                else:
-                    rec.specific_gravity = 0.0
-            except Exception:
-                rec.specific_gravity = 0.0
+            values = rec.specific_gravity_table.mapped("specific_gravity")
+            values = [v for v in values if v]
+            rec.specific_gravity = (
+                sum(values) / len(values)
+                if values else 0.0
+            )
+    
 
     specific_gravity_conformity = fields.Selection([
             ('pass', 'Pass'),
@@ -4544,7 +4539,364 @@ class Soil(models.Model):
                     else:
                         rec.avg_moisture_final_report = 'non_nabl'
 
-     
+
+    # Liquid Limit
+    cone_liquid_limit_name = fields.Char("Name",default="Atterberg Limits of Soil - by Cone Penetrometer")
+    cone_liquid_limit_visible = fields.Boolean("Atterberg Limits of Soil - by Cone Penetrometer Visible",compute="_compute_visible")
+
+    cone_liquid_limit_ids = fields.One2many(
+        "soil.cone.penetrometer.liquid.limits.line",
+        "parent_id",
+        string="Liquid Limit Details",
+    )
+
+    cone_liquid_limit = fields.Float(
+        string="Liquid Limit (%)",
+        compute="_compute_cone_liquid_limits",
+        digits=(16, 2),
+    )
+
+
+    @api.depends(
+        "cone_liquid_limit_ids.penetration",
+        "cone_liquid_limit_ids.moisture_content",
+    )
+    def _compute_cone_liquid_limits(self):
+        for rec in self:
+            rec.cone_liquid_limit = 0.0
+
+            lines = rec.cone_liquid_limit_ids.filtered(
+                lambda l: l.penetration > 0 and l.moisture_content > 0
+            ).sorted(key=lambda l: l.penetration)
+
+            # Need exactly 4 readings
+            if len(lines) < 4:
+                continue
+
+            # 14 mm
+            p1 = lines[0].penetration
+            w1 = lines[0].moisture_content
+
+            # 18 mm
+            p2 = lines[1].penetration
+            w2 = lines[1].moisture_content
+
+            # 23 mm
+            p3 = lines[2].penetration
+            w3 = lines[2].moisture_content
+
+            # 28 mm
+            p4 = lines[3].penetration
+            w4 = lines[3].moisture_content
+
+            # Same formula as Excel screenshot
+            rec.cone_liquid_limit = round(
+                w1
+                + (
+                    (math.log10(20) - math.log10(p1))
+                    / (math.log10(p4) - math.log10(p1))
+                )
+                * (w4 - w1),
+                3,
+            )
+
+
+    
+
+#     @api.depends(
+#     "cone_liquid_limit_ids.penetration",
+#     "cone_liquid_limit_ids.moisture_content",
+# )
+#     def _compute_cone_liquid_limits(self):
+#      for rec in self:
+#         rec.cone_liquid_limit = 0.0
+
+#         lines = rec.cone_liquid_limit_ids.filtered(
+#             lambda l: l.penetration > 0 and l.moisture_content > 0
+#         ).sorted(key=lambda l: l.penetration)
+
+#         if len(lines) < 2:
+#             continue
+
+#         # First reading
+#         first = lines[0]
+
+#         # Last reading
+#         last = lines[-1]
+
+#         p1 = first.penetration
+#         p2 = last.penetration
+
+#         w1 = first.moisture_content
+#         w2 = last.moisture_content
+
+#         if p1 != p2:
+#             rec.cone_liquid_limit = round(
+#                 w1
+#                 + (
+#                     (math.log10(20) - math.log10(p1))
+#                     / (math.log10(p2) - math.log10(p1))
+#                 )
+#                 * (w2 - w1),
+#                 3,
+#             )
+
+
+    cone_liquid_limit_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_cone_liquid_limit_conformity", store=True)
+
+    @api.depends('cone_liquid_limit','eln_ref','grade')
+    def _compute_cone_liquid_limit_conformity(self):
+        
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.cone_liquid_limit_conformity = 'na'
+                continue
+            record.cone_liquid_limit_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','daed9902-75e2-43f5-ae40-e4390af80eb4')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','daed9902-75e2-43f5-ae40-e4390af80eb4')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.cone_liquid_limit - record.cone_liquid_limit*mu_value
+                    upper = record.cone_liquid_limit + record.cone_liquid_limit*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.cone_liquid_limit_conformity = 'pass'
+                        break
+                    else:
+                        record.cone_liquid_limit_conformity = 'fail'
+
+    cone_liquid_limit_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail')], string="NABL", compute="_compute_cone_liquid_limit_nabl", store=True)
+
+    @api.depends('cone_liquid_limit','eln_ref','grade')
+    def _compute_cone_liquid_limit_nabl(self):
+        
+        for record in self:
+            record.cone_liquid_limit_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','daed9902-75e2-43f5-ae40-e4390af80eb4')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','daed9902-75e2-43f5-ae40-e4390af80eb4')]).parameter_table
+            # for material in materials:
+            #     if material.grade.id == record.grade.id:
+            lab_min = line.lab_min_value
+            lab_max = line.lab_max_value
+            mu_value = line.mu_value
+            
+            lower = record.cone_liquid_limit - record.cone_liquid_limit*mu_value
+            upper = record.cone_liquid_limit + record.cone_liquid_limit*mu_value
+            if lower >= lab_min and upper <= lab_max:
+                record.cone_liquid_limit_nabl = 'pass'
+                break
+            else:
+                record.cone_liquid_limit_nabl = 'fail'
+
+    cone_liquid_limit_report_type = fields.Selection([
+            ('auto', 'Auto'),
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+        
+    cone_liquid_limit_final_report = fields.Selection([
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non-NABL'),], compute="_compute_cone_liquid_limit_final_report", store=True)
+        
+    @api.depends('cone_liquid_limit_nabl', 'cone_liquid_limit_report_type')
+    def _compute_cone_liquid_limit_final_report(self):
+        for rec in self:
+        
+                # Manual override
+                if rec.cone_liquid_limit_report_type == 'nabl':
+                    rec.cone_liquid_limit_final_report = 'nabl'
+        
+                elif rec.cone_liquid_limit_report_type == 'non_nabl':
+                    rec.cone_liquid_limit_final_report = 'non_nabl'
+        
+                # Automatic
+                else:
+                    if rec.cone_liquid_limit_nabl == 'pass':
+                        rec.cone_liquid_limit_final_report = 'nabl'
+                    else:
+                        rec.cone_liquid_limit_final_report = 'non_nabl'
+
+
+    cone_plastic_limit = fields.Char(
+            string="Plastic Limit (%)",
+            store=True,
+            digits=(16, 2),
+            default="--"
+        )
+
+
+    cone_plastic_limit_report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="Report Type",
+        default='nabl',
+        required=True,
+    )
+
+    cone_plastic_limit_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_cone_plastic_limit_nabl",
+    store=True
+)
+
+    @api.depends('cone_plastic_limit_report_type')
+    def _compute_cone_plastic_limit_nabl(self):
+     for rec in self:
+        rec.cone_plastic_limit_nabl = 'pass' if rec.cone_plastic_limit_report_type == 'nabl' else 'fail'
+
+
+    cone_plasticity_index = fields.Char(
+            string="Plasticity Index (%)",
+            store=True,
+            digits=(16, 2),
+            default="NP"
+        )
+
+    cone_plasticity_index_report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="Report Type",
+        default='nabl',
+        required=True,
+    )
+
+    cone_plasticity_index_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_cone_plasticity_index_nabl",
+    store=True
+)
+
+    @api.depends('cone_plasticity_index_report_type')
+    def _compute_cone_plasticity_index_nabl(self):
+     for rec in self:
+        rec.cone_plasticity_index_nabl = 'pass' if rec.cone_plasticity_index_report_type == 'nabl' else 'fail'
+
+
+    cone_liquid_graph_image = fields.Binary(
+    string="Graph",
+    readonly=True,
+)
+
+    show_cone_liquid_graph = fields.Boolean(string="Show Liquid Limit Graph")
+
+    cone_liquid_graph_filename = fields.Char()
+
+
+    def action_generate_cone_liquid_graph(self):
+     for rec in self:
+
+        lines = rec.cone_liquid_limit_ids.filtered(
+            lambda l: l.penetration > 0 and l.moisture_content > 0
+        ).sorted(key=lambda l: l.penetration)
+
+        if len(lines) < 2:
+            continue
+
+        # Original data
+        x = np.array([l.penetration for l in lines], dtype=float)
+        y = np.array([l.moisture_content for l in lines], dtype=float)
+
+        fig, ax = plt.subplots(figsize=(10, 5))
+
+        # ============================
+        # Logarithmic Trendline
+        # ============================
+
+        log_x = np.log10(x)
+
+        # Best fit line
+        m, c = np.polyfit(log_x, y, 1)
+
+        # Smooth X values
+        x_fit = np.logspace(
+            np.log10(min(x)),
+            np.log10(max(x)),
+            200
+        )
+
+        # Trendline
+        y_fit = m * np.log10(x_fit) + c
+
+        ax.plot(
+            x_fit,
+            y_fit,
+            color="#5B9BD5",
+            linewidth=2
+        )
+
+        # Original points
+        ax.scatter(
+            x,
+            y,
+            color="#5B9BD5",
+            s=35,
+            zorder=5
+        )
+
+        # ============================
+        # Semi Log Axis
+        # ============================
+
+        ax.set_xscale("log")
+
+        ax.set_xlim(1, 100)
+        ax.set_ylim(0, 35)
+
+        ax.set_xticks([1, 10, 100])
+        ax.get_xaxis().set_major_formatter(
+            ticker.ScalarFormatter()
+        )
+
+        ax.xaxis.set_minor_locator(
+            ticker.LogLocator(
+                base=10,
+                subs=np.arange(2, 10) * 0.1
+            )
+        )
+
+        ax.set_yticks(np.arange(0, 36, 5))
+
+        # Grid
+        ax.grid(which="major", color="gray", linewidth=0.8, alpha=0.7)
+        ax.grid(which="minor", color="gray", linewidth=0.3, alpha=0.7)
+        ax.yaxis.grid(True)
+
+        # Labels
+        ax.set_xlabel("No. of Penetration (mm)", fontsize=12)
+        ax.set_ylabel("Moisture Content (%)", fontsize=12)
+
+        plt.tight_layout()
+
+        buffer = io.BytesIO()
+
+        plt.savefig(
+            buffer,
+            format="png",
+            dpi=100,
+            bbox_inches="tight"
+        )
+
+        plt.close(fig)
+
+        rec.cone_liquid_graph_image = base64.b64encode(
+            buffer.getvalue()
+        )
+
+        rec.cone_liquid_graph_filename = "cone_liquid_limit_graph.png"
+
+
+
+
 
      ### Compute Visible
     @api.depends('sample_parameters')
@@ -4563,6 +4915,7 @@ class Soil(models.Model):
             record.specific_gravity_visible  = False 
             record.direct_shear_visible  = False 
             record.moisture_content_visible = False
+            record.cone_liquid_limit_visible = False
 
 
 
@@ -4608,6 +4961,9 @@ class Soil(models.Model):
 
                 if sample.internal_id == '00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr':
                     record.direct_shear_visible = True
+
+                if sample.internal_id == 'daed9902-75e2-43f5-ae40-e4390af80eb4':
+                    record.cone_liquid_limit_visible = True
 
 
     
@@ -4788,6 +5144,36 @@ class Soil(models.Model):
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
+
+
+             # Atterberg Limit - CP
+            if result.parameter.internal_id == 'daed9902-75e2-43f5-ae40-e4390af80eb4':
+                result.calculated = True
+
+            
+            # Liquid Limit - CP
+            if result.parameter.internal_id == '6188571f-d595-45aa-9b9b-1f69fd85af56':
+                result.calculated = True
+                result.result_char = round(self.cone_liquid_limit,2)
+                if self.cone_liquid_limit_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            # Plastic Limit - CP
+            if result.parameter.internal_id == '38450531-a91a-4d07-9418-8067bc7c2253':
+                result.calculated = True
+                
+
+
+            # Plasticity Index - CP
+            if result.parameter.internal_id == 'c0f1fc84-d5c1-4d53-a942-20468b7ae9a6':
+                result.calculated = True
+               
+
+
 
 
 
@@ -5256,59 +5642,8 @@ class LIQUIDLIMITLINE(models.Model):
             record.serial_no = index + 1
 
 
-# class WATERCONTENTLINE(models.Model):
-#     _name = "mechanical.water.content.line"
-#     parent_id = fields.Many2one('mechanical.soil',string="Parent Id")
 
-#     serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
-#     container_noo = fields.Integer(string="Container No") 
-#     wt_of_cont = fields.Float(string="Weight of container,(gms)")
-#     wet_sample_cont = fields.Float(string="Weight of wet sample + container (gm)")
-#     dry_sample_cont = fields.Float(string="Weigth of dry sample + Container (gms)")
-#     mass_dry_soil= fields.Float(string="Mass of dry soil")
-#     water_contentss = fields.Float(string="Water content (W)=(W1-W2)(W1-Wc)/100%",compute="_compute_water_contentss")
-#     w1_w2 = fields.Float(string="(W1-W2)",compute="_compute_w1_w2")
-#     W1_Wc = fields.Float(string="(W1_Wc)",compute="_compute_W1_Wc")
-
-
-
-#     @api.depends('wet_sample_cont', 'dry_sample_cont')
-#     def _compute_w1_w2(self):
-#         for line in self:
-#             line.w1_w2 = line.wet_sample_cont - line.dry_sample_cont
-
-
-#     @api.depends('wet_sample_cont', 'wt_of_cont')
-#     def _compute_W1_Wc(self):
-#         for line in self:
-#             line.W1_Wc = line.wet_sample_cont - line.wt_of_cont
-
-
- 
-#     @api.depends('w1_w2', 'W1_Wc')
-#     def _compute_water_contentss(self):
-#         for line in self:
-#             if line.W1_Wc != 0:
-#                 line.water_contentss = line.w1_w2 / line.W1_Wc *100
-#             else:
-#                 line.water_contentss = 0.0
-
-#     @api.model
-#     def create(self, vals):
-#         # Set the serial_no based on the existing records for the same parent
-#         if vals.get('parent_id'):
-#             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-#             if existing_records:
-#                 max_serial_no = max(existing_records.mapped('serial_no'))
-#                 vals['serial_no'] = max_serial_no + 1
-
-       # return super(WATERCONTENTLINE, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
+    
 
 class PLASTICLIMITLINE(models.Model):
     _name = "mechanical.plasticl.limit.line"
@@ -6008,36 +6343,146 @@ class DirectShearTestLine(models.Model):
             record.serial_no = index + 1
 
 
+class SoilSpecificGavityLine(models.Model):
+    _name = "soil.specific.gravity.line"
+    parent_id = fields.Many2one('mechanical.soil',string="Parent Id")
+
+    serial_no = fields.Integer(string="Test",readonly=True, copy=False, default=1)
+
+    w1 = fields.Float(string="Weight of Density Bottle with Lid (W1) ")
+
+    w2 = fields.Float(string="Weight of Density Bottle + Dry Soil (W2) ")
+
+    w3 = fields.Float(string="Weight of Density Bottle + Soil + Water (W3)")
+
+    w4 = fields.Float(string="Weight of Density Bottle + Water (W4)")
+
+    weight_of_soil = fields.Float(
+        string="Weight of Soil (W2-W1)",
+        compute="_compute_weight",
+        store=True,
+    )
+
+    specific_gravity = fields.Float(
+        string="Specific Gravity of Sample = [(W2−W1)/((W4−W1)−(W3−W2))​]",
+        compute="_compute_specific_gravity",
+        store=True,
+        digits=(16, 3),
+    )
+
+    @api.depends("w1", "w2")
+    def _compute_weight(self):
+        for rec in self:
+            rec.weight_of_soil = rec.w2 - rec.w1
+
+    @api.depends("w1", "w2", "w3", "w4")
+    def _compute_specific_gravity(self):
+        for rec in self:
+            numerator = rec.w2 - rec.w1
+            denominator = (rec.w4 - rec.w1) - (rec.w3 - rec.w2)
+
+            if denominator:
+                rec.specific_gravity = numerator / denominator
+            else:
+                rec.specific_gravity = 0.0
 
 
-# class DirectShearLine(models.Model):
-#     _name = "mechanical.soil.direct.shear.line"
-#     parent_id = fields.Many2one('mechanical.soil',string="Parent Id")
 
-#     serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
 
-#     normal_stress = fields.Float(string="Normal stress σ (kPa)")
-#     shear_strength = fields.Float(string="Shear stress τ (kPa)")
+        return super(SoilSpecificGavityLine, self).create(vals)
 
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+class CONEPENETROMETERLIQUIDLIMITLINE(models.Model):
+    _name = "soil.cone.penetrometer.liquid.limits.line"
+    parent_id = fields.Many2one('mechanical.soil',string="Parent Id")
+
+    serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
+
+
+    container_no = fields.Char(string="Container No.")
+
+    w1 = fields.Float(string="Empty Wt. of Container (W1) (gm)")
+
+    w2 = fields.Float(string="Container + Wet Soil (W2) (gm)")
+
+    w3 = fields.Float(string="Container + Dry Soil (W3) (gm)")
+
+    moisture_weight = fields.Float(
+        string="Weight of Moisture (W4) (gm)",
+        compute="_compute_weights",
+        store=True,
+    )
+
+    dry_soil_weight = fields.Float(
+        string="Weight of Dry Soil (W5) (gm)",
+        compute="_compute_weights",
+        store=True,
+    )
+
+    moisture_content = fields.Float(
+        string="Moisture Content  w = 100*(W4/W5) (%)",
+        compute="_compute_moisture",
+        store=True,
+        digits=(16, 2),
+    )
+
+    penetration = fields.Float(
+        string="No. of Penetration in (mm)"
+    )
+
+    @api.depends("w1", "w2", "w3")
+    def _compute_weights(self):
+        for rec in self:
+            rec.moisture_weight = rec.w2 - rec.w3
+            rec.dry_soil_weight = rec.w3 - rec.w1
+
+    @api.depends("moisture_weight", "dry_soil_weight")
+    def _compute_moisture(self):
+        for rec in self:
+            if rec.dry_soil_weight:
+                rec.moisture_content = (
+                    rec.moisture_weight / rec.dry_soil_weight
+                ) * 100
+            else:
+                rec.moisture_content = 0.0
    
 
+
     
-#     @api.model
-#     def create(self, vals):
-#         # Set the serial_no based on the existing records for the same parent
-#         if vals.get('parent_id'):
-#             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-#             if existing_records:
-#                 max_serial_no = max(existing_records.mapped('serial_no'))
-#                 vals['serial_no'] = max_serial_no + 1
 
-#         return super(DirectShearLine, self).create(vals)
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
 
-#     def _reorder_serial_numbers(self):
-#         # Reorder the serial numbers based on the positions of the records in child_lines
-#         records = self.sorted('id')
-#         for index, record in enumerate(records):
-#             record.serial_no = index + 1
+        return super(CONEPENETROMETERLIQUIDLIMITLINE, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+
 
 
 class SoilNotes(models.Model):

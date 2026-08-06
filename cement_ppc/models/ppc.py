@@ -1023,7 +1023,7 @@ class CementPPC(models.Model):
     
 
     density_line_ids = fields.One2many(
-        "density.cement.line",
+        "ensity.cement.ppc.line",
         "parent_id",
         string="Trial Lines",
     )
