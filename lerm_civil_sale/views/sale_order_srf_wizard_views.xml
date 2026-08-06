@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="action_sale_order_srf_wizard" model="ir.actions.act_window">
+            <field name="name">Create SRF</field>
+            <field name="res_model">sale.order.srf.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record id="sale_order_srf_wizard_form" model="ir.ui.view">
+            <field name="name">sale.order.srf.wizard.form</field>
+            <field name="model">sale.order.srf.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Create SRF from Sales Order">
+                    <group>
+                        <field name="sale_order_id"/>
+                        <field name="partner_id"/>
+                        <field name="customer_id" options="{'no_create': True}"/>
+                        <field name="name_work_id" options="{'no_create': True}"/>
+                        <field name="srf_date"/>
+                        <field name="lab_location"/>
+                        <field name="location_name"/>
+                        <field name="report_due_date"/>
+                    </group>
+                    <field name="line_ids">
+                        <tree editable="bottom">
+                            <field name="selected"/>
+                            <field name="material_id" readonly="1"/>
+                            <field name="grade_id" readonly="1"/>
+                            <field name="size_id" readonly="1"/>
+                            <field name="conformity" readonly="1"/>
+                            <field name="parameters" widget="many2many_tags" domain="[('id', 'in', material_id.parameter_table1)]"/>
+                            <field name="product_uom_qty"/>
+                            <field name="price" readonly="1"/>
+                        </tree>
+                    </field>
+                    <footer>
+                        <button name="action_create_srf" type="object" string="Create SRF" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>
