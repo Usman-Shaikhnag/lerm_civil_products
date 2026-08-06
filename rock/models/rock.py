@@ -482,6 +482,7 @@ class MechanicalRock(models.Model):
 
 
 
+
    
     ### Compute Visible
     @api.depends('sample_parameters')
