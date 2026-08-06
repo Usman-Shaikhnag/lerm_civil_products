@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_lerm_pricelist_audit_log_tree" model="ir.ui.view">
+            <field name="name">lerm.pricelist.audit.log.tree</field>
+            <field name="model">lerm.pricelist.audit.log</field>
+            <field name="arch" type="xml">
+                <tree string="Price Audit Log">
+                    <field name="timestamp"/>
+                    <field name="user_id"/>
+                    <field name="source"/>
+                    <field name="pricelist_id"/>
+                    <field name="product_tmpl_id"/>
+                    <field name="parameter_id"/>
+                    <field name="action"/>
+                    <field name="old_price" string="Old Price"/>
+                    <field name="new_price" string="New Price"/>
+                    <field name="sale_order_id" string="Sales Order"/>
+                    <button name="action_open_sale_order" type="object"
+                        string="Open" icon="fa-external-link"
+                        invisible="not sale_order_id"
+                        help="Open the Sales Order"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_lerm_pricelist_audit_log_search" model="ir.ui.view">
+            <field name="name">lerm.pricelist.audit.log.search</field>
+            <field name="model">lerm.pricelist.audit.log</field>
+            <field name="arch" type="xml">
+                <search string="Price Audit Log">
+                    <filter name="source_sale_order" string="Sales Order" domain="[('source', '=', 'sale_order')]"/>
+                    <filter name="source_pricelist" string="Direct Pricelist Edit" domain="[('source', '=', 'pricelist')]"/>
+                    <filter name="source_product" string="Product Default Price" domain="[('source', '=', 'product')]"/>
+                    <separator/>
+                    <filter name="create" string="Create" domain="[('action', '=', 'create')]"/>
+                    <filter name="update" string="Update" domain="[('action', '=', 'update')]"/>
+                    <group string="Group By" name="group_by">
+                        <filter name="group_by_pricelist" string="Pricelist" context="{'group_by': 'pricelist_id'}"/>
+                        <filter name="group_by_product" string="Product" context="{'group_by': 'product_tmpl_id'}"/>
+                        <filter name="group_by_source" string="Source" context="{'group_by': 'source'}"/>
+                        <filter name="group_by_user" string="User" context="{'group_by': 'user_id'}"/>
+                        <filter name="group_by_timestamp" string="Date" context="{'group_by': 'timestamp'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_lerm_pricelist_audit_log" model="ir.actions.act_window">
+            <field name="name">Price Audit Log</field>
+            <field name="res_model">lerm.pricelist.audit.log</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_lerm_pricelist_audit_log_tree"/>
+            <field name="search_view_id" ref="view_lerm_pricelist_audit_log_search"/>
+        </record>
+
+        <menuitem id="menu_lerm_pricelist_audit_log"
+            name="Price Audit Log"
+            parent="lerm_civil.lerm_root"
+            action="action_lerm_pricelist_audit_log"
+            sequence="60"/>
+
+        <record id="product_pricelist_audit_button_lerm" model="ir.ui.view">
+            <field name="name">product.pricelist.audit.button.lerm</field>
+            <field name="model">product.pricelist</field>
+            <field name="inherit_id" ref="product.product_pricelist_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[hasclass('oe_title')]" position="after">
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_lerm_audit_log" type="object"
+                            class="oe_stat_button" icon="fa-history"
+                            string="Price Audit" help="View price change audit log for this pricelist">
+                            <field name="lerm_audit_log_count" widget="statinfo"/>
+                        </button>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

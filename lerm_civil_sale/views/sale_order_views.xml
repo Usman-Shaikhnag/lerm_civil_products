@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="lerm_civil_sale_order_form" model="ir.ui.view">
+            <field name="name">sale.order.inherited.lerm.civil.sale</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="customer_id" string="Reporting Customer" options="{'no_create': True}"/>
+                    <field name="name_work_id" string="Name of Work" options="{'no_create': True}"/>
+                </xpath>
+                <xpath expr="//header/field[@name='state']" position="before">
+                    <button name="action_pricelist" type="object" string="Pricelist" class="btn-primary"
+                        invisible="state != 'sale'"/>
+                    <button name="action_open_srf_wizard" type="object" string="Create SRF"
+                        class="btn-primary" groups="sales_team.group_sale_salesman"/>
+                </xpath>
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button name="action_view_srfs" type="object" string="SRFs" class="oe_stat_button" icon="fa-file-text-o"
+                        invisible="srf_count == 0">
+                        <field name="srf_count" widget="statinfo"/>
+                    </button>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/tree/field[@name='product_uom_qty']" position="after">
+                    <field name="grade_id" options="{'no_create': True}"/>
+                    <field name="size_id" options="{'no_create': True}"/>
+                    <field name="conformity"/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

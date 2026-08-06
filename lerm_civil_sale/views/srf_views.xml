@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="lerm_civil_sale_srf_form" model="ir.ui.view">
+            <field name="name">lerm.civil.srf.inherited.lerm.civil.sale</field>
+            <field name="model">lerm.civil.srf</field>
+            <field name="inherit_id" ref="lerm_civil.lerm_civil_srf_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='customer']" position="after">
+                    <field name="sale_order_id" readonly="1" options="{'no_create': True, 'no_open': True}"/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>
