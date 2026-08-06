@@ -210,8 +210,11 @@
 										</t>
 									</td>
 									<td rowspan="5" style="text-align: center; vertical-align: middle;" t-if="eln.conformity">
-										<span t-esc="brick.comp_strength_confirmity"/>
-									</td>
+								
+									<span t-attf-style="color: #{'green' if brick.comp_strength_confirmity and brick.comp_strength_confirmity.lower() == 'pass' else ('red' if brick.comp_strength_confirmity and brick.comp_strength_confirmity.lower() == 'fail' else 'black')}; font-weight: bold;"
+										t-esc="brick.comp_strength_confirmity"/>
+							
+								</td>
 								</tr>
 
 								<tr t-if="brick.compressive_strength_visible">
@@ -592,9 +595,13 @@
 											</t>
 										</t>
 									</td>
+									
 									<td rowspan="5" style="text-align: center; vertical-align: middle;" t-if="eln.conformity">
-										<span t-esc="brick.water_absorption_confirmity"/>
-									</td>
+								
+									<span t-attf-style="color: #{'green' if brick.water_absorption_confirmity and brick.water_absorption_confirmity.lower() == 'pass' else ('red' if brick.water_absorption_confirmity and brick.water_absorption_confirmity.lower() == 'fail' else 'black')}; font-weight: bold;"
+										t-esc="brick.water_absorption_confirmity"/>
+							
+								</td>
 								</tr>
 
 								<tr t-if="brick.water_absorbtion_visible and (brick.water_absorption_nabl == 'pass' and nabl or brick.water_absorption_nabl == 'fail' and not nabl)">
