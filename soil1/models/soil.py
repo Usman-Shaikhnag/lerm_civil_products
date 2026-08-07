@@ -3932,6 +3932,9 @@ class Soil(models.Model):
                 if sample.internal_id == 'tyer4fgr-5c56-475b-9arty156878965uut':
                     record.gsa_visible = True
 
+                if sample.internal_id == '318214f8-0d92-46e8-aabf-f27ff8556a82':
+                    record.gsa_visible = True
+
                 if sample.internal_id == '26a889da-3ab8-40e9-af69-2399b62dce9f':
                     record.specific_gravity_visible = True
 
@@ -4270,7 +4273,7 @@ class Soil(models.Model):
                 #     result.nabl_status = 'non-nabl'
                 continue
 
-            if result.parameter.internal_id == 'tyer4fgrtlmjy-475b-9arty156878901247':
+            if result.parameter.internal_id == '318214f8-0d92-46e8-aabf-f27ff8556a82':
                 # result.result_char = round(self.area_triaxial,2)
                 result.calculated = True
                 # if self.area_triaxial_nabl == 'pass':
