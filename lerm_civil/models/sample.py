@@ -1251,7 +1251,41 @@ class SampleRequestReviewLine(models.Model):
 
     split_done = fields.Boolean(string="Lab Generated", default=False)
 
+    parameters = fields.Many2many('lerm.parameter.master',string="Parameter")
+    technicians = fields.Many2many('res.users',string="Technicians")
+    task_id = fields.Many2one('project.task', string="To-Do Task")
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        lines = super(SampleRequestReviewLine, self).create(vals_list)
+        for line in lines:
+            if line.technicians and line.parameters:
+                task = self.env['project.task'].sudo().create({
+                    'name': f"Sample Testing: Lab {line.lab_id or 'Pending'} - {line.sample_id.kes_no}",
+                    'user_ids': [(6, 0, line.technicians.ids)],
+                    'description': f"Assigned Parameters: {', '.join(line.parameters.mapped('parameter_name'))} <br/> Sample: {line.sample_id.kes_no} <br/> Lab ID: {line.lab_id or 'Pending'}",
+                })
+                line.task_id = task.id
+        return lines
+
+    def write(self, vals):
+        res = super(SampleRequestReviewLine, self).write(vals)
+        for line in self:
+            if line.technicians and line.parameters:
+                if not line.task_id:
+                    task = self.env['project.task'].sudo().create({
+                        'name': f"Sample Testing: Lab {line.lab_id or 'Pending'} - {line.sample_id.kes_no}",
+                        'user_ids': [(6, 0, line.technicians.ids)],
+                        'description': f"Assigned Parameters: {', '.join(line.parameters.mapped('parameter_name'))} <br/> Sample: {line.sample_id.kes_no} <br/> Lab ID: {line.lab_id or 'Pending'}",
+                    })
+                    line.task_id = task.id
+                elif 'technicians' in vals or 'parameters' in vals or 'lab_id' in vals:
+                    line.task_id.sudo().write({
+                        'name': f"Sample Testing: Lab {line.lab_id or 'Pending'} - {line.sample_id.kes_no}",
+                        'user_ids': [(6, 0, line.technicians.ids)],
+                        'description': f"Assigned Parameters: {', '.join(line.parameters.mapped('parameter_name'))} <br/> Sample: {line.sample_id.kes_no} <br/> Lab ID: {line.lab_id or 'Pending'}",
+                    })
+        return res
 
 
 
