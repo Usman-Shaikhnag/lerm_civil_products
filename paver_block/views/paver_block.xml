@@ -82,167 +82,32 @@
 
 
 
-                    <!-- Plan Area -->
-
-                     <div invisible = "paver_visible == False"  style="white-space: nowrap; width:70%;text-align: center">
-                        <h1>
-                            <field name="paver_name" readonly="1" nolabel="1"/>
-                            <field name="paver_visible" invisible="1"/>
-                        </h1>
-                    </div>
-
-                     <div invisible = "paver_visible == False" >
-                    <field name="thickness_child_lines" mode="tree"  invisible="1">
-                            <tree editable="bottom" class="custom_table_borders">
-                                <field name="thickness1"/>
-                                  <field name="Correction_factore"/>
-                            </tree>
-                    </field>
-                    </div>
-                   
-                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "paver_visible == False">
-                        <tbody>
-                          
-                             <tr>
-                                <td><label class="fw-bold" for="thickness2">   Thickness of Paver Block:</label></td>
-                                <td><field name="thickness2"/> <span> mm</span></td>
-                            </tr>
-                           
-                        </tbody>
-                    </table>
-
-                    
-                        <!-- Left Table -->
-                        <div class="d-flex gap-2">
-                                <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
-                                    <thead>
-                                        <tr>
-                                            <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
-                                                Parameter Name
-                                            </th>
-                                            <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
-                                                Result
-                                            </th>
-                                            <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
-                                                Unit
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; color: black; padding: 8px 10px;">
-                                                <label for="mass_specimen"/>
-                                            </td>
-                                            <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                                <field name="mass_specimen" nolabel="1"/>
-                                            </td>
-                                            <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                                N
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style="border: 1px solid black; color: black; padding: 8px 10px;">
-                                                <label for="mass_size"/>
-                                            </td>
-                                            <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                                <field name="mass_size" nolabel="1"/>
-                                            </td>
-                                            <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                                N
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style="border: 1px solid black; color: black; padding: 8px 10px;">
-                                                <label for="area_paver"/>
-                                            </td>
-                                            <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                                <field name="area_paver" nolabel="1"/>
-                                            </td>
-                                            <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                                mm²
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                       
-
-                        <!-- Right Table -->
-                            <table  class="table table-sm o_form_table table-bordered w-50 custom_table_borders"  style="width: 100%; border-collapse: collapse;" invisible="paver_visible == False">
-                                <thead>
-                                    <tr>
-                                        <th style="text-align: center; border: 1px solid black;">Gms</th>
-                                        <th style="text-align: center; border: 1px solid black;">N</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td style="text-align: center; border: 1px solid black;">
-                                            <field name="gms1" nolabel="1" class="blue-input"/>
-                                        </td>
-                                        <td style="text-align: center; border: 1px solid black;">
-                                            <field name="n1" nolabel="1" class="blue-input"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align: center; border: 1px solid black;">
-                                            <field name="gms2" nolabel="1" class="blue-input"/>
-                                        </td>
-                                        <td style="text-align: center; border: 1px solid black;">
-                                            <field name="n2" nolabel="1" class="blue-input"/>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "paver_visible == False">
-                        <tbody>
-                          
-                             <tr>
-                                <td><label class="fw-bold" for="area_paver_conformity">NABL</label></td>
-                                <td><field name="area_paver_conformity"
-                                            decoration-success="area_paver_conformity == 'pass'"
-                                            decoration-danger="area_paver_conformity == 'fail'"
-                                             readonly="1"/></td>
-                            </tr>
-                             <tr>
-                                <td><label class="fw-bold" for="area_paver_nabl">NABL</label></td>
-                                <td><field name="area_paver_nabl"
-                                            decoration-success="area_paver_nabl == 'pass'"
-                                            decoration-danger="area_paver_nabl == 'fail'"
-                                             readonly="1"/></td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-
                     <!-- Compressive Strength -->
-                    <group invisible = "commpressive_visible == False"  style="white-space: nowrap; width:70%;">
+                    <div invisible = "commpressive_visible == False"  style="text-align:center">
                         <h1>
                             <field name="commpressive_name" readonly="1" nolabel="1"/>
                             <field name="commpressive_visible" invisible="1"/>
                         </h1>
-                    </group>
+                    </div>
 
 
-                    <div invisible = "commpressive_visible == False"   style="width: 100%;">
-                    <field name="commpressive_child_lines"   mode="tree" nolabel="1" >
-                            <tree editable="bottom" class="custom_table_borders" style="width: 100%;">
+                    <div invisible = "commpressive_visible == False" >
+                    <field name="commpressive_child_lines"   nolabel="1" >
+                            <tree editable="bottom" class="custom_table_borders">
                                 <field name="serial_no"/>
-                                <field name="sample_identification_com" class="blue-input" decoration-info="sample_identification_com != 0"/>
-                                <field name="wt_block"  class="blue-input" decoration-info="wt_block != 0"/>
+                                <field name="plan_area" class="blue-input" decoration-info="plan_area != 0"/>
+                                <field name="max_load"  class="blue-input" decoration-info="max_load != 0"/>
+                                <field name="apparent_strength"/>
                                 <field name="correction_factor" class="blue-input" decoration-info="correction_factor != 0"/>
-                                <field name="load" class="blue-input" decoration-info="load != 0"/>
-                                <field name="compressive_strenght"/>
-                                <field name="thickness" class="blue-input" decoration-info="thickness != 0"/>
+                                <field name="corrected_strength"/>
                                
                             </tree>
                     </field>
                    
                     </div>
 
-                      <div class="d-flex gap-2" invisible = "commpressive_visible == False" >
-                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "commpressive_visible == False">
+                      <div invisible = "commpressive_visible == False" >
+                      <table class="table o_form_table w-50 mt-2 custom_table_borders" invisible = "commpressive_visible == False">
                         <tbody>
                           
                              <tr>
@@ -263,62 +128,40 @@
                                             decoration-danger="avg_commpressive_nabl == 'fail'"
                                              readonly="1"/></td>
                             </tr>
+
+                            <tr>
+                                <td><label class="fw-bold" for="commpressive_report_type">Report Type</label></td>
+                                <td><field name="commpressive_report_type" class="blue-input" decoration-info="commpressive_report_type != 0"/></td>
+                            </tr>
                         </tbody>
                     </table>
 
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "commpressive_visible == False">
-                        <tbody>
-                          
-                             <tr>
-                                <td><label class="fw-bold" for="avg_thickness">  Avg Thickness</label></td>
-                                <td><field name="avg_thickness"/>   mm</td>
-                            </tr>
-                            <tr>
-                                <td><label class="fw-bold" for="avg_thickness_conformity">NABL</label></td>
-                                <td><field name="avg_thickness_conformity"
-                                            decoration-success="avg_thickness_conformity == 'pass'"
-                                            decoration-danger="avg_thickness_conformity == 'fail'"
-                                             readonly="1"/></td>
-                            </tr>
-                             <tr>
-                                <td><label class="fw-bold" for="avg_thickness_nabl">NABL</label></td>
-                                <td><field name="avg_thickness_nabl"
-                                            decoration-success="avg_thickness_nabl == 'pass'"
-                                            decoration-danger="avg_thickness_nabl == 'fail'"
-                                             readonly="1"/></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    
                     </div>
 
 
 
 
                    <!-- Water Absorption -->
-                    <group invisible = "water_absorption_visible == False"  style="white-space: nowrap; width:70%;">
+                    <div invisible = "water_absorption_visible == False"  style="text-align:center">
                         <h1 >
                             <field name="water_absorption_name" readonly="1" nolabel="1"/>
                             <field name="water_absorption_visible" invisible="1"/>
                         </h1>
-                    </group>
-
-
-                  
-
-
-                            <div class="custom_table_borders" style="width: 100%;"  invisible="water_absorption_visible == False">
-                                <field name="water_absorption_child_lines" mode="tree" nolabel="1">
-                                    <tree editable="bottom" class="custom_table_borders" style="width: 100%; border-collapse: collapse;">
+                    </div>
+                    <div class="custom_table_borders"  invisible="water_absorption_visible == False">
+                                <field name="water_absorption_child_lines" nolabel="1">
+                                    <tree editable="bottom" >
                                         <field name="serial_no" />
-                                        <field name="sample_identification" class="blue-input" decoration-info="sample_identification != 0"/>
-                                        <field name="dry_wt_w1"  class="blue-input" decoration-info="dry_wt_w1 != 0"/>
                                         <field name="wet_w2"  class="blue-input" decoration-info="wet_w2 != 0"/>
+                                        <field name="dry_wt_w1"  class="blue-input" decoration-info="dry_wt_w1 != 0"/>
+                                        
                                         <field name="water_absorption"/>
                                     </tree>
                                 </field>
                             </div>
 
-                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "water_absorption_visible == False">
+                      <table class="table o_form_table w-50 mt-2 custom_table_borders" invisible = "water_absorption_visible == False">
                         <tbody>
                           
                              <tr>
@@ -340,8 +183,62 @@
                                             decoration-danger="avg_water_absorption_nabl == 'fail'"
                                              readonly="1"/></td>
                             </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="water_absorption_report_type">Report Type</label></td>
+                                <td><field name="water_absorption_report_type" class="blue-input" decoration-info="water_absorption_report_type != 0"/></td>
+                            </tr>
                         </tbody>
                     </table>
+
+                    <!-- Plan Area -->
+                    <div invisible = "plan_area_visible == False"  style="text-align:center">
+                        <h1 >
+                            <field name="plan_area_name" readonly="1" nolabel="1"/>
+                            <field name="plan_area_visible" invisible="1"/>
+                        </h1>
+                    </div>
+                    <div class="custom_table_borders"  invisible="plan_area_visible == False">
+                                <field name="plan_area_child_lines" nolabel="1">
+                                    <tree editable="bottom" >
+                                        <field name="serial_no" />
+                                        <field name="mass_cutout"  class="blue-input" decoration-info="mass_cutout != 0"/>
+                                        <field name="mass_standard"  class="blue-input" decoration-info="mass_standard != 0"/>
+                                        
+                                        <field name="plan_area"/>
+                                        <field name="remark"  class="blue-input" decoration-info="remark != 0" width="100px"/>
+                                    </tree>
+                                </field>
+                            </div>
+
+                      <table class="table o_form_table w-50 mt-2 custom_table_borders" invisible = "plan_area_visible == False">
+                        <tbody>
+                          
+                             <tr>
+                                <td><label class="fw-bold" for="average_plan_area">Average Plan Area (mm²)</label></td>
+                                <td><field name="average_plan_area"/> </td>
+                            </tr>
+                           
+                             <tr>
+                                <td><label class="fw-bold" for="average_plan_area_conformity">NABL</label></td>
+                                <td><field name="average_plan_area_conformity"
+                                            decoration-success="average_plan_area_conformity == 'pass'"
+                                            decoration-danger="average_plan_area_conformity == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                             <tr>
+                                <td><label class="fw-bold" for="average_plan_area_nabl">NABL</label></td>
+                                <td><field name="average_plan_area_nabl"
+                                            decoration-success="average_plan_area_nabl == 'pass'"
+                                            decoration-danger="average_plan_area_nabl == 'fail'"
+                                             readonly="1"/></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="plan_area_report_type">Report Type</label></td>
+                                <td><field name="plan_area_report_type" class="blue-input" decoration-info="plan_area_report_type != 0"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
 
 
                      <!-- Dimension -->
@@ -389,6 +286,10 @@
                                             decoration-danger="avg_length_nabl == 'fail'"
                                              readonly="1"/></td>
                             </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_length_report_type">Report Type</label></td>
+                                <td><field name="avg_length_report_type" class="blue-input" decoration-info="avg_length_report_type != 0"/></td>
+                            </tr>
                         </tbody>
                     </table>
 
@@ -415,6 +316,10 @@
                                             decoration-danger="avg_width_nabl == 'fail'"
                                              readonly="1"/></td>
                             </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_width_report_type">Report Type</label></td>
+                                <td><field name="avg_width_report_type" class="blue-input" decoration-info="avg_width_report_type != 0"/></td>
+                            </tr>
                         </tbody>
                     </table>
                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "dimension_visible == False">
@@ -439,6 +344,10 @@
                                             decoration-danger="avg_height_nabl == 'fail'"
                                              readonly="1"/></td>
                             </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_height_report_type">Report Type</label></td>
+                                <td><field name="avg_height_report_type" class="blue-input" decoration-info="avg_height_report_type != 0"/></td>
+                            </tr>
                         </tbody>
                     </table>
                     <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" style="margin-top:20px;" invisible = "dimension_visible == False">
@@ -462,6 +371,10 @@
                                             decoration-success="avg_area_nabl == 'pass'"
                                             decoration-danger="avg_area_nabl == 'fail'"
                                              readonly="1"/></td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="avg_area_report_type">Report Type</label></td>
+                                <td><field name="avg_area_report_type" class="blue-input" decoration-info="avg_area_report_type != 0"/></td>
                             </tr>
                         </tbody>
                     </table>

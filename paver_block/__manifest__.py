@@ -14,6 +14,7 @@ This module contains all the common features of Sales Management and eCommerce.
     'data': [
                  'security/ir.model.access.csv',
                  'views/paver_block.xml',
+                 'reports/paver_report.xml',
                  'reports/paver_datasheet.xml'
     ],
    
