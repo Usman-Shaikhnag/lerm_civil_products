@@ -23,7 +23,7 @@ class MechanicalRock(models.Model):
 
     name_rock = fields.Char("Name",default="ROCK")
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
-    sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
+    sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=False)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
@@ -695,6 +695,7 @@ class MechanicalRock(models.Model):
 
 
     @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
+    @api.depends_context('uid')
     def _compute_sample_parameters(self):
         current_user = self.env.user
 

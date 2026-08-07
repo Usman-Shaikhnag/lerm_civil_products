@@ -76,6 +76,16 @@ class Soil(models.Model):
     #             'res_id': self.eln_ref.id,
                 
     #         }
+
+    def read(self, fields=None, load='_classic_read'):
+
+        self._compute_sample_parameters()
+        self._compute_visible()
+        self.default_get(fields)
+
+        return super(Soil, self).read(fields=fields, load=load)
+
+
     def open_eln_page(self):
     # import wdb; wdb.set_trace()
         

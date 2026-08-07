@@ -19,9 +19,12 @@
         </field>
     </record>
 
-    <act_window id="action_ftp_upload_wizard"
-        name="Upload File to SFTP"
-        res_model="file.upload.wizard"
-        view_mode="form"
-        target="new"/>
+    <record id="action_ftp_upload_wizard" model="ir.actions.act_window">
+            <field name="name">Upload File to SFTP</field>
+            <field name="res_model">file.upload.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{'default_form_name': form_name, 'default_field_name': field_name}</field>
+        </record>
+
 </odoo>

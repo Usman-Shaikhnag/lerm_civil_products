@@ -136,6 +136,18 @@
     </record>
 
 
+    <record id="test_sample_pending_partially_allotted_action" model="ir.actions.act_window">
+        <field name="name">Sample</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">lerm.srf.sample</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="domain">[('status','=','2-confirmed'),('state','=','7-partially-alloted')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Partially Alotted Sample</p>
+        </field>
+    </record>
+
+
     <!-- <record id="test_sample_calculated_action" model="ir.actions.act_window">
         <field name="name">Sample Calculated</field>
         <field name="type">ir.actions.act_window</field>
@@ -433,6 +445,12 @@
         name="Alloted"
         parent="sample_status"
         action="test_sample_pending_allotted_action"
+        sequence="21" />
+
+    <menuitem id="sample_status_partially_allotted"
+        name="Partially Alloted"
+        parent="sample_status"
+        action="test_sample_pending_partially_allotted_action"
         sequence="21" />
 
     <!-- <menuitem id="sample_status_calculated"
