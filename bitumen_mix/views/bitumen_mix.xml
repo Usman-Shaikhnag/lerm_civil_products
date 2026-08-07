@@ -52,273 +52,169 @@
                             }
                     </style>
 
-                     <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 100%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
-                                          Location:
-                                            </td>
-                                          
 
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: block; width: 100%;">
-                                                    <field name="location" nolabel="1" style="width: 100%;" class="o_input"/>
-                                                </div>
-                                            </td>
-                                          
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <group invisible="1">
-                         <field name="location_heding" />
-                        </group>
-
-
-                    <group invisible = "bitumen_content_visible == False" style="white-space: nowrap; width:70%;margin-top: 20px;" >
-                        <h1 style=" text-align:center; ">
-                            <field name="bitumen_content_name" readonly="1" nolabel="1"/>
-                            <field name="bitumen_content_visible" invisible="1"/>
-
-                        </h1>
-                    </group>
-
-                        <div class="custom_table_borders" style="width:100%;" invisible = "bitumen_content_visible == False">
-                            <table style="width: 100%; border-collapse: collapse;">
-                                <thead>
-                                    <tr>
-                                     <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
-                                           S.No
-                                        </th>
-                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
-                                           Description
-                                        </th>
-                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
-                                            <field name="location_heding" nolabel="1" style="width: 100%;" class="o_input"/>
-                                        </th>
-                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
-                                            Unit
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                    <td style="border: 1px solid black; color: black; padding: 8px 10px;text-align: center">
-                                            1
-                                        </td>
-                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;">
-                                            <label for="wt_of_samplew1"/>
-                                        </td>
-                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="wt_of_samplew1" nolabel="1" class="blue-input"/>
-                                        </td>
-                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                           grams
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                       <td style="border: 1px solid black; color: black; padding: 8px 10px;text-align: center">
-                                            2
-                                        </td>
-                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;">
-                                            <label for="wt_of_intial"/>
-                                        </td>
-                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="wt_of_intial" nolabel="1" class="blue-input"/>
-                                        </td>
-                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                           grams
-                                        </td>
-                                    </tr>
-                                      <tr>
-                                       <td style="border: 1px solid black; color: black; padding: 8px 10px;text-align: center">
-                                            3
-                                        </td>
-                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;">
-                                            <label for="wt_of_aggregate"/>
-                                        </td>
-                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="wt_of_aggregate" nolabel="1" class="blue-input"/>
-                                        </td>
-                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                           grams
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                       <td style="border: 1px solid black; color: black; padding: 8px 10px;text-align: center">
-                                            4
-                                        </td>
-                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;">
-                                            <label for="wt_of_extraction" class="blue-input"/>
-                                        </td>
-                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="wt_of_extraction" nolabel="1" class="blue-input"/>
-                                        </td>
-                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                           grams
-                                        </td>
-                                    </tr>
-                                     <tr>
-                                       <td style="border: 1px solid black; color: black; padding: 8px 10px;text-align: center">
-                                            5
-                                        </td>
-                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;">
-                                            <!-- <label for="wt_of_filter"/> -->
-                                            Increased weight of filter W3 = (F2-F1)
-                                        </td>
-                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                            <field name="wt_of_filter" nolabel="1" class="blue-input"/>
-                                        </td>
-                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-                                           grams
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-
-                        <group style="white-space: nowrap; width:100%;"  invisible = "bitumen_content_visible == False" string="Result">
-                            <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 100%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
-                                        Binder content 
-                                            </td>
-                                          
-                                          
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 80px;">
-                                                    <field name="binder_content" nolabel="1"/>
-                                                </div>
-                                            </td>
-
-                                              <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                              %
-                                            </td>
-                                          
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        </group>
-
-                       
-
-                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible = "bitumen_content_visible == False">
-                        <tbody>
-                         
-                            <tr>
-                                <td><label for="binder_content_conformity">Confirmity</label></td>
-                                <td>
-                                    <field  name="binder_content_conformity"
-                                           decoration-success="binder_content_conformity == 'pass'" 
-                                           decoration-danger="binder_content_conformity == 'fail'" 
-                                           readonly="1"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><label for="binder_content_nabl">Nabl</label></td>
-                                <td>
-                                  <field  name="binder_content_nabl"
-                                         decoration-success="binder_content_nabl == 'pass'" 
-                                           decoration-danger="binder_content_nabl == 'fail'" 
-                                           readonly="1"/>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="d-flex gap-2"> 
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="temp"></label>
+                                    </td>
+                                    <td>
+                                        <field name="temp" class="blue-input"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-sm table-bordered w-50 custom_table_borders" style="white-space:nowrap;">
+                            <tbody>
+                                
+                                <tr>
+                                    <td>
+                                        <label class="fw-bold" for="humidity" ></label>
+                                    </td>
+                                    <td>
+                                        <field name="humidity" class="blue-input"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                   
                
-                    <group invisible = "sieve_visible == False" style="white-space: nowrap; width:70%;margin-top: 20px;" >
-                        <h1>
+                    <!-- Sieve Analysis -->
+                    <div invisible="sieve_visible == False" >
+                        <h1 style="text-align: center;">
                             <field name="sieve_analysis_name" readonly="1" nolabel="1"/>
                             <field name="sieve_visible" invisible="1"/>
 
                         </h1>
-                    </group>
-                   
-                    <group style="white-space: nowrap; width:70%;"  invisible = "sieve_visible == False">
-                    
-                     <group >
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 100%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
-                                            Weight of Sample
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 80px;">
-                                                    <field name="wt_of_sample" nolabel="1" class="blue-input"/>
-                                                </div>
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                              gms
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </group>
-
-
-                  
-            </group>
-                    <div invisible = "sieve_visible == False"  >
-                    <field name="sieve_analysis_child_lines" nolabel="1" >
-                            <tree editable="bottom"  class="custom_table_borders">
-                                <field name="serial_no" string="Sr.No"/>
-                                <field name='sieve_size' string="IS Sieve Size" class="blue-input" decoration-info="sieve_size != 0"/>
-                                <field name='wt_retained' string="Wt. Retained in gms" class="blue-input" decoration-info="wt_retained != 0"/>
-                                <field name='percent_retained' string="% Retained"/>
-                                <field name='cumulative_retained' context="{'default_cumulative_retained': cumulative_retained}" string="Cum. Retained %"/>
-                                <field name='passing_percent' string="Passing %" readonly="1"/>
-                                  <field name='specific_limt' string="Specified Limits" class="oe_center" />
-                                
-                            </tree>
-                    </field>
                     </div>
 
-                    <group >
-                        <div class="custom_table_borders" style="display: flex; justify-content: center; width: 100%;">
-                            <div style="width: 100%;">
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tbody>
-                                        <tr>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: left; vertical-align: middle; color: black;">
-                                           Total
-                                            </td>
-                                            <td style="border: 1px solid black; padding: 10px; text-align: center; vertical-align: middle;">
-                                                <div style="display: inline-block; min-width: 80px;">
-                                                    <field name="total_sieve_analysis" nolabel="1"/>
-                                                </div>
-                                            </td>
-                                            
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not sieve_visible">
+                        <tbody>
+                            <tr>
+                                <td class="w-25"><label for="report_type"/></td>
+                                <td  class="w-25">
+                                    <field name="report_type" class="blue-input"/>
+                                </td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
+                   
+                    <table class="table table-sm o_form_table table-bordered custom_table_borders" invisible="not sieve_visible">
+                        <tbody>
+                            <tr>
+                                <td class="w-25"><label for="wt_of_sample"/>
+                                </td>
+                                <td  class="w-25">
+                                    <field name="wt_of_sample" class="blue-input"/>
+                                </td>
+                                <td class="w-25"><label for="material_type"/>
+                                </td>
+                                <td  class="w-25">
+                                    <field name="material_type" class="blue-input"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-                         <div invisible="sieve_visible == False">
-                            <button string="Calculate"
-                                    type="object"
-                                    name="calculate_sieve"
-                                    class="oe_highlight">
-                                <i class="fa fa-calculator"/> Calculate
-                            </button>
-                        </div>
-                    </group>
+
+                    <div invisible="sieve_visible == False">
+                        <field name="sieve_analysis_child_lines" nolabel="1" class="no_column_sorting" >
+                            <tree editable="bottom"  class="custom_table_borders ">
+                                <field  name="serial_no" string="Sr.No"/>
+                                <field  name='sieve_size' string="IS Sieve Size"/>
+                                <field  class="blue-input" name='wt_retained' string="Wt. Retained in gms"/>
+                                <field name='percent_retained' string="% Retained"/>
+                                <field  name='cumulative_retained' context="{'default_cumulative_retained': cumulative_retained}" string="Cum. Retained %"/>
+                                <field  name='passing_percent' string="Passing %" readonly="1"/>
+                                <field class=" oe_center" name='specific_limt' string="Specified Limits"/>
+                                
+                            </tree>
+                        </field>
+                    </div>
+                    <div invisible="sieve_visible == False">
+                        <button string="Calculate" type="object" name="calculate_sieve" class="oe_highlight">
+                            <i class="fa fa-calculator"/> Calculate
+                        </button>
+                    </div>
+
+                <table class="table table-sm o_form_table w-50 table-bordered custom_table_borders mt-2" invisible="not sieve_visible">
+                    <tbody>
+                        <tr>
+                            <td ><label for="total_sieve_analysis"/></td>
+                            <td  ><field name="total_sieve_analysis"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+
+                <!-- Flow Value Test -->
+
+
+                    <div invisible="flow_value_visible == False">
+                        <h1 class="text-center">
+                            <field name="flow_value_name" readonly="1" nolabel="1"/>
+                            <field name="flow_value_visible" invisible="1"/>
+
+                        </h1>
+                    </div>
+
+                    <div class="custom_table_borders" invisible="flow_value_visible == False">
+                        <field name="flow_value_child_lines" nolabel="1" colspan="2">
+                            <tree editable="bottom">
+                                <field name='serial_no'/>
+                                <field name="diameter" class="blue-input" decoration-info="diameter != 0"/>
+                                <field name="height" class="blue-input" decoration-info="height != 0"/>
+                                <field name="maximum_load" class="blue-input" decoration-info="maximum_load != 0"/>
+                                <field name="flow_reading" class="blue-input" decoration-info="flow_reading != 0"/>
+                                <field name="flow_value"/>
+                            </tree>
+                        </field>
+                    </div>
+
+                    <table class="table table-sm table-bordered w-50 mt-2 custom_table_borders" invisible="flow_value_visible == False" style="white-space:nowrap;">
+                        <tbody>
+                            <tr>
+                                <td><label class="fw-bold" for="average_flow">Average Flow Value</label></td>
+                                  <td><field name="average_flow"/></td>
+                            </tr>
+                             <tr>
+                                <td><label class="fw-bold" for="average_flow_conformity">Conformity</label></td>
+                                <td>
+                                    <field name="average_flow_conformity"
+                                        decoration-success="average_flow_conformity == 'pass'" 
+                                        decoration-danger="average_flow_conformity == 'fail'" 
+                                        readonly="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                               <td><label class="fw-bold" for="average_flow_nabl">NABL</label></td>
+                                <td>
+                                    <field name="average_flow_nabl"
+                                        decoration-success="average_flow_nabl == 'pass'" 
+                                        decoration-danger="average_flow_nabl == 'fail'"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label class="fw-bold" for="flow_value_report_type">Report Type</label></td>
+                                <td><field name="flow_value_report_type" class="blue-input" decoration-info="flow_value_report_type != 0"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+
+                    
+               
+                    
+                   
+                
+
+
 
                   
 

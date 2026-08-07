@@ -20,6 +20,9 @@ class BitumenConcrete(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
     size_id = fields.Many2one('lerm.size.line',string="Size",compute="_compute_size_id",store=True)
 
+    temp = fields.Char("Temperature",store=True)
+    humidity = fields.Char("Humidity",store=True)
+
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
     @api.depends('eln_ref')
@@ -28,107 +31,46 @@ class BitumenConcrete(models.Model):
             self.size_id = self.eln_ref.size_id.id
 
 
-    # 1. Bitumen Content
-
-    location = fields.Char(string="Location:")
-
-    location_heding = fields.Char(string="Heding")
-
-    @api.onchange('location')
-    def _onchange_location_set_heading(self):
-        for rec in self:
-            rec.location_heding = rec.location
-
-
-    bitumen_content_name = fields.Char("Name",default="Bitumen Content")
-    bitumen_content_visible = fields.Boolean("Bitumen Content",compute="_compute_visible")
-
-
-    wt_of_samplew1 = fields.Float(string="Weight of the sample (W1)")
-    wt_of_intial = fields.Float(string="Initial weight of the filter paper (F1)")
-    wt_of_aggregate = fields.Float(string="Weight of aggregate after extraction (W2)")
-    wt_of_extraction = fields.Float(string="Weight of filter paper after extraction with fine materials (F2)")
-    wt_of_filter = fields.Float(string="Increased weight of filter W3 = (F2-F1)",compute="_compute_wt_of_filter",store=True,digits=(12,1))
-
-    binder_content = fields.Float(string="% Binder content",compute="_compute_binder_content",digits=(12,2),store=True)
-
-    binder_content_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_binder_content_conformity", store=True)
-
-    @api.depends('binder_content','eln_ref','grade')
-    def _compute_binder_content_conformity(self):
-        
-        for record in self:
-            record.binder_content_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35789ght-7188-4086-b132-62b50e63f1247ui')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35789ght-7188-4086-b132-62b50e63f1247ui')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.binder_content - record.binder_content*mu_value
-                    upper = record.binder_content + record.binder_content*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.binder_content_conformity = 'pass'
-                        break
-                    else:
-                        record.binder_content_conformity = 'fail'
-
-    binder_content_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_binder_content_nabl", store=True)
-
-    @api.depends('binder_content','eln_ref','grade')
-    def _compute_binder_content_nabl(self):
-        
-        for record in self:
-            record.binder_content_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35789ght-7188-4086-b132-62b50e63f1247ui')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35789ght-7188-4086-b132-62b50e63f1247ui')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.binder_content - record.binder_content*mu_value
-                    upper = record.binder_content + record.binder_content*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.binder_content_nabl = 'pass'
-                        break
-                    else:
-                        record.binder_content_nabl = 'fail'
-
-    @api.depends('wt_of_extraction', 'wt_of_intial')
-    def _compute_wt_of_filter(self):
-        for rec in self:
-            if rec.wt_of_extraction and rec.wt_of_intial:
-                rec.wt_of_filter = rec.wt_of_extraction - rec.wt_of_intial
-            else:
-                rec.wt_of_filter = 0.0
-
-    @api.depends('wt_of_samplew1', 'wt_of_aggregate', 'wt_of_filter')
-    def _compute_binder_content(self):
-        for rec in self:
-            if rec.wt_of_samplew1:
-                rec.binder_content = ((rec.wt_of_samplew1 - (rec.wt_of_aggregate + rec.wt_of_filter)) / rec.wt_of_samplew1) * 100
-            else:
-                rec.binder_content = 0.0
-
-
-  
-
-
+    
     # Sieve Analysis 
-    sieve_analysis_name = fields.Char("Name",default="Gradation")
+    sieve_analysis_name = fields.Char("Name",default="Sieve Analysis")
     sieve_visible = fields.Boolean("Sieve Analysis Visible",compute="_compute_visible")
 
-    sieve_analysis_child_lines = fields.One2many('mechanical.bitumen.mix.sieve.line','parent_id',string="Parameter")
+
+    report_type = fields.Selection(
+        [
+            ('nabl', 'NABL'),
+            ('non_nabl', 'Non NABL'),
+        ],
+        string="Report Type",
+        default='nabl',
+        required=True,
+    )
+
+    sieve_nabl = fields.Selection(
+    [('pass', 'Pass'), ('fail', 'Fail')],
+    compute="_compute_sieve_nabl",
+    store=True
+)
+
+    @api.depends('report_type')
+    def _compute_sieve_nabl(self):
+     for rec in self:
+        rec.sieve_nabl = 'pass' if rec.report_type == 'nabl' else 'fail'
+
+
+    sieve_analysis_child_lines = fields.One2many('mechanical.bitumen.mix.sieve.line','parent_id',string="Parameter"
+)
+
     total_sieve_analysis = fields.Float(string="Total",compute="_compute_total_sieve")
+
     wt_of_sample = fields.Float(string="Weight of Sample, gms")
+    material_type = fields.Selection([
+        ('bm', 'BM'),
+        ('dbm', 'DBM'),
+        ('bc', 'BC')
+    ], string="Type of Material")
+
 
     @api.onchange('wt_of_aggregate')
     def _onchange_set_sample_weight(self):
@@ -149,24 +91,53 @@ class BitumenConcrete(models.Model):
             sieve_lines = []
             grade_name = rec.grade.grade if rec.grade else ""
 
-            if grade_name == "Bituminous Macadam":
-                sieve_sizes = ['45 mm', '37.5 mm', '26.5 mm', '19 mm', '13.2 mm',
-                            '4.75 mm', '2.36 mm', '300 μm', '75 μm', '0', '0', 'Pan']
-            elif grade_name == "Dense Graded Bituminous Macadam":
-                sieve_sizes = ['45 mm', '37.5 mm', '26.5 mm', '19 mm', '13.2 mm',
-                            '4.75 mm', '2.36 mm', '300 μm', '75 μm', '0', '0', 'Pan']
-            elif grade_name == "Semi Dense Bituminous Concrete":
-                sieve_sizes = ['19 mm', '13.2 mm', '9.5 mm', '4.75 mm', '2.36 mm',
-                            '1.18 mm', '300 μm', '75 μm', '0', '0', '0', 'Pan']
-            elif grade_name == "Bituminous Concrete":
-                sieve_sizes = ['26.5 mm', '19 mm', '13.2 mm', '9.5 mm', '4.75 mm',
-                            '2.36 mm', '1.18 mm', '600 μm', '300 μm', '150 μm', '75 μm', 'Pan']
-            elif grade_name == "Mixed Seal Surfacing":
-                sieve_sizes = ['13.2 mm', '11.2 mm', '5.6 mm', '2.8 mm', '90 μm',
-                            '0', '0', '0', '0', '0', '0', 'Pan']
-            elif grade_name == "Open Graded Premix Surfacing":
-                sieve_sizes = ['13.2 mm', '11.2 mm', '5.6 mm', '2.8 mm', '90 μm',
-                            '0', '0', '0', '0', '0', '0', 'Pan']
+            if grade_name == "Grade 1":
+                sieve_sizes =[
+            '45 mm',
+            '37.5 mm',
+            '26.5 mm',
+            '19 mm',
+            '13.2 mm',
+            '11.2 mm',
+            '9.5 mm',
+            '6.3 mm',
+            '5.6 mm',
+            '4.75 mm',
+            '3.35 mm',
+            '2.80 mm',
+            '2.36 mm',
+            '1.18 mm',
+            '0.600 mm',
+            '0.300 mm',
+            '0.150 mm',
+            '0.090 mm',
+            '0.075 mm',
+            'Pan',
+        ]
+            elif grade_name == "Grade 2":
+                sieve_sizes = [
+            '45 mm',
+            '37.5 mm',
+            '26.5 mm',
+            '19 mm',
+            '13.2 mm',
+            '11.2 mm',
+            '9.5 mm',
+            '6.3 mm',
+            '5.6 mm',
+            '4.75 mm',
+            '3.35 mm',
+            '2.80 mm',
+            '2.36 mm',
+            '1.18 mm',
+            '0.600 mm',
+            '0.300 mm',
+            '0.150 mm',
+            '0.090 mm',
+            '0.075 mm',
+            'Pan',
+        ]
+            
             else:
                 sieve_sizes = []
 
@@ -181,205 +152,122 @@ class BitumenConcrete(models.Model):
 
 
    
-    @api.onchange('grade', 'size_id')
+    @api.onchange('grade', 'material_type')
     def _onchange_set_specific_limits(self):
         for rec in self:
             grade_name = rec.grade.grade if rec.grade else ""
-            size_value = rec.size_id.size if rec.size_id else ""
+            material_type = rec.material_type if rec.material_type else ""
 
             limits = []
 
-            if grade_name == "Bituminous Macadam":
-                if size_value == "1":
+            if material_type == "bm":
+                if grade_name == "Grade 1":
+    
                     limits = [
-                        '100',
-                        '90 - 100',
-                        '75 - 100',
-                        '-',
-                        '35 - 61',
-                        '13 - 22',
-                        '4 - 19',
-                        '2 - 10',
-                        '0 - 8',
-                        '0',
-                        '0',
-                        '0',
-                    ]
-                elif size_value == "2":
+                   '100','90-100','75-100','-','35-61','-','-','-','-','13-22','-','-','4-19','-','-','2-10','-','-','0-8',''
+                   ]
+                elif grade_name == "Grade 2":
                     limits = [
-                        '-',
-                        '-',
-                        '100',
-                        '90 - 100',
-                        '56 - 88',
-                        '16 - 36',
-                        '4 - 19',
-                        '2 - 10',
-                        '0 - 8',
-                        '0',
-                        '0',
-                        '0',
+                    '-','-','100','90-100','56-88','-','-','-','-','16-36','-','-','4-19','-','-','2-10','-','-','0-8',''
                     ]
 
-            elif grade_name == "Dense Graded Bituminous Macadam":
-                if size_value == "1":
+            elif material_type == "dbm":
+                if grade_name == "Grade 1":
                     limits = [
-                        '100',
-                        '90 - 100',
-                        '63 - 93',
-                        '-',
-                        '55 - 75',
-                        '38 - 54',
-                        '28 - 42',
-                        '7 -- 21',
-                        '2 -- 8',
-                        '0',
-                        '0',
-                        '0',
+                   '100',      # 45
+                   '95-100',   # 37.5
+                   '63-93',    # 26.5
+                   '-',        # 19
+                   '55-75',    # 13.2
+                   '-',        # 11.2
+                   '-',        # 9.5
+                   '-',        # 6.3
+                   '-',        # 5.6
+                   '38-54',    # 4.75
+                   '-',        # 3.35
+                   '-',        # 2.80
+                   '28-42',    # 2.36
+                   '-',        # 1.18
+                   '-',        # 0.600
+                   '7-21',     # 0.300
+                   '-',        # 0.150
+                   '-',        # 0.090
+                   '2-8',      # 0.075
+                   '',         # Pan
+                ]
+                elif grade_name == "Grade 2":
+                    limits = [
+                   '-',        # 45
+                   '100',      # 37.5
+                   '90-100',   # 26.5
+                   '71-95',    # 19
+                   '56-80',    # 13.2
+                   '-',        # 11.2
+                   '-',        # 9.5
+                   '-',        # 6.3
+                   '-',        # 5.6
+                   '38-54',    # 4.75
+                   '-',        # 3.35
+                   '-',        # 2.80
+                   '28-42',    # 2.36
+                   '-',        # 1.18
+                   '-',        # 0.600
+                   '7-21',     # 0.300
+                   '-',        # 0.150
+                   '-',        # 0.090
+                   '2-8',      # 0.075
+                   '',         # Pan
+                   ]
+
+            elif material_type == "bc":
+                if grade_name == "Grade 1":
+                    limits = [
+                    '-',        # 45
+                    '-',        # 37.5
+                    '100',      # 26.5
+                    '90-100',   # 19
+                    '59-79',    # 13.2
+                    '-',        # 11.2
+                    '52-72',    # 9.5
+                    '-',        # 6.3
+                    '-',        # 5.6
+                    '35-55',    # 4.75
+                    '-',        # 3.35
+                    '-',        # 2.80
+                    '28-44',    # 2.36
+                    '20-34',    # 1.18
+                    '15-27',    # 0.600
+                    '10-20',    # 0.300
+                    '5-13',     # 0.150
+                    '-',        # 0.090
+                    '2-8',      # 0.075
+                    '',         # Pan
                     ]
-                elif size_value == "2":
+                elif grade_name == "Grade 2":
                     limits = [
-                        '-',
-                        '100',
-                        '90 - 100',
-                        '71 - 95',
-                        '56 - 80',
-                        '38 - 54',
-                        '28 - 42',
-                        '7 -- 21',
-                        '2 -- 8',
-                        '0',
-                        '0',
-                        '0',
+                    '-',        # 45
+                    '-',        # 37.5
+                    '-',        # 26.5
+                    '100',      # 19
+                    '90-100',   # 13.2
+                    '-',        # 11.2
+                    '70-88',    # 9.5
+                    '-',        # 6.3
+                    '-',        # 5.6
+                    '53-71',    # 4.75
+                    '-',        # 3.35
+                    '-',        # 2.80
+                    '42-58',    # 2.36
+                    '34-48',    # 1.18
+                    '26-38',    # 0.600
+                    '18-28',    # 0.300
+                    '12-20',    # 0.150
+                    '-',        # 0.090
+                    '4-10',     # 0.075
+                    '',         # Pan
                     ]
 
-            elif grade_name == "Semi Dense Bituminous Concrete":
-                if size_value == "1":
-                    limits = [
-                        '100',
-                        '90 - 100',
-                        '70 - 90',
-                        '35 - 51',
-                        '24 - 39',
-                        '15 - 30',
-                        '9 -- 19',
-                        '3 -- 8',
-                        '0',
-                        '0',
-                        '0',
-                        '0',
-                    ]
-                elif size_value == "2":
-                    limits = [
-                        '-',
-                        '100',
-                        '90 - 100',
-                        '35 - 51',
-                        '24 - 39',
-                        '15 - 30',
-                        '9 -- 19',
-                        '3 -- 8',
-                        '0',
-                        '0',
-                        '0',
-                        '0',
-                    ]
-
-            elif grade_name == "Bituminous Concrete":
-                if size_value == "1":
-                    limits = [
-                        '100',
-                        '90 - 100',
-                        '59 - 79',
-                        '52 - 72',
-                        '35 - 55',
-                        '28 - 44',
-                        '20 - 34',
-                        '15 - 27',
-                        '10 -- 20',
-                        '5 -- 13',
-                        '2 -- 8',
-                        '0',
-                    ]
-                elif size_value == "2":
-                    limits = [
-                        '-',
-                        '100',
-                        '90 - 100',
-                        '70 - 88',
-                        '53 - 71',
-                        '42 - 58',
-                        '34 - 48',
-                        '26 - 38',
-                        '18 - 28',
-                        '12 -- 20',
-                        '4 -- 10',
-                        '0',
-                    ]
-
-            elif grade_name == "Mixed Seal Surfacing":
-                if size_value == "1":
-                    limits = [
-                        '-',
-                        '100',
-                        '52 - 88',
-                        '14 - 38',
-                        '0 - 5',
-                        '0',
-                        '0',
-                        '0',
-                        '0',
-                        '0',
-                        '0',
-                        '0',
-                    ]
-                elif size_value == "2":
-                    limits = [
-                        '100',
-                        '88 - 100',
-                        '31 - 52',
-                        '5 - 25',
-                        '0 - 5',
-                        '0',
-                        '0',
-                        '0',
-                        '0',
-                        '0',
-                        '0',
-                        '0',
-                    ]
-
-            elif grade_name == "Open Graded Premix Surfacing":
-                if size_value == "1":
-                    limits = [
-                        '--',
-                        '100',
-                        '52 - 88',
-                        '14 - 38',
-                        '0 - 5',
-                        '0',
-                        '0',
-                        '0',
-                        '0',
-                        '0',
-                        '0',
-                        '0',
-                    ]
-                elif size_value == "2":
-                    limits = [
-                        '100',
-                        '88 - 100',
-                        '31 - 52',
-                        '5 - 25',
-                        '0 - 5',
-                        '0',
-                        '0',
-                        '0',
-                        '0',
-                        '0',
-                        '0',
-                        '0',
-                    ]
+            
 
             # Assign limits to sieve lines
             for i, line in enumerate(rec.sieve_analysis_child_lines):
@@ -387,6 +275,9 @@ class BitumenConcrete(models.Model):
                     line.specific_limt = limits[i]
                 else:
                     line.specific_limt = ''
+
+
+    
  
 
     @api.onchange('sieve_analysis_child_lines')
@@ -459,6 +350,115 @@ class BitumenConcrete(models.Model):
 
 
 
+    # Flow Value Test
+    flow_value_name = fields.Char("Name",default="Flow Value Test")
+    flow_value_visible = fields.Boolean("Flow Value Test Visible",compute="_compute_visible")
+
+    flow_value_child_lines = fields.One2many('bitumen.mix.flow.value.line','parent_id',string="Parameter")
+
+
+    average_flow = fields.Float(
+        string="Average Flow Value",
+        compute="_compute_average_flow",
+        store=True
+    )
+
+    @api.depends('flow_value_child_lines.flow_value')
+    def _compute_average_flow(self):
+        for rec in self:
+            values = rec.flow_value_child_lines.mapped('flow_value')
+            rec.average_flow = sum(values) / len(values) if values else 0.0
+
+
+    average_flow_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_average_flow_conformity", store=True)
+
+    @api.depends('average_flow','eln_ref','grade')
+    def _compute_average_flow_conformity(self):
+        
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.average_flow_conformity = 'na'
+                continue
+            record.average_flow_conformity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35789ght-7188-4086-b132-62b50e63f1247ui')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35789ght-7188-4086-b132-62b50e63f1247ui')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    
+                    lower = record.average_flow - record.average_flow*mu_value
+                    upper = record.average_flow + record.average_flow*mu_value
+                    if lower >= req_min and upper <= req_max:
+                        record.average_flow_conformity = 'pass'
+                        break
+                    else:
+                        record.average_flow_conformity = 'fail'
+
+    average_flow_nabl = fields.Selection([
+        ('pass', 'NABL'),
+        ('fail', 'Non-NABL')], string="NABL", compute="_compute_average_flow_nabl", store=True)
+
+    @api.depends('average_flow','eln_ref','grade')
+    def _compute_average_flow_nabl(self):
+        
+        for record in self:
+            record.average_flow_nabl = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35789ght-7188-4086-b132-62b50e63f1247ui')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35789ght-7188-4086-b132-62b50e63f1247ui')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.average_flow - record.average_flow*mu_value
+                    upper = record.average_flow + record.average_flow*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.average_flow_nabl = 'pass'
+                        break
+                    else:
+                        record.average_flow_nabl = 'fail'
+
+
+    flow_value_report_type = fields.Selection([
+        ('auto', 'Auto'),
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], string="Report Type", default='auto')
+    
+    flow_value_final_report = fields.Selection([
+        ('nabl', 'NABL'),
+        ('non_nabl', 'Non-NABL'),], compute="_compute_flow_value_final_report", store=True)
+    
+    @api.depends('average_flow_nabl', 'flow_value_report_type')
+    def _compute_flow_value_final_report(self):
+        for rec in self:
+    
+            # Manual override
+            if rec.flow_value_report_type == 'nabl':
+                rec.flow_value_final_report = 'nabl'
+    
+            elif rec.flow_value_report_type == 'non_nabl':
+                rec.flow_value_final_report = 'non_nabl'
+    
+            # Automatic
+            else:
+                if rec.average_flow_nabl == 'pass':
+                    rec.flow_value_final_report = 'nabl'
+                else:
+                    rec.flow_value_final_report = 'non_nabl'
+
+
+
+    
+
+
+
+
+
          ### Compute Visible
     @api.depends('sample_parameters')
     def _compute_visible(self):
@@ -466,7 +466,7 @@ class BitumenConcrete(models.Model):
         for record in self:
       
             record.sieve_visible = False
-            record.bitumen_content_visible = False
+            record.flow_value_visible = False
            
             for sample in record.sample_parameters:
                 print("Internal Ids",sample.internal_id)
@@ -475,45 +475,43 @@ class BitumenConcrete(models.Model):
                     record.sieve_visible = True
 
                 if sample.internal_id == "35789ght-7188-4086-b132-62b50e63f1247ui":
-                    record.bitumen_content_visible = True
+                    record.flow_value_visible = True
 
                 
 
-            
-              
-    # def open_eln_page(self):
-    #     # import wdb; wdb.set_trace()
-
-    #     return {
-    #             'view_mode': 'form',
-    #             'res_model': "lerm.eln",
-    #             'type': 'ir.actions.act_window',
-    #             'target': 'current',
-    #             'res_id': self.eln_ref.id,
-                
-    #         }
+   
 
     def open_eln_page(self):
-    # import wdb; wdb.set_trace()
-        for result in self.eln_ref.parameters_result:
+
+        current_user = self.env.user
+        # 🔹 Only results assigned to current technician
+        if current_user.has_group('lerm_civil.lerm_discipline_group'):
+            technician_results = self.eln_ref.parameters_result
+        else:
+            technician_results = self.eln_ref.parameters_result.filtered(
+                lambda r: r.technician == current_user
+            )
+
+        for result in technician_results:
+            internal_id = result.parameter.internal_id
+
+
+            # Flow Value
             if result.parameter.internal_id == '35789ght-7188-4086-b132-62b50e63f1247ui':
-                result.result_char = round(self.binder_content,2)
+                result.result_char = round(self.average_flow,2)
                 result.calculated = True
-                if self.binder_content_nabl == 'pass':
+                if self.average_flow_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
                 continue
 
+
+         # Sieve Analysis
         for result in self.eln_ref.parameters_result:
             if result.parameter.internal_id == '62578gtre-7188-4086-b132-62b50e63f1247ui':
-                # result.result_char = round(self.binder_content,2)
                 result.calculated = True
-                # if self.binder_content_nabl == 'pass':
-                #     result.nabl_status = 'nabl'
-                # else:
-                #     result.nabl_status = 'non-nabl'
-                # continue 
+                
           
 
 
@@ -570,6 +568,8 @@ class BitumenConcrete(models.Model):
                 parameter_ids = user_param_results.mapped('parameter').ids
 
             record.sample_parameters = [(6, 0, parameter_ids)]
+
+
     def get_all_fields(self):
         record = self.env['mechanical.bitumen.mix'].browse(self.ids[0])
         field_values = {}
@@ -711,6 +711,55 @@ class SieveAnalysisLine(models.Model):
             sorted_lines = sorted(record.parent_id.sieve_analysis_child_lines, key=lambda r: r.id)
             # index = sorted_lines.index(record)
             # print("Working")
+
+
+class BitumenMixFlowValueLine(models.Model):
+    _name = "bitumen.mix.flow.value.line"
+    parent_id = fields.Many2one('mechanical.bitumen.mix', string="Parent Id")
+    
+    serial_no = fields.Integer(string="Specimen. No", readonly=True, copy=False, default=1)
+
+    diameter = fields.Float(string="Diameter (mm)")
+
+    height = fields.Float(string="Height (mm)")
+
+    maximum_load = fields.Float(string="Maximum Load (kN)")
+
+    flow_reading = fields.Integer(string="Flow Reading (0.25 mm units)")
+
+    flow_value = fields.Float(string="Flow Value (mm)",compute="_compute_flow_value",store=True)
+
+
+    @api.depends('flow_reading')
+    def _compute_flow_value(self):
+        for rec in self:
+            rec.flow_value = rec.flow_reading * 0.25
+
+
+
+
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('serial_no'))
+                vals['serial_no'] = max_serial_no + 1
+
+        return super(BitumenMixFlowValueLine, self).create(vals)
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.serial_no = index + 1
+
+
+
+
+
 class BitumenConcreteNotes(models.Model):
     _name = "mechanical.bitumen.mix.notes"
 
