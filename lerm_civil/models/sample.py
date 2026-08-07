@@ -35,7 +35,7 @@ class LermSampleForm(models.Model):
     department_id = fields.Char(string='Department')
     material_id = fields.Many2one('product.template',string="Material")
     material_id_lab_name = fields.Char(string="Material",compute="compute_material_id_lab_name",store=True)
-    ulr_no = fields.Char(string="ULR No." ,readonly=True, default=lambda self: 'New')
+    ulr_no = fields.Char(string="ULR No.", default=lambda self: 'New')
     brand = fields.Char(string="Brand")
     size_id = fields.Many2one('lerm.size.line',string="Size")
     grade_id = fields.Many2one('lerm.grade.line',string="Grade")
@@ -284,7 +284,25 @@ class LermSampleForm(models.Model):
 
     display_report_portal = fields.Boolean("Display on Portal")
     customer_portal_sample = fields.Many2one('customer.sample.line',string="Customer Portal Sample", readonly=True)
+    review_lab_ids_display = fields.Char(
+        string="Lab IDs (Review)",
+        compute="_compute_review_lab_ids_display",
+    )
 
+    def _compute_review_lab_ids_display(self):
+        for rec in self:
+            review = self.env['sample.request.review'].sudo().search([
+                ('sample_id', '=', rec.id)
+            ], limit=1)
+            if review and review.review_line_ids:
+                lab_ids = review.review_line_ids.mapped('lab_id')
+                rec.review_lab_ids_display = ', '.join(
+                    lid for lid in lab_ids if lid
+                ) or False
+            else:
+                rec.review_lab_ids_display = False
+
+                
     def unlink(self):
         for rec in self:
             if rec.srf_id:
@@ -1251,7 +1269,41 @@ class SampleRequestReviewLine(models.Model):
 
     split_done = fields.Boolean(string="Lab Generated", default=False)
 
+    parameters = fields.Many2many('lerm.parameter.master',string="Parameter")
+    technicians = fields.Many2many('res.users',string="Technicians")
+    task_id = fields.Many2one('project.task', string="To-Do Task")
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        lines = super(SampleRequestReviewLine, self).create(vals_list)
+        for line in lines:
+            if line.technicians and line.parameters:
+                task = self.env['project.task'].sudo().create({
+                    'name': f"Sample Testing: Lab {line.lab_id or 'Pending'} - {line.sample_id.kes_no}",
+                    'user_ids': [(6, 0, line.technicians.ids)],
+                    'description': f"Assigned Parameters: {', '.join(line.parameters.mapped('parameter_name'))} <br/> Sample: {line.sample_id.kes_no} <br/> Lab ID: {line.lab_id or 'Pending'}",
+                })
+                line.task_id = task.id
+        return lines
+
+    def write(self, vals):
+        res = super(SampleRequestReviewLine, self).write(vals)
+        for line in self:
+            if line.technicians and line.parameters:
+                if not line.task_id:
+                    task = self.env['project.task'].sudo().create({
+                        'name': f"Sample Testing: Lab {line.lab_id or 'Pending'} - {line.sample_id.kes_no}",
+                        'user_ids': [(6, 0, line.technicians.ids)],
+                        'description': f"Assigned Parameters: {', '.join(line.parameters.mapped('parameter_name'))} <br/> Sample: {line.sample_id.kes_no} <br/> Lab ID: {line.lab_id or 'Pending'}",
+                    })
+                    line.task_id = task.id
+                elif 'technicians' in vals or 'parameters' in vals or 'lab_id' in vals:
+                    line.task_id.sudo().write({
+                        'name': f"Sample Testing: Lab {line.lab_id or 'Pending'} - {line.sample_id.kes_no}",
+                        'user_ids': [(6, 0, line.technicians.ids)],
+                        'description': f"Assigned Parameters: {', '.join(line.parameters.mapped('parameter_name'))} <br/> Sample: {line.sample_id.kes_no} <br/> Lab ID: {line.lab_id or 'Pending'}",
+                    })
+        return res
 
 
 

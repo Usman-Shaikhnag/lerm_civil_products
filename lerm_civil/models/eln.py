@@ -69,12 +69,13 @@ class ELN(models.Model):
 
     update_result = fields.Integer("Update Result")
     state = fields.Selection([
+        ('5-alloted', 'Alloted'),
         ('1-draft', 'In-Test'),
         ('2-confirm', 'In-Check'),
         ('3-approved','Approved'),
         ('4-rejected','Rejected'),
-        ('5-cancelled','Cancelled')
-    ], string='State',default='1-draft')
+        ('5-cancelled','Cancelled'),
+    ], string='State',default='5-alloted')
     start_date = fields.Date(string="Start Date")
     end_date = fields.Date(string="End Date")
     remarks = fields.Text("Remarks")
@@ -115,6 +116,27 @@ class ELN(models.Model):
     quantity = fields.Integer(string="Quantity",default=1)
     sample_qty = fields.Integer(string="Sample Quantity")
     source_sample = fields.Char(string="Source of Sample",compute="_compute_source_sample",store=True)
+    
+    review_lab_ids_display = fields.Char(
+        string="Lab IDs (Review)",
+        compute="_compute_review_lab_ids_display",
+    )
+
+    def _compute_review_lab_ids_display(self):
+        for rec in self:
+            if rec.sample_id:
+                review = self.env['sample.request.review'].sudo().search([
+                    ('sample_id', '=', rec.sample_id.id)
+                ], limit=1)
+                if review and review.review_line_ids:
+                    lab_ids = review.review_line_ids.mapped('lab_id')
+                    rec.review_lab_ids_display = ', '.join(
+                        lid for lid in lab_ids if lid
+                    ) or False
+                else:
+                    rec.review_lab_ids_display = False
+            else:
+                rec.review_lab_ids_display = False
     # lab_id = fields.Char(
     #     string="Lab ID",
     #     readonly=True,
@@ -140,6 +162,8 @@ class ELN(models.Model):
     quantity_received = fields.Integer(string="Quantiyty Received")
     quantity_consumed = fields.Integer(string="Quantity Consumed")
     quantity_balance = fields.Integer(string="Quantity Balance", compute="compute_quantity_balance", readonly=True)
+    test_started = fields.Boolean(string="Test Started", default=False)
+
 
     @api.depends('parameters_result.technician')
     def _compute_technicians_from_results(self):
@@ -290,6 +314,9 @@ class ELN(models.Model):
 
         # print("material ",self.material.product_based_calculation)
         # print("model ",model)
+        if not self.test_started or self.state == '5-alloted':
+            self.test_started = True
+            self.state = '1-draft'
 
         # import wdb; wdb.set_trace()
         if self.model_id != 0:
@@ -360,14 +387,6 @@ class ELN(models.Model):
             "invisible_fetch_inputs": True
         })
 
-        # parameter = self.env['lerm.parameter.master'].browse(7)  # Replace 'parameter_id' with the actual ID of the parameter
-        # dependent_parameters = parameter.fetch_dependent_parameters_recursive(depth=80)  # Fetch up to 3 levels of dependent parameters
-        # # import wdb ; wdb.set_trace() 
-        # for dependent_parameter in dependent_parameters:
-        #     import wdb ; wdb.set_trace() 
-        #     print(dependent_parameter.parameter_name)
-        # parameters = []
-
         for record in self.parameters_result:
             parameter = self.env['lerm.parameter.master'].browse(record.parameter.id)
             # import wdb ; wdb.set_trace() 
@@ -383,23 +402,12 @@ class ELN(models.Model):
                 for inputs in dependent_parameter.dependent_inputs:
                     # import wdb ; wdb.set_trace() 
                     self.write({"parameters_input":[(0,0,{'parameter_result':data.id,"is_parameter_dependent":inputs.is_parameter_dependent,'identifier':inputs.identifier,'inputs':inputs.id,'value':inputs.default})]})
+        
+        if not self.test_started or self.state == '5-alloted':
+            self.test_started = True
+            self.state = '1-draft'
 
 
-
-            # dependent_parameters = parameter.fetch_dependent_parameters_recursive(depth=80)
-
-            # for inputs in record.parameter.dependent_inputs:
-                
-            #     self.write({"parameters_input":[(0,0,{'parameter_result':record.id,'identifier':inputs.identifier,'inputs':inputs.id})]})
-            #     if inputs.is_parameter_dependent:
-
-            #         # data = self.write({"parameters_result":[(0,0,{'parameter':inputs.parameter.id})]})
-            #         data = self.env["eln.parameters.result"].create({"eln_id":self.id,'parameter':inputs.parameter.id})
-            #         import wdb ; wdb.set_trace()
-            #         for inputs in data.parameter.dependent_inputs: 
-            #             self.write({"parameters_input":[(0,0,{'parameter_result':data.id,'identifier':inputs.identifier,'inputs':inputs.id})]})
-
-            #         self.env.cr.commit()
 
     def calculate_results(self):
         for record in self.parameters_result:
@@ -721,6 +729,7 @@ class ParameteResultCalculationWizard(models.TransientModel):
     # result_char = fields.Char(string="Result")
 
     eln_state = fields.Selection([
+        ('5-alloted', 'Alloted'),
         ('1-draft', 'In-Test'),
         ('2-confirm', 'In-Check'),
         ('3-approved','Approved'),

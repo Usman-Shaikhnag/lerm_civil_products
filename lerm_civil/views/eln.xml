@@ -12,7 +12,7 @@
                     name="confirm_eln"
                     string="Confirm"
                     invisible="state not in ('1-draft', '4-rejected')"/>
-                <field readonly="1" name="state" widget="statusbar" statusbar_visible="1-draft,2-confirm,3-approved"/>
+                <field readonly="1" name="state" widget="statusbar" statusbar_visible="1-draft,5-alloted,2-confirm,3-approved"/>
                 <button type="object" name="print_report" string="Print Report"/>
                 <button type="object" name="reupdate_result" string="Update Results"/>
                 <button type="object" name="print_datasheet" string="Print Datasheet"/>
@@ -250,6 +250,7 @@
                     <field name='lab_no_value' optional="show" invisible="1"/>
                     <field name='group' optional="show"/>
                     <field name='material' optional="show"/>
+                    <field name='review_lab_ids_display' optional="show" string="Lab IDs (Review)"/>
                     <field name='witness_name' optional="show"/>
                     <field name='casting_date' optional="show"/>
                     <field name='date_testing' optional="show"/>
@@ -315,6 +316,7 @@
                     <field name="group" string="Group" />
                     <field name="material" string="Material" />
                     <field name="state" string="State" />
+                    <filter string="Alloted" name="state_in_alloted" domain="[('state', '=', '5-alloted')]" />
                     <filter string="In-Test" name="state_in_test" domain="[('state', '=', '1-draft')]" />
                     <filter string="In-Check" name="state_in_check" domain="[('state', '=', '2-confirm')]" />
                     <filter string="Approved" name="state_approved" domain="[('state', '=', '3-approved')]" />

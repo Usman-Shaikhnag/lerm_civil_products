@@ -437,6 +437,8 @@
                       
                         
                         <field name="lab_id" readonly="1"/>
+                        <field name="parameters" widget="many2many_tags" domain="[('id', 'in', parent.parameters)]"/>
+                        <field name="technicians" widget="many2many_tags" options="{'no_create': True}"/>
                         <field name="weight" />
                         <field name="uom" />
                         <field name="source" />
