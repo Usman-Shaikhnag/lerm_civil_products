@@ -1183,8 +1183,12 @@ class SrfForm(models.Model):
                     seq_val = self.env['ir.sequence'].next_by_code('sample.ulr.seq') or 'New'
 
                     lab = sample.lab_location
-                    lab_cert = lab.lab_certificate_no if lab else ''
-                    lab_loc = sample.location_name.location_code if sample.location_name else ''
+                    # lab_cert = lab.lab_certificate_no if lab else ''
+                    # lab_loc = sample.location_name.location_code if sample.location_name else ''
+
+
+                    lab_cert = (lab.lab_certificate_no or '') if lab else ''
+                    lab_loc = (sample.location_name.location_code or '') if sample.location_name else ''
 
                     ulr_no = seq_val.replace('(lab_certificate_no)', lab_cert)\
                                     .replace('(lab_no_value)', lab_loc)
