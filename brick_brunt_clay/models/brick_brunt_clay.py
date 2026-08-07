@@ -6,45 +6,20 @@ import math
 class MechanicalBricksBurntClay(models.Model):
     _name = "mechanical.bricks.burnt.clay"
     _inherit = "lerm.eln"
-    _rec_name = "name2"
+    _rec_name = "name"
 
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
-    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
-    name2 = fields.Char("Name",default="Clay Bricks")
+    name = fields.Char("Name",default="Bricks (Burnt Clay)")
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
-
-    compressive_strength_unit = fields.Char(
-    compute="_compute_units", store=False
-    )
-    water_absorption_unit = fields.Char(
-        compute="_compute_units", store=False
-    )
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
+    # child_lines = fields.One2many('mechanical.water.absorption.bricks.line','parent_id',string="Parameter")
+    # test_start_date = fields.Date("Test Start Date")
+    # test_end_date = fields.Date("Test End Date")
 
 
-
-
-    def _compute_units(self):
-        for rec in self:
-            comp_param = self.env['lerm.parameter.master'].search([
-                ('internal_id', '=', '97928829-9b1f-4091-aa7f-4b76f98eb47f')
-            ], limit=1)
-            water_param = self.env['lerm.parameter.master'].search([
-                ('internal_id', '=', '1ddc7095-da2d-44a2-a70a-ab97216aee77')
-            ], limit=1)
-
-            rec.compressive_strength_unit = comp_param.unit.name if comp_param.unit else ""
-            rec.water_absorption_unit = water_param.unit.name if water_param.unit else ""
-
-    length_in_mm = fields.Float(string="Length in mm")
-    width_in_mm = fields.Float(string="Width in mm")
-    height_in_mm = fields.Float(string="Height in mm")
-
-
-    # remark
-
-    notes_id = fields.One2many('brickbruntclay.notes', 'parent_id', string="Notes")
+    notes_id = fields.One2many('mechanical.bricks.burnt.clay.notes', 'parent_id', string="Notes",ondelete='cascade')
     
     @api.model
     def default_get(self, fields):
@@ -53,79 +28,74 @@ class MechanicalBricksBurntClay(models.Model):
         default_notes = [
             (0, 0, {
                 'sr_no': 'a',
-                'notes': 'The information marked with an # received from customer',
+                'notes': 'The Test Report(s) is/are valid only to the sample submitted to the laboratory.',
             }),
             (0, 0, {
                 'sr_no': 'b',
-                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+                'notes': 'Sample(s) was/were not drawn by laboratory.',
             }),
             (0, 0, {
                 'sr_no': 'c',
-                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+                'notes': 'This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.',
             }),
             (0, 0, {
                 'sr_no': 'd',
-                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+                'notes': '# - Information provided by the customer.',
             }),
         ]
 
         res['notes_id'] = default_notes
         return res
-
-
-
-
-
-    # Initial Rate Of Absorption
-
-    ini_rate_absorption_visible = fields.Boolean("Initial Rate Of Absorption",compute="_compute_visible")
-    ini_rate_absorption_name = fields.Char("Name",default="Initial Rate Of Absorption")
-    
-    absorption_line_ids = fields.One2many(
-        'initial.rate.absorption.line',
-        'parent_id',
-        string="IRA Test Lines"
-    )
-
-    average_ira = fields.Float(
-        string="Average Initial Rate of Absorption (g/min/100 cm²)",
-        compute="_compute_average_ira",
-        store=True
-    )
-
-    @api.depends('absorption_line_ids.initial_rate_absorp')
-    def _compute_average_ira(self):
-        for rec in self:
-            if rec.absorption_line_ids:
-                total = sum(rec.absorption_line_ids.mapped('initial_rate_absorp'))
-                rec.average_ira = total / len(rec.absorption_line_ids)
-            else:
-                rec.average_ira = 0
-
-  
-    
-
-
-    
+   
 
         #1------------ Compressive Strength
 
     compressive_strength_visible = fields.Boolean("Compressive Strengt Visible",compute="_compute_visible")
     compressive_strength_name = fields.Char("Name",default="Compressive Strength")
-
-
-    compressive_strength_lines = fields.One2many('mechanical.bricks.clay.compressive.line','parent_id',string="Parameter")
-
+    length = fields.Float(string="Length mm")
+    length_2 = fields.Float(string="Length mm")
+    length_3 = fields.Float(string="Length mm")
+    length_4 = fields.Float(string="Length mm")
+    length_5 = fields.Float(string="Length mm")
+    width = fields.Float(string="Width mm")
+    width_2 = fields.Float(string="Width mm")
+    width_3 = fields.Float(string="Width mm")
+    width_4 = fields.Float(string="Width mm")
+    width_5 = fields.Float(string="Width mm")
+    height = fields.Float(string="Height mm")
+    height_2 = fields.Float(string="Height mm")
+    height_3 = fields.Float(string="Height mm")
+    height_4 = fields.Float(string="Height mm")
+    height_5 = fields.Float(string="Height mm")
+    area = fields.Float(string="Area (mm²)", digits=(12,4),compute="_compute_area")
+    area_2 = fields.Float(string="Area (mm²)", digits=(12,4),compute="_compute_area_2")
+    area_3 = fields.Float(string="Area (mm²)", digits=(12,4),compute="_compute_area_3")
+    area_4 = fields.Float(string="Area (mm²)", digits=(12,4),compute="_compute_area_4")
+    area_5 = fields.Float(string="Area (mm²)", digits=(12,4),compute="_compute_area_5")
+    load = fields.Float(string=" Load in, KN", digits=(12,1))
+    load_2 = fields.Float(string=" Load in, KN", digits=(12,1))
+    load_3 = fields.Float(string=" Load in, KN", digits=(12,1))
+    load_4 = fields.Float(string=" Load in, KN", digits=(12,1))
+    load_5 = fields.Float(string=" Load in, KN", digits=(12,1))
+    comp_strength_1 = fields.Float(string="Compressive strength MPa",compute="_compute_comp_strength_1")
+    comp_strength_2 = fields.Float(string="Compressive strength MPa",compute="_compute_comp_strength_2")
+    comp_strength_3 = fields.Float(string="Compressive strength MPa",compute="_compute_comp_strength_3")
+    comp_strength_4 = fields.Float(string="Compressive strength MPa",compute="_compute_comp_strength_4")
+    comp_strength_5 = fields.Float(string="Compressive strength MPa",compute="_compute_comp_strength_5")
+    
     avrg_compressive_strength = fields.Float(string="Average Compressive Strength",compute="_compute_avrg_compressive_strength")
 
     comp_strength_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Confirmity', default='fail',compute="_compute_comp_strength_conformity")
 
     comp_strength_nabl = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')],string="NABL",compute="_compute_comp_strength_nabl",store=True)
+        ('fail', 'Fail'),
+        
+        ],string="NABL",compute="_compute_comp_strength_nabl",store=True)
 
 
 
@@ -136,6 +106,11 @@ class MechanicalBricksBurntClay(models.Model):
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','97928829-9b1f-4091-aa7f-4b76f98eb47f')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','97928829-9b1f-4091-aa7f-4b76f98eb47f')]).parameter_table
             for material in materials:
+
+                   # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.comp_strength_confirmity = '--'
+                        break
                 
                     req_min = material.req_min
                     req_max = material.req_max
@@ -174,25 +149,101 @@ class MechanicalBricksBurntClay(models.Model):
 
     
 
-    @api.depends('compressive_strength_lines.comp_strength_1')
+    @api.depends('comp_strength_1', 'comp_strength_2', 'comp_strength_3', 'comp_strength_4', 'comp_strength_5')
     def _compute_avrg_compressive_strength(self):
-        for rec in self:
-            comp_strength_1s = rec.compressive_strength_lines.filtered(lambda l: l.comp_strength_1 is not None)
-            total = sum(line.comp_strength_1 for line in comp_strength_1s)
-            count = len(comp_strength_1s)
-            rec.avrg_compressive_strength = total / count if count > 0 else 0.0
+        for record in self:
+            comp_strength_1 = [
+                record.comp_strength_1,
+                record.comp_strength_2,
+                record.comp_strength_3,
+                record.comp_strength_4,
+                record.comp_strength_5,
+            ]
+            # Filter out None values and calculate the average
+            non_empty_strengths = [strength for strength in comp_strength_1 if strength is not None]
+            if non_empty_strengths:
+                average_strength = sum(non_empty_strengths) / len(non_empty_strengths)
+            else:
+                average_strength = 0.0
+            record.avrg_compressive_strength = average_strength
 
       
+    @api.depends('length', 'width')
+    def _compute_area(self):
+        for record in self:
+            record.area = record.length * record.width
+
+    @api.depends('length_2', 'width_2')
+    def _compute_area_2(self):
+        for record in self:
+            record.area_2 = record.length_2 * record.width_2
+
+    @api.depends('length_3', 'width_3')
+    def _compute_area_3(self):
+        for record in self:
+            record.area_3 = record.length_3 * record.width_3
+
+    @api.depends('length_4', 'width_4')
+    def _compute_area_4(self):
+        for record in self:
+            record.area_4 = record.length_4 * record.width_4
+
+    @api.depends('length_5', 'width_5')
+    def _compute_area_5(self):
+        for record in self:
+            record.area_5 = record.length_5 * record.width_5
+
+    @api.depends('load', 'area')
+    def _compute_comp_strength_1(self):
+        for record in self:
+            if record.area != 0:
+                record.comp_strength_1 = record.load / record.area * 1000
+            else:
+                record.comp_strength_1 = 0.0
+    
+    @api.depends('load_2', 'area_2')
+    def _compute_comp_strength_2(self):
+        for record in self:
+            if record.area_2 != 0:
+                record.comp_strength_2 = record.load_2 / record.area_2 * 1000
+            else:
+                record.comp_strength_2 = 0.0
+
+    @api.depends('load_3', 'area_3')
+    def _compute_comp_strength_3(self):
+        for record in self:
+            if record.area_3 != 0:
+                record.comp_strength_3 = record.load_3 / record.area_3 * 1000
+            else:
+                record.comp_strength_3 = 0.0
+
+    @api.depends('load_4', 'area_4')
+    def _compute_comp_strength_4(self):
+        for record in self:
+            if record.area_4 != 0:
+                record.comp_strength_4 = record.load_4 / record.area_4 * 1000
+            else:
+                record.comp_strength_4 = 0.0
+
+    @api.depends('load_5', 'area_5')
+    def _compute_comp_strength_5(self):
+        for record in self:
+            if record.area_5 != 0:
+                record.comp_strength_5 = record.load_5 / record.area_5 * 1000
+            else:
+                record.comp_strength_5 = 0.0
+
+    
 
 
         #-2----------Efflorescence Visual Observation 
     efflorescence_visible = fields.Boolean("Efflorescence Visible",compute="_compute_visible")
     visual_observation_name_efflorescence = fields.Char("Name",default="Efflorescence")
-    visual_observation_1 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
-    visual_observation_2 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
-    visual_observation_3 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
-    visual_observation_4 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
-    visual_observation_5 = fields.Selection([('light', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
+    visual_observation_1 = fields.Selection([('like', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
+    visual_observation_2 = fields.Selection([('like', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
+    visual_observation_3 = fields.Selection([('like', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
+    visual_observation_4 = fields.Selection([('like', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
+    visual_observation_5 = fields.Selection([('like', 'Light'), ('nil', 'Nil'), ('slight', 'Slight'), ('moderate', 'Moderate'), ('heavy', 'Heavy'), ('serious', 'Serious')],string='Visual observation')
 
 
          #-3----------  Dimension As per IS: IS : 1077 -1992 
@@ -209,20 +260,27 @@ class MechanicalBricksBurntClay(models.Model):
 
     water_absorbtion_visible = fields.Boolean("Water Absorption Visible",compute="_compute_visible")
     wt_absorption_name = fields.Char("Name",default="Water Absorption")
-    water_absorption_lines = fields.One2many('mechanical.bricks.clay.water.absorption.line','parent_id',string="Parameter")
-   
+    initial_wt = fields.Float(string="Initial wt after 24 hr emersion water")
+    initial_wt_2 = fields.Float(string="Initial wt after 24 hr emersion water")
+    initial_wt_3 = fields.Float(string="Initial wt after 24 hr emersion water")
+    initial_wt_4 = fields.Float(string="Initial wt after 24 hr emersion water")
+    initial_wt_5 = fields.Float(string="Initial wt after 24 hr emersion water")
+    final_wt = fields.Float(string="Final wt after 24 hr oven")
+    final_wt_2 = fields.Float(string="Final wt after 24 hr oven")
+    final_wt_3 = fields.Float(string="Final wt after 24 hr oven")
+    final_wt_4 = fields.Float(string="Final wt after 24 hr oven")
+    final_wt_5 = fields.Float(string="Final wt after 24 hr oven")
+    water_absorption = fields.Float(string="Water Absorption %", compute="_compute_water_absorption")
+    water_absorption_2 = fields.Float(string="Water Absorption %", compute="_compute_water_absorption_2")
+    water_absorption_3 = fields.Float(string="Water Absorption %", compute="_compute_water_absorption_3")
+    water_absorption_4 = fields.Float(string="Water Absorption %", compute="_compute_water_absorption_4")
+    water_absorption_5 = fields.Float(string="Water Absorption %", compute="_compute_water_absorption_5")
     avrg_water_absorption = fields.Float(string="Average Water Absorption, %", compute="_compute_avrg_water_absorption")
-    @api.depends('water_absorption_lines.water_absorption')
-    def _compute_avrg_water_absorption(self):
-        for rec in self:
-            water_absorptions = rec.water_absorption_lines.filtered(lambda l: l.water_absorption is not None)
-            total = sum(line.water_absorption for line in water_absorptions)
-            count = len(water_absorptions)
-            rec.avrg_water_absorption = total / count if count > 0 else 0.0
 
     water_absorption_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Confirmity', default='fail',compute="_compute_water_absorption_confirmity")
 
     water_absorption_nabl = fields.Selection([
@@ -237,6 +295,11 @@ class MechanicalBricksBurntClay(models.Model):
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1ddc7095-da2d-44a2-a70a-ab97216aee77')]).parameter_table
             for material in materials:
+
+                   # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.water_absorption_confirmity = '--'
+                        break
                 
                     req_min = material.req_min
                     req_max = material.req_max
@@ -271,9 +334,67 @@ class MechanicalBricksBurntClay(models.Model):
                     else:
                         record.water_absorption_nabl = 'fail'
 
-    
+    @api.depends('water_absorption', 'water_absorption_2', 'water_absorption_3', 'water_absorption_4', 'water_absorption_5')
+    def _compute_avrg_water_absorption(self):
+        for record in self:
+            total_absorption = (
+                record.water_absorption +
+                record.water_absorption_2 +
+                record.water_absorption_3 +
+                record.water_absorption_4 +
+                record.water_absorption_5
+            )
+            num_entries = sum(1 for field in [
+                record.water_absorption,
+                record.water_absorption_2,
+                record.water_absorption_3,
+                record.water_absorption_4,
+                record.water_absorption_5
+            ] if field)
+            if num_entries > 0:
+                record.avrg_water_absorption = total_absorption / num_entries
+            else:
+                record.avrg_water_absorption = 0.0
 
-    
+    @api.depends('initial_wt' , 'final_wt')
+    def _compute_water_absorption(self):
+        for record in self:
+            if record.final_wt != 0:
+                record.water_absorption = (record.initial_wt - record.final_wt) / record.final_wt * 100
+            else:
+                record.water_absorption = 0
+
+    @api.depends('initial_wt_2' , 'final_wt_2')
+    def _compute_water_absorption_2(self):
+        for record in self:
+            if record.final_wt_2 != 0:
+                record.water_absorption_2 = (record.initial_wt_2 - record.final_wt_2) / record.final_wt_2 * 100
+            else:
+                record.water_absorption_2 = 0
+
+    @api.depends('initial_wt_3' , 'final_wt_3')
+    def _compute_water_absorption_3(self):
+        for record in self:
+            if record.final_wt_3 != 0:
+                record.water_absorption_3 = (record.initial_wt_3 - record.final_wt_3) / record.final_wt_3 * 100
+            else:
+                record.water_absorption_3 = 0
+
+    @api.depends('initial_wt_4' , 'final_wt_4')
+    def _compute_water_absorption_4(self):
+        for record in self:
+            if record.final_wt_4 != 0:
+                record.water_absorption_4 = (record.initial_wt_4 - record.final_wt_4) / record.final_wt_4 * 100
+            else:
+                record.water_absorption_4 = 0
+
+    @api.depends('initial_wt_5' , 'final_wt_5')
+    def _compute_water_absorption_5(self):
+        for record in self:
+            if record.final_wt_5 != 0:
+                record.water_absorption_5 = (record.initial_wt_5 - record.final_wt_5) / record.final_wt_5 * 100
+            else:
+                record.water_absorption_5 = 0
 
     confirmity = fields.Selection([
         ('pass', 'Pass'),
@@ -290,7 +411,6 @@ class MechanicalBricksBurntClay(models.Model):
             record.water_absorbtion_visible = False
             record.efflorescence_visible = False
             record.dimension_visible = False
-            record.ini_rate_absorption_visible = False
 
             for sample in record.sample_parameters:
                 print("Internal Ids",sample.internal_id)
@@ -302,10 +422,6 @@ class MechanicalBricksBurntClay(models.Model):
                     record.efflorescence_visible = True
                 if sample.internal_id == "9f1689be-107d-4e30-9d3d-2aff6292264d":
                     record.dimension_visible = True 
-
-                if sample.internal_id == "5cf180a4-0737-46c3-b647-7828747bfd37":
-                    record.ini_rate_absorption_visible = True 
-
      
     def open_eln_page(self):
         # parameter_based_assignment
@@ -316,8 +432,8 @@ class MechanicalBricksBurntClay(models.Model):
         )
 
         for result in technician_results:
-            
-            # Compressive Strength 
+
+
             if result.parameter.internal_id == '97928829-9b1f-4091-aa7f-4b76f98eb47f':
                 result.result_char = round(self.avrg_compressive_strength,2)
                 result.calculated = True
@@ -327,7 +443,6 @@ class MechanicalBricksBurntClay(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
 
-            # water absorbtion
             if result.parameter.internal_id == '1ddc7095-da2d-44a2-a70a-ab97216aee77':
                 result.result_char = round(self.avrg_water_absorption,2)
                 result.calculated = True
@@ -335,22 +450,27 @@ class MechanicalBricksBurntClay(models.Model):
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
-                continue 
+                continue
 
-            # Efflorence
+
             if result.parameter.internal_id == '9dda88ca-75fa-4e60-bcac-3cf6609386ce':
-                # result.result_char = round(self.avrg_water_absorption,2)
+                # result.result_char = self.initial_setting_time_minutes_unrounded
                 result.calculated = True
+                # if self.initial_setting_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
 
-            # Dimension
+
             if result.parameter.internal_id == '9f1689be-107d-4e30-9d3d-2aff6292264d':
-                # result.result_char = round(self.avrg_water_absorption,2)
+                # result.result_char = self.final_setting_time_minutes
                 result.calculated = True
-            
-            # Rate Of Absorption
-            if result.parameter.internal_id == '5cf180a4-0737-46c3-b647-7828747bfd37':
-                result.result_char = round(self.average_ira,2)
-                result.calculated = True
+                # if self.final_setting_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
 
 
         return {
@@ -361,6 +481,7 @@ class MechanicalBricksBurntClay(models.Model):
                 'res_id': self.eln_ref.id,
                 
             }
+
 
     @api.model
     def create(self, vals):
@@ -376,46 +497,18 @@ class MechanicalBricksBurntClay(models.Model):
             self.grade = self.eln_ref.grade_id.id
     
 
-    # @api.depends('eln_ref')
-    # def _compute_sample_parameters(self):
-    #     # records = self.env['lerm.eln'].sudo().search([('id','=', record.eln_id.id)]).parameters_result
-    #     # print("records",records)
-    #     # self.sample_parameters = records
-    #     for record in self:
-    #         records = record.eln_ref.parameters_result.parameter.ids
-    #         record.sample_parameters = records
-    #         print("Records",records)
-
-    # @api.depends('eln_ref')
-    # def _compute_sample_parameters(self):
-     
-    #     for record in self:
-    #         records = record.eln_ref.parameters_result.parameter.ids
-    #         record.sample_parameters = records
-    #         print("Records",records)
-
-
-    @api.depends('eln_ref', 'eln_ref.parameters_result.technician')
+    @api.depends('eln_ref')
     def _compute_sample_parameters(self):
-        # parameter_based_assignment
-        current_user = self.env.user
+        # records = self.env['lerm.eln'].sudo().search([('id','=', record.eln_id.id)]).parameters_result
+        # print("records",records)
+        # self.sample_parameters = records
         for record in self:
-            if not record.eln_ref:
-                record.sample_parameters = [(6, 0, [])]
-                continue
-
-            # filter parameter results by current user
-            user_param_results = record.eln_ref.parameters_result.filtered(
-                lambda r: r.technician and r.technician.id == current_user.id
-            )
-
-            # map to parameter master IDs
-            parameter_ids = user_param_results.mapped('parameter').ids
-
-            record.sample_parameters = [(6, 0, parameter_ids)]
+            records = record.eln_ref.parameters_result.parameter.ids
+            record.sample_parameters = records
+            print("Records",records)
 
     def get_all_fields(self):
-        record = self.env['mechanical.bricks.burnt.clay'].browse(self.ids[0])
+        record = self.env['mechanical.bricks'].browse(self.ids[0])
         field_values = {}
         for field_name, field in record._fields.items():
             field_value = record[field_name]
@@ -425,137 +518,8 @@ class MechanicalBricksBurntClay(models.Model):
 
 
 
-class CompressiveLine(models.Model):
-    _name = "mechanical.bricks.clay.compressive.line"
-    parent_id = fields.Many2one('mechanical.bricks.burnt.clay',string="Parent Id")
-
-    serial_no = fields.Integer(string="sample", readonly=True, copy=False, default=1)
-    identification_mark = fields.Char(string="Identification Mark")
-    length = fields.Float(string="Length mm")
-    width = fields.Float(string="Width mm")
-    height = fields.Float(string="Height mm")
-    area = fields.Float(string="Area (mm²)", digits=(12,4),compute="_compute_area")
-    load = fields.Float(string=" Load in, Kn", digits=(12,1))
-    comp_strength_1 = fields.Float(string="Compressive strength MPa",compute="_compute_comp_strength_1")
-
-
-
-
-    @api.depends('length', 'width')
-    def _compute_area(self):
-        for record in self:
-            record.area = record.length * record.width
-
-    @api.depends('load', 'area')
-    def _compute_comp_strength_1(self):
-        for record in self:
-            if record.area != 0:
-                record.comp_strength_1 = record.load / record.area * 1000
-            else:
-                record.comp_strength_1 = 0.0
-   
-   
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
-
-        return super(CompressiveLine, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
-
-
-class WaterAbsorptionLine(models.Model):
-    _name = "mechanical.bricks.clay.water.absorption.line"
-    parent_id = fields.Many2one('mechanical.bricks.burnt.clay',string="Parent Id")
-
-    serial_no = fields.Integer(string="sample", readonly=True, copy=False, default=1)
-    identification_mark = fields.Char(string="Identification Mark")
-    initial_wt = fields.Float(string="Initial wt after 24 hr emersion water)")
-    final_wt = fields.Float(string="Final wt after 24 hr oven")
-    water_absorption = fields.Float(string="Water Absorption %", compute="_compute_water_absorption")
-
-    @api.depends('initial_wt' , 'final_wt')
-    def _compute_water_absorption(self):
-        for record in self:
-            if record.final_wt != 0:
-                record.water_absorption = (record.initial_wt - record.final_wt) / record.final_wt * 100
-            else:
-                record.water_absorption = 0
-    
-
-
-
-   
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
-
-        return super(WaterAbsorptionLine, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
-
-
-class InitialRateAbsorptionLine(models.Model):
-    _name = "initial.rate.absorption.line"
-    parent_id = fields.Many2one('mechanical.bricks.burnt.clay',string="Parent Id")
-
-    serial_no = fields.Integer(string="sample", readonly=True, copy=False, default=1)
-    iW1 = fields.Float("Weight of dry brick (g) ")
-    W2 = fields.Float("Weight of brick after 1 minute immersion (g) ")
-    W2_W1 = fields.Float("Water Absorbed (W₂–W₁) g ",compute="_compute_initial_rate_absorp",
-        store=True)
-    area = fields.Float("Area of immersed surface (cm²) ",compute="_compute_area", store=True)
-    initial_rate_absorp = fields.Float("Initial Rate of Absorption (g/min/100 cm²)",compute="_compute_initial_rate_absorp",store=True)
-
-    @api.depends('parent_id.length_in_mm', 'parent_id.width_in_mm')
-    def _compute_area(self):
-        for rec in self:
-            length = rec.parent_id.length_in_mm or 0
-            breadth = rec.parent_id.width_in_mm or 0
-            rec.area = length * breadth
-
-    @api.depends('iW1', 'W2', 'area')
-    def _compute_initial_rate_absorp(self):
-        for rec in self:
-
-            # Water absorbed
-            rec.W2_W1 = rec.W2 - rec.iW1
-
-            # Initial Rate Absorption
-            if rec.area:
-                rec.initial_rate_absorp = (rec.W2_W1 * 100) / rec.area
-            else:
-                rec.initial_rate_absorp = 0
-
-    @api.model
-    def create(self, vals):
-     vals['serial_no'] = self.search_count([]) + 1
-     return super().create(vals)
-
-
-
-   
-   
-class brickbruntclayNotes(models.Model):
-    _name = "brickbruntclay.notes"
+class BrickBurntClayNotes(models.Model):
+    _name = "mechanical.bricks.burnt.clay.notes"
 
     parent_id = fields.Many2one('mechanical.bricks.burnt.clay',string="Parent Id")
     sr_no = fields.Char("Sr. No.")

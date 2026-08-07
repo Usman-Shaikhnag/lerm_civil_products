@@ -87,6 +87,7 @@ class MechanicalBricks(models.Model):
     comp_strength_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Confirmity', default='fail',compute="_compute_comp_strength_conformity")
 
     comp_strength_nabl = fields.Selection([
@@ -102,7 +103,13 @@ class MechanicalBricks(models.Model):
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b0eecb4f-9287-48c7-a607-bf1b64a8115d')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','b0eecb4f-9287-48c7-a607-bf1b64a8115d')]).parameter_table
             for material in materials:
-                
+                    
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.comp_strength_confirmity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -271,6 +278,7 @@ class MechanicalBricks(models.Model):
     water_absorption_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Confirmity', default='fail',compute="_compute_water_absorption_confirmity")
 
     water_absorption_nabl = fields.Selection([
@@ -285,7 +293,12 @@ class MechanicalBricks(models.Model):
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','537e20c5-f3ab-4b19-af25-91a4671baf5f')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','537e20c5-f3ab-4b19-af25-91a4671baf5f')]).parameter_table
             for material in materials:
-                
+                    
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.water_absorption_confirmity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value

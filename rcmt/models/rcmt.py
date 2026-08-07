@@ -407,8 +407,8 @@ class RCMT(models.Model):
     def _compute_rcmt_nabl(self):
         for record in self:
             record.rcmt_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id', '=', '78954gh24-391c-4d7b-818d-28f7b75ea261')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id', '=', '78954gh24-391c-4d7b-818d-28f7b75ea261')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id', '=', '36f86e6e-391c-4d7b-818d-28f7b75ea261')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id', '=', '36f86e6e-391c-4d7b-818d-28f7b75ea261')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -434,8 +434,8 @@ class RCMT(models.Model):
         
         for record in self:
             record.rcmt_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78954gh24-391c-4d7b-818d-28f7b75ea261')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78954gh24-391c-4d7b-818d-28f7b75ea261')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','36f86e6e-391c-4d7b-818d-28f7b75ea261')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','36f86e6e-391c-4d7b-818d-28f7b75ea261')]).parameter_table
             for material in materials:
                 # if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -471,7 +471,7 @@ class RCMT(models.Model):
 
         
         # for result in self.eln_ref.parameters_result:
-            if result.parameter.internal_id == '78954gh24-391c-4d7b-818d-28f7b75ea261':
+            if result.parameter.internal_id == '36f86e6e-391c-4d7b-818d-28f7b75ea261':
                 # result.result_char = round(self.binder_content,2)
                 result.calculated = True
                 # if self.binder_content_nabl == 'pass':

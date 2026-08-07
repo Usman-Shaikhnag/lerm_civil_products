@@ -2,9 +2,9 @@
 <odoo>
     <data>
 
-        <record id="steel_tmt_bar_view" model="ir.ui.view">
-        <field name="name">steel.tmt.bar.form</field>
-        <field name="model">steel.tmt.bar</field>
+        <record id="ss_round_view" model="ir.ui.view">
+        <field name="name">structural.steel.round.form</field>
+        <field name="model">structural.steel.round</field>
         <field name="arch" type="xml">
             <form>
 
@@ -17,9 +17,7 @@
                     </group>
                          
                             <group>
-                                <group>
-                                    <field name='Id_no' invisible="1"/>
-                                </group>
+                                
                                
                                 
                             </group>
@@ -71,24 +69,34 @@
                                     </tree>
                                 </field>
                             </div>
-                            <group>
-                                    <field name='tests' options="{'no_create':True}" invisible="1"/>
-                            </group>
-
+                            
                             
                             <field name="bend_visible" invisible="1"/>
                             <field name="fracture_visible" invisible="1"/>
                             <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
                                 <tbody>
                                     <tr>
-                                        <td><label for="dia1"></label></td>
-                                        <td><field name="dia1"/></td>
-                                        <td><label for="dia2"></label></td>
-                                        <td><field name="dia2"/></td>
+                                        <td><span>Parameters</span></td>
+                                        <td><span>Observation 1</span></td>
+                                        <td><span>Parameters</span></td>
+                                        <td><span>Observation 2</span></td>
+                                        
                                     </tr>
                                     <tr>
-                                        <td><label for="area1"></label></td>
-                                        <td><field name="area1"/></td>
+                                        <td><label for="width"></label></td>
+                                        <td><field name="width"/></td>
+                                        <td><label for="width2"></label></td>
+                                        <td><field name="width2"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="thickness"></label></td>
+                                        <td><field name="thickness"/></td>
+                                        <td><label for="thickness2"></label></td>
+                                        <td><field name="thickness2"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="area"></label></td>
+                                        <td><field name="area"/></td>
                                         <td><label for="area2"></label></td>
                                         <td><field name="area2"/></td>
                                     </tr>
@@ -99,38 +107,38 @@
                                         <td><field name="gauge_length2"/></td>
                                     </tr>
                                     <tr>
-                                        <td><label for="final_length1"></label></td>
-                                        <td><field name="final_length1"/></td>
+                                        <td><label for="final_length"></label></td>
+                                        <td><field name="final_length"/></td>
                                         <td><label for="final_length2"></label></td>
                                         <td><field name="final_length2"/></td>
                                     </tr>
                                     <tr>
-                                        <td><label for="yeild_load1"></label></td>
-                                        <td><field name="yeild_load1"/></td>
+                                        <td><label for="yeild_load"></label></td>
+                                        <td><field name="yeild_load"/></td>
                                         <td><label for="yeild_load2"></label></td>
                                         <td><field name="yeild_load2"/></td>
                                     </tr>
                                     <tr>
-                                        <td><label for="ultimate_load1"></label></td>
-                                        <td><field name="ultimate_load1"/></td>
+                                        <td><label for="ultimate_load"></label></td>
+                                        <td><field name="ultimate_load"/></td>
                                         <td><label for="ultimate_load2"></label></td>
                                         <td><field name="ultimate_load2"/></td>
                                     </tr>
                                     <tr>
-                                        <td><label for="proof_yeid_stress1"></label></td>
-                                        <td><field name="proof_yeid_stress1"/></td>
+                                        <td><label for="proof_yeid_stress"></label></td>
+                                        <td><field name="proof_yeid_stress"/></td>
                                         <td><label for="proof_yeid_stress2"></label></td>
                                         <td><field name="proof_yeid_stress2"/></td>
                                     </tr>
                                     <tr>
-                                        <td><label for="ult_tens_strgth1"></label></td>
-                                        <td><field name="ult_tens_strgth1"/></td>
+                                        <td><label for="ult_tens_strgth"></label></td>
+                                        <td><field name="ult_tens_strgth"/></td>
                                         <td><label for="ult_tens_strgth2"></label></td>
                                         <td><field name="ult_tens_strgth2"/></td>
                                     </tr>
                                     <tr>
-                                        <td><label for="elongation1"></label></td>
-                                        <td><field name="elongation1"/></td>
+                                        <td><label for="elongation"></label></td>
+                                        <td><field name="elongation"/></td>
                                         <td><label for="elongation2"></label></td>
                                         <td><field name="elongation2"/></td>
                                     </tr>
@@ -142,8 +150,8 @@
                                     </tr>
 
                                     <tr invisible="fracture_visible == False">
-                                        <td><label for="fracture1"/></td>
-                                        <td><field name="fracture1"/></td>
+                                        <td><label for="fracture"/></td>
+                                        <td><field name="fracture"/></td>
                                         <td><label for="fracture2"/></td>
                                         <td><field name="fracture2"/></td>
                                     </tr>
@@ -154,53 +162,53 @@
                             <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
                                 <tbody>
                                     <tr>
-                                        <td><label for="requirement_yield1"></label></td>
-                                        <td><field name="requirement_yield1"/></td>
-                                        <td><label for="proof_yeid_stress1_nabl"></label></td>
-                                        <td><field name="proof_yeid_stress1_nabl"
-                                            decoration-success="proof_yeid_stress1_nabl == 'pass'"
-                                            decoration-danger="proof_yeid_stress1_nabl == 'fail'"
+                                        <td><label for="requirement_yield"></label></td>
+                                        <td><field name="requirement_yield" string="Proof Yield Stress Requirement"/></td>
+                                        <td><label for="yield_nabl"></label></td>
+                                        <td><field name="yield_nabl" string="Proof Yield Stress NABL"
+                                            decoration-success="yield_nabl == 'pass'"
+                                            decoration-danger="yield_nabl == 'fail'"
                                             readonly="1"/></td>
-                                        <td><label for="proof_yeid_stress1_confirmity"></label></td>
-                                        <td><field name="proof_yeid_stress1_confirmity"
-                                                decoration-success="proof_yeid_stress1_confirmity == 'pass'"
-                                                decoration-danger="proof_yeid_stress1_confirmity == 'fail'"
+                                        <td><label for="yield_conformity"></label></td>
+                                        <td><field name="yield_conformity" string="Proof Yield Stress Confirmity"
+                                                decoration-success="yield_conformity == 'pass'"
+                                                decoration-danger="yield_conformity == 'fail'"
                                                 readonly="1"/></td>
                                     </tr>
                                     <tr>
-                                        <td><label for="requirement_utl1"></label></td>
-                                        <td><field name="requirement_utl1"/></td>
-                                        <td><label for="ult_tens_strgth1_nabl"></label></td>
+                                        <td><label for="requirement_utl"></label></td>
+                                        <td><field name="requirement_utl" string="UTS Requirement"/></td>
+                                        <td><label for="uts_nabl"></label></td>
                                         <td>
-                                            <field name="ult_tens_strgth1_nabl"
-                                                decoration-success="ult_tens_strgth1_nabl == 'pass'"
-                                                decoration-danger="ult_tens_strgth1_nabl == 'fail'"
+                                            <field name="uts_nabl" string="UTS NABL"
+                                                decoration-success="uts_nabl == 'pass'"
+                                                decoration-danger="uts_nabl == 'fail'"
                                                 readonly="1"/>
                                         </td>
-                                        <td><label for="ult_tens_strgth1_confirmity"></label></td>
+                                        <td><label for="uts_conformity"></label></td>
                                         <td>
-                                            <field name="ult_tens_strgth1_confirmity"
-                                                decoration-success="ult_tens_strgth1_confirmity == 'pass'"
-                                                decoration-danger="ult_tens_strgth1_confirmity == 'fail'"
+                                            <field name="uts_conformity" string="UTS Confirmity"
+                                                decoration-success="uts_conformity == 'pass'"
+                                                decoration-danger="uts_conformity == 'fail'"
                                                 readonly="1"/>
                                         </td>
                                     </tr>
 
                                     <tr>
-                                        <td><label for="requirement_elongation1"></label></td>
-                                        <td><field name="requirement_elongation1"/></td>
-                                        <td><label for="elongation1_nabl"></label></td>
+                                        <td><label for="requirement_elongation"></label></td>
+                                        <td><field name="requirement_elongation" string="Elongation Requirement"/></td>
+                                        <td><label for="elongation_nabl"></label></td>
                                         <td>
-                                            <field name="elongation1_nabl"
-                                                decoration-success="elongation1_nabl == 'pass'"
-                                                decoration-danger="elongation1_nabl == 'fail'"
+                                            <field name="elongation_nabl" string="Elongation NABL"
+                                                decoration-success="elongation_nabl == 'pass'"
+                                                decoration-danger="elongation_nabl == 'fail'"
                                                 readonly="1"/>
                                         </td>
-                                        <td><label for="elongation1_confirmity"></label></td>
+                                        <td><label for="elongation_conformity"></label></td>
                                         <td>
-                                            <field name="elongation1_confirmity"
-                                                decoration-success="elongation1_confirmity == 'pass'"
-                                                decoration-danger="elongation1_confirmity == 'fail'"
+                                            <field name="elongation_conformity" string="Elongation Confirmity"
+                                                decoration-success="elongation_conformity == 'pass'"
+                                                decoration-danger="elongation_conformity == 'fail'"
                                                 readonly="1"/>
                                         </td>
                                     </tr>
@@ -208,21 +216,7 @@
                             </table>
                           
 
-                        <notebook>
-
-                            <page string="Notes">
-                                <div class="custom_table_borders" style="margin-top: 15px;">
-                                    <field name="notes_id" nolabel="1">
-                                        <tree editable="bottom">
-                                            <field name="sr_no" width="100"/>
-                                            <field name="notes"  />
-                                        </tree>
-                                    </field>
-                                    
-                                </div>
-                            </page>
-
-                        </notebook>
+                        
 
                     
 
