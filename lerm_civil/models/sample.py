@@ -28,7 +28,7 @@ class LermSampleForm(models.Model):
     department_id = fields.Char(string='Department')
     material_id = fields.Many2one('product.template',string="Material")
     material_id_lab_name = fields.Char(string="Material",compute="compute_material_id_lab_name",store=True)
-    ulr_no = fields.Char(string="ULR No." ,readonly=True, default=lambda self: 'New')
+    ulr_no = fields.Char(string="ULR No.", default=lambda self: 'New')
     brand = fields.Char(string="Brand")
     size_id = fields.Many2one('lerm.size.line',string="Size")
     grade_id = fields.Many2one('lerm.grade.line',string="Grade")
