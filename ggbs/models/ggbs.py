@@ -8,12 +8,10 @@ import math
 class GgbsMechanical(models.Model):
     _name = "mechanical.ggbs"
     _inherit = "lerm.eln"
-    _description = 'mechanical.ggbs'
     _rec_name = "name"
 
 
     name = fields.Char("Name",default="GGBS")
-    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     parameter_id = fields.Many2one('eln.parameters.result', string="Parameter")
 
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
@@ -22,48 +20,10 @@ class GgbsMechanical(models.Model):
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
 
 
-
-
     @api.depends('eln_ref')
     def _compute_grade_id(self):
         if self.eln_ref:
             self.grade = self.eln_ref.grade_id.id
-
-
-
-
-
-            # remark
-
-    notes_id = fields.One2many('ggbs.notes', 'parent_id', string="Notes")
-    
-    @api.model
-    def default_get(self, fields):
-        res = super(GgbsMechanical, self).default_get(fields)
-
-        default_notes = [
-            (0, 0, {
-                'sr_no': 'a',
-                'notes': 'The information marked with an # received from customer',
-            }),
-            (0, 0, {
-                'sr_no': 'b',
-                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
-            }),
-            (0, 0, {
-                'sr_no': 'c',
-                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
-            }),
-            (0, 0, {
-                'sr_no': 'd',
-                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
-            }),
-        ]
-
-        res['notes_id'] = default_notes
-        return res
-
-
 
 
     ## Normal Consistency
@@ -96,8 +56,8 @@ class GgbsMechanical(models.Model):
     # def _compute_normal_conformity(self):
     #     for record in self:
     #         record.normal_consistency_conformity = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457801hg-b44a-48cc-9d41-198f55346af0')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457801hg-b44a-48cc-9d41-198f55346af0')]).parameter_table
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','84946eb6-b44a-48cc-9d41-198f55346af0')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','84946eb6-b44a-48cc-9d41-198f55346af0')]).parameter_table
     #         for material in materials:
     #             if material.grade.id == record.grade.id:
     #                 req_min = material.req_min
@@ -116,8 +76,8 @@ class GgbsMechanical(models.Model):
         
     #     for record in self:
     #         record.normal_consistency_nabl = 'fail'
-    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457801hg-b44a-48cc-9d41-198f55346af0')])
-    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457801hg-b44a-48cc-9d41-198f55346af0')]).parameter_table
+    #         line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','84946eb6-b44a-48cc-9d41-198f55346af0')])
+    #         materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','84946eb6-b44a-48cc-9d41-198f55346af0')]).parameter_table
     #         for material in materials:
     #             if material.grade.id == record.grade.id:
     #                 lab_min = line.lab_min_value
@@ -203,8 +163,8 @@ class GgbsMechanical(models.Model):
     def _compute_specific_gravity_confirmity(self):
         for record in self:
             record.specific_gravity_confirmity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','10071b15-baa4-466f-a6a7-044da708f265')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','10071b15-baa4-466f-a6a7-044da708f265')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
@@ -223,8 +183,8 @@ class GgbsMechanical(models.Model):
         
         for record in self:
             record.specific_gravity_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','210bgf54-baa4-466f-a6a7-044da708f265')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','10071b15-baa4-466f-a6a7-044da708f265')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','10071b15-baa4-466f-a6a7-044da708f265')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -456,8 +416,8 @@ class GgbsMechanical(models.Model):
     def _compute_slag_7days_conformity(self):
         for record in self:
             record.slag_7days_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1452fgr0-8e67-4e94-86ea-98d9472f5c71')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1452fgr0-8e67-4e94-86ea-98d9472f5c71')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','55b3df61-8e67-4e94-86ea-98d9472f5c71')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','55b3df61-8e67-4e94-86ea-98d9472f5c71')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
@@ -476,8 +436,8 @@ class GgbsMechanical(models.Model):
         
         for record in self:
             record.slag_7days_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1452fgr0-8e67-4e94-86ea-98d9472f5c71')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1452fgr0-8e67-4e94-86ea-98d9472f5c71')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','55b3df61-8e67-4e94-86ea-98d9472f5c71')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','55b3df61-8e67-4e94-86ea-98d9472f5c71')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -509,8 +469,8 @@ class GgbsMechanical(models.Model):
     def _compute_slag_28days_conformity(self):
         for record in self:
             record.slag_28days_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','bg21hy20-f42a-4405-b127-b5d84fe78485')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','bg21hy20-f42a-4405-b127-b5d84fe78485')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c28cde20-f42a-4405-b127-b5d84fe78485')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c28cde20-f42a-4405-b127-b5d84fe78485')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
@@ -529,8 +489,8 @@ class GgbsMechanical(models.Model):
         
         for record in self:
             record.slag_28days_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','bg21hy20-f42a-4405-b127-b5d84fe78485')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','bg21hy20-f42a-4405-b127-b5d84fe78485')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c28cde20-f42a-4405-b127-b5d84fe78485')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c28cde20-f42a-4405-b127-b5d84fe78485')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -634,8 +594,8 @@ class GgbsMechanical(models.Model):
     def _compute_fineness_confirmity(self):
         for record in self:
             record.fineness_confirmity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ca17d450-c526-4092-a3a7-6b0ff7e69c0a')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ca17d450-c526-4092-a3a7-6b0ff7e69c0a')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     req_min = material.req_min
@@ -654,8 +614,8 @@ class GgbsMechanical(models.Model):
         
         for record in self:
             record.fineness_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5214hgtb-c526-4092-a3a7-6b0ff7e69c0a')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ca17d450-c526-4092-a3a7-6b0ff7e69c0a')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ca17d450-c526-4092-a3a7-6b0ff7e69c0a')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -742,402 +702,6 @@ class GgbsMechanical(models.Model):
     def _compute_mean_measured_time(self):
         for record in self:
             record.mean_of_three_measured_times = record.average_time_fineness
-
-
-      ### setting Time,Final Setting Time	
-
-    setting_time_name = fields.Char("Name", default="Setting Time")
-
-    intial_time_lines = fields.One2many('ggbs.initial.time.line','parent_id',string="Initial Time")
-
-    final_time_lines = fields.One2many('ggbs.final.time.line','parent_id',string="Initial Time")
-
-    initial_setting_time_visible = fields.Boolean("Initial Setting Time Visible",compute="_compute_visible")
-    initial_setting_time_name = fields.Char("Name",default="Initial Setting Time")
-
-    temp_percent_setting = fields.Float("Temperature °C",digits=(16,1))
-    humidity_percent_setting = fields.Float("Humidity %")
-    start_date_setting = fields.Date("Start Date")
-    end_date_setting = fields.Date("End Date")
-
-    # wt_of_cement_setting_time = fields.Float("Wt. of Cement(g)",default=400)
-    # wt_of_water_required_setting_time = fields.Float("Wt.of water required (g) (0.85*P%)" , compute="_compute_wt_of_water_required",store=True )
-
-    # @api.depends('normal_consistency_trial1','wt_of_cement_setting_time')
-    # def _compute_wt_of_water_required(self):
-    #     for record in self:
-    #         record.wt_of_water_required_setting_time =  (((0.85 * record.normal_consistency_trial1) / 100) * record.wt_of_cement_setting_time)
-
-    #Initial setting Time
-
-    
-    time_water_added = fields.Datetime("The Time When water is added to cement (t1)",compute="_compute_initial_times",store=True)
-    time_needle_fails = fields.Datetime("The time at which needle fails to penetrate the test block to a point 5 ± 0.5 mm (t2)",compute="_compute_initial_times",store=True)
-    initial_setting_time_hours = fields.Char("Initial Setting Time (t2-t1) (Hours)", compute="_compute_initial_setting_time")
-    initial_setting_time_minutes = fields.Integer("Initial Setting Time Rounded", compute="_compute_initial_setting_time")
-    initial_setting_time_minutes_unrounded = fields.Char("Initial Setting Time",compute="_compute_initial_setting_time")
-
-    @api.depends("intial_time_lines.clock_time", "intial_time_lines.serial_no")
-    def _compute_initial_times(self):
-        for rec in self:
-            if rec.intial_time_lines:
-                sorted_lines = rec.intial_time_lines.sorted("serial_no")
-                rec.time_water_added = sorted_lines[0].clock_time if sorted_lines else False
-                rec.time_needle_fails = sorted_lines[-1].clock_time if sorted_lines else False
-            else:
-                rec.time_water_added = False
-                rec.time_needle_fails = False
-
-    initial_setting_conformity = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),
-    ], string='Conformity', default='fail',compute="_compute_initial_setting_conformity")
-
-    initial_setting_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL'),
-    ], string='NABL' ,compute="_compute_initial_setting_nabl" ,store=True)
-
-
-    @api.depends('initial_setting_time_minutes_unrounded','eln_ref','grade')
-    def _compute_initial_setting_conformity(self):
-        for record in self:
-            record.initial_setting_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ytre147-30fe-4043-b518-015f5c60d916')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ytre147-30fe-4043-b518-015f5c60d916')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    lower = float(record.initial_setting_time_minutes_unrounded) - float(record.initial_setting_time_minutes_unrounded)*mu_value
-                    upper = float(record.initial_setting_time_minutes_unrounded) + float(record.initial_setting_time_minutes_unrounded)*mu_value
-                    if lower >= req_min and upper <= req_max :
-                        record.initial_setting_conformity = 'pass'
-                        break
-                    else:
-                        record.initial_setting_conformity = 'fail'
-
-    @api.depends('initial_setting_time_minutes_unrounded','eln_ref','grade')
-    def _compute_initial_setting_nabl(self):
-        
-        for record in self:
-            record.initial_setting_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ytre147-30fe-4043-b518-015f5c60d916')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ytre147-30fe-4043-b518-015f5c60d916')]).parameter_table
-            
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            
-            lower = float(record.initial_setting_time_minutes_unrounded) - float(record.initial_setting_time_minutes_unrounded)*mu_value
-            upper = float(record.initial_setting_time_minutes_unrounded) + float(record.initial_setting_time_minutes_unrounded)*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.initial_setting_nabl = 'pass'
-                break
-            else:
-                record.initial_setting_nabl = 'fail'
-
-
-    @api.depends('time_water_added', 'time_needle_fails')
-    def _compute_initial_setting_time(self):
-        for record in self:
-            if record.time_water_added and record.time_needle_fails:
-                t1 = record.time_water_added
-                t2 = record.time_needle_fails
-                time_difference = t2 - t1
-
-                # Convert time difference to seconds and then to minutes
-                time_difference_minutes = time_difference.total_seconds() / 60
-
-                initial_setting_time_hours = time_difference.total_seconds() / 3600
-                time_delta = timedelta(hours=initial_setting_time_hours)
-                record.initial_setting_time_hours = "{:0}:{:02}".format(int(time_delta.total_seconds() // 3600), int((time_delta.total_seconds() % 3600) // 60))
-                if time_difference_minutes % 5 == 0:
-                    record.initial_setting_time_minutes = time_difference_minutes
-                else:
-                    record.initial_setting_time_minutes = round(time_difference_minutes / 5) * 5
-
-                record.initial_setting_time_minutes_unrounded = time_difference_minutes
-
-            else:
-                record.initial_setting_time_hours = False
-                record.initial_setting_time_minutes = False
-                record.initial_setting_time_minutes_unrounded = False
-
-
-
-    #Final setting Time
-
-    final_setting_time_visible = fields.Boolean("Final Setting Time Visible",compute="_compute_visible")
-    final_setting_time_name = fields.Char("Name",default="Final Setting Time")
-
-    time_needle_make_impression = fields.Datetime("The Time at which the needle make an impression on the surface of test block while attachment fails to do (t3)",compute="_compute_final_time",store=True)
-    final_setting_time_hours = fields.Char("Final Setting Time (t3-t1) (Hours)",compute="_compute_final_setting_time")
-    final_setting_time_minutes_unrounded = fields.Char("Final Setting Time",compute="_compute_final_setting_time")
-    final_setting_time_minutes = fields.Char("Final Setting Time Rounded",compute="_compute_final_setting_time")
-
-    @api.depends("final_time_lines.clock_time1", "final_time_lines.serial_no")
-    def _compute_final_time(self):
-        for rec in self:
-            if rec.final_time_lines:
-                # Sort lines by serial_no
-                sorted_lines = rec.final_time_lines.sorted("serial_no")
-                rec.time_needle_make_impression = sorted_lines[-1].clock_time1
-            else:
-                rec.time_needle_make_impression = False
-
-    final_setting_conformity = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail'),
-    ], string='Conformity', default='fail',compute="_compute_final_setting_conformity")
-
-    final_setting_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL'),
-    ], string='NABL', compute="_compute_final_setting_nabl")
-
-
-    @api.depends('final_setting_time_minutes_unrounded','eln_ref','grade')
-    def _compute_final_setting_conformity(self):
-        for record in self:
-            record.final_setting_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].search([('internal_id','=','yy1475u-5e9c-4335-9ea2-2d87624c3061')])
-            materials = self.env['lerm.parameter.master'].search([('internal_id','=','yy1475u-5e9c-4335-9ea2-2d87624c3061')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    lower = float(record.final_setting_time_minutes_unrounded) - float(record.final_setting_time_minutes_unrounded)*mu_value
-                    upper = float(record.final_setting_time_minutes_unrounded) + float(record.final_setting_time_minutes_unrounded)*mu_value
-                    if lower >= req_min and upper <= req_max :
-                        record.final_setting_conformity = 'pass'
-                        break
-                    else:
-                        record.final_setting_conformity = 'fail'
-
-    @api.depends('final_setting_time_minutes_unrounded','eln_ref','grade')
-    def _compute_final_setting_nabl(self):
-        
-        for record in self:
-            record.final_setting_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].search([('internal_id','=','yy1475u-5e9c-4335-9ea2-2d87624c3061')])
-            materials = self.env['lerm.parameter.master'].search([('internal_id','=','yy1475u-5e9c-4335-9ea2-2d87624c3061')]).parameter_table
-            lab_min = line.lab_min_value
-            lab_max = line.lab_max_value
-            mu_value = line.mu_value
-            lower = float(record.final_setting_time_minutes_unrounded) - float(record.final_setting_time_minutes_unrounded)*mu_value
-            upper = float(record.final_setting_time_minutes_unrounded) + float(record.final_setting_time_minutes_unrounded)*mu_value
-            if lower >= lab_min and upper <= lab_max:
-                record.final_setting_nabl = 'pass'
-                break
-            else:
-                record.final_setting_nabl = 'fail'
-
-
-
-    @api.depends('time_needle_make_impression')
-    def _compute_final_setting_time(self):
-        for record in self:
-            if record.time_needle_make_impression and record.time_water_added:
-                t1 = record.time_water_added
-                t2 = record.time_needle_make_impression
-                time_difference = t2 - t1
-                record.final_setting_time_minutes = time_difference
-                record.final_setting_time_hours = time_difference
-                final_setting_time_decimal = time_difference.total_seconds() / 60
-                final_setting_time = int(final_setting_time_decimal)
-                if final_setting_time % 5 == 0:
-                    record.final_setting_time_minutes = final_setting_time
-                else:
-                    record.final_setting_time_minutes =  round(final_setting_time / 5) * 5
-                record.final_setting_time_minutes_unrounded = final_setting_time
-            else:
-                record.final_setting_time_hours = False
-                record.final_setting_time_minutes = False
-                record.final_setting_time_minutes_unrounded = False
-
-
-     # 6. Moisture Content
-
-    moisture_content_name1 = fields.Char("Name",default="Moisture Content")
-    moisture_content_visible = fields.Boolean("Silt Content",compute="_compute_visible")
-
-    moisture_content_child_lines = fields.One2many('ggbs.moisture.content.line','parent_id',string="Parameter")
-
-    wet_sand = fields.Float(string="Weight of Wet Sand Sample, (W1)", compute="_compute_avg_moisture_content_lines")
-    wet_dry = fields.Float(string="Weight of Dry Sand Sample, (W2)", compute="_compute_avg_moisture_content_lines")
-    diff_wd = fields.Float(string="Diff. Between Wet and Dry Sand:- (W1-W2)", compute="_compute_avg_moisture_content_lines")
-
-    @api.depends('moisture_content_child_lines')
-    def _compute_avg_moisture_content_lines(self):
-        for rec in self:
-            # Sort for consistent line order
-            lines = rec.moisture_content_child_lines.sorted(key=lambda l: l.serial_no)
-
-            # For wet_sand and wet_dry → only first 2 lines
-            selected_lines = lines[:2]
-            count_selected = len(selected_lines)
-
-            if count_selected:
-                rec.wet_sand = sum(line.wt_sand for line in selected_lines) / count_selected
-                rec.wet_dry = sum(line.wt_dry for line in selected_lines) / count_selected
-            else:
-                rec.wet_sand = rec.wet_dry = 0.0
-
-            # For diff_wd → use all lines
-            count_all = len(lines)
-            if count_all:
-                rec.diff_wd = sum(line.diff_wet_sand for line in lines) / count_all
-            else:
-                rec.diff_wd = 0.0
-
-
-
-    avg_moisture = fields.Float(
-        string="Average Moisture Content (%)",
-        compute="_compute_avg_moisture",
-        store=True )
-
-
-    @api.depends('diff_wd', 'wet_dry')
-    def _compute_avg_moisture(self):
-        for rec in self:
-            if rec.wet_dry:
-                rec.avg_moisture = ((rec.diff_wd  / rec.wet_dry) * 100)
-            else:
-                rec.avg_moisture = 0.0
-
-
-    avg_moisture_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_moisture_conformity", store=True)
-
-    @api.depends('avg_moisture','eln_ref','grade')
-    def _compute_avg_moisture_conformity(self):
-        
-        for record in self:
-            record.avg_moisture_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4578nhgrr245-3fa3-4b83-ae31-9d281457457hy')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4578nhgrr245-3fa3-4b83-ae31-9d281457457hy')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.avg_moisture - record.avg_moisture*mu_value
-                    upper = record.avg_moisture + record.avg_moisture*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.avg_moisture_conformity = 'pass'
-                        break
-                    else:
-                        record.avg_moisture_conformity = 'fail'
-
-    avg_moisture_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_avg_moisture_nabl", store=True)
-
-    @api.depends('avg_moisture','eln_ref','grade')
-    def _compute_avg_moisture_nabl(self):
-        
-        for record in self:
-            record.avg_moisture_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4578nhgrr245-3fa3-4b83-ae31-9d281457457hy')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4578nhgrr245-3fa3-4b83-ae31-9d281457457hy')]).parameter_table
-            for material in materials:
-                if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.avg_moisture - record.avg_moisture*mu_value
-                    upper = record.avg_moisture + record.avg_moisture*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.avg_moisture_nabl = 'pass'
-                        break
-                    else:
-                        record.avg_moisture_nabl = 'fail'
-
-    # Soundness By Le-Chatelier Test
-
-    soundness_visible = fields.Boolean("Soundness By Le-Chatelier Test",compute="_compute_visible")
-    soundness_name = fields.Char("Name",default="Soundness By Le-Chatelier Test")
-
-    
-    temp_soundness = fields.Char("Temp °c" )
-    humidity_soundness = fields.Char("Humidity %" )
-
-    soundness_child_lines = fields.One2many('ggbs.soundness.le.chatelier.line','parent_id',string="Soundness By Le-Chatelier Test")
-
-    avg_expansion = fields.Float('Average Expansion (mm)',compute="_compute_avg_expansion")
-
-
-    @api.depends('soundness_child_lines.expansion')
-    def _compute_avg_expansion(self):
-        for record in self:
-            if record.soundness_child_lines:
-              record.avg_expansion = round(sum(record.soundness_child_lines.mapped('expansion'))/ len(record.soundness_child_lines),1)
-            else:
-                record.avg_expansion = 0.0
-
-
-    avg_expansion_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),
-        ('na', 'NA'),
-        ], string="Conformity", compute="_compute_avg_expansion_conformity", store=True)
-
-    @api.depends('avg_expansion','eln_ref','grade')
-    def _compute_avg_expansion_conformity(self):
-        
-        for record in self:
-            if not record.eln_ref or not record.eln_ref.conformity:
-                record.avg_expansion_conformity = 'na'
-                continue
-            record.avg_expansion_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78luytr-91b0-4153-87ef-11b6954a9837')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78luytr-91b0-4153-87ef-11b6954a9837')]).parameter_table
-            for material in materials:
-                # if material.grade.id == record.grade.id:
-                    req_min = material.req_min
-                    req_max = material.req_max
-                    mu_value = line.mu_value
-                    
-                    lower = record.avg_expansion - record.avg_expansion*mu_value
-                    upper = record.avg_expansion + record.avg_expansion*mu_value
-                    if lower >= req_min and upper <= req_max:
-                        record.avg_expansion_conformity = 'pass'
-                        break
-                    else:
-                        record.avg_expansion_conformity = 'fail'
-
-    avg_expansion_nabl = fields.Selection([
-        ('pass', 'NABL'),
-        ('fail', 'Non-NABL')], string="NABL", compute="_compute_avg_expansion_nabl", store=True)
-
-    @api.depends('avg_expansion','eln_ref','grade')
-    def _compute_avg_expansion_nabl(self):
-        
-        for record in self:
-            record.avg_expansion_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78luytr-91b0-4153-87ef-11b6954a9837')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','78luytr-91b0-4153-87ef-11b6954a9837')]).parameter_table
-            for material in materials:
-                # if material.grade.id == record.grade.id:
-                    lab_min = line.lab_min_value
-                    lab_max = line.lab_max_value
-                    mu_value = line.mu_value
-                    
-                    lower = record.avg_expansion - record.avg_expansion*mu_value
-                    upper = record.avg_expansion + record.avg_expansion*mu_value
-                    if lower >= lab_min and upper <= lab_max:
-                        record.avg_expansion_nabl = 'pass'
-                        break
-                    else:
-                        record.avg_expansion_nabl = 'fail'
-
     
 
     ### Compute Visible
@@ -1153,129 +717,59 @@ class GgbsMechanical(models.Model):
             record.slag_activity_28_visible = False
 
             record.fineness_visible = False
-            record.final_setting_time_visible = False
-            record.initial_setting_time_visible = False
-            record.moisture_content_visible = False
-            record.soundness_visible = False
 
             
             
             for sample in record.sample_parameters:
                 print("Samples internal id",sample.internal_id)
-                if sample.internal_id == '21457801hg-b44a-48cc-9d41-198f55346af0':
+                if sample.internal_id == '84946eb6-b44a-48cc-9d41-198f55346af0':
                     record.normal_consistency_visible = True
                     record.normal_consistency_cement_visible = True
-                if sample.internal_id == '210bgf54-baa4-466f-a6a7-044da708f265':
+                if sample.internal_id == '10071b15-baa4-466f-a6a7-044da708f265':
                     record.specific_gravity_visible = True
-                if sample.internal_id == '1452fgr0-8e67-4e94-86ea-98d9472f5c71':
+                if sample.internal_id == '55b3df61-8e67-4e94-86ea-98d9472f5c71':
                     record.slag_activity_7_visible = True
-                if sample.internal_id == '5214hgtb-c526-4092-a3a7-6b0ff7e69c0a':
+                if sample.internal_id == 'ca17d450-c526-4092-a3a7-6b0ff7e69c0a':
                     record.fineness_visible = True
-                if sample.internal_id == 'bg21hy20-f42a-4405-b127-b5d84fe78485':
+                if sample.internal_id == 'c28cde20-f42a-4405-b127-b5d84fe78485':
                     record.slag_activity_7_visible = True
                     record.slag_activity_28_visible = True
 
-                if sample.internal_id == 'yy1475u-5e9c-4335-9ea2-2d87624c3061':
-                    record.final_setting_time_visible = True
-                if sample.internal_id == 'ytre147-30fe-4043-b518-015f5c60d916':
-                    record.initial_setting_time_visible = True
-
-                if sample.internal_id == '4578nhgrr245-3fa3-4b83-ae31-9d281457457hy':
-                    record.moisture_content_visible = True
-                if sample.internal_id == '78luytr-91b0-4153-87ef-11b6954a9837':
-                    record.soundness_visible = True
-
 
     def open_eln_page(self):
-        # parameter_based_assignment
-        current_user = self.env.user
-        # 🔹 Only results assigned to current technician
-        technician_results = self.eln_ref.parameters_result.filtered(
-            lambda r: r.technician == current_user
-        )
-
-        for result in technician_results:
-        
-                    if result.parameter.internal_id == '21457801hg-b44a-48cc-9d41-198f55346af0':
-                        result.result_char = self.normal_consistency
-                        result.calculated = True
-                        continue
-
-
-                    if result.parameter.internal_id == '210bgf54-baa4-466f-a6a7-044da708f265':
-                        result.result_char = self.average_specific_gravity
-                        result.calculated = True
-                        if self.specific_gravity_nabl == 'pass':
-                            result.nabl_status = 'nabl'
-                        else:
-                            result.nabl_status = 'non-nabl'
-                        continue
-
-                    
-                    if result.parameter.internal_id == '1452fgr0-8e67-4e94-86ea-98d9472f5c71':
-                        result.result_char = self.slag_activity_index_7days
-                        result.calculated = True
-                        if self.specific_gravity_nabl == 'pass':
-                            result.nabl_status = 'nabl'
-                        else:
-                            result.nabl_status = 'non-nabl'
-                        continue
-
-
-                    if result.parameter.internal_id == '5214hgtb-c526-4092-a3a7-6b0ff7e69c0a':
-                        result.result_char = self.fineness_air_permeability
-                        result.calculated = True
-                        if self.fineness_nabl == 'pass':
-                            result.nabl_status = 'nabl'
-                        else:
-                            result.nabl_status = 'non-nabl'
-                        continue
-
-
-                    if result.parameter.internal_id == 'bg21hy20-f42a-4405-b127-b5d84fe78485':
-                        result.result_char = self.slag_activity_index_28days
-                        result.calculated = True
-                        if self.slag_28days_nabl == 'pass':
-                            result.nabl_status = 'nabl'
-                        else:
-                            result.nabl_status = 'non-nabl'
-                        continue
-
-                    if result.parameter.internal_id == '4578nhgrr245-3fa3-4b83-ae31-9d281457457hy':
-                        result.result_char = self.avg_moisture
-                        result.calculated = True
-                        if self.avg_moisture_nabl == 'pass':
-                            result.nabl_status = 'nabl'
-                        else:
-                            result.nabl_status = 'non-nabl'
-                        continue
-
-                    if result.parameter.internal_id == 'ytre147-30fe-4043-b518-015f5c60d916':
-                        result.result_char = self.initial_setting_time_minutes_unrounded
-                        result.calculated = True
-                        if self.initial_setting_nabl == 'pass':
-                            result.nabl_status = 'nabl'
-                        else:
-                            result.nabl_status = 'non-nabl'
-                        continue
-
-                    if result.parameter.internal_id == 'yy1475u-5e9c-4335-9ea2-2d87624c3061':
-                        result.result_char = self.final_setting_time_minutes_unrounded
-                        result.calculated = True
-                        if self.final_setting_nabl == 'pass':
-                            result.nabl_status = 'nabl'
-                        else:
-                            result.nabl_status = 'non-nabl'
-                        continue
-
-                    if result.parameter.internal_id == '78luytr-91b0-4153-87ef-11b6954a9837':
-                        result.result_char = self.avg_expansion
-                        result.calculated = True
-                        if self.avg_expansion_nabl == 'pass':
-                            result.nabl_status = 'nabl'
-                        else:
-                            result.nabl_status = 'non-nabl'
-                        continue
+        # import wdb; wdb.set_trace()
+        for result in self.eln_ref.parameters_result:
+            if result.parameter.internal_id == '84946eb6-b44a-48cc-9d41-198f55346af0':
+                result.result_char = self.normal_consistency
+                continue
+            if result.parameter.internal_id == '10071b15-baa4-466f-a6a7-044da708f265':
+                result.result_char = self.average_specific_gravity
+                if self.specific_gravity_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == '55b3df61-8e67-4e94-86ea-98d9472f5c71':
+                result.result_char = self.slag_activity_index_7days
+                if self.specific_gravity_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == 'ca17d450-c526-4092-a3a7-6b0ff7e69c0a':
+                result.result_char = self.fineness_air_permeability
+                if self.fineness_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+            if result.parameter.internal_id == 'c28cde20-f42a-4405-b127-b5d84fe78485':
+                result.result_char = self.slag_activity_index_28days
+                if self.slag_28days_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
 
         return {
                 'view_mode': 'form',
@@ -1424,175 +918,3 @@ class GgbsSlagOpc28DaysLine(models.Model):
                 record.compressive_strength = round(compressive_strength,3)
             else:
                 record.compressive_strength = 0
-
-
-class InitialTimeLine(models.Model):
-    _name = "ggbs.initial.time.line"
-    parent_id = fields.Many2one('mechanical.ggbs',string="Parent Id")
-
-    serial_no = fields.Integer(string="Sr.No", readonly=True, copy=False, default=1)
-
-   
-    
-    clock_time = fields.Datetime(string="Date & Time")
-    penetration_intial = fields.Float(string="Penetration Of Needle")
-
-    
-
-
-    
-
-   
-
-
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
-
-        return super(InitialTimeLine, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
-
-
-class FinalTimeLine(models.Model):
-    _name = "ggbs.final.time.line"
-    parent_id = fields.Many2one('mechanical.ggbs',string="Parent Id")
-
-    serial_no = fields.Integer(string="Sr.No", readonly=True, copy=False, default=1)
-
-   
-    
-    clock_time1 = fields.Datetime(string="Date & Time")
-    impression_intial1 = fields.Float(string="Impression Of Needle")
-
-    
-
-
-    
-
-   
-
-
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
-
-        return super(FinalTimeLine, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
-
-
-
-class MoistureContentLine(models.Model):
-    _name = "ggbs.moisture.content.line"
-    parent_id = fields.Many2one('mechanical.ggbs',string="Parent Id")
-
-    serial_no = fields.Integer(string="Sr. No", readonly=True, copy=False, default=1)
-    wt_sand = fields.Float(string="Weight of Wet Sand Sample, (W1)")
-    wt_dry = fields.Float(string="Weight of Dry Sand Sample, (W2)")
-    diff_wet_sand = fields.Float(string="Diff. Between Wet and Dry Sand:- (W1-W2)",compute="_compute_moisture_content")
-    # moisture_content = fields.Float(string="Moisture ContentLine % = ((W1-W2)/W2) x 100",compute="_compute_moisture_content")
-
-    @api.depends('wt_sand', 'wt_dry')
-    def _compute_moisture_content(self):
-        for rec in self:
-            A = rec.wt_sand
-            B = rec.wt_dry
-
-            if A and B:
-                rec.diff_wet_sand = A - B
-            else:
-                rec.diff_wet_sand = 0.0
-
-    
-
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
-
-        return super(MoistureContentLine, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
-
-
-
-class SoundnessLeChatelierLine(models.Model):	
-    _name= "ggbs.soundness.le.chatelier.line"
-    parent_id = fields.Many2one('mechanical.ggbs',string="Parent Id")
-
-    sr_no = fields.Integer(string="Sr.NO", readonly=True, copy=False, default=1)
-
-    mould_no = fields.Char("Mould No.")
-    initial_read = fields.Float("Initial Reading of Indicator Point Before Boiling (A) in mm")
-    final_read = fields.Float("Final Reading of Indicator Point After 3 Hrs. Boiling (B) in mm")
-    expansion = fields.Float(string="Expansion (B – A) mm",compute="_compute_expansion")
-
-
-    @api.depends('initial_read','final_read')
-    def _compute_expansion(self):
-        for record in self:
-            record.expansion = (record.final_read - record.initial_read)
-
-
-		
-
-
-
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('sr_no'))
-                vals['sr_no'] = max_serial_no + 1
-
-        return super(SoundnessLeChatelierLine, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.sr_no = index + 1
-
-
-
-class ggbsNotes(models.Model):
-    _name = "ggbs.notes"
-
-    parent_id = fields.Many2one('mechanical.ggbs',string="Parent Id")
-    sr_no = fields.Char("Sr. No.")
-    notes = fields.Char("Notes")
-
-
-
-
-
-    
