@@ -7,15 +7,44 @@ import math
 class ChequeredCementTile(models.Model):
     _name = "mechanical.cement.chequered.tile"
     _inherit = "lerm.eln"
-    _description = 'mechanical.cement.chequered.tile'
     _rec_name = "name"
 
     name = fields.Char("Name",default="Cement Concrete flooring Tiles")
-    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
+
+
+    notes_id = fields.One2many('mechanical.cement.chequered.tile.notes', 'parent_id', string="Notes",ondelete='cascade')
+    
+    @api.model
+    def default_get(self, fields):
+        res = super(ChequeredCementTile, self).default_get(fields)
+
+        default_notes = [
+            (0, 0, {
+                'sr_no': 'a',
+                'notes': 'The Test Report(s) is/are valid only to the sample submitted to the laboratory.',
+            }),
+            (0, 0, {
+                'sr_no': 'b',
+                'notes': 'Sample(s) was/were not drawn by laboratory.',
+            }),
+            (0, 0, {
+                'sr_no': 'c',
+                'notes': 'This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.',
+            }),
+            (0, 0, {
+                'sr_no': 'd',
+                'notes': '# - Information provided by the customer.',
+            }),
+        ]
+
+        res['notes_id'] = default_notes
+        return res
+   
 
     @api.depends('eln_ref')
     def _compute_grade_id(self):
@@ -25,12 +54,6 @@ class ChequeredCementTile(models.Model):
 
      # Dimension
 
-    dimension_name = fields.Char(default="Dimension")
-    dimension_visible = fields.Boolean(compute="_compute_visible")
-    length = fields.Float('Length')
-    thickness = fields.Float('Thickness')
-    width = fields.Float('Width')
-
     chequered_tiles_cement_cement_name1 = fields.Char("Name",default=" Chequered Tiles")
     chequered_tiles_cement_visible = fields.Boolean("Chequered Visible",compute="_compute_visible")   
 
@@ -38,14 +61,16 @@ class ChequeredCementTile(models.Model):
 
     # name = fields.Char("Name",default="DIMENSION")
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
-    chequered_tiles_cement_lines = fields.One2many('mechanical.cement.chequered.tile1.line','parent_id',string="Parameter")
+    chequered_tiles_cement_lines = fields.One2many('mechanical.cement.chequered.tile.line','parent_id',string="Parameter")
     average_cememt_flatness = fields.Float(string="Average Flatness (mm)", compute="_compute_average_cememt_flatness",digits=(16,2))
 
     
 
     average_cememt_flatness_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Flatness Conformity", compute="_compute_average_cememt_flatness_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Flatness Conformity", compute="_compute_average_cememt_flatness_conformity", store=True)
 
 
 
@@ -54,10 +79,16 @@ class ChequeredCementTile(models.Model):
         
         for record in self:
             record.average_cememt_flatness_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2568fgt4-9cbe-4f6b-a53f-7aa6de46c884')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2568fgt4-9cbe-4f6b-a53f-7aa6de46c884')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','50c5bb98-9cbe-4f6b-a53f-7aa6de46c884')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','50c5bb98-9cbe-4f6b-a53f-7aa6de46c884')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_cememt_flatness_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -79,8 +110,8 @@ class ChequeredCementTile(models.Model):
         
         for record in self:
             record.average_cememt_flatness_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2568fgt4-9cbe-4f6b-a53f-7aa6de46c884')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2568fgt4-9cbe-4f6b-a53f-7aa6de46c884')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','50c5bb98-9cbe-4f6b-a53f-7aa6de46c884')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','50c5bb98-9cbe-4f6b-a53f-7aa6de46c884')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -100,7 +131,10 @@ class ChequeredCementTile(models.Model):
 
     average_cement_perpendicularity_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Perpendicularity Conformity", compute="_compute_average_cement_perpendicularity_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Perpendicularity Conformity", compute="_compute_average_cement_perpendicularity_conformity", store=True)
+
 
 
 
@@ -109,10 +143,17 @@ class ChequeredCementTile(models.Model):
         
         for record in self:
             record.average_cement_perpendicularity_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','256opy-7664-4997-b116-6bb1ad2d43d0')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','256opy-7664-4997-b116-6bb1ad2d43d0')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2e2acb63-7664-4997-b116-6bb1ad2d43d0')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2e2acb63-7664-4997-b116-6bb1ad2d43d0')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_cement_perpendicularity_conformity = '--'
+                        break
+
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -134,8 +175,8 @@ class ChequeredCementTile(models.Model):
         
         for record in self:
             record.average_cement_perpendicularity_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','256opy-7664-4997-b116-6bb1ad2d43d0')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','256opy-7664-4997-b116-6bb1ad2d43d0')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2e2acb63-7664-4997-b116-6bb1ad2d43d0')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2e2acb63-7664-4997-b116-6bb1ad2d43d0')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -156,7 +197,9 @@ class ChequeredCementTile(models.Model):
 
     average_cement_straightness_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Straightness Conformity", compute="_compute_average_cement_straightness_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Straightness Conformity", compute="_compute_average_cement_straightness_conformity", store=True)
 
 
 
@@ -165,10 +208,16 @@ class ChequeredCementTile(models.Model):
         
         for record in self:
             record.average_cement_straightness_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','254opyt1-0a6a-4a00-ab70-04908d78524c')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','254opyt1-0a6a-4a00-ab70-04908d78524c')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f2a983db-0a6a-4a00-ab70-04908d78524c')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f2a983db-0a6a-4a00-ab70-04908d78524c')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_cement_straightness_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -190,8 +239,8 @@ class ChequeredCementTile(models.Model):
         
         for record in self:
             record.average_cement_straightness_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','254opyt1-0a6a-4a00-ab70-04908d78524c')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','254opyt1-0a6a-4a00-ab70-04908d78524c')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f2a983db-0a6a-4a00-ab70-04908d78524c')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','f2a983db-0a6a-4a00-ab70-04908d78524c')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -255,7 +304,10 @@ class ChequeredCementTile(models.Model):
 
     average_water_cement_absorption_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_water_cement_absorption_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_average_water_cement_absorption_conformity", store=True)
+
 
 
 
@@ -264,10 +316,16 @@ class ChequeredCementTile(models.Model):
         
         for record in self:
             record.average_water_cement_absorption_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','258opk1-5406-4010-a81f-88e591d4197e')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','258opk1-5406-4010-a81f-88e591d4197e')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4fa6ddc8-5406-4010-a81f-88e591d4197e')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4fa6ddc8-5406-4010-a81f-88e591d4197e')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_water_cement_absorption_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -289,8 +347,8 @@ class ChequeredCementTile(models.Model):
         
         for record in self:
             record.average_water_cement_absorption_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','258opk1-5406-4010-a81f-88e591d4197e')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','258opk1-5406-4010-a81f-88e591d4197e')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4fa6ddc8-5406-4010-a81f-88e591d4197e')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','4fa6ddc8-5406-4010-a81f-88e591d4197e')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -333,7 +391,9 @@ class ChequeredCementTile(models.Model):
 
     average_cement_wet_transver_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_cement_wet_transver_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_average_cement_wet_transver_conformity", store=True)
 
 
 
@@ -342,10 +402,16 @@ class ChequeredCementTile(models.Model):
         
         for record in self:
             record.average_cement_wet_transver_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2658piy-34eb-4442-bccb-3b13f9d05ea2')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2658piy-34eb-4442-bccb-3b13f9d05ea2')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','397c8329-34eb-4442-bccb-3b13f9d05ea2')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','397c8329-34eb-4442-bccb-3b13f9d05ea2')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_cement_wet_transver_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -367,8 +433,8 @@ class ChequeredCementTile(models.Model):
         
         for record in self:
             record.average_cement_wet_transver_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2658piy-34eb-4442-bccb-3b13f9d05ea2')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2658piy-34eb-4442-bccb-3b13f9d05ea2')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','397c8329-34eb-4442-bccb-3b13f9d05ea2')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','397c8329-34eb-4442-bccb-3b13f9d05ea2')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -405,24 +471,20 @@ class ChequeredCementTile(models.Model):
             record.chequered_tiles_cement_visible = False
             record.chequered_cement_water_absorption_visible = False
             record.chequeredwet_cement_transver_visible = False
-            record.dimension_visible = False
             
             
             for sample in record.sample_parameters:
                 print("Internal Ids",sample.internal_id)
 
                
-                if sample.internal_id == "12578dfgr-a3df-4990-93d1-9904984644a3":
+                if sample.internal_id == "4254eed5-a3df-4990-93d1-9904984644a3":
                     record.chequered_tiles_cement_visible = True
 
-                if sample.internal_id == "258opk1-5406-4010-a81f-88e591d4197e":
+                if sample.internal_id == "4fa6ddc8-5406-4010-a81f-88e591d4197e":
                     record.chequered_cement_water_absorption_visible = True
 
-                if sample.internal_id == "2658piy-34eb-4442-bccb-3b13f9d05ea2":
+                if sample.internal_id == "397c8329-34eb-4442-bccb-3b13f9d05ea2":
                     record.chequeredwet_cement_transver_visible = True
-
-                if sample.internal_id == "30214hy-34eb-4442-bccb-3b13f9d541hng":
-                    record.dimension_visible = True
 
                
 
@@ -439,15 +501,49 @@ class ChequeredCementTile(models.Model):
         )
 
         for result in technician_results:
-            # import wdb;wdb.set_trace()
 
-            
-            # Chequered Tiles 
-            if result.parameter.internal_id == '12578dfgr-a3df-4990-93d1-9904984644a3':
+
+
+            if result.parameter.internal_id == '4254eed5-a3df-4990-93d1-9904984644a3':
+                # result.result_char = self.initial_setting_time_minutes_unrounded
                 result.calculated = True
+                # if self.initial_setting_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
 
-            # Water Absorption
-            if result.parameter.internal_id == '258opk1-5406-4010-a81f-88e591d4197e':
+
+            if result.parameter.internal_id == '50c5bb98-9cbe-4f6b-a53f-7aa6de46c884':
+                result.result_char = round(self.average_cememt_flatness,2)
+                result.calculated = True
+                if self.average_cememt_flatness_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '2e2acb63-7664-4997-b116-6bb1ad2d43d0':
+                result.result_char = round(self.average_cement_perpendicularity,2)
+                result.calculated = True
+                if self.average_cement_perpendicularity_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            if result.parameter.internal_id == 'f2a983db-0a6a-4a00-ab70-04908d78524c':
+                result.result_char = round(self.average_cement_straightness,2)
+                result.calculated = True
+                if self.average_cement_straightness_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
+            if result.parameter.internal_id == '4fa6ddc8-5406-4010-a81f-88e591d4197e':
                 result.result_char = round(self.average_water_cement_absorption,2)
                 result.calculated = True
                 if self.average_water_cement_absorption_nabl == 'pass':
@@ -456,8 +552,7 @@ class ChequeredCementTile(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
 
-            # WET TRANSVERSE STRENGTH TEST
-            if result.parameter.internal_id == '2658piy-34eb-4442-bccb-3b13f9d05ea2':
+            if result.parameter.internal_id == '397c8329-34eb-4442-bccb-3b13f9d05ea2':
                 result.result_char = round(self.average_cement_wet_transver,2)
                 result.calculated = True
                 if self.average_cement_wet_transver_nabl == 'pass':
@@ -466,6 +561,13 @@ class ChequeredCementTile(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
 
+
+            
+
+
+           
+
+
         return {
                 'view_mode': 'form',
                 'res_model': "lerm.eln",
@@ -473,7 +575,7 @@ class ChequeredCementTile(models.Model):
                 'target': 'current',
                 'res_id': self.eln_ref.id,
                 
-            }           
+            }   
 
 
     @api.model
@@ -514,7 +616,7 @@ class ChequeredCementTile(models.Model):
 
 
 class ChequeredCementTileLine(models.Model):
-    _name = "mechanical.cement.chequered.tile1.line"
+    _name = "mechanical.cement.chequered.tile.line"
     parent_id = fields.Many2one('mechanical.cement.chequered.tile',string="Parent Id")
    
     sr_no = fields.Integer(string="Sr No.",readonly=True, copy=False, default=1)
@@ -631,3 +733,12 @@ class ChequeredCementWetTransverLine(models.Model):
         records = self.sorted('id')
         for index, record in enumerate(records):
             record.sr_no = index + 1
+
+
+
+class FlooringTileNotes(models.Model):
+    _name = "mechanical.cement.chequered.tile.notes"
+
+    parent_id = fields.Many2one('mechanical.cement.chequered.tile',string="Parent Id")
+    sr_no = fields.Char("Sr. No.")
+    notes = fields.Char("Notes")

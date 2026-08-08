@@ -112,16 +112,6 @@
 									<span t-field="o.material.name"/>
 								</td>
 							</tr>
-							<!-- Source of Sample (only if value exists) -->
-								<tr t-if="o.material.source_sample">
-									<td colspan="12">Source of Sample: <![CDATA[&nbsp;]]><span t-field="o.material.source_sample"/></td>
-								</tr>
-
-								<!-- Test method adopted (only if value exists) -->
-								<tr t-if="o.material.test_method_adopted">
-									<td colspan="12">Test method adopted: <![CDATA[&nbsp;]]>
-									<span t-field="o.material.test_method_adopted"/></td>
-								</tr>
 						</table>
 					</div>
 					
@@ -130,23 +120,11 @@
 
                         <tr style="height:20px;">
                             <td rowspan="1" >Sr.No</td>
-                            <td rowspan="1" >
-							<span t-esc="eln.material.test_parameter"/>
-							<!-- Test Parameters -->
-							</td>
-                            <td rowspan="1" >
-							<span t-esc="eln.material.unit"/>
-							<!-- Unit -->
-							</td>
-                            <td rowspan="1" >
-							<span t-esc="eln.material.method_reference"/>
-							<!-- Test Method -->
-							</td>
+                            <td rowspan="1" ><span t-esc="eln.material.test_parameter"/></td>
+                            <td rowspan="1" ><span t-esc="eln.material.unit"/></td>
+                            <td rowspan="1" ><span t-field="eln.material.method_reference"></span></td>
+                            <td rowspan="1"> <span t-esc="eln.material.result_remark"/></td>
                             <td rowspan="1">
-							<span t-esc="eln.material.result_remark"/>	
-							 <!-- Test Result -->
-							 </td>
-                            <td rowspan="1"> Limit As per
 								<span t-field="eln.material.specifications"></span>
 							</td>
 							
@@ -169,17 +147,17 @@
                   			</td>
                             <td>
 								<span>
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','1254785r-79c0-44a8-9379-f40dd3323rg34')]).parameter_name"/>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','19999f82-79c0-44a8-9379-f40dd3323rg34')]).parameter_name"/>
 								</span>
 							</td>
                             <td>
 								<span>
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','1254785r-79c0-44a8-9379-f40dd3323rg34')]).unit.name"/>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','19999f82-79c0-44a8-9379-f40dd3323rg34')]).unit.name"/>
 								</span>
 							</td>
                             <td>
 								<span>
-									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','1254785r-79c0-44a8-9379-f40dd3323rg34')]).parameter_table" t-as="parameter">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','19999f82-79c0-44a8-9379-f40dd3323rg34')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.specification"/>
                                         </t>
@@ -193,7 +171,7 @@
                             
 							<td>
 								<span>
-									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','1254785r-79c0-44a8-9379-f40dd3323rg34')]).parameter_table" t-as="parameter">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','19999f82-79c0-44a8-9379-f40dd3323rg34')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.permissable_limit"/>
                                         </t>
@@ -217,17 +195,17 @@
                   			</td>
                             <td>
 								<span>
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','2546369f82-79c0-44a8-9379-f40dd3323rg34')]).parameter_name"/>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','rtgh4569f82-79c0-44a8-9379-f40dd3323rg34')]).parameter_name"/>
 								</span>
 							</td>
                             <td>
 								<span>
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','2546369f82-79c0-44a8-9379-f40dd3323rg34')]).unit.name"/>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','rtgh4569f82-79c0-44a8-9379-f40dd3323rg34')]).unit.name"/>
 								</span>
 							</td>
                             <td>
 								<span>
-									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','2546369f82-79c0-44a8-9379-f40dd3323rg34')]).parameter_table" t-as="parameter">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','rtgh4569f82-79c0-44a8-9379-f40dd3323rg34')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.specification"/>
                                         </t>
@@ -241,7 +219,7 @@
                             
 							<td>
 								<span>
-									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','2546369f82-79c0-44a8-9379-f40dd3323rg34')]).parameter_table" t-as="parameter">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','rtgh4569f82-79c0-44a8-9379-f40dd3323rg34')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.permissable_limit"/>
                                         </t>
@@ -265,17 +243,17 @@
                   			</td>
                             <td>
 								<span>
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','23k45868469f82-79c0-44a8-9379-f40dd3323rg34')]).parameter_name"/>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','hjty5678469f82-79c0-44a8-9379-f40dd3323rg34')]).parameter_name"/>
 								</span>
 							</td>
                             <td>
 								<span>
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','23k45868469f82-79c0-44a8-9379-f40dd3323rg34')]).unit.name"/>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','hjty5678469f82-79c0-44a8-9379-f40dd3323rg34')]).unit.name"/>
 								</span>
 							</td>
                             <td>
 								<span>
-									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','23k45868469f82-79c0-44a8-9379-f40dd3323rg34')]).parameter_table" t-as="parameter">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','hjty5678469f82-79c0-44a8-9379-f40dd3323rg34')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.specification"/>
                                         </t>
@@ -289,7 +267,7 @@
                             
 							<td>
 								<span>
-									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','23k45868469f82-79c0-44a8-9379-f40dd3323rg34')]).parameter_table" t-as="parameter">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','hjty5678469f82-79c0-44a8-9379-f40dd3323rg34')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.permissable_limit"/>
                                         </t>
@@ -313,17 +291,17 @@
                   			</td>
                             <td>
 								<span>
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','26579pi7-ef96-446d-9108-c13d740424ca')]).parameter_name"/>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','15784955-ef96-446d-9108-c13d740424ca')]).parameter_name"/>
 								</span>
 							</td>
                             <td>
 								<span>
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','26579pi7-ef96-446d-9108-c13d740424ca')]).unit.name"/>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','15784955-ef96-446d-9108-c13d740424ca')]).unit.name"/>
 								</span>
 							</td>
                             <td>
 								<span>
-									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','26579pi7-ef96-446d-9108-c13d740424ca')]).parameter_table" t-as="parameter">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','15784955-ef96-446d-9108-c13d740424ca')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.specification"/>
                                         </t>
@@ -337,7 +315,7 @@
                             
 							<td>
 								<span>
-									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','26579pi7-ef96-446d-9108-c13d740424ca')]).parameter_table" t-as="parameter">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','15784955-ef96-446d-9108-c13d740424ca')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.permissable_limit"/>
                                         </t>
@@ -360,17 +338,17 @@
                   			</td>
                             <td>
 								<span>
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','3258li68-d457-4f5d-a912-48c756bb7837')]).parameter_name"/>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','6d833bd3-d457-4f5d-a912-48c756bb7837')]).parameter_name"/>
 								</span>
 							</td>
                             <td>
 								<span>
-									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','3258li68-d457-4f5d-a912-48c756bb7837')]).unit.name"/>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','6d833bd3-d457-4f5d-a912-48c756bb7837')]).unit.name"/>
 								</span>
 							</td>
                             <td>
 								<span>
-									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','3258li68-d457-4f5d-a912-48c756bb7837')]).parameter_table" t-as="parameter">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','6d833bd3-d457-4f5d-a912-48c756bb7837')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.specification"/>
                                         </t>
@@ -384,7 +362,7 @@
                             
 							<td>
 								<span>
-									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','3258li68-d457-4f5d-a912-48c756bb7837')]).parameter_table" t-as="parameter">
+									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','6d833bd3-d457-4f5d-a912-48c756bb7837')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
                                                 <span t-field="parameter.permissable_limit"/>
                                         </t>
@@ -408,69 +386,25 @@
 					</table>
 
 				
-						<!-- <div style="margin-top:20px" class="noteContainer">
-							<div>
-								<b>Note :-</b>
-							</div>
-							<div>
-								<ul>
-									<li>
-										The Test Report(s) is/are valid only to the sample submitted to the laboratory.
-									</li>
-									<li>
-										Sample(s) was/were not drawn by laboratory.
-									</li>
-									<li>
-										This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.
-									</li>
-									<li t-if="eln.has_witness">
-										Test witnessed by : <span t-esc="eln.witness_name"/>
-										
-									</li>
-									<li t-if="eln.remarks">
-										<span t-esc="eln.remarks"/>
-									</li>
-								</ul>
-							</div>
-						</div> -->
-
-
-
-
-						 <!-- Remarks Section -->
-
-                    <div style="margin-top:50px" class="noteContainer">
-						<table >
-							<tr>
-							
-								<td style="padding: 5px; font-style: italic; font-size: 15px; line-height: 18px;">
-									<b>Remarks:</b><br/><br/>
-									    * Refer to Annexure-I for environmental and test conditions<br/><br/>
-									    * Refer to Annexure-I (A) to know NABL accredited scope, range and uncertainty of measurement for test parameter<br/><br/>
-
-									<b>Notes:-</b><br/><br/>
-								    	<!-- a. The information marked with an # received from customer<br/><br/>
-							        	b. The results listed refer only to tested parameters and sample as received from customer<br/><br/>
-							        	c. The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.<br/><br/>
-							        	d. This document shall not be reproduced in part or full without the approval of Genstru. -->
-
+						<div style="page-break-inside: avoid;">
+								<div style="page-break-inside: avoid; margin-top: 20px;" class="noteContainer">
+									<ul>
 										<t t-if="data.notes_id">
-										<t t-foreach="data.notes_id" t-as="n">
-											<span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span><br/><br/>
+											<t t-foreach="data.notes_id" t-as="n">
+												<li>
+													<span t-esc="n.sr_no"/>. <span t-esc="n.notes"/>
+												</li>
+											</t>
 										</t>
-									</t>
-								</td>
-							</tr>
-							</table  >
-						</div>
-
-
-
-
-
-
-
-
+										<li t-if="eln.has_witness">
+											Test witnessed by : <span t-esc="eln.witness_name"/>
+										</li>
+										<li t-if="eln.remarks">
+											<span t-esc="eln.remarks"/>
+										</li>
+									</ul>
+								</div>
+							</div>
 						<div class="signatureContainer girdgird">
 							<div>
 								<div>
@@ -494,13 +428,13 @@
 							</div>
 
 							<div>
-						<div>
-							<img t-attf-src="/lerm_civil/static/src/img/stamp1.png" alt="Image"/>
-						</div>
-						<div style="padding-top:5px">
-							Format No. <span t-esc="eln.material.test_format_no"/>
-						</div>
-					</div>
+								<div>
+									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
+								</div>
+								<div style="padding-top:5px">
+									Format No. <span t-esc="eln.material.test_format_no"/>
+								</div>
+							</div>
 							
 							<div>
 								<div>
