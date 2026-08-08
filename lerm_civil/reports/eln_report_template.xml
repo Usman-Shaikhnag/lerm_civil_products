@@ -1255,11 +1255,11 @@
 									</td> -->
 									
 								<td t-if="r.get('result_type') == 'number'">
-									<!-- Number asel tar float format karun print hoil -->
-									<span t-esc="'{:.{}f}'.format(float(r.get('value') or 0), int(r.get('decimal') or 2))"/>
+									<!-- <span t-esc="'{:.{}f}'.format(float(r.get('value') or 0), int(r.get('decimal') or ''))"/> -->
+									<!-- <span t-esc="'{:.{}f}'.format(float(r.get('value') or 0), int(r.get('decimal') if r.get('decimal') is not None and r.get('decimal') != '' else 2))"/> -->
+									<span t-esc="r['value']"/>
 								</td>
 								<td t-elif="r.get('result_type') == 'char'">
-									<!-- Fakta Formula line var ch result_char disel, baaki normal input saathi value disel -->
 									<span t-if="r.get('identifier') == 'Formula'" t-esc="r.get('result_char', '')"/>
 									<span t-else="" t-esc="r.get('value', '')"/>
 								</td>
