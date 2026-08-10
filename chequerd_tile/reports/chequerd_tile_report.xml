@@ -178,9 +178,14 @@
 									</t>
 								</span>
 							</td>
+						
+
 							<td t-if="eln.conformity">
-								<span t-field="data.average_flatness_conformity"/>
-							</td>
+											
+							<span t-attf-style="color: #{'green' if data.average_flatness_conformity and data.average_flatness_conformity.lower() == 'pass' else ('red' if data.average_flatness_conformity and data.average_flatness_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+								t-esc="data.average_flatness_conformity"/>
+						
+								</td>
 
 						</tr>
 
@@ -226,9 +231,15 @@
 									</t>
 								</span>
 							</td>
+							
+
 							<td t-if="eln.conformity">
-								<span t-field="data.average_perpendicularity_conformity"/>
-							</td>
+											
+							<span t-attf-style="color: #{'green' if data.average_perpendicularity_conformity and data.average_perpendicularity_conformity.lower() == 'pass' else ('red' if data.average_perpendicularity_conformity and data.average_perpendicularity_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+								t-esc="data.average_perpendicularity_conformity"/>
+						
+								</td>
+
 
 						</tr>
 
@@ -274,9 +285,14 @@
 									</t>
 								</span>
 							</td>
+							
+
 							<td t-if="eln.conformity">
-								<span t-field="data.average_straightness_conformity"/>
-							</td>
+											
+							<span t-attf-style="color: #{'green' if data.average_straightness_conformity and data.average_straightness_conformity.lower() == 'pass' else ('red' if data.average_straightness_conformity and data.average_straightness_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+								t-esc="data.average_straightness_conformity"/>
+						
+								</td>
 
 						</tr>
 
@@ -322,9 +338,14 @@
 									</t>
 								</span>
 							</td>
+						
+
 							<td t-if="eln.conformity">
-								<span t-field="data.average_water_absorption_conformity"/>
-							</td>
+											
+							<span t-attf-style="color: #{'green' if data.average_water_absorption_conformity and data.average_water_absorption_conformity.lower() == 'pass' else ('red' if data.average_water_absorption_conformity and data.average_water_absorption_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+								t-esc="data.average_water_absorption_conformity"/>
+						
+								</td>
 
 						</tr>
 
@@ -369,9 +390,13 @@
 									</t>
 								</span>
 							</td>
+							
 							<td t-if="eln.conformity">
-								<span t-field="data.average_wet_transver_conformity"/>
-							</td>
+											
+							<span t-attf-style="color: #{'green' if data.average_wet_transver_conformity and data.average_wet_transver_conformity.lower() == 'pass' else ('red' if data.average_wet_transver_conformity and data.average_wet_transver_conformity.lower() == 'fail' else 'black')}; font-weight: bold;"
+								t-esc="data.average_wet_transver_conformity"/>
+						
+								</td>
 
 						</tr>
 
