@@ -59,6 +59,296 @@
                              background-color: #d8ecff !important;
                              border-color: #3b82f6 !important;
                             }
+
+                        
+
+
+
+                        /* =========================================================
+   ROCK TABLE ONLY
+   FREEZE FIRST 4 COLUMNS
+   ========================================================= */
+
+
+/* =========================
+   1. SPECIMEN / SR NO
+   ========================= */
+
+.rock-freeze .o_list_renderer .o_list_table
+th[data-name="sr_no"],
+.rock-freeze .o_list_renderer .o_list_table
+td[name="sr_no"] {
+
+    position: sticky !important;
+    left: 0 !important;
+
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+
+    z-index: 1000 !important;
+
+    background-color: #ffffff !important;
+
+    /* solid right border */
+    box-shadow: inset -0.3px 0 #000000 !important;
+}
+
+
+/* =========================
+   2. DATE RECEIVED
+   ========================= */
+
+.rock-freeze .o_list_renderer .o_list_table
+th[data-name="date_received"],
+.rock-freeze .o_list_renderer .o_list_table
+td[name="date_received"] {
+
+    position: sticky !important;
+    left:58px !important;
+
+    width: 105px !important;
+    min-width: 105px !important;
+    max-width: 105px !important;
+
+    z-index: 1000 !important;
+
+    background-color: #d8ecff !important;
+
+    box-shadow: inset -1px 0 #000000 !important;
+}
+
+
+/* =========================
+   3. DATE TESTING
+   ========================= */
+
+.rock-freeze .o_list_renderer .o_list_table
+th[data-name="date_testing"],
+.rock-freeze .o_list_renderer .o_list_table
+td[name="date_testing"] {
+
+    position: sticky !important;
+    left: 161px !important;
+
+    width: 105px !important;
+    min-width: 105px !important;
+    max-width: 105px !important;
+
+    z-index: 1000 !important;
+
+    background-color: #d8ecff !important;
+
+    box-shadow: inset -1px 0 #000000 !important;
+}
+
+
+/* =========================
+   4. LAB ID
+   ========================= */
+
+.rock-freeze .o_list_renderer .o_list_table
+th[data-name="lab_id"],
+.rock-freeze .o_list_renderer .o_list_table
+td[name="lab_id"] {
+
+    position: sticky !important;
+    left: 265px !important;
+
+    width: 105px !important;
+    min-width: 105px !important;
+    max-width: 105px !important;
+
+    z-index: 1000 !important;
+
+    background-color: #d8ecff !important;
+
+    /* strong final frozen border */
+    box-shadow:
+        inset -1px 0 #000000,
+        1px 0 1px rgba(0,0,0,0.15) !important;
+}
+
+
+/* =========================================================
+   HEADERS MUST BE ABOVE DATA CELLS
+   ========================================================= */
+
+.rock-freeze .o_list_renderer .o_list_table
+thead th[data-name="sr_no"],
+.rock-freeze .o_list_renderer .o_list_table
+thead th[data-name="date_received"],
+.rock-freeze .o_list_renderer .o_list_table
+thead th[data-name="date_testing"],
+.rock-freeze .o_list_renderer .o_list_table
+thead th[data-name="lab_id"] {
+
+    z-index: 2000 !important;
+
+    background-color: #ffffff !important;
+
+    background-clip: padding-box !important;
+}
+
+
+/* =========================================================
+   BLUE INPUT CELLS
+   ========================================================= */
+
+.rock-freeze .o_list_renderer .o_list_table
+td[name="date_received"].blue-input,
+.rock-freeze .o_list_renderer .o_list_table
+td[name="date_testing"].blue-input,
+.rock-freeze .o_list_renderer .o_list_table
+td[name="lab_id"].blue-input {
+
+    background-color: #d8ecff !important;
+}
+
+
+/* =========================================================
+   IMPORTANT:
+   FROZEN CELLS MUST BE OPAQUE
+   ========================================================= */
+
+.rock-freeze .o_list_renderer .o_list_table
+td[name="sr_no"],
+.rock-freeze .o_list_renderer .o_list_table
+td[name="date_received"],
+.rock-freeze .o_list_renderer .o_list_table
+td[name="date_testing"],
+.rock-freeze .o_list_renderer .o_list_table
+td[name="lab_id"] {
+
+    opacity: 1 !important;
+
+    background-clip: padding-box !important;
+
+    isolation: isolate !important;
+}
+
+
+/* =========================================================
+   FINAL LAB ID BOUNDARY
+   ========================================================= */
+
+.rock-freeze .o_list_renderer .o_list_table
+td[name="lab_id"],
+.rock-freeze .o_list_renderer .o_list_table
+th[data-name="lab_id"] {
+
+    border-right: 1px solid #000000 !important;
+}
+
+                        <!-- /* =========================================
+   ROCK TABLE - FREEZE FIRST 4 COLUMNS
+   ODOO 17
+   ========================================= */
+
+/* SR NO */
+.o_list_renderer .o_list_table th[data-name="sr_no"],
+.o_list_renderer .o_list_table td[name="sr_no"] {
+    position: sticky !important;
+    left: 0px !important;
+    z-index: 100 !important;
+    background-color: #ffffff !important;
+    min-width: 112px !important;
+    width: 112px !important;
+}
+
+
+/* DATE RECEIVED */
+.o_list_renderer .o_list_table th[data-name="date_received"],
+.o_list_renderer .o_list_table td[name="date_received"] {
+    position: sticky !important;
+    left: 112px !important;
+    z-index: 100 !important;
+    background-color: #ffffff !important;
+    min-width: 115px !important;
+    width: 115px !important;
+}
+
+
+/* DATE TESTING */
+.o_list_renderer .o_list_table th[data-name="date_testing"],
+.o_list_renderer .o_list_table td[name="date_testing"] {
+    position: sticky !important;
+    left: 227px !important;
+    z-index: 100 !important;
+    background-color: #ffffff !important;
+    min-width: 115px !important;
+    width: 115px !important;
+}
+
+
+/* LAB ID */
+.o_list_renderer .o_list_table th[data-name="lab_id"],
+.o_list_renderer .o_list_table td[name="lab_id"] {
+    position: sticky !important;
+    left: 342px !important;
+    z-index: 100 !important;
+    background-color: #ffffff !important;
+    min-width: 120px !important;
+    width: 120px !important;
+}
+
+
+/* =========================================
+   FROZEN HEADER
+   ========================================= */
+
+.o_list_renderer .o_list_table thead th[data-name="sr_no"],
+.o_list_renderer .o_list_table thead th[data-name="date_received"],
+.o_list_renderer .o_list_table thead th[data-name="date_testing"],
+.o_list_renderer .o_list_table thead th[data-name="lab_id"] {
+    z-index: 200 !important;
+    background-color: #ffffff !important;
+}
+
+
+/* =========================================
+   BORDER AFTER FROZEN AREA
+   ========================================= */
+
+.o_list_renderer .o_list_table th[data-name="lab_id"],
+.o_list_renderer .o_list_table td[name="lab_id"] {
+    border-right: 3px solid #555 !important;
+}
+
+
+/* =========================================
+   IMPORTANT: PREVENT OTHER CELLS
+   FROM APPEARING THROUGH FROZEN CELLS
+   ========================================= */
+
+.o_list_renderer .o_list_table td[name="sr_no"],
+.o_list_renderer .o_list_table td[name="date_received"],
+.o_list_renderer .o_list_table td[name="date_testing"],
+.o_list_renderer .o_list_table td[name="lab_id"] {
+    opacity: 1 !important;
+    overflow: hidden !important;
+}
+
+/* Frozen cells */
+.o_list_renderer .o_list_table td[name="sr_no"],
+.o_list_renderer .o_list_table td[name="date_received"],
+.o_list_renderer .o_list_table td[name="date_testing"],
+.o_list_renderer .o_list_table td[name="lab_id"] {
+    position: sticky !important;
+    z-index: 100 !important;
+}
+
+/* Blue cells remain blue */
+.o_list_renderer .o_list_table td[name="date_received"].blue-input,
+.o_list_renderer .o_list_table td[name="date_testing"].blue-input,
+.o_list_renderer .o_list_table td[name="lab_id"].blue-input {
+    background-color: #d8ecff !important;
+}
+
+/* SR number keeps normal table background */
+.o_list_renderer .o_list_table td[name="sr_no"] {
+    background-color: #ffffff !important;
+} -->
                     </style>
 
 
@@ -106,13 +396,13 @@
 
 
                     <div >
-                        <field name="rock_child_lines">
-                            <tree editable="bottom" class="custom_table_borders">
+                        <field name="rock_child_lines" class="rock-freeze">
+                            <tree editable="bottom" class="custom_table_borders" >
                              <!-- <field name="blue_input" invisible="1"/> -->
-                                <field name='sr_no'/>
-                                <field name='date_received'  class="blue-input" decoration-info="date_received != 0"/>
-                                <field name='date_testing' class="blue-input" decoration-info="date_testing != 0"/>
-                                <field name='lab_id' width="120" class="blue-input" decoration-info="lab_id != 0"/>
+                                <field name='sr_no' class="freeze-1"/>
+                                <field name='date_received'  class="blue-input freeze-2" decoration-info="date_received != 0" />
+                                <field name='date_testing' class="blue-input freeze-3" decoration-info="date_testing != 0"/>
+                                <field name='lab_id' width="120" class="blue-input freeze-4" decoration-info="lab_id != 0"/>
                                 
                                 <field name='piece_no'  width="120" class="blue-input" decoration-info="piece_no != 0"/>
                                 <field name='lithological' width="120" class="blue-input" decoration-info="lithological != 0"/>
@@ -924,6 +1214,9 @@
                             <form string="" >
                             <sheet>
                             <style>
+                                
+
+
                                 /* Modal chi title hide karnya sathi */
                                 .modal-header .modal-title {
                                     display: none !important;
