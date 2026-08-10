@@ -35,7 +35,7 @@ class LermSampleForm(models.Model):
     department_id = fields.Char(string='Department')
     material_id = fields.Many2one('product.template',string="Material")
     material_id_lab_name = fields.Char(string="Material",compute="compute_material_id_lab_name",store=True)
-    ulr_no = fields.Char(string="ULR No." ,readonly=True, default=lambda self: 'New')
+    ulr_no = fields.Char(string="ULR No.", default=lambda self: 'New')
     brand = fields.Char(string="Brand")
     size_id = fields.Many2one('lerm.size.line',string="Size")
     grade_id = fields.Many2one('lerm.grade.line',string="Grade")
@@ -284,7 +284,25 @@ class LermSampleForm(models.Model):
 
     display_report_portal = fields.Boolean("Display on Portal")
     customer_portal_sample = fields.Many2one('customer.sample.line',string="Customer Portal Sample", readonly=True)
+    review_lab_ids_display = fields.Char(
+        string="Lab IDs (Review)",
+        compute="_compute_review_lab_ids_display",
+    )
 
+    def _compute_review_lab_ids_display(self):
+        for rec in self:
+            review = self.env['sample.request.review'].sudo().search([
+                ('sample_id', '=', rec.id)
+            ], limit=1)
+            if review and review.review_line_ids:
+                lab_ids = review.review_line_ids.mapped('lab_id')
+                rec.review_lab_ids_display = ', '.join(
+                    lid for lid in lab_ids if lid
+                ) or False
+            else:
+                rec.review_lab_ids_display = False
+
+                
     def unlink(self):
         for rec in self:
             if rec.srf_id:

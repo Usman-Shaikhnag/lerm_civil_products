@@ -116,6 +116,27 @@ class ELN(models.Model):
     quantity = fields.Integer(string="Quantity",default=1)
     sample_qty = fields.Integer(string="Sample Quantity")
     source_sample = fields.Char(string="Source of Sample",compute="_compute_source_sample",store=True)
+    
+    review_lab_ids_display = fields.Char(
+        string="Lab IDs (Review)",
+        compute="_compute_review_lab_ids_display",
+    )
+
+    def _compute_review_lab_ids_display(self):
+        for rec in self:
+            if rec.sample_id:
+                review = self.env['sample.request.review'].sudo().search([
+                    ('sample_id', '=', rec.sample_id.id)
+                ], limit=1)
+                if review and review.review_line_ids:
+                    lab_ids = review.review_line_ids.mapped('lab_id')
+                    rec.review_lab_ids_display = ', '.join(
+                        lid for lid in lab_ids if lid
+                    ) or False
+                else:
+                    rec.review_lab_ids_display = False
+            else:
+                rec.review_lab_ids_display = False
     # lab_id = fields.Char(
     #     string="Lab ID",
     #     readonly=True,
