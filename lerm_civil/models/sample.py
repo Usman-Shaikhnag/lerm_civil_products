@@ -56,17 +56,21 @@ class LermSampleForm(models.Model):
     size_ids = fields.Many2many('lerm.size.line',string="Size Ids",compute="compute_size_ids")
     grade_ids = fields.Many2many('lerm.grade.line',string="Grade Ids",compute="compute_grade_ids")
     qty_ids = fields.Many2many('lerm.qty.line',string="Qty Ids",compute="compute_qty_ids")
-    days_casting = fields.Selection([
-        ('1', '1 Days'),
-        ('3', '3 Days'),
-        ('7', '7 Days'),
-        ('14', '14 Days'),
-        ('21', '21 Days'),
-        ('28', '28 Days'),
-        ('45', '45 Days'),
-        ('56', '56 Days'),
-        ('112', '112 Days'),
-    ], string='Days of casting', default='3')
+    # days_casting = fields.Selection([
+    #     ('1', '1 Days'),
+    #     ('3', '3 Days'),
+    #     ('7', '7 Days'),
+    #     ('14', '14 Days'),
+    #     ('21', '21 Days'),
+    #     ('28', '28 Days'),
+    #     ('45', '45 Days'),
+    #     ('56', '56 Days'),
+    #     ('112', '112 Days'),
+    # ], string='Days of casting', default='3')
+    days_casting = fields.Selection(
+    [(str(i), f'{i} Days') for i in range(1, 101)],
+    string='Days of Testing',
+    default='3')
     date_casting = fields.Date("Date of Casting")
     customer_id = fields.Many2one('res.partner' , string="Customer")
     alias = fields.Char(string="Alias")

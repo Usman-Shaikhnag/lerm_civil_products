@@ -157,17 +157,10 @@ class SrfForm(models.Model):
     contractor_ids = fields.Many2many('lerm.contractor.line')
     casting = fields.Boolean(string="Casting")
     
-    days_casting = fields.Selection([
-        ('1', '1 Days'),
-        ('3', '3 Days'),
-        ('7', '7 Days'),
-        ('14', '14 Days'),
-        ('21', '21 Days'),
-        ('28', '28 Days'),
-        ('45', '45 Days'),
-        ('56', '56 Days'),
-        ('112', '112 Days'),
-    ], string='Days of casting', default='3')
+    days_casting = fields.Selection(
+    [(str(i), f'{i} Days') for i in range(1, 101)],
+    string='Days of Testing',
+    default='3')
     
 
     
@@ -978,17 +971,21 @@ class CreateSampleWizard(models.TransientModel):
     material_ids = fields.Many2many('product.template',string="Material Ids")
     client_sample_id = fields.Char(string="Client Sample Id")
     
-    days_casting = fields.Selection([
-        ('1', '1 Days'),
-        ('3', '3 Days'),
-        ('7', '7 Days'),
-        ('14', '14 Days'),
-        ('21', '21 Days'),
-        ('28', '28 Days'),
-        ('45', '45 Days'),
-        ('56', '56 Days'),
-        ('112', '112 Days'),
-    ], string='Days of Testing', default='3')
+    # days_casting = fields.Selection([
+    #     ('1', '1 Days'),
+    #     ('3', '3 Days'),
+    #     ('7', '7 Days'),
+    #     ('14', '14 Days'),
+    #     ('21', '21 Days'),
+    #     ('28', '28 Days'),
+    #     ('45', '45 Days'),
+    #     ('56', '56 Days'),
+    #     ('112', '112 Days'),
+    # ], string='Days of Testing', default='3')
+    days_casting = fields.Selection(
+    [(str(i), f'{i} Days') for i in range(1, 101)],
+    string='Days of Testing',
+    default='3')
     date_casting = fields.Date(string="Date of Casting")
     customer_id = fields.Many2one('res.partner' , string="Customer",compute="_compute_customer_id")
     product_aliases = fields.Many2many('product.product',string="Product Aliases")
