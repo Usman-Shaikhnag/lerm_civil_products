@@ -7,27 +7,16 @@ import math
 class ShutteringPlywood(models.Model):
     _name = "mechanical.shuttering.plywood"
     _inherit = "lerm.eln"
-    _description = 'mechanical.shuttering.plywood'
     _rec_name = "name"
 
     name = fields.Char("Name",default="SHUTTERING PLYWOOD")
-    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
-
-    @api.depends('eln_ref')
-    def _compute_grade_id(self):
-        if self.eln_ref:
-            self.grade = self.eln_ref.grade_id.id
-
-
-
-            # remark
-
-    notes_id = fields.One2many('shutteringplaywood.notes', 'parent_id', string="Notes")
+    notes_id = fields.One2many('mechanical.shuttering.plywood.notes', 'parent_id', string="Notes")
     
     @api.model
     def default_get(self, fields):
@@ -36,19 +25,19 @@ class ShutteringPlywood(models.Model):
         default_notes = [
             (0, 0, {
                 'sr_no': 'a',
-                'notes': 'The information marked with an # received from customer',
+                'notes': 'The Test Report(s) is/are valid only to the sample submitted to the laboratory.',
             }),
             (0, 0, {
                 'sr_no': 'b',
-                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+                'notes': 'Sample(s) was/were not drawn by laboratory.',
             }),
             (0, 0, {
                 'sr_no': 'c',
-                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+                'notes': 'This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.',
             }),
             (0, 0, {
                 'sr_no': 'd',
-                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+                'notes': '# - Information provided by the customer.',
             }),
         ]
 
@@ -56,6 +45,15 @@ class ShutteringPlywood(models.Model):
         return res
     
 
+
+
+
+
+
+    @api.depends('eln_ref')
+    def _compute_grade_id(self):
+        if self.eln_ref:
+            self.grade = self.eln_ref.grade_id.id
 
 
       # Dimensions
@@ -75,6 +73,12 @@ class ShutteringPlywood(models.Model):
     average_thickness = fields.Float(string="Average Thickness, mm", compute="_compute_average_thickness_shuttering",digits=(12,2))
     average_squareness = fields.Float(string="Average Squareness, mm", compute="_compute_average_squareness_shuttering",digits=(12,4))
     average_edge_straightness = fields.Float(string="Average Edge Straightness, mm", compute="_compute_average_edge_straightness_shuttering",digits=(12,4))
+
+    length_pecification = fields.Char("Length Specification")
+    width_pecification = fields.Char("Width Specification")
+    thickness_pecification = fields.Char("Thickness Specification")
+    squareness_pecification = fields.Char("Squareness Specification")
+    edge_straightness_pecification = fields.Char("Edge Straightness Specification")
  
     @api.depends('child_lines_dimensions_shuttering.lenght')
     def _compute_average_length_shuttering(self):
@@ -142,7 +146,9 @@ class ShutteringPlywood(models.Model):
 
     average_length_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Length Conformity", compute="_compute_average_length_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Length Conformity", compute="_compute_average_length_conformity", store=True)
 
 
 
@@ -151,10 +157,16 @@ class ShutteringPlywood(models.Model):
         
         for record in self:
             record.average_length_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3548tre-7a9c-4616-bad5-88eb1b294674')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3548tre-7a9c-4616-bad5-88eb1b294674')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','25874u28-7a9c-4616-bad5-88eb1b294674')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','25874u28-7a9c-4616-bad5-88eb1b294674')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_length_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -176,8 +188,8 @@ class ShutteringPlywood(models.Model):
         
         for record in self:
             record.average_length_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3548tre-7a9c-4616-bad5-88eb1b294674')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3548tre-7a9c-4616-bad5-88eb1b294674')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','25874u28-7a9c-4616-bad5-88eb1b294674')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','25874u28-7a9c-4616-bad5-88eb1b294674')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -196,7 +208,9 @@ class ShutteringPlywood(models.Model):
 
     average_width_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Width Conformity", compute="_compute_average_width_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Width Conformity", compute="_compute_average_width_conformity", store=True)
 
 
 
@@ -205,10 +219,16 @@ class ShutteringPlywood(models.Model):
         
         for record in self:
             record.average_width_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3548gtre-7a9c-4616-bad5-88eb1b29247u2')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3548gtre-7a9c-4616-bad5-88eb1b29247u2')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23564u28-7a9c-4616-bad5-88eb1b29247u2')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23564u28-7a9c-4616-bad5-88eb1b29247u2')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_width_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -230,8 +250,8 @@ class ShutteringPlywood(models.Model):
         
         for record in self:
             record.average_width_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3548gtre-7a9c-4616-bad5-88eb1b29247u2')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3548gtre-7a9c-4616-bad5-88eb1b29247u2')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23564u28-7a9c-4616-bad5-88eb1b29247u2')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23564u28-7a9c-4616-bad5-88eb1b29247u2')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -250,7 +270,9 @@ class ShutteringPlywood(models.Model):
 
     average_thickness_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Thickness Conformity", compute="_compute_average_thickness_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Thickness Conformity", compute="_compute_average_thickness_conformity", store=True)
 
 
 
@@ -259,10 +281,16 @@ class ShutteringPlywood(models.Model):
         
         for record in self:
             record.average_thickness_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','34587ght-7a9c-4616-bad5-88eb1b2923245t')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','34587ght-7a9c-4616-bad5-88eb1b2923245t')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','864h4u28-7a9c-4616-bad5-88eb1b2923245t')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','864h4u28-7a9c-4616-bad5-88eb1b2923245t')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_thickness_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -284,8 +312,8 @@ class ShutteringPlywood(models.Model):
         
         for record in self:
             record.average_thickness_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','34587ght-7a9c-4616-bad5-88eb1b2923245t')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','34587ght-7a9c-4616-bad5-88eb1b2923245t')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','864h4u28-7a9c-4616-bad5-88eb1b2923245t')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','864h4u28-7a9c-4616-bad5-88eb1b2923245t')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -304,7 +332,9 @@ class ShutteringPlywood(models.Model):
 
     average_squareness_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Squareness Conformity", compute="_compute_average_squareness_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Squareness Conformity", compute="_compute_average_squareness_conformity", store=True)
 
 
 
@@ -313,10 +343,16 @@ class ShutteringPlywood(models.Model):
         
         for record in self:
             record.average_squareness_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35478hgtr-7a9c-4616-bad5-88eb1b29232354l')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35478hgtr-7a9c-4616-bad5-88eb1b29232354l')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2346kj28-7a9c-4616-bad5-88eb1b29232354l')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2346kj28-7a9c-4616-bad5-88eb1b29232354l')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_squareness_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -338,8 +374,8 @@ class ShutteringPlywood(models.Model):
         
         for record in self:
             record.average_squareness_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35478hgtr-7a9c-4616-bad5-88eb1b29232354l')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35478hgtr-7a9c-4616-bad5-88eb1b29232354l')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2346kj28-7a9c-4616-bad5-88eb1b29232354l')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2346kj28-7a9c-4616-bad5-88eb1b29232354l')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -358,7 +394,9 @@ class ShutteringPlywood(models.Model):
 
     average_edge_straightness_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Edge Straightness Conformity", compute="_compute_average_edge_straightness_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Edge Straightness Conformity", compute="_compute_average_edge_straightness_conformity", store=True)
 
 
 
@@ -367,10 +405,16 @@ class ShutteringPlywood(models.Model):
         
         for record in self:
             record.average_edge_straightness_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35487kuy-7a9c-4616-bad5-88eb1b292323467t')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35487kuy-7a9c-4616-bad5-88eb1b292323467t')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2347io28-7a9c-4616-bad5-88eb1b292323467t')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2347io28-7a9c-4616-bad5-88eb1b292323467t')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_edge_straightness_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -392,8 +436,8 @@ class ShutteringPlywood(models.Model):
         
         for record in self:
             record.average_edge_straightness_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35487kuy-7a9c-4616-bad5-88eb1b292323467t')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','35487kuy-7a9c-4616-bad5-88eb1b292323467t')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2347io28-7a9c-4616-bad5-88eb1b292323467t')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2347io28-7a9c-4616-bad5-88eb1b292323467t')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -416,6 +460,8 @@ class ShutteringPlywood(models.Model):
 
     adhesion_plies = fields.Char(string="Observation")
 
+    adhesion_plies_pecification = fields.Char("Adhesion of Plies Specification")
+
 
         #Resistance to dry heat
 
@@ -423,6 +469,8 @@ class ShutteringPlywood(models.Model):
     resistance_heat_visible = fields.Boolean("Resistance to Dry Heat Visible",compute="_compute_visible") 
 
     resistance_heat = fields.Char(string="Observation")
+
+    resistance_heat_pecification = fields.Char("Resistance to Dry Heat Specification")
 
 
 
@@ -432,6 +480,8 @@ class ShutteringPlywood(models.Model):
     water_resistance_visible = fields.Boolean("Water Resistance Test Visible",compute="_compute_visible") 
 
     water_resistance = fields.Char(string="Observation")
+
+    water_resistance_pecification = fields.Char("Water Resistance Specification")
 
 
 
@@ -446,6 +496,8 @@ class ShutteringPlywood(models.Model):
     child_lines_density_shuttering = fields.One2many('mechanical.density.huttering.line','parent_id',string="Parameter")
 
     average_density_shuttering = fields.Float(string="Density, g/cm3 ",compute="_compute_average_gypsum_density_shuttering",digits=(12,3),store=True)
+
+    density_shuttering_pecification = fields.Char("Density Specification")
 
     @api.depends('child_lines_density_shuttering.density_shuttering')
     def _compute_average_gypsum_density_shuttering(self):
@@ -463,7 +515,9 @@ class ShutteringPlywood(models.Model):
 
     average_density_shuttering_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_density_shuttering_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_average_density_shuttering_conformity", store=True)
 
 
 
@@ -472,10 +526,16 @@ class ShutteringPlywood(models.Model):
         
         for record in self:
             record.average_density_shuttering_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','124578gte-7a9c-4616-bad5-88eb1b29087y')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','124578gte-7a9c-4616-bad5-88eb1b29087y')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65379b28-7a9c-4616-bad5-88eb1b29087y')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65379b28-7a9c-4616-bad5-88eb1b29087y')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_density_shuttering_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -497,8 +557,8 @@ class ShutteringPlywood(models.Model):
         
         for record in self:
             record.average_density_shuttering_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','124578gte-7a9c-4616-bad5-88eb1b29087y')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','124578gte-7a9c-4616-bad5-88eb1b29087y')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65379b28-7a9c-4616-bad5-88eb1b29087y')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','65379b28-7a9c-4616-bad5-88eb1b29087y')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -537,19 +597,19 @@ class ShutteringPlywood(models.Model):
                 print("Internal Ids",sample.internal_id)
 
                
-                if sample.internal_id == "12578trew3-7a9c-4616-bad5-88eb1b2607456":
+                if sample.internal_id == "0645454b28-7a9c-4616-bad5-88eb1b2607456":
                     record.dimensions_shuttering_visible = True
 
-                if sample.internal_id == "35478tyus14-7a9b-4616-bad5-88eb1b26070834":
+                if sample.internal_id == "06463454b28-7a9b-4616-bad5-88eb1b26070834":
                     record.adhesion_plies_visible = True
 
-                if sample.internal_id == "57896543fght-7a9b-4616-bad5-88eb1b260hj653":
+                if sample.internal_id == "4660321b28-7a9b-4616-bad5-88eb1b260hj653":
                     record.resistance_heat_visible = True
 
-                if sample.internal_id == "12547gtre2-7a7n-4616-bad5-88eb1b260tr878ng":
+                if sample.internal_id == "0360321b28-7a7n-4616-bad5-88eb1b260tr878ng":
                     record.water_resistance_visible = True
 
-                if sample.internal_id == "124578gte-7a9c-4616-bad5-88eb1b29087y":
+                if sample.internal_id == "65379b28-7a9c-4616-bad5-88eb1b29087y":
                     record.density_shuttering_visible = True
 
 
@@ -567,31 +627,49 @@ class ShutteringPlywood(models.Model):
         )
 
         for result in technician_results:
-            # import wdb;wdb.set_trace()
-            
-            
-            
-            if result.parameter.internal_id == '12578trew3-7a9c-4616-bad5-88eb1b2607456':
-                # result.result_char = round(self.aggregate_elongation,2)
+
+
+
+            if result.parameter.internal_id == '0645454b28-7a9c-4616-bad5-88eb1b2607456':
+                # result.result_char = self.initial_setting_time_minutes_unrounded
                 result.calculated = True
-                # if self.aggregate_combine_conformity == 'pass':
+                # if self.initial_setting_nabl == 'pass':
                 #     result.nabl_status = 'nabl'
                 # else:
                 #     result.nabl_status = 'non-nabl'
-                # continue
+                continue
 
-            if result.parameter.internal_id == '35478tyus14-7a9b-4616-bad5-88eb1b26070834':
+
+            if result.parameter.internal_id == '06463454b28-7a9b-4616-bad5-88eb1b26070834':
+                # result.result_char = round(self.average_cememt_flatness,2)
                 result.calculated = True
-               
+                # if self.average_cememt_flatness_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
 
-            if result.parameter.internal_id == '57896543fght-7a9b-4616-bad5-88eb1b260hj653':
+            if result.parameter.internal_id == '4660321b28-7a9b-4616-bad5-88eb1b260hj653':
+                # result.result_char = round(self.average_cement_perpendicularity,2)
                 result.calculated = True
+                # if self.average_cement_perpendicularity_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
 
 
-            if result.parameter.internal_id == '12547gtre2-7a7n-4616-bad5-88eb1b260tr878ng':
+            if result.parameter.internal_id == '0360321b28-7a7n-4616-bad5-88eb1b260tr878ng':
+                # result.result_char = round(self.average_cement_straightness,2)
                 result.calculated = True
+                # if self.average_cement_straightness_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
+                continue
 
-            if result.parameter.internal_id == '124578gte-7a9c-4616-bad5-88eb1b29087y':
+
+            if result.parameter.internal_id == '65379b28-7a9c-4616-bad5-88eb1b29087y':
                 result.result_char = round(self.average_density_shuttering,2)
                 result.calculated = True
                 if self.average_density_shuttering_nabl == 'pass':
@@ -600,6 +678,54 @@ class ShutteringPlywood(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
 
+            if result.parameter.internal_id == '25874u28-7a9c-4616-bad5-88eb1b294674':
+                result.result_char = round(self.average_length,2)
+                result.calculated = True
+                if self.average_length_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '23564u28-7a9c-4616-bad5-88eb1b29247u2':
+                result.result_char = round(self.average_width,2)
+                result.calculated = True
+                if self.average_width_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '864h4u28-7a9c-4616-bad5-88eb1b2923245t':
+                result.result_char = round(self.average_thickness,2)
+                result.calculated = True
+                if self.average_thickness_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '2346kj28-7a9c-4616-bad5-88eb1b29232354l':
+                result.result_char = round(self.average_squareness,2)
+                result.calculated = True
+                if self.average_squareness_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '2347io28-7a9c-4616-bad5-88eb1b292323467t':
+                result.result_char = round(self.average_edge_straightness,2)
+                result.calculated = True
+                if self.average_edge_straightness_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            
+
+
         return {
                 'view_mode': 'form',
                 'res_model': "lerm.eln",
@@ -607,7 +733,7 @@ class ShutteringPlywood(models.Model):
                 'target': 'current',
                 'res_id': self.eln_ref.id,
                 
-            }           
+            }   
 
 
     @api.model
@@ -728,9 +854,8 @@ class DensityLine(models.Model):
 
 
 
-
-class shutteringplaywoodNotes(models.Model):
-    _name = "shutteringplaywood.notes"
+class ShutteringPlywoodNotes(models.Model):
+    _name = "mechanical.shuttering.plywood.notes"
 
     parent_id = fields.Many2one('mechanical.shuttering.plywood',string="Parent Id")
     sr_no = fields.Char("Sr. No.")
