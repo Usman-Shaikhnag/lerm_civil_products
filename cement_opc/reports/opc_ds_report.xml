@@ -1200,32 +1200,26 @@
 					<t t-set="i" t-value="0"/>
 						<thead>
 							<tr>
-								<th>
+								<th style="text-align: center;"> 
 									<span>
 										Sr. No
 									</span>
 								</th>
-								<th>
-									<span>
-										Test Parameter
-									</span>
+								<th style="text-align: center;">
+									<span t-esc="eln.material.test_parameter"/>
 								</th>
-								<th>
-									<span>
-										Unit
-									</span>
+								<th style="text-align: center;">
+									<span t-esc="eln.material.unit"/>
 								</th>
-								<th>
-									<span>
-										Test Result
-									</span>
+								<th style="text-align: center;">
+									<span t-esc="eln.material.result_remark"/>
 								</th>
 								
 								<th rowspan="1"> 
 									<span t-field="eln.material.specifications"></span>
 								</th>
 
-								<th>
+								<th style="text-align: center;">
 									<span t-field="eln.material.method_reference"></span>
 								</th>
 								<th t-if="eln.conformity">
@@ -1240,7 +1234,7 @@
 
 						<!-- Normal Consistency  -->
 							<tr t-if="cement.normal_consistency_visible and cement.normal_consistency_nabl == 'pass' and nabl and not fromEln">
-								<td>
+								<td style="text-align: center;">
 									<span t-esc="i + 1" />
 									<t t-set="i" t-value="i+1"/>
 									
@@ -1252,19 +1246,19 @@
 									</span>
 									
 								</td>
-								<td>
+								<td style="text-align: center;">
 									<span>
 										<span t-field="env['lerm.parameter.master'].search([('internal_id','=','a9e97cea-372f-4775-9bcb-e9dd70e6e6df')]).unit.name"/>
 									</span>
 								</td>
 								
-								<td>
+								<td style="text-align: center;">
 									<span>
 										<span t-field="cement.normal_consistency_trial1"/>
 									</span>									
 								</td>
 								
-								<td>
+								<td style="text-align: center;">
 									<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','a9e97cea-372f-4775-9bcb-e9dd70e6e6df')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -1273,7 +1267,7 @@
 									</t>
 									</span>
 								</td>
-								<td>
+								<td style="text-align: center;"> 
 									<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','a9e97cea-372f-4775-9bcb-e9dd70e6e6df')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">

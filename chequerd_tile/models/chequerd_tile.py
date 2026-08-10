@@ -1,37 +1,23 @@
 from odoo import api, fields, models
 from odoo.exceptions import UserError,ValidationError
 import math
-import json
-import base64
-import qrcode
-from io import BytesIO
-from lxml import etree
 
 
 
 class ChequeredTile(models.Model):
-    _name = "mechanical.chequered.tiles"
+    _name = "mechanical.chequered.tile"
     _inherit = "lerm.eln"
-    _description = 'mechanical.chequered.tiles'
     _rec_name = "name"
 
-
     name = fields.Char("Name",default=" CHEQUERED TILE")
-    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
     sample_parameters = fields.Many2many('lerm.parameter.master',string="Parameters",compute="_compute_sample_parameters",store=True)
     eln_ref = fields.Many2one('lerm.eln',string="Eln")
     grade = fields.Many2one('lerm.grade.line',string="Grade",compute="_compute_grade_id",store=True)
-
-    @api.depends('eln_ref')
-    def _compute_grade_id(self):
-        if self.eln_ref:
-            self.grade = self.eln_ref.grade_id.id
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
 
 
-    # remark
-
-    notes_id = fields.One2many('chequerdtile.notes', 'parent_id', string="Notes")
+    notes_id = fields.One2many('mechanical.chequered.tile.notes', 'parent_id', string="Notes",ondelete='cascade')
     
     @api.model
     def default_get(self, fields):
@@ -40,48 +26,46 @@ class ChequeredTile(models.Model):
         default_notes = [
             (0, 0, {
                 'sr_no': 'a',
-                'notes': 'The information marked with an # received from customer',
+                'notes': 'The Test Report(s) is/are valid only to the sample submitted to the laboratory.',
             }),
             (0, 0, {
                 'sr_no': 'b',
-                'notes': 'The results listed refer only to tested parameters and sample as received from customer',
+                'notes': 'Sample(s) was/were not drawn by laboratory.',
             }),
             (0, 0, {
                 'sr_no': 'c',
-                'notes': 'The balance samples if any will be discarded after 15 days from the date of issue of test certificate unless otherwise specified.',
+                'notes': 'This Report may not be reproduced in except full/ part without the permission of the Lab Head of the Laboratory.',
             }),
             (0, 0, {
                 'sr_no': 'd',
-                'notes': 'This document shall not be reproduced in part or full without the approval of Genstru.',
+                'notes': '# - Information provided by the customer.',
             }),
         ]
 
         res['notes_id'] = default_notes
         return res
 
-
-
+    @api.depends('eln_ref')
+    def _compute_grade_id(self):
+        if self.eln_ref:
+            self.grade = self.eln_ref.grade_id.id
 
 
      # Dimension
-
-    dimension_name = fields.Char(default="Dimension")
-    dimension_visible = fields.Boolean(compute="_compute_visible")
-    length = fields.Float('Length')
-    thickness = fields.Float('Thickness')
-    width = fields.Float('Width')
 
     chequered_tiles_name1 = fields.Char("Name",default=" Chequered Tiles")
     chequered_tiles_visible = fields.Boolean("Chequered Visible",compute="_compute_visible")   
 
     # name = fields.Char("Name",default="DIMENSION")
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
-    chequered_tiles_lines = fields.One2many('mechanical.chequered.tile.lines','parent_id',string="Parameter")
+    chequered_tiles_lines = fields.One2many('mechanical.chequered.tile.line','parent_id',string="Parameter")
     average_flatness = fields.Float(string="Average Flatness (mm)", compute="_compute_average_flatness",digits=(16,2))
 
     average_flatness_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Flatness Conformity", compute="_compute_average_flatness_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Flatness Conformity", compute="_compute_average_flatness_conformity", store=True)
 
 
 
@@ -90,10 +74,17 @@ class ChequeredTile(models.Model):
         
         for record in self:
             record.average_flatness_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1254785r-79c0-44a8-9379-f40dd3323rg34')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1254785r-79c0-44a8-9379-f40dd3323rg34')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','19999f82-79c0-44a8-9379-f40dd3323rg34')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','19999f82-79c0-44a8-9379-f40dd3323rg34')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_flatness_conformity = '--'
+                        break
+
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -115,8 +106,8 @@ class ChequeredTile(models.Model):
         
         for record in self:
             record.average_flatness_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1254785r-79c0-44a8-9379-f40dd3323rg34')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','1254785r-79c0-44a8-9379-f40dd3323rg34')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','19999f82-79c0-44a8-9379-f40dd3323rg34')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','19999f82-79c0-44a8-9379-f40dd3323rg34')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -136,7 +127,9 @@ class ChequeredTile(models.Model):
 
     average_perpendicularity_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Perpendicularity Conformity", compute="_compute_average_perpendicularity_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Perpendicularity Conformity", compute="_compute_average_perpendicularity_conformity", store=True)
 
 
 
@@ -145,10 +138,17 @@ class ChequeredTile(models.Model):
         
         for record in self:
             record.average_perpendicularity_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2546369f82-79c0-44a8-9379-f40dd3323rg34')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2546369f82-79c0-44a8-9379-f40dd3323rg34')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','rtgh4569f82-79c0-44a8-9379-f40dd3323rg34')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','rtgh4569f82-79c0-44a8-9379-f40dd3323rg34')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_perpendicularity_conformity = '--'
+                        break
+
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -170,8 +170,8 @@ class ChequeredTile(models.Model):
         
         for record in self:
             record.average_perpendicularity_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2546369f82-79c0-44a8-9379-f40dd3323rg34')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','2546369f82-79c0-44a8-9379-f40dd3323rg34')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','rtgh4569f82-79c0-44a8-9379-f40dd3323rg34')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','rtgh4569f82-79c0-44a8-9379-f40dd3323rg34')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -192,7 +192,9 @@ class ChequeredTile(models.Model):
 
     average_straightness_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Straightness Conformity", compute="_compute_average_straightness_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Straightness Conformity", compute="_compute_average_straightness_conformity", store=True)
 
 
 
@@ -201,10 +203,17 @@ class ChequeredTile(models.Model):
         
         for record in self:
             record.average_straightness_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23k45868469f82-79c0-44a8-9379-f40dd3323rg34')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23k45868469f82-79c0-44a8-9379-f40dd3323rg34')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','hjty5678469f82-79c0-44a8-9379-f40dd3323rg34')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','hjty5678469f82-79c0-44a8-9379-f40dd3323rg34')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_straightness_conformity = '--'
+                        break
+
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -226,8 +235,8 @@ class ChequeredTile(models.Model):
         
         for record in self:
             record.average_straightness_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23k45868469f82-79c0-44a8-9379-f40dd3323rg34')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','23k45868469f82-79c0-44a8-9379-f40dd3323rg34')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','hjty5678469f82-79c0-44a8-9379-f40dd3323rg34')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','hjty5678469f82-79c0-44a8-9379-f40dd3323rg34')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -286,12 +295,15 @@ class ChequeredTile(models.Model):
 
     # name = fields.Char("Name",default="DIMENSION")
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
-    chequered_water_absorption_lines = fields.One2many('mechanical.chequered.water.absorption.lines','parent_id',string="Parameter")
+    chequered_water_absorption_lines = fields.One2many('mechanical.chequered.water.absorption.line','parent_id',string="Parameter")
     average_water_absorption = fields.Float(string="Average Water Absorption %",compute="_compute_average_water_absorption",digits=(12,2))
 
     average_water_absorption_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_water_absorption_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_average_water_absorption_conformity", store=True)
+
 
 
 
@@ -300,10 +312,17 @@ class ChequeredTile(models.Model):
         
         for record in self:
             record.average_water_absorption_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','26579pi7-ef96-446d-9108-c13d740424ca')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','26579pi7-ef96-446d-9108-c13d740424ca')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','15784955-ef96-446d-9108-c13d740424ca')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','15784955-ef96-446d-9108-c13d740424ca')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_water_absorption_conformity = '--'
+                        break
+
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -325,8 +344,8 @@ class ChequeredTile(models.Model):
         
         for record in self:
             record.average_water_absorption_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','26579pi7-ef96-446d-9108-c13d740424ca')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','26579pi7-ef96-446d-9108-c13d740424ca')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','15784955-ef96-446d-9108-c13d740424ca')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','15784955-ef96-446d-9108-c13d740424ca')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -362,12 +381,14 @@ class ChequeredTile(models.Model):
 
     # name = fields.Char("Name",default="DIMENSION")
     parameter_id = fields.Many2one('eln.parameters.result',string="Parameter")
-    chequered_wet_transver_lines = fields.One2many('mechanical.chequered.wet.transverse.lines','parent_id',string="Parameter")
+    chequered_wet_transver_lines = fields.One2many('mechanical.chequered.wet.transverse.line','parent_id',string="Parameter")
     average_wet_transver = fields.Float(string="Average Wet Transveres %",compute="_compute_average_wet_transver",digits=(12,2))
 
     average_wet_transver_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_average_wet_transver_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_average_wet_transver_conformity", store=True)
 
 
 
@@ -376,10 +397,17 @@ class ChequeredTile(models.Model):
         
         for record in self:
             record.average_wet_transver_conformity = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3258li68-d457-4f5d-a912-48c756bb7837')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3258li68-d457-4f5d-a912-48c756bb7837')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6d833bd3-d457-4f5d-a912-48c756bb7837')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6d833bd3-d457-4f5d-a912-48c756bb7837')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.average_wet_transver_conformity = '--'
+                        break
+
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -401,8 +429,8 @@ class ChequeredTile(models.Model):
         
         for record in self:
             record.average_wet_transver_nabl = 'fail'
-            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3258li68-d457-4f5d-a912-48c756bb7837')])
-            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','3258li68-d457-4f5d-a912-48c756bb7837')]).parameter_table
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6d833bd3-d457-4f5d-a912-48c756bb7837')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6d833bd3-d457-4f5d-a912-48c756bb7837')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
@@ -439,23 +467,12 @@ class ChequeredTile(models.Model):
             record.chequered_tiles_visible = False
             record.chequered_water_absorption_visible = False
             record.chequeredwet_transver_visible = False
-            record.dimension_visible = False
             
             
             for sample in record.sample_parameters:
                 print("Internal Ids",sample.internal_id)
 
                
-                # if sample.internal_id == "25687f82-79c0-44a8-9379-f40dd3323rg34":
-                #     record.chequered_tiles_visible = True
-
-                # if sample.internal_id == "26579pi7-ef96-446d-9108-c13d740424ca":
-                #     record.chequered_water_absorption_visible = True
-
-                # if sample.internal_id == "3258li68-d457-4f5d-a912-48c756bb7837":
-                #     record.chequeredwet_transver_visible = True
-
-
                 if sample.internal_id == "b0d3008e-918a-4602-a329-835d38f63c34":
                     record.chequered_tiles_visible = True
 
@@ -464,9 +481,6 @@ class ChequeredTile(models.Model):
 
                 if sample.internal_id == "6d833bd3-d457-4f5d-a912-48c756bb7837":
                     record.chequeredwet_transver_visible = True
-
-                if sample.internal_id == "6dytrbv-d457-4f5d-a912-48c7302145tyr":
-                    record.dimension_visible = True
 
                
 
@@ -483,34 +497,19 @@ class ChequeredTile(models.Model):
         )
 
         for result in technician_results:
-            # import wdb;wdb.set_trace()
 
-            
-            # Chequered Tiles 
+
+
             if result.parameter.internal_id == 'b0d3008e-918a-4602-a329-835d38f63c34':
+                # result.result_char = self.initial_setting_time_minutes_unrounded
                 result.calculated = True
-
-            # Water Absorption
-            if result.parameter.internal_id == '15784955-ef96-446d-9108-c13d740424ca':
-                result.result_char = round(self.average_water_absorption,2)
-                result.calculated = True
-                if self.average_water_absorption_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
+                # if self.initial_setting_nabl == 'pass':
+                #     result.nabl_status = 'nabl'
+                # else:
+                #     result.nabl_status = 'non-nabl'
                 continue
 
-            # WET TRANSVERSE STRENGTH TEST
-            if result.parameter.internal_id == '6d833bd3-d457-4f5d-a912-48c756bb7837':
-                result.result_char = round(self.average_wet_transver,2)
-                result.calculated = True
-                if self.average_wet_transver_nabl == 'pass':
-                    result.nabl_status = 'nabl'
-                else:
-                    result.nabl_status = 'non-nabl'
-                continue
 
-            # Flatness Avg in  (mm)
             if result.parameter.internal_id == '19999f82-79c0-44a8-9379-f40dd3323rg34':
                 result.result_char = round(self.average_flatness,2)
                 result.calculated = True
@@ -520,7 +519,6 @@ class ChequeredTile(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
 
-            # Perpendicularity Avg in %
             if result.parameter.internal_id == 'rtgh4569f82-79c0-44a8-9379-f40dd3323rg34':
                 result.result_char = round(self.average_perpendicularity,2)
                 result.calculated = True
@@ -530,7 +528,7 @@ class ChequeredTile(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
 
-            # Straightness Avg in %
+
             if result.parameter.internal_id == 'hjty5678469f82-79c0-44a8-9379-f40dd3323rg34':
                 result.result_char = round(self.average_straightness,2)
                 result.calculated = True
@@ -540,7 +538,26 @@ class ChequeredTile(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
 
-        
+
+            if result.parameter.internal_id == '15784955-ef96-446d-9108-c13d740424ca':
+                result.result_char = round(self.average_water_absorption,2)
+                result.calculated = True
+                if self.average_water_absorption_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+            if result.parameter.internal_id == '6d833bd3-d457-4f5d-a912-48c756bb7837':
+                result.result_char = round(self.average_wet_transver,2)
+                result.calculated = True
+                if self.average_wet_transver_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+
 
         return {
                 'view_mode': 'form',
@@ -549,7 +566,7 @@ class ChequeredTile(models.Model):
                 'target': 'current',
                 'res_id': self.eln_ref.id,
                 
-            }           
+            }      
 
 
     @api.model
@@ -590,8 +607,8 @@ class ChequeredTile(models.Model):
 
 
 class ChequeredTileLine(models.Model):
-    _name = "mechanical.chequered.tile.lines"
-    parent_id = fields.Many2one('mechanical.chequered.tiles',string="Parent Id")
+    _name = "mechanical.chequered.tile.line"
+    parent_id = fields.Many2one('mechanical.chequered.tile',string="Parent Id")
    
     sr_no = fields.Integer(string="Sr No.",readonly=True, copy=False, default=1)
 
@@ -634,8 +651,8 @@ class ChequeredTileLine(models.Model):
 
 
 class ChequeredWaterAbsorptionLine(models.Model):
-    _name = "mechanical.chequered.water.absorption.lines"
-    parent_id = fields.Many2one('mechanical.chequered.tiles',string="Parent Id")
+    _name = "mechanical.chequered.water.absorption.line"
+    parent_id = fields.Many2one('mechanical.chequered.tile',string="Parent Id")
    
     sr_no = fields.Integer(string="Sr No.",readonly=True, copy=False, default=1)
 
@@ -671,8 +688,8 @@ class ChequeredWaterAbsorptionLine(models.Model):
 
 
 class ChequeredWetTransverLine(models.Model):
-    _name = "mechanical.chequered.wet.transverse.lines"
-    parent_id = fields.Many2one('mechanical.chequered.tiles',string="Parent Id")
+    _name = "mechanical.chequered.wet.transverse.line"
+    parent_id = fields.Many2one('mechanical.chequered.tile',string="Parent Id")
    
     sr_no = fields.Integer(string="Sr No.",readonly=True, copy=False, default=1)
 
@@ -709,13 +726,9 @@ class ChequeredWetTransverLine(models.Model):
             record.sr_no = index + 1
 
 
+class ChequeredTileNotes(models.Model):
+    _name = "mechanical.chequered.tile.notes"
 
-
-class chequerdtileNotes(models.Model):
-    _name = "chequerdtile.notes"
-
-    parent_id = fields.Many2one('mechanical.chequered.tiles',string="Parent Id")
+    parent_id = fields.Many2one('mechanical.chequered.tile',string="Parent Id")
     sr_no = fields.Char("Sr. No.")
     notes = fields.Char("Notes")
-
-

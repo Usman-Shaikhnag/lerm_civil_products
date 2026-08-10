@@ -65,6 +65,9 @@ class FerrousStructuralSteel(models.Model):
     
     fracture2 = fields.Char("Fracture (Within Gauge Length)",default="W.G.L")
 
+    eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
+
+
     @api.depends('width2', 'thickness2')
     def _compute_area2(self):
         for record in self:
