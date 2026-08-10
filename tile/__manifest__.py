@@ -14,7 +14,8 @@ This module contains all the common features of TILE.
     'data': [
              'security/ir.model.access.csv',
               'views/tile.xml',
-              'reports/tile_ds_report.xml'
+              'reports/tile_datasheet.xml',
+              'reports/tile_report.xml'
     ],
 
     'assets': {
