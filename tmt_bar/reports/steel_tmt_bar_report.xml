@@ -29,11 +29,11 @@
                                     </t>
                                     <t t-else="">--</t>
                                 </td>
-                                <td colspan="1">ULR NO:</td>
+                                <!-- <td colspan="1">ULR NO:</td>
                                 <td colspan="1" style="font-weight:bold;">
                                     <![CDATA[&nbsp;]]>
                                     <span t-field="o.sample_id.ulr_no"/>
-                                </td>
+                                </td> -->
                             </tr>
                             <tr>
                                 <td colspan="1">Address:</td>
@@ -218,6 +218,7 @@
                                 </td>
                             </tr>
 
+                            <!--
                             <tr style="font-size:12px;" t-if="data.yield_visible or data.uts_visible or data.elongation_visible or data.weight_per_meter_visible or data.ts_ys_visible">
                                 <td style="text-align: center;">
                                     <span t-esc="i + 1" />
@@ -364,6 +365,7 @@
                                 <td t-if="eln.conformity" style="text-align: center;">
                                 </td>
                             </tr>
+-->
 
                             <tr style="font-size:12px;" t-if="(data.yield_nabl == 'pass' and nabl or (data.yield_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl) and data.yield_visible">
                                 <td style="text-align: center;">
@@ -537,6 +539,7 @@
                                 </td>
                             </tr>
 
+                            <!--
                             <tr style="font-size:12px;" t-if="data.bend_visible">
                                 <td style="text-align: center;">
                                     <span t-esc="i + 1" />
@@ -595,6 +598,7 @@
                                 <td t-if="eln.conformity">
                                 </td>
                             </tr>
+-->
                         </tbody>
                     </table>
 
