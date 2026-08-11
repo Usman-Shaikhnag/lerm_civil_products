@@ -87,7 +87,7 @@ class LermSampleForm(models.Model):
     approveby_signature_required = fields.Boolean("Approved by Signature")
     testedby_signature_required = fields.Boolean("Tested by Signature")
     page_break = fields.Integer("Page break",default=6)
-    lab_id = fields.Char(string="Lab Id")
+    lab_id = fields.Char(string="Structure")
 
     active = fields.Boolean(string="Active",default=True)
 
