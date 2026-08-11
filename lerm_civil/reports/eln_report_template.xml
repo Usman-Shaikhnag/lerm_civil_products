@@ -67,7 +67,7 @@
 								</td>
 							</t>
 							<t t-else="">
-								<td t-if="(eln.sample_id.scope == 'non_nabl') or not nabl" colspan="3">
+								<td t-if="(eln.sample_id.scope == 'non_nabl') and not nabl" colspan="3">
 									<span t-field="o.kes_no"/><span>N</span>
 								</td>
 								<td t-if="(eln.sample_id.scope == 'nabl') or nabl" colspan="3">
