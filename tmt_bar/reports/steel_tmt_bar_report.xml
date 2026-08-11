@@ -60,7 +60,7 @@
                                     </t>
                                     <t t-else="">--</t>
                                 </td>
-                                <td colspan="1">Sample ID :-</td>
+                                <td colspan="1">Client Sample Id :-</td>
                                 <td colspan="1">
                                     <t t-if="o.sample_id.client_sample_id">
                                         <span t-field="o.sample_id.client_sample_id"/>
@@ -87,8 +87,8 @@
                             <tr>
                                 <td colspan="1">#Source of Sample :-</td>
                                 <td colspan="1">
-                                    <t t-if="o.material.source_sample">
-                                        <span t-field="o.material.source_sample"/>
+                                    <t t-if="o.sample_id.source_of_sample">
+                                        <span t-field="o.sample_id.source_of_sample"/>
                                     </t>
                                     <t t-else="">-</t>
                                 </td>
@@ -131,9 +131,15 @@
                             <tr>
                                 <td colspan="1">Temperature :-</td>
                                 <td colspan="1">
+                                <t t-if="data.temp is not None">
+											<span t-field="data.temp"/>   <span style="vertical-align: baseline;"> °C</span>
+                                    </t>
                                 </td>
                                 <td colspan="1">Humidity :-</td>
                                 <td colspan="1">
+                                <t t-if="data.humidity is not None">
+											<span t-field="data.humidity"/>  <span style="vertical-align: baseline;"> %</span>
+										</t>
                                 </td>
                             </tr>
                             <tr>

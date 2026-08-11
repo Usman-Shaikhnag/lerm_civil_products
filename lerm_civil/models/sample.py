@@ -51,22 +51,29 @@ class LermSampleForm(models.Model):
         ('non_nabl', 'Non-NABL'),
     ], string='Scope', default='nabl')
     sample_description = fields.Text(string="Sample Description")
+    source_of_sample = fields.Char(string="Source Of Sample")
     group_ids = fields.Many2many('lerm_civil.group',string="Group Ids",compute="compute_group_ids")
     material_ids = fields.Many2many('product.template',string="Material Ids",compute="compute_material_ids")
     size_ids = fields.Many2many('lerm.size.line',string="Size Ids",compute="compute_size_ids")
     grade_ids = fields.Many2many('lerm.grade.line',string="Grade Ids",compute="compute_grade_ids")
     qty_ids = fields.Many2many('lerm.qty.line',string="Qty Ids",compute="compute_qty_ids")
-    days_casting = fields.Selection([
-        ('1', '1 Days'),
-        ('3', '3 Days'),
-        ('7', '7 Days'),
-        ('14', '14 Days'),
-        ('21', '21 Days'),
-        ('28', '28 Days'),
-        ('45', '45 Days'),
-        ('56', '56 Days'),
-        ('112', '112 Days'),
-    ], string='Days of casting', default='3')
+    # days_casting = fields.Selection([
+    #     ('1', '1 Days'),
+    #     ('3', '3 Days'),
+    #     ('7', '7 Days'),
+    #     ('14', '14 Days'),
+    #     ('21', '21 Days'),
+    #     ('28', '28 Days'),
+    #     ('45', '45 Days'),
+    #     ('56', '56 Days'),
+    #     ('112', '112 Days'),
+    # ], string='Days of casting', default='3')
+
+    days_casting = fields.Selection(
+    [(str(i), f'{i} Days') for i in range(1, 101)],
+    string='Days of Testing',
+    default='3')
+    
     date_casting = fields.Date("Date of Casting")
     customer_id = fields.Many2one('res.partner' , string="Customer")
     alias = fields.Char(string="Alias")
@@ -83,7 +90,7 @@ class LermSampleForm(models.Model):
     approveby_signature_required = fields.Boolean("Approved by Signature")
     testedby_signature_required = fields.Boolean("Tested by Signature")
     page_break = fields.Integer("Page break",default=6)
-    lab_id = fields.Char(string="Lab Id")
+    lab_id = fields.Char(string="Structure")
 
     active = fields.Boolean(string="Active",default=True)
 
@@ -264,6 +271,7 @@ class LermSampleForm(models.Model):
                 'default_witness':self.witness,
                 'default_scope':self.scope,
                 'default_sample_description':self.sample_description,
+                'default_source_of_sample':self.source_of_sample,
                 'default_client_sample_id':self.client_sample_id,
                 'default_days_casting':self.days_casting,
                 'default_casting':self.casting,

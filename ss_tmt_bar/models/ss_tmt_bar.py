@@ -21,6 +21,9 @@ class StainlessSteel(models.Model):
     _description = 'mechanical.stainless.steel.tmt.bar'
 
     eln_state = fields.Selection(related='eln_ref.state', string="ELN State", store=True)
+
+    temp = fields.Char("Temperature",store=True)
+    humidity = fields.Char("Humidity",store=True)
    
 
 

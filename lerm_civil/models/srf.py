@@ -157,17 +157,24 @@ class SrfForm(models.Model):
     contractor_ids = fields.Many2many('lerm.contractor.line')
     casting = fields.Boolean(string="Casting")
     
-    days_casting = fields.Selection([
-        ('1', '1 Days'),
-        ('3', '3 Days'),
-        ('7', '7 Days'),
-        ('14', '14 Days'),
-        ('21', '21 Days'),
-        ('28', '28 Days'),
-        ('45', '45 Days'),
-        ('56', '56 Days'),
-        ('112', '112 Days'),
-    ], string='Days of casting', default='3')
+    # days_casting = fields.Selection([
+    #     ('1', '1 Days'),
+    #     ('3', '3 Days'),
+    #     ('7', '7 Days'),
+    #     ('14', '14 Days'),
+    #     ('21', '21 Days'),
+    #     ('28', '28 Days'),
+    #     ('45', '45 Days'),
+    #     ('56', '56 Days'),
+    #     ('112', '112 Days'),
+    # ], string='Days of casting', default='3')
+
+    days_casting = fields.Selection(
+    [(str(i), f'{i} Days') for i in range(1, 101)],
+    string='Days of Testing',
+    default='3')
+
+    
     
 
     
@@ -839,6 +846,7 @@ class SrfForm(models.Model):
             witness = samples[-1].witness
             scope = samples[-1].scope
             sample_description = samples[-1].sample_description
+            source_of_sample = samples[-1].source_of_sample
             sample_received_date = self.srf_date
             report_due_date = samples[-1].report_due_date
             # import wdb ; wdb.set_trace()
@@ -867,6 +875,7 @@ class SrfForm(models.Model):
                 # 'default_department_id':department_id,
                 'default_scope':scope,
                 'default_sample_description':sample_description,
+                'default_source_of_sample':source_of_sample,
                 'default_sample_received_date':sample_received_date,
                 'default_report_due_date':report_due_date
             }
@@ -956,7 +965,7 @@ class CreateSampleWizard(models.TransientModel):
     grade_ids = fields.Many2many('lerm.grade.line',string="Grades")
     grade_required = fields.Boolean(string="Grade Required",compute="compute_grade_required")
 
-    lab_id = fields.Char(string="Lab ID")
+    lab_id = fields.Char(string="Structure")
 
     sample_qty = fields.Integer(string="Sample Quantity",default=1)
     received_by_id = fields.Many2one('res.users',string="Received By",default=lambda self: self.env.user)
@@ -974,21 +983,27 @@ class CreateSampleWizard(models.TransientModel):
         ('non_nabl', 'Non-NABL'),
     ], string='Scope', default='nabl')
     sample_description = fields.Text(string="Sample Description")
+    source_of_sample = fields.Char(string="Source Of Sample")
     group_ids = fields.Many2many('lerm_civil.group',string="Group Ids")
     material_ids = fields.Many2many('product.template',string="Material Ids")
     client_sample_id = fields.Char(string="Client Sample Id")
     
-    days_casting = fields.Selection([
-        ('1', '1 Days'),
-        ('3', '3 Days'),
-        ('7', '7 Days'),
-        ('14', '14 Days'),
-        ('21', '21 Days'),
-        ('28', '28 Days'),
-        ('45', '45 Days'),
-        ('56', '56 Days'),
-        ('112', '112 Days'),
-    ], string='Days of Testing', default='3')
+    # days_casting = fields.Selection([
+    #     ('1', '1 Days'),
+    #     ('3', '3 Days'),
+    #     ('7', '7 Days'),
+    #     ('14', '14 Days'),
+    #     ('21', '21 Days'),
+    #     ('28', '28 Days'),
+    #     ('45', '45 Days'),
+    #     ('56', '56 Days'),
+    #     ('112', '112 Days'),
+    # ], string='Days of Testing', default='3')
+
+    days_casting = fields.Selection(
+    [(str(i), f'{i} Days') for i in range(1, 101)],
+    string='Days of Testing',
+    default='3')
     date_casting = fields.Date(string="Date of Casting")
     customer_id = fields.Many2one('res.partner' , string="Customer",compute="_compute_customer_id")
     product_aliases = fields.Many2many('product.product',string="Product Aliases")
@@ -1227,6 +1242,7 @@ class CreateSampleWizard(models.TransientModel):
         lab_no_value = self.lab_no_value
         # lab_l_id = self.lab_l_id.id
         sample_description =self.sample_description
+        source_of_sample = self.source_of_sample
         parameters = self.parameters
         discipline_id = self.discipline_id
         casting = self.casting
@@ -1273,6 +1289,7 @@ class CreateSampleWizard(models.TransientModel):
             # 'sample_range_id':sample_range.id,
             'size_id':size_id,
             'sample_description':sample_description,
+            'source_of_sample':source_of_sample,
             'casting':casting,
             'date_casting':self.date_casting,
             'days_casting':self.days_casting,
@@ -1310,6 +1327,7 @@ class CreateSampleWizard(models.TransientModel):
             srf_id  = data['srf_id']
             parameters = data['parameter']
             sample_description = data['sample_description']
+            source_of_sample = data['source_of_sample']
             size_id = data['size_id']
             casting = data["casting"]
             days_casting = data["days_casting"]
@@ -1330,6 +1348,7 @@ class CreateSampleWizard(models.TransientModel):
                 'parameters':parameters,
                 'size_id':size_id,
                 'sample_description':sample_description,
+                'source_of_sample':source_of_sample,
                 'casting':casting,
                 'date_casting':date_casting,
                 'days_casting':days_casting
@@ -1348,6 +1367,7 @@ class CreateSampleWizard(models.TransientModel):
                 'sample_range_id':sample_range.id,
                 'size_id':size_id,
                 'sample_description':sample_description,
+                'source_of_sample':source_of_sample,
                 'casting':casting,
                 'date_casting':date_casting,
                 'days_casting':days_casting,
@@ -1382,6 +1402,7 @@ class CreateSampleWizard(models.TransientModel):
             # lab_l_id = self.lab_l_id.id
             scope = self.scope
             sample_description =self.sample_description
+            source_of_sample =self.source_of_sample
             parameters = self.parameters
             discipline_id = self.discipline_id
             casting = self.casting
@@ -1436,6 +1457,7 @@ class CreateSampleWizard(models.TransientModel):
                     'conformity':conformity,
                     'scope':scope,
                     'sample_description':sample_description,
+                    'source_of_sample':source_of_sample,
                     'parameters':parameters,
                     'discipline_id':discipline_id.id,
                     'casting':casting,
@@ -1473,6 +1495,7 @@ class CreateSampleWizard(models.TransientModel):
                         'conformity':conformity,
                         'scope':scope,
                         'sample_description':sample_description,
+                        'source_of_sample':source_of_sample,
                         'parameters':parameters,
                         'discipline_id':discipline_id.id,
                         'casting':casting,

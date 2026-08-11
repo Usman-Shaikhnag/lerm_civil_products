@@ -246,23 +246,52 @@ class MechanicalConcreteCube(models.Model):
 
     
     
-    age_of_days = fields.Selection([
-        ('3days', '3 Days'),
-        ('7days', '7 Days'),
-        ('14days', '14 Days'),
-        ('28days', '28 Days'),
-    ], string='Age', default='28days',required=True,compute="_compute_age_of_days")
+    # age_of_days = fields.Selection([
+    #     ('3days', '3 Days'),
+    #     ('7days', '7 Days'),
+    #     ('14days', '14 Days'),
+    #     ('28days', '28 Days'),
+    # ], string='Age', default='28days',required=True,compute="_compute_age_of_days")
+
+    age_of_days = fields.Selection(
+    [(f'{i}days', f'{i} Days') for i in range(1, 101)],
+    string='Age',
+    default='28days',
+    required=True,
+    compute="_compute_age_of_days",
+)
+    
     date_of_casting = fields.Date(string="Date of Casting",compute="compute_date_of_casting")
-    date_of_testing = fields.Date(string="Date of Testing",compute="_compute_date_testing")
+    # date_of_testing = fields.Date(string="Date of Testing",compute="_compute_date_testing")
 
+    # @api.depends('eln_ref')
+    # def _compute_date_testing(self):
+    #     if self.eln_ref:
+    #         self.date_of_testing = self.eln_ref.date_testing
+    #     else:
+    #         self.date_of_testing = ''
 
+    date_of_testing = fields.Date(
+    string="Date of Testing",
+    compute="_compute_date_testing",
+    store=True,)
 
-    @api.depends('eln_ref')
+    @api.depends(
+    'date_of_casting',
+    'age_of_days',)
     def _compute_date_testing(self):
-        if self.eln_ref:
-            self.date_of_testing = self.eln_ref.date_testing
-        else:
-            self.date_of_testing = ''
+     for record in self:
+        record.date_of_testing = False
+
+        if record.date_of_casting and record.age_of_days:
+            days = int(
+                ''.join(filter(str.isdigit, record.age_of_days))
+            )
+
+            record.date_of_testing = (
+                fields.Date.to_date(record.date_of_casting)
+                + timedelta(days=days)
+            )
             
 
     confirmity = fields.Selection([
@@ -282,43 +311,69 @@ class MechanicalConcreteCube(models.Model):
     ], string='NABL', default='fail',compute="_compute_nabl")
 
 
-    @api.depends('age_of_test','age_of_days')
+    # @api.depends('age_of_test','age_of_days')
+    # def compute_difference(self):
+    #     for record in self:
+    #         age_of_days = 0
+    #         if record.age_of_days == '3days':
+    #             age_of_days = 3
+    #         elif record.age_of_days == '7days':
+    #             age_of_days = 7
+    #         elif record.age_of_days == '14days':
+    #             age_of_days = 14
+    #         elif record.age_of_days == '21days':
+    #             age_of_days = 21
+    #         elif record.age_of_days == '28days':
+    #             age_of_days = 28
+    #         elif record.age_of_days == '45days':
+    #             age_of_days = 45
+    #         elif record.age_of_days == '56days':
+    #             age_of_days = 56
+    #         elif record.age_of_days == '112days':
+    #             age_of_days = 112
+    #         else:
+    #             age_of_days = 0
+    #         record.difference = record.age_of_test - age_of_days
+
+    @api.depends('age_of_test', 'age_of_days')
     def compute_difference(self):
-        for record in self:
-            age_of_days = 0
-            if record.age_of_days == '3days':
-                age_of_days = 3
-            elif record.age_of_days == '7days':
-                age_of_days = 7
-            elif record.age_of_days == '14days':
-                age_of_days = 14
-            elif record.age_of_days == '21days':
-                age_of_days = 21
-            elif record.age_of_days == '28days':
-                age_of_days = 28
-            elif record.age_of_days == '45days':
-                age_of_days = 45
-            elif record.age_of_days == '56days':
-                age_of_days = 56
-            elif record.age_of_days == '112days':
-                age_of_days = 112
-            else:
-                age_of_days = 0
-            record.difference = record.age_of_test - age_of_days
+     for record in self:
+        if record.age_of_days:
+            try:
+                expected_days = int(
+                    ''.join(filter(str.isdigit, record.age_of_days))
+                )
+            except (ValueError, TypeError):
+                expected_days = 0
+        else:
+            expected_days = 0
+
+        record.difference = record.age_of_test - expected_days
 
         
 
 
-    @api.depends('date_of_testing','date_of_casting')
+    # @api.depends('date_of_testing','date_of_casting')
+    # def compute_age_of_test(self):
+    #     for record in self:
+    #         if record.date_of_casting and record.date_of_testing:
+    #             date1 = fields.Date.from_string(record.date_of_casting)
+    #             date2 = fields.Date.from_string(record.date_of_testing)
+    #             date_difference = (date2 - date1).days
+    #             record.age_of_test = date_difference
+    #         else:
+    #             record.age_of_test = 0
+
+    @api.depends('date_of_testing', 'date_of_casting')
     def compute_age_of_test(self):
-        for record in self:
-            if record.date_of_casting and record.date_of_testing:
-                date1 = fields.Date.from_string(record.date_of_casting)
-                date2 = fields.Date.from_string(record.date_of_testing)
-                date_difference = (date2 - date1).days
-                record.age_of_test = date_difference
-            else:
-                record.age_of_test = 0
+     for record in self:
+        if record.date_of_casting and record.date_of_testing:
+            date1 = fields.Date.to_date(record.date_of_casting)
+            date2 = fields.Date.to_date(record.date_of_testing)
+
+            record.age_of_test = (date2 - date1).days
+        else:
+            record.age_of_test = 0
 
     @api.onchange('eln_ref')
     def compute_date_of_casting(self):
@@ -331,31 +386,42 @@ class MechanicalConcreteCube(models.Model):
 
 
 
-    @api.onchange('eln_ref')
+    # @api.onchange('eln_ref')
+    # def _compute_age_of_days(self):
+    #     for record in self:
+    #         if record.eln_ref.sample_id:
+    #             sample_record = self.env['lerm.srf.sample'].sudo().search([('id','=', record.eln_ref.sample_id.id)]).days_casting
+    #             if sample_record == '3':
+    #                 record.age_of_days = '3days'
+    #             elif sample_record == '7':
+    #                 record.age_of_days = '7days'
+    #             elif sample_record == '14':
+    #                 record.age_of_days = '14days'
+    #             elif sample_record == '21':
+    #                 record.age_of_days = '21days'
+    #             elif sample_record == '28':
+    #                 record.age_of_days = '28days'
+    #             elif sample_record == '45':
+    #                 record.age_of_days = '45days'
+    #             elif sample_record == '56':
+    #                 record.age_of_days = '56days'
+    #             elif sample_record == '112':
+    #                 record.age_of_days = '112days'
+    #             else:
+    #                 record.age_of_days = None
+    #         else:
+    #             record.age_of_days = None
+
+    @api.depends('eln_ref')
     def _compute_age_of_days(self):
-        for record in self:
-            if record.eln_ref.sample_id:
-                sample_record = self.env['lerm.srf.sample'].sudo().search([('id','=', record.eln_ref.sample_id.id)]).days_casting
-                if sample_record == '3':
-                    record.age_of_days = '3days'
-                elif sample_record == '7':
-                    record.age_of_days = '7days'
-                elif sample_record == '14':
-                    record.age_of_days = '14days'
-                elif sample_record == '21':
-                    record.age_of_days = '21days'
-                elif sample_record == '28':
-                    record.age_of_days = '28days'
-                elif sample_record == '45':
-                    record.age_of_days = '45days'
-                elif sample_record == '56':
-                    record.age_of_days = '56days'
-                elif sample_record == '112':
-                    record.age_of_days = '112days'
-                else:
-                    record.age_of_days = None
-            else:
-                record.age_of_days = None
+     for record in self:
+        record.age_of_days = False
+
+        if record.eln_ref and record.eln_ref.sample_id:
+            sample_record = record.eln_ref.sample_id.days_casting
+
+            if sample_record:
+                record.age_of_days = f'{sample_record}days'
 
 
     wpt_name = fields.Char("Name",default=" Water Permeability Test")
