@@ -949,7 +949,7 @@ class CreateSampleWizard(models.TransientModel):
     grade_ids = fields.Many2many('lerm.grade.line',string="Grades")
     grade_required = fields.Boolean(string="Grade Required",compute="compute_grade_required")
 
-    lab_id = fields.Char(string="Lab ID")
+    lab_id = fields.Char(string="Structure")
 
     sample_qty = fields.Integer(string="Sample Quantity",default=1)
     received_by_id = fields.Many2one('res.users',string="Received By",default=lambda self: self.env.user)
