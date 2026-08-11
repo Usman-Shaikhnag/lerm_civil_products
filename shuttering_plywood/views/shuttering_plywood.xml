@@ -6,7 +6,7 @@
         <field name="name">mechanical.shuttering.plywood.form</field>
         <field name="model">mechanical.shuttering.plywood</field>
         <field name="arch" type="xml">
-            <form string="Your Form View" create="false">
+            <form>
                 <sheet>
                    <div >
                         <h1>
@@ -18,17 +18,9 @@
                         <field name="sample_id" readonly="1"/>
                         <field name="eln_ref" readonly="1"/>
                          <field name="grade" readonly="1"/>
+                         <field name="eln_state" />
                         <field name="parameter_id" invisible="1"/>
-                        <field name="eln_state" />
                     </group>
-                    <div class="custom_table_borders">
-                      <field name="sample_parameters" nolabel="1">
-                        <tree>
-                          <field name="parameter_name"/>
-                          <field name="test_method"/>
-                        </tree>
-                      </field>
-                    </div>
 
                     <style>
                         .blue-input input {
@@ -47,6 +39,15 @@
                              border-color: #3b82f6 !important;
                             }
                     </style>
+
+                     <div class="custom_table_borders" style="margin-top: 15px;">
+                      <field name="sample_parameters">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </div>
                    
        
 
@@ -54,316 +55,460 @@
 
                     <!--  Dimensions -->
 
-                       <div invisible="not dimensions_shuttering_visible">
+                       <group  invisible = "dimensions_shuttering_visible == False">
                         <h1>
                             <field name="dimensions_shuttering_name" readonly="1" nolabel="1"/>
                             <field name="dimensions_shuttering_visible" invisible="1"/>
                         </h1>
-                    </div>
-                    <group/>
-                       <div class="custom_table_borders" invisible="not dimensions_shuttering_visible">
-                        <field name="child_lines_dimensions_shuttering" nolabel="1" colspan="2" >
-                            <tree editable="bottom" >
+                    </group>
+
+               
+
+
+                        <field name="child_lines_dimensions_shuttering" nolabel="1" class="custom_table_borders" invisible="dimensions_shuttering_visible == False" >
+                            <tree editable="bottom">
                                 <field name='sr_no'/>
                                 <field name='lenght' class="blue-input" decoration-info="lenght != 0"/>
                                 <field name='width' class="blue-input" decoration-info="width != 0"/>
                                 <field name='thickness' class="blue-input" decoration-info="thickness != 0"/>
                                 <field name='squareness' class="blue-input" decoration-info="squareness != 0"/>
                                    <field name='edge_straightness' class="blue-input" decoration-info="edge_straightness != 0"/>
+                              
+                
                             </tree>
-                         </field>  
+                           
+                         </field> 
+
+                         <div class="d-flex gap-2" invisible="dimensions_shuttering_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="average_length"></label></td>
+                                    <td><field name="average_length" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="average_width"></label></td>
+                                    <td><field name="average_width"  /></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+
+                          
                     </div>
 
-                    <div>
-                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                     <div class="d-flex gap-2" invisible="dimensions_shuttering_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="average_thickness"></label></td>
+                                    <td><field name="average_thickness" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="average_squareness"></label></td>
+                                    <td><field name="average_squareness"  /></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+
+                          
+                    </div>
+
+                    <div class="d-flex gap-2" invisible="dimensions_shuttering_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="average_edge_straightness"></label></td>
+                                    <td><field name="average_edge_straightness" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                      
+
+                          
+                    </div>
+
+
+                    <div class="d-flex gap-2" invisible="dimensions_shuttering_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="length_pecification"></label></td>
+                                    <td><field name="length_pecification" class="blue-input" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="width_pecification"></label></td>
+                                    <td><field name="width_pecification" class="blue-input" /></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+
+                          
+                    </div>
+
+                     <div class="d-flex gap-2" invisible="dimensions_shuttering_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="thickness_pecification"></label></td>
+                                    <td><field name="thickness_pecification" class="blue-input" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="squareness_pecification"></label></td>
+                                    <td><field name="squareness_pecification" class="blue-input" /></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+
+                          
+                    </div>
+
+                    <div class="d-flex gap-2" invisible="dimensions_shuttering_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="edge_straightness_pecification"></label></td>
+                                    <td><field name="edge_straightness_pecification"  class="blue-input"/></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                      
+
+                          
+                    </div>
+
+                    <div class="d-flex gap-2" invisible="dimensions_shuttering_visible == False" >
+                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
                           <tbody>
                            <tr>
-                             <td><span>Average Length, mm</span></td>
-                              <td><field name='average_length' col="1"/></td>
+                            <td><label for="average_length_conformity"></label></td>
+                            <td><field name='average_length_conformity'
+                               decoration-success="average_length_conformity == 'pass'" 
+                               decoration-danger="average_length_conformity == 'fail'" 
+                               readonly="1"/></td>
                            </tr>
                            <tr>
-                             <td><span>Average Width, mm</span></td>
-                             <td><field name='average_width' col="1"/></td>
-                           </tr>
-                           <tr>
-                             <td><span>Average Thickness, mm</span></td>
-                              <td><field name='average_thickness' col="1"/></td>
-                           </tr>
-                           <tr>
-                             <td><span>Average Squareness, mm</span></td>
-                              <td><field name='average_squareness' col="1"/></td>
-                           </tr>
-                           <tr>
-                            <td><span>Average Edge Straightness, mm</span></td>
-                            <td><field name='average_edge_straightness' col="1"/></td>
+                            <td><label for="average_length_nabl"></label></td>
+                            <td><field name='average_length_nabl'
+                               decoration-success="average_length_nabl == 'pass'" 
+                               decoration-danger="average_length_nabl == 'fail'" 
+                               readonly="1"/></td>
                            </tr>
                            </tbody>                     
                           </table>
-                      </div>
-                      <group/>
-                      <group/>
-
-                    
 
 
-                    <div style="display:flex;">
-                    <div style="width:50%;">
-                      <table class="table table-sm o_form_table table-bordered  custom_table_borders" style="width:98%">
-                         <tbody>
-                            <tr>
-                              <td><span>Length Conformity</span></td>
-                              <td><field name='average_length_conformity'
-                                       decoration-success="average_length_conformity == 'pass'" 
-                                       decoration-danger="average_length_conformity == 'fail'" 
-                                       readonly="1"/></td>
-                            </tr>
-                            <tr>
-                            <td><span>Width Conformity</span></td>
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="average_width_conformity"></label></td>
                             <td><field name='average_width_conformity'
-                                       decoration-success="average_width_conformity == 'pass'" 
-                                       decoration-danger="average_width_conformity == 'fail'" 
-                                       readonly="1"/></td>
-                            </tr>
-                            <tr>
-                            <td><span>Thickness Conformity</span></td>
+                               decoration-success="average_width_conformity == 'pass'" 
+                               decoration-danger="average_width_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="average_width_nabl"></label></td>
+                            <td><field name='average_width_nabl'
+                               decoration-success="average_width_nabl == 'pass'" 
+                               decoration-danger="average_width_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+
+                          
+                    </div>
+
+
+                    <div class="d-flex gap-2" invisible="dimensions_shuttering_visible == False" >
+                      
+
+
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="average_thickness_conformity"></label></td>
                             <td><field name='average_thickness_conformity'
-                                       decoration-success="average_thickness_conformity == 'pass'" 
-                                       decoration-danger="average_thickness_conformity == 'fail'" 
-                                       readonly="1"/></td>
-                            </tr>
-                            <tr>
-                            <td><span>Squareness Conformity</span></td>
+                               decoration-success="average_thickness_conformity == 'pass'" 
+                               decoration-danger="average_thickness_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="average_thickness_nabl"></label></td>
+                            <td><field name='average_thickness_nabl'
+                               decoration-success="average_thickness_nabl == 'pass'" 
+                               decoration-danger="average_thickness_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+
+
+                           <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="average_squareness_conformity"></label></td>
                             <td><field name='average_squareness_conformity'
-                                       decoration-success="average_squareness_conformity == 'pass'" 
-                                       decoration-danger="average_squareness_conformity == 'fail'" 
-                                       readonly="1"/></td>
-                            </tr>
-                            <tr>
-                            <td><span>Edge Straightness Conformity</span></td>
+                               decoration-success="average_squareness_conformity == 'pass'" 
+                               decoration-danger="average_squareness_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="average_squareness_nabl"></label></td>
+                            <td><field name='average_squareness_nabl'
+                               decoration-success="average_squareness_nabl == 'pass'" 
+                               decoration-danger="average_squareness_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+
+                          
+                    </div>
+
+
+                     <div class="d-flex gap-2" invisible="dimensions_shuttering_visible == False" >
+                      
+
+
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="average_edge_straightness_conformity"></label></td>
                             <td><field name='average_edge_straightness_conformity'
-                                       decoration-success="average_edge_straightness_conformity == 'pass'" 
-                                       decoration-danger="average_edge_straightness_conformity == 'fail'" 
-                                       readonly="1"/></td>
-                            </tr>
-                            </tbody>
-                      </table>
+                               decoration-success="average_edge_straightness_conformity == 'pass'" 
+                               decoration-danger="average_edge_straightness_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="average_edge_straightness_nabl"></label></td>
+                            <td><field name='average_edge_straightness_nabl'
+                               decoration-success="average_edge_straightness_nabl == 'pass'" 
+                               decoration-danger="average_edge_straightness_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+
+
+                         
+                          
                     </div>
 
+                           
+                       
 
-                    <div style="width:50%;">
-                      <table class="table table-sm o_form_table table-bordered w-100 custom_table_borders">
-                         <tbody>
-                            <tr>
-                              <td><span> Length NABL</span></td>
-                              <td><field name="average_length_nabl"
-                                       decoration-success="average_length_nabl == 'pass'" 
-                                       decoration-danger="average_length_nabl == 'fail'" 
-                                       readonly="1"/></td>
-                            </tr>
-                            <tr>
-                            <td><span>Width NABL</span></td>
-                            <td><field name="average_width_nabl"
-                                       decoration-success="average_width_nabl == 'pass'" 
-                                       decoration-danger="average_width_nabl == 'fail'" 
-                                       readonly="1"/></td>
-                            </tr>
-                            <tr>
-                              <td><span> Thickness NABL</span></td>
-                              <td> <field name="average_thickness_nabl"
-                                       decoration-success="average_thickness_nabl == 'pass'" 
-                                       decoration-danger="average_thickness_nabl == 'fail'" 
-                                       readonly="1"/></td>
-                            </tr>
-                            <tr>
-                              <td><span>Squareness NABL</span></td>
-                              <td><field name="average_squareness_nabl"
-                                       decoration-success="average_squareness_nabl == 'pass'" 
-                                       decoration-danger="average_squareness_nabl == 'fail'" 
-                                       readonly="1"/></td>
-                            </tr>
-                            <tr>
-                              <td><span>Edge Straightness NABL</span></td>
-                              <td><field name="average_edge_straightness_nabl"
-                                       decoration-success="average_edge_straightness_nabl == 'pass'" 
-                                       decoration-danger="average_edge_straightness_nabl == 'fail'" 
-                                       readonly="1"/></td>
-                            </tr>
-                            </tbody>
-                      </table>
-                    </div>
-
-                    </div>
-                    <group/>
-                    <group/>
-
-
-
-
-
-
-
-
-
-
-
-
-
-                        <!-- Adhesion of Plies -->
-                                            
-                       <div invisible="not adhesion_plies_visible">
+                 
+                    
+                       <div  invisible="adhesion_plies_visible == False">
                         <h1>
                             <field name="adhesion_plies_name" readonly="1" nolabel="1"/>
                             <field name="adhesion_plies_visible" invisible="1"/>
                         </h1>
                     </div>
-                    <group/>
 
-                    <div>
-                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                      <tbody>
-                        <tr>
-                          <td><span>Observation</span></td>
-                          <td style="width:300px"><field name='adhesion_plies' col="1" class="blue-input" /></td>
-                         </tr>
-                         </tbody>
-                      </table>
+
+                      <div class="d-flex gap-2" invisible="adhesion_plies_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="adhesion_plies"></label></td>
+                                    <td><field name="adhesion_plies" class="blue-input" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="adhesion_plies_pecification"></label></td>
+                                    <td><field name="adhesion_plies_pecification" class="blue-input" /></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+
+                          
                     </div>
-                    <group/>
 
-                   
-
-
+               
                        <!--  Resistance to dry heat-->
 
-                       <div invisible="not resistance_heat_visible">
+                       <div  invisible="resistance_heat_visible == False">
                         <h1>
                             <field name="resistance_heat_name" readonly="1" nolabel="1"/>
                             <field name="resistance_heat_visible" invisible="1"/>
                         </h1>
                     </div>
-                    <group/>
 
-                    <div>
-                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                      <tbody>
-                        <tr>
-                          <td><span>Observation</span></td>
-                          <td style="width:300px"><field name='resistance_heat' col="1" class="blue-input" /></td>
-                         </tr>
-                         </tbody>
-                      </table>
+                     <div class="d-flex gap-2" invisible="resistance_heat_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="resistance_heat"></label></td>
+                                    <td><field name="resistance_heat" class="blue-input" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="resistance_heat_pecification"></label></td>
+                                    <td><field name="resistance_heat_pecification" class="blue-input" /></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+
+                          
                     </div>
-                    <group/>
-                   
 
-
+               
 
                        <!--  Water Resistance Test-->
 
-                       <div invisible="not water_resistance_visible">
+                       <div invisible="water_resistance_visible == False">
                         <h1>
                             <field name="water_resistance_name" readonly="1" nolabel="1"/>
                             <field name="water_resistance_visible" invisible="1"/>
                         </h1>
                     </div>
-                    <group/>
-                    <div>
-                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                      <tbody>
-                        <tr>
-                          <td><span>Observation</span></td>
-                          <td style="width:300px"><field name='water_resistance' col="1" class="blue-input" /></td>
-                         </tr>
-                         </tbody>
-                      </table>
-                    </div>
-                    <group/>
 
-                   
+
+                    <div class="d-flex gap-2" invisible="water_resistance_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="water_resistance"></label></td>
+                                    <td><field name="water_resistance" class="blue-input" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="water_resistance_pecification"></label></td>
+                                    <td><field name="water_resistance_pecification" class="blue-input" /></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+
+                          
+                    </div>
+
+               
 
 
                      <!--  density -->
 
-                       <group invisible="not density_shuttering_visible">
+                       <div  invisible="density_shuttering_visible == False">
                         <h1>
                             <field name="density_shuttering_name" readonly="1" nolabel="1"/>
                             <field name="density_shuttering_visible" invisible="1"/>
                         </h1>
-                    </group>
+                    </div>
 
-                       <div class="custom_table_borders" invisible="not density_shuttering_visible">
-                        <field name="child_lines_density_shuttering" nolabel="1" colspan="2" >
+               
+
+
+                        <field name="child_lines_density_shuttering" nolabel="1" class="custom_table_borders" invisible="density_shuttering_visible == False">
                             <tree editable="bottom">
                                 <field name='sr_no'/>
                                 <field name='lenght' class="blue-input" decoration-info="lenght != 0"/>
                                 <field name='width' class="blue-input" decoration-info="width != 0"/>
                                 <field name='thickness' class="blue-input" decoration-info="thickness != 0"/>
                                 <field name='initial_weight' class="blue-input" decoration-info="initial_weight != 0"/>
-                                <field name='oven_dry_weight' class="blue-input" decoration-info="oven_dry_weight != 0"/>
+                                   <field name='oven_dry_weight' class="blue-input" decoration-info="oven_dry_weight != 0"/>
                                 <field name='density_shuttering'/>
-                            </tree>
-                         </field> 
-                    </div>
-
-                    <div>
-                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                      <tbody>
-                        <tr>
-                          <td><span>Density, g/cm3</span></td>
-                          <td><field name='average_density_shuttering' col="1"/></td>
-                         </tr>
-                         </tbody>
-                      </table>
-                    </div>
-                    <group/>
-
-                    <!-- <group invisible="not density_shuttering_visible"  style="white-space: nowrap; width:70%;">
-                        <field name='average_density_shuttering' col="4"/>
-                       
-                    </group> -->
-
-
-                    <div>
-                      <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
-                      <tbody>
-                        <tr>
-                          <td><span>Conformity</span></td>
-                          <td><field name='average_density_shuttering_conformity'
-                                       decoration-success="average_density_shuttering_conformity == 'pass'" 
-                                       decoration-danger="average_density_shuttering_conformity == 'fail'" 
-                                       readonly="1"/></td>
-                         </tr>
-                         <tr>
-                         <td><span>NABL</span></td>
-                         <td><field name="average_density_shuttering_nabl"
-                                       decoration-success="average_density_shuttering_nabl == 'pass'" 
-                                       decoration-danger="average_density_shuttering_nabl == 'fail'" 
-                                       readonly="1"/> </td>
-                         </tr>
-                         </tbody>                     
-                      </table>
-                    </div>
-
-                    <!-- <group invisible="not density_shuttering_visible">
-
-                     <group style="width:25%" invisible="not density_shuttering_visible">
-                                <field name='average_density_shuttering_conformity'
-                                       decoration-success="average_density_shuttering_conformity == 'pass'" 
-                                       decoration-danger="average_density_shuttering_conformity == 'fail'" 
-                                       readonly="1"/>
-                        </group>
-                          <group style="width:25%" invisible="not density_shuttering_visible">
-                                <field name="average_density_shuttering_nabl"
-                                       decoration-success="average_density_shuttering_nabl == 'pass'" 
-                                       decoration-danger="average_density_shuttering_nabl == 'fail'" 
-                                       readonly="1"/>
-                            </group>
-                        </group> -->
-
-
-                    
                 
-                           <notebook>
+                            </tree>
+                           
+                         </field> 
+
+                          <div class="d-flex gap-2" invisible="density_shuttering_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="average_density_shuttering"></label></td>
+                                    <td><field name="average_density_shuttering"  /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="density_shuttering_pecification"></label></td>
+                                    <td><field name="density_shuttering_pecification" class="blue-input" /></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+
+                          
+                    </div>
+
+                    <div invisible="not density_shuttering_visible">
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="average_density_shuttering_conformity"></label></td>
+                            <td><field name='average_density_shuttering_conformity'
+                               decoration-success="average_density_shuttering_conformity == 'pass'" 
+                               decoration-danger="average_density_shuttering_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="average_density_shuttering_nabl"></label></td>
+                            <td><field name='average_density_shuttering_nabl'
+                               decoration-success="average_density_shuttering_nabl == 'pass'" 
+                               decoration-danger="average_density_shuttering_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+                      </div> 
+
+                        <notebook>
 
                         <page string="Notes">
                             <div class="custom_table_borders" style="margin-top: 15px;">
@@ -379,7 +524,10 @@
 
                     </notebook>
 
+                           
+                      
 
+                
 
                      <button
                             type="object"
