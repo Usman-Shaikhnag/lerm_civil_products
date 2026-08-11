@@ -89,19 +89,14 @@ class MechanicalConcreteCube(models.Model):
     def action_calculate_avg_strength(self):
         for rec in self:
             lines = rec.child_lines.sorted(key=lambda l: l.sr_no)  # sr_no ने sort करायचं
-            group_size = 3
-
-            for i in range(0, len(lines), group_size):
-                group = lines[i:i + group_size]
-                strengths = [l.compressive_strength for l in group if l.compressive_strength > 0]
-                avg = sum(strengths) / len(strengths) if strengths else 0.0
-
-                if group:
-                    group[0].avg_compressive_strength = avg
+            strengths = [l.compressive_strength for l in lines if l.compressive_strength > 0]
+            avg = sum(strengths) / len(strengths) if strengths else 0.0
 
             for line in lines:
-                if line not in [lines[i] for i in range(0, len(lines), group_size)]:
-                    line.avg_compressive_strength = 0.0
+                line.avg_compressive_strength = 0.0
+
+            if lines:
+                lines[0].avg_compressive_strength = avg
 
 
     average_strength = fields.Float(string="Average Compressive Strength in N/mm2",compute="_compute_average_strength",digits=(12,2))
