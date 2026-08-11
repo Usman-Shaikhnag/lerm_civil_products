@@ -68,12 +68,10 @@ class LermSampleForm(models.Model):
     #     ('56', '56 Days'),
     #     ('112', '112 Days'),
     # ], string='Days of casting', default='3')
-
     days_casting = fields.Selection(
     [(str(i), f'{i} Days') for i in range(1, 101)],
     string='Days of Testing',
     default='3')
-    
     date_casting = fields.Date("Date of Casting")
     customer_id = fields.Many2one('res.partner' , string="Customer")
     alias = fields.Char(string="Alias")

@@ -48,7 +48,7 @@
 									</td>
 
 									<td colspan="2">
-										<span t-field="o.sample_id.lab_id"/>
+										<span t-field="o.srf_id.srf_id"/>
 									</td>
 								</tr>
 
@@ -106,14 +106,14 @@
 
 								<tr>
 									<td><strong>Condition of Sample</strong></td>
-									<td colspan="5">
+									<td colspan="2">
 										<span t-field="o.sample_id.sample_condition"/>
 									</td>
 
-									<!-- <td><strong>Letter No :</strong></td>
+									<td><strong>Structure</strong></td>
 									<td colspan="2">
-										<span t-field="o.sample_id.sample_condition"/>
-									</td> -->
+										<span t-field="o.sample_id.lab_id"/>
+									</td>
 								</tr>
 
 								<tr>
@@ -162,7 +162,6 @@
 
 							<tbody>
 								<t t-set="lines" t-value="data.child_lines"/>
-								<t t-set="line_count" t-value="0"/>
 								<t t-foreach="lines" t-as="r">
 								<tr>
 									<td style="text-align: center;"><span t-esc="r.sr_no"/></td>
@@ -173,7 +172,7 @@
 										<td style="text-align: center;"><span t-esc="r.height"/></td>
 									</t>
 									<t t-if="sector_type == 'normal'">
-										<td style="text-align: center;"><span t-esc="r.area"/></td>
+										<td style="text-align: center;"><span t-esc="r.area" t-options='{"widget": "float", "precision": 0}'/></td>
 									</t>
 									<t t-if="sector_type != 'non_govt'">
 										<td style="text-align: center;"><span t-esc="r.wt_sample"/></td>
@@ -186,13 +185,12 @@
 										<span t-esc="r.compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 
-									<t t-if="line_count % 3 == 0">
-										<td style="text-align: center; vertical-align: middle;" t-att-rowspan="3">
+									<t t-if="r_index == 0">
+										<td style="text-align: center; vertical-align: middle;" t-att-rowspan="len(lines)">
 											<span t-esc="r.avg_compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
 										</td>
 									</t>
 								</tr>
-								<t t-set="line_count" t-value="line_count + 1"/>
 								</t>
 							</tbody>
 						</table>
