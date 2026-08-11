@@ -29,11 +29,13 @@
                                     </t>
                                     <t t-else="">--</t>
                                 </td>
-                                <!-- <td colspan="1">ULR NO:</td>
+
+                                <td colspan="1">SRF ID :</td>
                                 <td colspan="1" style="font-weight:bold;">
                                     <![CDATA[&nbsp;]]>
-                                    <span t-field="o.sample_id.ulr_no"/>
-                                </td> -->
+                                    <span t-field="o.sample_id.srf_id"/>
+                                </td>
+                                
                             </tr>
                             <tr>
                                 <td colspan="1">Address:</td>
@@ -46,10 +48,13 @@
                                     <span t-field="o.srf_id.customer.state_id"/>,
                                     <span t-field="o.srf_id.customer.country_id"/>
                                 </td>
-                                <td colspan="1">Test Report No :</td>
-                                <td colspan="1" style="font-weight:bold;">
-                                    <![CDATA[&nbsp;]]>
-                                    <span t-field="o.sample_id.kes_no"/>
+                                
+                                <td colspan="1">Client Sample Id :-</td>
+                                <td colspan="1">
+                                    <t t-if="o.sample_id.client_sample_id">
+                                        <span t-field="o.sample_id.client_sample_id"/>
+                                    </t>
+                                    <t t-else="">-</t>
                                 </td>
                             </tr>
                             <tr>
@@ -60,12 +65,11 @@
                                     </t>
                                     <t t-else="">--</t>
                                 </td>
-                                <td colspan="1">Client Sample Id :-</td>
-                                <td colspan="1">
-                                    <t t-if="o.sample_id.client_sample_id">
-                                        <span t-field="o.sample_id.client_sample_id"/>
-                                    </t>
-                                    <t t-else="">-</t>
+                                
+                                <td colspan="1">Brand:</td>
+                                <td colspan="1" >
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-field="o.sample_id.brand"/>
                                 </td>
                             </tr>
                             <tr>
@@ -95,8 +99,11 @@
                                 <td colspan="1">Date of Performance of Test :-</td>
                                 <td colspan="1">
                                     <t t-if="o.start_date and o.end_date">
-                                        <span t-field="o.start_date"/><![CDATA[&nbsp;]]> to <![CDATA[&nbsp;]]> <span t-field="o.end_date"/>
-                                    </t>
+											
+											<span t-field="o.start_date" t-options='{"widget": "date"}'/>
+											<span style="display:inline-block; padding:0 3px;">to</span>
+											<span t-field="o.end_date" t-options='{"widget": "date"}'/>
+										</t>
                                     <t t-else="">-</t>
                                 </td>
                             </tr>
