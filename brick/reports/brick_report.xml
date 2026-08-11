@@ -171,7 +171,7 @@
 									<td colspan="1">Temperature :-</td>
 										<td colspan="1" >
 											<t t-if="data.brick_temperature is not None">
-											<span t-field="data.brick_temperature"/>   °C
+											<span t-field="data.brick_temperature"/>   <span style="vertical-align: baseline;"> °C</span>
 										</t>
 									<t t-else="">NA</t>
 										</td>
@@ -179,7 +179,7 @@
 									<td colspan="1">Humidity :-</td>
 										<td colspan="1" >
 											<t t-if="data.brick_humidity is not None">
-											<span t-field="data.brick_humidity"/>   %
+											<span t-field="data.brick_humidity"/>   <span style="vertical-align: baseline;"> %</span>
 										</t>
 									<t t-else="">NA</t>
 										</td>

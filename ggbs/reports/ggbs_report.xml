@@ -174,7 +174,7 @@
 									<td colspan="1">Temperature :-</td>
 										<td colspan="1" >
 											<t t-if="ggbs.temp is not None">
-											<span t-field="ggbs.temp"/>   °C
+											<span t-field="ggbs.temp"/>   <span style="vertical-align: baseline;"> °C</span>
 										</t>
 									<t t-else="">NA</t>
 										</td>
@@ -182,7 +182,7 @@
 									<td colspan="1">Humidity :-</td>
 										<td colspan="1" >
 											<t t-if="ggbs.humidity is not None">
-											<span t-field="ggbs.humidity"/>   %
+											<span t-field="ggbs.humidity"/>   <span style="vertical-align: baseline;"> %</span>
 										</t>
 									<t t-else="">NA</t>
 										</td>

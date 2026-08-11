@@ -108,7 +108,7 @@ class MechanicalConcreteCube(models.Model):
                     line.avg_compressive_strength = 0.0
 
 
-    average_strength = fields.Float(string="Average Compressive Strength in N/mm2",compute="_compute_average_strength",digits=(12,2))
+    average_strength = fields.Float(string="Average Compressive Strength in MPa",compute="_compute_average_strength",digits=(12,2))
 
     def prefill_data(self):
         wizard_action = self.env.ref('concrete_cube.action_cube_prefill_data_wizard')
@@ -362,7 +362,7 @@ class MechanicalConcreteCube(models.Model):
                 record.age_of_days = None
 
 
-    avg_compressive_strength = fields.Float(string="Avg. Compressive Strength (N/mm2)",compute="_compute_avg_compressive_strength",store=True)
+    avg_compressive_strength = fields.Float(string="Avg. Compressive Strength (MPa)",compute="_compute_avg_compressive_strength",store=True)
 
     @api.depends('child_lines.avg_compressive_strength')
     def _compute_avg_compressive_strength(self):
@@ -1831,9 +1831,9 @@ class MechanicalConcreteCubeLine(models.Model):
     dt_of_testing1 = fields.Date(string="Date of Testing",compute="_compute_dt_of_testing",store=True)
 
     load = fields.Float(string="Maximum Load (KN)")
-    compressive_strength = fields.Float(string="Compressive Strength (N/mm2)",compute="_compute_strength",store=True)
+    compressive_strength = fields.Float(string="Compressive Strength (MPa)",compute="_compute_strength",store=True)
 
-    avg_compressive_strength = fields.Float(string="Avg. Compressive Strength (N/mm2)")
+    avg_compressive_strength = fields.Float(string="Avg. Compressive Strength (MPa)")
     area = fields.Float(string="Area (cm²)",compute="_compute_area",store=True)
     dimension = fields.Char(string="Dimension (mm)",compute="_compute_dimension",store=True)
     volume = fields.Float(string="Volume (cc)")

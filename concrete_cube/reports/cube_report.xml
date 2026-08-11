@@ -65,9 +65,9 @@
 									<td><strong>Type of Failure</strong></td>
 									<td style="width: 25%;"><span t-field="data.type_of_failure"/></td>
 									<td style="width: 12.5%;"><strong>Temp</strong></td>
-									<td style="width: 12.5%; text-align: center;"><span t-field="data.temp"/>° C</td>
+									<td style="width: 12.5%; text-align: center;"><span t-field="data.temp"/><span style="vertical-align: baseline;"> °C</span></td>
 									<td style="width: 12.5%;"><strong>Humidity</strong></td>
-									<td style="width: 12.5%; text-align: center;"><span t-field="data.humidity"/>%</td>
+									<td style="width: 12.5%; text-align: center;"><span t-field="data.humidity"/><span style="vertical-align: baseline;"> %</span></td>
 								</tr>
 								<tr>
 									<td><strong>Condition of Sample</strong></td>
@@ -75,7 +75,9 @@
 								</tr>
 								<tr>
 									<td><strong>Discipline</strong></td>
-									<td colspan="5"><span t-field="o.sample_id.discipline_id.discipline"/></td>
+									<td colspan="5">Building Infrastructure And Construction Materials
+									<!-- <span t-field="o.sample_id.discipline_id.discipline"/> -->
+									</td>
 								</tr>
 								<!-- <tr t-if="o.material.source_sample">
 									<td><strong>Source of Sample</strong></td>
@@ -97,8 +99,8 @@
 									<!-- <th style="text-align: center; font-weight: bold; width: 9%;">Date of casting</th>
 									<th style="text-align: center; font-weight: bold; width: 9%;">Date of Testing</th> -->
 									<!-- <th style="text-align: center; font-weight: bold; width: 6%;">Load (kN)</th> -->
-									<th style="text-align: center; font-weight: bold; width: 13%;">Comp. Strength (N/mm2)</th>
-									<th style="text-align: center; font-weight: bold; width: 15%;">Avg. Comp. Strength (N/mm2)</th>
+									<th style="text-align: center; font-weight: bold; width: 13%;">Comp. Strength (MPa)</th>
+									<th style="text-align: center; font-weight: bold; width: 15%;">Avg. Comp. Strength (MPa)</th>
 								</tr>
 							</thead>
 
@@ -148,7 +150,7 @@
 
 
 					<div style="">
-						<table style="margin-top:10px;">
+						<table style="margin-top:10px;" t-if="data.water_permeability_visible or data.act_compressive_visible or data.density_visible or data.weight_visible">
 						<t t-set="i" t-value="0"/>
 							<thead>
 								<tr>
