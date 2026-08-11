@@ -14,7 +14,7 @@
                  'security/security.xml',
                  'views/fst_dashboard.xml',
                  'security/ir.model.access.csv',
-                 'views/pile_load_import_wizard_view.xml',
+                #  'views/pile_load_import_wizard_view.xml',
 
     ],
     'assets': {

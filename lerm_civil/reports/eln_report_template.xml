@@ -456,14 +456,32 @@
 										</th>
 										<th style="max-width: 250px;">
 											<span>
-												
-												<span t-esc="eln.material.specifications"/>
+												<!-- <span t-esc="eln.material.specifications"/> -->
+												<t t-if="eln.material.grade_based_title">
+													<t t-foreach="eln.material.grade_title_table" t-as="grade_table">
+														<t t-if="eln.grade_id.id == grade_table.grade.id">
+															<span t-esc="grade_table.specifications"/>
+														</t>
+													</t>
+												</t>
+												<t t-else="">
+													<span t-esc="eln.material.specifications"/>
+												</t>
 											</span>
 										</th>
 										<th style="max-width: 200px;">
 											<span>
-												<span t-esc="eln.material.method_reference"/>
-												
+												<!-- <span t-esc="eln.material.method_reference"/> -->
+												<t t-if="eln.material.grade_based_title">
+													<t t-foreach="eln.material.grade_title_table" t-as="grade_table">
+														<t t-if="eln.grade_id.id == grade_table.grade.id">
+															<span t-esc="grade_table.method_reference"/>
+														</t>
+													</t>
+												</t>
+												<t t-else="">
+													<span t-esc="eln.material.method_reference"/>
+												</t>
 
 											</span>
 										</th>
@@ -566,14 +584,32 @@
 										</th>
 										<th style="max-width: 250px;">
 											<span>
-												
-												<span t-esc="eln.material.specifications"/>
+												<!-- <span t-esc="eln.material.specifications"/> -->
+												<t t-if="eln.material.grade_based_title">
+													<t t-foreach="eln.material.grade_title_table" t-as="grade_table">
+														<t t-if="eln.grade_id.id == grade_table.grade.id">
+															<span t-esc="grade_table.specifications"/>
+														</t>
+													</t>
+												</t>
+												<t t-else="">
+													<span t-esc="eln.material.specifications"/>
+												</t>
 											</span>
 										</th>
 										<th style="max-width: 200px;">
 											<span>
-												<span t-esc="eln.material.method_reference"/>
-												
+												<!-- <span t-esc="eln.material.method_reference"/> -->
+												<t t-if="eln.material.grade_based_title">
+													<t t-foreach="eln.material.grade_title_table" t-as="grade_table">
+														<t t-if="eln.grade_id.id == grade_table.grade.id">
+															<span t-esc="grade_table.method_reference"/>
+														</t>
+													</t>
+												</t>
+												<t t-else="">
+													<span t-esc="eln.material.method_reference"/>
+												</t>
 
 											</span>
 										</th>
@@ -672,14 +708,32 @@
 										</th>
 										<th style="max-width: 250px;">
 											<span>
-												
-												<span t-esc="eln.material.specifications"/>
+												<!-- <span t-esc="eln.material.specifications"/> -->
+												<t t-if="eln.material.grade_based_title">
+													<t t-foreach="eln.material.grade_title_table" t-as="grade_table">
+														<t t-if="eln.grade_id.id == grade_table.grade.id">
+															<span t-esc="grade_table.specifications"/>
+														</t>
+													</t>
+												</t>
+												<t t-else="">
+													<span t-esc="eln.material.specifications"/>
+												</t>
 											</span>
 										</th>
 										<th style="max-width: 200px;">
 											<span>
-												<span t-esc="eln.material.method_reference"/>
-												
+												<!-- <span t-esc="eln.material.method_reference"/> -->
+												<t t-if="eln.material.grade_based_title">
+													<t t-foreach="eln.material.grade_title_table" t-as="grade_table">
+														<t t-if="eln.grade_id.id == grade_table.grade.id">
+															<span t-esc="grade_table.method_reference"/>
+														</t>
+													</t>
+												</t>
+												<t t-else="">
+													<span t-esc="eln.material.method_reference"/>
+												</t>
 
 											</span>
 										</th>
@@ -772,18 +826,35 @@
 										</th>
 										<th style="max-width: 250px;">
 											<span>
-												
-												<span t-esc="eln.material.specifications"/>
+												<!-- <span t-esc="eln.material.specifications"/> -->
+												<t t-if="eln.material.grade_based_title">
+													<t t-foreach="eln.material.grade_title_table" t-as="grade_table">
+														<t t-if="eln.grade_id.id == grade_table.grade.id">
+															<span t-esc="grade_table.specifications"/>
+														</t>
+													</t>
+												</t>
+												<t t-else="">
+													<span t-esc="eln.material.specifications"/>
+												</t>
 											</span>
 										</th>
 										<th style="max-width: 200px;">
 											<span>
-												<span t-esc="eln.material.method_reference"/>
-												
+												<!-- <span t-esc="eln.material.method_reference"/> -->
+												<t t-if="eln.material.grade_based_title">
+													<t t-foreach="eln.material.grade_title_table" t-as="grade_table">
+														<t t-if="eln.grade_id.id == grade_table.grade.id">
+															<span t-esc="grade_table.method_reference"/>
+														</t>
+													</t>
+												</t>
+												<t t-else="">
+													<span t-esc="eln.material.method_reference"/>
+												</t>
 
 											</span>
 										</th>
-										
 										<th t-if="eln.conformity">
 											<span>
 												Confirmity Status
@@ -883,14 +954,32 @@
 										</th>
 										<th style="max-width: 250px;">
 											<span>
-												
-												<span t-esc="eln.material.specifications"/>
+												<!-- <span t-esc="eln.material.specifications"/> -->
+												<t t-if="eln.material.grade_based_title">
+													<t t-foreach="eln.material.grade_title_table" t-as="grade_table">
+														<t t-if="eln.grade_id.id == grade_table.grade.id">
+															<span t-esc="grade_table.specifications"/>
+														</t>
+													</t>
+												</t>
+												<t t-else="">
+													<span t-esc="eln.material.specifications"/>
+												</t>
 											</span>
 										</th>
 										<th style="max-width: 200px;">
 											<span>
-												<span t-esc="eln.material.method_reference"/>
-												
+												<!-- <span t-esc="eln.material.method_reference"/> -->
+												<t t-if="eln.material.grade_based_title">
+													<t t-foreach="eln.material.grade_title_table" t-as="grade_table">
+														<t t-if="eln.grade_id.id == grade_table.grade.id">
+															<span t-esc="grade_table.method_reference"/>
+														</t>
+													</t>
+												</t>
+												<t t-else="">
+													<span t-esc="eln.material.method_reference"/>
+												</t>
 
 											</span>
 										</th>

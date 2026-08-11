@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="ss_round_datasheet">
+		<t t-call="web.html_container">
+			<!-- <t t-call="web.basic_layout"> -->
+			 <t t-call="lerm_civil.mechanical_data_sheet_header">
+                <div style="text-align:center;font-size:18px">
+                    Ferrous Structural Steel Datasheet
+                </div>
+				<div class="container_eln" style="margin-top:5px">
+					<div t-foreach="eln" t-as="o">
+						<table>
+							<tr cols="12">
+								<td colspan="6">Job no :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.eln_id"/>
+								</td>
+								<td colspan="6">Test Start Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.start_date"/>
+								</td>
+							</tr>
+							<tr cols="12">
+								<td colspan="6">Material :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.material.name"/>
+								</td>
+								<td colspan="6">Test End Date :
+									<![CDATA[&nbsp;]]>
+									<span t-field="o.end_date"/>
+								</td>
+							</tr>
+							 <tr style="height:50px" cols="12">
+                            <td colspan="4">Performed By :
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.technician.name"/>
+                            </td>
+                            <td colspan="4">Witness Name :
+                                <![CDATA[&nbsp;]]>
+                                <span t-field="eln.witness_name"/>
+                            </td>
+                            <td colspan="4">Witness Signature :
+                                <![CDATA[&nbsp;]]>
+                                <span style='padding:20px'></span>
+                            </td>
+                        </tr>
+							
+						</table>
+					</div>
+					<table>
+							<thead>
+								<tr>
+									<th style="text-align: center;">Parameter</th>
+									<th style="text-align: center;">Unit</th>
+									<th style="text-align: center;">Observation-1</th>
+									<th style="text-align: center; ">Observation-2</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td >
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','c3a19cd8-eb69-4e82-9d61-a371a1675c23')]).parameter_name"/>
+											<!-- Gauge Length -->
+										</span>
+
+									</td>
+									<td style="text-align: center;">
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','c3a19cd8-eb69-4e82-9d61-a371a1675c23')]).unit.name"/>
+										</span>
+
+									</td>
+									<td style="text-align: center;"><span t-field="data.dia1"/></td>
+									<td style="text-align: center;"><span t-field="data.dia2"/></td>
+								</tr>
+								<tr>
+									<td >
+										<span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','46d4321b-d0c7-44c6-98b2-dcf0b35cc29f')]).parameter_name"/>
+											<!-- Gauge Length -->
+										</span>
+
+									</td>
+									<td style="text-align: center;">
+									<span>
+                                        <span t-field="env['lerm.parameter.master'].search([('internal_id','=','46d4321b-d0c7-44c6-98b2-dcf0b35cc29f')]).unit.name"/>
+                                    </span>
+										
+								</td>
+									<td style="text-align: center;"><span t-field="data.area1" t-options='{"widget": "float", "precision": 2}' /></td>
+									<td style="text-align: center;"><span t-field="data.area2" /></td>
+								</tr>
+								<!-- Add more rows for other parameters -->
+								<tr>
+												<td >
+                                                    <span>
+                                                        <span t-field="env['lerm.parameter.master'].search([('internal_id','=','2133c567-ae3f-4ef4-b12d-26429a7e5565')]).parameter_name"/>
+														<!-- Gauge Length -->
+                                                    </span>
+
+                                                </td>
+												<td style="text-align: center; vertical-align: middle;">
+													<span>
+														<span t-field="env['lerm.parameter.master'].search([('internal_id','=','2133c567-ae3f-4ef4-b12d-26429a7e5565')]).unit.name"/>
+													</span>
+														
+												</td>
+												<td style="text-align: center;"><span t-field="data.gauge_length1"/></td>
+												<td style="text-align: center;"><span t-field="data.gauge_length2"/></td>
+											</tr>
+											<tr>
+												<td >
+                                                    <span>
+                                                        <span t-field="env['lerm.parameter.master'].search([('internal_id','=','e0d0fc5f-10c9-4834-8531-82884e744b8d')]).parameter_name"/>
+														<!-- Final Length -->
+                                                    </span>
+
+                                                </td>
+												<td style="text-align: center; vertical-align: middle;">
+													<span>
+															<span t-field="env['lerm.parameter.master'].search([('internal_id','=','e0d0fc5f-10c9-4834-8531-82884e744b8d')]).unit.name"/>
+														</span>
+														
+												</td>
+												<td style="text-align: center;"><span t-field="data.final_length1"  /></td>
+												<td style="text-align: center;"><span t-field="data.final_length2"  /></td>
+											</tr>
+											<tr>
+												<td >
+                                                    <span>
+                                                        <span t-field="env['lerm.parameter.master'].search([('internal_id','=','56c985d9-6153-44d2-83df-1b5009be6364')]).parameter_name"/>
+														<!-- 0.2% proof Load / Yield Load -->
+                                                    </span>
+
+                                                </td>
+												<td style="text-align: center; vertical-align: middle;">
+													<span>
+															<span t-field="env['lerm.parameter.master'].search([('internal_id','=','56c985d9-6153-44d2-83df-1b5009be6364')]).unit.name"/>
+														</span>
+														
+												</td>
+												<td style="text-align: center;"><span t-field="data.yeild_load1" /></td>
+												<td style="text-align: center;"><span t-field="data.yeild_load2" /></td>
+											</tr>
+											<tr>
+												<td >
+                                                    <span>
+                                                        <span t-field="env['lerm.parameter.master'].search([('internal_id','=','191b4a91-7433-4c79-87b8-fbb4291b1c23')]).parameter_name"/>
+														<!-- Ultimate Load -->
+                                                    </span>
+
+                                                </td>
+												<td style="text-align: center; vertical-align: middle;">
+													<span>
+															<span t-field="env['lerm.parameter.master'].search([('internal_id','=','191b4a91-7433-4c79-87b8-fbb4291b1c23')]).unit.name"/>
+														</span>
+													
+												</td>
+												<td style="text-align: center;"><span t-field="data.ultimate_load1" /></td>
+												<td style="text-align: center;"><span t-field="data.ultimate_load2" /></td>
+											</tr>
+											<tr>
+												<td >
+                                                    <span>
+                                                        <span t-field="env['lerm.parameter.master'].search([('internal_id','=','afa815b6-a7ce-4272-b062-ca6b2fe55b01')]).parameter_name"/>
+														<!-- 0.2% proof Load / Yield Stress -->
+                                                    </span>
+
+                                                </td>
+												<td style="text-align: center; vertical-align: middle;">
+													<span>
+															<span t-field="env['lerm.parameter.master'].search([('internal_id','=','afa815b6-a7ce-4272-b062-ca6b2fe55b01')]).unit.name"/>
+														</span>
+													
+												</td>
+												<td style="text-align: center;"><span t-field="data.proof_yeid_stress1"  /></td>
+												<td style="text-align: center;"><span t-field="data.proof_yeid_stress2"  /></td>
+											</tr>
+											<tr>
+												<td >
+                                                    <span>
+                                                        <span t-field="env['lerm.parameter.master'].search([('internal_id','=','bd4a58b3-d439-4d80-aadb-0a33f1d3bec2')]).parameter_name"/>
+														<!-- Ultimate Tensile Strength -->
+                                                    </span>
+
+                                                </td>
+												<td style="text-align: center; vertical-align: middle;">
+													<span>
+															<span t-field="env['lerm.parameter.master'].search([('internal_id','=','bd4a58b3-d439-4d80-aadb-0a33f1d3bec2')]).unit.name"/>
+														</span>
+													
+												</td>
+												<td style="text-align: center;"><span t-field="data.ult_tens_strgth1"  /></td>
+												<td style="text-align: center;"><span t-field="data.ult_tens_strgth2"  /></td>
+											</tr>
+											<tr>
+												<td >
+                                                    <span>
+                                                        <span t-field="env['lerm.parameter.master'].search([('internal_id','=','70fecea5-c9de-4ede-a7f9-fd2a8ad9697d')]).parameter_name"/>
+														<!-- % Elongation -->
+                                                    </span>
+
+                                                </td>
+												<td style="text-align: center; vertical-align: middle;">
+													<span>
+														<span t-field="env['lerm.parameter.master'].search([('internal_id','=','70fecea5-c9de-4ede-a7f9-fd2a8ad9697d')]).unit.name"/>
+													</span>
+												</td>
+												<td style="text-align: center;"><span t-field="data.elongation1"  /></td>
+												<td style="text-align: center;"><span t-field="data.elongation2"  /></td>
+											</tr>
+											
+
+											
+											<!-- <tr>
+												<td >
+                                                    <span>
+                                                        <span t-field="env['lerm.parameter.master'].search([('internal_id','=','dae179ef-5a4e-4f79-beef-2c5014f59bc5')]).parameter_name"/>
+                                                    </span>
+
+                                                </td>
+												<td style="text-align: center;"><span t-field="data.re_bend_test"  /></td>
+												<td style="text-align: center;"><span t-field="data.re_bend_test2"  /></td>
+											</tr> -->
+											<tr>
+												<td>
+                                                    <span>
+                                                        <span t-field="env['lerm.parameter.master'].search([('internal_id','=','43b89870-ec82-488f-866f-4a5a953073aa')]).parameter_name"/>
+														<!-- Bend Test -->
+                                                    </span>
+
+                                                </td>
+												<td style="text-align: center; vertical-align: middle;">
+													<span>
+														<span t-field="env['lerm.parameter.master'].search([('internal_id','=','43b89870-ec82-488f-866f-4a5a953073aa')]).unit.name"/>
+													</span>
+												</td>
+												<td style="text-align: center;"><span t-field="data.bend_test"  /></td>
+												<td style="text-align: center;"><span t-field="data.bend_test2"  /></td>
+											</tr>
+
+											<tr>
+												<td >
+                                                    <span>
+                                                        <span t-field="env['lerm.parameter.master'].search([('internal_id','=','62ffe6d0-ca87-41f6-9e18-47169dc04398')]).parameter_name"/>
+														<!-- Fracture -->
+                                                    </span>
+
+                                                </td>
+												<td style="text-align: center; vertical-align: middle;">
+												<span>
+													<span t-field="env['lerm.parameter.master'].search([('internal_id','=','62ffe6d0-ca87-41f6-9e18-47169dc04398')]).unit.name"/>
+												</span>
+											</td>
+												<td style="text-align: center;"><span t-field="data.fracture1"  /></td>
+												<td style="text-align: center;"><span t-field="data.fracture2"  /></td>
+											</tr>
+							</tbody>
+						</table>
+
+
+
+					
+						   
+                    <!-- authorizeRowDataSheet -->
+                    
+                     <div class="authorizeRowDataSheet">
+						<div>
+                            <div>
+                                <b>
+                                    Tested By 
+                                </b>
+                                
+                            </div>
+                            <div style="height:40px">
+								<t t-if="eln.tested_by_signature_datasheet">
+									<div t-if="eln.technician and eln.technician.employee_id and eln.technician.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,%s' % eln.technician.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+								</t>
+                            </div>
+                            <div>
+                                <b>
+									<span t-esc="eln.technician.employee_id.name"/> 
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.technician.employee_id.job_title"/>)
+                                </b>
+                            </div>
+						</div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
+							</div>
+							<div>
+								<b>
+								<span t-field="eln.sample_id.check_by.name"/>
+								</b>
+							</div>
+							
+							<div>
+								<b>
+									(<span t-field="eln.sample_id.check_by.job_title"/>)
+								</b>
+							</div>
+						</div>
+					</div>
+				</div>
+			</t>
+		</t>
+	</template>
+</odoo>

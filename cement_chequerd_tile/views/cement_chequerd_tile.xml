@@ -58,10 +58,17 @@
                     </div>
 
 
-                      <div invisible = "chequered_tiles_cement_visible == False">
-                        <field name='cement_sample_size' col="4"/>
-                     
-                    </div>
+                    
+
+                     <table class="table table-sm o_form_table table-bordered w-40 custom_table_borders" invisible = "chequered_tiles_cement_visible == False">
+                            <tbody>
+                                <tr>
+                                    <td><label for="cement_sample_size"></label></td>
+                                    <td><field name="cement_sample_size" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
 
                         <field name="chequered_tiles_cement_lines" nolabel="1"  class="custom_table_borders" invisible="chequered_tiles_cement_visible == False">
                             <tree editable="bottom">
