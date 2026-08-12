@@ -142,7 +142,9 @@
 					</span>
 					
 					<span style="text-align:right; display: flex; justify-content: space-between;  margin-left: 3rem;  ">
-						Date. <span t-esc="eln.end_date.strftime('%d/%m/%Y')"/>
+						Date. 
+						<!-- <span t-esc="eln.end_date.strftime('%d/%m/%Y')"/> -->
+						<span t-esc="eln.end_date.strftime('%d/%m/%Y') if eln.end_date else ''"/>
 					</span>
 				
 					<div style="text-align:center;margin-top:12px">	

@@ -7,7 +7,7 @@
 
                     <div class="" t-foreach="eln" t-as="o">
                         <table style="width:100%; border-collapse: collapse;" border="1">
-
+ 
                             <tr>
                                 <td colspan="1">#Project Name/Site Name :</td>
                                 <td colspan="3" style="font-weight:bold;">
@@ -24,10 +24,10 @@
                                     </t>
                                     <t t-else="">--</t>
                                 </td>
-                                <td colspan="1">ULR NO:</td>
+                                <td colspan="1">SRF ID :</td>
                                 <td colspan="1" style="font-weight:bold;">
-                                    <![CDATA[&nbsp;]]>
-                                    <span t-field="o.sample_id.ulr_no"/>
+                                    
+                                    <span t-esc="o.sample_id.srf_id.display_name.split('-')[0]"/>
                                 </td>
                             </tr>
                             <tr>
@@ -41,10 +41,12 @@
                                     <span t-field="o.srf_id.customer.state_id"/>,
                                     <span t-field="o.srf_id.customer.country_id"/>
                                 </td>
-                                <td colspan="1">Test Report No :</td>
-                                <td colspan="1" style="font-weight:bold;">
-                                    <![CDATA[&nbsp;]]>
-                                    <span t-field="o.sample_id.kes_no"/>
+                                <td colspan="1">Client Sample Id :-</td>
+                                <td colspan="1">
+                                    <t t-if="o.sample_id.client_sample_id">
+                                        <span t-field="o.sample_id.client_sample_id"/>
+                                    </t>
+                                    <t t-else="">-</t>
                                 </td>
                             </tr>
                             <tr>
@@ -55,12 +57,10 @@
                                     </t>
                                     <t t-else="">--</t>
                                 </td>
-                                <td colspan="1">Sample ID :-</td>
-                                <td colspan="1">
-                                    <t t-if="o.sample_id.client_sample_id">
-                                        <span t-field="o.sample_id.client_sample_id"/>
-                                    </t>
-                                    <t t-else="">-</t>
+                                <td colspan="1">Brand:</td>
+                                <td colspan="1" >
+                                   
+                                    <span t-field="o.sample_id.brand"/>
                                 </td>
                             </tr>
                             <tr>
@@ -90,8 +90,11 @@
                                 <td colspan="1">Date of Performance of Test :-</td>
                                 <td colspan="1">
                                     <t t-if="o.start_date and o.end_date">
-                                        <span t-field="o.start_date"/><![CDATA[&nbsp;]]> to <![CDATA[&nbsp;]]> <span t-field="o.end_date"/>
-                                    </t>
+											
+											<span t-field="o.start_date" t-options='{"widget": "date"}'/>
+											<span style="display:inline-block; padding:0 3px;">to</span>
+											<span t-field="o.end_date" t-options='{"widget": "date"}'/>
+										</t>
                                     <t t-else="">-</t>
                                 </td>
                             </tr>
@@ -115,10 +118,17 @@
                                     </t>
                                     <t t-else="">-</t>
                                 </td>
-                                <td colspan="1">Test Method Followed :-</td>
+                                <!-- <td colspan="1">Test Method Followed :-</td>
                                 <td colspan="1">
                                     <t t-if="o.material.test_method_adopted">
                                         <span t-field="o.material.test_method_adopted"/>
+                                    </t>
+                                    <t t-else="">-</t>
+                                </td> -->
+                                <td colspan="1">Reference No. :-</td>
+                                <td colspan="1">
+                                    <t t-if="o.srf_id.client_refrence">
+                                        <span t-field="o.srf_id.client_refrence"/>
                                     </t>
                                     <t t-else="">-</t>
                                 </td>
@@ -139,7 +149,7 @@
                                     <t t-else="">-</t>
                                 </td>
                             </tr>
-                            <tr>
+                            <!-- <tr>
                                 <td colspan="1">Reference No. :-</td>
                                 <td colspan="3">
                                     <t t-if="o.srf_id.client_refrence">
@@ -147,7 +157,7 @@
                                     </t>
                                     <t t-else="">-</t>
                                 </td>
-                            </tr>
+                            </tr> -->
 
                         </table>
                     </div>

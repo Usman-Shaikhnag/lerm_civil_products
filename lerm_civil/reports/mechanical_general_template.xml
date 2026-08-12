@@ -23,7 +23,9 @@
 					</span>
 					
 					<span style="text-align:left; display: flex; justify-content: space-between;  margin-left: 4rem;  ">
-						Date. <span t-esc="eln.end_date.strftime('%d/%m/%Y')"/>
+						Date. 
+						<span t-esc="eln.end_date.strftime('%d/%m/%Y') if eln.end_date else ''"/>
+						<!-- <span t-esc="eln.end_date.strftime('%d/%m/%Y')"/> -->
 					</span>
 				
 					<div style="text-align:center;margin-top:12px; margin-bottom:10px;">

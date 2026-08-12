@@ -33,7 +33,8 @@
 							</td>
 							<td colspan="4" style="border:none;">
 								<span style="text-align:left;margin-left:20%;">	
-									Date <![CDATA[&nbsp;]]> <span t-esc="eln.end_date.strftime('%d/%m/%Y')"/>
+									<!-- Date <![CDATA[&nbsp;]]> <span t-esc="eln.end_date.strftime('%d/%m/%Y')"/> -->
+									<span t-esc="eln.end_date.strftime('%d/%m/%Y') if eln.end_date else ''"/>
 								</span>
 							</td>
 						</tr>

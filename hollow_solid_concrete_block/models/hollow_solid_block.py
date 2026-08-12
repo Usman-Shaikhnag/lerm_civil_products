@@ -987,18 +987,18 @@ class HSCompressionTestLine(models.Model):
     #     for rec in self:
     #         rec.dimension = rec.parent_id.size_id.size
 
-    # length = fields.Float(string="Length")
-    # breadth = fields.Float(string="Breadth")
-    # height = fields.Float(string="Specimen No.")
+    length = fields.Float(string="Length (mm)")
+    width = fields.Float(string="Width (mm)")
+    height = fields.Float(string="Height (mm)")
 
-    dimension = fields.Char(
-        string="Dimension (mm) (L x B x H)",
-        related="parent_id.eln_ref.size_id.size",
-        store=True,
-        readonly=True,
-    )
+    # dimension = fields.Char(
+    #     string="Dimension (mm) (L x B x H)",
+    #     related="parent_id.eln_ref.size_id.size",
+    #     store=True,
+    #     readonly=True,
+    # )
 
-    area_pressure_face = fields.Float(string="Area (cm²)",compute="_compute_area",store=True,)
+    area_pressure_face = fields.Float(string="Area (mm²)",compute="_compute_area",store=True,)
 
     weight_before_test = fields.Float(string="Weight Before Test (Kg)")
 
@@ -1006,31 +1006,31 @@ class HSCompressionTestLine(models.Model):
 
     compressive_strength = fields.Float(string="Compressive Strength (MPa)",compute='_compute_strength',store=True)
 
-    # @api.depends('length', 'breadth')
-    # def _compute_area(self):
-    #     for rec in self:
-    #         rec.area_pressure_face = rec.length * rec.breadth
+    @api.depends('length', 'width')
+    def _compute_area(self):
+        for rec in self:
+            rec.area_pressure_face = rec.length * rec.width
 
     
 
-    @api.depends("dimension")
-    def _compute_area(self):
-        for record in self:
-            record.area_pressure_face = 0.0
+    # @api.depends("dimension")
+    # def _compute_area(self):
+    #     for record in self:
+    #         record.area_pressure_face = 0.0
 
-            if not record.dimension:
-                continue
+    #         if not record.dimension:
+    #             continue
 
-            dimensions = re.findall(
-                r"\d+(?:\.\d+)?",
-                record.dimension,
-            )
+    #         dimensions = re.findall(
+    #             r"\d+(?:\.\d+)?",
+    #             record.dimension,
+    #         )
 
-            if len(dimensions) >= 2:
-                length = float(dimensions[0])
-                breadth = float(dimensions[1])
+    #         if len(dimensions) >= 2:
+    #             length = float(dimensions[0])
+    #             breadth = float(dimensions[1])
 
-                record.area_pressure_face = length * breadth
+    #             record.area_pressure_face = length * breadth
 
     @api.depends('max_load_failure', 'area_pressure_face')
     def _compute_strength(self):
