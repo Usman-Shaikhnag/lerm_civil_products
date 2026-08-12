@@ -342,31 +342,31 @@ class MechanicalConcreteCube(models.Model):
 
 
 
-    @api.onchange('eln_ref')
-    def _compute_age_of_days(self):
-        for record in self:
-            if record.eln_ref.sample_id:
-                sample_record = self.env['lerm.srf.sample'].sudo().search([('id','=', record.eln_ref.sample_id.id)]).days_casting
-                if sample_record == '3':
-                    record.age_of_days = '3days'
-                elif sample_record == '7':
-                    record.age_of_days = '7days'
-                elif sample_record == '14':
-                    record.age_of_days = '14days'
-                elif sample_record == '21':
-                    record.age_of_days = '21days'
-                elif sample_record == '28':
-                    record.age_of_days = '28days'
-                elif sample_record == '45':
-                    record.age_of_days = '45days'
-                elif sample_record == '56':
-                    record.age_of_days = '56days'
-                elif sample_record == '112':
-                    record.age_of_days = '112days'
-                else:
-                    record.age_of_days = None
-            else:
-                record.age_of_days = None
+    # @api.onchange('eln_ref')
+    # def _compute_age_of_days(self):
+    #     for record in self:
+    #         if record.eln_ref.sample_id:
+    #             sample_record = self.env['lerm.srf.sample'].sudo().search([('id','=', record.eln_ref.sample_id.id)]).days_casting
+    #             if sample_record == '3':
+    #                 record.age_of_days = '3days'
+    #             elif sample_record == '7':
+    #                 record.age_of_days = '7days'
+    #             elif sample_record == '14':
+    #                 record.age_of_days = '14days'
+    #             elif sample_record == '21':
+    #                 record.age_of_days = '21days'
+    #             elif sample_record == '28':
+    #                 record.age_of_days = '28days'
+    #             elif sample_record == '45':
+    #                 record.age_of_days = '45days'
+    #             elif sample_record == '56':
+    #                 record.age_of_days = '56days'
+    #             elif sample_record == '112':
+    #                 record.age_of_days = '112days'
+    #             else:
+    #                 record.age_of_days = None
+    #         else:
+    #             record.age_of_days = None
 
 
     wpt_name = fields.Char("Name",default=" Water Permeability Test")
