@@ -1205,6 +1205,27 @@
 </record>
 
 
+<record id="particle_board_datasheet_action" model="ir.actions.report">
+    <field name="name">Particle Board DataSheet </field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">particle_board.particle_board_datasheet</field>
+    <field name="report_file">particle_board.particle_board_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+<record id="particle_board_report_action" model="ir.actions.report">
+    <field name="name">Particle Board Report </field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">particle_board.particle_board_report</field>
+    <field name="report_file">particle_board.particle_board_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+
 
 
 </odoo>

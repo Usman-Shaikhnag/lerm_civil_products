@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mechanical_particle_board_view" model="ir.ui.view">
+        <field name="name">mechanical.particle.board.form</field>
+        <field name="model">mechanical.particle.board</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                   <div >
+                        <h1>
+                            <field name="name" readonly="1" nolabel="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="srf_id" invisible="1"/>
+                        <field name="sample_id" readonly="1"/>
+                        <field name="eln_ref" readonly="1"/>
+                         <field name="grade" readonly="1"/>
+                         <field name="eln_state" />
+                        <field name="parameter_id" invisible="1"/>
+                    </group>
+
+                    <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+
+
+                    <div class="custom_table_borders" style="margin-top: 15px;">
+                      <field name="sample_parameters">
+                        <tree>
+                          <field name="parameter_name"/>
+                          <field name="test_method"/>
+                        </tree>
+                      </field>
+                    </div>
+                   
+       
+
+
+
+                    <!--  Dimensions -->
+
+                       <div invisible = "dimensions_particle_visible == False" >
+                        <h1>
+                            <field name="dimensions_particle_name" readonly="1" nolabel="1"/>
+                            <field name="dimensions_particle_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+               
+
+
+                        <field name="child_lines_dimensions_particle" nolabel="1"  class="custom_table_borders" invisible="dimensions_particle_visible == False">
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='lenght' class="blue-input" decoration-info="lenght != 0"/>
+                                <field name='width' class="blue-input" decoration-info="width != 0"/>
+                                <field name='thickness' class="blue-input" decoration-info="thickness != 0"/>
+                                <field name='squareness' class="blue-input" decoration-info="squareness != 0"/>
+                                   <field name='edge_straightness' class="blue-input" decoration-info="edge_straightness != 0"/>
+                              
+                
+                            </tree>
+                           
+                         </field> 
+
+                         <div class="d-flex gap-2" invisible="dimensions_particle_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="average_length"></label></td>
+                                    <td><field name="average_length" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="average_width"></label></td>
+                                    <td><field name="average_width"  /></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+
+                          
+                    </div>
+
+                      <div class="d-flex gap-2" invisible="dimensions_particle_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="average_thickness"></label></td>
+                                    <td><field name="average_thickness" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="average_squareness"></label></td>
+                                    <td><field name="average_squareness"  /></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+
+                          
+                    </div>
+
+
+                      <div class="d-flex gap-2" invisible="dimensions_particle_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="average_edge_straightness"></label></td>
+                                    <td><field name="average_edge_straightness" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                      
+
+                          
+                    </div>
+
+
+
+                     <div class="d-flex gap-2" invisible="dimensions_particle_visible == False" >
+                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="average_length_conformity"></label></td>
+                            <td><field name='average_length_conformity'
+                               decoration-success="average_length_conformity == 'pass'" 
+                               decoration-danger="average_length_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="average_length_nabl"></label></td>
+                            <td><field name='average_length_nabl'
+                               decoration-success="average_length_nabl == 'pass'" 
+                               decoration-danger="average_length_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+
+
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="average_width_conformity"></label></td>
+                            <td><field name='average_width_conformity'
+                               decoration-success="average_width_conformity == 'pass'" 
+                               decoration-danger="average_width_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="average_width_nabl"></label></td>
+                            <td><field name='average_width_nabl'
+                               decoration-success="average_width_nabl == 'pass'" 
+                               decoration-danger="average_width_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+
+                          
+                    </div>
+
+
+
+                    <div class="d-flex gap-2" invisible="dimensions_particle_visible == False" >
+                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="average_thickness_conformity"></label></td>
+                            <td><field name='average_thickness_conformity'
+                               decoration-success="average_thickness_conformity == 'pass'" 
+                               decoration-danger="average_thickness_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="average_thickness_nabl"></label></td>
+                            <td><field name='average_thickness_nabl'
+                               decoration-success="average_thickness_nabl == 'pass'" 
+                               decoration-danger="average_thickness_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+
+
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="average_squareness_conformity"></label></td>
+                            <td><field name='average_squareness_conformity'
+                               decoration-success="average_squareness_conformity == 'pass'" 
+                               decoration-danger="average_squareness_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="average_squareness_nabl"></label></td>
+                            <td><field name='average_squareness_nabl'
+                               decoration-success="average_squareness_nabl == 'pass'" 
+                               decoration-danger="average_squareness_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+
+                          
+                    </div>
+
+
+                    <div class="d-flex gap-2" invisible="dimensions_particle_visible == False" >
+                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="average_edge_straightness_conformity"></label></td>
+                            <td><field name='average_edge_straightness_conformity'
+                               decoration-success="average_edge_straightness_conformity == 'pass'" 
+                               decoration-danger="average_edge_straightness_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="average_edge_straightness_nabl"></label></td>
+                            <td><field name='average_edge_straightness_nabl'
+                               decoration-success="average_edge_straightness_nabl == 'pass'" 
+                               decoration-danger="average_edge_straightness_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+
+
+                         
+                          
+                    </div>
+                           
+                       
+
+                  
+
+                   
+
+
+                   
+
+                    
+
+
+                        <!-- Density and Moisture Content-->
+
+                       <div invisible="density_moisture_particale_visible == False" >
+                        <h1>
+                            <field name="density_moisture_particale_name" readonly="1" nolabel="1"/>
+                            <field name="density_moisture_particale_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+               
+
+
+                        <field name="child_lines_density_moisture_particale" nolabel="1" class="custom_table_borders" invisible="density_moisture_particale_visible == False" >
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='lenght' class="blue-input" decoration-info="lenght != 0"/>
+                                <field name='width' class="blue-input" decoration-info="width != 0"/>
+                                <field name='thickness' class="blue-input" decoration-info="thickness != 0"/>
+                                <field name='initial_weight' class="blue-input" decoration-info="initial_weight != 0"/>
+                                <field name='oven_dry_weight' class="blue-input" decoration-info="oven_dry_weight != 0"/>
+                                <field name='density_particle'/>
+                                 <field name='moisture_particle'/>
+                
+                            </tree>
+                           
+                         </field> 
+
+
+                         <div class="d-flex gap-2" invisible="density_moisture_particale_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="average_density_particle"></label></td>
+                                    <td><field name="average_density_particle" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="average_moisture_particle"></label></td>
+                                    <td><field name="average_moisture_particle"  /></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+
+                          
+                    </div>
+
+
+                    <div class="d-flex gap-2" invisible="density_moisture_particale_visible == False" >
+                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="average_density_particle_conformity"></label></td>
+                            <td><field name='average_density_particle_conformity'
+                               decoration-success="average_density_particle_conformity == 'pass'" 
+                               decoration-danger="average_density_particle_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="average_density_particle_nabl"></label></td>
+                            <td><field name='average_density_particle_nabl'
+                               decoration-success="average_density_particle_nabl == 'pass'" 
+                               decoration-danger="average_density_particle_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+
+
+                          <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="average_moisture_particle_conformity"></label></td>
+                            <td><field name='average_moisture_particle_conformity'
+                               decoration-success="average_moisture_particle_conformity == 'pass'" 
+                               decoration-danger="average_moisture_particle_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="average_moisture_particle_nabl"></label></td>
+                            <td><field name='average_moisture_particle_nabl'
+                               decoration-success="average_moisture_particle_nabl == 'pass'" 
+                               decoration-danger="average_moisture_particle_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+
+                          
+                    </div>
+                           
+                       
+
+                    
+
+                 
+
+                    
+
+
+
+                          <!--Water Absorption-->
+
+                       <div invisible="water_absorption_particle_visible == False" >
+                        <h1>
+                            <field name="water_absorption_particle_name" readonly="1" nolabel="1"/>
+                            <field name="water_absorption_particle_visible" invisible="1"/>
+                        </h1>
+                    </div>
+
+               
+
+
+                        <field name="child_lines_water_absorption_particle" nolabel="1"  class="custom_table_borders" invisible="water_absorption_particle_visible == False">
+                            <tree editable="bottom">
+                                <field name='sr_no'/>
+                                <field name='initial_weight' class="blue-input" decoration-info="initial_weight != 0"/>
+                                <field name='oven_dry_weight' class="blue-input" decoration-info="oven_dry_weight != 0"/>
+                                <field name='water_absorption_particle'/>
+                              
+                
+                            </tree>
+                           
+                         </field> 
+
+                         <div class="d-flex gap-2" invisible="water_absorption_particle_visible == False" >
+                        <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                            <tbody>
+                                <tr>
+                                    <td><label for="average_water_absorption_particle"></label></td>
+                                    <td><field name="average_water_absorption_particle" /></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        
+                    
+
+                          
+                    </div>
+
+                     <div class="d-flex gap-2" invisible="dimensions_particle_visible == False" >
+                       <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                          <tbody>
+                           <tr>
+                            <td><label for="average_water_absorption_particle_conformity"></label></td>
+                            <td><field name='average_water_absorption_particle_conformity'
+                               decoration-success="average_water_absorption_particle_conformity == 'pass'" 
+                               decoration-danger="average_water_absorption_particle_conformity == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           <tr>
+                            <td><label for="average_water_absorption_particle_nabl"></label></td>
+                            <td><field name='average_water_absorption_particle_nabl'
+                               decoration-success="average_water_absorption_particle_nabl == 'pass'" 
+                               decoration-danger="average_water_absorption_particle_nabl == 'fail'" 
+                               readonly="1"/></td>
+                           </tr>
+                           </tbody>                     
+                          </table>
+
+
+                         
+                          
+                    </div>
+
+
+
+
+                     <notebook>
+
+                        <page string="Notes">
+                            <div class="custom_table_borders" style="margin-top: 15px;">
+                                <field name="notes_id" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="sr_no" width="100"/>
+                                        <field name="notes"  />
+                                    </tree>
+                                </field>
+                                
+                            </div>
+                        </page>
+
+                    </notebook>
+
+                        
+
+                     <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+                    
+                     
+
+
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+    </data>
+</odoo>
