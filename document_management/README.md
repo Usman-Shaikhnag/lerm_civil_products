@@ -22,23 +22,68 @@ OWL UI (Odoo) ── jsonrpc ──▶ Odoo controllers  (metadata, permissions,
 This module is designed to run with **Odoo 17 in Docker** and a **FastAPI**
 backend for file storage. Two parts:
 
-- **A. Odoo (Docker)** — copy the module into the container's addons path and
-  install it.
+- **A. Odoo (Docker)** — the module lives on the host and is mounted **into the
+  container as a volume** (bind mount), then installed.
 - **B. FastAPI backend** — run it either **in its own container**
   (recommended for a server) or **on the host** (for development / simple
   setups). Pick one option and skip the other.
 
+### 0. Quick start — DMS backend in its own compose (easiest)
+
+A `docker-compose.yml` ships with the module that runs **only the FastAPI
+backend** (Odoo runs in your existing stack). It's fully standalone:
+
+```bash
+cd /path/to/document_management
+DMS_SECRET='pick-a-long-random-secret' docker compose up -d dms-backend
+```
+
+Check it's healthy:
+
+```bash
+curl http://localhost:8000/api/v1/health   # {"status":"ok",...}
+```
+
+Then configure **Settings → Document Management** in your existing Odoo:
+
+- **FastAPI Base URL** = `http://localhost:8000` (browser)
+- **FastAPI Server URL** = `http://host.docker.internal:8000` (Odoo container →
+  host port 8000; use the host LAN IP if `host.docker.internal` doesn't resolve)
+- **Storage Path** = `/var/lib/dms_files`
+- **Shared Secret** = the same `DMS_SECRET` you passed to `docker compose up`
+
+> If you prefer, copy the `dms-backend` service block into your existing
+> `docker-compose.yml` instead of running a second file — then use
+> `http://dms-backend:8000` as the Server URL if the services share a network.
+> LibreOffice is installed in the container on first start (takes a few
+> minutes); remove the apt line to skip Word previews.
+
 ### A. Install the Odoo module (Docker)
 
-Copy `document_management` into the addons folder that the Odoo container
-mounts (e.g. `./practice-addon17:/mnt/extra-addons`):
+The addon is kept on the **host filesystem** in a folder that is **bind-mounted
+into the Odoo container** as a volume. Your `docker-compose.yml` must map it to
+the container addons path:
+
+```yaml
+services:
+  web:
+    image: odoo:17.0
+    volumes:
+      - /opt/odoo/addons:/mnt/extra-addons   # host addons folder mounted into the container
+```
+
+1. Copy `document_management` into the **host** folder that is mounted into the
+   container (the bind-mount source, e.g. `/opt/odoo/addons`):
 
 ```bash
 scp -r document_management user@server:/opt/odoo/addons/
 chmod -R a+rX /opt/odoo/addons/document_management   # must be readable by the container
 ```
 
-Install it inside the container:
+   Because of the bind mount, the module is immediately visible inside the
+   container at `/mnt/extra-addons/document_management`.
+
+2. Install it **inside the container**:
 
 ```bash
 docker exec -it <web_container> odoo -d <dbname> -u document_management --stop-after-init \
@@ -53,6 +98,10 @@ docker exec -it <db_container> psql -U odoo -d <dbname> \
   -c "SELECT name,state FROM ir_module_module WHERE name='document_management';"
 # expect: document_management | installed
 ```
+
+> **Upgrading later:** edit/copy the files on the **host** folder, then re-run
+> the same `docker exec ... -u document_management` command and restart the
+> container — the bind mount means the container sees the new files immediately.
 
 ### B1. FastAPI in its own container (recommended for a server)
 
@@ -69,7 +118,7 @@ Add a service to your `docker-compose.yml`:
       - DMS_SECRET=YOUR_LONG_RANDOM_SECRET
       - DMS_LIBREOFFICE_BIN=soffice
     volumes:
-      - ./practice-addon17/document_management/backend:/app
+      - /opt/odoo/addons/document_management/backend:/app
       - dms-files:/var/lib/dms_files
     command: >
       sh -c "pip install --no-cache-dir -r /app/requirements.txt &&

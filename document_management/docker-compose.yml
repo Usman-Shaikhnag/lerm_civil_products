@@ -1,0 +1,40 @@
+# Standalone Docker Compose for the DMS FastAPI backend only.
+#
+# Your Odoo instance runs separately (existing compose / host). This file just
+# provides the document storage + preview backend.
+#
+# Run from the document_management/ folder:
+#
+#   DMS_SECRET='pick-a-long-random-secret' docker compose up -d dms-backend
+#
+# Then, in Odoo Settings -> Document Management:
+#   - FastAPI Base URL   = http://localhost:8000        (browser)
+#   - FastAPI Server URL = http://host.docker.internal:8000   (Odoo container -> host port 8000;
+#                                                            use the host LAN IP if that doesn't resolve)
+#   - Storage Path       = /var/lib/dms_files
+#   - Shared Secret      = the same value as DMS_SECRET
+#
+# To merge into your existing docker-compose.yml instead, copy the
+# "dms-backend" service block below (adjust the backend volume path).
+
+services:
+  dms-backend:
+    image: python:3.11-slim
+    working_dir: /app
+    ports:
+      - "8000:8000"
+    environment:
+      - DMS_STORAGE_PATH=/var/lib/dms_files
+      - DMS_SECRET=${DMS_SECRET:-change-me-in-production}
+      - DMS_LIBREOFFICE_BIN=soffice
+    volumes:
+      - ./backend:/app
+      - dms-files:/var/lib/dms_files
+    command: >
+      sh -c "pip install --no-cache-dir -r /app/requirements.txt &&
+             apt-get update && apt-get install -y --no-install-recommends libreoffice &&
+             uvicorn main:app --host 0.0.0.0 --port 8000 --app-dir /app"
+    restart: unless-stopped
+
+volumes:
+  dms-files:
