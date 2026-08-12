@@ -271,7 +271,17 @@ class MechanicalConcreteCube(models.Model):
                 + timedelta(days=days)
             )
 
+    # @api.depends('eln_ref')
+    # def _compute_date_testing(self):
+    #     if self.eln_ref:
+    #         self.date_of_testing = self.eln_ref.date_testing
+    #     else:
+    #         self.date_of_testing = ''
 
+    date_of_testing = fields.Date(
+    string="Date of Testing",
+    compute="_compute_date_testing",
+    store=True,)
 
     @api.depends('eln_ref')
     def _compute_age_of_days(self):
@@ -367,6 +377,17 @@ class MechanicalConcreteCube(models.Model):
     #                 record.age_of_days = None
     #         else:
     #             record.age_of_days = None
+
+    @api.depends('eln_ref')
+    def _compute_age_of_days(self):
+     for record in self:
+        record.age_of_days = False
+
+        if record.eln_ref and record.eln_ref.sample_id:
+            sample_record = record.eln_ref.sample_id.days_casting
+
+            if sample_record:
+                record.age_of_days = f'{sample_record}days'
 
 
     wpt_name = fields.Char("Name",default=" Water Permeability Test")
