@@ -185,7 +185,7 @@
 
                                 <!-- Dimension Length -->
 
-                                <tr t-if="data.length_dimen_visible and (data.avg_measured_length_nabl == 'pass' and nabl or (data.avg_measured_length_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+                                <tr t-if="data.dimension_visible and (data.avg_length_nabl == 'pass' and nabl or (data.avg_length_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
                                     <t t-set="length" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','916c70fe-57ff-4f2a-9361-41a687b54f85')])"/>
 
                                     <td style="text-align: center;">
@@ -197,7 +197,7 @@
                                     </td>
                                     <td style="text-align: center;">
                                         <span>
-                                            <span t-field="data.avg_measured_length" t-options='{"widget": "float", "precision": 3}'/>
+                                            <span t-field="data.avg_length" t-options='{"widget": "float", "precision": 3}'/>
                                         </span>
                                     </td>
                                     <td style="text-align: center;">
@@ -228,7 +228,7 @@
 
                                 <!-- Dimension Height -->
 
-                                <tr t-if="data.height_dimen_visible and (data.avg_measured_height_nabl == 'pass' and nabl or (data.avg_measured_height_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+                                <tr t-if="data.dimension_visible and (data.avg_height_nabl == 'pass' and nabl or (data.avg_height_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
                                     <t t-set="height" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','6c0d4ef6-867f-4e79-baf1-690338654f26')])"/>
 
                                     <td style="text-align: center;">
@@ -240,7 +240,7 @@
                                     </td>
                                     <td style="text-align: center;">
                                         <span>
-                                            <span t-field="data.avg_measured_height" t-options='{"widget": "float", "precision": 3}'/>
+                                            <span t-field="data.avg_height" t-options='{"widget": "float", "precision": 3}'/>
                                         </span>
                                     </td>
                                     <td style="text-align: center;">
@@ -271,7 +271,7 @@
 
                                 <!-- Dimension Width -->
 
-                                <tr t-if="data.width_dimen_visible and (data.avg_measured_width_nabl == 'pass' and nabl or (data.avg_measured_width_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+                                <tr t-if="data.dimension_visible and (data.avg_width_nabl == 'pass' and nabl or (data.avg_width_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
                                     <t t-set="width" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','ffa13e28-aab7-400a-9885-22b12783ca07')])"/>
 
                                     <td style="text-align: center;">
@@ -283,7 +283,7 @@
                                     </td>
                                     <td style="text-align: center;">
                                         <span>
-                                            <span t-field="data.avg_measured_width" t-options='{"widget": "float", "precision": 3}'/>
+                                            <span t-field="data.avg_width" t-options='{"widget": "float", "precision": 3}'/>
                                         </span>
                                     </td>
                                     <td style="text-align: center;">
@@ -440,6 +440,93 @@
                                     </td>
 
                                 </tr>
+
+                                <!-- Drying Shrinkage -->
+
+                                <tr t-if="data.drying_shrinkage_visible and (data.avg_drying_shrinkage_nabl == 'pass' and nabl or (data.avg_drying_shrinkage_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+                                    <t t-set="drying" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','a077ef6a-aa0e-4a99-be38-66a6cbf610f0')])"/>
+
+                                    <td style="text-align: center;">
+                                        <span t-esc="i + 1" />
+                                        <t t-set="i" t-value="i+1"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="drying.parameter_name"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span>
+                                            <span t-field="data.avg_drying_shrinkage" t-options='{"widget": "float", "precision": 8}'/>
+                                        </span>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span>
+                                            <span t-esc="drying.unit.name"/>
+                                        </span>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span>
+                                            <t t-foreach="drying.parameter_table" t-as="parameter">
+                                                <t t-if="parameter.grade.id == eln.grade_id.id">
+                                                    <span t-field="parameter.permissable_limit"/>
+                                                </t>
+                                            </t>
+                                        </span>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span>
+                                            <t t-foreach="drying.parameter_table" t-as="parameter">
+                                                <t t-if="parameter.grade.id == eln.grade_id.id">
+                                                    <span t-field="parameter.specification"/>
+                                                </t>
+                                            </t>
+                                        </span>
+                                    </td>
+
+                                </tr>
+
+                                <!-- Moisture Movement -->
+
+                                <tr t-if="data.moisture_movement_visible and (data.avg_moisture_movement_nabl == 'pass' and nabl or (data.avg_moisture_movement_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
+                                    <t t-set="moisture" t-value="env['lerm.parameter.master'].sudo().search([('internal_id','=','a6f060e5-f40e-4b8e-8a63-0eddf3fe6532')])"/>
+
+                                    <td style="text-align: center;">
+                                        <span t-esc="i + 1" />
+                                        <t t-set="i" t-value="i+1"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="moisture.parameter_name"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span>
+                                            <span t-field="data.avg_moisture_movement" t-options='{"widget": "float", "precision": 4}'/>
+                                        </span>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span>
+                                            <span t-esc="moisture.unit.name"/>
+                                        </span>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span>
+                                            <t t-foreach="moisture.parameter_table" t-as="parameter">
+                                                <t t-if="parameter.grade.id == eln.grade_id.id">
+                                                    <span t-field="parameter.permissable_limit"/>
+                                                </t>
+                                            </t>
+                                        </span>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span>
+                                            <t t-foreach="moisture.parameter_table" t-as="parameter">
+                                                <t t-if="parameter.grade.id == eln.grade_id.id">
+                                                    <span t-field="parameter.specification"/>
+                                                </t>
+                                            </t>
+                                        </span>
+                                    </td>
+
+                                </tr>
+
 
                             </tbody>
                         </table>

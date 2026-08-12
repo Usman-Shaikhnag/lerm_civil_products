@@ -50,38 +50,38 @@ class HollowSolidConcreteBlock(models.Model):
         }
 
     # Dimension Length
-    length_dimen_name = fields.Char(default="Dimension Length")
-    length_dimen_visible = fields.Boolean(string="Dimension Length Visible" ,compute="_compute_visible")
+    dimension_name = fields.Char(default="Dimension")
+    dimension_visible = fields.Boolean(string="Dimension Visible" ,compute="_compute_visible")
 
-    length_dimen_line_ids = fields.One2many('hs.length.dimension.block.line','parent_id',string='Dimension Length Block Lines')
+    dimension_line_ids = fields.One2many('hs.length.dimension.block.line','parent_id',string='Dimension Length Block Lines')
 
-    avg_measured_length = fields.Float(
-    string="Average Measured Length",
-    compute="_compute_avg_measured_length",
+    avg_length = fields.Float(
+    string="Average Length (mm)",
+    compute="_compute_avg_length",
     store=True
 )
 
-    @api.depends('length_dimen_line_ids.measured_length')
-    def _compute_avg_measured_length(self):
+    @api.depends('dimension_line_ids.length')
+    def _compute_avg_length(self):
      for rec in self:
-        lengths = rec.length_dimen_line_ids.mapped('measured_length')
-        rec.avg_measured_length = (
+        lengths = rec.dimension_line_ids.mapped('length')
+        rec.avg_length = (
             sum(lengths) / len(lengths)
             if lengths else 0.0
         )
 
-    avg_measured_length_confirmity = fields.Selection([
+    avg_length_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ('na', 'NA'),], string='Confirmity', default='fail',compute="_compute_avg_measured_length_confirmity")
+    ('na', 'NA'),], string='Confirmity', default='fail',compute="_compute_avg_length_confirmity")
     
-    @api.depends('avg_measured_length','eln_ref','grade')
-    def _compute_avg_measured_length_confirmity(self):
+    @api.depends('avg_length','eln_ref','grade')
+    def _compute_avg_length_confirmity(self):
         for record in self:
             if not record.eln_ref or not record.eln_ref.conformity:
-                record.avg_measured_length_confirmity = 'na'
+                record.avg_length_confirmity = 'na'
                 continue
-            record.avg_measured_length_confirmity = 'fail'
+            record.avg_length_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','916c70fe-57ff-4f2a-9361-41a687b54f85')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','916c70fe-57ff-4f2a-9361-41a687b54f85')]).parameter_table
             for material in materials:
@@ -89,24 +89,24 @@ class HollowSolidConcreteBlock(models.Model):
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
-                    lower = record.avg_measured_length - record.avg_measured_length*mu_value
-                    upper = record.avg_measured_length + record.avg_measured_length*mu_value
+                    lower = record.avg_length - record.avg_length*mu_value
+                    upper = record.avg_length + record.avg_length*mu_value
                     if lower >= req_min and upper <= req_max :
-                        record.avg_measured_length_confirmity = 'pass'
+                        record.avg_length_confirmity = 'pass'
                         break
                     else:
-                        record.avg_measured_length_confirmity = 'fail'
+                        record.avg_length_confirmity = 'fail'
 
-    avg_measured_length_nabl = fields.Selection([
+    avg_length_nabl = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='NABL', default='fail',compute="_compute_avg_measured_length_nabl")
+    ], string='NABL', default='fail',compute="_compute_avg_length_nabl")
     
-    @api.depends('avg_measured_length','eln_ref','grade')
-    def _compute_avg_measured_length_nabl(self):
+    @api.depends('avg_length','eln_ref','grade')
+    def _compute_avg_length_nabl(self):
         
         for record in self:
-            record.avg_measured_length_nabl = 'pass'
+            record.avg_length_nabl = 'pass'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','916c70fe-57ff-4f2a-9361-41a687b54f85')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','916c70fe-57ff-4f2a-9361-41a687b54f85')]).parameter_table
             for material in materials:
@@ -115,48 +115,44 @@ class HollowSolidConcreteBlock(models.Model):
                     lab_max = line.lab_max_value
                     mu_value = line.mu_value
                     
-                    lower = record.avg_measured_length - record.avg_measured_length*mu_value
-                    upper = record.avg_measured_length + record.avg_measured_length*mu_value
+                    lower = record.avg_length - record.avg_length*mu_value
+                    upper = record.avg_length + record.avg_length*mu_value
                     if lower >= lab_min and upper <= lab_max:
-                        record.avg_measured_length_nabl = 'pass'
+                        record.avg_length_nabl = 'pass'
                         break
                     else:
-                        record.avg_measured_length_nabl = 'fail'
+                        record.avg_length_nabl = 'fail'
 
-    # Dimension Height
-    height_dimen_name = fields.Char(default="Dimension Height")
-    height_dimen_visible = fields.Boolean(string="Dimension Height Visible" ,compute="_compute_visible")
 
-    height_dimen_line_ids = fields.One2many('hs.height.dimension.block.line','parent_id',string='Dimension Height Block Lines')
 
-    avg_measured_height = fields.Float(
-    string="Average Measured Height",
-    compute="_compute_avg_measured_height",
+    avg_height = fields.Float(
+    string="Average Height (mm)",
+    compute="_compute_avg_height",
     store=True
 )
 
-    @api.depends('height_dimen_line_ids.measured_height')
-    def _compute_avg_measured_height(self):
+    @api.depends('dimension_line_ids.height')
+    def _compute_avg_height(self):
      for rec in self:
-        heights = rec.height_dimen_line_ids.mapped('measured_height')
-        rec.avg_measured_height = (
+        heights = rec.dimension_line_ids.mapped('height')
+        rec.avg_height = (
             sum(heights) / len(heights)
             if heights else 0.0
         )
 
 
-    avg_measured_height_confirmity = fields.Selection([
+    avg_height_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ('na', 'NA'),], string='Confirmity', default='fail',compute="_compute_avg_measured_height_confirmity")
+    ('na', 'NA'),], string='Confirmity', default='fail',compute="_compute_avg_height_confirmity")
 
-    @api.depends('avg_measured_height','eln_ref','grade')
-    def _compute_avg_measured_height_confirmity(self):
+    @api.depends('avg_height','eln_ref','grade')
+    def _compute_avg_height_confirmity(self):
         for record in self:
             if not record.eln_ref or not record.eln_ref.conformity:
-                record.avg_measured_height_confirmity = 'na'
+                record.avg_height_confirmity = 'na'
                 continue
-            record.avg_measured_height_confirmity = 'fail'
+            record.avg_height_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6c0d4ef6-867f-4e79-baf1-690338654f26')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6c0d4ef6-867f-4e79-baf1-690338654f26')]).parameter_table
             for material in materials:
@@ -164,24 +160,24 @@ class HollowSolidConcreteBlock(models.Model):
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
-                    lower = record.avg_measured_height - record.avg_measured_height*mu_value
-                    upper = record.avg_measured_height + record.avg_measured_height*mu_value
+                    lower = record.avg_height - record.avg_height*mu_value
+                    upper = record.avg_height + record.avg_height*mu_value
                     if lower >= req_min and upper <= req_max :
-                        record.avg_measured_height_confirmity = 'pass'
+                        record.avg_height_confirmity = 'pass'
                         break
                     else:
-                        record.avg_measured_height_confirmity = 'fail'
+                        record.avg_height_confirmity = 'fail'
 
-    avg_measured_height_nabl = fields.Selection([
+    avg_height_nabl = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='NABL', default='fail',compute="_compute_avg_measured_height_nabl")
+    ], string='NABL', default='fail',compute="_compute_avg_height_nabl")
 
-    @api.depends('avg_measured_height','eln_ref','grade')
-    def _compute_avg_measured_height_nabl(self):
+    @api.depends('avg_height','eln_ref','grade')
+    def _compute_avg_height_nabl(self):
         
         for record in self:
-            record.avg_measured_height_nabl = 'pass'
+            record.avg_height_nabl = 'pass'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6c0d4ef6-867f-4e79-baf1-690338654f26')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6c0d4ef6-867f-4e79-baf1-690338654f26')]).parameter_table
             for material in materials:
@@ -190,48 +186,43 @@ class HollowSolidConcreteBlock(models.Model):
                     lab_max = line.lab_max_value
                     mu_value = line.mu_value
                     
-                    lower = record.avg_measured_height - record.avg_measured_height*mu_value
-                    upper = record.avg_measured_height + record.avg_measured_height*mu_value
+                    lower = record.avg_height - record.avg_height*mu_value
+                    upper = record.avg_height + record.avg_height*mu_value
                     if lower >= lab_min and upper <= lab_max:
-                        record.avg_measured_height_nabl = 'pass'
+                        record.avg_height_nabl = 'pass'
                         break
                     else:
-                        record.avg_measured_height_nabl = 'fail'
+                        record.avg_height_nabl = 'fail'
 
-    # Dimension Width
-    width_dimen_name = fields.Char(default="Dimension Width")
-    width_dimen_visible = fields.Boolean(string="Dimension Width Visible" ,compute="_compute_visible")
 
-    width_dimen_line_ids = fields.One2many('hs.width.dimension.block.line','parent_id',string='Dimension Width Block Lines')
-
-    avg_measured_width = fields.Float(
-    string="Average Measured Width",
-    compute="_compute_avg_measured_width",
+    avg_width = fields.Float(
+    string="Average Width (mm)",
+    compute="_compute_avg_width",
     store=True
 )
 
-    @api.depends('width_dimen_line_ids.measured_width')
-    def _compute_avg_measured_width(self):
+    @api.depends('dimension_line_ids.width')
+    def _compute_avg_width(self):
      for rec in self:
-        width = rec.width_dimen_line_ids.mapped('measured_width')
-        rec.avg_measured_width = (
+        width = rec.dimension_line_ids.mapped('width')
+        rec.avg_width = (
             sum(width) / len(width)
             if width else 0.0
         )
 
 
-    avg_measured_width_confirmity = fields.Selection([
+    avg_width_confirmity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ('na', 'NA'),], string='Confirmity', default='fail',compute="_compute_avg_measured_width_confirmity")
+    ('na', 'NA'),], string='Confirmity', default='fail',compute="_compute_avg_width_confirmity")
     
-    @api.depends('avg_measured_width','eln_ref','grade')
-    def _compute_avg_measured_width_confirmity(self):
+    @api.depends('avg_width','eln_ref','grade')
+    def _compute_avg_width_confirmity(self):
         for record in self:
             if not record.eln_ref or not record.eln_ref.conformity:
-                record.avg_measured_width_confirmity = 'na'
+                record.avg_width_confirmity = 'na'
                 continue
-            record.avg_measured_width_confirmity = 'fail'
+            record.avg_width_confirmity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ffa13e28-aab7-400a-9885-22b12783ca07')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ffa13e28-aab7-400a-9885-22b12783ca07')]).parameter_table
             for material in materials:
@@ -239,24 +230,24 @@ class HollowSolidConcreteBlock(models.Model):
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
-                    lower = record.avg_measured_width - record.avg_measured_width*mu_value
-                    upper = record.avg_measured_width + record.avg_measured_width*mu_value
+                    lower = record.avg_width - record.avg_width*mu_value
+                    upper = record.avg_width + record.avg_width*mu_value
                     if lower >= req_min and upper <= req_max :
-                        record.avg_measured_width_confirmity = 'pass'
+                        record.avg_width_confirmity = 'pass'
                         break
                     else:
-                        record.avg_measured_width_confirmity = 'fail'
+                        record.avg_width_confirmity = 'fail'
 
-    avg_measured_width_nabl = fields.Selection([
+    avg_width_nabl = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
-    ], string='NABL', default='fail',compute="_compute_avg_measured_width_nabl")
+    ], string='NABL', default='fail',compute="_compute_avg_width_nabl")
     
-    @api.depends('avg_measured_width','eln_ref','grade')
-    def _compute_avg_measured_width_nabl(self):
+    @api.depends('avg_width','eln_ref','grade')
+    def _compute_avg_width_nabl(self):
         
         for record in self:
-            record.avg_measured_width_nabl = 'pass'
+            record.avg_width_nabl = 'pass'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ffa13e28-aab7-400a-9885-22b12783ca07')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ffa13e28-aab7-400a-9885-22b12783ca07')]).parameter_table
             for material in materials:
@@ -265,13 +256,17 @@ class HollowSolidConcreteBlock(models.Model):
                     lab_max = line.lab_max_value
                     mu_value = line.mu_value
                     
-                    lower = record.avg_measured_width - record.avg_measured_width*mu_value
-                    upper = record.avg_measured_width + record.avg_measured_width*mu_value
+                    lower = record.avg_width - record.avg_width*mu_value
+                    upper = record.avg_width + record.avg_width*mu_value
                     if lower >= lab_min and upper <= lab_max:
-                        record.avg_measured_width_nabl = 'pass'
+                        record.avg_width_nabl = 'pass'
                         break
                     else:
-                        record.avg_measured_width_nabl = 'fail'
+                        record.avg_width_nabl = 'fail'
+
+
+
+    
 
     # Block Density 
     block_density_name = fields.Char(default="Block Density")
@@ -279,7 +274,7 @@ class HollowSolidConcreteBlock(models.Model):
 
     block_density_ids = fields.One2many('hs.block.density.line','parent_id',string='Block Density Lines')
 
-    mean_block_density = fields.Float(string="Mean Block Density",compute="_compute_mean_block_density",store=True,digits=(10,3))
+    mean_block_density = fields.Float(string="Avg. Block Density",compute="_compute_mean_block_density",store=True,digits=(10,2))
 
     @api.depends('block_density_ids.block_density')
     def _compute_mean_block_density(self):
@@ -436,7 +431,7 @@ class HollowSolidConcreteBlock(models.Model):
         string="Mean Water Absorption (%)",
         compute="_compute_mean_water_absorption",
         store=True,
-        digits=(16, 3),
+        digits=(16, 2),
     )
 
 
@@ -526,6 +521,152 @@ class HollowSolidConcreteBlock(models.Model):
                   else:
                       record.mean_water_absorption_nabl = 'fail'
 
+
+    # Drying Shrinkage 
+    drying_shrinkage_name = fields.Char(default="Drying Shrinkage")
+    drying_shrinkage_visible = fields.Boolean(string="Drying Shrinkage Visible",compute="_compute_visible")
+
+    drying_shrinkage_ids = fields.One2many('hs.drying.shrinkage.line','parent_id',string='Drying Shrinkage Lines')
+
+    avg_drying_shrinkage = fields.Float(string="Avg. Drying Shrinkage (%)",compute="_compute_avg_drying_shrinkage",store=True,digits=(10,8))
+
+    @api.depends('drying_shrinkage_ids.drying_shrinkage')
+    def _compute_avg_drying_shrinkage(self):
+     for rec in self:
+        if rec.drying_shrinkage_ids:
+            rec.avg_drying_shrinkage = (
+                sum(rec.drying_shrinkage_ids.mapped('drying_shrinkage'))
+                / len(rec.drying_shrinkage_ids)
+            )
+        else:
+            rec.avg_drying_shrinkage = 0.0
+
+    avg_drying_shrinkage_confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ('na', 'NA'),], string='Confirmity', default='fail',compute="_compute_avg_drying_shrinkage_confirmity")
+
+    @api.depends('avg_drying_shrinkage','eln_ref','grade')
+    def _compute_avg_drying_shrinkage_confirmity(self):
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_drying_shrinkage_confirmity = 'na'
+                continue
+            record.avg_drying_shrinkage_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a077ef6a-aa0e-4a99-be38-66a6cbf610f0')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a077ef6a-aa0e-4a99-be38-66a6cbf610f0')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    lower = record.avg_drying_shrinkage - record.avg_drying_shrinkage*mu_value
+                    upper = record.avg_drying_shrinkage + record.avg_drying_shrinkage*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.avg_drying_shrinkage_confirmity = 'pass'
+                        break
+                    else:
+                        record.avg_drying_shrinkage_confirmity = 'fail'
+
+    avg_drying_shrinkage_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='NABL', default='fail',compute="_compute_avg_drying_shrinkage_nabl")
+    
+    @api.depends('avg_drying_shrinkage','eln_ref','grade')
+    def _compute_avg_drying_shrinkage_nabl(self):
+        
+        for record in self:
+            record.avg_drying_shrinkage_nabl = 'pass'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a077ef6a-aa0e-4a99-be38-66a6cbf610f0')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a077ef6a-aa0e-4a99-be38-66a6cbf610f0')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_drying_shrinkage - record.avg_drying_shrinkage*mu_value
+                    upper = record.avg_drying_shrinkage + record.avg_drying_shrinkage*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.avg_drying_shrinkage_nabl = 'pass'
+                        break
+                    else:
+                        record.avg_drying_shrinkage_nabl = 'fail'
+
+
+    # Moisture Movement
+    moisture_movement_name = fields.Char(default="Moisture Movement")
+    moisture_movement_visible = fields.Boolean(string="Moisture Movement Visible",compute="_compute_visible")
+
+    moisture_movement_ids = fields.One2many('hs.moisture.movement.line','parent_id',string='Moisture Movement Lines')
+
+    avg_moisture_movement = fields.Float(string="Avg. Moisture Movement (%)",compute="_compute_avg_moisture_movement",store=True,digits=(10,4))
+
+    @api.depends('moisture_movement_ids.moisture_movement')
+    def _compute_avg_moisture_movement(self):
+     for rec in self:
+        if rec.moisture_movement_ids:
+            rec.avg_moisture_movement = (
+                sum(rec.moisture_movement_ids.mapped('moisture_movement'))
+                / len(rec.moisture_movement_ids)
+            )
+        else:
+            rec.avg_moisture_movement = 0.0
+
+    avg_moisture_movement_confirmity = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ('na', 'NA'),], string='Confirmity', default='fail',compute="_compute_avg_moisture_movement_confirmity")
+
+    @api.depends('avg_moisture_movement','eln_ref','grade')
+    def _compute_avg_moisture_movement_confirmity(self):
+        for record in self:
+            if not record.eln_ref or not record.eln_ref.conformity:
+                record.avg_moisture_movement_confirmity = 'na'
+                continue
+            record.avg_moisture_movement_confirmity = 'fail'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a6f060e5-f40e-4b8e-8a63-0eddf3fe6532')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a6f060e5-f40e-4b8e-8a63-0eddf3fe6532')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    req_min = material.req_min
+                    req_max = material.req_max
+                    mu_value = line.mu_value
+                    lower = record.avg_moisture_movement - record.avg_moisture_movement*mu_value
+                    upper = record.avg_moisture_movement + record.avg_moisture_movement*mu_value
+                    if lower >= req_min and upper <= req_max :
+                        record.avg_moisture_movement_confirmity = 'pass'
+                        break
+                    else:
+                        record.avg_moisture_movement_confirmity = 'fail'
+
+    avg_moisture_movement_nabl = fields.Selection([
+        ('pass', 'Pass'),
+        ('fail', 'Fail'),
+    ], string='NABL', default='fail',compute="_compute_avg_moisture_movement_nabl")
+    
+    @api.depends('avg_moisture_movement','eln_ref','grade')
+    def _compute_avg_moisture_movement_nabl(self):
+        
+        for record in self:
+            record.avg_moisture_movement_nabl = 'pass'
+            line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a6f060e5-f40e-4b8e-8a63-0eddf3fe6532')])
+            materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a6f060e5-f40e-4b8e-8a63-0eddf3fe6532')]).parameter_table
+            for material in materials:
+                if material.grade.id == record.grade.id:
+                    lab_min = line.lab_min_value
+                    lab_max = line.lab_max_value
+                    mu_value = line.mu_value
+                    
+                    lower = record.avg_moisture_movement - record.avg_moisture_movement*mu_value
+                    upper = record.avg_moisture_movement + record.avg_moisture_movement*mu_value
+                    if lower >= lab_min and upper <= lab_max:
+                        record.avg_moisture_movement_nabl = 'pass'
+                        break
+                    else:
+                        record.avg_moisture_movement_nabl = 'fail'
+
     
 
 
@@ -551,24 +692,27 @@ class HollowSolidConcreteBlock(models.Model):
     @api.depends('eln_ref','sample_parameters')
     def _compute_visible(self):
         for record in self:
-            record.length_dimen_visible = False
-            record.height_dimen_visible = False
-            record.width_dimen_visible = False
+            record.dimension_visible = False
             record.block_density_visible = False
             record.compressive_strength_visible = False
             record.water_absorbtion_visible = False
+            record.drying_shrinkage_visible = False
+            record.moisture_movement_visible = False
 
             for sample in record.sample_parameters:
                 print("Samples internal id",sample.internal_id)
                 
+                if sample.internal_id == '3f3a11ba-cedf-42af-8e84-a42de743b7e4':
+                    record.dimension_visible = True
+
                 if sample.internal_id == '916c70fe-57ff-4f2a-9361-41a687b54f85':
-                    record.length_dimen_visible = True
+                    record.dimension_visible = True
 
                 if sample.internal_id == '6c0d4ef6-867f-4e79-baf1-690338654f26':
-                    record.height_dimen_visible = True
+                    record.dimension_visible = True
 
                 if sample.internal_id == 'ffa13e28-aab7-400a-9885-22b12783ca07':
-                    record.width_dimen_visible = True
+                    record.dimension_visible = True
 
                 if sample.internal_id == 'eaea5db1-dda0-4516-a043-322050d93537':
                     record.block_density_visible = True
@@ -578,6 +722,12 @@ class HollowSolidConcreteBlock(models.Model):
 
                 if sample.internal_id == '692bb4da-26eb-4701-9ad7-b341c974c8e8':
                     record.compressive_strength_visible = True
+
+                if sample.internal_id == 'a077ef6a-aa0e-4a99-be38-66a6cbf610f0':
+                    record.drying_shrinkage_visible = True
+
+                if sample.internal_id == 'a6f060e5-f40e-4b8e-8a63-0eddf3fe6532':
+                    record.moisture_movement_visible = True
 
 
     def open_eln_page(self):
@@ -596,9 +746,9 @@ class HollowSolidConcreteBlock(models.Model):
 
             # Length
             if result.parameter.internal_id == '916c70fe-57ff-4f2a-9361-41a687b54f85':
-                result.result_char = round(self.avg_measured_length,2)
+                result.result_char = round(self.avg_length,2)
                 result.calculated = True
-                if self.avg_measured_length_nabl == 'pass':
+                if self.avg_length_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -606,9 +756,9 @@ class HollowSolidConcreteBlock(models.Model):
 
              # Height
             if result.parameter.internal_id == '6c0d4ef6-867f-4e79-baf1-690338654f26':
-                result.result_char = round(self.avg_measured_height,2)
+                result.result_char = round(self.avg_height,2)
                 result.calculated = True
-                if self.avg_measured_height_nabl == 'pass':
+                if self.avg_height_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -616,9 +766,9 @@ class HollowSolidConcreteBlock(models.Model):
 
             # Width
             if result.parameter.internal_id == 'ffa13e28-aab7-400a-9885-22b12783ca07':
-                result.result_char = round(self.avg_measured_width,2)
+                result.result_char = round(self.avg_width,2)
                 result.calculated = True
-                if self.avg_measured_width_nabl == 'pass':
+                if self.avg_width_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -650,6 +800,26 @@ class HollowSolidConcreteBlock(models.Model):
                 result.result_char = round(self.mean_water_absorption,2)
                 result.calculated = True
                 if self.mean_water_absorption_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+             # Drying Shrinkage
+            if result.parameter.internal_id == 'a077ef6a-aa0e-4a99-be38-66a6cbf610f0':
+                result.result_char = round(self.avg_drying_shrinkage,2)
+                result.calculated = True
+                if self.avg_drying_shrinkage_nabl == 'pass':
+                    result.nabl_status = 'nabl'
+                else:
+                    result.nabl_status = 'non-nabl'
+                continue
+
+             # Moisture Movement
+            if result.parameter.internal_id == 'a6f060e5-f40e-4b8e-8a63-0eddf3fe6532':
+                result.result_char = round(self.avg_moisture_movement,2)
+                result.calculated = True
+                if self.avg_moisture_movement_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -782,29 +952,9 @@ class HSLengthDimensionBlockLine(models.Model):
 
     sample_no = fields.Integer(string="Block No.", readonly=True, copy=False, default=1)
 
-    nominal_length = fields.Float("Nominal Length (mm)",digits=(10,3))
-    measured_length = fields.Float("Measured Length (mm)" ,digits=(10,3))
-    deviation = fields.Float("Deviation (mm)",
-        compute='_compute_deviation',digits=(10,3) ,
-        store=True
-    )
-    result = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')
-    ], compute='_compute_result', store=True,digits=(10,3))
-
-    remark = fields.Char("Remark")
-
-    @api.depends('nominal_length', 'measured_length')
-    def _compute_deviation(self):
-        for rec in self:
-            rec.deviation = rec.measured_length - rec.nominal_length
-
-    @api.depends('deviation')
-    def _compute_result(self):
-        for rec in self:
-            rec.result = 'pass' if abs(rec.deviation) <= 5 else 'fail'
-
+    length = fields.Float(string="Length (mm)")
+    width = fields.Float(string="Width (mm)")
+    height = fields.Float(string="Height (mm)")
     
 
     @api.model
@@ -825,108 +975,7 @@ class HSLengthDimensionBlockLine(models.Model):
         for index, record in enumerate(records):
             record.sample_no = index + 1
 
-class HSHeightDimensionBlockLine(models.Model):
-    _name = 'hs.height.dimension.block.line'
-    _description = 'Dimension Height Block Lines'
 
-    parent_id = fields.Many2one('hollow.solid.concrete.block', string="Parent Id")
-
-    sample_no = fields.Integer(string="Block No.", readonly=True, copy=False, default=1)
-
-    nominal_height = fields.Float("Nominal Height (mm)",digits=(10,3))
-    measured_height = fields.Float("Measured Height (mm)" ,digits=(10,3))
-    deviation = fields.Float("Deviation (mm)",
-        compute='_compute_deviation',digits=(10,3) ,
-        store=True
-    )
-    result = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')
-    ], compute='_compute_result', store=True,digits=(10,3))
-
-    remark = fields.Char("Remark")
-
-    @api.depends('nominal_height', 'measured_height')
-    def _compute_deviation(self):
-        for rec in self:
-            rec.deviation = rec.measured_height - rec.nominal_height
-
-    @api.depends('deviation')
-    def _compute_result(self):
-        for rec in self:
-            rec.result = 'pass' if abs(rec.deviation) <= 3 else 'fail'
-
-    
-
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('sample_no'))
-                vals['sample_no'] = max_serial_no + 1
-
-        return super(HSHeightDimensionBlockLine, self).create(vals)
-
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.sample_no = index + 1
-
-
-class HSWidthDimensionBlockLine(models.Model):
-    _name = 'hs.width.dimension.block.line'
-    _description = 'Dimension Width Block Lines'
-
-    parent_id = fields.Many2one('hollow.solid.concrete.block', string="Parent Id")
-
-    sample_no = fields.Integer(string="Block No.", readonly=True, copy=False, default=1)
-
-    nominal_width = fields.Float("Nominal Width (mm)",digits=(10,3))
-    measured_width = fields.Float("Measured Width (mm)" ,digits=(10,3))
-    deviation = fields.Float("Deviation (mm)",
-        compute='_compute_deviation',digits=(10,3) ,
-        store=True
-    )
-    result = fields.Selection([
-        ('pass', 'Pass'),
-        ('fail', 'Fail')
-    ], compute='_compute_result', store=True,digits=(10,3))
-
-    remark = fields.Char("Remark")
-
-    @api.depends('nominal_width', 'measured_width')
-    def _compute_deviation(self):
-        for rec in self:
-            rec.deviation = rec.measured_width - rec.nominal_width
-
-    @api.depends('deviation')
-    def _compute_result(self):
-        for rec in self:
-            rec.result = 'pass' if abs(rec.deviation) <= 3 else 'fail'
-
-    
-
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('sample_no'))
-                vals['sample_no'] = max_serial_no + 1
-
-        return super(HSWidthDimensionBlockLine, self).create(vals)
-
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.sample_no = index + 1
 
 
 class HSBlockDensityLine(models.Model):
@@ -937,17 +986,29 @@ class HSBlockDensityLine(models.Model):
 
     sample_no = fields.Integer(string="Specimen No.", readonly=True, copy=False, default=1)
 
-    dry_weight = fields.Float(string="Dry Weight W (g)",digits=(10,3))
-    volume = fields.Float(string="Volume V (cm³)",digits=(10,3))
-    block_density = fields.Float(string="Block Density γ (g/cm³)",compute='_compute_block_density',store=True,digits=(10,3))
+    length = fields.Float(string="Length (mm)")
+    width = fields.Float(string="Width (mm)")
+    height = fields.Float(string="Height (mm)")
+    dry_weight = fields.Float(string="Weight (kg)",digits=(10,2))
+    volume = fields.Float(string="Volume V (m³)",compute='_compute_volume',store=True,digits=(10,6))
+    block_density = fields.Float(string="Block Density γ (kg/m³)",compute='_compute_block_density',store=True,digits=(10,3))
+
+    
+
+    @api.depends('length', 'width','height')
+    def _compute_volume(self):
+        for rec in self:
+            rec.volume = (
+                rec.length * rec.width * rec.height / 1000000000
+            )
 
     @api.depends('dry_weight', 'volume')
     def _compute_block_density(self):
-        for rec in self:
-            rec.block_density = (
-                rec.dry_weight / rec.volume
-                if rec.volume else 0.0
-            )
+     for rec in self:
+        if rec.volume:
+            rec.block_density = rec.dry_weight / rec.volume
+        else:
+            rec.block_density = 0.0
 
     @api.model
     def create(self, vals):
@@ -1076,30 +1137,30 @@ class HSWaterAbsorptionLine(models.Model):
 
     # A_wet
     wet_mass = fields.Float(
-        string="Wet Mass (kg) A_wet",
+        string="Wet Weight (g) ",
         digits=(16, 2),
     )
 
 
     # B
     dry_mass = fields.Float(
-        string="Dry Mass (kg) B",
+        string="Dry Weight (g) ",
         digits=(16, 2),
     )
 
 
-    # A_suspended
-    suspended_mass = fields.Float(
-        string="Suspended Mass (kg) A_suspended",
-        digits=(16, 2),
-    )
+    # # A_suspended
+    # suspended_mass = fields.Float(
+    #     string="Suspended Mass (kg) A_suspended",
+    #     digits=(16, 2),
+    # )
 
 
     water_absorption = fields.Float(
-        string="Water Absorption (%) = ((A_wet - B)/B) × 100",
+        string="Water Absorption (%) ",
         compute="_compute_water_absorption",
         store=True,
-        digits=(16, 3),
+        digits=(16, 2),
     )
 
 
@@ -1147,7 +1208,138 @@ class HSWaterAbsorptionLine(models.Model):
             record.sample_no = index + 1
 
 
+class HSDryingShrinkageLine(models.Model):
+    _name = 'hs.drying.shrinkage.line'
+    _description = 'Drying Shrinkage Lines'
 
+    parent_id = fields.Many2one('hollow.solid.concrete.block', string="Parent Id")
+
+    sample_no = fields.Integer(string="Sr No.", readonly=True, copy=False, default=1)
+
+
+    sample_length = fields.Float(
+        string='Sample Length (mm)',
+        digits=(16, 3)
+    )
+
+    length_l1 = fields.Float(
+        string='Length L1',
+        digits=(16, 3)
+    )
+
+    length_l2 = fields.Float(
+        string='Length L2',
+        digits=(16, 3)
+    )
+
+    drying_shrinkage = fields.Float(
+        string='Drying Shrinkage %',
+        compute='_compute_drying_shrinkage',
+        store=True,
+        digits=(16, 9)
+    )
+
+    @api.depends('sample_length', 'length_l1', 'length_l2')
+    def _compute_drying_shrinkage(self):
+        for rec in self:
+            if rec.sample_length:
+                rec.drying_shrinkage = (
+                    (rec.length_l1 - rec.length_l2)
+                    / rec.sample_length
+                ) * 100
+            else:
+                rec.drying_shrinkage = 0.0
+
+    
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sample_no'))
+                vals['sample_no'] = max_serial_no + 1
+
+        return super(HSDryingShrinkageLine, self).create(vals)
+
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.sample_no = index + 1
+
+
+
+class HSMoistureMovementLine(models.Model):
+    _name = 'hs.moisture.movement.line'
+    _description = 'Moisture Movement Lines'
+
+    parent_id = fields.Many2one('hollow.solid.concrete.block', string="Parent Id")
+
+    sample_no = fields.Integer(string="Sr No.", readonly=True, copy=False, default=1)
+
+
+    sample_length = fields.Float(
+        string='Length (mm)',
+        digits=(16, 3)
+    )
+
+    length_after_immersion = fields.Float(
+        string='Length after 4 days immersion in water (B)',
+        digits=(16, 3)
+    )
+
+    length_after_oven_dry = fields.Float(
+        string='Length after oven dry (A)',
+        digits=(16, 3)
+    )
+
+    moisture_movement = fields.Float(
+        string='Moisture Movement (%)',
+        compute='_compute_moisture_movement',
+        store=True,
+        digits=(16, 8)
+    )
+
+    @api.depends(
+        'sample_length',
+        'length_after_immersion',
+        'length_after_oven_dry'
+    )
+    def _compute_moisture_movement(self):
+        for rec in self:
+            if rec.sample_length:
+                rec.moisture_movement = (
+                    (
+                        rec.length_after_immersion
+                        - rec.length_after_oven_dry
+                    )
+                    / rec.sample_length
+                ) * 100
+            else:
+                rec.moisture_movement = 0.0
+
+    
+
+    @api.model
+    def create(self, vals):
+        # Set the serial_no based on the existing records for the same parent
+        if vals.get('parent_id'):
+            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
+            if existing_records:
+                max_serial_no = max(existing_records.mapped('sample_no'))
+                vals['sample_no'] = max_serial_no + 1
+
+        return super(HSMoistureMovementLine, self).create(vals)
+
+
+    def _reorder_serial_numbers(self):
+        # Reorder the serial numbers based on the positions of the records in child_lines
+        records = self.sorted('id')
+        for index, record in enumerate(records):
+            record.sample_no = index + 1
 
 
 

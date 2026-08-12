@@ -471,7 +471,7 @@
                                 </td>
                             </tr>
 
-                            <tr style="font-size:12px;" t-if="(data.ts_ys_nabl == 'pass' and nabl or (data.ts_ys_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl) and data.ts_ys_visible">
+                            <!-- <tr style="font-size:12px;" t-if="(data.ts_ys_nabl == 'pass' and nabl or (data.ts_ys_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl) and data.ts_ys_visible">
                                 <td style="text-align: center;">
                                     <span t-esc="i + 1" />
                                     <t t-set="i" t-value="i+1"/>
@@ -506,7 +506,7 @@
                                 <td t-if="eln.conformity" style="text-align: center;">
                                     <span t-esc="data.ts_ys_conformity"/>
                                 </td>
-                            </tr>
+                            </tr> -->
 
                             <tr style="font-size:12px;" t-if="(data.elongation_nabl == 'pass' and nabl or (data.elongation_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl) and data.elongation_visible">
                                 <td style="text-align: center;">

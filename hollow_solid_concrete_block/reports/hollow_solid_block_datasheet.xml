@@ -43,43 +43,35 @@
                 <div class="container_eln pageSeperater" style="margin-top:5px">
 
                     <!-- Dimension Length -->
-                    <div t-if="data.length_dimen_visible">
+                    <div t-if="data.dimension_visible">
                         <div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;margin-top: 15px">
-                            Dimension Length
+                            Dimension
                         </div>
 
                         <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
                             <thead>
                                 <tr style="background-color: #f0f0f0;">
-                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Block No.</th>
-                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Nominal Length (mm)</th>
-                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Measured Length (mm)</th>
-                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Deviation (mm)</th>
-                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Result (Pass/Fail)</th>
-                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Remark</th>
+                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Sr No.</th>
+                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Length (mm)</th>
+                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Width (mm)</th>
+                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Height (mm)</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <t t-set="k" t-value="0"/>
-                                <tr t-foreach="data.length_dimen_line_ids" t-as="r" style="text-align: center;">
+                                <tr t-foreach="data.dimension_line_ids" t-as="r" style="text-align: center;">
                                     <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
                                         <span t-esc="k + 1" />
                                         <t t-set="k" t-value="k+1"/>
                                     </td>
                                     <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
-                                        <span t-esc="r['nominal_length']"/>
+                                        <span t-esc="r['length']"/>
                                     </td>
                                     <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
-                                        <span t-esc="r['measured_length']"/>
+                                        <span t-esc="r['width']"/>
                                     </td>
                                     <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
-                                        <span t-esc="r['deviation']" t-options='{"widget": "float", "precision": 3}'/>
-                                    </td>
-                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
-                                        <span t-esc="r['result']" />
-                                    </td>
-                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
-                                        <span t-esc="r['remark']" />
+                                        <span t-esc="r['height']" />
                                     </td>
                                 </tr>
                             </tbody>
@@ -87,9 +79,21 @@
 
                         <table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;">
                             <tr style="font-weight: bold; background-color: #f9f9f9;">
-                                <td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Average Measured Length :</td>
+                                <td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Average Length (mm) :</td>
                                 <td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
-                                    <span t-field="data.avg_measured_length" t-options='{"widget": "float", "precision": 3}'/>
+                                    <span t-field="data.avg_length" t-options='{"widget": "float", "precision": 3}'/>
+                                </td>
+                            </tr>
+                            <tr style="font-weight: bold; background-color: #f9f9f9;">
+                                <td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Average Height (mm) :</td>
+                                <td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+                                    <span t-field="data.avg_height" t-options='{"widget": "float", "precision": 3}'/>
+                                </td>
+                            </tr>
+                            <tr style="font-weight: bold; background-color: #f9f9f9;">
+                                <td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Average Width (mm) :</td>
+                                <td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+                                    <span t-field="data.avg_width" t-options='{"widget": "float", "precision": 3}'/>
                                 </td>
                             </tr>
                         </table>
@@ -146,216 +150,7 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Dimension Height -->
-                    <div t-if="data.height_dimen_visible">
-                        <div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;margin-top: 15px">
-                            Dimension Height
-                        </div>
-
-                        <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-                            <thead>
-                                <tr style="background-color: #f0f0f0;">
-                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Block No.</th>
-                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Nominal Height (mm)</th>
-                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Measured Height (mm)</th>
-                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Deviation (mm)</th>
-                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Result (Pass/Fail)</th>
-                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Remark</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <t t-set="k" t-value="0"/>
-                                <tr t-foreach="data.height_dimen_line_ids" t-as="r" style="text-align: center;">
-                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
-                                        <span t-esc="k + 1" />
-                                        <t t-set="k" t-value="k+1"/>
-                                    </td>
-                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
-                                        <span t-esc="r['nominal_height']"/>
-                                    </td>
-                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
-                                        <span t-esc="r['measured_height']"/>
-                                    </td>
-                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
-                                        <span t-esc="r['deviation']" t-options='{"widget": "float", "precision": 3}'/>
-                                    </td>
-                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
-                                        <span t-esc="r['result']" />
-                                    </td>
-                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
-                                        <span t-esc="r['remark']" />
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;">
-                            <tr style="font-weight: bold; background-color: #f9f9f9;">
-                                <td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Average Measured Height :</td>
-                                <td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
-                                    <span t-field="data.avg_measured_height" t-options='{"widget": "float", "precision": 3}'/>
-                                </td>
-                            </tr>
-                        </table>
-
-                        <t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].sudo().search([('eln_id','=', eln.id), ('parameter.internal_id','=','6c0d4ef6-867f-4e79-baf1-690338654f26')], limit=1).technician"/>
-                        <div class="signatureContainer noPageBreak girdgird">
-                            <div>
-                                <div>
-                                    <b>
-                                        Prepared By
-                                    </b>
-                                </div>
-                                <div style="height: 40px;">
-                                    <t t-if="eln.tested_by_signature_datasheet and prepared_by_obj">
-                                        <div t-if="prepared_by_obj.employee_id.signature">
-                                            <img t-att-src="'data:image/png;base64,%s' % prepared_by_obj.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-                                        </div>
-                                    </t>
-                                </div>
-                                <div>
-                                    <b>
-                                        <span t-esc="prepared_by_obj.name or ''"/>
-                                    </b>
-                                </div>
-                                <div>
-                                    <b>
-                                        (<span t-esc="prepared_by_obj.job_title or ''"/>)
-                                    </b>
-                                </div>
-                            </div>
-                            <div style="margin-left:600px">
-                                <div>
-                                    <b>
-                                        Checked By
-                                    </b>
-                                </div>
-                                <div style="height: 40px;">
-                                    <t t-if="eln.sample_id.checked_by_signature_datasheet">
-                                        <div t-if="eln.sample_id.check_by.employee_id.signature">
-                                            <img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-                                        </div>
-                                    </t>
-                                </div>
-                                <div>
-                                    <b>
-                                        <span t-esc="eln.sample_id.approved_by.name"/>
-                                    </b>
-                                </div>
-                                <div>
-                                    <b>
-                                        (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-                                    </b>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Dimension Width -->
-                    <div t-if="data.width_dimen_visible">
-                        <div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;margin-top: 15px">
-                            Dimension Width
-                        </div>
-
-                        <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-                            <thead>
-                                <tr style="background-color: #f0f0f0;">
-                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Block No.</th>
-                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Nominal Width (mm)</th>
-                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Measured Width (mm)</th>
-                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Deviation (mm)</th>
-                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Result (Pass/Fail)</th>
-                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Remark</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <t t-set="k" t-value="0"/>
-                                <tr t-foreach="data.width_dimen_line_ids" t-as="r" style="text-align: center;">
-                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
-                                        <span t-esc="k + 1" />
-                                        <t t-set="k" t-value="k+1"/>
-                                    </td>
-                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
-                                        <span t-esc="r['nominal_width']"/>
-                                    </td>
-                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
-                                        <span t-esc="r['measured_width']"/>
-                                    </td>
-                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
-                                        <span t-esc="r['deviation']" t-options='{"widget": "float", "precision": 3}'/>
-                                    </td>
-                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
-                                        <span t-esc="r['result']" />
-                                    </td>
-                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
-                                        <span t-esc="r['remark']" />
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;">
-                            <tr style="font-weight: bold; background-color: #f9f9f9;">
-                                <td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Average Measured Width :</td>
-                                <td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
-                                    <span t-field="data.avg_measured_width" t-options='{"widget": "float", "precision": 3}'/>
-                                </td>
-                            </tr>
-                        </table>
-
-                        <t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].sudo().search([('eln_id','=', eln.id), ('parameter.internal_id','=','ffa13e28-aab7-400a-9885-22b12783ca07')], limit=1).technician"/>
-                        <div class="signatureContainer noPageBreak girdgird">
-                            <div>
-                                <div>
-                                    <b>
-                                        Prepared By
-                                    </b>
-                                </div>
-                                <div style="height: 40px;">
-                                    <t t-if="eln.tested_by_signature_datasheet and prepared_by_obj">
-                                        <div t-if="prepared_by_obj.employee_id.signature">
-                                            <img t-att-src="'data:image/png;base64,%s' % prepared_by_obj.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-                                        </div>
-                                    </t>
-                                </div>
-                                <div>
-                                    <b>
-                                        <span t-esc="prepared_by_obj.name or ''"/>
-                                    </b>
-                                </div>
-                                <div>
-                                    <b>
-                                        (<span t-esc="prepared_by_obj.job_title or ''"/>)
-                                    </b>
-                                </div>
-                            </div>
-                            <div style="margin-left:600px">
-                                <div>
-                                    <b>
-                                        Checked By
-                                    </b>
-                                </div>
-                                <div style="height: 40px;">
-                                    <t t-if="eln.sample_id.checked_by_signature_datasheet">
-                                        <div t-if="eln.sample_id.check_by.employee_id.signature">
-                                            <img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-                                        </div>
-                                    </t>
-                                </div>
-                                <div>
-                                    <b>
-                                        <span t-esc="eln.sample_id.approved_by.name"/>
-                                    </b>
-                                </div>
-                                <div>
-                                    <b>
-                                        (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-                                    </b>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                            
 
                     <!-- Block Density -->
                     <div t-if="data.block_density_visible">
@@ -367,9 +162,12 @@
                             <thead>
                                 <tr style="background-color: #f0f0f0;">
                                     <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Specimen No.</th>
-                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Dry Weight W (g)</th>
-                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Volume V (cm³)</th>
-                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Block Density γ (g/cm³)</th>
+                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Length (mm)</th>
+                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Width (mm)</th>
+                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Height (mm)</th>
+                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Weight  (kg)</th>
+                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Volume V (m³)</th>
+                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Block Density γ (kg/m³)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -378,6 +176,15 @@
                                     <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
                                         <span t-esc="k + 1" />
                                         <t t-set="k" t-value="k+1"/>
+                                    </td>
+                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+                                        <span t-esc="r['length']"/>
+                                    </td>
+                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+                                        <span t-esc="r['width']"/>
+                                    </td>
+                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+                                        <span t-esc="r['height']" />
                                     </td>
                                     <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
                                         <span t-esc="r['dry_weight']"/>
@@ -577,10 +384,10 @@
                             <thead>
                                 <tr style="background-color: #f0f0f0;">
                                     <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Specimen No.</th>
-                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Wet Mass (kg) A_wet</th>
-                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Dry Mass (kg) B</th>
-                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Suspended Mass (kg) A_suspended</th>
-                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Water Absorption (%) = ((A_wet - B)/B) × 100</th>
+                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Wet Weight (g) </th>
+                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Dry Weight (g) </th>
+                                    <!-- <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Suspended Mass (kg) A_suspended</th> -->
+                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Water Absorption (%) </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -596,11 +403,11 @@
                                     <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
                                         <span t-esc="r['dry_mass']"/>
                                     </td>
-                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+                                    <!-- <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
                                         <span t-esc="r['suspended_mass']"/>
-                                    </td>
+                                    </td> -->
                                     <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
-                                        <span t-esc="r['water_absorption']" t-options='{"widget": "float", "precision": 3}'/>
+                                        <span t-esc="r['water_absorption']" t-options='{"widget": "float", "precision": 2}'/>
                                     </td>
                                 </tr>
                             </tbody>
@@ -610,7 +417,7 @@
                             <tr style="font-weight: bold; background-color: #f9f9f9;">
                                 <td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Mean Water Absorption (%) :</td>
                                 <td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
-                                    <span t-field="data.mean_water_absorption" t-options='{"widget": "float", "precision": 3}'/><span>   (%)</span>
+                                    <span t-field="data.mean_water_absorption" t-options='{"widget": "float", "precision": 2}'/><span>   (%)</span>
                                 </td>
                             </tr>
                         </table>
@@ -667,6 +474,217 @@
                             </div>
                         </div>
                     </div>
+
+
+
+                    <!-- Drying Shrinkage -->
+                    <div t-if="data.drying_shrinkage_visible">
+                        <div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;margin-top: 15px">
+                            Drying Shrinkage
+                        </div>
+
+                        <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                            <thead>
+                                <tr style="background-color: #f0f0f0;">
+                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Sr No.</th>
+                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Sample Length (mm)</th>
+                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Length L1</th>
+                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Length L2</th>
+                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Drying Shrinkage %</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="k" t-value="0"/>
+                                <tr t-foreach="data.drying_shrinkage_ids" t-as="r" style="text-align: center;">
+                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+                                        <span t-esc="k + 1" />
+                                        <t t-set="k" t-value="k+1"/>
+                                    </td>
+                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+                                        <span t-esc="r['sample_length']"/>
+                                    </td>
+                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+                                        <span t-esc="r['length_l1']"/>
+                                    </td>
+                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+                                        <span t-esc="r['length_l2']" />
+                                    </td>
+                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+                                        <span t-esc="r['drying_shrinkage']" t-options='{"widget": "float", "precision": 5}'/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;">
+                            <tr style="font-weight: bold; background-color: #f9f9f9;">
+                                <td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Avg. Drying Shrinkage :</td>
+                                <td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+                                    <span t-field="data.avg_drying_shrinkage" t-options='{"widget": "float", "precision": 8}'/><span>   (%)</span>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].sudo().search([('eln_id','=', eln.id), ('parameter.internal_id','=','a077ef6a-aa0e-4a99-be38-66a6cbf610f0')], limit=1).technician"/>
+                        <div class="signatureContainer noPageBreak girdgird">
+                            <div>
+                                <div>
+                                    <b>
+                                        Prepared By
+                                    </b>
+                                </div>
+                                <div style="height: 40px;">
+                                    <t t-if="eln.tested_by_signature_datasheet and prepared_by_obj">
+                                        <div t-if="prepared_by_obj.employee_id.signature">
+                                            <img t-att-src="'data:image/png;base64,%s' % prepared_by_obj.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+                                        </div>
+                                    </t>
+                                </div>
+                                <div>
+                                    <b>
+                                        <span t-esc="prepared_by_obj.name or ''"/>
+                                    </b>
+                                </div>
+                                <div>
+                                    <b>
+                                        (<span t-esc="prepared_by_obj.job_title or ''"/>)
+                                    </b>
+                                </div>
+                            </div>
+                            <div style="margin-left:600px">
+                                <div>
+                                    <b>
+                                        Checked By
+                                    </b>
+                                </div>
+                                <div style="height: 40px;">
+                                    <t t-if="eln.sample_id.checked_by_signature_datasheet">
+                                        <div t-if="eln.sample_id.check_by.employee_id.signature">
+                                            <img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+                                        </div>
+                                    </t>
+                                </div>
+                                <div>
+                                    <b>
+                                        <span t-esc="eln.sample_id.approved_by.name"/>
+                                    </b>
+                                </div>
+                                <div>
+                                    <b>
+                                        (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+                                    </b>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Moisture Movement -->
+                    <div t-if="data.moisture_movement_visible">
+                        <div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;margin-top: 15px">
+                            Moisture Movement
+                        </div>
+
+                        <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                            <thead>
+                                <tr style="background-color: #f0f0f0;">
+                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Sr No.</th>
+                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Length (mm)</th>
+                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Length after 4 days immersion in water (B)</th>
+                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Length after oven dry (A)</th>
+                                    <th style="border: 1px solid #ccc; padding: 8px;text-align:center;vertical-align:middle;" colspan="2">Moisture Movement (%)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="k" t-value="0"/>
+                                <tr t-foreach="data.moisture_movement_ids" t-as="r" style="text-align: center;">
+                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+                                        <span t-esc="k + 1" />
+                                        <t t-set="k" t-value="k+1"/>
+                                    </td>
+                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+                                        <span t-esc="r['sample_length']"/>
+                                    </td>
+                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+                                        <span t-esc="r['length_after_immersion']"/>
+                                    </td>
+                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+                                        <span t-esc="r['length_after_oven_dry']" />
+                                    </td>
+                                    <td style="border: 1px solid #ccc; padding: 6px;text-align: center;" colspan="2">
+                                        <span t-esc="r['moisture_movement']" t-options='{"widget": "float", "precision": 6}'/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table style="margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 14px;">
+                            <tr style="font-weight: bold; background-color: #f9f9f9;">
+                                <td colspan="6" style="text-align: right; padding: 8px; border: 1px solid #ccc;">Avg. Moisture Movement :</td>
+                                <td colspan="6" style="padding: 8px; border: 1px solid #ccc;">
+                                    <span t-field="data.avg_moisture_movement" t-options='{"widget": "float", "precision": 4}'/><span>   (%)</span>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].sudo().search([('eln_id','=', eln.id), ('parameter.internal_id','=','a6f060e5-f40e-4b8e-8a63-0eddf3fe6532')], limit=1).technician"/>
+                        <div class="signatureContainer noPageBreak girdgird">
+                            <div>
+                                <div>
+                                    <b>
+                                        Prepared By
+                                    </b>
+                                </div>
+                                <div style="height: 40px;">
+                                    <t t-if="eln.tested_by_signature_datasheet and prepared_by_obj">
+                                        <div t-if="prepared_by_obj.employee_id.signature">
+                                            <img t-att-src="'data:image/png;base64,%s' % prepared_by_obj.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+                                        </div>
+                                    </t>
+                                </div>
+                                <div>
+                                    <b>
+                                        <span t-esc="prepared_by_obj.name or ''"/>
+                                    </b>
+                                </div>
+                                <div>
+                                    <b>
+                                        (<span t-esc="prepared_by_obj.job_title or ''"/>)
+                                    </b>
+                                </div>
+                            </div>
+                            <div style="margin-left:600px">
+                                <div>
+                                    <b>
+                                        Checked By
+                                    </b>
+                                </div>
+                                <div style="height: 40px;">
+                                    <t t-if="eln.sample_id.checked_by_signature_datasheet">
+                                        <div t-if="eln.sample_id.check_by.employee_id.signature">
+                                            <img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+                                        </div>
+                                    </t>
+                                </div>
+                                <div>
+                                    <b>
+                                        <span t-esc="eln.sample_id.approved_by.name"/>
+                                    </b>
+                                </div>
+                                <div>
+                                    <b>
+                                        (<span t-esc="eln.sample_id.approved_by.job_title"/>)
+                                    </b>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+
 
                 </div>
             </t>
