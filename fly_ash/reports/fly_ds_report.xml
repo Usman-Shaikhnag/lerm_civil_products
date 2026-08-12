@@ -1232,12 +1232,13 @@
                             </div>
                             <div>
                                 <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
+									<span t-esc="eln.technician.employee_id.name"/> 
+                                <!-- <span t-esc="eln.sample_id.filled_by.name"/> -->
                                 </b>
                             </div>
                             <div>
                                 <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                    (<span t-esc="eln.technician.employee_id.job_title"/>)
                                 </b>
                             </div>
 						</div>
@@ -2148,7 +2149,8 @@
 
 
 
-							<t t-if="i &lt;= 5">
+							<t t-set="page_split_i" t-value="i"/>
+							<t t-if="page_split_i &lt;= 5">
 
 						
 								<tr t-if="flyash.compressive_visible and (flyash.compressive_strength_of_sample_nabl == 'pass' and nabl or (flyash.compressive_strength_of_sample_nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl) and not fromEln" >
@@ -2360,7 +2362,7 @@
 
 						</tbody>
 					</table>
-					<t t-if="i > 5">
+					<t t-if="page_split_i > 5">
 						<div style="page-break-before: always;"></div>
 						<table>	
 							<tbody>

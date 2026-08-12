@@ -31,6 +31,10 @@
           <field name="is_product_based_calculation"/>
           <label for="is_product_based_calculation"/>
         </span>
+        <span class="d-inline-block">
+            <field name="grade_based_title"/>
+            <label for="grade_based_title"/>
+          </span>
       </xpath>
 
       <!-- Placeholder on Name Field -->
@@ -138,6 +142,21 @@
               invisible="show_lerm_tabs == False">
           <field name="sop" widget="html"/>
         </page>
+        <page string="Grade Based Title" invisible="grade_based_title == False">
+            <field name="grade_title_table">
+              <tree editable="bottom">
+                <field name="parent_id" readonly="1"/>
+                <field name="grade" domain="[('product_id', '=', parent_id)]"/>
+                <field name="test_parameter"/>
+                <field name="results"/>
+                <field name="specifications"/>
+                <field name="unit"/>
+                <field name="method_reference"/>
+                <field name="result_remark"/>
+
+              </tree>
+            </field>
+          </page>
 
         <!-- Alias -->
         <page string="Alias"
