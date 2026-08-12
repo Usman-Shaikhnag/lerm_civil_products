@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="res_config_settings_view_form_dms" model="ir.ui.view">
+            <field name="name">res.config.settings.dms</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form" position="inside">
+                    <app data-string="Document Management"
+                         string="Document Management"
+                         name="document_management"
+                         logo="/document_management/static/description/icon.png"
+                         groups="document_management.group_dms_manager">
+                        <block title="Storage &amp; Backend">
+                            <setting string="Storage Path"
+                                     help="Absolute path on the server where documents are stored. The FastAPI service must have read/write access to this folder.">
+                                <div class="content-group">
+                                    <field name="dms_storage_path" class="w-100"/>
+                                </div>
+                            </setting>
+                            <setting string="FastAPI Base URL"
+                                     help="Base URL of the FastAPI backend as seen from the browser, e.g. http://localhost:8000">
+                                <div class="content-group">
+                                    <field name="dms_fastapi_url" class="w-100"/>
+                                </div>
+                            </setting>
+                            <setting string="FastAPI Server URL"
+                                     help="Base URL of the FastAPI backend as seen from the Odoo server itself. Use http://host.docker.internal:8000 when Odoo runs in Docker and FastAPI on the host. Leave empty to reuse the browser URL.">
+                                <div class="content-group">
+                                    <field name="dms_fastapi_server_url" class="w-100"/>
+                                </div>
+                            </setting>
+                            <setting string="Shared Secret"
+                                     help="Shared secret used to sign tokens between Odoo and the FastAPI backend (must match DMS_SECRET).">
+                                <div class="content-group">
+                                    <field name="dms_fastapi_secret" password="True" class="w-100"/>
+                                </div>
+                            </setting>
+                            <setting string="Enable Audit Trail"
+                                     help="Record every document action (uploads, downloads, previews, permission changes, logins) in the audit trail.">
+                                <field name="dms_enable_audit"/>
+                            </setting>
+                        </block>
+                    </app>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

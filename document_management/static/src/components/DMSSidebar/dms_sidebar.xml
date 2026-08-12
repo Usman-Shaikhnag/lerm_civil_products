@@ -1,0 +1,73 @@
+<templates>
+    <t t-name="document_management.DMSSidebar" owl="1">
+        <aside class="o_dms_sidebar">
+            <div class="o_dms_sidebar_head">
+                <span class="o_dms_brand">Documents</span>
+                <button class="o_dms_icon_btn d-lg-none" t-on-click="props.onToggleSidebar">
+                    <i class="fa fa-times"/>
+                </button>
+            </div>
+
+            <nav class="o_dms_nav">
+                <button class="o_dms_nav_item" t-att-class="props.nav === 'drive' ? 'active' : ''"
+                        t-on-click="() => props.onSelectNav('drive')">
+                    <i class="fa fa-hdd-o"/>
+                    <span>My Drive</span>
+                </button>
+                <button class="o_dms_nav_item" t-att-class="props.nav === 'recent' ? 'active' : ''"
+                        t-on-click="() => props.onSelectNav('recent')">
+                    <i class="fa fa-clock-o"/>
+                    <span>Recent</span>
+                </button>
+                <button class="o_dms_nav_item" t-att-class="props.nav === 'shared' ? 'active' : ''"
+                        t-on-click="() => props.onSelectNav('shared')">
+                    <i class="fa fa-users"/>
+                    <span>Shared with me</span>
+                </button>
+                <button class="o_dms_nav_item" t-att-class="props.nav === 'starred' ? 'active' : ''"
+                        t-on-click="() => props.onSelectNav('starred')">
+                    <i class="fa fa-star-o"/>
+                    <span>Starred</span>
+                    <span t-if="props.starredCount" class="o_dms_badge" t-esc="props.starredCount"/>
+                </button>
+            </nav>
+
+            <div class="o_dms_sidebar_section">
+                <div class="o_dms_sidebar_label">Folders</div>
+                <t t-foreach="rootFolders" t-as="folder" t-key="folder.id">
+                    <DMSSidebarNode
+                        folder="folder"
+                        folders="props.folders"
+                        currentFolderId="props.currentFolderId"
+                        onNavigate="props.onNavigate"
+                    />
+                </t>
+                <div t-if="rootFolders.length === 0" class="o_dms_sidebar_empty">
+                    No folders yet
+                </div>
+            </div>
+        </aside>
+    </t>
+
+    <t t-name="document_management.DMSSidebarNode" owl="1">
+        <div>
+            <button class="o_dms_nav_item o_dms_folder_item"
+                    t-att-class="isActive ? 'active' : ''"
+                    t-on-click="() => props.onNavigate(props.folder.id)">
+                <i class="fa fa-folder-o"/>
+                <span class="o_dms_nav_text" t-esc="props.folder.name"/>
+                <span class="o_dms_badge" t-if="props.folder.itemCount" t-esc="props.folder.itemCount"/>
+            </button>
+            <div t-if="children.length" class="o_dms_folder_children">
+                <t t-foreach="children" t-as="child" t-key="child.id">
+                    <DMSSidebarNode
+                        folder="child"
+                        folders="props.folders"
+                        currentFolderId="props.currentFolderId"
+                        onNavigate="props.onNavigate"
+                    />
+                </t>
+            </div>
+        </div>
+    </t>
+</templates>

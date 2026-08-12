@@ -1,0 +1,179 @@
+<templates>
+    <t t-name="document_management.DMSPropertiesPanel" owl="1">
+        <div class="o_dms_overlay o_dms_overlay_right" t-on-click="props.onClose">
+            <div class="o_dms_properties" t-on-click.stop="">
+                <div class="o_dms_properties_header">
+                    <h3>Properties</h3>
+                    <button class="o_dms_icon_btn" t-on-click="props.onClose">
+                        <i class="fa fa-times"/>
+                    </button>
+                </div>
+
+                <div class="o_dms_properties_body">
+                    <div class="o_dms_property_group">
+                        <label class="o_dms_label">File Name</label>
+                        <input class="o_dms_input" t-model="state.draft.name"/>
+                    </div>
+
+                    <div class="o_dms_property_group">
+                        <label class="o_dms_label">Document Type</label>
+                        <select class="o_dms_select" t-model="state.draft.document_type_id">
+                            <option value="false">—</option>
+                            <t t-foreach="typeOptions" t-as="opt" t-key="opt.id">
+                                <option t-att-value="opt.id" t-esc="opt.name"/>
+                            </t>
+                        </select>
+                    </div>
+
+                    <div class="o_dms_property_grid">
+                        <div class="o_dms_property_group">
+                            <label class="o_dms_label">Department</label>
+                            <select class="o_dms_select" t-model="state.draft.department_id">
+                                <option value="false">—</option>
+                                <t t-foreach="deptOptions" t-as="opt" t-key="opt.id">
+                                    <option t-att-value="opt.id" t-esc="opt.name"/>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="o_dms_property_group">
+                            <label class="o_dms_label">Project</label>
+                            <select class="o_dms_select" t-model="state.draft.project_id">
+                                <option value="false">—</option>
+                                <t t-foreach="projectOptions" t-as="opt" t-key="opt.id">
+                                    <option t-att-value="opt.id" t-esc="opt.name"/>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="o_dms_property_group">
+                            <label class="o_dms_label">Customer</label>
+                            <select class="o_dms_select" t-model="state.draft.customer_id">
+                                <option value="false">—</option>
+                                <t t-foreach="customerOptions" t-as="opt" t-key="opt.id">
+                                    <option t-att-value="opt.id" t-esc="opt.name"/>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="o_dms_property_group">
+                            <label class="o_dms_label">Vendor</label>
+                            <select class="o_dms_select" t-model="state.draft.vendor_id">
+                                <option value="false">—</option>
+                                <t t-foreach="vendorOptions" t-as="opt" t-key="opt.id">
+                                    <option t-att-value="opt.id" t-esc="opt.name"/>
+                                </t>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="o_dms_property_grid">
+                        <div class="o_dms_property_group">
+                            <label class="o_dms_label">Employee</label>
+                            <select class="o_dms_select" t-model="state.draft.employee_id">
+                                <option value="false">—</option>
+                                <t t-foreach="employeeOptions" t-as="opt" t-key="opt.id">
+                                    <option t-att-value="opt.id" t-esc="opt.name"/>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="o_dms_property_group">
+                            <label class="o_dms_label">Status</label>
+                            <select class="o_dms_select" t-model="state.draft.status">
+                                <option value="draft">Draft</option>
+                                <option value="under_review">Under Review</option>
+                                <option value="active">Active</option>
+                                <option value="expired">Expired</option>
+                                <option value="archived">Archived</option>
+                            </select>
+                        </div>
+                        <div class="o_dms_property_group">
+                            <label class="o_dms_label">Document Date</label>
+                            <input class="o_dms_input" type="date" t-model="state.draft.document_date"/>
+                        </div>
+                        <div class="o_dms_property_group">
+                            <label class="o_dms_label">Expiry Date</label>
+                            <input class="o_dms_input" type="date" t-model="state.draft.expiry_date"/>
+                        </div>
+                    </div>
+
+                    <div class="o_dms_property_group">
+                        <label class="o_dms_label">Visibility</label>
+                        <select class="o_dms_select" t-model="state.draft.visibility">
+                            <option value="private">Private</option>
+                            <option value="public">Public</option>
+                        </select>
+                    </div>
+
+                    <div class="o_dms_property_group">
+                        <label class="o_dms_label">Tags</label>
+                        <div class="o_dms_tags">
+                            <button t-foreach="tagOptions" t-as="tag" t-key="tag.id"
+                                    class="o_dms_tag"
+                                    t-att-class="state.draft.tag_ids.includes(tag.id) ? 'active' : ''"
+                                    t-on-click="() => toggleTag(tag.id)"
+                                    t-att-style="state.draft.tag_ids.includes(tag.id) ? 'background:' + (tag.color || '#1f6feb') + '22;border-color:' + (tag.color || '#1f6feb') : ''">
+                                <span t-esc="tag.name"/>
+                            </button>
+                            <span t-if="tagOptions.length === 0" class="o_dms_muted">No tags configured</span>
+                        </div>
+                    </div>
+
+                    <div class="o_dms_property_group">
+                        <label class="o_dms_label">Description</label>
+                        <textarea class="o_dms_input o_dms_textarea" t-model="state.draft.description"/>
+                    </div>
+
+                    <div t-if="customValues.length" class="o_dms_property_group">
+                        <label class="o_dms_label">Custom Fields</label>
+                        <div class="o_dms_custom_fields">
+                            <t t-foreach="customValues" t-as="cv" t-key="cv.field_id">
+                                <div class="o_dms_custom_field">
+                                    <label class="o_dms_label" t-esc="cv.name"/>
+                                    <input t-if="cv.field_type === 'char'" class="o_dms_input" t-model="cv.value"/>
+                                    <textarea t-elif="cv.field_type === 'text'" class="o_dms_input o_dms_textarea" t-model="cv.value"/>
+                                    <input t-elif="cv.field_type === 'integer'" class="o_dms_input" type="number" t-model="cv.value"/>
+                                    <input t-elif="cv.field_type === 'float'" class="o_dms_input" type="number" step="any" t-model="cv.value"/>
+                                    <input t-elif="cv.field_type === 'date'" class="o_dms_input" type="date" t-model="cv.value"/>
+                                    <select t-elif="cv.field_type === 'selection'" class="o_dms_select" t-model="cv.value">
+                                        <option value="">—</option>
+                                        <t t-foreach="selectionOptions(cv)" t-as="opt" t-key="opt">
+                                            <option t-att-value="opt" t-esc="opt"/>
+                                        </t>
+                                    </select>
+                                    <label t-elif="cv.field_type === 'boolean'" class="o_dms_checkbox">
+                                        <input type="checkbox" t-model="cv.value"/>
+                                        <span>Enabled</span>
+                                    </label>
+                                    <input t-else="" class="o_dms_input" t-model="cv.value"/>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+
+                    <div t-if="props.file.versions &amp;&amp; props.file.versions.length" class="o_dms_property_group">
+                        <label class="o_dms_label">Version History</label>
+                        <div class="o_dms_versions">
+                            <t t-foreach="props.file.versions" t-as="v" t-key="v.id">
+                                <div class="o_dms_version">
+                                    <i class="fa fa-code-fork"/>
+                                    <div>
+                                        <strong>v<span t-esc="v.version_no"/></strong>
+                                        <span t-esc="v.user_name"/>
+                                        <span class="o_dms_muted" t-esc="fmtDateTime(v.date)"/>
+                                        <span class="o_dms_muted" t-esc="v.size + ' bytes'"/>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="o_dms_properties_footer">
+                    <button class="o_dms_btn o_dms_btn_outline" t-on-click="props.onClose">Cancel</button>
+                    <button class="o_dms_btn o_dms_btn_primary" t-on-click="save">
+                        <i class="fa fa-save"/>
+                        <span>Save</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

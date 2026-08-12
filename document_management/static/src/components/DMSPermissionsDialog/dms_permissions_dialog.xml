@@ -1,0 +1,94 @@
+<templates>
+    <t t-name="document_management.DMSPermissionsDialog" owl="1">
+        <div class="o_dms_overlay" t-on-click="props.onClose">
+            <div class="o_dms_modal o_dms_perm_modal" t-on-click.stop="">
+                <div class="o_dms_modal_header">
+                    <h3>Permissions</h3>
+                    <button class="o_dms_icon_btn" t-on-click="props.onClose">
+                        <i class="fa fa-times"/>
+                    </button>
+                </div>
+
+                <div class="o_dms_modal_body">
+                    <div t-if="state.loading" class="o_dms_center_pad">
+                        <i class="fa fa-spinner fa-pulse fa-2x"/>
+                    </div>
+                    <t t-else="">
+                        <div class="o_dms_perm_owner">
+                            <i class="fa fa-user-circle"/>
+                            <div>
+                                <strong>Owner</strong>
+                                <span t-if="state.owner" t-esc="state.owner.name"/>
+                            </div>
+                            <span class="o_dms_perm_owner_full">Full access</span>
+                        </div>
+
+                        <div class="o_dms_add_grant">
+                            <select class="o_dms_select" t-model="state.principalType">
+                                <option value="user">User</option>
+                                <option value="role">Role</option>
+                                <option value="team">Team</option>
+                                <option value="department">Department</option>
+                            </select>
+                            <select class="o_dms_select" t-model="state.principalValue">
+                                <option value="false">Select...</option>
+                                <t t-foreach="principals" t-as="p" t-key="p.id">
+                                    <option t-att-value="p.id" t-esc="p.name"/>
+                                </t>
+                            </select>
+                            <button class="o_dms_btn o_dms_btn_primary" t-on-click="addGrant">
+                                <i class="fa fa-plus"/>
+                            </button>
+                        </div>
+
+                        <div t-if="state.grants.length === 0" class="o_dms_muted o_dms_center_pad">
+                            No additional permissions. Only the owner has access.
+                        </div>
+
+                        <div t-foreach="state.grants" t-as="grant" t-key="grant_index"
+                             class="o_dms_grant_row">
+                            <div class="o_dms_grant_name">
+                                <i class="fa fa-shield"/>
+                                <span t-esc="grantName(grant)"/>
+                            </div>
+                            <div class="o_dms_grant_flags">
+                                <label class="o_dms_checkbox">
+                                    <input type="checkbox" t-model="grant.can_read"/>
+                                    <span>Read</span>
+                                </label>
+                                <label class="o_dms_checkbox">
+                                    <input type="checkbox" t-model="grant.can_write"/>
+                                    <span>Write</span>
+                                </label>
+                                <label class="o_dms_checkbox">
+                                    <input type="checkbox" t-model="grant.can_download"/>
+                                    <span>Download</span>
+                                </label>
+                                <label class="o_dms_checkbox">
+                                    <input type="checkbox" t-model="grant.can_delete"/>
+                                    <span>Delete</span>
+                                </label>
+                                <label class="o_dms_checkbox">
+                                    <input type="checkbox" t-model="grant.can_manage"/>
+                                    <span>Manage</span>
+                                </label>
+                            </div>
+                            <button class="o_dms_icon_btn o_dms_text_danger"
+                                    t-on-click="() => removeGrant(grant_index)">
+                                <i class="fa fa-trash-o"/>
+                            </button>
+                        </div>
+                    </t>
+                </div>
+
+                <div class="o_dms_modal_footer">
+                    <button class="o_dms_btn o_dms_btn_outline" t-on-click="props.onClose">Cancel</button>
+                    <button class="o_dms_btn o_dms_btn_primary" t-on-click="save">
+                        <i class="fa fa-save"/>
+                        <span>Save Permissions</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

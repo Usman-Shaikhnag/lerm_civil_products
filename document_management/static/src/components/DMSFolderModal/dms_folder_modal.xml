@@ -1,0 +1,29 @@
+<templates>
+    <t t-name="document_management.DMSFolderModal" owl="1">
+        <div class="o_dms_overlay" t-on-click="props.onClose">
+            <div class="o_dms_modal" t-on-click.stop="">
+                <div class="o_dms_modal_header">
+                    <h3>New Folder</h3>
+                    <button class="o_dms_icon_btn" t-on-click="props.onClose">
+                        <i class="fa fa-times"/>
+                    </button>
+                </div>
+                <div class="o_dms_modal_body">
+                    <label class="o_dms_label">Folder Name</label>
+                    <input class="o_dms_input" t-ref="nameInput" t-model="state.name"
+                           placeholder="Enter folder name"
+                           t-on-keydown="onKeydown"/>
+                </div>
+                <div class="o_dms_modal_footer">
+                    <button class="o_dms_btn o_dms_btn_outline" t-on-click="props.onClose">Cancel</button>
+                    <button class="o_dms_btn o_dms_btn_primary"
+                            t-att-disabled="!state.name.trim()"
+                            t-on-click="create">
+                        <i class="fa fa-plus"/>
+                        <span>Create</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

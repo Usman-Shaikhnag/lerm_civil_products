@@ -1,0 +1,97 @@
+<templates>
+    <t t-name="document_management.DMSApp" owl="1">
+        <div class="o_dms_app">
+            <t t-if="state.loading">
+                <div class="o_dms_loading">
+                    <i class="fa fa-spinner fa-pulse fa-3x"/>
+                    <p>Loading your documents...</p>
+                </div>
+            </t>
+            <t t-else="">
+                <DMSHeader
+                    viewLabel="currentViewLabel"
+                    viewMode="state.viewMode"
+                    onSetViewMode="setViewMode"
+                    searchQuery="state.searchQuery"
+                    onSearch="setSearch"
+                    onUpload="openUpload"
+                    onNewFolder="openFolderModal"
+                    onToggleSidebar="toggleSidebar"
+                    sidebarOpen="state.sidebarOpen"
+                />
+                <div class="o_dms_body">
+                    <t t-if="state.sidebarOpen" class="o_dms_backdrop" t-on-click="toggleSidebar"/>
+                    <DMSSidebar
+                        folders="state.folders"
+                        currentFolderId="state.currentFolderId"
+                        nav="state.nav"
+                        onNavigate="navigate"
+                        onSelectNav="selectNav"
+                        onToggleSidebar="toggleSidebar"
+                        onToggleStar="handleToggleStar"
+                        starredCount="starredCount"
+                    />
+                    <main class="o_dms_main">
+                        <DMSBreadcrumbs
+                            t-if="state.nav === 'drive'"
+                            crumbs="breadcrumbs"
+                            onNavigate="navigate"
+                        />
+                        <div class="o_dms_main_header" t-else="">
+                            <h2 t-esc="currentViewLabel"/>
+                        </div>
+                        <DMSDrive
+                            items="currentItems"
+                            viewMode="state.viewMode"
+                            currentFolderId="state.currentFolderId"
+                            onFolderClick="navigate"
+                            onFileClick="openPreview"
+                            onDownload="handleDownload"
+                            onRename="handleRename"
+                            onDelete="handleDelete"
+                            onStar="handleToggleStar"
+                            onProperties="openProperties"
+                            onPermissions="openPermissions"
+                        />
+                    </main>
+                </div>
+
+                <DMSUploadModal
+                    t-if="state.uploadOpen"
+                    folderId="state.currentFolderId"
+                    fastapiUrl="fastapiUrl"
+                    onClose="closeUpload"
+                    onUploaded="handleUploaded"
+                />
+                <DMSFolderModal
+                    t-if="state.folderModalOpen"
+                    onClose="closeFolderModal"
+                    onCreate="handleCreateFolder"
+                />
+                <DMSFilePreview
+                    t-if="state.previewFile"
+                    file="state.previewFile"
+                    fastapiUrl="fastapiUrl"
+                    onClose="closePreview"
+                    onDownload="handleDownload"
+                    onPrev="prevPreview"
+                    onNext="nextPreview"
+                />
+                <DMSPropertiesPanel
+                    t-if="state.propsFile"
+                    file="state.propsFile"
+                    meta="state.meta"
+                    onClose="closeProperties"
+                    onSave="handleSaveProperties"
+                />
+                <DMSPermissionsDialog
+                    t-if="state.permItem"
+                    item="state.permItem"
+                    meta="state.meta"
+                    onClose="closePermissions"
+                    onSave="handleSavePermissions"
+                />
+            </t>
+        </div>
+    </t>
+</templates>

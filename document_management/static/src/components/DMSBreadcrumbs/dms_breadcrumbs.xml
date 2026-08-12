@@ -1,0 +1,13 @@
+<templates>
+    <t t-name="document_management.DMSBreadcrumbs" owl="1">
+        <nav class="o_dms_breadcrumbs">
+            <t t-foreach="props.crumbs" t-as="crumb" t-key="crumb.id">
+                <t t-if="crumb_index > 0" class="o_dms_crumb_sep"><i class="fa fa-chevron-right"/></t>
+                <button class="o_dms_crumb" t-att-class="crumb_index === props.crumbs.length - 1 ? 'current' : ''"
+                        t-on-click="() => props.onNavigate(crumb.id)">
+                    <span t-esc="crumb.name"/>
+                </button>
+            </t>
+        </nav>
+    </t>
+</templates>

@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ===================== dms.tag ===================== -->
+        <record id="view_dms_tag_tree" model="ir.ui.view">
+            <field name="name">dms.tag.tree</field>
+            <field name="model">dms.tag</field>
+            <field name="arch" type="xml">
+                <tree string="Tags">
+                    <field name="name"/>
+                    <field name="color" widget="color"/>
+                    <field name="file_count"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_dms_tag_form" model="ir.ui.view">
+            <field name="name">dms.tag.form</field>
+            <field name="model">dms.tag</field>
+            <field name="arch" type="xml">
+                <form string="Tag">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="color" widget="color"/>
+                                <field name="active"/>
+                            </group>
+                            <group>
+                                <field name="file_count"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- ===================== dms.document.type ===================== -->
+        <record id="view_dms_document_type_tree" model="ir.ui.view">
+            <field name="name">dms.document.type.tree</field>
+            <field name="model">dms.document.type</field>
+            <field name="arch" type="xml">
+                <tree string="Document Types">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_dms_document_type_form" model="ir.ui.view">
+            <field name="name">dms.document.type.form</field>
+            <field name="model">dms.document.type</field>
+            <field name="arch" type="xml">
+                <form string="Document Type">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="active"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- ===================== dms.department ===================== -->
+        <record id="view_dms_department_tree" model="ir.ui.view">
+            <field name="name">dms.department.tree</field>
+            <field name="model">dms.department</field>
+            <field name="arch" type="xml">
+                <tree string="Departments">
+                    <field name="name"/>
+                    <field name="parent_id"/>
+                    <field name="manager_id"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_dms_department_form" model="ir.ui.view">
+            <field name="name">dms.department.form</field>
+            <field name="model">dms.department</field>
+            <field name="arch" type="xml">
+                <form string="Department">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="parent_id"/>
+                                <field name="manager_id"/>
+                                <field name="active"/>
+                            </group>
+                            <group>
+                                <field name="user_ids" widget="many2many_tags"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="note" placeholder="Notes..."/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- ===================== dms.team ===================== -->
+        <record id="view_dms_team_tree" model="ir.ui.view">
+            <field name="name">dms.team.tree</field>
+            <field name="model">dms.team</field>
+            <field name="arch" type="xml">
+                <tree string="Teams">
+                    <field name="name"/>
+                    <field name="department_id"/>
+                    <field name="leader_id"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_dms_team_form" model="ir.ui.view">
+            <field name="name">dms.team.form</field>
+            <field name="model">dms.team</field>
+            <field name="arch" type="xml">
+                <form string="Team">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="department_id"/>
+                                <field name="leader_id"/>
+                                <field name="active"/>
+                            </group>
+                            <group>
+                                <field name="member_ids" widget="many2many_tags"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- ===================== dms.role ===================== -->
+        <record id="view_dms_role_tree" model="ir.ui.view">
+            <field name="name">dms.role.tree</field>
+            <field name="model">dms.role</field>
+            <field name="arch" type="xml">
+                <tree string="Roles">
+                    <field name="name"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_dms_role_form" model="ir.ui.view">
+            <field name="name">dms.role.form</field>
+            <field name="model">dms.role</field>
+            <field name="arch" type="xml">
+                <form string="Role">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="active"/>
+                            </group>
+                            <group>
+                                <field name="user_ids" widget="many2many_tags"/>
+                            </group>
+                        </group>
+                        <group string="Odoo Groups">
+                            <field name="group_ids" widget="many2many_tags"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- ===================== dms.project ===================== -->
+        <record id="view_dms_project_tree" model="ir.ui.view">
+            <field name="name">dms.project.tree</field>
+            <field name="model">dms.project</field>
+            <field name="arch" type="xml">
+                <tree string="Projects">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="department_id"/>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_dms_project_form" model="ir.ui.view">
+            <field name="name">dms.project.form</field>
+            <field name="model">dms.project</field>
+            <field name="arch" type="xml">
+                <form string="Project">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="code"/>
+                                <field name="department_id"/>
+                                <field name="active"/>
+                            </group>
+                            <group>
+                                <field name="start_date"/>
+                                <field name="end_date"/>
+                                <field name="user_ids" widget="many2many_tags"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- ===================== dms.field.definition ===================== -->
+        <record id="view_dms_field_definition_tree" model="ir.ui.view">
+            <field name="name">dms.field.definition.tree</field>
+            <field name="model">dms.field.definition</field>
+            <field name="arch" type="xml">
+                <tree string="Custom Fields">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="field_type"/>
+                    <field name="required"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_dms_field_definition_form" model="ir.ui.view">
+            <field name="name">dms.field.definition.form</field>
+            <field name="model">dms.field.definition</field>
+            <field name="arch" type="xml">
+                <form string="Custom Field">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="code"/>
+                                <field name="field_type"/>
+                                <field name="active"/>
+                            </group>
+                            <group>
+                                <field name="sequence"/>
+                                <field name="required"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="selection_options"
+                                   invisible="field_type != 'selection'"/>
+                            <field name="model_id"
+                                   invisible="field_type != 'many2one'"/>
+                            <field name="help"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>
