@@ -1,0 +1,60 @@
+<templates>
+    <t t-name="document_management.DMSUploadModal" owl="1">
+        <div class="o_dms_overlay" t-on-click="props.onClose">
+            <div class="o_dms_modal o_dms_upload_modal" t-on-click.stop="">
+                <div class="o_dms_modal_header">
+                    <h3>Upload Documents</h3>
+                    <button class="o_dms_icon_btn" t-on-click="props.onClose">
+                        <i class="fa fa-times"/>
+                    </button>
+                </div>
+
+                <div class="o_dms_modal_body">
+                    <div class="o_dms_dropzone" t-att-class="state.dragOver ? 'dragover' : ''"
+                         t-on-click="openPicker"
+                         t-on-dragover.prevent="() => setDragOver(true)"
+                         t-on-dragleave="() => setDragOver(false)"
+                         t-on-drop="onDrop">
+                        <i class="fa fa-cloud-upload fa-3x"/>
+                        <p><strong>Drag &amp; drop files here</strong> or click to browse</p>
+                        <input type="file" multiple="multiple" t-ref="fileInput" hidden="true"
+                               t-on-change="onInputChange"/>
+                    </div>
+
+                    <div t-if="state.files.length" class="o_dms_upload_list">
+                        <t t-foreach="state.files" t-as="item" t-key="item_index">
+                            <div class="o_dms_upload_item">
+                                <i class="fa fa-file-o"/>
+                                <div class="o_dms_upload_info">
+                                    <div class="o_dms_upload_name">
+                                        <span t-esc="item.name"/>
+                                        <small t-if="item.status === 'uploading'" t-esc="item.progress + '%'"/>
+                                        <small t-if="item.status === 'error'" class="o_dms_text_danger" t-esc="item.error"/>
+                                        <small t-if="item.status === 'done'" class="o_dms_text_success">Uploaded</small>
+                                    </div>
+                                    <div class="o_dms_progress" t-if="item.status === 'uploading'">
+                                        <div class="o_dms_progress_bar" t-att-style="'width:' + item.progress + '%'"/>
+                                    </div>
+                                </div>
+                                <button t-if="!state.uploading" class="o_dms_icon_btn"
+                                        t-on-click="() => removeFile(item_index)">
+                                    <i class="fa fa-times"/>
+                                </button>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+
+                <div class="o_dms_modal_footer">
+                    <button class="o_dms_btn o_dms_btn_outline" t-on-click="props.onClose">Cancel</button>
+                    <button class="o_dms_btn o_dms_btn_primary"
+                            t-att-disabled="state.uploading || state.files.length === 0"
+                            t-on-click="startUpload">
+                        <i class="fa" t-att-class="state.uploading ? 'fa-spinner fa-pulse' : 'fa-upload'"/>
+                        <span t-esc="state.uploading ? 'Uploading...' : 'Upload Files'"/>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="tag_important" model="dms.tag">
+            <field name="name">Important</field>
+            <field name="color">#d9381e</field>
+        </record>
+        <record id="tag_confidential" model="dms.tag">
+            <field name="name">Confidential</field>
+            <field name="color">#7a26c0</field>
+        </record>
+        <record id="tag_archive" model="dms.tag">
+            <field name="name">Archive</field>
+            <field name="color">#57606a</field>
+        </record>
+
+        <record id="type_contract" model="dms.document.type">
+            <field name="name">Contract</field>
+            <field name="code">CTR</field>
+        </record>
+        <record id="type_report" model="dms.document.type">
+            <field name="name">Report</field>
+            <field name="code">RPT</field>
+        </record>
+        <record id="type_certificate" model="dms.document.type">
+            <field name="name">Certificate</field>
+            <field name="code">CRT</field>
+        </record>
+
+        <record id="dept_administration" model="dms.department">
+            <field name="name">Administration</field>
+        </record>
+        <record id="dept_engineering" model="dms.department">
+            <field name="name">Engineering</field>
+        </record>
+
+        <record id="role_manager" model="dms.role">
+            <field name="name">Manager</field>
+        </record>
+        <record id="role_reviewer" model="dms.role">
+            <field name="name">Reviewer</field>
+        </record>
+
+    </data>
+</odoo>

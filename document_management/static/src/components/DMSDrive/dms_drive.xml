@@ -1,0 +1,132 @@
+<templates>
+    <t t-name="document_management.DMSDrive" owl="1">
+        <div class="o_dms_drive">
+            <div t-if="props.items.length === 0" class="o_dms_empty">
+                <i class="fa fa-folder-open-o"/>
+                <p>This folder is empty</p>
+                <span>Upload files or create a folder to get started.</span>
+            </div>
+
+            <div t-else="" t-att-class="props.viewMode === 'grid' ? 'o_dms_grid' : 'o_dms_list'">
+                <t t-foreach="props.items" t-as="item" t-key="item.id">
+
+                    <!-- GRID CARD -->
+                    <div t-if="props.viewMode === 'grid'" class="o_dms_card"
+                         t-on-click="() => handleItemClick(item)"
+                         t-on-dblclick.self="() => handleItemClick(item)">
+                        <div class="o_dms_card_top">
+                            <i class="fa o_dms_file_icon" t-att-class="itemIcon(item)"
+                               t-att-style="'color: ' + itemColor(item)"/>
+                            <button class="o_dms_menu_btn" t-on-click.stop="() => toggleMenu(item)">
+                                <i class="fa fa-ellipsis-v"/>
+                            </button>
+                            <div t-if="state.menuId === item.id" class="o_dms_menu" t-on-click.stop="">
+                                <DMSMenu item="item" can="can" onAction="(a) => menuAction(item, a)"/>
+                            </div>
+                        </div>
+                        <div class="o_dms_card_name">
+                            <t t-if="state.renamingId === item.id">
+                                <input class="o_dms_rename_input" t-model="state.renameInput"
+                                       t-on-keydown="onRenameKeydown"
+                                       
+                                       t-on-blur="submitRename"/>
+                            </t>
+                            <span t-else="" t-esc="item.name"/>
+                        </div>
+                        <div t-if="!item.isFolder &amp;&amp; item.relatedRecordName"
+                             class="o_dms_related_badge"
+                             t-on-click.stop="() => openRecord(item)"
+                             title="Open related record">
+                            <i class="fa fa-link"/>
+                            <span t-esc="item.relatedRecordName"/>
+                        </div>
+                        <div class="o_dms_card_meta">
+                            <span t-esc="itemMeta(item)"/>
+                            <span t-att-class="item.visibility === 'public' ? 'o_dms_public' : 'o_dms_private'">
+                                <i class="fa" t-att-class="item.visibility === 'public' ? 'fa-globe' : 'fa-lock'"/>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- LIST ROW -->
+                    <div t-else="" class="o_dms_row" t-att-class="state.renamingId === item.id ? 'renaming' : ''"
+                         t-on-click="() => handleItemClick(item)">
+                        <div class="o_dms_row_icon">
+                            <i class="fa o_dms_file_icon" t-att-class="itemIcon(item)"
+                               t-att-style="'color: ' + itemColor(item)"/>
+                        </div>
+                        <div class="o_dms_row_name">
+                            <t t-if="state.renamingId === item.id">
+                                <input class="o_dms_rename_input" t-model="state.renameInput"
+                                       t-on-keydown="onRenameKeydown"
+                                       
+                                       t-on-blur="submitRename"/>
+                            </t>
+                            <span t-else="" t-esc="item.name"/>
+                        </div>
+                        <div class="o_dms_row_owner" t-if="!item.isFolder" t-esc="item.ownerName || ''"/>
+                        <div class="o_dms_row_date" t-if="!item.isFolder" t-esc="itemDate(item)"/>
+                        <div t-if="!item.isFolder &amp;&amp; item.relatedRecordName"
+                             class="o_dms_row_related"
+                             t-on-click.stop="() => openRecord(item)"
+                             title="Open related record">
+                            <i class="fa fa-link"/>
+                            <span t-esc="item.relatedRecordName"/>
+                        </div>
+                        <div class="o_dms_row_size" t-esc="itemMeta(item)"/>
+                        <div class="o_dms_row_actions">
+                            <span t-if="item.visibility === 'public'" class="o_dms_public">
+                                <i class="fa fa-globe" title="Public"/>
+                            </span>
+                            <button class="o_dms_menu_btn" t-on-click.stop="() => toggleMenu(item)">
+                                <i class="fa fa-ellipsis-v"/>
+                            </button>
+                            <div t-if="state.menuId === item.id" class="o_dms_menu" t-on-click.stop="">
+                                <DMSMenu item="item" can="can" onAction="(a) => menuAction(item, a)"/>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="document_management.DMSMenu" owl="1">
+        <div class="o_dms_menu_inner">
+            <button class="o_dms_menu_item" t-on-click="() => props.onAction('open')">
+                <i class="fa" t-att-class="props.item.isFolder ? 'fa-folder-open-o' : 'fa-eye'"/>
+                <span t-esc="props.item.isFolder ? 'Open' : 'Preview'"/>
+            </button>
+            <button t-if="!props.item.isFolder &amp;&amp; props.can(props.item, 'download')"
+                    class="o_dms_menu_item" t-on-click="() => props.onAction('download')">
+                <i class="fa fa-download"/>
+                <span>Download</span>
+            </button>
+            <button t-if="props.can(props.item, 'write')" class="o_dms_menu_item"
+                    t-on-click="() => props.onAction('rename')">
+                <i class="fa fa-pencil"/>
+                <span>Rename</span>
+            </button>
+            <button t-if="!props.item.isFolder &amp;&amp; props.can(props.item, 'manage')"
+                    class="o_dms_menu_item" t-on-click="() => props.onAction('properties')">
+                <i class="fa fa-info-circle"/>
+                <span>Properties</span>
+            </button>
+            <button t-if="props.can(props.item, 'manage')" class="o_dms_menu_item"
+                    t-on-click="() => props.onAction('permissions')">
+                <i class="fa fa-shield"/>
+                <span>Permissions</span>
+            </button>
+            <button t-if="!props.item.isFolder" class="o_dms_menu_item"
+                    t-on-click="() => props.onAction('star')">
+                <i class="fa" t-att-class="props.item.starred ? 'fa-star' : 'fa-star-o'"/>
+                <span t-esc="props.item.starred ? 'Unstar' : 'Star'"/>
+            </button>
+            <button t-if="props.can(props.item, 'delete')" class="o_dms_menu_item danger"
+                    t-on-click="() => props.onAction('delete')">
+                <i class="fa fa-trash-o"/>
+                <span>Delete</span>
+            </button>
+        </div>
+    </t>
+</templates>

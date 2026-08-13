@@ -83,6 +83,7 @@ class CementNormalConsistency(models.Model):
     normal_consistency_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Conformity', default='fail',compute="_compute_normal_conformity")
 
     normal_consistency_nabl = fields.Selection([
@@ -99,6 +100,12 @@ class CementNormalConsistency(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a9e97cea-372f-4775-9bcb-e9dd70e6e6df')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.normal_consistency_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -163,6 +170,7 @@ class CementNormalConsistency(models.Model):
     initial_setting_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Conformity', default='fail')
 
     initial_setting_nabl = fields.Selection([
@@ -179,6 +187,12 @@ class CementNormalConsistency(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','40ce7425-30fe-4043-b518-015f5c60d916')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.initial_setting_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -251,6 +265,7 @@ class CementNormalConsistency(models.Model):
     final_setting_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Conformity', default='fail')
 
     final_setting_nabl = fields.Selection([
@@ -267,6 +282,12 @@ class CementNormalConsistency(models.Model):
             materials = self.env['lerm.parameter.master'].search([('internal_id','=','d339933c-5e9c-4335-9ea2-2d87624c3061')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.final_setting_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -350,6 +371,7 @@ class CementNormalConsistency(models.Model):
     density_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Conformity', default='fail',compute="_compute_density_conformity")
 
     density_nabl = fields.Selection([
@@ -366,6 +388,12 @@ class CementNormalConsistency(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8fcf78c9-dd02-4664-bba4-b887a64a6952')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.density_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -450,6 +478,7 @@ class CementNormalConsistency(models.Model):
     soundness_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Conformity', default='fail',compute="_compute_soundness_conformity")
 
     soundness_nabl = fields.Selection([
@@ -466,6 +495,12 @@ class CementNormalConsistency(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','5d2e505d-1d50-48aa-a8c8-9f70fe4b421b')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.soundness_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -553,6 +588,7 @@ class CementNormalConsistency(models.Model):
     dry_seiving_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Conformity', default='fail',compute="_compute_dry_seiving_conformity")
 
     dry_seiving_nabl = fields.Selection([
@@ -569,6 +605,12 @@ class CementNormalConsistency(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ed89d6b3-783f-4044-aef7-d2dd847d3cce')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.dry_seiving_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -656,6 +698,7 @@ class CementNormalConsistency(models.Model):
     compressive_3days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Conformity', default='fail',compute="_compute_compressive_3days_conformity")
 
     compressive_3days_nabl = fields.Selection([
@@ -672,6 +715,12 @@ class CementNormalConsistency(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','8ff8bce6-fb91-4673-8789-557cf91c3449')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.compressive_3days_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -754,6 +803,7 @@ class CementNormalConsistency(models.Model):
     compressive_7days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Conformity', default='fail',compute="_compute_compressive_7days_conformity")
 
     compressive_7days_nabl = fields.Selection([
@@ -770,6 +820,12 @@ class CementNormalConsistency(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','a267dec2-59df-4c9d-827b-69778c31c29b')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.compressive_7days_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -855,6 +911,7 @@ class CementNormalConsistency(models.Model):
     compressive_28days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Conformity', default='fail',compute="_compute_compressive_28days_conformity")
 
     compressive_28days_nabl = fields.Selection([
@@ -871,6 +928,12 @@ class CementNormalConsistency(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','6a0229a9-ba1d-4fc9-b2fa-3383699d3464')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.compressive_28days_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -994,6 +1057,7 @@ class CementNormalConsistency(models.Model):
     fineness_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Conformity', default='fail',compute="_compute_fineness_conformity")
 
     fineness_nabl = fields.Selection([
@@ -1009,6 +1073,12 @@ class CementNormalConsistency(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','ca17d450-c526-4092-a3a7-6b0ff7e69c0a')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.fineness_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
@@ -1139,7 +1209,9 @@ class CementNormalConsistency(models.Model):
 
     avg_expantion_opc_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_expantion_opc_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_avg_expantion_opc_conformity", store=True)
 
 
 
@@ -1151,7 +1223,13 @@ class CementNormalConsistency(models.Model):
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','fh2234553c-5e9c-4335-9ea2-2d87624c23048')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','fh2234553c-5e9c-4335-9ea2-2d87624c23048')]).parameter_table
             for material in materials:
+
                 if material.grade.id == record.grade.id:
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.avg_expantion_opc_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value

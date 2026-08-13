@@ -14,7 +14,8 @@ This module contains all the common features of Door Products.
     'data': [
                  'security/ir.model.access.csv',
                 'views/door.xml',
-                'reports/door_ds_report.xml'
+                'reports/door_datasheet.xml',
+                'reports/door_report.xml'
 
     ],
     'assets': {

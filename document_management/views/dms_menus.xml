@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <menuitem id="dms_root_menu"
+                  name="Documents"
+                  sequence="90"
+                  web_icon="document_management,static/description/icon.png"/>
+
+        <!-- OWL Drive application -->
+        <record id="action_dms_drive_client" model="ir.actions.client">
+            <field name="name">Document Drive</field>
+            <field name="tag">document_management</field>
+        </record>
+
+        <menuitem id="menu_dms_drive"
+                  name="Document Drive"
+                  parent="dms_root_menu"
+                  action="action_dms_drive_client"
+                  sequence="10"/>
+
+        <menuitem id="menu_dms_master_data"
+                  name="Master Data"
+                  parent="dms_root_menu"
+                  sequence="20"/>
+
+        <record id="action_dms_tags" model="ir.actions.act_window">
+            <field name="name">Tags</field>
+            <field name="res_model">dms.tag</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="menu_dms_tags" name="Tags" parent="menu_dms_master_data"
+                  action="action_dms_tags" sequence="10"/>
+
+        <record id="action_dms_document_types" model="ir.actions.act_window">
+            <field name="name">Document Types</field>
+            <field name="res_model">dms.document.type</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="menu_dms_document_types" name="Document Types" parent="menu_dms_master_data"
+                  action="action_dms_document_types" sequence="20"/>
+
+        <record id="action_dms_departments" model="ir.actions.act_window">
+            <field name="name">Departments</field>
+            <field name="res_model">dms.department</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="menu_dms_departments" name="Departments" parent="menu_dms_master_data"
+                  action="action_dms_departments" sequence="30"/>
+
+        <record id="action_dms_teams" model="ir.actions.act_window">
+            <field name="name">Teams</field>
+            <field name="res_model">dms.team</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="menu_dms_teams" name="Teams" parent="menu_dms_master_data"
+                  action="action_dms_teams" sequence="40"/>
+
+        <record id="action_dms_roles" model="ir.actions.act_window">
+            <field name="name">Roles</field>
+            <field name="res_model">dms.role</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="menu_dms_roles" name="Roles" parent="menu_dms_master_data"
+                  action="action_dms_roles" sequence="50"/>
+
+        <record id="action_dms_projects" model="ir.actions.act_window">
+            <field name="name">Projects</field>
+            <field name="res_model">dms.project</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="menu_dms_projects" name="Projects" parent="menu_dms_master_data"
+                  action="action_dms_projects" sequence="60"/>
+
+        <record id="action_dms_custom_fields" model="ir.actions.act_window">
+            <field name="name">Custom Fields</field>
+            <field name="res_model">dms.field.definition</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="menu_dms_custom_fields" name="Custom Fields" parent="menu_dms_master_data"
+                  action="action_dms_custom_fields" sequence="70"/>
+
+        <!-- Audit trail -->
+        <record id="action_dms_audit" model="ir.actions.act_window">
+            <field name="name">Audit Trail</field>
+            <field name="res_model">dms.audit.trail</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="menu_dms_audit" name="Audit Trail" parent="dms_root_menu"
+                  action="action_dms_audit" sequence="30" groups="document_management.group_dms_auditor,document_management.group_dms_manager"/>
+
+        <!-- Settings -->
+        <menuitem id="menu_dms_settings"
+                  name="Settings"
+                  parent="dms_root_menu"
+                  action="base.res_config_setting_act_window"
+                  sequence="90"
+                  groups="document_management.group_dms_manager"/>
+
+    </data>
+</odoo>

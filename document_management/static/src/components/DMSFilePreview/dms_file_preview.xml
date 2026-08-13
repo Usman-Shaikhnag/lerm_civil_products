@@ -1,0 +1,71 @@
+<templates>
+    <t t-name="document_management.DMSFilePreview" owl="1">
+        <div class="o_dms_overlay" t-on-click="props.onClose">
+            <div class="o_dms_preview" t-on-click.stop="">
+                <div class="o_dms_preview_header">
+                    <i class="fa fa-file-o o_dms_preview_icon"/>
+                    <div class="o_dms_preview_title">
+                        <span t-esc="props.file.name"/>
+                        <small t-esc="props.file.sizeDisplay"/>
+                    </div>
+                    <div t-if="props.file.relatedRecordName" class="o_dms_preview_related"
+                         t-on-click="() => openRecord()"
+                         title="Open related record">
+                        <i class="fa fa-link"/>
+                        <span t-esc="props.file.relatedRecordName"/>
+                    </div>
+                    <button class="o_dms_icon_btn" t-on-click="props.onPrev" title="Previous">
+                        <i class="fa fa-chevron-left"/>
+                    </button>
+                    <button class="o_dms_icon_btn" t-on-click="props.onNext" title="Next">
+                        <i class="fa fa-chevron-right"/>
+                    </button>
+                    <button class="o_dms_icon_btn" t-on-click="props.onClose" title="Close">
+                        <i class="fa fa-times"/>
+                    </button>
+                </div>
+
+                <div class="o_dms_preview_body">
+                    <div t-if="state.loading" class="o_dms_preview_loading">
+                        <i class="fa fa-spinner fa-pulse fa-3x"/>
+                        <p>Loading preview...</p>
+                    </div>
+                    <t t-elif="state.error">
+                        <div class="o_dms_preview_error">
+                            <i class="fa fa-exclamation-triangle fa-3x"/>
+                            <p t-esc="state.error"/>
+                        </div>
+                    </t>
+                    <t t-elif="kind === 'image'">
+                        <img t-att-src="state.previewUrl" class="o_dms_preview_image" alt=""/>
+                    </t>
+                    <t t-elif="kind === 'pdf'">
+                        <iframe t-att-src="state.previewUrl" class="o_dms_preview_iframe"/>
+                    </t>
+                    <t t-elif="kind === 'word' || kind === 'excel'">
+                        <iframe t-att-src="state.previewUrl" class="o_dms_preview_iframe"/>
+                    </t>
+                    <t t-elif="kind === 'csv'">
+                        <iframe t-att-src="state.previewUrl" class="o_dms_preview_iframe"/>
+                    </t>
+                    <t t-else="">
+                        <div class="o_dms_preview_error">
+                            <i class="fa fa-file-o fa-4x"/>
+                            <p>No preview available for this file type.</p>
+                        </div>
+                    </t>
+                </div>
+
+                <div class="o_dms_preview_footer">
+                    <button t-if="canDownload()" class="o_dms_btn o_dms_btn_primary" t-on-click="() => props.onDownload(props.file)">
+                        <i class="fa fa-download"/>
+                        <span>Download</span>
+                    </button>
+                    <span t-if="props.file.visibility === 'public'" class="o_dms_public">
+                        <i class="fa fa-globe"/> Public
+                    </span>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

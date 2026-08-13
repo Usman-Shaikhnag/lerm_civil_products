@@ -1,18 +1,19 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
 
+from odoo.addons.ftp_storage.models.dms_attachment import record_download_url
+
 class SrfFTP(models.Model):
 
     _inherit = 'lerm.civil.srf'
 
     attachment_path = fields.Char("Attachment")
-    
+
     def download_attachment(self):
-        host = self.env["ftp.storage"].sudo().search([('active','=',True)]).host
-        ftp_url = f"https://{host}/files/{self.attachment_path}"
+        self.ensure_one()
         return {
             'type': 'ir.actions.act_url',
-            'url': f"/web/binary/download_ftp?url={ftp_url}",
+            'url': record_download_url(self, 'attachment_path'),
             'target': 'self',
         }
 

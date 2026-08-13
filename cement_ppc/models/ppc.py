@@ -86,6 +86,7 @@ class CementPpc(models.Model):
     normal_consistency_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Conformity', default='fail',compute="_compute_normal_conformity")
 
     normal_consistency_nabl = fields.Selection([
@@ -103,6 +104,12 @@ class CementPpc(models.Model):
             mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.normal_consistency_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     # mu_value = line.mu_value
@@ -168,6 +175,7 @@ class CementPpc(models.Model):
     initial_setting_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Conformity', default='fail',compute="_compute_initial_setting_conformity")
 
     initial_setting_nabl = fields.Selection([
@@ -185,6 +193,12 @@ class CementPpc(models.Model):
             mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.initial_setting_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     # mu_value = line.mu_value
@@ -256,6 +270,7 @@ class CementPpc(models.Model):
     final_setting_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Conformity', default='fail',compute="_compute_final_setting_conformity")
 
     final_setting_nabl = fields.Selection([
@@ -273,6 +288,12 @@ class CementPpc(models.Model):
             mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.final_setting_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     # mu_value = line.mu_value
@@ -332,7 +353,7 @@ class CementPpc(models.Model):
     #Density
 
     
-    density_name = fields.Char("Name",default="Density")
+    density_name1 = fields.Char("Name",default="Specific Gravity")
     density_visible = fields.Boolean("Setting Time Visible",compute="_compute_visible")
 
     temp_percent_density = fields.Float("Temperature °C",digits=(16,1))
@@ -362,6 +383,7 @@ class CementPpc(models.Model):
     density_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Conformity', default='fail',compute="_compute_density_conformity")
 
     density_nabl = fields.Selection([
@@ -379,6 +401,12 @@ class CementPpc(models.Model):
             mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.density_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     # mu_value = line.mu_value
@@ -461,6 +489,7 @@ class CementPpc(models.Model):
     soundness_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Conformity', default='fail',compute="_compute_soundness_conformity")
 
     soundness_nabl = fields.Selection([
@@ -478,6 +507,12 @@ class CementPpc(models.Model):
             mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.soundness_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     # mu_value = line.mu_value
@@ -564,6 +599,7 @@ class CementPpc(models.Model):
     dry_seiving_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Conformity', default='fail',compute="_compute_dry_seiving_conformity")
 
     dry_seiving_nabl = fields.Selection([
@@ -581,6 +617,12 @@ class CementPpc(models.Model):
             mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.dry_seiving_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     # mu_value = line.mu_value
@@ -672,6 +714,7 @@ class CementPpc(models.Model):
     compressive_3days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Conformity', default='fail',compute="_compute_compressive_3days_conformity")
 
     compressive_3days_nabl = fields.Selection([
@@ -689,6 +732,12 @@ class CementPpc(models.Model):
             mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.compressive_3days_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     # mu_value = line.mu_value
@@ -773,6 +822,7 @@ class CementPpc(models.Model):
     compressive_7days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Conformity', default='fail',compute="_compute_compressive_7days_conformity")
 
     compressive_7days_nabl = fields.Selection([
@@ -790,6 +840,12 @@ class CementPpc(models.Model):
             mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.compressive_7days_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     # mu_value = line.mu_value
@@ -874,6 +930,7 @@ class CementPpc(models.Model):
     compressive_28days_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Conformity', default='fail',compute="_compute_compressive_28days_conformity")
 
     compressive_28days_nabl = fields.Selection([
@@ -891,6 +948,12 @@ class CementPpc(models.Model):
             mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.compressive_28days_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     # mu_value = line.mu_value
@@ -1016,6 +1079,7 @@ class CementPpc(models.Model):
     fineness_conformity = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
+        ('--', '--')
     ], string='Conformity', default='fail',compute="_compute_fineness_conformity")
 
     fineness_nabl = fields.Selection([
@@ -1032,6 +1096,12 @@ class CementPpc(models.Model):
             mu_value = line.mu_value
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.fineness_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     # mu_value = line.mu_value
@@ -1157,7 +1227,9 @@ class CementPpc(models.Model):
 
     avg_expantion_opc_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_avg_expantion_opc_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')
+            ], string="Conformity", compute="_compute_avg_expantion_opc_conformity", store=True)
 
 
 
@@ -1170,6 +1242,12 @@ class CementPpc(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','c3c45df4-ac5e-4a60-b812-9a09d1e85033')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    # Check if permissible limit is '--' or empty
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.avg_expantion_opc_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value

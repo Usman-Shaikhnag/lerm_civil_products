@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_dms_audit_tree" model="ir.ui.view">
+            <field name="name">dms.audit.trail.tree</field>
+            <field name="model">dms.audit.trail</field>
+            <field name="arch" type="xml">
+                <tree string="Audit Trail" editable="bottom">
+                    <field name="date"/>
+                    <field name="user_name"/>
+                    <field name="login"/>
+                    <field name="action"/>
+                    <field name="model_name"/>
+                    <field name="record_id"/>
+                    <field name="file_id" optional="show"/>
+                    <field name="folder_id" optional="show"/>
+                    <field name="ip_address" optional="show"/>
+                    <field name="session_id" optional="hide"/>
+                    <field name="details" optional="hide"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_dms_audit_form" model="ir.ui.view">
+            <field name="name">dms.audit.trail.form</field>
+            <field name="model">dms.audit.trail</field>
+            <field name="arch" type="xml">
+                <form string="Audit Entry">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="date"/>
+                                <field name="user_name"/>
+                                <field name="login"/>
+                                <field name="action"/>
+                            </group>
+                            <group>
+                                <field name="model_name"/>
+                                <field name="record_id"/>
+                                <field name="file_id"/>
+                                <field name="folder_id"/>
+                                <field name="ip_address"/>
+                                <field name="session_id"/>
+                            </group>
+                        </group>
+                        <group string="Details">
+                            <field name="details"/>
+                            <field name="old_value"/>
+                            <field name="new_value"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>
