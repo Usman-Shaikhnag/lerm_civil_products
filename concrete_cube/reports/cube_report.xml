@@ -16,10 +16,36 @@
 								</tr>
 
 								<tr>
-									<td><strong>Customer Name</strong></td>
+
+								<t t-if="o.srf_id.client">
+                                <td colspan="1"><strong>Customer Name</strong></td>
+                                <td colspan="2">
+                                    <![CDATA[&nbsp;]]>
+                                    <t t-if="o.srf_id.customer">
+                                        <span t-field="o.srf_id.customer"/>
+                                    </t>
+                                    <t t-else="">--</t>
+                                </td>
+                                <td colspan="1"><strong>Client Name </strong></td>
+                                <td colspan="2" >
+                                    
+                                        <span t-field="o.srf_id.client"/>
+                                </td>
+                            </t>
+                            <t t-else="">
+                             <td>Customer Name :</td>
+                             <td colspan="5" >
+                                       <![CDATA[&nbsp;]]>
+                                   <t t-if="o.srf_id.customer">
+                                      <span t-field="o.srf_id.customer"/>
+                                  </t>
+                                <t t-else="">--</t>
+                             </td>
+                            </t>
+									<!-- <td><strong>Customer Name</strong></td>
 									<td colspan="5">
 										<span t-field="o.srf_id.customer.name"/>
-									</td>
+									</td> -->
 								</tr>
 
 								<tr>
