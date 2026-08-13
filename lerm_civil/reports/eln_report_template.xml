@@ -3,6 +3,15 @@
 
 	<template id="custom_layout_header_footer_lerm_eln">
         <div t-attf-class="header article" t-att-style="report_header_style">
+			<div t-if="report_type == 'pdf'" style="position: absolute;top: 0;left: 0;right: 0;bottom: auto;z-index: 99;opacity: 0.08;pointer-events: none;margin-top:200px">
+				<table style="width: 100%; height: 100%; border: none; box-shadow: none; border-collapse: collapse;">
+					<tr style="vertical-align: middle;">
+						<td style="text-align: center; vertical-align: middle; border: none; box-shadow: none;">
+							<img t-if="eln.sample_id.lab_location and eln.sample_id.lab_location.watermark_image" t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.watermark_image.decode('utf-8')" style="width: 100%; border: none; box-shadow: none;" />
+						</td>
+					</tr>
+				</table>
+			</div>
 			<div class="row">
 				<t t-if="eln.sample_id.lab_location">
 					<div t-if="(eln.sample_id.scope == 'nabl' and nabl) or fromEln" class="col-12 imageContainer" >
@@ -89,15 +98,6 @@
         </div>
 		
         <div t-attf-class="article" t-att-style="report_header_style" style="position: relative;">
-			<div t-if="report_type == 'pdf'" style="position: fixed;top: 0;left: 0;right: 0;bottom: 0;z-index: 99;opacity: 0.08;pointer-events: none;">
-				<table style="width: 100%; height: 100%;">
-					<tr style="vertical-align: middle;">
-						<td style="text-align: center; vertical-align: middle;">
-							<img t-if="eln.sample_id.lab_location and eln.sample_id.lab_location.watermark_image" t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.watermark_image.decode('utf-8')" style="width: 100%;" />
-						</td>
-					</tr>
-				</table>
-			</div>
 			<div t-if="report_type != 'pdf'" style="position: absolute;top: 45%;display: flex;align-items: center;justify-content: center;z-index: 99;opacity: 0.08;pointer-events: none;width:100%">
 				<img t-if="eln.sample_id.lab_location and eln.sample_id.lab_location.watermark_image" t-att-src="'data:image/png;base64,' + eln.sample_id.lab_location.watermark_image.decode('utf-8')" style="width: 100%;" />
 			</div>
