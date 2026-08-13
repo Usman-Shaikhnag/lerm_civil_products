@@ -49,6 +49,7 @@ export class DMSDrive extends Component {
             "submitRename",
             "onRenameKeydown",
             "menuAction",
+            "openRecord",
         ]);
     }
 
@@ -74,6 +75,15 @@ export class DMSDrive extends Component {
 
     can(item, flag) {
         return item.isFolder ? item.access[flag] : item.access[flag];
+    }
+
+    openRecord(item) {
+        if (item.resModel && item.resId) {
+            window.open(
+                `/web#id=${item.resId}&model=${encodeURIComponent(item.resModel)}&view_type=form`,
+                "_blank"
+            );
+        }
     }
 
     handleItemClick(item) {

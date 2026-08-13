@@ -29,8 +29,11 @@ def _get_secret():
     return secret.encode('utf-8')
 
 
-def issue_token(claims, ttl=600):
-    """Issue a compact HMAC-SHA256 JWT with the configured shared secret."""
+def issue_token(claims, ttl=600, secret=None):
+    """Issue a compact HMAC-SHA256 JWT with the configured shared secret.
+
+    Pass `secret` explicitly (e.g. from an env) when no HTTP request is active.
+    """
     now = int(time.time())
     payload = dict(claims)
     payload['iat'] = now
@@ -40,7 +43,9 @@ def issue_token(claims, ttl=600):
         _b64url_encode(json.dumps(header).encode('utf-8')) + '.' +
         _b64url_encode(json.dumps(payload).encode('utf-8'))
     )
-    signature = hmac.new(_get_secret(), signing_input.encode('utf-8'),
+    if secret is None:
+        secret = _get_secret()
+    signature = hmac.new(secret, signing_input.encode('utf-8'),
                          hashlib.sha256).digest()
     return signing_input + '.' + _b64url_encode(signature)
 

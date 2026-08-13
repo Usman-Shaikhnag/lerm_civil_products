@@ -1,6 +1,7 @@
 /** @odoo-module **/
 
 import { Component, useState } from "@odoo/owl";
+import { jsonrpc } from "@web/core/network/rpc_service";
 import { formatDate, formatDateTime, statusBadge, bindAll } from "../../utils";
 
 export class DMSPropertiesPanel extends Component {
@@ -30,6 +31,9 @@ export class DMSPropertiesPanel extends Component {
                 description: f.description || "",
                 visibility: f.visibility || "private",
                 tag_ids: f.tagIds || [],
+                res_model: f.resModel || "",
+                res_id: f.resId || false,
+                related_record_name: f.relatedRecordName || "",
             },
             customValues: (f.customValues || []).map((cv) => ({
                 field_id: cv.field_id,
@@ -38,8 +42,65 @@ export class DMSPropertiesPanel extends Component {
                 field_type: cv.field_type,
                 value: cv.value,
             })),
+            searchText: "",
+            suggestions: [],
+            searching: false,
         });
-        bindAll(this, ["toggleTag", "save", "getCustomFieldDef", "selectionOptions", "fmtDateTime"]);
+        bindAll(this, [
+            "toggleTag",
+            "save",
+            "getCustomFieldDef",
+            "selectionOptions",
+            "fmtDateTime",
+            "onModelChange",
+            "onRecordSearch",
+            "selectRecord",
+            "clearReference",
+        ]);
+    }
+
+    get modelOptions() {
+        return this.props.meta.models || [];
+    }
+
+    onModelChange() {
+        this.state.draft.res_id = false;
+        this.state.draft.related_record_name = "";
+        this.state.searchText = "";
+        this.state.suggestions = [];
+    }
+
+    async onRecordSearch() {
+        const model = this.state.draft.res_model;
+        if (!model) {
+            this.state.suggestions = [];
+            return;
+        }
+        this.state.searching = true;
+        try {
+            const res = await jsonrpc("/dms/record_search", {
+                model,
+                term: this.state.searchText,
+            });
+            this.state.suggestions = res || [];
+        } catch (e) {
+            this.state.suggestions = [];
+        } finally {
+            this.state.searching = false;
+        }
+    }
+
+    selectRecord(rec) {
+        this.state.draft.res_id = rec.id;
+        this.state.draft.related_record_name = rec.display_name;
+        this.state.searchText = "";
+        this.state.suggestions = [];
+    }
+
+    clearReference() {
+        this.state.draft.res_id = false;
+        this.state.draft.related_record_name = "";
+        this.state.suggestions = [];
     }
 
     statusInfo(status) {
@@ -105,7 +166,16 @@ export class DMSPropertiesPanel extends Component {
             field_id: cv.field_id,
             value: cv.value,
         }));
-        this.props.onSave({ ...this.state.draft, id: this.props.file.id, custom_values: customValues });
+        const payload = {
+            ...this.state.draft,
+            id: this.props.file.id,
+            custom_values: customValues,
+        };
+        if (!this.state.draft.res_model) {
+            payload.res_model = false;
+            payload.res_id = false;
+        }
+        this.props.onSave(payload);
         this.props.onClose();
     }
 }

@@ -7,6 +7,11 @@ from io import BytesIO
 import os
 import base64
 
+from odoo.addons.ftp_storage.models.dms_attachment import (
+    DMS_RECORD_MODELS,
+    upload_to_dms,
+)
+
 
 class UploadWizard(models.TransientModel):
     _name = "file.upload.wizard"
@@ -44,6 +49,24 @@ class UploadWizard(models.TransientModel):
     def action_upload_files(self):
         
         self.ensure_one()
+
+        # ---- DMS path: SRF / Sample / ELN attachments go to the DMS ----
+        if self.form_name in DMS_RECORD_MODELS:
+            record = self.env[self.form_name].sudo().browse(self.env.context.get('active_id'))
+            if not record.exists():
+                raise UserError(_("Record not found."))
+            dms_file = upload_to_dms(self.env, record, self.file_data, self.file_name, self.field_name)
+            record.write({self.field_name: dms_file.storage_path})
+            return {
+                'type': 'ir.actions.act_window_close',
+                'tag': 'display_notification',
+                'params': {
+                    'title': _("Upload Successful"),
+                    'message': _("File %s uploaded to the Document Management System") % self.file_name,
+                    'sticky': False,
+                }
+            }
+
         transport = None
         sftp = None
         try:

@@ -25,6 +25,12 @@ def _sanitize(name):
     return name or 'untitled'
 
 
+def _json_response(obj, status=200):
+    return http.Response(
+        json.dumps(obj), status=status,
+        headers=[('Content-Type', 'application/json')])
+
+
 def _get_fastapi_url(server_side=False):
     icp = request.env['ir.config_parameter'].sudo()
     if server_side:
@@ -129,6 +135,9 @@ class DmsDriveController(http.Controller):
             'status': file.status,
             'description': file.description or '',
             'tagIds': file.tag_ids.ids,
+            'resModel': file.res_model or False,
+            'resId': file.res_id or False,
+            'relatedRecordName': file.related_record_name or '',
             'access': file._effective_access(user, cache),
             'starred': user.id in file.star_user_ids.ids,
             'versionCount': file.version_count,
@@ -194,6 +203,41 @@ class DmsDriveController(http.Controller):
         model, field = mapping[collection]
         records = request.env[model].sudo().search([('active', '=', True)], order='name')
         return [{'id': r.id, 'name': r[field]} for r in records]
+
+    @http.route('/dms/meta/models', type='json', auth='user', methods=['POST'])
+    def meta_models(self):
+        """List all concrete, non-transient models with a rec_name (linkable)."""
+        result = []
+        for model in request.env['ir.model'].sudo().search([('transient', '=', False)],
+                                                           order='name'):
+            m = model.model
+            if not m:
+                continue
+            try:
+                Model = request.env[m]
+            except Exception:
+                continue
+            if Model._abstract or Model._transient or not Model._rec_name:
+                continue
+            result.append({'model': m, 'name': model.name})
+        return result
+
+    @http.route('/dms/record_search', type='json', auth='user', methods=['POST'])
+    def record_search(self, model, term='', limit=20):
+        if not model:
+            return []
+        try:
+            Model = request.env[model]
+        except Exception:
+            raise UserError('Unknown model: %s' % model)
+        if Model._abstract or Model._transient or not Model._rec_name:
+            raise UserError('Model is not linkable: %s' % model)
+        try:
+            limit = max(1, min(int(limit), 50))
+        except (TypeError, ValueError):
+            limit = 20
+        results = Model.name_search(term, limit=limit)
+        return [{'id': rid, 'display_name': name} for rid, name in results]
 
     @http.route('/dms/meta/custom_fields', type='json', auth='user', methods=['POST'])
     def meta_custom_fields(self):
@@ -299,6 +343,32 @@ class DmsDriveController(http.Controller):
         }
 
     # ------------------------------------------------------------------
+    # Same-origin upload proxy (avoids browser CORS on file uploads)
+    # ------------------------------------------------------------------
+    @http.route('/dms/upload_file', type='http', auth='user', methods=['POST'], csrf=False)
+    def upload_file(self):
+        """Receive a file from the OWL UI (same origin) and store it via FastAPI."""
+        uploaded = http.request.httprequest.files.get('file')
+        if not uploaded:
+            return _json_response({'detail': 'No file provided'}, status=400)
+        folder_id = request.params.get('folder_id') or False
+        try:
+            folder = request.env['dms.folder'].browse(int(folder_id)) if folder_id else False
+            if folder:
+                folder._check_permission('write')
+            folder_path = _folder_path(folder) if folder else ''
+            token = issue_token({'uid': request.env.uid, 'fid': 0,
+                                 'path': folder_path, 'op': 'upload'})
+            data = _fastapi_request(
+                'POST', '/api/v1/files/upload?token=' + token, token,
+                files={'file': (uploaded.filename or 'file', uploaded.stream,
+                                uploaded.mimetype or 'application/octet-stream')},
+                data={'folder_path': folder_path})
+        except (AccessError, UserError) as e:
+            return _json_response({'detail': str(e)}, status=400)
+        return _json_response(data or {'detail': 'Upload failed'}, status=200)
+
+    # ------------------------------------------------------------------
     # Upload registration
     # ------------------------------------------------------------------
     @http.route('/dms/register_upload', type='json', auth='user', methods=['POST'])
@@ -324,6 +394,9 @@ class DmsDriveController(http.Controller):
             'description': data.get('description') or '',
             'tag_ids': [(6, 0, data.get('tag_ids') or [])],
         }
+        res_model, res_id = self._validate_reference(data)
+        vals['res_model'] = res_model or False
+        vals['res_id'] = res_id or None
         self._apply_m2o(vals, ['document_type_id', 'department_id', 'project_id',
                                'customer_id', 'vendor_id', 'employee_id'])
         file = request.env['dms.file'].create(vals)
@@ -351,6 +424,10 @@ class DmsDriveController(http.Controller):
                     vals[key] = data[key]
             else:
                 vals[key] = data[key]
+        if 'res_model' in data or 'res_id' in data:
+            res_model, res_id = self._validate_reference(data)
+            vals['res_model'] = res_model or False
+            vals['res_id'] = res_id or None
         self._apply_m2o(vals, ['document_type_id', 'department_id', 'project_id',
                                'customer_id', 'vendor_id', 'employee_id'])
         if 'tag_ids' in vals:
@@ -604,6 +681,26 @@ class DmsDriveController(http.Controller):
             return int(value) or False
         except (TypeError, ValueError):
             return False
+
+    def _validate_reference(self, data):
+        """Validate and normalize a generic record link (res_model + res_id)."""
+        res_model = (data.get('res_model') or '').strip() or False
+        res_id = self._m2o(data.get('res_id'))
+        if res_model and not res_id:
+            raise UserError('A related record must be selected for the model.')
+        if res_id and not res_model:
+            raise UserError('A related model is required when a record is linked.')
+        if res_model:
+            try:
+                Model = request.env[res_model]
+            except Exception:
+                raise UserError('Unknown model: %s' % res_model)
+            if Model._abstract or Model._transient or not Model._rec_name:
+                raise UserError('Model is not linkable: %s' % res_model)
+            rec = Model.browse(res_id)
+            if not rec.exists():
+                raise UserError('Record not found: %s #%s' % (res_model, res_id))
+        return res_model, res_id
 
     def _apply_m2o(self, vals, keys):
         for key in keys:

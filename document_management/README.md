@@ -240,6 +240,7 @@ on the host.
   - owner full access
 - Audit trail (uploads, downloads, previews, renames, moves, permission changes, logins)
 - Tags, document types, departments, teams, roles, projects, customers, vendors, employees
+- Link any document to an Odoo record/transaction (sale order, invoice, partner, etc.)
 - Document date, expiry date, status, dynamic custom fields, version history, starring
 
 ## Security groups

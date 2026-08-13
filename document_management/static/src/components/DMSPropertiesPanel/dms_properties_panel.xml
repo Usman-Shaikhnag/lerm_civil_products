@@ -103,6 +103,45 @@
                     </div>
 
                     <div class="o_dms_property_group">
+                        <label class="o_dms_label">Related Record</label>
+                        <t t-if="state.draft.res_id">
+                            <div class="o_dms_related_chip">
+                                <i class="fa fa-link"/>
+                                <div>
+                                    <span class="o_dms_related_name" t-esc="state.draft.related_record_name"/>
+                                    <span class="o_dms_muted" t-esc="state.draft.res_model"/>
+                                </div>
+                                <button class="o_dms_icon_btn" t-on-click="clearReference"
+                                        title="Remove link">
+                                    <i class="fa fa-times"/>
+                                </button>
+                            </div>
+                        </t>
+                        <t t-else="">
+                            <select class="o_dms_select" t-model="state.draft.res_model"
+                                    t-on-change="onModelChange">
+                                <option value="">— None —</option>
+                                <t t-foreach="modelOptions" t-as="mo" t-key="mo.model">
+                                    <option t-att-value="mo.model" t-esc="mo.name"/>
+                                </t>
+                            </select>
+                            <div t-if="state.draft.res_model" class="o_dms_related_search">
+                                <input class="o_dms_input" t-model="state.searchText"
+                                       placeholder="Search record..."
+                                       t-on-input="onRecordSearch"/>
+                                <div t-if="state.suggestions.length" class="o_dms_suggestions">
+                                    <button t-foreach="state.suggestions" t-as="s" t-key="s.id"
+                                            class="o_dms_suggestion"
+                                            t-on-click="() => selectRecord(s)">
+                                        <span t-esc="s.display_name"/>
+                                    </button>
+                                </div>
+                                <div t-if="state.searching" class="o_dms_muted">Searching...</div>
+                            </div>
+                        </t>
+                    </div>
+
+                    <div class="o_dms_property_group">
                         <label class="o_dms_label">Tags</label>
                         <div class="o_dms_tags">
                             <button t-foreach="tagOptions" t-as="tag" t-key="tag.id"

@@ -3,6 +3,7 @@
 import os
 
 from odoo import api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class DmsFileVersion(models.Model):
@@ -74,12 +75,34 @@ class DmsFile(models.Model):
                                        string='Custom Values')
     star_user_ids = fields.Many2many('res.users', string='Starred By')
 
+    # ---- Generic link to any DB record / transaction ----
+    res_model = fields.Char(string='Related Model', index=True,
+                            help='Technical model name of the linked record, e.g. sale.order')
+    res_id = fields.Integer(string='Related Record ID', index=True,
+                            help='ID of the linked record.')
+    related_record_name = fields.Char(string='Related Record',
+                                      compute='_compute_related_record_name')
+    record_field = fields.Char(string='Record Field',
+                               help='Name of the record field this file backs '
+                                    '(e.g. attachment_path, report_path).')
+
     version_ids = fields.One2many('dms.file.version', 'file_id', string='Versions')
     version_count = fields.Integer(string='Version Count', compute='_compute_version_count')
     is_latest_version = fields.Boolean(string='Is Latest', default=True)
 
     active = fields.Boolean(default=True)
     locked_by = fields.Many2one('res.users', string='Locked By')
+
+    @api.constrains('res_model', 'res_id')
+    def _check_related_pair(self):
+        # NOTE: Odoo Integer fields can never be NULL (they become 0), so the
+        # "no link" state is res_model empty + res_id 0. Both must be set together.
+        for file in self:
+            has_model = bool(file.res_model)
+            has_id = bool(file.res_id)
+            if has_model != has_id:
+                raise ValidationError(
+                    'Related model and related record must be set together.')
 
     # ------------------------------------------------------------------
     # Computed fields
@@ -115,6 +138,24 @@ class DmsFile(models.Model):
                 file.size_display = '%.1f KB' % (size / 1024)
             else:
                 file.size_display = '%.2f MB' % (size / (1024 * 1024))
+
+    @api.depends('res_model', 'res_id')
+    def _compute_related_record_name(self):
+        for file in self:
+            rec = file.get_referenced_record()
+            file.related_record_name = rec.display_name if rec else False
+
+    def get_referenced_record(self):
+        """Return the record linked via res_model/res_id (or an empty recordset)."""
+        self.ensure_one()
+        if not self.res_model or not self.res_id:
+            return None
+        try:
+            model = self.env[self.res_model]
+        except KeyError:
+            return None
+        rec = model.browse(self.res_id)
+        return rec if rec.exists() else None
 
     @api.depends('version_ids')
     def _compute_version_count(self):

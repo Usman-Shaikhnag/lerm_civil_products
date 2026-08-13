@@ -8,6 +8,12 @@
                         <span t-esc="props.file.name"/>
                         <small t-esc="props.file.sizeDisplay"/>
                     </div>
+                    <div t-if="props.file.relatedRecordName" class="o_dms_preview_related"
+                         t-on-click="() => openRecord()"
+                         title="Open related record">
+                        <i class="fa fa-link"/>
+                        <span t-esc="props.file.relatedRecordName"/>
+                    </div>
                     <button class="o_dms_icon_btn" t-on-click="props.onPrev" title="Previous">
                         <i class="fa fa-chevron-left"/>
                     </button>

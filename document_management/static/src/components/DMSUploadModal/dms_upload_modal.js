@@ -95,18 +95,15 @@ export class DMSUploadModal extends Component {
     }
 
     async uploadOne(item, index) {
-        const res = await jsonrpc("/dms/get_token", {
-            folder_id: this.props.folderId === "root" ? false : parseInt(this.props.folderId),
-            op: "upload",
-        });
-        const token = res.token;
         const formData = new FormData();
         formData.append("file", item.file, item.name);
+        formData.append(
+            "folder_id",
+            this.props.folderId === "root" ? "" : this.props.folderId
+        );
 
-        const result = await this.xhrUpload(
-            `${this.props.fastapiUrl}/api/v1/files/upload?token=${encodeURIComponent(token)}`,
-            formData,
-            (pct) => (this.state.files[index].progress = pct)
+        const result = await this.xhrUpload("/dms/upload_file", formData, (pct) =>
+            (this.state.files[index].progress = pct)
         );
 
         const registered = await jsonrpc("/dms/register_upload", {

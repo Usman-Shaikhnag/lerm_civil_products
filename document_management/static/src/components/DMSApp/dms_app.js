@@ -62,6 +62,7 @@ export class DMSApp extends Component {
                 vendors: [],
                 employees: [],
                 customFields: [],
+                models: [],
             },
         });
 
@@ -204,7 +205,7 @@ export class DMSApp extends Component {
 
     async fetchMeta() {
         const key = this.state.meta;
-        const [users, tags, types, departments, teams, roles, projects, customers, vendors, employees, customFields] =
+        const [users, tags, types, departments, teams, roles, projects, customers, vendors, employees, customFields, models] =
             await Promise.all([
                 jsonrpc("/dms/meta/users", {}),
                 jsonrpc("/dms/meta/tags", {}),
@@ -217,6 +218,7 @@ export class DMSApp extends Component {
                 jsonrpc("/dms/meta/partners", { partner_type: "vendor" }),
                 jsonrpc("/dms/meta/employees", {}),
                 jsonrpc("/dms/meta/custom_fields", {}),
+                jsonrpc("/dms/meta/models", {}),
             ]);
         key.users = users || [];
         key.tags = tags || [];
@@ -229,6 +231,7 @@ export class DMSApp extends Component {
         key.vendors = vendors || [];
         key.employees = employees || [];
         key.customFields = customFields || [];
+        key.models = models || [];
     }
 
     async fetchDrive() {

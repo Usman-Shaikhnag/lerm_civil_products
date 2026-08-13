@@ -2,6 +2,7 @@
 
 import { Component, useState, onWillStart, onWillUpdateProps } from "@odoo/owl";
 import { jsonrpc } from "@web/core/network/rpc_service";
+import { bindAll } from "../../utils";
 
 export class DMSFilePreview extends Component {
     static template = "document_management.DMSFilePreview";
@@ -21,8 +22,19 @@ export class DMSFilePreview extends Component {
             loading: true,
             error: "",
         });
+        bindAll(this, ["openRecord"]);
         this.loadPreview();
         onWillUpdateProps(() => this.loadPreview());
+    }
+
+    openRecord() {
+        const f = this.props.file;
+        if (f.resModel && f.resId) {
+            window.open(
+                `/web#id=${f.resId}&model=${encodeURIComponent(f.resModel)}&view_type=form`,
+                "_blank"
+            );
+        }
     }
 
     async loadPreview() {

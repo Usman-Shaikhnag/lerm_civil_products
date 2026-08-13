@@ -33,6 +33,13 @@
                             </t>
                             <span t-else="" t-esc="item.name"/>
                         </div>
+                        <div t-if="!item.isFolder &amp;&amp; item.relatedRecordName"
+                             class="o_dms_related_badge"
+                             t-on-click.stop="() => openRecord(item)"
+                             title="Open related record">
+                            <i class="fa fa-link"/>
+                            <span t-esc="item.relatedRecordName"/>
+                        </div>
                         <div class="o_dms_card_meta">
                             <span t-esc="itemMeta(item)"/>
                             <span t-att-class="item.visibility === 'public' ? 'o_dms_public' : 'o_dms_private'">
@@ -59,6 +66,13 @@
                         </div>
                         <div class="o_dms_row_owner" t-if="!item.isFolder" t-esc="item.ownerName || ''"/>
                         <div class="o_dms_row_date" t-if="!item.isFolder" t-esc="itemDate(item)"/>
+                        <div t-if="!item.isFolder &amp;&amp; item.relatedRecordName"
+                             class="o_dms_row_related"
+                             t-on-click.stop="() => openRecord(item)"
+                             title="Open related record">
+                            <i class="fa fa-link"/>
+                            <span t-esc="item.relatedRecordName"/>
+                        </div>
                         <div class="o_dms_row_size" t-esc="itemMeta(item)"/>
                         <div class="o_dms_row_actions">
                             <span t-if="item.visibility === 'public'" class="o_dms_public">
