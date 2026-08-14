@@ -65,7 +65,7 @@
 								<td colspan="3"><strong>Date of Report</strong>: </td>
 									
 								<td colspan="3">
-								<span t-field="o.start_date" style="margin-right:10px;"/> 		
+								<span t-field="o.end_date" style="margin-right:10px;"/> 		
 								</td>
 							
 							</tr>
@@ -245,7 +245,7 @@
                 <th rowspan="3" style="text-align:center;">Depth (m)</th>
                 <th colspan="4" style="text-align:center;">GSA⁺</th>
                 <th colspan="3" style="text-align:center;">Atterberg Limits</th>
-                <th rowspan="3" style="text-align:center;">IS Class</th>
+                <th rowspan="3" style="text-align:center;">IS <br/> Classification</th>
 				 <th colspan="2" style="text-align:center;">Specific Gravity</th>
 				 <th colspan="2" style="text-align:center;">Free Swell Index</th>
 				 <th colspan="2" style="text-align:center;">Bulk Density</th>
@@ -1129,7 +1129,7 @@
 
 										<t t-if="data.notes_id">
 										<t t-foreach="data.notes_id" t-as="n">
-											<span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span><br/><br/>
+											<span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span><br/>
 										</t>
 									</t>
 								</td>

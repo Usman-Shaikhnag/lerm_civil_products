@@ -1384,13 +1384,16 @@
 								</td>
 								</t>
 
-								<t t-if="data.elasticity_visible">
 								<td  colspan="2" style="text-align: center;">
+								<t t-if="data.elasticity_visible">
 								<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','22145-f6f5-4b5b-bfc2-34792cf1a235265555677')]).parameter_name"/>
 								</span>
-								</td>
 								</t>
+
+								 <t t-else="">MODULUS OF ELASTICITY AND POISSON'S RATIO OF ROCK
+								 </t>
+								 </td>
                               
 
 							  
@@ -1434,29 +1437,43 @@
 								</td>
 								</t>
 
-								<t t-if="data.triaxial_visible">
+								
 								<td  colspan="2" style="text-align: center;">
+								<t t-if="data.triaxial_visible">
 								<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','214jht3mhh2277j-0bc7-41a6-a2bb-0fe9211321ytrbe')]).parameter_name"/>
 								</span>
-								</td>
 								</t>
 
-									<t t-if="data.slake_durability_visible">
+								 <t t-else="">
+								  <span>TRIAXIAL SHEAR TEST</span>
+								 </t>
+								</td>
+								
+
+									
 								<td  colspan="2" style="text-align: center;">
-								<span>
+								<t t-if="data.slake_durability_visible">
+								 <span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3258tyumhh2277j-0bc7-41a6-a2bb-0fe92112457hyte')]).parameter_name"/>
-								</span>
-								</td>
+								 </span>
 								</t>
+								<t t-else="">
+								  <span>DETERMINATION OF SLAKE DURABILITY OF ROCK</span>
+								 </t>
+								</td>
+								
 
-									<t t-if="data.cerchar_abrasivity_visible">
-								<td  colspan="2" style="text-align: center;">
+									<td  colspan="2" style="text-align: center;">
+								<t t-if="data.cerchar_abrasivity_visible">
 								<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','210324nrhh2277j-0bc7-41a6-a2bb-0fe92111234poy')]).parameter_name"/>
 								</span>
-								</td>
 								</t>
+								<t t-else="">
+								  <span>Determination of CERCHAR Abrasivity Index of Rock</span>
+								 </t>
+								</td>
 
 
 								
@@ -1464,11 +1481,15 @@
 								
                             </tr>
 							<tr style="background-color:#f9f9f9;">
-							<th>E</th><th>mu ( μ )</th>
-                            <th>ϕ</th><th>C</th>
-							 <th>Id</th><th>CL</th>
+							<th style="text-align:center;vertial-align:middle;">E</th>
+							<th style="text-align:center;vertial-align:middle;">mu ( μ )</th>
+                            <th style="text-align:center;vertial-align:middle;">ϕ</th>
+							<th style="text-align:center;vertial-align:middle;">C</th>
+							 <th style="text-align:center;vertial-align:middle;">Id</th>
+							 <th style="text-align:center;vertial-align:middle;">CL</th>
 
-							 <th>CAI</th><th>CL</th>
+							 <th style="text-align:center;vertial-align:middle;">CAI</th>
+							 <th style="text-align:center;vertial-align:middle;">CL</th>
 
 							
 							</tr>
@@ -1587,23 +1608,29 @@
 							</td>
 							</t>
 
-							  <t t-if="data.elasticity_visible">
 							<td  colspan="1" style="text-align: center;">
+							<t t-if="data.elasticity_visible">
 							<span>
-									<!-- <span t-field="env['lerm.parameter.master'].search([('internal_id','=','210324nrhh2277j-0bc7-41a6-a2bb-0fe92111234poy')]).unit.name"/> -->
-									GPa
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','210324nrhh2277j-0bc7-41a6-a2bb-0fe92111234poy')]).unit.name"/>
+									
 								</span>
+								</t>
+								<t t-else="">GPa
+								 </t>
 							</td>
-							</t>
+							
 
-							 <t t-if="data.elasticity_visible">
+							
 							<td  colspan="1" style="text-align: center;">
+							 <t t-if="data.elasticity_visible">
 							<span>
-									<!-- <span t-field="env['lerm.parameter.master'].search([('internal_id','=','210324nrhh2277j-0bc7-41a6-a2bb-0fe92111234poy')]).unit.name"/> -->
-									--
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','210324nrhh2277j-0bc7-41a6-a2bb-0fe92111234poy')]).unit.name"/>
+									
 								</span>
+								</t>
+								<t t-else="">--
+								 </t>
 							</td>
-							</t>
 
 
                            <!-- <t t-set="show_duration_of_test" t-value="any(line.duration_of_test for line in data.rock_child_lines)"/> -->
@@ -1646,51 +1673,80 @@
 								</span>
 							</td>
 							</t>
-							<t t-if="data.triaxial_visible">
+
 							<td  colspan="1" style="text-align: center;">
+							<t t-if="data.triaxial_visible">
 							<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','6315f914-f6f5-4b5b-bfc2-34792cf1a237')]).unit.name"/>
+									
 								</span>
+								</t>
+								<t t-else="">Degree
+								 </t>
 							</td>
-							</t>
-							<t t-if="data.triaxial_visible">
+							
+
+							
 							<td  colspan="1" style="text-align: center;">
+							 <t t-if="data.triaxial_visible">
 							<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','214jht3mhh2277j-0bc7-41a6-a2bb-0fe9211321ytrbe')]).unit.name"/>
+									
 								</span>
-							</td>
-							</t>
+								</t>
+								<t t-else="">MPa
+								 </t>
+							</td>  
+							
 
-							<t t-if="data.slake_durability_visible">
 							<td  colspan="1" style="text-align: center;">
-							<!-- <span>
-									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3258tyumhh2277j-0bc7-41a6-a2bb-0fe92112457hyte')]).unit.name"/>
-								</span> -->
-							</td>
-							</t>
 							<t t-if="data.slake_durability_visible">
-							<td  colspan="1" style="text-align: center;">
-							<!-- <span>
+							<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3258tyumhh2277j-0bc7-41a6-a2bb-0fe92112457hyte')]).unit.name"/>
-								</span> -->
+									
+								</span>
+								</t>
+								<t t-else="">
+								 </t>
 							</td>
-							</t>
+							
 
+							
+							<td  colspan="1" style="text-align: center;">
+							 <t t-if="data.slake_durability_visible">
+							<span>
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3258tyumhh2277j-0bc7-41a6-a2bb-0fe92112457hyte')]).unit.name"/>
+									
+								</span>
+								</t>
+								<t t-else=""> 
+								 </t>
+							</td> 
+
+							<td  colspan="1" style="text-align: center;">
 							<t t-if="data.cerchar_abrasivity_visible">
-							<td  colspan="1" style="text-align: center;">
 							<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','210324nrhh2277j-0bc7-41a6-a2bb-0fe92111234poy')]).unit.name"/>
+									
 								</span>
+								</t>
+								<t t-else="">
+								 </t>
 							</td>
-							</t>
+							
 
-							<t t-if="data.cerchar_abrasivity_visible">
+							
 							<td  colspan="1" style="text-align: center;">
+							 <t t-if="data.cerchar_abrasivity_visible">
 							<span>
 									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','210324nrhh2277j-0bc7-41a6-a2bb-0fe92111234poy')]).unit.name"/>
+									
 								</span>
-							</td>
-							</t>
+								</t>
+								<t t-else=""> 
+								 </t>
+							</td> 
+
 
 						 
 						</tr>
@@ -1853,8 +1909,8 @@
 							</td> 
 							</t>
 
-								<t t-if="data.elasticity_visible">
 							<td  colspan="2" style="text-align: center;">
+							<t t-if="data.elasticity_visible">
 							<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','22145-f6f5-4b5b-bfc2-34792cf1a235265555677')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -1862,8 +1918,11 @@
                                         </t>
 									</t>
 								</span>
+								</t>
+								<t t-else="">IS 9221
+								 </t>
 							</td> 
-							</t>
+
 							<!-- <t t-if="data.point_load_visible1">
 							<td  colspan="1" style="text-align: center;">
 							<span>
@@ -1920,8 +1979,11 @@
 							</td> 
 							</t>
 
-							<t t-if="data.triaxial_visible">
+
+
+							
 							<td  colspan="2" style="text-align: center;">
+							<t t-if="data.triaxial_visible">
 							<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','214jht3mhh2277j-0bc7-41a6-a2bb-0fe9211321ytrbe')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -1929,8 +1991,11 @@
                                         </t>
 									</t>
 								</span>
+								</t>
+								<t t-else="">IS 13047: 1991
+								 </t>
 							</td> 
-							</t>
+							
 
 							<!-- <t t-if="data.triaxial_visible">
 							<td  colspan="1" style="text-align: center;">
@@ -1944,8 +2009,8 @@
 							</td> 
 							</t> -->
 
-							<t t-if="data.slake_durability_visible">
 							<td  colspan="2" style="text-align: center;">
+							<t t-if="data.slake_durability_visible">
 							<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3258tyumhh2277j-0bc7-41a6-a2bb-0fe92112457hyte')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -1953,8 +2018,11 @@
                                         </t>
 									</t>
 								</span>
+								</t>
+								<t t-else="">IS 10050: 1981
+								 </t>
 							</td> 
-							</t>
+							
 							<!-- <t t-if="data.slake_durability_visible">
 							<td  colspan="1" style="text-align: center;">
 							<span>
@@ -1967,8 +2035,9 @@
 							</td> 
 							</t> -->
 
-							<t t-if="data.cerchar_abrasivity_visible">
+							
 							<td  colspan="2" style="text-align: center;">
+							<t t-if="data.cerchar_abrasivity_visible">
 							<span>
 									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','210324nrhh2277j-0bc7-41a6-a2bb-0fe92111234poy')]).parameter_table" t-as="parameter">
 										<t t-if="parameter.grade.id == eln.grade_id.id">
@@ -1976,8 +2045,10 @@
                                         </t>
 									</t>
 								</span>
+								</t>
+								<t t-else="">ASTMD7625-10: 2022
+								 </t>
 							</td> 
-							</t>
 
 						
 

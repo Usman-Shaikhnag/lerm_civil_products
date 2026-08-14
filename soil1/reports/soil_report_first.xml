@@ -189,7 +189,7 @@
                     <th rowspan="3" style="text-align:center;vertical-align: middle; width:4%;">Depth (m)</th>
                     <th colspan="4" style="text-align:center;vertical-align: middle; width:10%;">GSA⁺</th>
                     <th colspan="3" style="text-align:center;vertical-align: middle; width:9%;">Atterberg Limits</th>
-                    <th rowspan="3" style="text-align:center;vertical-align: middle; width:4%;">IS Class</th>
+                    <th rowspan="3" style="text-align:center;vertical-align: middle; width:4%;">IS <br/> Classification</th>
                     <th rowspan="2" colspan="2" style="text-align:center; vertical-align:middle; width:4%;" >Gs</th>
                     <th rowspan="2" colspan="2" style="text-align:center; vertical-align:middle; width:4%;">FSI</th>
                     <th rowspan="2" colspan="2" style="text-align:center; vertical-align:middle; width:4%;">γb</th>
@@ -1044,9 +1044,9 @@
                     <tr> 
                         <td style="padding: 5px; font-style: italic; font-size: 15px; line-height: 18px;">
                             <b>Remarks:</b><br/><br/>
-                                1. + Refer to Annexure-I for environmental and test conditions<br/><br/>
-                                2. Refer to Annexure- I (A) to know NABL accredited scope, range and uncertainty of measurement for test parameter<br/><br/>
-                                G-Gravel, S-Sand, M-Silt, C-Clay, LL-Liquid Limit, PL-Plastic Limit, SL-Shrinkage Limit, NMC-Natural Moisture Content, UCS- Unconfined Compressive Strength,CBR- California Bearing Ratio Test<br/><br/>	
+                                1. + Refer to Annexure-I for environmental and test conditions<br/>
+                                2. Refer to Annexure- I (A) to know NABL accredited scope, range and uncertainty of measurement for test parameter<br/>
+                                G-Gravel, S-Sand, M-Silt, C-Clay, LL-Liquid Limit, PL-Plastic Limit, SL-Shrinkage Limit, NMC-Natural Moisture Content, UCS- Unconfined Compressive Strength,CBR- California Bearing Ratio Test<br/>	
                                 UU-Unconsolidated Undrained, C-Cohesion, ɸ-Angle of Internal Friction, Pc-Preconsolidation Pressure, Cc-Compression Index, NP-Non-Plastic, MDD- Maximum dry density, OMC- Optimum moisture content, k = coefficient of permeability	<br/><br/>	
 
                             <b>Notes:-</b><br/><br/>
@@ -1057,7 +1057,7 @@
 
                                 <t t-if="data.notes_id">
                                 <t t-foreach="data.notes_id" t-as="n">
-                                    <span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span><br/><br/>
+                                    <span><t t-esc="n.sr_no"/>. <t t-esc="n.notes"/></span><br/>
                                 </t>
                             </t>
                         </td>
