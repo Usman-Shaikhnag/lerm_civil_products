@@ -12,6 +12,7 @@ export class DMSHeader extends Component {
         onSetViewMode: Function,
         searchQuery: String,
         onSearch: Function,
+        onClearSearch: Function,
         onUpload: Function,
         onNewFolder: Function,
         onToggleSidebar: Function,

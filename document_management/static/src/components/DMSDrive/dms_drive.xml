@@ -1,10 +1,26 @@
 <templates>
     <t t-name="document_management.DMSDrive" owl="1">
         <div class="o_dms_drive">
-            <div t-if="props.items.length === 0" class="o_dms_empty">
-                <i class="fa fa-folder-open-o"/>
-                <p>This folder is empty</p>
-                <span>Upload files or create a folder to get started.</span>
+            <div t-if="props.searchActive" class="o_dms_search_banner">
+                <span class="o_dms_search_banner_label">
+                    <i class="fa fa-search"/>
+                    <t t-esc="props.searchLoading ? 'Searching...' : searchLabel"/>
+                </span>
+                <button class="o_dms_search_banner_clear" t-on-click="props.onClearSearch">
+                    <i class="fa fa-times"/>
+                    <span>Clear</span>
+                </button>
+            </div>
+
+            <div t-if="props.searchActive &amp;&amp; props.searchLoading" class="o_dms_empty">
+                <i class="fa fa-spinner fa-pulse"/>
+                <p>Searching documents...</p>
+            </div>
+            <div t-elif="props.items.length === 0" class="o_dms_empty">
+                <i t-att-class="props.searchActive ? 'fa fa-search' : 'fa fa-folder-open-o'"/>
+                <p t-esc="props.searchActive ? 'No documents match your search' : 'This folder is empty'"/>
+                <span t-if="props.searchActive">Try a different file name, record ID or keyword.</span>
+                <span t-else="">Upload files or create a folder to get started.</span>
             </div>
 
             <div t-else="" t-att-class="props.viewMode === 'grid' ? 'o_dms_grid' : 'o_dms_list'">
@@ -40,6 +56,11 @@
                             <i class="fa fa-link"/>
                             <span t-esc="item.relatedRecordName"/>
                         </div>
+                        <div t-if="!item.isFolder &amp;&amp; item.folderPath"
+                             class="o_dms_folder_path" title="Folder location">
+                            <i class="fa fa-folder-o"/>
+                            <span t-esc="item.folderPath"/>
+                        </div>
                         <div class="o_dms_card_meta">
                             <span t-esc="itemMeta(item)"/>
                             <span t-att-class="item.visibility === 'public' ? 'o_dms_public' : 'o_dms_private'">
@@ -72,6 +93,10 @@
                              title="Open related record">
                             <i class="fa fa-link"/>
                             <span t-esc="item.relatedRecordName"/>
+                        </div>
+                        <div t-if="!item.isFolder &amp;&amp; item.folderPath"
+                             class="o_dms_row_folder" title="Folder location">
+                            <span t-esc="item.folderPath"/>
                         </div>
                         <div class="o_dms_row_size" t-esc="itemMeta(item)"/>
                         <div class="o_dms_row_actions">
