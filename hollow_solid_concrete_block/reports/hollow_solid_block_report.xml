@@ -9,7 +9,7 @@
                         <table style="width:100%; border-collapse: collapse;" border="1">
  
                             <tr>
-                                <td colspan="2">#Project Name/Site Name :</td>
+                                <td colspan="2">Project Name/Site Name :</td>
                                 <td colspan="6" style="font-weight:bold;">
                                     <![CDATA[&nbsp;]]>
                                     <span t-field="o.srf_id.name_work"/>
@@ -18,7 +18,7 @@
                             <tr>
 
                             <t t-if="o.srf_id.client">
-                                <td colspan="2">#Customer Name :</td>
+                                <td colspan="2">Customer Name :</td>
                                 <td colspan="2" style="font-weight:bold;">
                                     <![CDATA[&nbsp;]]>
                                     <t t-if="o.srf_id.customer">
@@ -33,7 +33,7 @@
                                 </td>
                             </t>
                             <t t-else="">
-                             <td colspan="2">#Customer Name :</td>
+                             <td colspan="2">Customer Name :</td>
                              <td colspan="6" style="font-weight:bold;">
                                        <![CDATA[&nbsp;]]>
                                    <t t-if="o.srf_id.customer">
@@ -82,10 +82,7 @@
                             <tr>
                                 <td colspan="2">Samples Description :-</td>
                                 <td colspan="2">
-                                    <t t-if="o.material and o.material.lab_name or o.sample_id.size_id">
-                                        <span t-field="o.sample_id.size_id"/> <![CDATA[&nbsp;]]> <![CDATA[&nbsp;]]> <span t-field="o.material.lab_name"/>
-                                    </t>
-                                    <t t-else="">--</t>
+                                    <span t-field="o.sample_id.sample_description"/>
                                 </td>
                                 <td colspan="2">Brand:</td>
                                 <td colspan="2" >
@@ -95,12 +92,13 @@
                                 
                             </tr>
                             <tr>
-                                <td colspan="2">#Source of Sample :-</td>
+                                <td colspan="2">Source of Sample :-</td>
                                 <td colspan="2">
-                                    <t t-if="o.material.source_sample">
+                                    <!-- <t t-if="o.material.source_sample">
                                         <span t-field="o.material.source_sample"/>
                                     </t>
-                                    <t t-else="">-</t>
+                                    <t t-else="">-</t> -->
+                                    <span t-field="o.sample_id.source_of_sample"/>
                                 </td>
 
                                 <td colspan="2">Date of Receipt :-</td>
@@ -115,6 +113,7 @@
                             <tr>
                                 <td colspan="2">Condition of Sample :-</td>
                                 <td colspan="2">
+                                    <span t-field="o.sample_id.sample_condition"/>
                                 </td>
                                 <td colspan="2">Date of Performance of Test :-</td>
                                 <td colspan="2">
