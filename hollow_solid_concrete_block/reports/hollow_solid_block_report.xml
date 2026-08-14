@@ -49,12 +49,12 @@
                             </tr>
                             <tr>
                                 <td colspan="3">SRF ID :</td>
-                                <td colspan="2" style="font-weight:bold;">
+                                <td colspan="3" style="font-weight:bold;">
                                     <![CDATA[&nbsp;]]>
                                     <span t-esc="o.sample_id.srf_id.display_name.split('-')[0]"/>
                                 </td>
                                 <td colspan="3">Client Sample Id :-</td>
-                                <td colspan="3">
+                                <td colspan="2">
                                     <t t-if="o.sample_id.client_sample_id">
                                         <span t-field="o.sample_id.client_sample_id"/>
                                     </t>
@@ -70,14 +70,14 @@
                             </tr>
                             <tr>
                                 <td colspan="3" style="text-align:left;">Reference No. :-</td>
-                                <td colspan="2" style="text-align:left;">
+                                <td colspan="3" style="text-align:left;">
                                     <t t-if="o.srf_id.client_refrence">
                                         <span t-field="o.srf_id.client_refrence"/>
                                     </t>
                                     <t t-else="">-</t>
                                 </td>
                                 <td colspan="3">Brand:</td>
-                                <td colspan="3">
+                                <td colspan="2">
                                     <span t-field="o.sample_id.brand"/>
                                 </td>
                             </tr>
@@ -162,7 +162,7 @@
                                     <th style="text-align: center;">
                                         <span t-esc="eln.material.unit"/>
                                     </th>
-                                    <th style="text-align: center;"><span t-esc="eln.material.specifications"/></th>
+                                    <!-- <th style="text-align: center;"><span t-esc="eln.material.specifications"/></th> -->
                                     <th style="text-align: center;"><span t-esc="eln.material.method_reference"/></th>
                                 </tr>
                             </thead>
@@ -177,7 +177,7 @@
                                         <span t-esc="i + 1" />
                                         <t t-set="i" t-value="i+1"/>
                                     </td>
-                                    <td>
+                                    <td style="text-align: center;">
                                         <span t-esc="length.parameter_name"/>
                                     </td>
                                     <td style="text-align: center;">
@@ -188,32 +188,32 @@
                                         </t>
                                     </td>
                                     <td style="text-align: center;">
-                                        <span>
+                                        <div style="text-align:center;">
                                             <span t-field="data.avg_length" t-options='{"widget": "float", "precision": 0}'/>
-                                        </span>
+                                        </div>
                                     </td>
                                     <td style="text-align: center;">
-                                        <span>
+                                        <div style="text-align:center;">
                                             <span t-esc="length.unit.name"/>
-                                        </span>
+                                        </div>
                                     </td>
-                                    <td style="text-align: center;">
-                                        <span>
+                                    <!-- <td style="text-align: center;">
+                                        <div style="text-align:center;">
                                             <t t-foreach="length.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.permissable_limit"/>
                                                 </t>
                                             </t>
-                                        </span>
-                                    </td>
+                                        </div>
+                                    </td> -->
                                     <td style="text-align: center;">
-                                        <span>
+                                        <div style="text-align:center;">
                                             <t t-foreach="length.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.specification"/>
                                                 </t>
                                             </t>
-                                        </span>
+                                        </div>
                                     </td>
 
                                 </tr>
@@ -227,7 +227,7 @@
                                         <span t-esc="i + 1" />
                                         <t t-set="i" t-value="i+1"/>
                                     </td>
-                                    <td>
+                                    <td style="text-align: center;">
                                         <span t-esc="height.parameter_name"/>
                                     </td>
                                     <td style="text-align: center;">
@@ -238,32 +238,32 @@
                                         </t>
                                     </td>
                                     <td style="text-align: center;">
-                                        <span>
+                                        <div style="text-align:center;">
                                             <span t-field="data.avg_height" t-options='{"widget": "float", "precision": 0}'/>
-                                        </span>
+                                        </div>
                                     </td>
                                     <td style="text-align: center;">
-                                        <span>
+                                        <div style="text-align:center;">
                                             <span t-esc="height.unit.name"/>
-                                        </span>
+                                        </div>
                                     </td>
-                                    <td style="text-align: center;">
-                                        <span>
+                                    <!-- <td style="text-align: center;">
+                                        <div style="text-align:center;">
                                             <t t-foreach="height.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.permissable_limit"/>
                                                 </t>
                                             </t>
-                                        </span>
-                                    </td>
+                                        </div>
+                                    </td> -->
                                     <td style="text-align: center;">
-                                        <span>
+                                        <div style="text-align:center;">
                                             <t t-foreach="height.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.specification"/>
                                                 </t>
                                             </t>
-                                        </span>
+                                        </div>
                                     </td>
 
                                 </tr>
@@ -277,7 +277,7 @@
                                         <span t-esc="i + 1" />
                                         <t t-set="i" t-value="i+1"/>
                                     </td>
-                                    <td>
+                                    <td style="text-align: center;">
                                         <span t-esc="width.parameter_name"/>
                                     </td>
                                     <td style="text-align: center;">
@@ -288,32 +288,32 @@
                                         </t>
                                     </td>
                                     <td style="text-align: center;">
-                                        <span>
+                                        <div style="text-align:center;">
                                             <span t-field="data.avg_width" t-options='{"widget": "float", "precision": 0}'/>
-                                        </span>
+                                        </div>
                                     </td>
                                     <td style="text-align: center;">
-                                        <span>
+                                        <div style="text-align:center;">
                                             <span t-esc="width.unit.name"/>
-                                        </span>
+                                        </div>
                                     </td>
-                                    <td style="text-align: center;">
-                                        <span>
+                                    <!-- <td style="text-align: center;">
+                                        <div style="text-align:center;">
                                             <t t-foreach="width.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.permissable_limit"/>
                                                 </t>
                                             </t>
-                                        </span>
-                                    </td>
+                                        </div>
+                                    </td> -->
                                     <td style="text-align: center;">
-                                        <span>
+                                        <div style="text-align:center;">
                                             <t t-foreach="width.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.specification"/>
                                                 </t>
                                             </t>
-                                        </span>
+                                        </div>
                                     </td>
 
                                 </tr>
@@ -327,7 +327,7 @@
                                         <span t-esc="i + 1" />
                                         <t t-set="i" t-value="i+1"/>
                                     </td>
-                                    <td>
+                                    <td style="text-align: center;">
                                         <span t-esc="block_density.parameter_name"/>
                                     </td>
                                     <td style="text-align: center;">
@@ -338,32 +338,32 @@
                                         </t>
                                     </td>
                                     <td style="text-align: center;">
-                                        <span>
+                                        <div style="text-align:center;">
                                             <span t-field="data.mean_block_density" t-options='{"widget": "float", "precision": 2}'/>
-                                        </span>
+                                        </div>
                                     </td>
                                     <td style="text-align: center;">
-                                        <span>
+                                        <div style="text-align:center;">
                                             <span t-esc="block_density.unit.name"/>
-                                        </span>
+                                        </div>
                                     </td>
-                                    <td style="text-align: center;">
-                                        <span>
+                                    <!-- <td style="text-align: center;">
+                                        <div style="text-align:center;">
                                             <t t-foreach="block_density.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.permissable_limit"/>
                                                 </t>
                                             </t>
-                                        </span>
-                                    </td>
+                                        </div>
+                                    </td> -->
                                     <td style="text-align: center;">
-                                        <span>
+                                        <div style="text-align:center;">
                                             <t t-foreach="block_density.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.specification"/>
                                                 </t>
                                             </t>
-                                        </span>
+                                        </div>
                                     </td>
 
                                 </tr>
@@ -377,7 +377,7 @@
                                         <span t-esc="i + 1" />
                                         <t t-set="i" t-value="i+1"/>
                                     </td>
-                                    <td>
+                                    <td style="text-align: center;">
                                         <span t-esc="compressive_strength.parameter_name"/>
                                     </td>
                                     <td style="text-align: center;">
@@ -388,32 +388,32 @@
                                         </t>
                                     </td>
                                     <td style="text-align: center;">
-                                        <span>
+                                        <div style="text-align:center;">
                                             <span t-field="data.average_compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
-                                        </span>
+                                        </div>
                                     </td>
                                     <td style="text-align: center;">
-                                        <span>
+                                        <div style="text-align:center;">
                                             <span t-esc="compressive_strength.unit.name"/>
-                                        </span>
+                                        </div>
                                     </td>
-                                    <td style="text-align: center;">
-                                        <span>
+                                    <!-- <td style="text-align: center;">
+                                        <div style="text-align:center;">
                                             <t t-foreach="compressive_strength.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.permissable_limit"/>
                                                 </t>
                                             </t>
-                                        </span>
-                                    </td>
+                                        </div>
+                                    </td> -->
                                     <td style="text-align: center;">
-                                        <span>
+                                        <div style="text-align:center;">
                                             <t t-foreach="compressive_strength.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.specification"/>
                                                 </t>
                                             </t>
-                                        </span>
+                                        </div>
                                     </td>
 
                                 </tr>
@@ -427,7 +427,7 @@
                                         <span t-esc="i + 1" />
                                         <t t-set="i" t-value="i+1"/>
                                     </td>
-                                    <td>
+                                    <td style="text-align: center;">
                                         <span t-esc="water.parameter_name"/>
                                     </td>
                                     <td style="text-align: center;">
@@ -438,32 +438,32 @@
                                         </t>
                                     </td>
                                     <td style="text-align: center;">
-                                        <span>
+                                        <div style="text-align:center;">
                                             <span t-field="data.mean_water_absorption" t-options='{"widget": "float", "precision": 2}'/>
-                                        </span>
+                                        </div>
                                     </td>
                                     <td style="text-align: center;">
-                                        <span>
+                                        <div style="text-align:center;">
                                             <span t-esc="water.unit.name"/>
-                                        </span>
+                                        </div>
                                     </td>
-                                    <td style="text-align: center;">
-                                        <span>
+                                    <!-- <td style="text-align: center;">
+                                        <div style="text-align:center;">
                                             <t t-foreach="water.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.permissable_limit"/>
                                                 </t>
                                             </t>
-                                        </span>
-                                    </td>
+                                        </div>
+                                    </td> -->
                                     <td style="text-align: center;">
-                                        <span>
+                                        <div style="text-align:center;">
                                             <t t-foreach="water.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.specification"/>
                                                 </t>
                                             </t>
-                                        </span>
+                                        </div>
                                     </td>
 
                                 </tr>
@@ -477,7 +477,7 @@
                                         <span t-esc="i + 1" />
                                         <t t-set="i" t-value="i+1"/>
                                     </td>
-                                    <td>
+                                    <td style="text-align: center;">
                                         <span t-esc="drying.parameter_name"/>
                                     </td>
                                     <td style="text-align: center;">
@@ -488,32 +488,32 @@
                                         </t>
                                     </td>
                                     <td style="text-align: center;">
-                                        <span>
+                                        <div style="text-align:center;">
                                             <span t-field="data.avg_drying_shrinkage" t-options='{"widget": "float", "precision": 4}'/>
-                                        </span>
+                                        </div>
                                     </td>
                                     <td style="text-align: center;">
-                                        <span>
+                                        <div style="text-align:center;">
                                             <span t-esc="drying.unit.name"/>
-                                        </span>
+                                        </div>
                                     </td>
-                                    <td style="text-align: center;">
-                                        <span>
+                                    <!-- <td style="text-align: center;">
+                                        <div style="text-align:center;">
                                             <t t-foreach="drying.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.permissable_limit"/>
                                                 </t>
                                             </t>
-                                        </span>
-                                    </td>
+                                        </div>
+                                    </td> -->
                                     <td style="text-align: center;">
-                                        <span>
+                                        <div style="text-align:center;">
                                             <t t-foreach="drying.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.specification"/>
                                                 </t>
                                             </t>
-                                        </span>
+                                        </div>
                                     </td>
 
                                 </tr>
@@ -527,7 +527,7 @@
                                         <span t-esc="i + 1" />
                                         <t t-set="i" t-value="i+1"/>
                                     </td>
-                                    <td>
+                                    <td style="text-align: center;">
                                         <span t-esc="moisture.parameter_name"/>
                                     </td>
                                     <td style="text-align: center;">
@@ -538,32 +538,32 @@
                                         </t>
                                     </td>
                                     <td style="text-align: center;">
-                                        <span>
+                                        <div style="text-align:center;">
                                             <span t-field="data.avg_moisture_movement" t-options='{"widget": "float", "precision": 4}'/>
-                                        </span>
+                                        </div>
                                     </td>
                                     <td style="text-align: center;">
-                                        <span>
+                                        <div style="text-align:center;">
                                             <span t-esc="moisture.unit.name"/>
-                                        </span>
+                                        </div>
                                     </td>
-                                    <td style="text-align: center;">
-                                        <span>
+                                    <!-- <td style="text-align: center;">
+                                        <div style="text-align:center;">
                                             <t t-foreach="moisture.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.permissable_limit"/>
                                                 </t>
                                             </t>
-                                        </span>
-                                    </td>
+                                        </div>
+                                    </td> -->
                                     <td style="text-align: center;">
-                                        <span>
+                                        <div style="text-align:center;">
                                             <t t-foreach="moisture.parameter_table" t-as="parameter">
                                                 <t t-if="parameter.grade.id == eln.grade_id.id">
                                                     <span t-field="parameter.specification"/>
                                                 </t>
                                             </t>
-                                        </span>
+                                        </div>
                                     </td>
 
                                 </tr>
