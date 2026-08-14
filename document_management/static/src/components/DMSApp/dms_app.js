@@ -43,6 +43,10 @@ export class DMSApp extends Component {
             folders: [],
             files: [],
             searchQuery: "",
+            searchResults: [],
+            searchLoading: false,
+            searchActive: false,
+            searchTotal: 0,
             previewFile: null,
             previewIndex: -1,
             uploadOpen: false,
@@ -77,6 +81,8 @@ export class DMSApp extends Component {
             "toggleSidebar",
             "setViewMode",
             "setSearch",
+            "searchDocuments",
+            "clearSearch",
             "closeUpload",
             "closeFolderModal",
             "prevPreview",
@@ -145,6 +151,9 @@ export class DMSApp extends Component {
     }
 
     get currentItems() {
+        if (this.state.searchActive) {
+            return this.state.searchResults;
+        }
         const q = (this.state.searchQuery || "").trim().toLowerCase();
         let items = [];
         if (this.state.nav === "recent") {
@@ -278,14 +287,14 @@ export class DMSApp extends Component {
     navigate(folderId) {
         this.state.currentFolderId = String(folderId);
         this.state.nav = "drive";
-        this.state.searchQuery = "";
+        this.clearSearch();
         this.state.sidebarOpen = false;
     }
 
     selectNav(nav) {
         this.state.nav = nav;
         this.state.currentFolderId = "root";
-        this.state.searchQuery = "";
+        this.clearSearch();
     }
 
     toggleSidebar() {
@@ -298,6 +307,60 @@ export class DMSApp extends Component {
 
     setSearch(q) {
         this.state.searchQuery = q;
+        this.state.searchActive = (q || "").trim().length > 0;
+        if (this.searchTimer) {
+            clearTimeout(this.searchTimer);
+        }
+        if (!this.state.searchActive) {
+            this.state.searchResults = [];
+            return;
+        }
+        this.searchTimer = setTimeout(() => this.searchDocuments(), 300);
+    }
+
+    async searchDocuments() {
+        const term = (this.state.searchQuery || "").trim();
+        if (!term) {
+            this.state.searchResults = [];
+            return;
+        }
+        const seq = (this._searchSeq || 0) + 1;
+        this._searchSeq = seq;
+        this.state.searchLoading = true;
+        try {
+            const res = await jsonrpc("/dms/search", { term, limit: 50 });
+            if (seq !== this._searchSeq) {
+                return;
+            }
+            this.state.searchResults = (res.files || []).map((f) => ({
+                ...f,
+                isFolder: false,
+            }));
+            this.state.searchTotal = res.total || 0;
+        } catch (e) {
+            if (seq !== this._searchSeq) {
+                return;
+            }
+            this.state.searchResults = [];
+            this.state.searchTotal = 0;
+            this.toast(e.message?.data?.message || "Search failed", "danger");
+        } finally {
+            if (seq === this._searchSeq) {
+                this.state.searchLoading = false;
+            }
+        }
+    }
+
+    clearSearch() {
+        if (this.searchTimer) {
+            clearTimeout(this.searchTimer);
+        }
+        this._searchSeq = (this._searchSeq || 0) + 1;
+        this.state.searchQuery = "";
+        this.state.searchResults = [];
+        this.state.searchTotal = 0;
+        this.state.searchActive = false;
+        this.state.searchLoading = false;
     }
 
     closeUpload() {

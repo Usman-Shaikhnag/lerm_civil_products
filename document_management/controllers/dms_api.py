@@ -138,6 +138,7 @@ class DmsDriveController(http.Controller):
             'resModel': file.res_model or False,
             'resId': file.res_id or False,
             'relatedRecordName': file.related_record_name or '',
+            'folderPath': file.folder_id.get_folder_path() if file.folder_id else '',
             'access': file._effective_access(user, cache),
             'starred': user.id in file.star_user_ids.ids,
             'versionCount': file.version_count,
@@ -165,6 +166,119 @@ class DmsDriveController(http.Controller):
                 files.append(self._serialize_file(file, user, cache))
 
         return {'folders': folders, 'files': files}
+
+    # ------------------------------------------------------------------
+    # Global search (file name, record name, folder, metadata)
+    # ------------------------------------------------------------------
+    @http.route('/dms/search', type='json', auth='user', methods=['POST'])
+    def search_documents(self, term='', limit=50):
+        """Search the whole DMS for files by name, linked record name,
+        folder name or metadata (tags, description, custom fields,
+        customer/vendor/project). Only files the user can read are returned.
+        """
+        user = request.env.user
+        cache = _effective_cache()
+        File = request.env['dms.file']
+        term = (term or '').strip()
+        if not term:
+            return {'files': [], 'total': 0}
+        try:
+            limit = max(1, min(int(limit), 100))
+        except (TypeError, ValueError):
+            limit = 50
+
+        candidate_ids = set()
+
+        # 1. File name / original name
+        for file in File.search([
+                '|',
+                ('name', 'ilike', term),
+                ('original_name', 'ilike', term),
+                ('active', '=', True)]):
+            candidate_ids.add(file.id)
+
+        # 2. Folder names (including files in descendant folders)
+        folders = request.env['dms.folder'].search([('name', 'ilike', term)])
+        if folders:
+            folder_scope = request.env['dms.folder'].search(
+                [('id', 'child_of', folders.ids)])
+            for file in File.search([('folder_id', 'in', folder_scope.ids),
+                                     ('active', '=', True)]):
+                candidate_ids.add(file.id)
+
+        # 3. Related record name (resolve display names via name_search)
+        models = []
+        for group in File.read_group([('res_model', '!=', False)],
+                                     ['res_model'], ['res_model']):
+            if group.get('res_model'):
+                models.append(group['res_model'])
+        for model_name in models:
+            try:
+                Model = request.env[model_name]
+            except Exception:
+                continue
+            if Model._abstract or Model._transient or not Model._rec_name:
+                continue
+            try:
+                matched = Model.name_search(term, limit=min(limit * 2, 200))
+            except Exception:
+                continue
+            matched_ids = [r[0] for r in matched if r and r[0]]
+            if not matched_ids:
+                continue
+            for file in File.search([('res_model', '=', model_name),
+                                     ('res_id', 'in', matched_ids),
+                                     ('active', '=', True)]):
+                candidate_ids.add(file.id)
+
+        # 4. Metadata: tags, description, custom values, customer/vendor/project
+        for file in File.search([
+                '&',
+                '|', '|', '|', '|', '|', '|',
+                ('tag_ids.name', 'ilike', term),
+                ('description', 'ilike', term),
+                ('custom_value_ids.value_char', 'ilike', term),
+                ('custom_value_ids.value_text', 'ilike', term),
+                ('customer_id.name', 'ilike', term),
+                ('vendor_id.name', 'ilike', term),
+                ('project_id.name', 'ilike', term),
+                ('active', '=', True)]):
+            candidate_ids.add(file.id)
+
+        # 5. many2one custom values resolved by target record name
+        m2o_fields = request.env['dms.field.definition'].sudo().search(
+            [('field_type', '=', 'many2one'), ('model_id', '!=', False)])
+        for fdef in m2o_fields:
+            try:
+                Target = request.env[fdef.model_id.model]
+            except Exception:
+                continue
+            if Target._abstract or Target._transient or not Target._rec_name:
+                continue
+            try:
+                matched = Target.name_search(term, limit=min(limit * 2, 200))
+            except Exception:
+                continue
+            matched_ids = [r[0] for r in matched if r and r[0]]
+            if not matched_ids:
+                continue
+            for file in File.search([
+                    ('custom_value_ids.field_id', '=', fdef.id),
+                    ('custom_value_ids.value_many2one', 'in', matched_ids),
+                    ('active', '=', True)]):
+                candidate_ids.add(file.id)
+
+        if not candidate_ids:
+            return {'files': [], 'total': 0}
+
+        files = []
+        for file in File.search([('id', 'in', sorted(candidate_ids)),
+                                 ('active', '=', True)], order='name'):
+            access = file._effective_access(user, cache)
+            if access.get('read'):
+                files.append(self._serialize_file(file, user, cache))
+        total = len(files)
+        return {'files': files[:limit], 'total': total}
 
     # ------------------------------------------------------------------
     # Master data
