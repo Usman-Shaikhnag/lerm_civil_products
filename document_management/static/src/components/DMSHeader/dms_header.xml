@@ -11,10 +11,15 @@
                 <i class="fa fa-search"/>
                 <input
                     type="text"
-                    placeholder="Search documents..."
+                    placeholder="Search all documents..."
                     t-att-value="state.value"
                     t-on-input="onSearchInput"
                 />
+                <button t-if="state.value" class="o_dms_search_clear"
+                        t-on-click="props.onClearSearch"
+                        title="Clear search">
+                    <i class="fa fa-times"/>
+                </button>
             </div>
 
             <div class="o_dms_header_actions">

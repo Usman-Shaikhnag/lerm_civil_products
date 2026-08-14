@@ -21,6 +21,11 @@ export class DMSDrive extends Component {
         items: Array,
         viewMode: String,
         currentFolderId: String,
+        searchActive: Boolean,
+        searchLoading: Boolean,
+        searchTotal: Number,
+        searchQuery: String,
+        onClearSearch: Function,
         onFolderClick: Function,
         onFileClick: Function,
         onDownload: Function,
@@ -71,6 +76,12 @@ export class DMSDrive extends Component {
 
     itemDate(item) {
         return formatDate(item.dateUploaded || item.lastAccessDate);
+    }
+
+    get searchLabel() {
+        const n = this.props.searchTotal || 0;
+        const label = n === 1 ? "1 result" : `${n} results`;
+        return `${label} for "${this.props.searchQuery}"`;
     }
 
     can(item, flag) {
