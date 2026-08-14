@@ -3,50 +3,31 @@
     <template id="hollow_solid_block_report">
         <t t-call="web.html_container">
             <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
-                <div class="container_eln" style="padding-top:20px;">
+                <div class="container_eln" style="padding-top:2px;">
 
                     <div class="" t-foreach="eln" t-as="o">
                         <table style="width:100%; border-collapse: collapse;" border="1">
  
                             <tr>
-                                <td colspan="2">Project Name/Site Name :</td>
-                                <td colspan="6" style="font-weight:bold;">
+                                <td colspan="3">Project Name/Site Name :</td>
+                                <td colspan="3" style="font-weight:bold;">
                                     <![CDATA[&nbsp;]]>
                                     <span t-field="o.srf_id.name_work"/>
                                 </td>
-                            </tr>
-                            <tr>
-
-                            <t t-if="o.srf_id.client">
-                                <td colspan="2">Customer Name :</td>
+                                <td colspan="3">Customer Name :</td>
                                 <td colspan="2" style="font-weight:bold;">
                                     <![CDATA[&nbsp;]]>
                                     <t t-if="o.srf_id.customer">
                                         <span t-field="o.srf_id.customer"/>
                                     </t>
-                                    <t t-else="">--</t>
-                                </td>
-                                <td colspan="2">Client Name :</td>
-                                <td colspan="2" style="font-weight:bold;">
-                                    
+                                    <t t-else="">
                                         <span t-field="o.srf_id.client"/>
+                                    </t>
                                 </td>
-                            </t>
-                            <t t-else="">
-                             <td colspan="2">Customer Name :</td>
-                             <td colspan="6" style="font-weight:bold;">
-                                       <![CDATA[&nbsp;]]>
-                                   <t t-if="o.srf_id.customer">
-                                      <span t-field="o.srf_id.customer"/>
-                                  </t>
-                                <t t-else="">--</t>
-                             </td>
-                            </t>
-                                
                             </tr>
                             <tr>
-                                <td colspan="2">Address:</td>
-                                <td colspan="2" style="font-weight:bold;">
+                                <td colspan="3" style="text-align:left;">Address:</td>
+                                <td colspan="8" style="font-weight:bold;text-align:left;">
                                     <![CDATA[&nbsp;]]>
                                     <span t-field="o.srf_id.customer.street"/>
                                     <span t-field="o.srf_id.customer.street2"/>
@@ -55,45 +36,54 @@
                                     <span t-field="o.srf_id.customer.state_id"/>,
                                     <span t-field="o.srf_id.customer.country_id"/>
                                 </td>
-                                <td colspan="2">SRF ID :</td>
-                                <td colspan="2" style="font-weight:bold;">
-                                    
-                                    <span t-esc="o.sample_id.srf_id.display_name.split('-')[0]"/>
-                                </td>
-                                
                             </tr>
                             <tr>
-                                <td colspan="2">Location of Performance :-</td>
-                                <td colspan="2">
+                                <td colspan="3" style="text-align:left;">Location of Performance :-</td>
+                                <td colspan="8" style="font-weight:bold;text-align:left;">
+                                    <![CDATA[&nbsp;]]>
                                     <t t-if="o.sample_id.location_name">
                                         <span t-field="o.sample_id.location_name"/>
                                     </t>
                                     <t t-else="">--</t>
                                 </td>
-                                <td colspan="2">Client Sample Id :-</td>
-                                <td colspan="2">
+                            </tr>
+                            <tr>
+                                <td colspan="3">SRF ID :</td>
+                                <td colspan="2" style="font-weight:bold;">
+                                    <![CDATA[&nbsp;]]>
+                                    <span t-esc="o.sample_id.srf_id.display_name.split('-')[0]"/>
+                                </td>
+                                <td colspan="3">Client Sample Id :-</td>
+                                <td colspan="3">
                                     <t t-if="o.sample_id.client_sample_id">
                                         <span t-field="o.sample_id.client_sample_id"/>
                                     </t>
                                     <t t-else="">-</t>
                                 </td>
-                                
                             </tr>
                             <tr>
-                                <td colspan="2">Samples Description :-</td>
-                                <td colspan="2">
+                                <td colspan="3" style="text-align:left;">Samples Description :-</td>
+                                <td colspan="8" style="font-weight:bold;text-align:left;">
+                                    <![CDATA[&nbsp;]]>
                                     <span t-field="o.sample_id.sample_description"/>
                                 </td>
-                                <td colspan="2">Brand:</td>
-                                <td colspan="2" >
-                                   
-                                    <span t-field="o.sample_id.brand"/>
-                                </td>
-                                
                             </tr>
                             <tr>
-                                <td colspan="2">Source of Sample :-</td>
-                                <td colspan="2">
+                                <td colspan="3" style="text-align:left;">Reference No. :-</td>
+                                <td colspan="2" style="text-align:left;">
+                                    <t t-if="o.srf_id.client_refrence">
+                                        <span t-field="o.srf_id.client_refrence"/>
+                                    </t>
+                                    <t t-else="">-</t>
+                                </td>
+                                <td colspan="3">Brand:</td>
+                                <td colspan="3">
+                                    <span t-field="o.sample_id.brand"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">Source of Sample :-</td>
+                                <td colspan="3">
                                     <!-- <t t-if="o.material.source_sample">
                                         <span t-field="o.material.source_sample"/>
                                     </t>
@@ -101,7 +91,7 @@
                                     <span t-field="o.sample_id.source_of_sample"/>
                                 </td>
 
-                                <td colspan="2">Date of Receipt :-</td>
+                                <td colspan="3">Date of Receipt :-</td>
                                 <td colspan="2">
                                     <t t-if="o.sample_id.sample_received_date">
                                         <span t-field="o.sample_id.sample_received_date"/>
@@ -111,11 +101,11 @@
                                 
                             </tr>
                             <tr>
-                                <td colspan="2">Condition of Sample :-</td>
-                                <td colspan="2">
+                                <td colspan="3">Condition of Sample :-</td>
+                                <td colspan="3">
                                     <span t-field="o.sample_id.sample_condition"/>
                                 </td>
-                                <td colspan="2">Date of Performance of Test :-</td>
+                                <td colspan="3">Date of Performance of Test :-</td>
                                 <td colspan="2">
                                     <t t-if="o.start_date and o.end_date">
 											
@@ -129,8 +119,8 @@
                             </tr>
                             
                             <tr>
-                                <td colspan="2">Discipline :-</td>
-                                <td colspan="2">
+                                <td colspan="3">Discipline :-</td>
+                                <td colspan="3">
                                     <t t-if="o.sample_id.group_id">
                                         <span t-field="o.sample_id.group_id"/>
                                     </t>
@@ -144,7 +134,7 @@
                                     <t t-else="">-</t>
                                 </td> -->
 
-                                <td colspan="2">Date of Report Issue :-</td>
+                                <td colspan="3">Date of Report Issue :-</td>
                                 <td colspan="2">
                                     <t t-if="o.end_date">
                                         <span t-field="o.end_date"/>
@@ -153,31 +143,7 @@
                                 </td>
                                
                             </tr>
-                            <tr>
-                            <td colspan="2">Reference No. :-</td>
-                                <td colspan="2">
-                                    <t t-if="o.srf_id.client_refrence">
-                                        <span t-field="o.srf_id.client_refrence"/>
-                                    </t>
-                                    <t t-else="">-</t>
-                                </td>
-                                <td colspan="1">Temperature :-</td>
-                                <td colspan="1">
-                                    <t t-if="data.hollow_solid_temp is not None">
-                                        <span t-field="data.hollow_solid_temp"/>   °C
-                                    </t>
-                                    <t t-else="">-</t>
-                                </td>
-                                <td colspan="1">Humidity :-</td>
-                                <td colspan="1">
-                                    <t t-if="data.hollow_solid_humidity is not None">
-                                        <span t-field="data.hollow_solid_humidity"/>   °C
-                                    </t>
-                                    <t t-else="">-</t>
-                                </td>
-                                 
-                            </tr>
-                            
+
 
                         </table>
                     </div>
@@ -191,9 +157,8 @@
                                     <th style="text-align: center;">
                                         <span t-esc="eln.material.test_parameter"/>
                                     </th>
-                                    <th style="text-align: center;">
-                                        <span t-esc="eln.material.result_remark"/>
-                                    </th>
+                                    <th style="text-align: center;">Result</th>
+                                    <th style="text-align: center;">Average of results</th>
                                     <th style="text-align: center;">
                                         <span t-esc="eln.material.unit"/>
                                     </th>
@@ -214,6 +179,13 @@
                                     </td>
                                     <td>
                                         <span t-esc="length.parameter_name"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <t t-foreach="data.dimension_line_ids.mapped('length')" t-as="val">
+                                            <div t-att-style="'text-align:center;' + ('border-bottom:1px solid #000;' if not val_last else '')">
+                                                <span t-esc="'%.0f' % val"/>
+                                            </div>
+                                        </t>
                                     </td>
                                     <td style="text-align: center;">
                                         <span>
@@ -259,6 +231,13 @@
                                         <span t-esc="height.parameter_name"/>
                                     </td>
                                     <td style="text-align: center;">
+                                        <t t-foreach="data.dimension_line_ids.mapped('height')" t-as="val">
+                                            <div t-att-style="'text-align:center;' + ('border-bottom:1px solid #000;' if not val_last else '')">
+                                                <span t-esc="'%.0f' % val"/>
+                                            </div>
+                                        </t>
+                                    </td>
+                                    <td style="text-align: center;">
                                         <span>
                                             <span t-field="data.avg_height" t-options='{"widget": "float", "precision": 0}'/>
                                         </span>
@@ -300,6 +279,13 @@
                                     </td>
                                     <td>
                                         <span t-esc="width.parameter_name"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <t t-foreach="data.dimension_line_ids.mapped('width')" t-as="val">
+                                            <div t-att-style="'text-align:center;' + ('border-bottom:1px solid #000;' if not val_last else '')">
+                                                <span t-esc="'%.0f' % val"/>
+                                            </div>
+                                        </t>
                                     </td>
                                     <td style="text-align: center;">
                                         <span>
@@ -345,6 +331,13 @@
                                         <span t-esc="block_density.parameter_name"/>
                                     </td>
                                     <td style="text-align: center;">
+                                        <t t-foreach="data.block_density_ids.mapped('block_density')" t-as="val">
+                                            <div t-att-style="'text-align:center;' + ('border-bottom:1px solid #000;' if not val_last else '')">
+                                                <span t-esc="'%.2f' % val"/>
+                                            </div>
+                                        </t>
+                                    </td>
+                                    <td style="text-align: center;">
                                         <span>
                                             <span t-field="data.mean_block_density" t-options='{"widget": "float", "precision": 2}'/>
                                         </span>
@@ -386,6 +379,13 @@
                                     </td>
                                     <td>
                                         <span t-esc="compressive_strength.parameter_name"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <t t-foreach="data.compressive_strength_line_ids.mapped('compressive_strength')" t-as="val">
+                                            <div t-att-style="'text-align:center;' + ('border-bottom:1px solid #000;' if not val_last else '')">
+                                                <span t-esc="'%.2f' % val"/>
+                                            </div>
+                                        </t>
                                     </td>
                                     <td style="text-align: center;">
                                         <span>
@@ -431,6 +431,13 @@
                                         <span t-esc="water.parameter_name"/>
                                     </td>
                                     <td style="text-align: center;">
+                                        <t t-foreach="data.water_absorption_line_ids.mapped('water_absorption')" t-as="val">
+                                            <div t-att-style="'text-align:center;' + ('border-bottom:1px solid #000;' if not val_last else '')">
+                                                <span t-esc="'%.2f' % val"/>
+                                            </div>
+                                        </t>
+                                    </td>
+                                    <td style="text-align: center;">
                                         <span>
                                             <span t-field="data.mean_water_absorption" t-options='{"widget": "float", "precision": 2}'/>
                                         </span>
@@ -472,6 +479,13 @@
                                     </td>
                                     <td>
                                         <span t-esc="drying.parameter_name"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <t t-foreach="data.drying_shrinkage_ids.mapped('drying_shrinkage')" t-as="val">
+                                            <div t-att-style="'text-align:center;' + ('border-bottom:1px solid #000;' if not val_last else '')">
+                                                <span t-esc="'%.4f' % val"/>
+                                            </div>
+                                        </t>
                                     </td>
                                     <td style="text-align: center;">
                                         <span>
@@ -517,6 +531,13 @@
                                         <span t-esc="moisture.parameter_name"/>
                                     </td>
                                     <td style="text-align: center;">
+                                        <t t-foreach="data.moisture_movement_ids.mapped('moisture_movement')" t-as="val">
+                                            <div t-att-style="'text-align:center;' + ('border-bottom:1px solid #000;' if not val_last else '')">
+                                                <span t-esc="'%.4f' % val"/>
+                                            </div>
+                                        </t>
+                                    </td>
+                                    <td style="text-align: center;">
                                         <span>
                                             <span t-field="data.avg_moisture_movement" t-options='{"widget": "float", "precision": 4}'/>
                                         </span>
@@ -556,7 +577,7 @@
                         <div style="margin-top:5px; page-break-inside: avoid;" class="noteContainer">
                             <table class="table table-bordered">
                                 <tr>
-                                    <td style="padding: 5px; font-style: italic; font-size: 12px;">
+                                    <td>
                                         <t t-if="data.notes_id">
                                             <b>Notes:-</b>
 
@@ -572,7 +593,7 @@
                                 </tr>
                             </table>
                         </div>
-                        <div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
+                        <div style="page-break-inside: avoid;" class="signatureContainer girdgird">
                             <div>
                                 <div>
                                     <b>
