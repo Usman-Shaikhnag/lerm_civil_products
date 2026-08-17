@@ -171,10 +171,10 @@
                                     </t>
                                     <t t-else="">-</t>
                                 </td>
-                                <td colspan="1">Humidity</td>
+                                <td colspan="1">Grade</td>
                                 <td colspan="1">
-                                    <t t-if="data.humidity is not None">
-                                        <span t-field="data.humidity"/>   °C
+                                    <t t-if="o.grade_id">
+                                        <span t-field="o.grade_id"/>
                                     </t>
                                     <t t-else="">-</t>
                                 </td>
