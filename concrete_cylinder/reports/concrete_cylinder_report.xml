@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-	
 
-    <template id="compresive_concrete_cube_report">
+<template id="concrete_cylinder_report">
 		<t t-call="web.html_container">
 			<!-- <t t-call="web.basic_layout"> -->
 			 <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
@@ -161,7 +160,7 @@
 						<span style="font-weight: bold;" t-esc="eln.material.test_parameter"/>: 
 						
 						
-							<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','eb26db03-17c1-48ac-8462-9671e4d3d09f')]).parameter_table" t-as="parameter">
+							<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3214587lkop-7a9c-4616-bad5-88eb1b29087y')]).parameter_table" t-as="parameter">
 								<t t-if="parameter.grade.id == eln.grade_id.id">
 									<span t-field="parameter.specification"/>
 								</t>
@@ -172,143 +171,108 @@
 						
 					</td> -->
 
-					<table>
+					<table style="margin-top:30px;" t-if="data.compressive_visible and (data.nabl == 'pass' and nabl or (data.nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 						<thead>
-							<tr  style="text-align: center;">
-								<th style="text-align: center;font-weight: bold;">
+							<tr >
+								<th style="text-align: center;"> 
 									<span>
 										Sr. No
 									</span>
 								</th>
-								<th style="text-align: center;font-weight: bold;">
+								<th	style="text-align: center;">
 									<span>
 										ID MARK/Location
 									</span>
 								</th>
-								<th style="text-align: center;font-weight: bold;width:100px;">
+
+								<th style="text-align: center;font-weight: bold;">
 									<span>
 										Grade
 									</span>
 								</th>
-								<th style="text-align: center;font-weight: bold;">
+								
+								<th style="text-align: center;">
 									<span>
-										Length in mm
+										Dia in mm
 									</span>
 								</th>
-								<th style="text-align: center;font-weight: bold;">
+
+								<th style="text-align: center;">
 									<span>
-										Width in mm
+										Height in mm
 									</span>
 								</th>
-								<th style="text-align: center;font-weight: bold;">
+								<th style="text-align: center;">
 									<span>
 										Area in mm²
 									</span>
 								</th>
 								
-								<th style="text-align: center;font-weight: bold;">
+								<th style="text-align: center;">
 									<span>
 										Weight of sample in kg
 									</span>
 								</th>
 
-								<th style="text-align: center;font-weight: bold;">
+								<th style="text-align: center;">
 									<span>
 										Crushing load in KN
 									</span>
 								</th>
-								<th style="text-align: center;font-weight: bold;padding-left:1px; padding-right:1px;">
+								<th style="text-align: center;">
 									<span>
 										Compressive Strength in N/mm2
 									</span>
 								</th>
-								
 							</tr>
 						</thead>
 						<tbody>
-							<!-- <t t-set="i" t-value="0"/> -->
-							<!-- non nabl -->
-							<!-- <tr  t-foreach="data.child_lines" t-as="r" t-if="data.nabl == 'fail' and not nabl">  -->
-							<!-- <tr t-foreach="data.child_lines" t-as="r"  t-if="data.nabl == 'fail' and not nabl">
+							<tr t-foreach="data.child_lines_concrete_cylinder" t-as="r">
 								<td style="text-align: center;">
 									<span t-esc="r.sr_no"/>
 								</td>
 								<td style="text-align: center;">
-									<span t-esc="r.id_mark"/>
+									<span t-esc="r.id_location"/>
 								</td>
 								<td style="text-align: center;">
 									<span t-esc="o.sample_id.grade_id.grade"/>
 								</td>
 								<td style="text-align: center;">
-									<span t-esc="r.length" t-options='{"widget": "float", "precision": 2}'/>
+									<span t-esc="r.dia"/>
 								</td>
 								<td style="text-align: center;">
-									<span t-esc="r.width" t-options='{"widget": "float", "precision": 2}'/>
-								</td>
-								<td style="text-align: center;">
-									<span t-esc="r.area" t-options='{"widget": "float", "precision": 2}'/>
-								</td>
-								<td style="text-align: center;">
-									<span t-esc="r.wt_sample" t-options='{"widget": "float", "precision": 3}'/>
-								</td>
-								<td style="text-align: center;">
-									<span t-esc="r.crushing_load" t-options='{"widget": "float", "precision": 2}'/>
-								</td>
-								<td style="text-align: center;">
-									<span t-esc="r.compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
-								</td>
-							</tr> -->
-
-							<!-- nabl -->
-							<!-- <tr t-foreach="data.child_lines" t-as="r" t-if="data.child_lines and (data.child_lines == 'pass' and nabl or (data.child_lines == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)"> -->
-							<tr  t-foreach="data.child_lines" t-as="r">  
-							<!-- <tr t-foreach="data.child_lines" t-as="r" t-if="(data.nabl == 'pass' and data.sample_id.scope == 'nabl') or (data.sample_id.scope == 'non nabl') or (data.nabl == 'fail' and data.sample_id.scope != 'nabl')">	 -->
-								<td style="text-align: center;">
-									<span t-esc="r.sr_no"/>
-								</td>
-								<td style="text-align: center;">
-									<span t-esc="r.id_mark"/>
-								</td>
-								<td style="text-align: center;">
-									<span t-esc="o.sample_id.grade_id.grade"/>
-								</td>
-								<td style="text-align: center;">
-									<span t-esc="r.length" t-options='{"widget": "float", "precision": 2}'/>
-								</td>
-								<td style="text-align: center;">
-									<span t-esc="r.width" t-options='{"widget": "float", "precision": 2}'/>
+									<span t-esc="r.height" t-options='{"widget": "float", "precision": 2}'/>
 								</td>
 								<td style="text-align: center;">
 									<span t-esc="r.area" t-options='{"widget": "float", "precision": 2}'/>
 								</td>
 								<td style="text-align: center;">
-									<span t-esc="r.wt_sample" t-options='{"widget": "float", "precision": 3}'/>
+									<span t-esc="r.weight_of_sample" t-options='{"widget": "float", "precision": 3}'/>
 								</td>
 								<td style="text-align: center;">
-									<span t-esc="r.crushing_load" t-options='{"widget": "float", "precision": 2}'/>
+									<span t-esc="r.crush_load" t-options='{"widget": "float", "precision": 1}'/>
 								</td>
 								<td style="text-align: center;">
-									<span t-esc="r.compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
+									<span t-esc="r.compressive_strenght" t-options='{"widget": "float", "precision": 2}'/>
 								</td>
-							</tr> 
-
-							
+							</tr>
 						</tbody>
 					</table>
 
 					<div style="margin-top:10px">
 						<table>
-						<tr t-if="data.nabl == 'pass' and nabl or (eln.sample_id.scope != 'nabl')">  
-							<!-- <tr t-if="data.child_lines and (data.child_lines == 'pass' and nabl or (data.child_lines == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)"> -->
+						<!-- <tr t-if="data.nabl == 'pass' and nabl or (eln.sample_id.scope != 'nabl')">   -->
+							<tr t-if="data.compressive_visible and (data.nabl == 'pass' and nabl or (data.nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 								<td colspan="12">Avg. Compressive Strength N/mm2 :<![CDATA[&nbsp;]]>
-									<span t-field="data.average_strength"/>
+									<span t-field="data.average_concrete_cylinder"/>
 								</td>
 							</tr>
-							<tr t-if="data.nabl == 'fail' and not nabl"> 
+							<!-- <tr t-if="data.nabl == 'fail' and not nabl">  -->
+							<!-- <tr t-if="data.compressive_visible and (data.nabl == 'pass' and nabl or (data.nabl == 'fail' or eln.sample_id.scope != 'nabl') and not nabl)">
 								<td colspan="12">Result - Average Compressive Strength N/mm2 :<![CDATA[&nbsp;]]>
-									<span t-field="data.average_strength"/>
+									<span t-field="data.average_concrete_cylinder"/>
 								</td>
-							</tr>
+							</tr> -->
 							
 							
 							 <!-- added
@@ -368,9 +332,9 @@
 								</div>
 							</div>
 							<div>
-								<!-- <div t-if="stamp and stamp == '4-in_report'">
+								<div t-if="stamp and stamp == '4-in_report'">
 									<img t-attf-src="/lerm_civil/static/src/img/stamp.png" alt="Image"/>
-								</div> -->
+								</div>
 								<div style="padding-top:5px">
 									Format No. <span t-esc="eln.material.test_format_no"/>
 								</div>
@@ -417,6 +381,4 @@
 		</t>
 	</template>
 
-	
-
-</odoo>
+    </odoo>
