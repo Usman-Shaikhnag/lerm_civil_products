@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<template id="concrete_cylinder_datasheet">
+
+
+	<template id="concrete_cylinder_datasheet">
 		<t t-call="web.html_container">
 			<!-- <t t-call="web.basic_layout"> -->
 			 <!-- <t t-call="lerm_civil.mechanical_data_sheet_header"> -->
@@ -9,12 +11,11 @@
 					<p style="font-size:15px"><b>Test Data Sheet</b></p>
 				</div> -->
 				<div style="text-align:center;font-size:18px">
-                    Concrete Cylinder
-					<!-- <span t-field="env['lerm.parameter.master'].search([('internal_id','=','301hjtre-17c1-48ac-8462-9671e4d3d09f')]).parameter_name"/> -->
+                    Compresive Strength Cylinder DataSheet
+					<!-- <span t-field="env['lerm.parameter.master'].search([('internal_id','=','3214587lkop-7a9c-4616-bad5-88eb1b29087y')]).parameter_name"/> -->
                 </div>
 				<div class="container_eln" style="margin-top:5px">
 					
-
 					<div t-foreach="eln" t-as="o">
 						<table>
 							<tr cols="12">
@@ -58,9 +59,9 @@
 						</table>
 						<div style="text-align:center;font-size:18px;margin-top:25px">
 						<!-- Concrete Cube -->
-							<span t-field="env['lerm.parameter.master'].search([('internal_id','=','301hjtre-17c1-48ac-8462-9671e4d3d09f')]).parameter_name"/>
+							<span t-field="env['lerm.parameter.master'].search([('internal_id','=','3214587lkop-7a9c-4616-bad5-88eb1b29087y')]).parameter_name"/>
 							<span>
-								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','301hjtre-17c1-48ac-8462-9671e4d3d09f')]).parameter_table" t-as="parameter">
+								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','3214587lkop-7a9c-4616-bad5-88eb1b29087y')]).parameter_table" t-as="parameter">
 									<t t-if="parameter.grade.id == eln.grade_id.id">
 										<span t-field="parameter.specification"/>
 									</t>
@@ -68,23 +69,23 @@
 							</span>
 						</div>
 					</div>
-						<table style="margin-top:10px">
+						<table style="margin-top:20px">
 				
 							
 							<tr>
-								<td > <strong>Grade of Sample</strong> : <span t-field="o.grade_id.grade"/>
+								<td colspan="6">Date of Casting  :  <span t-field="data.date_of_casting"></span>
 								</td>
-								
-								<td> <strong>Age Of Cubes</strong> : <span t-field="data.age_of_days"></span>
+								<!-- <td colspan="6">Date of Testing  :  <span t-field="data.date_of_testing"></span>
+								</td> -->
+								<td colspan="6">Age of Test, Days :  <span t-field="data.age_of_test"></span>
 								</td>
 							</tr>
-
-							<tr>
-							<td><strong>Size of Sample</strong> : <span t-field="o.sample_id.size_id.size"/></td>
-							<td><strong>Area Of Cube  : </strong><span t-field="data.area_of_cube"/>  Sq.mm</td>
-										
-								</tr>
-							
+							<!-- <tr cols="12">
+								<td colspan="6">Age of Test, Days :
+									<![CDATA[&nbsp;]]>
+									<span t-field="data.age_of_test"/>
+								</td>
+							</tr> -->
 						</table>
 						<table style="margin-top:30px;">
 						<thead>
@@ -96,143 +97,93 @@
 								</th>
 								<th	style="text-align: center;">
 									<span>
-										Sample Identification
+										ID MARK/Location
 									</span>
 								</th>
 
 								<th style="text-align: center;font-weight: bold;">
 									<span>
-									Weight of Cube (gms)
+										Grade
 									</span>
 								</th>
 								
 								<th style="text-align: center;">
 									<span>
-									Date of casting
+										Dia in mm
 									</span>
 								</th>
 
 								<th style="text-align: center;">
 									<span>
-									No.of Days
+										Height in mm
 									</span>
 								</th>
 								<th style="text-align: center;">
 									<span>
-									Date of Testing
+										Area in mm²
 									</span>
 								</th>
 								
 								<th style="text-align: center;">
 									<span>
-										Load (kN)
+										Weight of sample in kg
 									</span>
 								</th>
 
 								<th style="text-align: center;">
 									<span>
-										Compressive Strength (N/mm2)
+										Crushing load in KN
 									</span>
 								</th>
-
 								<th style="text-align: center;">
 									<span>
-										Avg. Compressive Strength (N/mm2)
+										Compressive Strength in N/mm2
 									</span>
 								</th>
-							
 							</tr>
 						</thead>
 						<tbody>
-							<!-- <tr t-foreach="data.child_lines" t-as="r"> -->
-							  <t t-set="lines" t-value="data.child_lines"/>
-								<t t-set="line_count" t-value="0"/>
-								<t t-foreach="lines" t-as="r">
-
-							<tr >
-
+							<tr t-foreach="data.child_lines_concrete_cylinder" t-as="r">
 								<td style="text-align: center;">
 									<span t-esc="r.sr_no"/>
 								</td>
 								<td style="text-align: center;">
-									<span t-esc="r.id_mark"/>
+									<span t-esc="r.id_location"/>
 								</td>
 								<td style="text-align: center;">
-									<span t-esc="r.wt_sample"/>
+									<span t-esc="o.sample_id.grade_id.grade"/>
 								</td>
 								<td style="text-align: center;">
-									<span t-esc="r.dt_of_casting"/>
+									<span t-esc="r.dia"/>
 								</td>
 								<td style="text-align: center;">
-									<span t-esc="r.days" />
+									<span t-esc="r.height" t-options='{"widget": "float", "precision": 2}'/>
 								</td>
 								<td style="text-align: center;">
-									<span t-esc="r.dt_of_testing1"/>
+									<span t-esc="r.area" t-options='{"widget": "float", "precision": 2}'/>
 								</td>
 								<td style="text-align: center;">
-									<span t-esc="r.load"/>
+									<span t-esc="r.weight_of_sample" t-options='{"widget": "float", "precision": 3}'/>
 								</td>
 								<td style="text-align: center;">
-									<span t-esc="r.compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
+									<span t-esc="r.crush_load" t-options='{"widget": "float", "precision": 1}'/>
 								</td>
-
-
-								  <t t-if="line_count % 3 == 0">
-									<td style="text-align: center; vertical-align: middle;" t-att-rowspan="3">
-										<span t-esc="r.avg_compressive_strength" t-options='{"widget": "float", "precision": 2}'/>
-									</td>
-									</t>
-								
+								<td style="text-align: center;">
+									<span t-esc="r.compressive_strenght" t-options='{"widget": "float", "precision": 2}'/>
+								</td>
 							</tr>
-							 <t t-set="line_count" t-value="line_count + 1"/>
-							</t>
 						</tbody>
 					</table>
 
-
-					         <table style="width: 100%; border-collapse: collapse;margin-top:10px">
-                                <thead>
-                                    <tr>
-                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
-                                         Permissible Range
-                                        </th>
-                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
-                                           N/mm2
-                                        </th>
-                                        <th style="border: 1px solid black; text-align: center; color: black; padding: 10px 20px;">
-                                           kN
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;text-align: center">
-                                           7 Days
-                                        </td>
-                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-											<span t-field="data.days_7_kmm"/>
-                                        </td>
-                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-										  <span t-field="data.days_7_n"/>
-                                        </td>
-                                    </tr>
-
-                                     <tr>
-                                        <td style="border: 1px solid black; color: black; padding: 8px 10px;text-align: center">
-                                          28 Days
-
-                                        </td>
-                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-											  <span t-field="data.days_28_kmm"/>
-											
-                                        </td>
-                                        <td style="border: 1px solid black; text-align: center; padding: 8px 10px;">
-										   <span t-field="data.days_28_n"/>
-                                        </td>
-                                    </tr>
-                                    
-                                </tbody>
-                            </table>
+					<div style="margin-top:10px">
+						<table>
+							<tr>
+								<td colspan="12">Avg. Compressive Strength N/mm2 :<![CDATA[&nbsp;]]>
+									<span t-field="data.average_concrete_cylinder"/>
+								</td>
+							</tr>
+						</table>
+					</div>
 					<div class="authorizeRowDataSheet">
 						<div>
 							<div>
@@ -241,30 +192,42 @@
 								</b>
 								
 							</div>
-							<div style="height:30px">
+							 <div style="height: 40px;">
+						<!-- <t t-if="eln.sample_id.testedby_signature_required"> -->
+								<t t-if="eln.tested_by_signature_datasheet">
 
-							</div>
-							<div>
-								<b>
-								<span t-esc="eln.sample_id.filled_by.name"/>
-								</b>
-							</div>
-							<div>
-								<b>
-									(<span t-esc="eln.sample_id.filled_by.job_title"/>)
-								</b>
-							</div>
-						</div>
-						
-						<div style="margin-left:500px">
+									<div t-if="eln.sample_id.filled_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
 									
-							<div>
-								<b>
-									Checked By
-								</b>
+								</t>
 							</div>
-							<div style="height:30px">
-
+                            <div>
+                                <b>
+                                <span t-esc="eln.sample_id.filled_by.name"/>
+                                </b>
+                            </div>
+                            <div>
+                                <b>
+                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
+                                </b>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-left:600px">
+                                    
+                            <div>
+                                <b>
+                                    Checked By
+                                </b>
+                            </div>
+							<div style="height: 40px;">
+								<t t-if="eln.sample_id.checked_by_signature_datasheet">
+									<div t-if="eln.sample_id.check_by.employee_id.signature">
+										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
+									</div>
+									
+								</t>
 							</div>
 							<div>
 								<b>
@@ -280,293 +243,6 @@
 						</div>
 					</div>
 
-
-					 <!-- 3. Water Absorption -->
-
-						<div t-if="data.water_absorption_visible" style="margin-top:20px; page-break-before: always;">
-                        <div style="text-align:center;font-size:18px">
-                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','0124ytrg-eba3-4f15-b33d-679b39f73301')]).parameter_name"/>
-                            <span>
-								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','0124ytrg-eba3-4f15-b33d-679b39f73301')]).parameter_table" t-as="parameter">
-									<t t-if="parameter.grade.id == eln.grade_id.id">
-										<span t-field="parameter.specification"/>
-									</t>
-								</t>
-							</span>
-                        </div>
-                    <table style="margin-top:20px">
-					<thead >
-						<tr cols="12">
-							<td >Sr no 
-							</td>
-
-							<td  style="text-align:center;">Sample Identification
-
-							</td>
-
-                            <td  style="text-align:center;">Dry wt (W1)
-
-							</td>
-                          
-                            <td  style="text-align:center;">Wet wt (W2)
-							</td>
-
-                             <td  style="text-align:center;"> Water Absorption %
-							</td>
-
-                        
-                           
-						
-						</tr>
-						
-						</thead>
-						  <tbody>
-
-						<t t-set="i" t-value="0"/>
-						<tr t-foreach="data.water_absorption_child_lines" t-as="r">
-							<td  style="text-align:center;">
-								<div>
-									<span t-esc="i + 1" />
-									<t t-set="i" t-value="i+1"/>
-								</div>
-							</td >
-							<td  style="text-align:center;">
-								<span t-esc="r['sample_identification']" />
-							</td>
-                            <td   style="text-align:center;">
-								<span t-esc="r['dry_wt_w1']" />
-							</td>
-                            <td  style="text-align:center;">
-								<span t-esc="r['wet_w2']" />
-							</td>
-                              <td  style="text-align:center;">
-								<span t-esc="r['water_absorption']" />
-							</td>
-                          
-
-							
-						</tr>
-						</tbody>
-					</table>
-
-                    <!-- <table style="margin-top:5px">
-                            <tr cols="12">
-                                <td colspan="6"><b>Water Absorption (%):</b></td>
-                                <td colspan="6" style="text-align: center;">
-                                    <span t-field="data.avg_water_absorption" t-options='{"widget": "float", "precision": 2}'/>
-                                </td>
-                            </tr>
-                            
-                          
-                        </table> -->
-
-							<table style="margin-top:2px">
-							
-                            <tr>
-								<td colspan="12">Water Absorption:</td>
-								<![CDATA[&nbsp;]]>
-								<td>
-									<span t-field="data.avg_water_absorption" t-options='{"widget": "float", "precision": 2}'/>
-								</td>
-								<td>
-							 (%)
-								</td>
-							</tr>
-						</table>
-						<div class="signatureContainer girdgird">
-							<div>
-								<div>
-									<b>
-										Prepared By
-									</b>
-								</div>
-								<div style="height: 40px;">
-							<t t-if="eln.tested_by_signature_datasheet">
-
-								<div t-if="eln.sample_id.filled_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
-								
-							</t>
-						</div>
-                            <div>
-                                <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
-                                </b>
-                            </div>
-                            <div>
-                                <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
-                                </b>
-                            </div>
-                        </div>
-                        
-                        <div style="margin-left:600px">
-                                    
-                            <div>
-                                <b>
-                                    Checked By
-                                </b>
-                            </div>
-							<div style="height: 40px;">
-								<t t-if="eln.sample_id.checked_by_signature_datasheet">
-									<div t-if="eln.sample_id.check_by.employee_id.signature">
-										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-									</div>
-									
-								</t>
-							</div>
-								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
-							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
-								
-							
-						</div>
-                    
-                </div>
-
-                       
-                    </div>
-
-
-					<div t-if="data.wpt_visible" style="margin-top:20px; page-break-before: always;">
-                        <div style="text-align:center;font-size:18px">
-                              <span t-field="env['lerm.parameter.master'].search([('internal_id','=','1234jht-0268-46ef-ba88-9c0453210lkit1')]).parameter_name"/>
-                            <span>
-								<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','1234jht-0268-46ef-ba88-9c0453210lkit1')]).parameter_table" t-as="parameter">
-									<t t-if="parameter.grade.id == eln.grade_id.id">
-										<span t-field="parameter.specification"/>
-									</t>
-								</t>
-							</span>
-							<table style="margin-top:20px" >
-							<tr cols="12">
-								<td colspan="1">Sr no 
-								</td>
-								<td colspan="1">Sample 
-								</td>
-								<td colspan="1">Depth of Penetration 1
-								</td>
-								<td colspan="2">Depth of Penetration 2
-								</td>
-								<td colspan="2">Depth of Penetration 3
-								</td>
-								<td colspan="2">Average
-								</td>
-								
-							</tr>
-
-							<t t-set="i" t-value="0"/>
-							<tr t-foreach="data.child_lines" t-as="r">
-								<td colspan="1">
-									<div>
-										<span t-esc="i + 1" />
-										<t t-set="i" t-value="i+1"/>
-									</div>
-                  				</td>
-								<td colspan="1">
-									<span t-esc="r['sample']"/>
-								</td>
-								<td colspan="1">
-									<span t-esc="r['depth1']"/>
-								</td>
-								<td colspan="2">
-									<span t-esc="r['depth2']"/>
-								</td>
-								<td colspan="2">
-									<span t-esc="r['depth3']"/>
-								</td>
-								<td colspan="2">
-									<span t-esc="r['average']"/>
-								</td>
-								
-							</tr>
-						</table>
-							<table style="margin-top:20px">
-								<tr cols="12">
-									<td colspan="6">Average Of WPT :
-										<![CDATA[&nbsp;]]>
-									</td>
-									<td colspan="6">
-										<span t-field="data.average_of_wpt"/>
-									</td>
-									
-								</tr>
-								
-							</table>
-
-							<div class="signatureContainer girdgird">
-							<div>
-								<div>
-									<b>
-										Prepared By
-									</b>
-								</div>
-								<div style="height: 40px;">
-							<t t-if="eln.tested_by_signature_datasheet">
-
-								<div t-if="eln.sample_id.filled_by.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,' + eln.sample_id.filled_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
-								
-							</t>
-						</div>
-                            <div>
-                                <b>
-                                <span t-esc="eln.sample_id.filled_by.name"/>
-                                </b>
-                            </div>
-                            <div>
-                                <b>
-                                    (<span t-esc="eln.sample_id.filled_by.job_title"/>)
-                                </b>
-                            </div>
-                        </div>
-                        
-                        <div style="margin-left:600px">
-                                    
-                            <div>
-                                <b>
-                                    Checked By
-                                </b>
-                            </div>
-							<div style="height: 40px;">
-								<t t-if="eln.sample_id.checked_by_signature_datasheet">
-									<div t-if="eln.sample_id.check_by.employee_id.signature">
-										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-									</div>
-									
-								</t>
-							</div>
-								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
-							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
-								
-							
-						</div>
-						</div>
-						</div>
-
-							
-					 
-                        </div>
-
 					<!-- <div style="text-align:center;margin-top:25px">
 						......End of Report......
 					</div> -->
@@ -576,4 +252,5 @@
 			</t>
 		</t>
 	</template>
-    </odoo>
+
+</odoo>
