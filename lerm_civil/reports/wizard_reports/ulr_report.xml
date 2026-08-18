@@ -169,9 +169,9 @@
 										</td>
 										<td>
 											<span t-if="r['state']">
-												<t t-set="field_type" t-value="env['ir.model.fields'].search([('name','=','state'),('model_id.model','=','lerm.srf.sample')])"/>
+												<t t-set="field_type" t-value="env['ir.model.fields'].sudo().search([('name','=','state'),('model_id.model','=','lerm.srf.sample')])"/>
 
-												<t t-set="selection" t-value="env['ir.model.fields.selection'].search([('field_id','=',field_type.id),('value','=',r['state'])])"/>
+												<t t-set="selection" t-value="env['ir.model.fields.selection'].sudo().search([('field_id','=',field_type.id),('value','=',r['state'])])"/>
 												<!-- <span>Selection </span> -->
 												
 												<t style="text-align:center;" t-esc="selection.name"/>

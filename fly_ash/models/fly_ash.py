@@ -146,7 +146,8 @@ class FlyaschNormalConsistency(models.Model):
 
     normal_consistency_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail')], string="Conformity", compute="_compute_normal_consistency_conformity", store=True)
+            ('fail', 'Fail'),
+            ('--', '--')], string="Conformity", compute="_compute_normal_consistency_conformity", store=True)
 
     @api.depends('normal_consistency_fly_1','eln_ref','grade')
     def _compute_normal_consistency_conformity(self):
@@ -157,6 +158,11 @@ class FlyaschNormalConsistency(models.Model):
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','124fgrt3-1b3c-43ae-9c20-5421b6d6edf9')]).parameter_table
             for material in materials:
                 if material.grade.id == record.grade.id:
+
+                    if hasattr(material, 'permissable_limit') and (material.permissable_limit == '--' or not material.permissable_limit):
+                        record.door_length_avg_conformity = '--'
+                        break
+
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
