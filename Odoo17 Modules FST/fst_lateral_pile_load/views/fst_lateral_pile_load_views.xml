@@ -7,24 +7,15 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <record id="inject_lateral_card_into_fst_dashboard" model="ir.ui.view">
-        <field name="name">lerm.ert.dashboard.inherit.lateral</field>
-        <field name="model">lerm.ert.dashboard</field>
-        <field name="inherit_id" ref="fst.view_ert_dashboard"/>
-        <field name="arch" type="xml">
-            <xpath expr="//div[hasclass('card-box')][last()]" position="after">
-                <div class="card-box" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
-                    <h3 class="title">Lateral Pile Load Test</h3>
-                    <a type="action"
-                    name="%(action_fst_lateral_pile_load_test)d"
-                    class="btn btn-lg"
-                    style="background:#00bcd4; color:#000;">
-                        Records
-                    </a>
-                </div>
-            </xpath>
-        </field>
-    </record>
+    <menuitem id="menu_fst_lateral_pile_load_root"
+              name="Lateral Pile Load"
+              sequence="40"/>
+    <menuitem id="menu_fst_lateral_pile_load_tests"
+              name="Tests"
+              parent="menu_fst_lateral_pile_load_root"
+              action="action_fst_lateral_pile_load_test"
+              sequence="10"
+              groups="group_fst_lateral_pile_load_user"/>
 
     <record id="view_fst_lateral_pile_load_test_tree" model="ir.ui.view">
         <field name="name">fst.lateral.pile.load.test.tree</field>
@@ -64,7 +55,7 @@
                     <button name="action_generate_report_no" string="Generate Report No" type="object" class="btn-primary"/>
                     <button name="print_report" string="Print Report" type="object" class="btn-primary"/>
                     <button name="action_prefill_contents" string="Prefill Contents" type="object" class="btn-secondary"/>
-                    <button name="action_generate_test_data" string="Generate Test Data" type="object" class="btn-success"/>
+                    <button name="action_generate_test_data" string="Generate Test Data" type="object" class="btn-success" groups="group_fst_lateral_pile_load_manager"/>
                 </header>
 
                 <sheet>
@@ -181,7 +172,6 @@
                         <field name="preparation_report" widget="text" nolabel="1"/>
                     </div>
 
-                    <!-- ================= TABLE 1 : BASIC DATA ================= -->
                     <div style="margin-top:35px;">
                         <h3 style="border-bottom:2px solid #000;">
                             TABLE 1 : BASIC DATA

@@ -2,7 +2,6 @@ from odoo import api, fields, models
 from datetime import timedelta
 import base64
 import io
-import re
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.interpolate import make_interp_spline
@@ -130,7 +129,7 @@ class FstLateralPileLoadTest(models.Model):
         for rec in self:
             if not rec.report_no:
                 rec.report_no = self.env['ir.sequence'].next_by_code(
-                    'lerm.srf.sample.kes'
+                    'fst.lateral.pile.load.report.no'
                 )
 
     def action_generate_ulr_no(self):
@@ -138,23 +137,11 @@ class FstLateralPileLoadTest(models.Model):
             if rec.ulr:
                 return
 
-            lab = self.env['lerm.lab.master'].search([], limit=1)
-            if not lab:
-                return
-
             year = fields.Date.today().strftime('%y')
-
-            cert = (lab.lab_certificate_no or '').split('(')[0]
-            loc = (lab.lab_location_line[:1].location_code or '').split('(')[0]
-
-            seq_raw = self.env['ir.sequence'].next_by_code(
-                lab.ulr_sequence.code
+            seq = self.env['ir.sequence'].next_by_code(
+                'fst.lateral.pile.load.ulr'
             )
-
-            match = re.search(r'(\d+F?)$', seq_raw)
-            seq = match.group(1) if match else ''
-
-            rec.ulr = f"{cert}{year}{loc}{seq}"
+            rec.ulr = f"ULR-{year}-{seq}"
 
     def action_prefill_contents(self):
         self.ensure_one()
