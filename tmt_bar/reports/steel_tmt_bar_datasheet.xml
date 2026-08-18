@@ -319,6 +319,19 @@
 									<span t-esc="data.elongation_nabl"/>
 								</td> -->
 							</tr>
+							<tr invisible="total_elongation_visible == False">
+								<td  >
+									<span t-field="env['lerm.parameter.master'].search([('internal_id','=','fa617d1e-94e3-4edc-98a5-30533cc63c32')]).parameter_name"/>
+								</td>
+								<td style="text-align: center; vertical-align: middle;">
+								        <span>
+											<span t-field="env['lerm.parameter.master'].search([('internal_id','=','fa617d1e-94e3-4edc-98a5-30533cc63c32')]).unit.name"/>
+										</span>
+								   </td>
+								<td style="text-align: center;">
+									<span t-esc="round(data.total_elongation , 2)"/>
+								</td>
+							</tr>
 
 							<tr>
 								<td  >

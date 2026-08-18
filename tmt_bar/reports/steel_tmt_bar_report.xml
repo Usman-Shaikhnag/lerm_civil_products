@@ -625,6 +625,42 @@
 									<span t-esc="data.elongation_conformity"/>
 								</td>
 							</tr>
+							<tr style="font-size:12px;" t-if="(data.total_elongation_visible">
+								<td style="text-align: center;">
+									<span t-esc="i + 1" />
+									<t t-set="i" t-value="i+1"/>
+								</td>
+								<td  >
+									<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','fa617d1e-94e3-4edc-98a5-30533cc63c32')]).parameter_name"/>
+								</td>
+								<td style="text-align: center; vertical-align: middle;">
+									<span>
+										<span t-field="env['lerm.parameter.master'].sudo().search([('internal_id','=','fa617d1e-94e3-4edc-98a5-30533cc63c32')]).unit.name"/>
+									</span>
+								</td>
+								<td style="text-align: center;">
+									<span t-esc="round(data.total_elongation , 2)"/>
+								</td>
+
+
+								<td style="text-align: center; vertical-align: middle;">
+									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','fa617d1e-94e3-4edc-98a5-30533cc63c32')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.permissable_limit"/>
+										</t>
+									</t>
+								</td>
+								<!-- <td style="text-align: center; vertical-align: middle;">
+									<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','b4ae8d8f-9cbd-4bf5-abe4-c0bf0379b725')]).parameter_table" t-as="parameter">
+										<t t-if="parameter.grade.id == eln.grade_id.id">
+											<span t-field="parameter.specification"/>
+										</t>
+									</t>
+								   </td> -->
+								<td t-if="eln.conformity" style="text-align: center;">
+									<span t-esc="data.elongation_conformity"/>
+								</td>
+							</tr>
 
 
 

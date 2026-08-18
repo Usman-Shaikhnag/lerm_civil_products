@@ -126,6 +126,11 @@
                                         decoration-danger="elongation_conformity == 'fail'" 
                                         readonly="1" /></td>
                                     </tr>
+                                    <tr invisible="total_elongation_visible == False">
+                                        <td><label for="total_elongation"></label></td>
+                                        <td><field name='total_elongation'/></td>
+                                        <field name="total_elongation_visible" invisible="1"/>
+                                    </tr>
                                     <tr invisible="weight_per_meter_visible == False"> 
                                         <td><label for="weight_per_meter"></label></td>
                                         <td><field name="weight_per_meter" /></td>

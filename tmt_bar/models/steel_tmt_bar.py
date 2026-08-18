@@ -185,6 +185,8 @@ class SteelTmtBarLine(models.Model):
     weight_per_meter_visible = fields.Boolean("Weight Per Meter",compute="_compute_visible")
     yield_visible = fields.Boolean("Yield",compute="_compute_visible")
     ts_ys_visible = fields.Boolean("TS/YS",compute="_compute_visible")
+    total_elongation = fields.Float(string="Total Elongation at maximum force")
+    total_elongation_visible = fields.Boolean("Total Elongation",compute="_compute_visible")
 
 
     @api.depends('eln_ref','sample_parameters')
@@ -199,6 +201,7 @@ class SteelTmtBarLine(models.Model):
             record.weight_per_meter_visible = False
             record.yield_visible  = False  
             record.ts_ys_visible = False
+            record.total_elongation_visible = False
             
             for sample in record.sample_parameters:
                 print("Samples internal id",sample.internal_id)
@@ -219,6 +222,8 @@ class SteelTmtBarLine(models.Model):
                     record.yield_visible = True
                 if sample.internal_id == 'de4bb55e-9318-4725-ac44-fd1850d9e2eb':
                     record.ts_ys_visible = True
+                if sample.internal_id =='fa617d1e-94e3-4edc-98a5-30533cc63c32':
+                    record.total_elongation_visible = True
 
 
     @api.depends('weight','lentgh')
