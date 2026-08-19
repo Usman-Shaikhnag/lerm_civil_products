@@ -2352,7 +2352,7 @@ class ReportDownloadControllerSoil(http.Controller):
             if not eln.exists():
                 return werkzeug.exceptions.NotFound("ELN record not found")
 
-            report_name = 'soil.soil_ssl_report1'
+            report_name = 'report.soil.soil_report'
             pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
                 report_name, res_ids=[eln.id], data={'nabl': True}
             )
@@ -2378,7 +2378,7 @@ class ReportDownloadControllerSoil(http.Controller):
             if not eln.exists():
                 return werkzeug.exceptions.NotFound("ELN record not found")
 
-            report_name = 'soil.soil_ssl_report1'
+            report_name = 'report.soil.soil_report'
             pdf_content, _ = request.env['ir.actions.report']._render_qweb_pdf(
                 report_name, res_ids=[eln.id], data={'nabl': False}
             )
