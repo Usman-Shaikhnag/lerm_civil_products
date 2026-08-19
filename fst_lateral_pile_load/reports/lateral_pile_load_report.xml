@@ -17,9 +17,12 @@
             <t t-set="o" t-value="docs and docs[0]"/>
 
             <div class="header" style="padding:0; width:100%; margin:0;">
-                <div class="lab-header" style="text-align:center; background-color:#244061; color:#ffffff; padding:10px 0; font-size:13pt; font-weight:bold; letter-spacing:1px;">
-                    FST ENGINEERING SERVICES PVT. LTD.
-                </div>
+                <img t-if="o.lab_id.header_image"
+                    t-att-src="'data:image/png;base64,' + o.lab_id.header_image.decode('utf-8')"
+                    style="width:100%; height:auto; display:block;"/>
+                <img t-elif="env['lerm.lab.master'].search([], limit=1).header_image"
+                    t-att-src="'data:image/png;base64,' + env['lerm.lab.master'].search([], limit=1).header_image.decode('utf-8')"
+                    style="width:100%; height:auto; display:block;"/>
                 <table style="width:100%;" class="text-center">
                     <tr>
                         <td>Test Report No :</td>
@@ -32,243 +35,404 @@
                 </table>
             </div>
 
-            <div class="footer text-center">
-                Testing Location: Taloja Laboratory [Shop No 11, Skyline Sapphire, Sector 7, Taloja Phase 1, Navi Mumbai- 410208]<br/>
-                Regd. Office: Shop no. 3 &amp; 105 Bldg. B1, Wadala Truck Terminal, MMRDA Compound, Antop Hill, Mumbai- 400037<br/>
-                Tel.: +91 22 2401 0040 | Email: sales@knackengineeringservices.com | Website: www.knackengineeringservices.com<br/>
-                Page <span class="page"/> of <span class="topage"/>
+            <div class="footer">
+                <table style="width:100%; border-collapse:collapse; font-family:'Times New Roman',Times,serif; font-size:12pt; table-layout:fixed; border:1px solid #000;">
+                    <colgroup>
+                        <col style="width:40%;"/>
+                        <col style="width:40%;"/>
+                        <col style="width:20%;"/>
+                    </colgroup>
+                    <tr>
+                        <td style="border:1px solid #000; padding:8px 14px; vertical-align:middle; text-align:left; height:65px;">
+                            <b>Location:</b> <span t-esc="o.pile_no"/>
+                        </td>
+                        <td style="border:1px solid #000; padding:8px 14px; vertical-align:middle; text-align:center;">
+                            <b>Report No:</b> <span t-esc="o.report_no"/>
+                        </td>
+                        <td style="border:1px solid #000; padding:8px 14px; vertical-align:middle; text-align:center; font-weight:bold;">
+                            <span class="page"/>
+                        </td>
+                    </tr>
+                </table>
             </div>
 
             <style>
-                body { font-family: Arial, sans-serif; font-size: 10pt; color: #000000; margin: 0; padding: 0; }
-                h2.report-title { text-align: center; font-size: 14pt; font-weight: bold; margin: 12px 0 8px 0; text-transform: uppercase; letter-spacing: 1px; }
-                h3.section-heading { font-size: 11pt; font-weight: bold; margin: 14px 0 6px 0; text-transform: uppercase; }
-                h4.sub-heading { font-size: 10pt; font-weight: bold; margin: 10px 0 4px 0; text-align: center; text-transform: uppercase; }
-                table.data-table { width: 100%; border-collapse: collapse; font-size: 10pt; margin-bottom: 10px; }
-                table.data-table td, table.data-table th { border: 1px solid #000000; padding: 4px 6px; vertical-align: middle; }
-                table.data-table thead tr th, tr.tbl-header td, tr.tbl-header th { background-color: #244061; color: #ffffff; font-weight: bold; text-align: center; }
-                table.meta-table { width: 100%; border-collapse: collapse; font-size: 10pt; margin-bottom: 8px; }
+                body { font-family: 'Times New Roman', Times, serif; font-size: 10pt; color: #000000; margin: 0; padding: 0; }
+                h2.report-title { text-align: center; font-size: 16pt; font-weight: bold; margin: 12px 0 8px 0; text-transform: uppercase; letter-spacing: 1px; }
+                h3.section-heading { font-size: 20pt; font-weight: bold; margin: 25px 0 15px 0; text-transform: uppercase; font-family: 'Times New Roman', serif; }
+                h4.sub-heading { font-size: 17pt; font-weight: bold; margin: 22px 0 15px 0; font-family: 'Times New Roman', serif; }
+                p.section-text { font-size: 15pt; line-height: 1.9; text-align: justify; margin-bottom: 18px; font-family: 'Times New Roman', serif; }
+                table.meta-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 10pt; margin-bottom: 8px; }
                 table.meta-table td { border: 1px solid #000000; padding: 4px 6px; vertical-align: middle; }
-                table.meta-table td.label { font-weight: bold; white-space: nowrap; width: 28%; }
-                table.toc-table { width: 100%; border-collapse: collapse; font-size: 10pt; margin-bottom: 10px; }
-                table.toc-table th { background-color: #244061; color: #ffffff; font-weight: bold; border: 1px solid #000000; padding: 5px 6px; text-align: center; }
-                table.toc-table td { border: 1px solid #000000; padding: 4px 6px; vertical-align: middle; }
-                table.toc-table td.toc-srno { text-align: center; width: 8%; }
-                table.toc-table td.toc-page { text-align: center; width: 10%; }
-                table.dial-table { width: 100%; border-collapse: collapse; font-size: 9pt; margin-bottom: 10px; }
-                table.dial-table th { background-color: #244061; color: #ffffff; border: 1px solid #000000; padding: 4px 6px; text-align: center; font-weight: bold; }
-                table.dial-table td { border: 1px solid #000000; padding: 3px 6px; text-align: center; }
-                table.summary-table { width: 55%; border-collapse: collapse; font-size: 10pt; margin-bottom: 10px; }
-                table.summary-table th { background-color: #244061; color: #ffffff; border: 1px solid #000000; padding: 5px 8px; text-align: center; }
-                table.summary-table td { border: 1px solid #000000; padding: 4px 8px; }
-                table.signature-table { width: 100%; border-collapse: collapse; margin-top: 30px; font-size: 10pt; }
-                table.signature-table td { border: 1px solid #000000; padding: 12px 10px; text-align: center; vertical-align: top; width: 45%; }
-                table.signature-table td.spacer { border: none; width: 10%; }
+                table.meta-table td.label { font-weight: bold; background: #f3f3f3; white-space: nowrap; width: 28%; }
+                table.toc-table { width: 100%; border-collapse: collapse; font-size: 11pt; }
+                table.toc-table thead tr th { border-bottom: 1px solid #000; padding: 6px 4px; text-align: left; font-weight: bold; }
+                table.toc-table td { padding: 5px 4px; vertical-align: top; }
+                table.toc-table td.toc-srno { width: 10%; text-align: left; }
+                table.toc-table td.toc-page { width: 12%; text-align: right; }
+                table.dial-table { width: 100%; border-collapse: collapse; font-size: 8pt; }
+                table.dial-table th { background-color: #244061; color: #ffffff; border: 1px solid #000; padding: 2px; text-align: center; }
+                table.dial-table td { border: 1px solid #000; padding: 2px; text-align: center; }
+                table.summary-table { width: 100%; border-collapse: collapse; font-size: 10pt; margin-bottom: 10px; }
+                table.summary-table th { background-color: #244061; color: #ffffff; border: 1px solid #000; padding: 4px; text-align: center; }
+                table.summary-table td { border: 1px solid #000; padding: 4px; text-align: center; }
+                table.signature-table { width: 80%; margin: 30px auto 0 auto; border-collapse: collapse; }
+                table.signature-table td { width: 50%; vertical-align: top; padding: 10px; border: 1px solid #000; text-align: center; }
                 .page-break { page-break-after: always; }
                 .text-center { text-align: center; }
                 .bold { font-weight: bold; }
-                p.section-text { font-size: 10pt; margin: 6px 0 10px 0; line-height: 1.5; }
+                .page { margin-top: 20px; font-family: 'Times New Roman', Times, serif; }
                 .end-of-report { text-align: center; font-weight: bold; margin-top: 20px; font-size: 11pt; }
+                .annexure-page { width: 100%; padding-top: 110mm; text-align: center; page-break-after: always; page-break-inside: avoid; }
+                .annexure-title { font-family: 'Times New Roman', serif; font-size: 30pt; font-weight: bold; margin-bottom: 22px; }
+                .annexure-subtitle { font-family: 'Times New Roman', serif; font-size: 26pt; font-weight: bold; text-transform: uppercase; }
             </style>
 
             <main>
                 <div class="page">
 
-                    <!-- ═════ COVER ═════ -->
-                    <h2 class="report-title"><t t-esc="o.name"/></h2>
-                    <h3 class="section-heading" style="text-align:center;">INITIAL LATERAL PILE LOAD TEST</h3>
-                    <h3 class="section-heading" style="text-align:center;">OF PILE NO - <t t-esc="o.pile_no"/></h3>
-
-                    <table class="meta-table">
-                        <tr>
-                            <td class="label">Name of Work</td>
-                            <td><t t-esc="o.work_name"/></td>
-                            <td class="label">Client</td>
-                            <td><t t-esc="o.client"/></td>
-                        </tr>
-                        <tr>
-                            <td class="label">Contractor</td>
-                            <td><t t-esc="o.contractor"/></td>
-                            <td class="label">Report No</td>
-                            <td><t t-esc="o.report_no"/></td>
-                        </tr>
-                        <tr>
-                            <td class="label">ULR No</td>
-                            <td><t t-esc="o.ulr"/></td>
-                            <td class="label">Report Date</td>
-                            <td><t t-esc="o.rec_date_str"/></td>
-                        </tr>
-                        <tr>
-                            <td class="label">Test Standard</td>
-                            <td><t t-esc="o.test_standard"/></td>
-                            <td class="label">Site Location</td>
-                            <td><t t-esc="o.site_location"/></td>
+                    <!-- ═════ FIRST PAGE / COVER ═════ -->
+                    <table style="width:100%; border-collapse:collapse; table-layout:fixed;">
+                        <colgroup>
+                            <col style="width:18%;"/>
+                            <col style="width:15%;"/>
+                            <col style="width:18%;"/>
+                            <col style="width:15%;"/>
+                            <col style="width:12%;"/>
+                            <col style="width:22%;"/>
+                        </colgroup>
+                        <tr style="height:16mm;">
+                            <td style="border:1px solid #000; padding:3px 5px; font-weight:bold; background:#f3f3f3; vertical-align:middle;">Test Report no :</td>
+                            <td style="border:1px solid #000; padding:3px 5px; vertical-align:middle;">
+                                <span t-esc="o.report_no"/>
+                            </td>
+                            <td style="border:1px solid #000; padding:3px 5px; font-weight:bold; background:#f3f3f3; vertical-align:middle;">Report Issue Date :</td>
+                            <td style="border:1px solid #000; padding:3px 5px; vertical-align:middle;">
+                                <span t-esc="o.rec_date_str"/>
+                            </td>
+                            <td style="border:1px solid #000; padding:3px 5px; font-weight:bold; background:#f3f3f3; vertical-align:middle;">ULR No.</td>
+                            <td style="border:1px solid #000; padding:3px 5px; vertical-align:middle;">
+                                <span t-esc="o.ulr"/>
+                            </td>
                         </tr>
                     </table>
 
-                    <!-- ═════ CONTENTS ═════ -->
-                    <h3 class="section-heading">CONTENTS</h3>
-                    <table class="toc-table">
+                    <div style="height:18mm;"></div>
+
+                    <table style="width:100%; border-collapse:collapse; table-layout:fixed;">
+                        <tr>
+                            <td style="border:1px solid #000; padding:4px 6px; vertical-align:middle; height:30mm;">
+                                <b>Customer Party Name:</b><br/>
+                                <span t-esc="o.client"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid #000; padding:4px 6px; vertical-align:middle; height:30mm;">
+                                <b>Project / Site Address:</b><br/>
+                                <span t-esc="o.site_location"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid #000; padding:4px 6px; vertical-align:middle;">
+                                <table style="width:100%; border-collapse:collapse;">
+                                    <tr>
+                                        <td style="border:none; padding:2px 4px; width:50%; vertical-align:middle;">
+                                            <b>Name of Work:</b>
+                                            <span t-esc="o.work_name"/>
+                                        </td>
+                                        <td style="border:none; padding:2px 4px; width:50%; vertical-align:middle;">
+                                            <b>Report Date:</b>
+                                            <span t-esc="o.rec_date_str"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid #000; padding:4px 6px; vertical-align:middle;">
+                                <table style="width:100%; border-collapse:collapse;">
+                                    <tr>
+                                        <td style="border:none; padding:2px 4px; width:50%; vertical-align:middle;">
+                                            <b>Pile ID:</b>
+                                            <span t-esc="o.pile_no"/>
+                                        </td>
+                                        <td style="border:none; padding:2px 4px; width:50%; vertical-align:middle;"></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid #000; padding:4px 6px; vertical-align:middle;">
+                                <table style="width:100%; border-collapse:collapse;">
+                                    <tr>
+                                        <td style="border:none; padding:2px 4px; width:50%; vertical-align:middle;">
+                                            <b>Test Standard:</b>
+                                            <span t-esc="o.test_standard"/>
+                                        </td>
+                                        <td style="border:none; padding:2px 4px; width:50%; vertical-align:middle;">
+                                            <b>Contractor:</b>
+                                            <span t-esc="o.contractor"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid #000; padding:4px 6px; vertical-align:middle;">
+                                <b>Test Name:</b>
+                                Initial Lateral Pile Load Test
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid #000; padding:4px 6px; vertical-align:middle;">
+                                <b>References:</b>
+                                IS 2911 Part 4
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div style="page-break-before: always;"></div>
+
+                    <!-- ═════ TABLE OF CONTENTS ═════ -->
+                    <div style="text-align:center; font-size:16pt; font-weight:bold; letter-spacing:2px; margin-bottom:30px; text-transform:uppercase;">
+                        TABLE OF CONTENTS
+                    </div>
+
+                    <div style="border-top:2px solid #000; margin-bottom:16px;"></div>
+
+                    <table style="width:100%; border-collapse:collapse; font-size:11pt;">
                         <thead>
-                            <tr>
-                                <th class="toc-srno">Sr. No.</th>
-                                <th>Description</th>
-                                <th class="toc-page">Page No</th>
+                            <tr style="border-bottom:1px solid #000;">
+                                <th style="padding:6px 4px; text-align:left; font-weight:bold; width:10%;">Sr. No.</th>
+                                <th style="padding:6px 4px; text-align:left; font-weight:bold;">Description</th>
+                                <th style="padding:6px 4px; text-align:right; font-weight:bold; width:12%;">Page No.</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <t t-foreach="o.content_ids" t-as="line">
-                                <tr>
-                                    <td class="toc-srno"><t t-esc="line.sequence"/></td>
-                                    <td><t t-esc="line.description"/></td>
-                                    <td class="toc-page"><t t-esc="line.page_no"/></td>
-                                </tr>
-                            </t>
+                            <tr t-foreach="o.content_ids" t-as="line">
+                                <td style="padding:5px 4px; text-align:left; vertical-align:top; width:10%;">
+                                    <span t-if="line.sequence != 0" t-esc="line.sequence"/>
+                                </td>
+                                <td style="padding:5px 4px; text-align:left; vertical-align:top;">
+                                    <span t-esc="line.description"/>
+                                </td>
+                                <td style="padding:5px 4px; text-align:right; vertical-align:top; width:12%;">
+                                    <span t-esc="line.page_no"/>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
 
-                    <!-- ═════ 01. GENERAL PHILOSOPHY ═════ -->
-                    <h3 class="section-heading">01. General Philosophy</h3>
-                    <p class="section-text"><t t-esc="o.general_philosophy"/></p>
+                    <div style="border-bottom:2px solid #000; margin-top:16px;"></div>
+                    <div style="page-break-before: always;"></div>
 
-                    <!-- ═════ 2.1 SCOPE OF WORKS ═════ -->
-                    <h3 class="section-heading">2.1 Scope of Works</h3>
-                    <p class="section-text"><t t-esc="o.scope_of_works"/></p>
+                    <!-- ═════ 1. GENERAL PHILOSOPHY ═════ -->
+                    <div style="page-break-inside:avoid; break-inside:avoid;">
+                        <h3 style="font-size:20pt; font-weight:bold; text-transform:uppercase; margin-top:25px; margin-bottom:15px; font-family:'Times New Roman',serif;">1. GENERAL PHILOSOPHY</h3>
+                        <p style="font-size:15pt; line-height:1.9; text-align:justify; margin-bottom:18px; font-family:'Times New Roman',serif;">
+                            <span t-esc="o.general_philosophy"/>
+                        </p>
+                    </div>
 
-                    <div class="page-break"></div>
+                    <!-- ═════ 2. METHODOLOGY ═════ -->
+                    <div style="page-break-inside:avoid; break-inside:avoid;">
+                        <h3 style="font-size:20pt; font-weight:bold; text-transform:uppercase; margin-top:25px; margin-bottom:15px; font-family:'Times New Roman',serif;">2. METHODOLOGY FOR LATERAL PILE LOAD TESTING:</h3>
 
-                    <!-- ═════ 2.2 REFERENCE ═════ -->
-                    <h3 class="section-heading">2.2 Reference</h3>
-                    <p class="section-text"><t t-esc="o.reference"/></p>
+                        <h4 style="font-size:17pt; font-weight:bold; margin-top:22px; margin-bottom:15px; font-family:'Times New Roman',serif;">2.1 Scope of Work:</h4>
+                        <p style="font-size:15pt; line-height:1.9; text-align:justify; margin-bottom:18px; font-family:'Times New Roman',serif;">
+                            <span t-esc="o.scope_of_works"/>
+                        </p>
+                    </div>
 
-                    <!-- ═════ 2.3 EQUIPMENT USED ═════ -->
-                    <h3 class="section-heading">2.3 Equipment Used</h3>
-                    <p class="section-text"><t t-esc="o.test_equipment"/></p>
+                    <div style="page-break-inside:avoid; break-inside:avoid;">
+                        <h4 style="font-size:17pt; font-weight:bold; margin-top:22px; margin-bottom:15px; font-family:'Times New Roman',serif;">2.2 Reference:</h4>
+                        <ul style="margin-left:40px; padding-left:25px; line-height:2; font-size:15pt; font-family:'Times New Roman',serif; list-style-type:disc;">
+                            <li>IS 2911 (Part 4) - 2013 - Code of practice for design and construction of pile foundations - Part 4 Load Test on Piles.</li>
+                        </ul>
+                    </div>
 
-                    <!-- ═════ 2.4 SETTING UP OF APPARATUS ═════ -->
-                    <h3 class="section-heading">2.4 Setting up of Testing Apparatus</h3>
-                    <p class="section-text"><t t-esc="o.setup_apparatus"/></p>
+                    <div style="page-break-inside:avoid; break-inside:avoid;">
+                        <h4 style="font-size:17pt; font-weight:bold; margin-top:22px; margin-bottom:15px; font-family:'Times New Roman',serif;">2.3 Equipments Used:</h4>
+                        <ul style="margin-left:40px; padding-left:25px; line-height:2; font-size:15pt; font-family:'Times New Roman',serif; list-style-type:disc;">
+                            <li>Hydraulic Jack - 100 MT Capacity</li>
+                            <li>Pressure Gauge - 0-280 kg/cm2 with LC of 5.0 kg/cm2</li>
+                            <li>Dial Gauges - 2 Nos of Dial Gauges of 25 mm travel with LC of 0.01 mm</li>
+                        </ul>
+                    </div>
 
-                    <!-- ═════ 2.5 LOAD TEST PROCEDURE ═════ -->
-                    <h3 class="section-heading">2.5 Load Test Procedure</h3>
-                    <p class="section-text"><t t-esc="o.test_procedure"/></p>
+                    <div style="page-break-inside:avoid; break-inside:avoid;">
+                        <h4 style="font-size:17pt; font-weight:bold; margin-top:22px; margin-bottom:15px; font-family:'Times New Roman',serif;">2.4 Setting up of Testing Apparatus</h4>
+                        <p style="font-size:15pt; line-height:1.9; text-align:justify; margin-bottom:18px; font-family:'Times New Roman',serif;">
+                            <span t-esc="o.setup_apparatus"/>
+                        </p>
+                    </div>
 
-                    <!-- ═════ 2.6 PREPARATION OF TEST REPORT ═════ -->
-                    <h3 class="section-heading">2.6 Preparation of Test Report</h3>
-                    <p class="section-text"><t t-esc="o.preparation_report"/></p>
+                    <div style="page-break-inside:avoid; break-inside:avoid;">
+                        <h4 style="font-size:17pt; font-weight:bold; margin-top:22px; margin-bottom:15px; font-family:'Times New Roman',serif;">2.5 Load Test Procedure</h4>
+                        <p style="font-size:15pt; line-height:1.9; text-align:justify; margin-bottom:18px; font-family:'Times New Roman',serif;">
+                            <span t-esc="o.test_procedure"/>
+                        </p>
+                    </div>
 
-                    <!-- ═════ TABLE 1 : BASIC DATA ═════ -->
-                    <h3 class="section-heading">TABLE 1 : BASIC DATA</h3>
-                    <table class="data-table">
-                        <thead>
+                    <div style="page-break-inside:avoid; break-inside:avoid;">
+                        <h4 style="font-size:17pt; font-weight:bold; margin-top:22px; margin-bottom:15px; font-family:'Times New Roman',serif;">2.6 Preparation of Test Report</h4>
+                        <p style="font-size:15pt; line-height:1.9; text-align:justify; margin-bottom:18px; font-family:'Times New Roman',serif;">
+                            <span t-esc="o.preparation_report"/>
+                        </p>
+                    </div>
+
+                    <div style="page-break-inside:avoid; break-inside:avoid;">
+                        <h4 style="font-size:17pt; font-weight:bold; margin-top:22px; margin-bottom:15px; font-family:'Times New Roman',serif;">2.7 Conclusion</h4>
+                        <p style="font-size:15pt; line-height:1.9; text-align:justify; margin-bottom:18px; font-family:'Times New Roman',serif;">
+                            <span t-esc="o.conclusion"/>
+                        </p>
+                    </div>
+
+                    <!-- ═════ SIGNATURE ═════ -->
+                    <div style="margin-top:30px; text-align:center; font-size:12pt; page-break-inside:avoid;">
+                        <table style="width:80%; margin:0 auto; border-collapse:collapse;">
                             <tr>
-                                <th>Sr. No.</th>
-                                <th>Parameter</th>
-                                <th>Value</th>
+                                <td style="width:50%; vertical-align:top; padding:10px; border:1px solid #000;">
+                                    <b>Checked By</b><br/><br/><br/><br/>
+                                </td>
+                                <td style="width:50%; vertical-align:top; padding:10px; border:1px solid #000;">
+                                    <b>Approved By</b><br/><br/><br/><br/>
+                                    <span t-esc="o.signatory_name"/>
+                                    <br/>
+                                    (<span t-esc="o.signatory_designation"/>)
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="annexure-page">
+                        <div class="annexure-title">
+                            Annexure I
+                        </div>
+                        <div class="annexure-subtitle">
+                            (TEST READINGS)
+                        </div>
+                    </div>
+
+                    <!-- ═════ TABLE 2 : DIAL GAUGE READING (LOADING & UNLOADING) ═════ -->
+                    <h3 style="font-size:11pt; font-weight:bold; margin:14px 0 6px 0;">TABLE 2 : DIAL GAUGE READING (LOADING &amp; UNLOADING)</h3>
+                    <table style="width:100%; border-collapse:collapse; font-size:8pt;">
+                        <thead>
+                            <tr style="background-color:#244061; color:#ffffff;">
+                                <th style="border:1px solid #000; padding:2px;">Date</th>
+                                <th style="border:1px solid #000; padding:2px;">Time</th>
+                                <th style="border:1px solid #000; padding:2px;">Load (Tonne)</th>
+                                <th style="border:1px solid #000; padding:2px;">Applied Pressure (kg/cm<sup>2</sup>)</th>
+                                <th style="border:1px solid #000; padding:2px;">Pressure under plate (t/m<sup>2</sup>)</th>
+                                <th style="border:1px solid #000; padding:2px;">Dial A (mm)</th>
+                                <th style="border:1px solid #000; padding:2px;">Dial B (mm)</th>
+                                <th style="border:1px solid #000; padding:2px;">Dial C (mm)</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <t t-foreach="o.basic_data_ids" t-as="line">
-                                <tr>
-                                    <td style="text-align:center;"><t t-esc="line.sr_no"/></td>
-                                    <td><t t-esc="line.parameter"/></td>
-                                    <td><t t-esc="line.value"/></td>
-                                </tr>
-                            </t>
-                        </tbody>
-                    </table>
-
-                    <!-- ═════ TABLE 2A : LOADING ═════ -->
-                    <h3 class="section-heading">TABLE 2A : DIAL GAUGE READING CORRESPONDING TO LOADING</h3>
-                    <table class="dial-table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Time</th>
-                                <th>Load (Tonne)</th>
-                                <th>Applied Pressure (kg/cm²)</th>
-                                <th>Pressure under plate (t/m²)</th>
-                                <th>Dial A (mm)</th>
-                                <th>Dial B (mm)</th>
-                                <th>Dial C (mm)</th>
+                            <tr style="background-color:#d9e1f2; font-weight:bold;">
+                                <td style="border:1px solid #000; padding:2px; text-align:center;" colspan="8">LOADING</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <t t-foreach="o.loading_reading_ids" t-as="r">
-                                <tr>
-                                    <td><t t-esc="r.reading_date_str"/></td>
-                                    <td><t t-esc="r.reading_time_str"/></td>
-                                    <td><t t-esc="r.load_tonne"/></td>
-                                    <td><t t-esc="r.applied_pressure"/></td>
-                                    <td><t t-esc="r.pressure_under_plate"/></td>
-                                    <td><t t-esc="r.dial_a"/></td>
-                                    <td><t t-esc="r.dial_b"/></td>
-                                    <td><t t-esc="r.dial_c"/></td>
-                                </tr>
-                            </t>
+                            <tr t-foreach="o.loading_reading_ids" t-as="r">
+                                <td style="border:1px solid #000; padding:2px; text-align:center;">
+                                    <span t-esc="r.reading_date_str"/>
+                                </td>
+                                <td style="border:1px solid #000; padding:2px; text-align:center;">
+                                    <span t-esc="r.reading_time_str"/>
+                                </td>
+                                <td style="border:1px solid #000; padding:2px; text-align:center;">
+                                    <span t-esc="r.load_tonne"/>
+                                </td>
+                                <td style="border:1px solid #000; padding:2px; text-align:center;">
+                                    <span t-esc="r.applied_pressure"/>
+                                </td>
+                                <td style="border:1px solid #000; padding:2px; text-align:center;">
+                                    <span t-esc="r.pressure_under_plate"/>
+                                </td>
+                                <td style="border:1px solid #000; padding:2px; text-align:center;">
+                                    <span t-esc="r.dial_a"/>
+                                </td>
+                                <td style="border:1px solid #000; padding:2px; text-align:center;">
+                                    <span t-esc="r.dial_b"/>
+                                </td>
+                                <td style="border:1px solid #000; padding:2px; text-align:center;">
+                                    <span t-esc="r.dial_c"/>
+                                </td>
+                            </tr>
+                            <tr style="background-color:#d9e1f2; font-weight:bold;">
+                                <td style="border:1px solid #000; padding:2px; text-align:center;" colspan="8">UNLOADING</td>
+                            </tr>
+                            <tr t-foreach="o.unloading_reading_ids" t-as="r">
+                                <td style="border:1px solid #000; padding:2px; text-align:center;">
+                                    <span t-esc="r.reading_date_str"/>
+                                </td>
+                                <td style="border:1px solid #000; padding:2px; text-align:center;">
+                                    <span t-esc="r.reading_time_str"/>
+                                </td>
+                                <td style="border:1px solid #000; padding:2px; text-align:center;">
+                                    <span t-esc="r.load_tonne"/>
+                                </td>
+                                <td style="border:1px solid #000; padding:2px; text-align:center;">
+                                    <span t-esc="r.applied_pressure"/>
+                                </td>
+                                <td style="border:1px solid #000; padding:2px; text-align:center;">
+                                    <span t-esc="r.pressure_under_plate"/>
+                                </td>
+                                <td style="border:1px solid #000; padding:2px; text-align:center;">
+                                    <span t-esc="r.dial_a"/>
+                                </td>
+                                <td style="border:1px solid #000; padding:2px; text-align:center;">
+                                    <span t-esc="r.dial_b"/>
+                                </td>
+                                <td style="border:1px solid #000; padding:2px; text-align:center;">
+                                    <span t-esc="r.dial_c"/>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
 
-                    <div class="page-break"></div>
+                    <div class="annexure-page">
+                        <div class="annexure-title">
+                            Annexure II
+                        </div>
+                        <div class="annexure-subtitle">
+                            (LOAD VS. DEFLECTION PLOT)
+                        </div>
+                    </div>
+
+                    <div style="page-break-before: always;"></div>
 
                     <!-- ═════ TABLE 2A(i) : LOAD VS SETTLEMENT SUMMARY ═════ -->
-                    <h3 class="section-heading">TABLE 2A(i) : LOAD ON PLATE vs AVERAGE SETTLEMENT vs CUMULATIVE SETTLEMENT</h3>
-                    <table class="dial-table">
+                    <h3 style="font-size:11pt; font-weight:bold; margin:14px 0 6px 0;">LOAD ON PLATE vs AVERAGE SETTLEMENT vs CUMULATIVE SETTLEMENT</h3>
+                    <table style="width:100%; border-collapse:collapse; font-size:10pt;">
                         <thead>
-                            <tr>
-                                <th>Sr No</th>
-                                <th>Load on Plate (t)</th>
-                                <th>Average Settlement (mm)</th>
-                                <th>Cumulative Settlement (mm)</th>
+                            <tr style="background-color:#244061; color:#ffffff;">
+                                <th style="border:1px solid #000; padding:4px;">Sr No</th>
+                                <th style="border:1px solid #000; padding:4px;">Load on Plate (t)</th>
+                                <th style="border:1px solid #000; padding:4px;">Average Settlement (mm)</th>
+                                <th style="border:1px solid #000; padding:4px;">Cumulative Settlement (mm)</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <t t-foreach="o.loading_summary_ids" t-as="s">
-                                <tr>
-                                    <td><t t-esc="s.sequence"/></td>
-                                    <td><t t-esc="s.load_tonne"/></td>
-                                    <td><t t-esc="s.avg_settlement"/></td>
-                                    <td><t t-esc="s.cumulative_settlement"/></td>
-                                </tr>
-                            </t>
-                        </tbody>
-                    </table>
-
-                    <!-- ═════ TABLE 2B : UNLOADING ═════ -->
-                    <h3 class="section-heading">TABLE 2B : DIAL GAUGE READING CORRESPONDING TO UNLOADING</h3>
-                    <table class="dial-table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Time</th>
-                                <th>Load (Tonne)</th>
-                                <th>Applied Pressure (kg/cm²)</th>
-                                <th>Pressure under plate (t/m²)</th>
-                                <th>Dial A (mm)</th>
-                                <th>Dial B (mm)</th>
-                                <th>Dial C (mm)</th>
+                            <tr t-foreach="o.loading_summary_ids" t-as="s">
+                                <td style="border:1px solid #000; padding:4px; text-align:center;">
+                                    <span t-esc="s.sequence"/>
+                                </td>
+                                <td style="border:1px solid #000; padding:4px; text-align:center;">
+                                    <span t-esc="s.load_tonne"/>
+                                </td>
+                                <td style="border:1px solid #000; padding:4px; text-align:center;">
+                                    <span t-esc="s.avg_settlement"/>
+                                </td>
+                                <td style="border:1px solid #000; padding:4px; text-align:center;">
+                                    <span t-esc="s.cumulative_settlement"/>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <t t-foreach="o.unloading_reading_ids" t-as="r">
-                                <tr>
-                                    <td><t t-esc="r.reading_date_str"/></td>
-                                    <td><t t-esc="r.reading_time_str"/></td>
-                                    <td><t t-esc="r.load_tonne"/></td>
-                                    <td><t t-esc="r.applied_pressure"/></td>
-                                    <td><t t-esc="r.pressure_under_plate"/></td>
-                                    <td><t t-esc="r.dial_a"/></td>
-                                    <td><t t-esc="r.dial_b"/></td>
-                                    <td><t t-esc="r.dial_c"/></td>
-                                </tr>
-                            </t>
                         </tbody>
                     </table>
 
-                    <div class="page-break"></div>
-
-                    <!-- ═════ DISPLACEMENT GRAPH ═════ -->
-                    <h3 class="section-heading">LOAD - DISPLACEMENT GRAPH</h3>
+                    <!-- ═════ LOAD - DISPLACEMENT GRAPH ═════ -->
+                    <h3 style="font-size:11pt; font-weight:bold; margin:14px 0 6px 0;">LOAD - DISPLACEMENT GRAPH</h3>
                     <div style="text-align:center; margin:20px 0;">
                         <img t-if="o.graph_image"
                             t-att-src="'data:image/png;base64,%s' % o.graph_image.decode('utf-8')"
@@ -276,54 +440,47 @@
                     </div>
 
                     <!-- ═════ DISPLACEMENT SUMMARY ═════ -->
-                    <table class="summary-table" style="margin:0 auto;">
+                    <table style="width:55%; margin:0 auto; border-collapse:collapse; font-size:10pt;">
                         <thead>
-                            <tr>
-                                <th colspan="2">Displacement Summary</th>
+                            <tr style="background-color:#244061; color:#ffffff;">
+                                <th colspan="2" style="border:1px solid #000; padding:5px 8px; text-align:center;">Displacement Summary</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Gross Displacement</td>
-                                <td><t t-esc="o.gross_settlement"/> mm</td>
+                                <td style="border:1px solid #000; padding:4px 8px;">Gross Displacement</td>
+                                <td style="border:1px solid #000; padding:4px 8px;"><t t-esc="o.gross_settlement"/> mm</td>
                             </tr>
                             <tr>
-                                <td>Net Displacement</td>
-                                <td><t t-esc="o.net_settlement"/> mm</td>
+                                <td style="border:1px solid #000; padding:4px 8px;">Net Displacement</td>
+                                <td style="border:1px solid #000; padding:4px 8px;"><t t-esc="o.net_settlement"/> mm</td>
                             </tr>
                             <tr>
-                                <td>Rebound</td>
-                                <td><t t-esc="o.rebound"/> mm</td>
+                                <td style="border:1px solid #000; padding:4px 8px;">Rebound</td>
+                                <td style="border:1px solid #000; padding:4px 8px;"><t t-esc="o.rebound"/> mm</td>
                             </tr>
                         </tbody>
                     </table>
 
-                    <!-- ═════ 2.7 CONCLUSION ═════ -->
-                    <h3 class="section-heading">2.7 Conclusion</h3>
-                    <p class="section-text"><t t-esc="o.conclusion"/></p>
+                    <div class="annexure-page">
+                        <div class="annexure-title">
+                            Annexure III
+                        </div>
+                        <div class="annexure-subtitle">
+                            (SITE PHOTOGRAPHS)
+                        </div>
+                    </div>
 
-                    <!-- ═════ SIGNATURE ═════ -->
-                    <table class="signature-table">
-                        <tr>
-                            <td style="width:45%;">
-                                <span class="bold">Authorized Signatory</span><br/><br/><br/>
-                                <t t-esc="o.signatory_name"/><br/>
-                                (<t t-esc="o.signatory_designation"/>)
-                            </td>
-                            <td class="spacer"></td>
-                            <td style="width:45%;">
-                            </td>
-                        </tr>
-                    </table>
+                    <div style="page-break-before: always;"></div>
 
                     <!-- ═════ SITE PHOTOGRAPHS ═════ -->
-                    <h3 class="section-heading">SITE PHOTOGRAPHS</h3>
+                    <h3 style="font-size:11pt; font-weight:bold; margin:14px 0 6px 0;">SITE PHOTOGRAPHS</h3>
                     <t t-foreach="o.site_image_ids" t-as="img">
                         <div style="margin:16px 0; text-align:center;">
                             <img t-att-src="'data:image/png;base64,%s' % img.image.decode('utf-8')"
                                 t-att-alt="img.caption"
                                 style="width:60%; border:1px solid #ccc;"/>
-                            <p class="text-center"><t t-esc="img.caption"/></p>
+                            <p style="text-align:center;"><span t-esc="img.caption"/></p>
                         </div>
                     </t>
 

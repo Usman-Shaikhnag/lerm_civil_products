@@ -35,14 +35,21 @@ Production is an Odoo 17 Docker stack. Access is via SSH as root.
 
 > **SECURITY WARNING**: credentials below are **live secrets** committed in this repo (AGENTS.md is git-tracked and pushed to GitHub). Rotate them immediately if this repo ever becomes public or is shared outside the team.
 
-- **Host**: `89.117.52.222` (root / `0426Esehat`). Server runs Docker with three services:
+- **Host**: `knack17_0426Esehat` — configured in `~/.ssh/config`:
+  ```ini
+  Host knack17_0426Esehat
+      HostName 89.117.52.222
+      User root
+      # password: 0426Esehat
+  ```
+  Server runs Docker with three services:
   - `odoo` (odoo:17) → `:8069`, addons bind-mounted from the host volume at `/var/lib/docker/volumes/prod-data/_data` (a git checkout of this repo, branch `knack17_lerm`).
   - `db` (postgres:15) — the single production database is `demo_db` (psql: `docker exec db psql -U odoo -d demo_db`).
   - `document_management-dms-backend-1` (FastAPI) → `:8000` — the DMS backend for the `document_management` module.
 - The checkout may have **uncommitted production-specific edits** (e.g. `door/models/door.py` internal_ids that only exist in this DB). Never reset/checkout blindly — reconcile those changes first.
 - Deploy = update the checkout, install/upgrade changed modules, restart:
   ```bash
-  ssh root@89.117.52.222
+  ssh knack17_0426Esehat
   cd /var/lib/docker/volumes/prod-data/_data && git pull
   docker exec odoo odoo -d demo_db -u <changed_modules> --stop-after-init \
     --db_host=db --db_user=odoo --db_password=odoo

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="custom_layout_header_footer_lateral_pile_load">
+        <div class="header">
+            <img t-attf-src="/lerm_civil/static/src/img/header.png" alt="Image" style="width:100%; height:auto; display:block;"/>
+        </div>
+        <t t-out="0"/>
+        <div class="footer">
+            <table style="width:100%; border-collapse:collapse; font-family:'Times New Roman',serif; font-size:16pt; border:1px solid #000; table-layout:fixed;">
+                <colgroup>
+                    <col style="width:40%;"/>
+                    <col style="width:42%;"/>
+                    <col style="width:18%;"/>
+                </colgroup>
+                <tr>
+                    <td style="border:1px solid #000; padding:4px 8px; vertical-align:middle; text-align:left;">
+                        <b>Location:</b> <span t-esc="o.pile_no"/>
+                    </td>
+                    <td style="border:1px solid #000; padding:4px 8px; vertical-align:middle; text-align:center;">
+                        <b>Report No:</b> <span t-esc="o.sample_id.kes_no"/>
+                    </td>
+                    <td style="border:1px solid #000; padding:4px 8px; vertical-align:middle; text-align:center; font-weight:bold;">
+                        <span class="page"/>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </template>
+</odoo>
