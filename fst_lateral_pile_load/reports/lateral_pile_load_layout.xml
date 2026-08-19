@@ -3,28 +3,9 @@
 
     <template id="custom_layout_header_footer_lateral_pile_load">
             
-            <div class="header" style="width:100%; margin:0; padding:0; overflow:visible; display:block;">            
+            <div class="header" style="width:100%; margin:0; padding:0; overflow:visible; display:block;">
             <t t-set="lab" t-value="o.lab_id.sudo()"/>
             <t t-set="master_lab" t-value="env['lerm.lab.master'].sudo().search([], limit=1)"/>
-
-            
-            <img t-if="lab.header_image"
-                t-att-src="'data:image/png;base64,' + lab.header_image.decode('utf-8')"
-               style="width:100%;
-                        height:30mm;
-                        object-fit:fill;
-                        display:block;
-                        margin:0;
-                        padding:0;"/>
-
-            <img t-elif="master_lab.header_image"
-                t-att-src="'data:image/png;base64,' + master_lab.header_image.decode('utf-8')"
-                style="width:100%;
-                    height:30mm;
-                    object-fit:fill;
-                    display:block;
-                    margin:0;
-                    padding:0;"/>
 
             <table style="width:100%;
                         border-collapse:collapse;
