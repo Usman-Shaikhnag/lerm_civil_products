@@ -203,14 +203,14 @@
                             <tree editable="bottom" class="custom_table_borders">
                                 <field name='serial_no' />
 
-                                <field name='container_no1' class="blue-input" decoration-info="container_no1 != 0"/>
-                                <field name='blwo_no1' widget="char" style="width:10px; max-width:10px; min-width:10px;" class="blue-input" decoration-info="blwo_no1 != 0"/>
-                                <field name="wt_of_con_wet" class="blue-input" decoration-info="wt_of_con_wet != 0"/>
-                                <field name='wt_of_con_dry' class="blue-input" decoration-info="wt_of_con_dry != 0"/>
-                                <field name='loss_of_moisture' />
-                                <field name='wt_containner' class="blue-input" decoration-info="wt_containner != 0"/>
+                                <field name='penetration' class="blue-input" decoration-info="penetration != 0"/>
+                                <field name='container_no' class="blue-input" decoration-info="container_no != 0"/>
+                                <field name="weight_container_wet_soil" class="blue-input" decoration-info="weight_container_wet_soil != 0"/>
+                                <field name='weight_container_dry_soil' class="blue-input" decoration-info="weight_container_dry_soil != 0"/>
+                                <field name='weight_water' />
+                                <field name='weight_container' class="blue-input" decoration-info="weight_container != 0"/>
 
-                                <field name='wt_of_dry' />
+                                <field name='weight_dry_soil' />
 
                                 <field name='moisture_content' />
                             </tree>
@@ -267,14 +267,17 @@
                     <div invisible = "plastic_limit_visible == False">
                         <field name="plastic_limit_table">
                             <tree editable="bottom" class="custom_table_borders">
-                                <field name='serial_no'/>
+                                <field name='serial_no' />
+                                <field name='penetration' class="blue-input" decoration-info="penetration != 0"/>
                                 <field name='container_no' class="blue-input" decoration-info="container_no != 0"/>
-                                <field name='wt_of_con' class="blue-input" decoration-info="wt_of_con != 0"/>
-                                <field name='wt_of_con_wet' class="blue-input" decoration-info="wt_of_con_wet != 0"/>
-                                <field name='wt_of_con_dry' class="blue-input" decoration-info="wt_of_con_dry != 0"/>
-                                <field name='wt_of_water'/>
-                                <field name='wt_of_oven'/>
-                                <field name='water_content_pastic'/>
+                                <field name="weight_container_wet_soil" class="blue-input" decoration-info="weight_container_wet_soil != 0"/>
+                                <field name='weight_container_dry_soil' class="blue-input" decoration-info="weight_container_dry_soil != 0"/>
+                                <field name='weight_water' />
+                                <field name='weight_container' class="blue-input" decoration-info="weight_container != 0"/>
+
+                                <field name='weight_dry_soil' />
+
+                                <field name='moisture_content' />
                             </tree>
                         </field>
                     </div>

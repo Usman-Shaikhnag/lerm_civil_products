@@ -1011,42 +1011,42 @@
 									</th>
 									<th>
 										<span>
-										Container No.
+										Penetration (mm)
 										</span>
 									</th>
 										<th>
 										<span>
-										No. of Blows
+										Container No.
 										</span>
 									</th>
 									<th>
 										<span>
-										Wt. of Container + Wet Soil
+										Weight of Container + Wet Soil (g)
 										</span>
 									</th>
 									<th>
 										<span>
-											Wt. of Container + dry Soil
+											Weight of Container + Dry Soil (g)
 										</span>
 									</th>
 									<th>
 										<span>
-										Loss of Moisture (gm)
+										Weight of Water (g)
 										</span>
 									</th>
 									<th>
 										<span>
-										Weight of Container
+										Weight of Container (g)
 										</span>
 									</th>
 									<th>
 										<span>
-										Weight of Dry Soil
+										Weight of Dry Soil (g)
 										</span>
 									</th>
 									<th>
 										<span>
-											Moisture Content %
+											Moisture Content (%)
 										</span>
 									</th>
 
@@ -1063,25 +1063,25 @@
 										</div>
 									</td>
 									<td>
-										<span t-esc="r.container_no1"/>
+										<span t-esc="r.penetration"/>
 									</td>
 									<td>
-										<span t-esc="r.blwo_no1"/>
+										<span t-esc="r.container_no"/>
 									</td>
 									<td>
-										<span t-esc="r.wt_of_con_wet" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.weight_container_wet_soil" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td>
-										<span t-esc="r.wt_of_con_dry" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.weight_container_dry_soil" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td>
-										<span t-esc="r.loss_of_moisture" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.weight_water" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td>
-										<span t-esc="r.wt_containner"  t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.weight_container"  t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td>
-										<span t-esc="r.wt_of_dry"  t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.weight_dry_soil"  t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td>
 										<span t-esc="r.moisture_content"  t-options='{"widget": "float", "precision": 2}' />
@@ -1196,39 +1196,46 @@
 									</th>
 									<th>
 										<span>
-											Container No
+										Penetration (mm)
+										</span>
+									</th>
+										<th>
+										<span>
+										Container No.
 										</span>
 									</th>
 									<th>
 										<span>
-											Weight of container (gm)
+										Weight of Container + Wet Soil (g)
 										</span>
 									</th>
 									<th>
 										<span>
-										Weight of container + wet soil (gm)
+											Weight of Container + Dry Soil (g)
 										</span>
 									</th>
 									<th>
 										<span>
-										Weight of container + Dry soil (gm)
+										Weight of Water (g)
 										</span>
 									</th>
 									<th>
 										<span>
-											Weight of water in (gm)
+										Weight of Container (g)
 										</span>
 									</th>
 									<th>
 										<span>
-										Weight of ovendry soil (gm)
+										Weight of Dry Soil (g)
 										</span>
 									</th>
 									<th>
 										<span>
-										Water Content (%)
+											Moisture Content (%)
 										</span>
 									</th>
+
+								
 								</tr>
 							</thead>
 							<tbody>
@@ -1236,30 +1243,33 @@
 								<tr t-foreach="data.plastic_limit_table" t-as="r">
 									<td>
 										<div>
-											<span t-esc="n + 1" />
-											<t t-set="n" t-value="n+1"/>
+											<span t-esc="m + 1" />
+											<t t-set="m" t-value="m+1"/>
 										</div>
+									</td>
+									<td>
+										<span t-esc="r.penetration"/>
 									</td>
 									<td>
 										<span t-esc="r.container_no"/>
 									</td>
 									<td>
-										<span t-esc="r.wt_of_con" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.weight_container_wet_soil" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td>
-										<span t-esc="r.wt_of_con_wet" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.weight_container_dry_soil" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td>
-										<span t-esc="r.wt_of_con_dry" t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.weight_water" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td>
-										<span t-esc="r.wt_of_water"  t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.weight_container"  t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td>
-										<span t-esc="r.wt_of_oven"  t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.weight_dry_soil"  t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td>
-										<span t-esc="r.water_content_pastic"  t-options='{"widget": "float", "precision": 2}'/>
+										<span t-esc="r.moisture_content"  t-options='{"widget": "float", "precision": 2}' />
 									</td>
 								</tr>
 							</tbody>

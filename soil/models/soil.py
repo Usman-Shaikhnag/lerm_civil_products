@@ -764,89 +764,142 @@ class Soil(models.Model):
                # Liquid Limit
     liquid_limit_name = fields.Char("Name",default="Liquid Limit")
     liquid_limit_visible = fields.Boolean("Liquid Limit Visible",compute="_compute_visible")
-    # job_no_liquid_limit = fields.Char(string="Job No")
-    # material_liquid_limit = fields.Char(String="Material")
-    # start_date_liquid_limit = fields.Date("Start Date")
-    # end_date_liquid_limit = fields.Date("End Date")
+
     child_liness = fields.One2many('mechanical.liquid.limits.line','parent_id',string="Liquid Limit")
     liquid_limit = fields.Float('Liquid Limit %',compute="_compute_liquid_limit")
 
    
-   
+  
 
-    # @api.depends('child_liness.blwo_no1', 'child_liness.moisture_content')
+    # @api.depends('child_liness.penetration', 'child_liness.moisture_content')
     # def _compute_liquid_limit(self):
-    #     for record in self:
-    #         lines = record.child_liness.filtered(lambda l: l.blwo_no1 is not None and l.moisture_content is not None)
-    #         if not lines or len(lines) < 2:
-    #             record.liquid_limit = 0.0
-    #             continue
+    #  for record in self:
 
-    #         # Sort by blwo_no1 ascending
-    #         lines_sorted = sorted(lines, key=lambda l: l.blwo_no1)
-    #         target = 25.0
+    #     lines = record.child_liness.filtered(
+    #         lambda l: l.penetration and l.moisture_content
+    #     )
 
-    #         # Find the two points around target (just below and just above)
-    #         lower = None
-    #         upper = None
-    #         for i, line in enumerate(lines_sorted):
-    #             if line.blwo_no1 < target:
-    #                 lower = line
-    #             elif line.blwo_no1 >= target and lower:
-    #                 upper = line
-    #                 break
+    #     if len(lines) < 2:
+    #         record.liquid_limit = 0.0
+    #         continue
 
-    #         if lower and upper:
-    #             x1, x2 = lower.blwo_no1, upper.blwo_no1
-    #             y1, y2 = lower.moisture_content, upper.moisture_content
+    #     # X = Penetration
+    #     x = [float(l.penetration) for l in lines]
 
-    #             if x2 != x1:
-    #                 # Linear interpolation
-    #                 ll_value = y1 + (y2 - y1) * (target - x1) / (x2 - x1)
-    #             else:
-    #                 ll_value = y1
-    #             record.liquid_limit = ll_value
-    #         elif lower:
-    #             # If target above highest value
-    #             record.liquid_limit = lower.moisture_content
-    #         else:
-    #             record.liquid_limit = 0.0
+    #     # Y = Moisture Content
+    #     y = [float(l.moisture_content) for l in lines]
 
-    import math
+    #     n = len(x)
 
-    @api.depends('child_liness.blwo_no1', 'child_liness.moisture_content')
+    #     sum_x = sum(x)
+    #     sum_y = sum(y)
+
+    #     sum_xy = sum(
+    #         xi * yi for xi, yi in zip(x, y)
+    #     )
+
+    #     sum_x2 = sum(
+    #         xi * xi for xi in x
+    #     )
+
+    #     denominator = (
+    #         n * sum_x2
+    #         - (sum_x ** 2)
+    #     )
+
+    #     if denominator == 0:
+    #         record.liquid_limit = 0.0
+    #         continue
+
+    #     # Linear regression:
+    #     # Y = aX + b
+
+    #     a = (
+    #         n * sum_xy
+    #         - sum_x * sum_y
+    #     ) / denominator
+
+    #     b = (
+    #         sum_y - a * sum_x
+    #     ) / n
+
+    #     # Liquid Limit = Moisture Content
+    #     # at 20 mm penetration
+
+    #     ll = a * 20.0 + b
+
+    #     # record.liquid_limit = round(ll, 2)
+    #     record.liquid_limit = int(ll + 0.5)
+
+
+    @api.depends(
+    'child_liness.penetration',
+    'child_liness.moisture_content'
+)
     def _compute_liquid_limit(self):
+
      for record in self:
+
         lines = record.child_liness.filtered(
-            lambda l: l.blwo_no1 and l.moisture_content
+            lambda l: l.penetration
+            and l.moisture_content is not None
         )
 
         if len(lines) < 2:
-            record.liquid_limit = 0.0
+            record.liquid_limit = 0
             continue
 
-        x = [math.log10(float(l.blwo_no1)) for l in lines]
-        y = [float(l.moisture_content) for l in lines]
+        x = [
+            float(line.penetration)
+            for line in lines
+        ]
+
+        y = [
+            float(line.moisture_content)
+            for line in lines
+        ]
 
         n = len(x)
 
         sum_x = sum(x)
         sum_y = sum(y)
-        sum_xy = sum(xi * yi for xi, yi in zip(x, y))
-        sum_x2 = sum(xi * xi for xi in x)
 
-        denominator = n * sum_x2 - (sum_x ** 2)
+        sum_xy = sum(
+            xi * yi
+            for xi, yi in zip(x, y)
+        )
+
+        sum_x2 = sum(
+            xi * xi
+            for xi in x
+        )
+
+        denominator = (
+            n * sum_x2
+            - sum_x ** 2
+        )
 
         if denominator == 0:
-            record.liquid_limit = 0.0
+            record.liquid_limit = 0
             continue
 
-        a = (n * sum_xy - sum_x * sum_y) / denominator
-        b = (sum_y - a * sum_x) / n
+        a = (
+            n * sum_xy
+            - sum_x * sum_y
+        ) / denominator
 
-        ll = a * math.log10(25.0) + b
+        b = (
+            sum_y
+            - a * sum_x
+        ) / n
 
-        record.liquid_limit = round(ll, 2)
+        # Liquid Limit at 20 mm
+        ll = a * 20.0 + b
+
+        # Whole number
+        record.liquid_limit = round(ll)
+
+    
 
     
     liquid_limit_conformity = fields.Selection([
@@ -907,252 +960,303 @@ class Soil(models.Model):
 
     show_liquid_graph = fields.Boolean(string="Show Liquid Limit Graph")
 
-    
-
-
-
-   
-
-    # def generate_line_chart_liquid(self):
-    #     x_value = []
-    #     y_value = []
-    #     for line in self.child_liness:
-    #         if line.blwo_no1 and line.moisture_content is not None:
-    #             x_value.append(line.blwo_no1)
-    #             y_value.append(line.moisture_content)
-
-    #     if not x_value or not y_value:
-    #         return False
-
-    #     plt.figure(figsize=(10, 5))
-
-    #     # ✅ Blue line with red points
-    #     plt.plot(x_value, y_value, color='blue', linestyle='-', linewidth=2, label='Curve')
-    #     plt.scatter(x_value, y_value, color='red', edgecolors='black', s=60, zorder=5, label='Points')
-
-    #     # ✅ Labels and title
-    #     plt.xlabel('No. of Blows', fontsize=12)
-    #     plt.ylabel('Water Content (%)', fontsize=12)
-    #     plt.title('LIQUID LIMIT', fontsize=14)
-
-    #     # ✅ Axis limits (rounded)
-    #     max_y = max(y_value)
-    #     y_limit = (int(max_y / 10) + 1) * 10
-    #     plt.ylim(bottom=0, top=y_limit)
-
-    #     max_x = max(x_value)
-    #     x_limit = (int(max_x / 10) + 1) * 10
-    #     plt.xlim(left=0, right=x_limit)
-
-    #     # ✅ Minor ticks for fine grid lines
-    #     ax = plt.gca()
-    #     ax.xaxis.set_minor_locator(MultipleLocator(1))
-    #     ax.yaxis.set_minor_locator(MultipleLocator(1))
-
-    #     # ✅ Fine grid
-    #     plt.grid(True, which='both', axis='both', linestyle='--', linewidth=0.3, color='gray', alpha=0.8)
-
-    #     # 🔹 Highlight Liquid Limit point (DB field value वापरून)
-    #     if self.liquid_limit:
-    #         highlight_x = 25                # Blows (fixed at 25)
-    #         highlight_y = self.liquid_limit # Moisture content from field
-
-    #         # Dotted guide lines
-    #         plt.axhline(y=highlight_y, color='green', linestyle='--', linewidth=1)
-    #         plt.axvline(x=highlight_x, color='green', linestyle='--', linewidth=1)
-
-    #         # Point mark
-    #         plt.plot(highlight_x, highlight_y, marker='o', color='green', markersize=8)
-
-    #         # Label
-    #         plt.text(highlight_x + 1, highlight_y + 1, f"LL = {highlight_y:.2f}%", color='green')
-
-    #     # ✅ Save to buffer
-    #     buffer = io.BytesIO()
-    #     plt.tight_layout()
-    #     plt.legend()
-    #     plt.savefig(buffer, format='png')
-    #     plt.close()
-    #     buffer.seek(0)
-
-    #     return base64.b64encode(buffer.read()).decode('utf-8')
-
 
     def generate_line_chart_liquid(self):
 
       x_value = []
       y_value = []
 
+    # ----------------------------------
+    # Get child data
+    # ----------------------------------
       for line in self.child_liness:
-        if line.blwo_no1 and line.moisture_content is not None:
-            x_value.append(float(line.blwo_no1))
+        if line.penetration and line.moisture_content is not None:
+            x_value.append(float(line.penetration))
             y_value.append(float(line.moisture_content))
 
       if len(x_value) < 2:
         return False
 
-    # Sort data
-      data = sorted(zip(x_value, y_value), key=lambda x: x[0])
+    # ----------------------------------
+    # Sort data by penetration
+    # ----------------------------------
+      data = sorted(
+        zip(x_value, y_value),
+        key=lambda x: x[0]
+    )
+
       x_value = [d[0] for d in data]
       y_value = [d[1] for d in data]
 
     # ----------------------------------
-    # Regression: w = a log(N) + b
+    # Linear Regression
+    #
+    # y = a*x + b
     # ----------------------------------
-      x_log = [math.log10(x) for x in x_value]
+      n = len(x_value)
 
-      n = len(x_log)
-
-      sum_x = sum(x_log)
+      sum_x = sum(x_value)
       sum_y = sum(y_value)
-      sum_xy = sum(x * y for x, y in zip(x_log, y_value))
-      sum_x2 = sum(x * x for x in x_log)
 
-      denominator = n * sum_x2 - sum_x ** 2
+      sum_xy = sum(
+        x * y
+        for x, y in zip(x_value, y_value)
+    )
+
+      sum_x2 = sum(
+        x * x
+        for x in x_value
+    )
+
+      denominator = (
+        n * sum_x2
+        - (sum_x ** 2)
+    )
 
       if denominator == 0:
         return False
 
-      a = (n * sum_xy - sum_x * sum_y) / denominator
-      b = (sum_y - a * sum_x) / n
+      a = (
+        n * sum_xy
+        - sum_x * sum_y
+    ) / denominator
 
-      # LL at 25 blows
-      ll_value = a * math.log10(25) + b
-
-      # ----------------------------------
-      # Create smooth regression line
-      # ----------------------------------
-      x_fit = np.linspace(min(x_value), max(x_value), 500)
-      y_fit = [a * math.log10(x) + b for x in x_fit]
+      b = (
+        sum_y
+        - a * sum_x
+    ) / n
 
     # ----------------------------------
-    # Plot
+    # Liquid Limit at 20 mm
     # ----------------------------------
-      fig, ax = plt.subplots(figsize=(10, 4))
+      ll_penetration = 20.0
 
-      ax.set_xscale('log')
+      ll_value = (
+        a * ll_penetration + b
+    )
 
+    # ----------------------------------
     # Regression line
+    #
+    # IMPORTANT:
+    # Draw ONLY from minimum data point
+    # to maximum data point.
+    #
+    # This prevents the red line from
+    # touching/crossing the Y-axis.
+    # ----------------------------------
+      x_fit = np.linspace(
+        min(x_value),
+        max(x_value),
+        500
+    )
+
+      y_fit = [
+        a * x + b
+        for x in x_fit
+    ]
+
+    # ----------------------------------
+    # Create figure
+    # ----------------------------------
+      fig, ax = plt.subplots(
+        figsize=(10, 5)
+    )
+
+    # ----------------------------------
+    # NORMAL LINEAR X AXIS
+    # ----------------------------------
+      ax.set_xscale('linear')
+
+    # ----------------------------------
+    # RED REGRESSION LINE
+    # ----------------------------------
       ax.plot(
         x_fit,
         y_fit,
-        color='blue',
-        linewidth=2,
-        label='Flow Curve'
+        color='#c64b47',
+        linewidth=2.5,
+        zorder=2
     )
 
-    # Actual points
+    # ----------------------------------
+    # RED TEST POINTS
+    # ----------------------------------
       ax.scatter(
         x_value,
         y_value,
-        color='red',
-        edgecolors='black',
-        s=80,
-        zorder=5,
-        label='Test Points'
+        color='#c64b47',
+        edgecolors='#c64b47',
+        marker='s',
+        s=70,
+        zorder=5
     )
 
     # ----------------------------------
-    # LL Marker
+    # BLACK VERTICAL LINE AT 20 mm
     # ----------------------------------
-      ax.axvline(
-        x=25,
-        color='green',
-        linestyle='--',
-        linewidth=1.2
+      ax.plot(
+        [ll_penetration, ll_penetration],
+        [40, ll_value + 1.3],
+        color='black',
+        linewidth=2,
+        zorder=3
     )
 
-      ax.axhline(
-        y=ll_value,
-        color='green',
-        linestyle='--',
-        linewidth=1.2
-    )
-
-      ax.scatter(
-        [25],
-        [ll_value],
-        color='green',
-        s=120,
-        zorder=10
-    )
-
+    # ----------------------------------
+    # DOWN ARROW AT 20 mm
+    # ----------------------------------
       ax.annotate(
-        f'LL = {ll_value:.2f}%',
-        xy=(25, ll_value),
-        xytext=(26, ll_value + 2),
-        color='green',
+        '',
+        xy=(ll_penetration, 40),
+        xytext=(ll_penetration, 41.0),
+        arrowprops=dict(
+            arrowstyle='->',
+            color='black',
+            linewidth=2
+        )
+    )
+
+    # ----------------------------------
+    # BLACK HORIZONTAL LINE AT LL
+    # ----------------------------------
+      ax.plot(
+        [14, 22.8],
+        [ll_value, ll_value],
+        color='black',
+        linewidth=2,
+        zorder=3
+    )
+
+    # ----------------------------------
+    # LEFT ARROW AT 45%
+    # ----------------------------------
+      ax.annotate(
+        '',
+        xy=(14, ll_value),
+        xytext=(15.0, ll_value),
+        arrowprops=dict(
+            arrowstyle='->',
+            color='black',
+            linewidth=2
+        )
+    )
+
+    # ----------------------------------
+    # X AXIS LIMIT
+    # ----------------------------------
+      ax.set_xlim(
+        14,
+        26
+    )
+
+    # ----------------------------------
+    # X MAJOR TICKS
+    # 14, 16, 18, 20, 22, 24, 26
+    # ----------------------------------
+      ax.set_xticks(
+        np.arange(14, 27, 2)
+    )
+
+    # ----------------------------------
+    # X MINOR TICKS
+    # Every 0.5
+    # ----------------------------------
+      ax.set_xticks(
+        np.arange(14, 26.5, 0.5),
+        minor=True
+    )
+
+    # ----------------------------------
+    # Y AXIS LIMIT
+    # ----------------------------------
+      ax.set_ylim(
+        40,
+        48
+    )
+
+    # ----------------------------------
+    # Y MAJOR TICKS
+    # 40, 41, 42 ... 48
+    # ----------------------------------
+      ax.set_yticks(
+        np.arange(40, 49, 1)
+    )
+
+    # ----------------------------------
+    # Y MINOR TICKS
+    # Every 0.5
+    # ----------------------------------
+      ax.set_yticks(
+        np.arange(40, 48.5, 0.5),
+        minor=True
+    )
+
+    # ----------------------------------
+    # X LABEL
+    # ----------------------------------
+      ax.set_xlabel(
+        'penetration(mm)',
         fontsize=12,
         fontweight='bold'
     )
 
     # ----------------------------------
-    # Labels
+    # Y LABEL
     # ----------------------------------
-      ax.set_title(
-        'LIQUID LIMIT',
-        fontsize=18,
+      ax.set_ylabel(
+        'Moisture Content (%)',
+        fontsize=12,
         fontweight='bold'
     )
 
-      ax.set_xlabel(
-        'Number of Blows (Log Scale)',
-        fontsize=12
-    )
-
-      ax.set_ylabel(
-        'Water Content (%)',
-        fontsize=12
-    )
-
     # ----------------------------------
-    # Limits
+    # MAJOR GRID
     # ----------------------------------
-      ax.set_xlim(
-        min(x_value) * 0.8,
-        max(x_value) * 1.2
-    )
-
-      y_min = min(y_value)
-      y_max = max(y_value)
-
-      ax.set_ylim(
-        max(0, y_min - 5),
-        ((int(y_max / 10) + 1) * 10)
-    )
-
-    # ----------------------------------
-    # Grid
-    # ----------------------------------
-      ax.xaxis.set_major_locator(LogLocator(base=10))
-      ax.xaxis.set_minor_locator(
-        LogLocator(
-            base=10,
-            subs=np.arange(2, 10) * 0.1
-        )
-    )
-
-      ax.yaxis.set_minor_locator(MultipleLocator(1))
-
       ax.grid(
         which='major',
+        color='black',
         linestyle='-',
         linewidth=0.5,
         alpha=0.7
     )
 
+    # ----------------------------------
+    # MINOR GRID
+    # ----------------------------------
       ax.grid(
         which='minor',
-        linestyle='--',
-        linewidth=0.3,
-        alpha=0.5
+        color='#d0d7df',
+        linestyle='-',
+        linewidth=0.4,
+        alpha=0.7
     )
 
-      ax.legend()
+    # ----------------------------------
+    # Tick labels
+    # ----------------------------------
+      ax.tick_params(
+        axis='both',
+        which='major',
+        labelsize=10
+    )
 
+    # ----------------------------------
+    # Remove legend
+    # ----------------------------------
+      if ax.legend_:
+        ax.legend_.remove()
+
+    # ----------------------------------
+    # Tight layout
+    # ----------------------------------
       plt.tight_layout()
 
+    # ----------------------------------
+    # Convert chart to PNG
+    # ----------------------------------
       buffer = io.BytesIO()
+
       plt.savefig(
         buffer,
         format='png',
@@ -1164,10 +1268,285 @@ class Soil(models.Model):
 
       buffer.seek(0)
 
+    # ----------------------------------
+    # Return Base64
+    # ----------------------------------
       return base64.b64encode(
         buffer.read()
     ).decode('utf-8')
 
+
+
+    # def generate_line_chart_liquid(self):
+
+    #   x_value = []
+    #   y_value = []
+
+    #   for line in self.child_liness:
+    #     if line.penetration and line.moisture_content is not None:
+    #         x_value.append(float(line.penetration))
+    #         y_value.append(float(line.moisture_content))
+
+    #   if len(x_value) < 2:
+    #     return False
+
+    # # ----------------------------------
+    # # Sort data
+    # # ----------------------------------
+    #   data = sorted(
+    #     zip(x_value, y_value),
+    #     key=lambda x: x[0]
+    # )
+
+    #   x_value = [d[0] for d in data]
+    #   y_value = [d[1] for d in data]
+
+    # # ----------------------------------
+    # # Linear Regression
+    # # y = a*x + b
+    # # ----------------------------------
+    #   n = len(x_value)
+
+    #   sum_x = sum(x_value)
+    #   sum_y = sum(y_value)
+
+    #   sum_xy = sum(
+    #     x * y
+    #     for x, y in zip(x_value, y_value)
+    # )
+
+    #   sum_x2 = sum(
+    #     x * x
+    #     for x in x_value
+    # )
+
+    #   denominator = (
+    #     n * sum_x2
+    #     - sum_x ** 2
+    # )
+
+    #   if denominator == 0:
+    #     return False
+
+    #   a = (
+    #     n * sum_xy
+    #     - sum_x * sum_y
+    # ) / denominator
+
+    #   b = (
+    #     sum_y
+    #     - a * sum_x
+    # ) / n
+
+    # # ----------------------------------
+    # # Liquid Limit at 20 mm
+    # # ----------------------------------
+    #   ll_penetration = 20.0
+
+    #   ll_value = (
+    #     a * ll_penetration + b
+    # )
+
+    # # ----------------------------------
+    # # Regression line
+    # # ----------------------------------
+    #   x_fit = np.linspace(
+    #     14,
+    #     24,
+    #     500
+    # )
+
+    #   y_fit = [
+    #     a * x + b
+    #     for x in x_fit
+    # ]
+
+    # # ----------------------------------
+    # # Plot
+    # # ----------------------------------
+    #   fig, ax = plt.subplots(
+    #     figsize=(10, 5)
+    # )
+
+    # # IMPORTANT:
+    # # Normal linear X-axis
+    #   ax.set_xscale('linear')
+
+    # # ----------------------------------
+    # # Regression line
+    # # ----------------------------------
+    #   ax.plot(
+    #     x_fit,
+    #     y_fit,
+    #     color='#c64b47',
+    #     linewidth=2.5,
+    #     marker='',
+    #     zorder=2
+    # )
+
+    # # ----------------------------------
+    # # Actual test points
+    # # ----------------------------------
+    #   ax.plot(
+    #     x_value,
+    #     y_value,
+    #     color='#c64b47',
+    #     linewidth=2.5,
+    #     marker='s',
+    #     markersize=7,
+    #     markerfacecolor='#c64b47',
+    #     markeredgecolor='#c64b47',
+    #     zorder=5
+    # )
+
+    # # ----------------------------------
+    # # Liquid Limit
+    # # ----------------------------------
+    # # Vertical line at 20 mm
+    #   ax.plot(
+    #     [20, 20],
+    #     [40, ll_value + 1.3],
+    #     color='black',
+    #     linewidth=2,
+    #     zorder=3
+    # )
+
+    # # Arrow at bottom
+    #   ax.annotate(
+    #     '',
+    #     xy=(20, 40),
+    #     xytext=(20, 41.0),
+    #     arrowprops=dict(
+    #         arrowstyle='->',
+    #         color='black',
+    #         linewidth=2
+    #     )
+    # )
+
+    # # ----------------------------------
+    # # Horizontal line at LL
+    # # ----------------------------------
+    #   ax.plot(
+    #     [14, 22.8],
+    #     [ll_value, ll_value],
+    #     color='black',
+    #     linewidth=2,
+    #     zorder=3
+    # )
+
+    # # Arrow pointing left
+    #   ax.annotate(
+    #     '',
+    #     xy=(14, ll_value),
+    #     xytext=(15.0, ll_value),
+    #     arrowprops=dict(
+    #         arrowstyle='->',
+    #         color='black',
+    #         linewidth=2
+    #     )
+    # )
+
+    # # ----------------------------------
+    # # X Axis
+    # # ----------------------------------
+    #   ax.set_xlim(14, 26)
+
+    #   ax.set_xticks(
+    #     np.arange(14, 27, 2)
+    # )
+
+    #   ax.set_xticks(
+    #     np.arange(14, 26.5, 0.5),
+    #     minor=True
+    # )
+
+    # # ----------------------------------
+    # # Y Axis
+    # # ----------------------------------
+    #   ax.set_ylim(40, 48)
+
+    #   ax.set_yticks(
+    #     np.arange(40, 49, 1)
+    # )
+
+    #   ax.set_yticks(
+    #     np.arange(40, 48.5, 0.5),
+    #     minor=True
+    # )
+
+    # # ----------------------------------
+    # # Labels
+    # # ----------------------------------
+    #   ax.set_xlabel(
+    #     'penetration(mm)',
+    #     fontsize=12,
+    #     fontweight='bold'
+    # )
+
+    #   ax.set_ylabel(
+    #     'Moisture Content (%)',
+    #     fontsize=12,
+    #     fontweight='bold'
+    # )
+
+    # # ----------------------------------
+    # # Grid
+    # # ----------------------------------
+    #   ax.grid(
+    #     which='major',
+    #     color='black',
+    #     linestyle='-',
+    #     linewidth=0.5
+    # )
+
+    #   ax.grid(
+    #     which='minor',
+    #     color='#d0d7df',
+    #     linestyle='-',
+    #     linewidth=0.4
+    # )
+
+    # # ----------------------------------
+    # # Tick appearance
+    # # ----------------------------------
+    #   ax.tick_params(
+    #     axis='both',
+    #     which='major',
+    #     labelsize=10
+    # )
+
+    # # ----------------------------------
+    # # No legend
+    # # ----------------------------------
+    #   ax.legend_.remove() if ax.legend_ else None
+
+    # # ----------------------------------
+    # # Layout
+    # # ----------------------------------
+    #   plt.tight_layout()
+
+    # # ----------------------------------
+    # # Save image
+    # # ----------------------------------
+    #   buffer = io.BytesIO()
+
+    #   plt.savefig(
+    #     buffer,
+    #     format='png',
+    #     dpi=100,
+    #     bbox_inches='tight'
+    # )
+
+    #   plt.close()
+
+    #   buffer.seek(0)
+
+    #   return base64.b64encode(
+    #     buffer.read()
+    # ).decode('utf-8')
+
+
+    
 
         
        
@@ -1191,11 +1570,22 @@ class Soil(models.Model):
 
     plastic_limit = fields.Float(string="Average ",compute="_compute_plastic_limit")
    
-    @api.depends('plastic_limit_table.water_content_pastic')
+    @api.depends('plastic_limit_table.moisture_content')
     def _compute_plastic_limit(self):
-        for record in self:
-            total_water_content_pastic = sum(record.plastic_limit_table.mapped('water_content_pastic'))
-            record.plastic_limit = total_water_content_pastic / len(record.plastic_limit_table) if record.plastic_limit_table else 0.0
+
+     for record in self:
+
+        total_water_content_pastic = sum(
+            record.plastic_limit_table.mapped('moisture_content')
+        )
+
+        average = (
+            total_water_content_pastic / len(record.plastic_limit_table)
+            if record.plastic_limit_table
+            else 0.0
+        )
+
+        record.plastic_limit = round(average)
    
 
     plastic_limit_conformity = fields.Selection([
@@ -3444,32 +3834,98 @@ class LIQUIDLIMITLINE(models.Model):
     parent_id = fields.Many2one('mechanical.soil',string="Parent Id")
 
     serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
-    container_no1 = fields.Char(string="Container No.")
-    blwo_no1 = fields.Float(string="No. of Blows")
-    wt_of_con_wet = fields.Float(string="Wt. of Container + Wet Soil")
-    wt_of_con_dry = fields.Float(string="Wt. of Container + dry Soil")   
-    loss_of_moisture = fields.Float(string="Loss of Moisture (gm)",compute="_compute_loss_of_moisture")
-    wt_containner = fields.Float(string="Weight of Container")
-    wt_of_dry= fields.Float(string="Weight of Dry Soil",compute="_compute_wt_of_dry")
-    moisture_content = fields.Float(string="Moisture Content %",compute="_compute_moisture_content")
 
-    @api.depends('wt_of_con_wet', 'wt_of_con_dry')
-    def _compute_loss_of_moisture(self):
-        for line in self:
-            line.loss_of_moisture = line.wt_of_con_wet - line.wt_of_con_dry
 
-    @api.depends('wt_of_con_dry', 'wt_containner')
-    def _compute_wt_of_dry(self):
-        for line in self:
-            line.wt_of_dry = line.wt_of_con_dry - line.wt_containner
+    penetration = fields.Float(string='Penetration (mm)')
+    container_no = fields.Integer(string='Container No.')
 
-    @api.depends('loss_of_moisture', 'wt_of_dry')
-    def _compute_moisture_content(self):
+    weight_container_wet_soil = fields.Float(
+        string='Weight of Container + Wet Soil (g)'
+    )
+
+    weight_container_dry_soil = fields.Float(
+        string='Weight of Container + Dry Soil (g)'
+    )
+
+    weight_water = fields.Float(
+        string='Weight of Water (g)',
+        compute='_compute_values',
+        store=True
+    )
+
+    weight_container = fields.Float(
+        string='Weight of Container (g)'
+    )
+
+    weight_dry_soil = fields.Float(
+        string='Weight of Dry Soil (g)',
+        compute='_compute_values',
+        store=True
+    )
+
+    moisture_content = fields.Float(
+        string='Moisture Content (%)',
+        compute='_compute_values',
+        store=True
+    )
+
+    @api.depends(
+        'weight_container_wet_soil',
+        'weight_container_dry_soil',
+        'weight_container'
+    )
+    def _compute_values(self):
         for line in self:
-            if line.wt_of_dry != 0:
-                line.moisture_content = line.loss_of_moisture / line.wt_of_dry * 100
+
+            # Weight of Water
+            line.weight_water = (
+                line.weight_container_wet_soil
+                - line.weight_container_dry_soil
+            )
+
+            # Weight of Dry Soil
+            line.weight_dry_soil = (
+                line.weight_container_dry_soil
+                - line.weight_container
+            )
+
+            # Moisture Content
+            if line.weight_dry_soil:
+                line.moisture_content = (
+                    line.weight_water
+                    / line.weight_dry_soil
+                ) * 100
             else:
                 line.moisture_content = 0.0
+
+
+
+    # container_no1 = fields.Char(string="Container No.")
+    # blwo_no1 = fields.Float(string="No. of Blows")
+    # wt_of_con_wet = fields.Float(string="Wt. of Container + Wet Soil")
+    # wt_of_con_dry = fields.Float(string="Wt. of Container + dry Soil")   
+    # loss_of_moisture = fields.Float(string="Loss of Moisture (gm)",compute="_compute_loss_of_moisture")
+    # wt_containner = fields.Float(string="Weight of Container")
+    # wt_of_dry= fields.Float(string="Weight of Dry Soil",compute="_compute_wt_of_dry")
+    # moisture_content = fields.Float(string="Moisture Content %",compute="_compute_moisture_content")
+
+    # @api.depends('wt_of_con_wet', 'wt_of_con_dry')
+    # def _compute_loss_of_moisture(self):
+    #     for line in self:
+    #         line.loss_of_moisture = line.wt_of_con_wet - line.wt_of_con_dry
+
+    # @api.depends('wt_of_con_dry', 'wt_containner')
+    # def _compute_wt_of_dry(self):
+    #     for line in self:
+    #         line.wt_of_dry = line.wt_of_con_dry - line.wt_containner
+
+    # @api.depends('loss_of_moisture', 'wt_of_dry')
+    # def _compute_moisture_content(self):
+    #     for line in self:
+    #         if line.wt_of_dry != 0:
+    #             line.moisture_content = line.loss_of_moisture / line.wt_of_dry * 100
+    #         else:
+    #             line.moisture_content = 0.0
     
 
    
@@ -3495,59 +3951,7 @@ class LIQUIDLIMITLINE(models.Model):
             record.serial_no = index + 1
 
 
-# class WATERCONTENTLINE(models.Model):
-#     _name = "mechanical.water.content.line"
-#     parent_id = fields.Many2one('mechanical.soil',string="Parent Id")
 
-#     serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
-#     container_noo = fields.Integer(string="Container No") 
-#     wt_of_cont = fields.Float(string="Weight of container,(gms)")
-#     wet_sample_cont = fields.Float(string="Weight of wet sample + container (gm)")
-#     dry_sample_cont = fields.Float(string="Weigth of dry sample + Container (gms)")
-#     mass_dry_soil= fields.Float(string="Mass of dry soil")
-#     water_contentss = fields.Float(string="Water content (W)=(W1-W2)(W1-Wc)/100%",compute="_compute_water_contentss")
-#     w1_w2 = fields.Float(string="(W1-W2)",compute="_compute_w1_w2")
-#     W1_Wc = fields.Float(string="(W1_Wc)",compute="_compute_W1_Wc")
-
-
-
-#     @api.depends('wet_sample_cont', 'dry_sample_cont')
-#     def _compute_w1_w2(self):
-#         for line in self:
-#             line.w1_w2 = line.wet_sample_cont - line.dry_sample_cont
-
-
-#     @api.depends('wet_sample_cont', 'wt_of_cont')
-#     def _compute_W1_Wc(self):
-#         for line in self:
-#             line.W1_Wc = line.wet_sample_cont - line.wt_of_cont
-
-
- 
-#     @api.depends('w1_w2', 'W1_Wc')
-#     def _compute_water_contentss(self):
-#         for line in self:
-#             if line.W1_Wc != 0:
-#                 line.water_contentss = line.w1_w2 / line.W1_Wc *100
-#             else:
-#                 line.water_contentss = 0.0
-
-#     @api.model
-#     def create(self, vals):
-#         # Set the serial_no based on the existing records for the same parent
-#         if vals.get('parent_id'):
-#             existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-#             if existing_records:
-#                 max_serial_no = max(existing_records.mapped('serial_no'))
-#                 vals['serial_no'] = max_serial_no + 1
-
-       # return super(WATERCONTENTLINE, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
 
 class PLASTICLIMITLINE(models.Model):
     _name = "mechanical.plasticl.limit.line"
@@ -3555,34 +3959,98 @@ class PLASTICLIMITLINE(models.Model):
 
 
     serial_no = fields.Integer(string="Sr No",readonly=True, copy=False, default=1)
-    container_no = fields.Integer(string="Container No")   
-    wt_of_con = fields.Float(string="Weight of container (gm)")
-    wt_of_con_wet = fields.Float(string="Weight of container + wet soil (gm)")
-    wt_of_con_dry = fields.Float(string="Weight of container + Dry soil (gm)")
-    wt_of_water = fields.Float(string="Weight of water in (gm)",compute="_compute_wt_of_water")
-    wt_of_oven = fields.Float(string="Weight of ovendry soil (gm)",compute="_compute_wt_of_oven")
-    water_content_pastic = fields.Float(string="Water Content (%)",compute="_compute_water_content")
 
 
-    @api.depends('wt_of_con_wet', 'wt_of_con_dry')
-    def _compute_wt_of_water(self):
+    penetration = fields.Float(string='Penetration (mm)')
+    container_no = fields.Integer(string='Container No.')
+
+    weight_container_wet_soil = fields.Float(
+        string='Weight of Container + Wet Soil (g)'
+    )
+
+    weight_container_dry_soil = fields.Float(
+        string='Weight of Container + Dry Soil (g)'
+    )
+
+    weight_water = fields.Float(
+        string='Weight of Water (g)',
+        compute='_compute_values',
+        store=True
+    )
+
+    weight_container = fields.Float(
+        string='Weight of Container (g)'
+    )
+
+    weight_dry_soil = fields.Float(
+        string='Weight of Dry Soil (g)',
+        compute='_compute_values',
+        store=True
+    )
+
+    moisture_content = fields.Float(
+        string='Moisture Content (%)',
+        compute='_compute_values',
+        store=True
+    )
+
+    @api.depends(
+        'weight_container_wet_soil',
+        'weight_container_dry_soil',
+        'weight_container'
+    )
+    def _compute_values(self):
         for line in self:
-            line.wt_of_water = line.wt_of_con_wet - line.wt_of_con_dry
 
+            # Weight of Water
+            line.weight_water = (
+                line.weight_container_wet_soil
+                - line.weight_container_dry_soil
+            )
 
-    @api.depends('wt_of_con', 'wt_of_con_dry')
-    def _compute_wt_of_oven(self):
-        for line in self:
-            line.wt_of_oven = line.wt_of_con_dry - line.wt_of_con
+            # Weight of Dry Soil
+            line.weight_dry_soil = (
+                line.weight_container_dry_soil
+                - line.weight_container
+            )
 
-
-    @api.depends('wt_of_water', 'wt_of_oven')
-    def _compute_water_content(self):
-        for line in self:
-            if line.wt_of_oven != 0:
-                line.water_content_pastic = line.wt_of_water / line.wt_of_oven * 100
+            # Moisture Content
+            if line.weight_dry_soil:
+                line.moisture_content = (
+                    line.weight_water
+                    / line.weight_dry_soil
+                ) * 100
             else:
-                line.water_content_pastic = 0.0
+                line.moisture_content = 0.0
+
+    # container_no = fields.Integer(string="Container No")   
+    # wt_of_con = fields.Float(string="Weight of container (gm)")
+    # wt_of_con_wet = fields.Float(string="Weight of container + wet soil (gm)")
+    # wt_of_con_dry = fields.Float(string="Weight of container + Dry soil (gm)")
+    # wt_of_water = fields.Float(string="Weight of water in (gm)",compute="_compute_wt_of_water")
+    # wt_of_oven = fields.Float(string="Weight of ovendry soil (gm)",compute="_compute_wt_of_oven")
+    # water_content_pastic = fields.Float(string="Water Content (%)",compute="_compute_water_content")
+
+
+    # @api.depends('wt_of_con_wet', 'wt_of_con_dry')
+    # def _compute_wt_of_water(self):
+    #     for line in self:
+    #         line.wt_of_water = line.wt_of_con_wet - line.wt_of_con_dry
+
+
+    # @api.depends('wt_of_con', 'wt_of_con_dry')
+    # def _compute_wt_of_oven(self):
+    #     for line in self:
+    #         line.wt_of_oven = line.wt_of_con_dry - line.wt_of_con
+
+
+    # @api.depends('wt_of_water', 'wt_of_oven')
+    # def _compute_water_content(self):
+    #     for line in self:
+    #         if line.wt_of_oven != 0:
+    #             line.water_content_pastic = line.wt_of_water / line.wt_of_oven * 100
+    #         else:
+    #             line.water_content_pastic = 0.0
 
     @api.model
     def create(self, vals):
