@@ -14,6 +14,7 @@ class TempMonitoring(models.Model):
     sections_data = fields.Json(string="Sections", default=list)
     graph1 = fields.Binary()
     graph2 = fields.Binary()
+    lab_id = fields.Many2one('lerm.lab.master', string="Lab Name")
 
     chart1_cols = fields.Json(string="Chart 1 Columns", default=list)
     chart2_cols = fields.Json(string="Chart 2 Columns", default=list)

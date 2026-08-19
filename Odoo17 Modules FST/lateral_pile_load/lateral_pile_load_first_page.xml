@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="lateral_pile_load_first_page">
+        <t t-set="o" t-value="eln"/>
+        <div style="font-family:'Times New Roman',Times,serif; font-size:10pt; color:#000; line-height:1.15;">
+
+            <table style="width:100%; border-collapse:collapse; table-layout:fixed;">
+                <colgroup>
+                    <col style="width:18%;"/>
+                    <col style="width:15%;"/>
+                    <col style="width:18%;"/>
+                    <col style="width:15%;"/>
+                    <col style="width:12%;"/>
+                    <col style="width:22%;"/>
+                </colgroup>
+                <tr style="height:16mm;">
+                    <td style="border:1px solid #000; padding:3px 5px; font-weight:bold; background:#f3f3f3; vertical-align:middle;">Test Report no :</td>
+                    <td style="border:1px solid #000; padding:3px 5px; vertical-align:middle;">
+                        <span t-esc="o.sample_id.kes_no"/>
+                    </td>
+                    <td style="border:1px solid #000; padding:3px 5px; font-weight:bold; background:#f3f3f3; vertical-align:middle;">Report Issue Date :</td>
+                    <td style="border:1px solid #000; padding:3px 5px; vertical-align:middle;">
+                        <span t-esc="o.end_date"/>
+                    </td>
+                    <td style="border:1px solid #000; padding:3px 5px; font-weight:bold; background:#f3f3f3; vertical-align:middle;">ULR No.</td>
+                    <td style="border:1px solid #000; padding:3px 5px; vertical-align:middle;">
+                        <span t-esc="o.sample_id.ulr_no"/>
+                    </td>
+                </tr>
+            </table>
+
+            <div style="height:18mm;"></div>
+
+            <table style="width:100%; border-collapse:collapse; table-layout:fixed;">
+                <tr>
+                    <td style="border:1px solid #000; padding:4px 6px; vertical-align:middle; height:30mm;">
+                        <b>Customer Party Name:</b><br/>
+                        <span t-esc="o.srf_id.customer.name" style="font-weight:bold;"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid #000; padding:4px 6px; vertical-align:middle; height:30mm;">
+                        <b>Project / Site Address:</b><br/>
+                        <span t-esc="o.srf_id.name_work.project_name"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid #000; padding:4px 6px; vertical-align:middle;">
+                        <table style="width:100%; border-collapse:collapse;">
+                            <tr>
+                                <td style="border:none; padding:2px 4px; width:50%; vertical-align:middle;">
+                                    <b>Test Start Date:</b>
+                                    <span t-esc="o.start_date"/>
+                                </td>
+                                <td style="border:none; padding:2px 4px; width:50%; vertical-align:middle;">
+                                    <b>Test End Date :</b>
+                                    <span t-esc="o.end_date"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid #000; padding:4px 6px; vertical-align:middle;">
+                        <table style="width:100%; border-collapse:collapse;">
+                            <tr>
+                                <td style="border:none; padding:2px 4px; width:50%; vertical-align:middle;">
+                                    <b>Pile ID:</b>
+                                    <span t-esc="o.pile_no"/>
+                                </td>
+                                <td style="border:none; padding:2px 4px; width:50%; vertical-align:middle;"></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid #000; padding:4px 6px; vertical-align:middle;">
+                        <table style="width:100%; border-collapse:collapse;">
+                            <tr>
+                                <td style="border:none; padding:2px 4px; width:50%; vertical-align:middle;">
+                                    <b>Size:</b>
+                                    <span t-esc="o.sample_id.size_id.size"/>
+                                </td>
+                                <td style="border:none; padding:2px 4px; width:50%; vertical-align:middle;">
+                                    <b>Grade:</b>
+                                    <span t-esc="o.sample_id.grade_id.grade"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid #000; padding:4px 6px; vertical-align:middle;">
+                        <table style="width:100%; border-collapse:collapse;">
+                            <tr>
+                                <td style="border:none; padding:2px 4px; width:50%; vertical-align:middle;">
+                                    <b>Main Client:</b><br/>
+                                    <span t-esc="o.srf_id.client"/>
+                                </td>
+                                <td style="border:none; padding:2px 4px; width:50%; vertical-align:middle;">
+                                    <b>Consultant Name:</b><br/>
+                                    <span t-esc="o.srf_id.consultant_name1"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid #000; padding:4px 6px; vertical-align:middle;">
+                        <table style="width:100%; border-collapse:collapse;">
+                            <tr>
+                                <td style="border:none; padding:2px 4px; width:50%; vertical-align:middle;">
+                                    <b>EPC Contractor:</b><br/>
+                                    <span t-esc="o.srf_id.contractor.name"/>
+                                </td>
+                                <td style="border:none; padding:2px 4px; width:50%; vertical-align:middle;"></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid #000; padding:4px 6px; vertical-align:middle;">
+                        <table style="width:100%; border-collapse:collapse;">
+                            <tr>
+                                <td style="border:none; padding:2px 4px; width:50%; vertical-align:middle;">
+                                    <b>Discipline:</b>
+                                    <span t-esc="o.discipline.discipline"/>
+                                </td>
+                                <td style="border:none; padding:2px 4px; width:50%; vertical-align:middle;">
+                                    <b>Group:</b>
+                                    <span t-esc="o.sample_id.group_id.group"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid #000; padding:4px 6px; vertical-align:middle;">
+                        <b>Test Name:</b>
+                        <span t-esc="o.material.name"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid #000; padding:4px 6px; vertical-align:middle;">
+                        <b>References:</b>
+                        IS 2911 Part 4
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    </template>
+
+</odoo>

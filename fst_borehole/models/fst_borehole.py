@@ -88,6 +88,7 @@ class SoilBoreholeParent(models.Model):
     name = fields.Char("Project Name")
     borehole_lines = fields.One2many('soil.borehole.lines', 'parent_id', string="Borehole Lines", copy=False)
     rec_date = fields.Date("Date")
+    lab_id = fields.Many2one('lerm.lab.master', string="Lab Name")
 
     combined_images = fields.One2many(
         'soil.borehole.parent.image',

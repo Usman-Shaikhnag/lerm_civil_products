@@ -8,6 +8,7 @@
         'security/ir.model.access.csv',
         'wizards/excel_upload_wizard.xml',
         'views/fst_lateral_pile_load_views.xml',
+        'reports/lateral_pile_load_layout.xml',
         'reports/lateral_pile_load_report.xml',
     ],
     'installable': True,

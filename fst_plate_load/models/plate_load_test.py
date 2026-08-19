@@ -29,6 +29,7 @@ class PlateLoadTest(models.Model):
     site_address = fields.Char("Site Address", compute="_compute_eln_data", store=True)
     test_start_date = fields.Date("Test Start Date", compute="_compute_eln_data", store=True)
     test_end_date = fields.Date("Test End Date", compute="_compute_eln_data", store=True)
+    lab_id = fields.Many2one('lerm.lab.master', string="Lab Name")
     location = fields.Char("Location")
     strata = fields.Char("Strata")
     plate_size = fields.Char("Size of Plate", default="300 x 300 mm")

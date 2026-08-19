@@ -6,7 +6,12 @@
       <t t-set="o" t-value="docs and docs[0]"/>
 
           <div class="header" style="padding:0; width:100%; margin:0;">
-            <img src="/fst/static/src/img/header.png" style="width:100%; height:auto; display:block;"/>
+            <img t-if="o.lab_id.sudo().header_image"
+              t-att-src="'data:image/png;base64,' + o.lab_id.sudo().header_image.decode('utf-8')"
+              style="width:100%; height:auto; display:block;"/>
+            <img t-elif="env['lerm.lab.master'].sudo().search([], limit=1).header_image"
+              t-att-src="'data:image/png;base64,' + env['lerm.lab.master'].sudo().search([], limit=1).header_image.decode('utf-8')"
+              style="width:100%; height:auto; display:block;"/>
             <table style="width:100%;" class="text-center">
               <tr>
                 <td>Test Report No :</td>

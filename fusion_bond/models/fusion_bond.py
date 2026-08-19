@@ -30,3 +30,35 @@ class MechanicalFusionBondSteel(models.Model):
         string='Adhesion of coating',
         help='Choose an option from the list.'
     )
+
+    @api.depends('eln_ref')
+    def _compute_sample_parameters(self):
+        for record in self:
+            records = record.eln_ref.parameters_result.parameter.ids
+            record.sample_parameters = records
+            print("Records",records)
+
+    def get_all_fields(self):
+        record = self.env['mechanical.fusion.bond.steel'].browse(self.ids[0])
+        field_values = {}
+        for field_name, field in record._fields.items():
+            field_value = record[field_name]
+            field_values[field_name] = field_value
+
+        return field_values
+
+    @api.model
+    def create(self, vals):
+        # import wdb;wdb.set_trace()
+        record = super(MechanicalFusionBondSteel, self).create(vals)
+        # record.get_all_fields()
+        record.eln_ref.write({'model_id':record.id})
+        return record
+    
+
+    def read(self, fields=None, load='_classic_read'):
+
+        self._compute_sample_parameters()
+        self.default_get(fields)
+
+        return super(MechanicalFusionBondSteel, self).read(fields=fields, load=load)

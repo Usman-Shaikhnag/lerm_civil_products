@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="custom_layout_header_footer_lateral_pile_load">
+        <div class="header" style="padding:0; width:100%; margin:0;">
+            <t t-set="lab" t-value="o.lab_id.sudo()"/>
+            <t t-set="master_lab" t-value="env['lerm.lab.master'].sudo().search([], limit=1)"/>
+
+            <img t-if="lab.header_image"
+                t-att-src="'data:image/png;base64,' + lab.header_image.decode('utf-8')"
+                style="width:100%; height:auto; display:block; margin:0; padding:0;"/>
+
+            <img t-elif="master_lab.header_image"
+                t-att-src="'data:image/png;base64,' + master_lab.header_image.decode('utf-8')"
+                style="width:100%; height:auto; display:block; margin:0; padding:0;"/>
+            
+            <table style="width:100%;" class="text-center">
+                <tr>
+                    <td>Test Report No :</td>
+                    <td><t t-esc="o.report_no"/></td>
+                    <td>Report Issue Date :</td>
+                    <td><t t-esc="o.rec_date_str"/></td>
+                    <td>ULR No.</td>
+                    <td><t t-esc="o.ulr"/></td>
+                </tr>
+            </table>
+        </div>
+
+        <t t-out="0"/>
+
+        <div class="footer">
+            <table style="width:100%; border-collapse:collapse; font-family:'Times New Roman',Times,serif; font-size:12pt; table-layout:fixed; border:1px solid #000;">
+                <colgroup>
+                    <col style="width:40%;"/>
+                    <col style="width:40%;"/>
+                    <col style="width:20%;"/>
+                </colgroup>
+                <tr>
+                    <td style="border:1px solid #000; padding:8px 14px; vertical-align:middle; text-align:left; height:65px;">
+                        <b>Location:</b> <span t-esc="o.pile_no"/>
+                    </td>
+                    <td style="border:1px solid #000; padding:8px 14px; vertical-align:middle; text-align:center;">
+                        <b>Report No:</b> <span t-esc="o.report_no"/>
+                    </td>
+                    <td style="border:1px solid #000; padding:8px 14px; vertical-align:middle; text-align:center; font-weight:bold;">
+                        <span class="page"/>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </template>
+
+</odoo>
