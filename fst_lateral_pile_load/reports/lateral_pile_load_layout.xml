@@ -7,29 +7,23 @@
             <t t-set="lab" t-value="o.lab_id.sudo()"/>
             <t t-set="master_lab" t-value="env['lerm.lab.master'].sudo().search([], limit=1)"/>
 
-            <table style="width:100%;
-                        border-collapse:collapse;
-                        margin:0;
-                        padding:0;
-                        display:table;
-                        table-layout:fixed;">
-                <tr>
-                    <td style="padding:3px;">Test Report No :</td>
-                    <td style="padding:3px;">
-                        <t t-esc="o.report_no"/>
-                    </td>
+            <img t-if="lab.header_image"
+                t-att-src="'/fst_lateral_pile_load/header_image/%s' % lab.id"
+                style="width:100%;
+                    height:30mm;
+                    object-fit:fill;
+                    display:block;
+                    margin:0;
+                    padding:0;"/>
 
-                    <td style="padding:3px;">Report Issue Date :</td>
-                    <td style="padding:3px;">
-                        <t t-esc="o.rec_date_str"/>
-                    </td>
-
-                    <td style="padding:3px;">ULR No.</td>
-                    <td style="padding:3px;">
-                        <t t-esc="o.ulr"/>
-                    </td>
-                </tr>
-            </table>
+            <img t-elif="master_lab.header_image"
+                t-att-src="'/fst_lateral_pile_load/header_image/%s' % master_lab.id"
+                style="width:100%;
+                    height:30mm;
+                    object-fit:fill;
+                    display:block;
+                    margin:0;
+                    padding:0;"/>
         </div>
 
         <t t-out="0"/>

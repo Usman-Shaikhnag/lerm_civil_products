@@ -1,3 +1,4 @@
+import base64
 import io
 from datetime import datetime, timedelta
 
@@ -6,6 +7,29 @@ from odoo.http import request
 
 
 class LateralPileLoadTemplateController(http.Controller):
+
+    @http.route(
+        "/fst_lateral_pile_load/header_image/<int:lab_id>",
+        type="http",
+        auth="public",
+        csrf=False,
+    )
+    def header_image(self, lab_id):
+        lab = request.env["lerm.lab.master"].sudo().browse(lab_id)
+        data = lab.header_image
+        if not data:
+            return request.not_found()
+        raw = base64.b64decode(data) if isinstance(data, bytes) else data
+        attachment = request.env["ir.attachment"].sudo().search([
+            ("res_model", "=", "lerm.lab.master"),
+            ("res_field", "=", "header_image"),
+            ("res_id", "=", lab_id),
+        ], limit=1)
+        mimetype = attachment.mimetype or "image/png"
+        return request.make_response(
+            raw,
+            headers=[("Content-Type", mimetype)],
+        )
 
     @http.route(
         "/fst_lateral_pile_load/download_template",
