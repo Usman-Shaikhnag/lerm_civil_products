@@ -4,9 +4,8 @@
     <record id="lateral_pile_load_report_py3o" model="ir.actions.report">
         <field name="name">Lateral Pile Load Report</field>
         <field name="model">fst.lateral.pile.load.test</field>
-        <field name="report_type">qweb-pdf</field>
+        <field name="report_type">qweb-html</field>
         <field name="report_name">fst_lateral_pile_load.lateral_pile_load_template</field>
-        <field name="report_file">fst_lateral_pile_load.lateral_pile_load_template</field>
         <field name="print_report_name">'Lateral_Pile_Load_Report'</field>
         <field name="binding_type">report</field>
         <field name="binding_model_id" ref="model_fst_lateral_pile_load_test"/>
@@ -16,48 +15,14 @@
         <t t-call="web.html_container">
             <t t-set="o" t-value="docs and docs[0]"/>
 
-            <div class="header" style="padding:0; width:100%; margin:0;">
-                <img t-if="o.lab_id.sudo().header_image"
-                    t-att-src="'data:image/png;base64,' + o.lab_id.sudo().header_image.decode('utf-8')"
-                    style="width:100%; height:auto; display:block;"/>
-                <img t-elif="env['lerm.lab.master'].sudo().search([], limit=1).header_image"
-                    t-att-src="'data:image/png;base64,' + env['lerm.lab.master'].sudo().search([], limit=1).header_image.decode('utf-8')"
-                    style="width:100%; height:auto; display:block;"/>
-                <table style="width:100%;" class="text-center">
-                    <tr>
-                        <td>Test Report No :</td>
-                        <td><t t-esc="o.report_no"/></td>
-                        <td>Report Issue Date :</td>
-                        <td><t t-esc="o.rec_date_str"/></td>
-                        <td>ULR No.</td>
-                        <td><t t-esc="o.ulr"/></td>
-                    </tr>
-                </table>
-            </div>
-
-            <div class="footer">
-                <table style="width:100%; border-collapse:collapse; font-family:'Times New Roman',Times,serif; font-size:12pt; table-layout:fixed; border:1px solid #000;">
-                    <colgroup>
-                        <col style="width:40%;"/>
-                        <col style="width:40%;"/>
-                        <col style="width:20%;"/>
-                    </colgroup>
-                    <tr>
-                        <td style="border:1px solid #000; padding:8px 14px; vertical-align:middle; text-align:left; height:65px;">
-                            <b>Location:</b> <span t-esc="o.pile_no"/>
-                        </td>
-                        <td style="border:1px solid #000; padding:8px 14px; vertical-align:middle; text-align:center;">
-                            <b>Report No:</b> <span t-esc="o.report_no"/>
-                        </td>
-                        <td style="border:1px solid #000; padding:8px 14px; vertical-align:middle; text-align:center; font-weight:bold;">
-                            <span class="page"/>
-                        </td>
-                    </tr>
-                </table>
-            </div>
+            <t t-call="fst_lateral_pile_load.custom_layout_header_footer_lateral_pile_load">
 
             <style>
+                @page { margin-top: 34mm; }
                 body { font-family: 'Times New Roman', Times, serif; font-size: 10pt; color: #000000; margin: 0; padding: 0; }
+                @media print {
+                    .header { position: fixed; top: 0; left: 0; width: 100%; }
+                }
                 h2.report-title { text-align: center; font-size: 16pt; font-weight: bold; margin: 12px 0 8px 0; text-transform: uppercase; letter-spacing: 1px; }
                 h3.section-heading { font-size: 20pt; font-weight: bold; margin: 25px 0 15px 0; text-transform: uppercase; font-family: 'Times New Roman', serif; }
                 h4.sub-heading { font-size: 17pt; font-weight: bold; margin: 22px 0 15px 0; font-family: 'Times New Roman', serif; }
@@ -488,6 +453,7 @@
 
                 </div>
             </main>
+            </t>
         </t>
     </template>
 
