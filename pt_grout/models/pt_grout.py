@@ -171,7 +171,7 @@ class PtGrout(models.Model):
     time_needle_fails = fields.Datetime("The time at which needle fails to penetrate the test block to a point 5 ± 0.5 mm (t2)")
     initial_setting_time_hours = fields.Char("Initial Setting Time (t2-t1) (Hours)",compute="_compute_initial_setting_time")
     initial_setting_time_minutes = fields.Char("Initial Setting Time Rounded",compute="_compute_initial_setting_time")
-    initial_setting_time_minutes_unrounded = fields.Char("Initial Setting Time",compute="_compute_initial_setting_time")
+    initial_setting_time_hours = fields.Char("Initial Setting Time",compute="_compute_initial_setting_time")
 
     initial_setting_conformity = fields.Selection([
         ('pass', 'Pass'),
@@ -185,7 +185,7 @@ class PtGrout(models.Model):
     ], string='NABL', compute="_compute_initial_setting_nabl")
 
 
-    @api.depends('initial_setting_time_minutes_unrounded','eln_ref','grade')
+    @api.depends('initial_setting_time_hours','eln_ref','grade')
     def _compute_initial_setting_conformity(self):
         for record in self:
             record.initial_setting_conformity = 'fail'
@@ -202,15 +202,15 @@ class PtGrout(models.Model):
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
-                    lower = float(record.initial_setting_time_minutes_unrounded) - float(record.initial_setting_time_minutes_unrounded)*mu_value
-                    upper = float(record.initial_setting_time_minutes_unrounded) + float(record.initial_setting_time_minutes_unrounded)*mu_value
+                    lower = float(record.initial_setting_time_hours) - float(record.initial_setting_time_hours)*mu_value
+                    upper = float(record.initial_setting_time_hours) + float(record.initial_setting_time_hours)*mu_value
                     if lower >= req_min and upper <= req_max :
                         record.initial_setting_conformity = 'pass'
                         break
                     else:
                         record.initial_setting_conformity = 'fail'
 
-    @api.depends('initial_setting_time_minutes_unrounded','eln_ref','grade')
+    @api.depends('initial_setting_time_hours','eln_ref','grade')
     def _compute_initial_setting_nabl(self):
         
         for record in self:
@@ -223,8 +223,8 @@ class PtGrout(models.Model):
                     lab_max = line.lab_max_value
                     mu_value = line.mu_value
                     
-                    lower = float(record.initial_setting_time_minutes_unrounded) - float(record.initial_setting_time_minutes_unrounded)*mu_value
-                    upper = float(record.initial_setting_time_minutes_unrounded) + float(record.initial_setting_time_minutes_unrounded)*mu_value
+                    lower = float(record.initial_setting_time_hours) - float(record.initial_setting_time_hours)*mu_value
+                    upper = float(record.initial_setting_time_hours) + float(record.initial_setting_time_hours)*mu_value
                     if lower >= lab_min and upper <= lab_max:
                         record.initial_setting_nabl = 'pass'
                         break
@@ -251,12 +251,12 @@ class PtGrout(models.Model):
                 else:
                     record.initial_setting_time_minutes = round(time_difference_minutes / 5) * 5
 
-                record.initial_setting_time_minutes_unrounded = time_difference_minutes
+                record.initial_setting_time_hours = time_difference_minutes
 
             else:
                 record.initial_setting_time_hours = False
                 record.initial_setting_time_minutes = False
-                record.initial_setting_time_minutes_unrounded = False
+                record.initial_setting_time_hours = False
 
     #Final setting Time
 
@@ -266,7 +266,7 @@ class PtGrout(models.Model):
     time_needle_make_impression = fields.Datetime("The Time at which the needle make an impression on the surface of test block while attachment fails to do (t3)")
     final_setting_time_hours = fields.Char("Final Setting Time (t2-t1) (Hours)",compute="_compute_final_setting_time")
     final_setting_time_minutes = fields.Char("Final Setting Time Rounded",compute="_compute_final_setting_time")
-    final_setting_time_minutes_unrounded = fields.Char("Final Setting Time",compute="_compute_final_setting_time")
+    final_setting_time_hours = fields.Char("Final Setting Time",compute="_compute_final_setting_time")
 
     final_setting_conformity = fields.Selection([
         ('pass', 'Pass'),
@@ -280,7 +280,7 @@ class PtGrout(models.Model):
     ], string='NABL',compute="_compute_final_setting_nabl")
 
 
-    @api.depends('final_setting_time_minutes_unrounded','eln_ref','grade')
+    @api.depends('final_setting_time_hours','eln_ref','grade')
     def _compute_final_setting_conformity(self):
         for record in self:
             record.final_setting_conformity = 'fail'
@@ -297,15 +297,15 @@ class PtGrout(models.Model):
                     req_min = material.req_min
                     req_max = material.req_max
                     mu_value = line.mu_value
-                    lower = float(record.final_setting_time_minutes_unrounded) - float(record.final_setting_time_minutes_unrounded)*mu_value
-                    upper = float(record.final_setting_time_minutes_unrounded) + float(record.final_setting_time_minutes_unrounded)*mu_value
+                    lower = float(record.final_setting_time_hours) - float(record.final_setting_time_hours)*mu_value
+                    upper = float(record.final_setting_time_hours) + float(record.final_setting_time_hours)*mu_value
                     if lower >= req_min and upper <= req_max :
                         record.final_setting_conformity = 'pass'
                         break
                     else:
                         record.final_setting_conformity = 'fail'
 
-    @api.depends('final_setting_time_minutes_unrounded','eln_ref','grade')
+    @api.depends('final_setting_time_hours','eln_ref','grade')
     def _compute_final_setting_nabl(self):
         
         for record in self:
@@ -318,8 +318,8 @@ class PtGrout(models.Model):
                     lab_max = line.lab_max_value
                     mu_value = line.mu_value
                     
-                    lower = float(record.final_setting_time_minutes_unrounded) - float(record.final_setting_time_minutes_unrounded)*mu_value
-                    upper = float(record.final_setting_time_minutes_unrounded) + float(record.final_setting_time_minutes_unrounded)*mu_value
+                    lower = float(record.final_setting_time_hours) - float(record.final_setting_time_hours)*mu_value
+                    upper = float(record.final_setting_time_hours) + float(record.final_setting_time_hours)*mu_value
                     if lower >= lab_min and upper <= lab_max:
                         record.final_setting_nabl = 'pass'
                         break
@@ -344,11 +344,11 @@ class PtGrout(models.Model):
     #             else:
     #                 record.final_setting_time_minutes = round(final_setting_time / 5) * 5
 
-    #             record.final_setting_time_minutes_unrounded = final_setting_time
+    #             record.final_setting_time_hours = final_setting_time
     #         else:
     #             record.final_setting_time_hours = False
     #             record.final_setting_time_minutes = False
-    #             record.final_setting_time_minutes_unrounded = False
+    #             record.final_setting_time_hours = False
                         
     @api.depends('time_needle_make_impression')
     def _compute_final_setting_time(self):
@@ -372,11 +372,11 @@ class PtGrout(models.Model):
                 else:
                     record.final_setting_time_minutes = round(final_setting_time_minutes / 5) * 5
 
-                record.final_setting_time_minutes_unrounded = final_setting_time_minutes
+                record.final_setting_time_hours = final_setting_time_minutes
             else:
                 record.final_setting_time_hours = False
                 record.final_setting_time_minutes = False
-                record.final_setting_time_minutes_unrounded = False
+                record.final_setting_time_hours = False
 
 
 
@@ -908,7 +908,7 @@ class PtGrout(models.Model):
           
 
             if result.parameter.internal_id == '0fd53f55-7350-4597-8057-139ef15f07fe':
-                result.result_char = round(self.initial_setting_time_minutes_unrounded,2)
+                result.result_char = self.initial_setting_time_hours
                 result.calculated = True
                 if self.initial_setting_nabl == 'pass':
                     result.nabl_status = 'nabl'
@@ -930,7 +930,7 @@ class PtGrout(models.Model):
             
 
             if result.parameter.internal_id == '9377b0ab-5cad-4cbe-a6f5-1cee158d2d0e':
-                result.result_char = round(self.final_setting_time_minutes_unrounded,2)
+                result.result_char = self.final_setting_time_hours
                 result.calculated = True
                 if self.final_setting_nabl == 'pass':
                     result.nabl_status = 'nabl'
