@@ -14,13 +14,14 @@
     <template id="lateral_pile_load_template">
         <t t-call="web.html_container">
             <t t-set="o" t-value="docs and docs[0]"/>
+            <t t-set="lab" t-value="o.lab_id.sudo()"/>
+            <t t-set="master_lab" t-value="env['lerm.lab.master'].sudo().search([], limit=1)"/>
 
             <t t-call="fst_lateral_pile_load.custom_layout_header_footer_lateral_pile_load">
-
             <style>
                 @page { margin-top: 34mm; }
                 body { font-family: 'Times New Roman', Times, serif; font-size: 10pt; color: #000000; margin: 0; padding: 0; }
-
+    
                 h2.report-title { text-align: center; font-size: 16pt; font-weight: bold; margin: 12px 0 8px 0; text-transform: uppercase; letter-spacing: 1px; }
                 h3.section-heading { font-size: 20pt; font-weight: bold; margin: 25px 0 15px 0; text-transform: uppercase; font-family: 'Times New Roman', serif; }
                 h4.sub-heading { font-size: 17pt; font-weight: bold; margin: 22px 0 15px 0; font-family: 'Times New Roman', serif; }
