@@ -657,7 +657,7 @@ class FstLateralPileLoadTest(models.Model):
 
     def print_report(self):
         self.ensure_one()
-        return self.env.ref('fst_lateral_pile_load.lateral_pile_load_report_py3o').report_action(self)
+        return self.env.ref('fst_lateral_pile_load.lateral_pile_load_report').report_action(self)
 
     def action_duplicate_parent(self):
         for record in self:
