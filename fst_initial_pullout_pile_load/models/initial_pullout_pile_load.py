@@ -26,6 +26,7 @@ class PulloutPileLoadTestParent(models.Model):
     work_name = fields.Char("Name of Work")
     client = fields.Char(string="Client")
     contractor = fields.Char(string="Contractor")
+    lab_id = fields.Many2one('lerm.lab.master', string="Lab Name")
 
     ulr = fields.Char("ULR No", copy=False, readonly=True)
     report_no = fields.Char("Report No", copy=False, readonly=True)

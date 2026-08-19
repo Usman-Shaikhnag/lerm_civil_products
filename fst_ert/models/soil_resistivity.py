@@ -18,6 +18,7 @@ class ErtSoilResistivity(models.Model):
 
     name = fields.Char("Name", required=True, readonly=True, default='New')
     ert_parent_id = fields.Many2one('lerm.ert.parent')
+    lab_id = fields.Many2one('lerm.lab.master', string="Lab Name")
     graph_images = fields.One2many('ert.soil.resistivity.line', 'parent_id', string="Graphs")
     line_ids = fields.One2many('ert.soil.resistivity.line', 'parent_id', string="Resistivity Table")
     ert_point = fields.Char(string="ERT")

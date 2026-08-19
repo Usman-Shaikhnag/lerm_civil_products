@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="mech_threaded_steel_view" model="ir.ui.view">
+        <field name="name">mech.threaded.steel.form</field>
+        <field name="model">mech.threaded.steel</field>
+        <field name="arch" type="xml">
+            <form>
+
+                <sheet>
+                   <group>
+                         <field name='eln_ref' readonly="1"/>
+                          <field name='name' readonly="1"/>
+                    </group>
+                             <div class="d-flex gap-2" >
+                            <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                <tbody>
+                                    <tr>
+                                        <td><label for="grade"></label></td>
+                                        <td><field name="grade" /></td>
+                                        <field name="eln_state" />
+                                    </tr>
+                                
+                                </tbody>
+                            </table>
+                            
+                            <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders">
+                                <tbody>
+                                    <tr>
+                                        <td><label for="size"></label></td>
+                                        <td><field name="size" /></td>
+                                    </tr>
+                                
+                                </tbody>
+                            </table>
+                            </div>
+                             <style>
+                        .blue-input input {
+                            background-color: #d8ecff !important;   /* हलका Blue background */
+                            border-color: #3b82f6 !important;        /* Blue border */ 
+                        }
+
+                        .o_list_view .o_data_cell.blue-input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                             }
+
+                        /* Input when the cell goes into edit mode */
+                        .o_list_view .o_data_cell.blue-input input {
+                             background-color: #d8ecff !important;
+                             border-color: #3b82f6 !important;
+                            }
+                    </style>
+                           <div class="custom_table_borders">
+                                <field name="sample_parameters">
+                                    <tree>
+                                        <field name="parameter_name"/>
+                                        <field name="test_method"/>
+                                    </tree>
+                                </field>
+                            </div>
+                            <group>
+                                    <field name='tests' options="{'no_create':True}" invisible="1"/>
+                            </group>
+
+                            
+
+                            <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" >
+                                <tbody>
+                                    <tr>
+                                        <td><label for="diameter"></label></td>
+                                        <td><field name="diameter"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="area"></label></td>
+                                        <td><field name="area"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="gauge_length"></label></td>
+                                        <td><field name="gauge_length"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="final_diameter"></label></td>
+                                        <td><field name="final_diameter"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="final_length"></label></td>
+                                        <td><field name="final_length"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="proof_load"></label></td>
+                                        <td><field name="proof_load"/></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td><label for="ultimate_load"></label></td>
+                                        <td><field name="ultimate_load"/></td>
+                                    </tr>
+                                    
+                                    <tr invisible="yield_visible == False">
+                                        <td><label for="yield_stress"></label></td>
+                                        <td><field name="yield_stress" /></td>
+                                        <field name="yield_visible" invisible="1"/>
+                                    </tr>
+                                   
+                                   
+                                    <tr invisible="uts_visible == False" >
+                                        <td><label for="ult_tens_strgth"></label></td>
+                                        <td><field name="ult_tens_strgth" /></td>
+                                        <field name="uts_visible" invisible="1"/>
+                                    </tr>
+
+                                    <tr invisible="elongation_visible == False" >
+                                        <td><label for="percent_elongation"></label></td>
+                                        <td><field name="percent_elongation" /></td>
+                                        <field name="elongation_visible" invisible="1"/>
+                                    </tr>
+                                    
+                                    <tr invisible="reduction_visible == False" >
+                                        <td><label for="reduction_area"></label></td>
+                                        <td><field name="reduction_area" /></td>
+                                        <field name="reduction_visible" invisible="1"/>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td><label for="fracture"></label></td>
+                                        <td><field name="fracture"/></td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                          
+
+                        
+
+                    
+
+                            <button
+                            type="object"
+                            class="oe_highlight" 
+                            name="open_eln_page"
+                            string="Submit"
+                            />
+              
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+   
+
+
+    </data>
+</odoo>

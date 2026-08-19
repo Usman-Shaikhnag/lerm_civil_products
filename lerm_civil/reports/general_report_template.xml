@@ -329,10 +329,10 @@
 														<t t-else="">
 															<t t-set="model_name" t-value="str(r).split('(')[0].strip() if '(' in str(r) else str(r).strip()"/>
 															<t t-set="field_name" t-value="row[0]"/>
-															<t t-set="field_type" t-value="env['ir.model.fields'].search([('name','=',field_name),('model_id.model','=',model_name)])"/>
+															<t t-set="field_type" t-value="env['ir.model.fields'].sudo().search([('name','=',field_name),('model_id.model','=',model_name)])"/>
 
 															<t t-if="field_type.ttype == 'selection'">
-																<t t-set="selection" t-value="env['ir.model.fields.selection'].search([('field_id','=',field_type.id),('value','=',r[row[0]])])"/>
+																<t t-set="selection" t-value="env['ir.model.fields.selection'].sudo().search([('field_id','=',field_type.id),('value','=',r[row[0]])])"/>
 																<!-- <span>Selection </span> -->
 																
 																<t style="text-align:center;" t-esc="selection.name"/>
@@ -401,10 +401,10 @@
 														<t t-else="">
 															<t t-set="model_name" t-value="str(r).split('(')[0].strip() if '(' in str(r) else str(r).strip()"/>
 															<t t-set="field_name" t-value="row[0]"/>
-															<t t-set="field_type" t-value="env['ir.model.fields'].search([('name','=',field_name),('model_id.model','=',model_name)])"/>
+															<t t-set="field_type" t-value="env['ir.model.fields'].sudo().search([('name','=',field_name),('model_id.model','=',model_name)])"/>
 
 															<t t-if="field_type.ttype == 'selection'">
-																<t t-set="selection" t-value="env['ir.model.fields.selection'].search([('field_id','=',field_type.id),('value','=',r[row[0]])])"/>
+																<t t-set="selection" t-value="env['ir.model.fields.selection'].sudo().search([('field_id','=',field_type.id),('value','=',r[row[0]])])"/>
 																<!-- <span>Selection </span> -->
 																
 																<t style="text-align:center;" t-esc="selection.name"/>
@@ -454,10 +454,10 @@
 														<t t-else="">
 															<t t-set="model_name" t-value="str(r).split('(')[0].strip() if '(' in str(r) else str(r).strip()"/>
 															<t t-set="field_name" t-value="row[0]"/>
-															<t t-set="field_type" t-value="env['ir.model.fields'].search([('name','=',field_name),('model_id.model','=',model_name)])"/>
+															<t t-set="field_type" t-value="env['ir.model.fields'].sudo().search([('name','=',field_name),('model_id.model','=',model_name)])"/>
 
 															<t t-if="field_type.ttype == 'selection'">
-																<t t-set="selection" t-value="env['ir.model.fields.selection'].search([('field_id','=',field_type.id),('value','=',r[row[0]])])"/>
+																<t t-set="selection" t-value="env['ir.model.fields.selection'].sudo().search([('field_id','=',field_type.id),('value','=',r[row[0]])])"/>
 																<!-- <span>Selection </span> -->
 																
 																<t style="text-align:center;" t-esc="selection.name"/>
@@ -496,10 +496,10 @@
 										<t t-else="">
 											<t t-set="model_name" t-value="str(r).split('(')[0].strip() if '(' in str(r) else str(r).strip()"/>
 											<t t-set="field_name" t-value="row[0]"/>
-											<t t-set="field_type" t-value="env['ir.model.fields'].search([('name','=',field_name),('model_id.model','=',model_name)])"/>
+											<t t-set="field_type" t-value="env['ir.model.fields'].sudo().search([('name','=',field_name),('model_id.model','=',model_name)])"/>
 
 											<t t-if="field_type.ttype == 'selection'">
-												<t t-set="selection" t-value="env['ir.model.fields.selection'].search([('field_id','=',field_type.id),('value','=',formdata[result[0]])])"/>
+												<t t-set="selection" t-value="env['ir.model.fields.selection'].sudo().search([('field_id','=',field_type.id),('value','=',formdata[result[0]])])"/>
 												<!-- <span>Selection </span> -->
 												
 												<t t-esc="selection.name"/>

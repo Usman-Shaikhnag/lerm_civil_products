@@ -63,9 +63,8 @@
                     <button name="action_generate_ulr_no" string="Generate ULR No" type="object" class="btn-primary"/>
                     <button name="action_generate_report_no" string="Generate Report No" type="object" class="btn-primary"/>
                     <button name="print_report" string="Print Report" type="object" class="btn-primary"/>
-                    <!-- <button name="print_react_report" string="Print Report" type="object" class="btn-primary"/> -->
-                    <button name="action_download_excel_template" type="object" string="Download Template" class="btn-secondary"/>
-                    <button name="action_open_import_wizard" type="object" string="Upload Excel" class="btn-primary"/>
+                    <button name="action_prefill_contents" string="Prefill Contents" type="object" class="btn-secondary"/>
+                    <button name="action_generate_test_data" string="Generate Test Data" type="object" class="btn-success"/>
                 </header>
 
                 <sheet>
@@ -85,6 +84,7 @@
                         <field name="work_name"/>
                         <field name="client"/>
                         <field name="contractor"/>
+                        <field name="lab_id"/>
                         <field name="ulr"/>
                         <field name="report_no"/>
                         <field name="rec_date"/>
@@ -181,13 +181,6 @@
                     <div style="border:1px solid #ccc; padding:12px;">
                         <field name="preparation_report" widget="text" nolabel="1"/>
                     </div>
-
-                    <group col="2">
-                        <field name="test_load"/>
-                        <field name="incremental_load"/>
-                        <field name="dial_gauge_count"/>
-                        <field name="allowable_capacity"/>
-                    </group>
 
                     <!-- ================= TABLE 1 : BASIC DATA ================= -->
                     <div style="margin-top:35px;">

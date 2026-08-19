@@ -201,6 +201,8 @@ Settings → Document Management (or the Documents → Settings menu):
 
 - **Storage Path** — must match `DMS_STORAGE_PATH`.
 - **FastAPI Base URL** — URL of the backend **as seen from the browser**.
+  Must match the scheme the browser uses for Odoo itself (HTTPS if Odoo is
+  HTTPS — see "Gotchas" below).
 - **FastAPI Server URL** — URL of the backend **as seen from the Odoo server**
   itself (used for rename/move/delete). Leave empty to reuse the browser URL.
 - **Shared Secret** — must match `DMS_SECRET`.
@@ -210,9 +212,23 @@ Settings → Document Management (or the Documents → Settings menu):
 
 | Setting | Used for | Value |
 |---|---|---|
-| **FastAPI Base URL** | Upload / preview / download from the browser | `http://localhost:8000` (B1) or `http://<server-ip>:8000` (B2) |
+| **FastAPI Base URL** | Upload / preview / download from the browser | `http://localhost:8000` (B1) or `http://<server-ip>:8000` (B2). **Must be reachable from the browser exactly as written.** |
 | **FastAPI Server URL** | Rename / move / delete from the Odoo server | `http://dms-backend:8000` (B1) or `http://host.docker.internal:8000` (B2). Empty → falls back to the Base URL. |
 | **Shared Secret** | Signing tokens between Odoo & FastAPI | Must equal `DMS_SECRET` |
+
+### Gotchas (learned in production)
+
+- **If Odoo is served over HTTPS (e.g. behind an nginx site with `upgrade-insecure-requests`), the Base URL must also be HTTPS.** A plain `http://<ip>:8000` gets upgraded by the browser to HTTPS, the FastAPI backend doesn't speak TLS, and previews/downloads fail with *"sent an invalid response"*. Solution: proxy the backend through the same HTTPS site and set the Base URL to it. Example (nginx):
+  ```nginx
+  location /dms-files/ {
+      proxy_pass http://127.0.0.1:8000/;
+      proxy_set_header Host $host;
+      proxy_set_header X-Forwarded-Proto $scheme;
+  }
+  ```
+  then Base URL = `https://yourdomain/dms-files`, Server URL stays internal (`http://dms-backend:8000`).
+- **The running Odoo process caches `ir_config_parameter` in memory.** After changing any `document_management.*` param via raw SQL, `docker restart odoo`, otherwise Odoo keeps serving the stale value.
+- **Uploads fail with "Access Denied by ACLs ... model: dms.file"** for users who are not in a DMS group (`group_dms_user` / `group_dms_uploader` / `group_dms_manager`). Assign the group via Settings → Users; the user must re-login.
 
 ### Health check & final verification
 
@@ -220,6 +236,7 @@ Settings → Document Management (or the Documents → Settings menu):
 2. Open **Documents → Document Drive**, upload a PDF/XLSX/CSV → it appears and previews.
 3. Grant another user `read` → they see the file with no Download button; grant `download` → the button appears.
 4. Restart the container and the backend, then confirm it still works.
+5. **Verify the exact URL the browser will use**: open the file preview, then check in the browser devtools Network tab that the preview request hits the Base URL (not an upgraded `https` on the raw port).
 
 ### Backup note
 

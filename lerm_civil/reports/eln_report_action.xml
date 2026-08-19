@@ -1267,4 +1267,44 @@
 </record>
 
 
+<record id="concrete_cylinder_datasheet_action" model="ir.actions.report">
+    <field name="name">Concrete Cylinder DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">concrete_cylinder.concrete_cylinder_datasheet</field>
+    <field name="report_file">concrete_cylinder.concrete_cylinder_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+    <record id="concrete_cylinder_report_action" model="ir.actions.report">
+    <field name="name">Concrete Cylinder Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">concrete_cylinder.concrete_cylinder_report</field>
+    <field name="report_file">concrete_cylinder.concrete_cylinder_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+
+<record id="fusion_bond_datasheet_action" model="ir.actions.report">
+    <field name="name">Fusion Bond DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">fusion_bond.lerm_fusion_bond_coated_steel_datasheet</field>
+    <field name="report_file">fusion_bond.lerm_fusion_bond_coated_steel_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+    <record id="fusion_bond_report_action" model="ir.actions.report">
+    <field name="name">Fusion Bond Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">fusion_bond.lerm_fusion_bond_coated_steel_report</field>
+    <field name="report_file">fusion_bond.lerm_fusion_bond_coated_steel_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+
+
 </odoo>

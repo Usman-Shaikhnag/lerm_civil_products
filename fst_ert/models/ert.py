@@ -12,6 +12,7 @@ class LermErtParent(models.Model):
     name = fields.Char("Project Name")
     ert_lines = fields.One2many('ert.lines', 'parent_id', "ERT Lines", copy=False)
     rec_date = fields.Date("Date")
+    lab_id = fields.Many2one('lerm.lab.master', string="Lab Name")
 
     def create_ert(self):
         return {

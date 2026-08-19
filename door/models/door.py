@@ -1659,7 +1659,7 @@ class Door(models.Model):
                     result.nabl_status = 'non-nabl'
                 continue
 
-            if result.parameter.internal_id == '21547ghtd-f463-4129-a75a-091ebfc79eb3':
+            if result.parameter.internal_id == '9a7d5d91-6397-4ffe-bd3c-dab180427cbb':
                 # result.result_char = round(self.door_varying_twisting_avg,2)
                 result.calculated = True
                 # if self.door_varying_twisting_avg_nabl == 'pass':
@@ -1668,7 +1668,7 @@ class Door(models.Model):
                 #     result.nabl_status = 'non-nabl'
                 continue
 
-            if result.parameter.internal_id == '32145bng-f463-4129-a75a-091ebfc79eb3':
+            if result.parameter.internal_id == 'a2a517f3-2701-4a68-bc0f-17a06d7ac12b':
                 # result.result_char = round(self.door_varying_twisting_avg,2)
                 result.calculated = True
                 # if self.door_varying_twisting_avg_nabl == 'pass':
