@@ -288,6 +288,7 @@ class LermSampleForm(models.Model):
                 'default_report_due_date': self.report_due_date,
                 'default_lab_location': self.lab_location.id,
                 'default_location_name': self.location_name.id,
+                'default_lab_id': self.lab_id,
                 }
             }
 

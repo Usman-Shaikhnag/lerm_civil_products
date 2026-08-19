@@ -3,13 +3,13 @@
     <template id="steel_tmt_bar_report">
         <t t-call="web.html_container">
             <t t-call="lerm_civil.custom_layout_header_footer_lerm_eln">
-                <div class="container_eln" style="padding-top:20px;">
+                <div class="container_eln" style="padding-top:2px;">
 
                     <div class="" t-foreach="eln" t-as="o">
                         <table style="width:100%; border-collapse: collapse;" border="1">
 
                             <tr>
-                                <td colspan="2">#Project Name/Site Name :</td>
+                                <td colspan="2">Project Name/Site Name</td>
                                 <td colspan="6" style="font-weight:bold;">
                                     <![CDATA[&nbsp;]]>
                                     <span t-field="o.srf_id.name_work"/>
@@ -18,7 +18,7 @@
                             <tr>
 
                             <t t-if="o.srf_id.client">
-                                <td colspan="2">#Customer Name :</td>
+                                <td colspan="2">Customer Name</td>
                                 <td colspan="2" style="font-weight:bold;">
                                     <![CDATA[&nbsp;]]>
                                     <t t-if="o.srf_id.customer">
@@ -26,14 +26,14 @@
                                     </t>
                                     <t t-else="">--</t>
                                 </td>
-                                <td colspan="2">Client Name :</td>
+                                <td colspan="2">Client Name</td>
                                 <td colspan="2" style="font-weight:bold;">
                                     
                                         <span t-field="o.srf_id.client"/>
                                 </td>
                             </t>
                             <t t-else="">
-                             <td colspan="2">#Customer Name :</td>
+                             <td colspan="2">Customer Name</td>
                              <td colspan="6" style="font-weight:bold;">
                                        <![CDATA[&nbsp;]]>
                                    <t t-if="o.srf_id.customer">
@@ -45,7 +45,7 @@
                                 
                             </tr>
                             <tr>
-                                <td colspan="2">Address:</td>
+                                <td colspan="2">Address</td>
                                 <td colspan="2" style="font-weight:bold;">
                                     <![CDATA[&nbsp;]]>
                                     <span t-field="o.srf_id.customer.street"/>
@@ -55,7 +55,7 @@
                                     <span t-field="o.srf_id.customer.state_id"/>,
                                     <span t-field="o.srf_id.customer.country_id"/>
                                 </td>
-                                <td colspan="2">SRF ID :</td>
+                                <td colspan="2">SRF ID</td>
                                 <td colspan="2" style="font-weight:bold;">
                                     
                                     <span t-esc="o.sample_id.srf_id.display_name.split('-')[0]"/>
@@ -63,14 +63,14 @@
                                 
                             </tr>
                             <tr>
-                                <td colspan="2">Location of Performance :-</td>
+                                <td colspan="2">Location of Performance</td>
                                 <td colspan="2">
                                     <t t-if="o.sample_id.location_name">
                                         <span t-field="o.sample_id.location_name"/>
                                     </t>
                                     <t t-else="">--</t>
                                 </td>
-                                <td colspan="2">Client Sample Id :-</td>
+                                <td colspan="2">Client Sample Id</td>
                                 <td colspan="2">
                                     <t t-if="o.sample_id.client_sample_id">
                                         <span t-field="o.sample_id.client_sample_id"/>
@@ -80,14 +80,14 @@
                                 
                             </tr>
                             <tr>
-                                <td colspan="2">Samples Description :-</td>
+                                <td colspan="2">Samples Description</td>
                                 <td colspan="2">
                                     <t t-if="o.material and o.material.lab_name or o.sample_id.size_id">
                                         <span t-field="o.sample_id.size_id"/> <![CDATA[&nbsp;]]> <![CDATA[&nbsp;]]> <span t-field="o.material.lab_name"/>
                                     </t>
                                     <t t-else="">--</t>
                                 </td>
-                                <td colspan="2">Brand:</td>
+                                <td colspan="2">Brand</td>
                                 <td colspan="2" >
                                    
                                     <span t-field="o.sample_id.brand"/>
@@ -95,15 +95,16 @@
                                 
                             </tr>
                             <tr>
-                                <td colspan="2">#Source of Sample :-</td>
+                                <td colspan="2">Source of Sample</td>
                                 <td colspan="2">
-                                    <t t-if="o.material.source_sample">
+                                    <!-- <t t-if="o.material.source_sample">
                                         <span t-field="o.material.source_sample"/>
                                     </t>
-                                    <t t-else="">-</t>
+                                    <t t-else="">-</t> -->
+                                    <span t-field="o.sample_id.source_of_sample"/>
                                 </td>
 
-                                <td colspan="2">Date of Receipt :-</td>
+                                <td colspan="2">Date of Receipt</td>
                                 <td colspan="2">
                                     <t t-if="o.sample_id.sample_received_date">
                                         <span t-field="o.sample_id.sample_received_date"/>
@@ -113,10 +114,11 @@
                                 
                             </tr>
                             <tr>
-                                <td colspan="2">Condition of Sample :-</td>
+                                <td colspan="2">Condition of Sample</td>
                                 <td colspan="2">
+                                    <span t-field="o.sample_id.sample_condition"/>
                                 </td>
-                                <td colspan="2">Date of Performance of Test :-</td>
+                                <td colspan="2">Date of Performance of Test</td>
                                 <td colspan="2">
                                     <t t-if="o.start_date and o.end_date">
 											
@@ -130,7 +132,7 @@
                             </tr>
                             
                             <tr>
-                                <td colspan="2">Discipline :-</td>
+                                <td colspan="2">Discipline</td>
                                 <td colspan="2">
                                     <t t-if="o.sample_id.group_id">
                                         <span t-field="o.sample_id.group_id"/>
@@ -145,7 +147,7 @@
                                     <t t-else="">-</t>
                                 </td> -->
 
-                                <td colspan="2">Date of Report Issue :-</td>
+                                <td colspan="2">Date of Report Issue</td>
                                 <td colspan="2">
                                     <t t-if="o.end_date">
                                         <span t-field="o.end_date"/>
@@ -155,24 +157,24 @@
                                
                             </tr>
                             <tr>
-                            <td colspan="2">Reference No. :-</td>
+                            <td colspan="2">Reference No.</td>
                                 <td colspan="2">
                                     <t t-if="o.srf_id.client_refrence">
                                         <span t-field="o.srf_id.client_refrence"/>
                                     </t>
                                     <t t-else="">-</t>
                                 </td>
-                                <td colspan="1">Temperature :-</td>
+                                <td colspan="1">Temperature</td>
                                 <td colspan="1">
                                     <t t-if="data.temp is not None">
                                         <span t-field="data.temp"/>   °C
                                     </t>
                                     <t t-else="">-</t>
                                 </td>
-                                <td colspan="1">Humidity :-</td>
+                                <td colspan="1">Grade</td>
                                 <td colspan="1">
-                                    <t t-if="data.humidity is not None">
-                                        <span t-field="data.humidity"/>   °C
+                                    <t t-if="o.grade_id">
+                                        <span t-field="o.grade_id"/>
                                     </t>
                                     <t t-else="">-</t>
                                 </td>
@@ -197,7 +199,7 @@
 
                         <t t-if="data.rebend_visible">
                             <t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','f781bfd8-550b-45f4-81ac-43f856d147b8')])" t-as="parameter">
-                                <span style="font-size:12px;" t-esc="parameter.test_method.test_method"/>
+                                <span style="font-size:12px;" t-esc="parameter.test_method"/>
                             </t>
                         </t>
                     </div>
@@ -242,22 +244,24 @@
                                     <span t-esc="data.diameter"/>
                                 </td>
                                 <td style="text-align: center; vertical-align: middle;">
-                                    <t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','9b54fc13-5dcd-4425-a416-72493dd69d43')]).parameter_table" t-as="parameter">
+                                    <span>-</span>
+                                    <!-- <t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','9b54fc13-5dcd-4425-a416-72493dd69d43')]).parameter_table" t-as="parameter">
                                         <t t-if="parameter.grade.id == eln.grade_id.id">
                                             <span t-field="parameter.permissable_limit"/>
                                         </t>
-                                    </t>
+                                    </t> -->
                                 </td>
                                 <td style="text-align: center;">
-										<span>
-											<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','9b54fc13-5dcd-4425-a416-72493dd69d43')]).parameter_table" t-as="parameter">
+										<span> -
+											<!-- <t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','9b54fc13-5dcd-4425-a416-72493dd69d43')])" t-as="parameter">
 												<t t-if="parameter.grade.id == eln.grade_id.id">
 													<span t-field="parameter.specification"/>
 												</t>
-											</t>
+											</t> -->
 										</span>
 									</td>
                                 <td t-if="eln.conformity" style="text-align: center;">
+                                    -
                                 </td>
                             </tr>
 
@@ -435,10 +439,10 @@
                                 </td>
                                 <td style="text-align: center;">
 										<span>
-											<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','c732ed77-4c06-4cd4-ae85-b7424c1a24c7')]).parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-												</t>
+											<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','c732ed77-4c06-4cd4-ae85-b7424c1a24c7')])" t-as="parameter">
+												<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
+													<span t-field="parameter.test_method.test_method"/>
+												<!-- </t> -->
 											</t>
 										</span>
 									</td>
@@ -625,10 +629,10 @@
                                 </td>
                                 <td style="text-align: center;">
 										<span>
-											<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','f781bfd8-550b-45f4-81ac-43f856d147b8')]).parameter_table" t-as="parameter">
-												<t t-if="parameter.grade.id == eln.grade_id.id">
-													<span t-field="parameter.specification"/>
-												</t>
+											<t t-foreach="env['lerm.parameter.master'].sudo().search([('internal_id','=','f781bfd8-550b-45f4-81ac-43f856d147b8')])" t-as="parameter">
+												<!-- <t t-if="parameter.grade.id == eln.grade_id.id"> -->
+													<span t-field="parameter.test_method.test_method"/>
+												<!-- </t> -->
 											</t>
 										</span>
 									</td>
@@ -705,7 +709,7 @@
                                 <tr>
                                     <td style="padding: 5px; font-style: italic; font-size: 12px;">
                                         <t t-if="data.notes_id">
-                                            <b>Notes:-</b>
+                                            <b>Notes</b>
                                             <t t-foreach="data.notes_id" t-as="n">
                                                 <span>
                                                     (<t t-esc="n.sr_no"/>) 
@@ -715,7 +719,7 @@
                                             </t>
                                         </t>
                                         <t t-if="eln.has_witness">
-                                            &#160;&#160;Test witnessed by: <span t-esc="eln.witness_name"/>
+                                            &#160;&#160;Test witnessed by <span t-esc="eln.witness_name"/>
                                         </t>
                                         <t t-if="eln.remarks">
                                             &#160;&#160;<span t-esc="eln.remarks"/>
@@ -724,7 +728,7 @@
                                 </tr>
                             </table>
                         </div>
-                        <div style="margin-top:20px; page-break-inside: avoid;" class="signatureContainer girdgird">
+                        <div style="page-break-inside: avoid;" class="signatureContainer girdgird">
                             <div>
                                 <div>
                                     <b>

@@ -209,7 +209,8 @@
                             <field name="price" invisible='1'/>
                             <field name="size_id" domain="[('id', 'in', size_ids)]" options="{'no_create': True}"/>
                             <field name="sample_qty" readonly="is_update == True"/>
-                            <field name="sample_received_date" readonly="1"/>
+                            <!-- <field name="sample_received_date" readonly="1"/> -->
+                            <field name="sample_received_date"/>
                             <field name="report_due_date" required="1" readonly="casting" force_save="1"/>
                             <field name="location" readonly="1" force_save="1"/>
                             <field name="casting"/>

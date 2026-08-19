@@ -1497,6 +1497,7 @@ class CreateSampleWizard(models.TransientModel):
                         'product_alias':self.product_alias.id,
                         'lab_location':lab_location,
                         'location_name':location_name,
+                        'lab_id':self.lab_id,
                         'report_due_date': self.report_due_date,
                         'quantity':self.quantity,
                         'uom_id':self.uom_id.id,
