@@ -210,7 +210,7 @@ class PtGrout(models.Model):
                     else:
                         record.initial_setting_conformity = 'fail'
 
-    @api.depends('initial_setting_time_minutes_unrounded','eln_ref')
+    @api.depends('initial_setting_time_minutes_unrounded','eln_ref','grade')
     def _compute_initial_setting_nabl(self):
         
         for record in self:
@@ -218,13 +218,13 @@ class PtGrout(models.Model):
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0fd53f55-7350-4597-8057-139ef15f07fe')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','0fd53f55-7350-4597-8057-139ef15f07fe')]).parameter_table
             for material in materials:
-                # if material.grade.id == record.grade.id:
+                if material.grade.id == record.grade.id:
                     lab_min = line.lab_min_value
                     lab_max = line.lab_max_value
                     mu_value = line.mu_value
                     
-                    lower = record.initial_setting_time_minutes_unrounded - record.initial_setting_time_minutes_unrounded*mu_value
-                    upper = record.initial_setting_time_minutes_unrounded + record.initial_setting_time_minutes_unrounded*mu_value
+                    lower = float(record.initial_setting_time_minutes_unrounded) - float(record.initial_setting_time_minutes_unrounded)*mu_value
+                    upper = float(record.initial_setting_time_minutes_unrounded) + float(record.initial_setting_time_minutes_unrounded)*mu_value
                     if lower >= lab_min and upper <= lab_max:
                         record.initial_setting_nabl = 'pass'
                         break
