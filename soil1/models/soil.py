@@ -728,9 +728,9 @@ class Soil(models.Model):
         self.ensure_one()
         
         # Boolean True save
-        self.write({
-            'end_date': fields.Date.context_today(self),  # current date auto fill
-        })
+        # self.write({
+        #     'end_date': fields.Date.context_today(self),  # current date auto fill
+        # })
         
         # Close inline editor → Save-like back
         return {'type': 'ir.actions.act_window_close'}
@@ -913,10 +913,10 @@ class Soil(models.Model):
                     group[0].avg_nmc = avg  
 
                 i += 2
-            if not rec.end_date_mnc:
-                rec.write({
-                    'end_date_mnc': fields.Date.context_today(rec)
-                })
+            # if not rec.end_date_mnc:
+            #     rec.write({
+            #         'end_date_mnc': fields.Date.context_today(rec)
+            #     })
 
 
 
@@ -1035,10 +1035,10 @@ class Soil(models.Model):
                     group[0].avg_corr_specific_gravity = avg  
 
                 i += 2
-            if not rec.end_date_sg:
-                rec.write({
-                    'end_date_sg': fields.Date.context_today(rec)
-                })
+            # if not rec.end_date_sg:
+            #     rec.write({
+            #         'end_date_sg': fields.Date.context_today(rec)
+            #     })
 
 
 
@@ -5453,10 +5453,10 @@ class SoilGSALINE(models.Model):
         self.ensure_one()
         
         # Boolean True save
-        self.write({
-            'is_checked': True,
-            'end_date': fields.Date.context_today(self),  # current date auto fill
-        })
+        # self.write({
+        #     'is_checked': True,
+        #     'end_date': fields.Date.context_today(self),  # current date auto fill
+        # })
         
         # Close inline editor → Save-like back
         return {'type': 'ir.actions.act_window_close'}
@@ -9084,7 +9084,7 @@ class LLLine(models.Model):
         self.ensure_one()
         self.write({
             'is_checked': True,
-            'end_date': fields.Date.context_today(self),
+            # 'end_date': fields.Date.context_today(self),
         })
         if self.ll_line_ids:
             for index, line in enumerate(self.ll_line_ids.sorted(key=lambda r: r.id)):
@@ -9299,7 +9299,7 @@ class LLLine(models.Model):
         self.ensure_one()
         self.write({
             'is_checked': True,
-            'end_date': fields.Date.context_today(self),
+            # 'end_date': fields.Date.context_today(self),
         })
         if self.ll_line_ids:
             for index, line in enumerate(self.ll_line_ids.sorted(key=lambda r: r.id)):
@@ -9747,7 +9747,7 @@ class PLLine(models.Model):
       
         self.write({
             'is_checked': True,
-            'end_date': fields.Date.context_today(self),
+            # 'end_date': fields.Date.context_today(self),
         })
 
         # 2️⃣ Reset serial numbers of child lines (1,2,3...)
@@ -9819,7 +9819,7 @@ class SLLine(models.Model):
         
         self.write({
             'is_checked': True,
-            'end_date': fields.Date.context_today(self),
+            # 'end_date': fields.Date.context_today(self),
         })
 
         # 🔹 Reset serial numbers of child lines
@@ -9891,7 +9891,7 @@ class permHeadLine(models.Model):
         # Boolean True save
         self.write({
             'is_checked': True,
-            'end_date': fields.Date.context_today(self),  # current date auto fill
+            # 'end_date': fields.Date.context_today(self),  # current date auto fill
         })
         
         # Close inline editor → Save-like back
@@ -10189,7 +10189,7 @@ class TriaxialShearLine(models.Model):
         # Boolean True save
         self.write({
             'is_checked': True,
-            'end_date': fields.Date.context_today(self),  # current date auto fill
+            # 'end_date': fields.Date.context_today(self),  # current date auto fill
         })
         
         # Close inline editor → Save-like back
@@ -10972,7 +10972,7 @@ class HeavyCompactionLine(models.Model):
         # Boolean True save
         self.write({
             'is_checked': True,
-            'end_date': fields.Date.context_today(self),  # current date auto fill
+            # 'end_date': fields.Date.context_today(self),  # current date auto fill
         })
         
         # Close inline editor → Save-like back
@@ -11467,7 +11467,7 @@ class USCNewLine(models.Model):
         # Boolean True save
         self.write({
             'is_checked': True,
-            'end_date': fields.Date.context_today(self),  # current date auto fill
+            # 'end_date': fields.Date.context_today(self),  # current date auto fill
         })
         
         # Close inline editor → Save-like back
@@ -11919,7 +11919,7 @@ class DrirectShearLine(models.Model):
         # Boolean True save
         self.write({
             'is_checked': True,
-            'end_date': fields.Date.context_today(self),  # current date auto fill
+            # 'end_date': fields.Date.context_today(self),  # current date auto fill
         })
         
         # Close inline editor → Save-like back
@@ -13582,7 +13582,7 @@ class SwellingPressureLine(models.Model):
         # Boolean True save
         self.write({
             'is_checked': True,
-            'end_date': fields.Date.context_today(self),  # current date auto fill
+            # 'end_date': fields.Date.context_today(self),  # current date auto fill
         })
         
         # Close inline editor → Save-like back
@@ -14456,7 +14456,7 @@ class ConsolidationLine(models.Model):
         # Boolean True save
         self.write({
             'is_checked': True,
-            'end_date': fields.Date.context_today(self),  # current date auto fill
+            # 'end_date': fields.Date.context_today(self),  # current date auto fill
         })
         
         # Close inline editor → Save-like back
@@ -15826,7 +15826,7 @@ class CbrLine(models.Model):
         # Boolean True save
         self.write({
             'is_checked': True,
-            'end_date': fields.Date.context_today(self),  # current date auto fill
+            # 'end_date': fields.Date.context_today(self),  # current date auto fill
         })
         
         # Close inline editor → Save-like back
