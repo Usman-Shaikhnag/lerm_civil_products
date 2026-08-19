@@ -3066,34 +3066,278 @@ class Soil(models.Model):
     direct_shear_name = fields.Char("Name",default="Direct Shear Test")
     direct_shear_visible = fields.Boolean("Direct Shear Test Visible",compute="_compute_visible")
 
-    proving_ring_constant = fields.Float(string="Proving Ring Constant (k)", digits=(12,3))
+    # proving_ring_constant = fields.Float(string="Proving Ring Constant (k)", digits=(12,3))
 
     direct_shear_ids = fields.One2many("mechanical.direct.shear.test.line", "parent_id", string="Test Readings")
 
-    avg_shear_stress = fields.Float(
-        string="Average Shear Stress (τ_avg) ",
-        compute="_compute_avg_shear_stress",
-        store=True,
-        digits=(12,2))
 
-    @api.depends("direct_shear_ids.shear_stress")
-    def _compute_avg_shear_stress(self):
-        for rec in self:
-            vals = [line.shear_stress for line in rec.direct_shear_ids if line.shear_stress is not None]
-            rec.avg_shear_stress = round(sum(vals)/len(vals), 2) if vals else 0.0
+    sample_type = fields.Char(
+        string='Sample Type (DS / UDS)'
+    )
+
+    sample_depth = fields.Float(
+        string='Sample Depth from EGL (m)'
+    )
+
+    specimen_size = fields.Char(
+        string='Specimen Size (LXB) cm²'
+    )
+
+    thickness = fields.Float(
+            string='Thickness (cm)'
+        )
+
+    specimen_area = fields.Float(
+        string='Specimen Area (cm²)'
+    )
+
+    volume_sample = fields.Float(
+        string='Volume of Sample (cm³)',compute='_compute_volume_sample',
+    )
+
+    @api.depends(
+        'specimen_area',
+        'thickness',
+    )
+    def _compute_volume_sample(self):
+
+        for line in self:
+
+            line.volume_sample = (
+                line.specimen_area
+                * line.thickness
+            )
+
+
+
+    specimen_weight = fields.Float(
+        string='Weight of Specimen, W1 (gm)'
+    )
+
+ 
+    water_content = fields.Float(
+        string='Water Content (%)'
+    )
+
+    least_count_dial = fields.Float(
+        string='Least Count, Dial Gauge (mm)',
+        default=0.01
+    )
+
+    rate_of_shearing = fields.Float(
+        string='Rate of Shearing (mm/min)',
+        default=1.25
+    )
+
+    proving_ring_factor = fields.Float(
+        string='Proving Ring Factor (kN/div)',
+        default=0.001996,digits=(16,7)
+    )
+
     
-    avg_shear_stress_conformity = fields.Selection([
-            ('pass', 'Pass'),
-            ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_avg_shear_stress_conformity", store=True)
+    
 
-    @api.depends('avg_shear_stress','eln_ref','grade')
-    def _compute_avg_shear_stress_conformity(self):
+    bulk_density = fields.Float(
+        string='Bulk Density (gm/cc)'
+    )
+
+    dry_density = fields.Float(
+        string='Dry Density (gm/cc)'
+    )
+    # ----------------------------------
+    # Maximum Shear Stress
+    # ----------------------------------
+
+    max_shear_stress_05 = fields.Float(
+        string='Maximum Shear Stress 0.5 kg/cm²',
+        compute='_compute_max_shear_stress',
+        store=True
+    )
+
+    max_shear_stress_10 = fields.Float(
+        string='Maximum Shear Stress 1.0 kg/cm²',
+        compute='_compute_max_shear_stress',
+        store=True
+    )
+
+    max_shear_stress_15 = fields.Float(
+        string='Maximum Shear Stress 1.5 kg/cm²',
+        compute='_compute_max_shear_stress',
+        store=True
+    )
+
+    @api.depends(
+        'direct_shear_ids.shear_stress_05',
+        'direct_shear_ids.shear_stress_10',
+        'direct_shear_ids.shear_stress_15'
+    )
+    def _compute_max_shear_stress(self):
+
+        for record in self:
+
+            values_05 = record.direct_shear_ids.mapped(
+                'shear_stress_05'
+            )
+
+            values_10 = record.direct_shear_ids.mapped(
+                'shear_stress_10'
+            )
+
+            values_15 = record.direct_shear_ids.mapped(
+                'shear_stress_15'
+            )
+
+            record.max_shear_stress_05 = (
+                max(values_05) if values_05 else 0.0
+            )
+
+            record.max_shear_stress_10 = (
+                max(values_10) if values_10 else 0.0
+            )
+
+            record.max_shear_stress_15 = (
+                max(values_15) if values_15 else 0.0
+            )
+
+
+    cohesion = fields.Float(
+    string='Cohesion (c)',
+    compute='_compute_c_phi',
+    store=True)
+
+    phi = fields.Float(
+    string='ccc',
+    compute='_compute_c_phi',
+    store=True)
+
+
+    @api.depends(
+    'direct_shear_ids.shear_stress_05',
+    'direct_shear_ids.shear_stress_10',
+    'direct_shear_ids.shear_stress_15'
+)
+    def _compute_c_phi(self):
+
+     for record in self:
+
+        # ----------------------------------
+        # Normal Stress
+        # ----------------------------------
+        normal_stress = [
+            0.5,
+            1.0,
+            1.5
+        ]
+
+        # ----------------------------------
+        # Maximum Shear Stress
+        # ----------------------------------
+        shear_stress = [
+            record.max_shear_stress_05,
+            record.max_shear_stress_10,
+            record.max_shear_stress_15
+        ]
+
+        # ----------------------------------
+        # Remove empty/zero values
+        # ----------------------------------
+        points = [
+            (x, y)
+            for x, y in zip(
+                normal_stress,
+                shear_stress
+            )
+            if x is not None and y is not None
+        ]
+
+        if len(points) < 2:
+            record.cohesion = 0.0
+            record.phi = 0.0
+            continue
+
+        x = [p[0] for p in points]
+        y = [p[1] for p in points]
+
+        # ----------------------------------
+        # Linear Regression
+        #
+        # y = mx + c
+        # ----------------------------------
+        n = len(x)
+
+        sum_x = sum(x)
+        sum_y = sum(y)
+
+        sum_xy = sum(
+            xi * yi
+            for xi, yi in zip(x, y)
+        )
+
+        sum_x2 = sum(
+            xi * xi
+            for xi in x
+        )
+
+        denominator = (
+            n * sum_x2
+            - sum_x ** 2
+        )
+
+        if denominator == 0:
+            record.cohesion = 0.0
+            record.phi = 0.0
+            continue
+
+        # Slope
+        slope = (
+            n * sum_xy
+            - sum_x * sum_y
+        ) / denominator
+
+        # Intercept = Cohesion
+        intercept = (
+            sum_y
+            - slope * sum_x
+        ) / n
+
+        # ----------------------------------
+        # Cohesion
+        # ----------------------------------
+        record.cohesion = round(
+            intercept,
+            2
+        )
+
+        # ----------------------------------
+        # Phi
+        #
+        # Excel:
+        # =ATAN(SLOPE(...))*180/PI()
+        # ----------------------------------
+        phi_value = (
+            math.atan(slope)
+            * 180.0
+            / math.pi
+        )
+
+        record.phi = round(
+            phi_value
+        )
+
+
+    
+    cohesion_conformity = fields.Selection([
+            ('pass', 'Pass'),
+            ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_cohesion_conformity", store=True)
+
+    @api.depends('cohesion','eln_ref','grade')
+    def _compute_cohesion_conformity(self):
         
         for record in self:
             if not record.eln_ref or not record.eln_ref.conformity:
-                record.avg_shear_stress_conformity = 'na'
+                record.cohesion_conformity = 'na'
                 continue
-            record.avg_shear_stress_conformity = 'fail'
+            record.cohesion_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')]).parameter_table
             for material in materials:
@@ -3102,23 +3346,23 @@ class Soil(models.Model):
                     req_max = material.req_max
                     mu_value = line.mu_value
                     
-                    lower = record.avg_shear_stress - record.avg_shear_stress*mu_value
-                    upper = record.avg_shear_stress + record.avg_shear_stress*mu_value
+                    lower = record.cohesion - record.cohesion*mu_value
+                    upper = record.cohesion + record.cohesion*mu_value
                     if lower >= req_min and upper <= req_max:
-                        record.avg_shear_stress_conformity = 'pass'
+                        record.cohesion_conformity = 'pass'
                         break
                     else:
-                        record.avg_shear_stress_conformity = 'fail'
+                        record.cohesion_conformity = 'fail'
 
-    avg_shear_stress_nabl = fields.Selection([
+    cohesion_nabl = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_avg_shear_stress_nabl", store=True)
+        ('fail', 'Fail')], string="NABL", compute="_compute_cohesion_nabl", store=True)
 
-    @api.depends('avg_shear_stress','eln_ref','grade')
-    def _compute_avg_shear_stress_nabl(self):
+    @api.depends('cohesion','eln_ref','grade')
+    def _compute_cohesion_nabl(self):
         
         for record in self:
-            record.avg_shear_stress_nabl = 'fail'
+            record.cohesion_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')]).parameter_table
             # for material in materials:
@@ -3127,38 +3371,30 @@ class Soil(models.Model):
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.avg_shear_stress - record.avg_shear_stress*mu_value
-            upper = record.avg_shear_stress + record.avg_shear_stress*mu_value
+            lower = record.cohesion - record.cohesion*mu_value
+            upper = record.cohesion + record.cohesion*mu_value
             if lower >= lab_min and upper <= lab_max:
-                record.avg_shear_stress_nabl = 'pass'
+                record.cohesion_nabl = 'pass'
                 break
             else:
-                record.avg_shear_stress_nabl = 'fail'
+                record.cohesion_nabl = 'fail'
 
 
-     
 
-    # Direct Shear Test (Angle of Friction)
-    angle_shear_name = fields.Char("Name",default="Direct Shear Test (Angle of Friction)")
-    angle_shear_visible = fields.Boolean("Direct Shear Test (Angle of Friction) Visible",compute="_compute_visible")
-     
-
-    angleshear_line_ids = fields.One2many('mechanical.soil.direct.shear.line', 'parent_id', string="Test lines")
-    phi_deg = fields.Float(string="Angle of Internal Friction φ (°)", compute="_compute_phi_cohesion_direct", store=True)
-    cohesion = fields.Float(string="Cohesion c (kPa)", compute="_compute_phi_cohesion_direct", store=True)
-
-    phi_deg_conformity = fields.Selection([
+    
+    
+    phi_conformity = fields.Selection([
             ('pass', 'Pass'),
-            ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_phi_deg_conformity", store=True)
+            ('fail', 'Fail'),('na', 'NA'),], string="Conformity", compute="_compute_phi_conformity", store=True)
 
-    @api.depends('phi_deg','eln_ref','grade')
-    def _compute_phi_deg_conformity(self):
+    @api.depends('phi','eln_ref','grade')
+    def _compute_phi_conformity(self):
         
         for record in self:
             if not record.eln_ref or not record.eln_ref.conformity:
-                record.phi_deg_conformity = 'na'
+                record.phi_conformity = 'na'
                 continue
-            record.phi_deg_conformity = 'fail'
+            record.phi_conformity = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr')]).parameter_table
             for material in materials:
@@ -3167,23 +3403,23 @@ class Soil(models.Model):
                     req_max = material.req_max
                     mu_value = line.mu_value
                     
-                    lower = record.phi_deg - record.phi_deg*mu_value
-                    upper = record.phi_deg + record.phi_deg*mu_value
+                    lower = record.phi - record.phi*mu_value
+                    upper = record.phi + record.phi*mu_value
                     if lower >= req_min and upper <= req_max:
-                        record.phi_deg_conformity = 'pass'
+                        record.phi_conformity = 'pass'
                         break
                     else:
-                        record.phi_deg_conformity = 'fail'
+                        record.phi_conformity = 'fail'
 
-    phi_deg_nabl = fields.Selection([
+    phi_nabl = fields.Selection([
         ('pass', 'Pass'),
-        ('fail', 'Fail')], string="NABL", compute="_compute_phi_deg_nabl", store=True)
+        ('fail', 'Fail')], string="NABL", compute="_compute_phi_nabl", store=True)
 
-    @api.depends('phi_deg','eln_ref','grade')
-    def _compute_phi_deg_nabl(self):
+    @api.depends('phi','eln_ref','grade')
+    def _compute_phi_nabl(self):
         
         for record in self:
-            record.phi_deg_nabl = 'fail'
+            record.phi_nabl = 'fail'
             line = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr')])
             materials = self.env['lerm.parameter.master'].sudo().search([('internal_id','=','00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr')]).parameter_table
             # for material in materials:
@@ -3192,50 +3428,228 @@ class Soil(models.Model):
             lab_max = line.lab_max_value
             mu_value = line.mu_value
             
-            lower = record.phi_deg - record.phi_deg*mu_value
-            upper = record.phi_deg + record.phi_deg*mu_value
+            lower = record.phi - record.phi*mu_value
+            upper = record.phi + record.phi*mu_value
             if lower >= lab_min and upper <= lab_max:
-                record.phi_deg_nabl = 'pass'
+                record.phi_nabl = 'pass'
                 break
             else:
-                record.phi_deg_nabl = 'fail'
+                record.phi_nabl = 'fail'
 
-    @api.depends('angleshear_line_ids.normal_stress', 'angleshear_line_ids.shear_strength')
-    def _compute_phi_cohesion_direct(self):
-        for rec in self:
-            lines = rec.angleshear_line_ids.filtered(lambda l: l.normal_stress is not None and l.shear_strength is not None)
-            n = len(lines)
-            if n < 2:
-                rec.phi_deg = 0.0
-                rec.cohesion = 0.0
-                continue
 
-            # Ordinary least squares for tau = c + m*sigma
-            sigma = [l.normal_stress for l in lines]
-            tau = [l.shear_strength for l in lines]
 
-            sum_sigma = sum(sigma)
-            sum_tau = sum(tau)
-            sum_sigma_tau = sum(s * t for s, t in zip(sigma, tau))
-            sum_sigma2 = sum(s * s for s in sigma)
+    
 
-            denom = (n * sum_sigma2) - (sum_sigma ** 2)
-            if abs(denom) < 1e-12:
-                # degenerate case: all sigma equal
-                # fallback to two-point if possible
-                rec.phi_deg = 0.0
-                rec.cohesion = 0.0
-                continue
 
-            m = (n * sum_sigma_tau - sum_sigma * sum_tau) / denom  # m = tan(phi)
-            c = (sum_tau - m * sum_sigma) / n
+    graph_image_shear = fields.Binary(
+    string="Line Chart")
 
-            # convert m to degrees
-            phi_rad = math.atan(m)
-            phi_deg = phi_rad * 180.0 / math.pi
+    show_shear_graph = fields.Boolean(string="Show Shear Graph")
 
-            rec.phi_deg = phi_deg
-            rec.cohesion = c
+
+    def action_generate_shear_graph(self):
+
+      for record in self:
+
+        x_value = [0.5, 1.0, 1.5]
+
+        y_value = [
+            record.max_shear_stress_05,
+            record.max_shear_stress_10,
+            record.max_shear_stress_15
+        ]
+
+        points = [
+            (x, y)
+            for x, y in zip(x_value, y_value)
+            if y is not None
+        ]
+
+        if len(points) < 2:
+            record.graph_image_shear = False
+            continue
+
+        x_value = [p[0] for p in points]
+        y_value = [p[1] for p in points]
+
+        # ----------------------------------
+        # Linear Regression
+        # y = mx + c
+        # ----------------------------------
+        n = len(x_value)
+
+        sum_x = sum(x_value)
+        sum_y = sum(y_value)
+
+        sum_xy = sum(
+            x * y
+            for x, y in zip(x_value, y_value)
+        )
+
+        sum_x2 = sum(
+            x * x
+            for x in x_value
+        )
+
+        denominator = (
+            n * sum_x2
+            - sum_x ** 2
+        )
+
+        if denominator == 0:
+            record.graph_image_shear = False
+            continue
+
+        slope = (
+            n * sum_xy
+            - sum_x * sum_y
+        ) / denominator
+
+        intercept = (
+            sum_y
+            - slope * sum_x
+        ) / n
+
+        # ----------------------------------
+        # Cohesion
+        # ----------------------------------
+        record.cohesion = round(
+            intercept,
+            2
+        )
+
+        # ----------------------------------
+        # Phi
+        # ----------------------------------
+        phi_value = (
+            math.atan(slope)
+            * 180.0
+            / math.pi
+        )
+
+        record.phi = round(phi_value)
+
+        # ----------------------------------
+        # Regression line
+        # ----------------------------------
+        x_fit = np.linspace(
+            min(x_value),
+            max(x_value),
+            200
+        )
+
+        y_fit = (
+            slope * x_fit
+            + intercept
+        )
+
+        # ----------------------------------
+        # Graph
+        # ----------------------------------
+        fig, ax = plt.subplots(
+            figsize=(7, 5)
+        )
+
+        # Actual points
+        ax.plot(
+            x_value,
+            y_value,
+            color='#4A90E2',
+            linewidth=2,
+            marker='o',
+            markersize=7,
+            markerfacecolor='#4A90E2',
+            markeredgecolor='#4A90E2',
+            zorder=5
+        )
+
+        # Trend line
+        ax.plot(
+            x_fit,
+            y_fit,
+            color='#4A90E2',
+            linestyle=':',
+            linewidth=1.5,
+            zorder=2
+        )
+
+        # ----------------------------------
+        # Labels
+        # ----------------------------------
+        ax.set_xlabel(
+            'Normal Stress (kg/cm²)',
+            fontsize=11,
+            fontweight='bold'
+        )
+
+        ax.set_ylabel(
+            'Shear Stress (kg/cm²)',
+            fontsize=11,
+            fontweight='bold'
+        )
+
+        ax.set_title(
+            'Direct Shear Test',
+            fontsize=14,
+            fontweight='bold'
+        )
+
+        # ----------------------------------
+        # X Axis
+        # ----------------------------------
+        ax.set_xlim(0, 2)
+
+        ax.set_xticks(
+            np.arange(0, 2.1, 0.5)
+        )
+
+        # ----------------------------------
+        # Y Axis
+        # ----------------------------------
+        ax.set_ylim(0, 1.0)
+
+        ax.set_yticks(
+            np.arange(0, 1.01, 0.2)
+        )
+
+        # ----------------------------------
+        # Grid
+        # ----------------------------------
+        ax.grid(
+            True,
+            linestyle='-',
+            linewidth=0.5,
+            alpha=0.5
+        )
+
+        plt.tight_layout()
+
+        # ----------------------------------
+        # Save Image
+        # ----------------------------------
+        buffer = io.BytesIO()
+
+        plt.savefig(
+            buffer,
+            format='png',
+            dpi=100,
+            bbox_inches='tight'
+        )
+
+        plt.close(fig)
+
+        buffer.seek(0)
+
+        record.graph_image_shear = base64.b64encode(
+            buffer.read()
+        )
+
+      return True
+
+
+     
+
+    
 
 
      # Moisture Content
@@ -3326,8 +3740,7 @@ class Soil(models.Model):
             record.soil_visible = False
             record.fsi_visible  = False 
             record.specific_gravity_visible  = False 
-            record.direct_shear_visible  = False 
-            record.angle_shear_visible  = False 
+            record.direct_shear_visible  = False  
             record.moisture_content_visible = False
 
 
@@ -3373,7 +3786,7 @@ class Soil(models.Model):
                     record.direct_shear_visible = True
 
                 if sample.internal_id == '00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr':
-                    record.angle_shear_visible = True
+                    record.direct_shear_visible = True
 
 
     
@@ -3531,8 +3944,8 @@ class Soil(models.Model):
             # Direct Shear Test
             if result.parameter.internal_id == '21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr':
                 result.calculated = True
-                result.result_char = round(self.avg_shear_stress,2)
-                if self.avg_shear_stress_nabl == 'pass':
+                result.result_char = round(self.cohesion,2)
+                if self.cohesion_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -3544,8 +3957,8 @@ class Soil(models.Model):
             # Direct Shear Test (Angle of Friction)
             if result.parameter.internal_id == '00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr':
                 result.calculated = True
-                result.result_char = round(self.phi_deg,2)
-                if self.phi_deg_nabl == 'pass':
+                result.result_char = round(self.phi,2)
+                if self.phi_nabl == 'pass':
                     result.nabl_status = 'nabl'
                 else:
                     result.nabl_status = 'non-nabl'
@@ -4490,28 +4903,266 @@ class DirectShearTestLine(models.Model):
 
     serial_no = fields.Integer(string="Test",readonly=True, copy=False, default=1)
 
-    ao = fields.Float(string="Area of Sample (Ao) [cm²]", digits=(12,3))
-    delta = fields.Float(string="Horizontal Dial Gauge (δ) [mm]", digits=(12,3))
-    proving_ring_reading = fields.Float(string="Proving Ring Reading", digits=(12,3))
-    normal_stress = fields.Float(string="Normal Stress [kg/cm²]", digits=(12,3))
 
-    horizontal_load = fields.Float(string="Horizontal Load [kg]", compute="_compute_shear", store=True, digits=(12,3))
-    corrected_area = fields.Float(string="Corrected Area [cm²]", compute="_compute_shear", store=True, digits=(12,3))
-    shear_stress = fields.Float(string="Shear Stress (τ) [kg/cm²]", compute="_compute_shear", store=True, digits=(12,3))
+    horizontal_dial_reading = fields.Float(
+        string='Horizontal Dial Reading (Div)'
+    )
 
-    @api.depends("ao","delta","proving_ring_reading","parent_id.proving_ring_constant")
-    def _compute_shear(self):
-        for rec in self:
-            k = rec.parent_id.proving_ring_constant or 0
-            # Horizontal Load
-            rec.horizontal_load = rec.proving_ring_reading * k
-            # Corrected Area
-            rec.corrected_area = rec.ao * (1 - rec.delta/100)
-            # Shear Stress (sign preserved)
-            if rec.corrected_area != 0:
-                rec.shear_stress = rec.horizontal_load / rec.corrected_area
+    # ==================================
+    # B - Displacement
+    # Excel:
+    # =A15*0.001
+    # ==================================
+
+    displacement = fields.Float(
+        string='Displacement (cm)',
+        compute='_compute_values',
+        store=True
+    )
+
+    # ==================================
+    # C - Area Correction
+    # Excel:
+    # =(1-B15/6)
+    # ==================================
+
+    area_correction = fields.Float(
+        string='Area Correction',
+        compute='_compute_values',
+        store=True
+    )
+
+    # ==================================
+    # D - Corrected Area
+    # Excel:
+    # =$E$6*C15
+    # ==================================
+
+    corrected_area = fields.Float(
+        string='Corrected Area (cm²)',
+        compute='_compute_values',
+        store=True
+    )
+
+    # ==================================
+    # NORMAL STRESS = 0.5 kg/cm²
+    # ==================================
+
+    proving_ring_05 = fields.Float(
+        string='Proving Ring Reading'
+    )
+
+    shear_force_05 = fields.Float(
+        string='Shear Force (kN)',
+        compute='_compute_values',digits=(16,3),
+        store=True
+    )
+
+    shear_stress_05 = fields.Float(
+        string='Shear Stress (kg/cm²)',
+        compute='_compute_values',
+        store=True
+    )
+
+    # ==================================
+    # NORMAL STRESS = 1.0 kg/cm²
+    # ==================================
+
+    proving_ring_10 = fields.Float(
+        string='Proving Ring Reading'
+    )
+
+    shear_force_10 = fields.Float(
+        string='Shear Force (kN)',
+        compute='_compute_values',digits=(16,3),
+        store=True
+    )
+
+    shear_stress_10 = fields.Float(
+        string='Shear Stress (kg/cm²)',
+        compute='_compute_values',
+        store=True
+    )
+
+    # ==================================
+    # NORMAL STRESS = 1.5 kg/cm²
+    # ==================================
+
+    proving_ring_15 = fields.Float(
+        string='Proving Ring Reading'
+    )
+
+    shear_force_15 = fields.Float(
+        string='Shear Force (kN)',
+        compute='_compute_values',digits=(16,3),
+        store=True
+    )
+
+    shear_stress_15 = fields.Float(
+        string='Shear Stress (kg/cm²)',
+        compute='_compute_values',
+        store=True
+    )
+
+    # ==================================
+    # ALL CALCULATIONS
+    # ==================================
+
+    @api.depends(
+        'horizontal_dial_reading',
+        'parent_id.least_count_dial',
+        'parent_id.specimen_area',
+        'parent_id.proving_ring_factor',
+        'proving_ring_05',
+        'proving_ring_10',
+        'proving_ring_15',
+    )
+    def _compute_values(self):
+
+        for line in self:
+
+            parent = line.parent_id
+
+            if not parent:
+                line.displacement = 0.0
+                line.area_correction = 0.0
+                line.corrected_area = 0.0
+
+                line.shear_force_05 = 0.0
+                line.shear_force_10 = 0.0
+                line.shear_force_15 = 0.0
+
+                line.shear_stress_05 = 0.0
+                line.shear_stress_10 = 0.0
+                line.shear_stress_15 = 0.0
+
+                continue
+
+            # ==================================
+            # B - Displacement
+            #
+            # Excel:
+            # =A15*0.001
+            #
+            # But using Least Count from parent
+            # ==================================
+
+            line.displacement = (
+                line.horizontal_dial_reading
+                * 0.001
+            )
+
+            # ==================================
+            # C - Area Correction
+            #
+            # Excel:
+            # =(1-B15/6)
+            # ==================================
+
+            if line.displacement:
+                line.area_correction = (
+                    1.0
+                    - (
+                        line.displacement
+                        / 6
+                    )
+                )
             else:
-                rec.shear_stress = 0.0
+                line.area_correction = 0.0
+
+            # ==================================
+            # D - Corrected Area
+            #
+            # Excel:
+            # =$E$6*C15
+            # ==================================
+
+            line.corrected_area = (
+                parent.specimen_area
+                * line.area_correction
+            )
+
+            # ==================================
+            # Shear Force
+            #
+            # Proving Ring Reading
+            # × Proving Ring Factor
+            # ==================================
+
+            line.shear_force_05 = (
+                line.proving_ring_05
+                * parent.proving_ring_factor
+            )
+
+            line.shear_force_10 = (
+                line.proving_ring_10
+                * parent.proving_ring_factor
+            )
+
+            line.shear_force_15 = (
+                line.proving_ring_15
+                * parent.proving_ring_factor
+            )
+
+            # ==================================
+            # Shear Stress
+            #
+            # Shear Force / Corrected Area
+            #
+            # kN → kgf
+            # 1 kN = 101.9716 kgf
+            # ==================================
+
+            if line.corrected_area:
+
+                line.shear_stress_05 = (
+                    line.shear_force_05
+                    * 101.9716
+                    / line.corrected_area
+                )
+
+                line.shear_stress_10 = (
+                    line.shear_force_10
+                    * 101.9716
+                    / line.corrected_area
+                )
+
+                line.shear_stress_15 = (
+                    line.shear_force_15
+                    * 101.9716
+                    / line.corrected_area
+                )
+
+            else:
+
+                line.shear_stress_05 = 0.0
+                line.shear_stress_10 = 0.0
+                line.shear_stress_15 = 0.0
+
+
+
+    # ao = fields.Float(string="Area of Sample (Ao) [cm²]", digits=(12,3))
+    # delta = fields.Float(string="Horizontal Dial Gauge (δ) [mm]", digits=(12,3))
+    # proving_ring_reading = fields.Float(string="Proving Ring Reading", digits=(12,3))
+    # normal_stress = fields.Float(string="Normal Stress [kg/cm²]", digits=(12,3))
+
+    # horizontal_load = fields.Float(string="Horizontal Load [kg]", compute="_compute_shear", store=True, digits=(12,3))
+    # corrected_area = fields.Float(string="Corrected Area [cm²]", compute="_compute_shear", store=True, digits=(12,3))
+    # shear_stress = fields.Float(string="Shear Stress (τ) [kg/cm²]", compute="_compute_shear", store=True, digits=(12,3))
+
+    # @api.depends("ao","delta","proving_ring_reading","parent_id.proving_ring_constant")
+    # def _compute_shear(self):
+    #     for rec in self:
+    #         k = rec.parent_id.proving_ring_constant or 0
+    #         # Horizontal Load
+    #         rec.horizontal_load = rec.proving_ring_reading * k
+    #         # Corrected Area
+    #         rec.corrected_area = rec.ao * (1 - rec.delta/100)
+    #         # Shear Stress (sign preserved)
+    #         if rec.corrected_area != 0:
+    #             rec.shear_stress = rec.horizontal_load / rec.corrected_area
+    #         else:
+    #             rec.shear_stress = 0.0
 
    
 
@@ -4533,36 +5184,6 @@ class DirectShearTestLine(models.Model):
             record.serial_no = index + 1
 
 
-
-
-class DirectShearLine(models.Model):
-    _name = "mechanical.soil.direct.shear.line"
-    parent_id = fields.Many2one('mechanical.soil',string="Parent Id")
-
-    serial_no = fields.Integer(string="SR NO",readonly=True, copy=False, default=1)
-
-    normal_stress = fields.Float(string="Normal stress σ (kPa)")
-    shear_strength = fields.Float(string="Shear stress τ (kPa)")
-
-   
-
-    
-    @api.model
-    def create(self, vals):
-        # Set the serial_no based on the existing records for the same parent
-        if vals.get('parent_id'):
-            existing_records = self.search([('parent_id', '=', vals['parent_id'])])
-            if existing_records:
-                max_serial_no = max(existing_records.mapped('serial_no'))
-                vals['serial_no'] = max_serial_no + 1
-
-        return super(DirectShearLine, self).create(vals)
-
-    def _reorder_serial_numbers(self):
-        # Reorder the serial numbers based on the positions of the records in child_lines
-        records = self.sorted('id')
-        for index, record in enumerate(records):
-            record.serial_no = index + 1
 
 
 class SoilNotes(models.Model):

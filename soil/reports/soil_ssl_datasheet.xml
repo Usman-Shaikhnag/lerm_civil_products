@@ -379,11 +379,11 @@
 											IS Sieve Size
 										</span>
 									</th>
-									<th>
+									<!-- <th>
 										<span>
 										Particle Size  (mm)
 										</span>
-									</th>
+									</th> -->
 									<th>
 										<span>
 											Wt. Retained in gms
@@ -414,9 +414,9 @@
 									<td>
 										<span t-esc="r.sieve_size"/>
 									</td>
-									<td>
+									<!-- <td>
 										<span t-esc="r.particle_size"/>
-									</td>
+									</td> -->
 									<td>
 										<span t-esc="r.wt_retained" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
@@ -1605,6 +1605,10 @@
 							
 							</table>
 						</div>
+
+						
+
+
 						<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].sudo().search([('eln_id','=', eln.id), ('parameter.internal_id','=','26a889da-3ab8-40e9-af69-2399b62dce9f')], limit=1).technician"/>
 						<div class="signatureContainer girdgird">
 							<div>
@@ -1673,69 +1677,174 @@
 						 <div t-if="data.direct_shear_visible" style="page-break-before: always;">
 				           	<div style="text-align:center;margin-top: 20px;">
 								<p style="font-size:15px"><b><span t-field="data.direct_shear_name"/></b></p>
-								<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')]).parameter_table" t-as="parameter">
-										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
-											<span t-field="parameter.specification"/>
-										</t> -->
-									</t>
-								</span>
+								
 							</div>
 
 							<div style="margin-top:20px" t-if="data.direct_shear_visible">
 							<table>
 								
 								<tr cols="12">
-									<td colspan="6">Proving Ring Constant (k) :
+									<td colspan="6">Sample Type (DS / UDS) :
 										<![CDATA[&nbsp;]]>
-										<span t-field="data.proving_ring_constant"  t-options='{"widget": "float", "precision": 3}'/>
+										<span t-field="data.sample_type"/>
+									</td>
+									<td colspan="6">Sample Depth from EGL (m) :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.sample_depth"/>
+									</td>
+								</tr>
+								<tr cols="12">
+									<td colspan="6">Specimen Size (LXB) cm² :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.specimen_size"/>
+									</td>
+									<td colspan="6">Thickness (cm) :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.thickness"/>
+									</td>
+								</tr>
+								<tr cols="12">
+									<td colspan="6">Specimen Area (cm²) :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.specimen_area"/>
+									</td>
+									<td colspan="6">Volume of Sample (cm³) :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.volume_sample" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+								<tr cols="12">
+									<td colspan="6">Weight of Specimen, W1 (gm) :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.specimen_weight"/>
+									</td>
+									
+									<td colspan="6">Bulk Density (gm/cc) :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.bulk_density" />
+									</td>
+								</tr>
+								<tr cols="12">
+								<td colspan="6">Water Content (%) :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.water_content"/>
+									</td>
+									
+									<td colspan="6">Dry Density (gm/cc) :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.dry_density" />
+									</td>
+								</tr>
+								<tr cols="12">
+							    	<td colspan="6">Least Count, Dial Gauge (mm) :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.least_count_dial"/>
+									</td>
+									
+									<td colspan="6">Rate of Shearing (mm/min) :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.rate_of_shearing" />
+									</td>
+								</tr>
+
+								<tr cols="12">
+							    	<td colspan="6">Proving Ring Factor :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.proving_ring_factor"/>
 									</td>
 								</tr>
 								
+								
 							</table>
 						</div>
+						
 							
 						<table style="margin-top:30px;">
 							<thead>
 								<tr>
-									<th>
+									<th rowspan="2">
 										<span>
-											Sr. No
+											Horizontal Dial Reading (Div)
 										</span>
 									</th>
-									<th>
+									<th rowspan="2">
 										<span>
-										Area of Sample (Ao) [cm²]
+										Displacement (cm)
 										</span>
 									</th>
-									<th>
+									<th rowspan="2">
 										<span>
-									Horizontal Dial Gauge (δ) [mm]
+									Area Correction
 										</span>
 									</th>
-									<th>
+									<th rowspan="2">
+										<span>
+									Corrected Area (cm²)
+										</span>
+									</th>
+									<th colspan="3">
+										<span>
+									Normal Stress = 0.5 kg/cm²	
+										</span>
+									</th>
+									<th colspan="3">
+										<span>
+									Normal Stress = 1.0 kg/cm²
+										</span>
+									</th>
+									<th colspan="3">
+										<span>
+									Normal Stress = 1.5 kg/cm²
+										</span>
+									</th>
+
+									</tr>
+
+
+									<tr>
+									<th colspan="1">
 										<span>
 									Proving Ring Reading
 										</span>
 									</th>
-									<th>
+									<th colspan="1">
 										<span>
-									Normal Stress [kg/cm²]
+									Shear Force (kN)
 										</span>
 									</th>
-									<th>
+									<th colspan="1">
 										<span>
-									Horizontal Load [kg]
+									Shear Stress (kg/cm²)
 										</span>
 									</th>
-									<th>
+									<th colspan="1">
 										<span>
-									Corrected Area [cm²]
+									Proving Ring Reading
 										</span>
 									</th>
-									<th>
+									<th colspan="1">
 										<span>
-									Shear Stress (τ) [kg/cm²]
+									Shear Force (kN)
+										</span>
+									</th>
+									<th colspan="1">
+										<span>
+									Shear Stress (kg/cm²)
+										</span>
+									</th>
+									<th colspan="1">
+										<span>
+									Proving Ring Reading
+										</span>
+									</th>
+									<th colspan="1">
+										<span>
+									Shear Force (kN)
+										</span>
+									</th>
+									<th colspan="1">
+										<span>
+									Shear Stress (kg/cm²)
 										</span>
 									</th>
 									
@@ -1744,32 +1853,50 @@
 							<tbody>
 								<t t-set="n" t-value="0"/>
 								<tr t-foreach="data.direct_shear_ids" t-as="r">
-									<td>
+									<!-- <td>
 										<div>
 											<span t-esc="n + 1" />
 											<t t-set="n" t-value="n+1"/>
 										</div>
+									</td> -->
+									<td>
+										<span t-esc="r.horizontal_dial_reading"/>
 									</td>
 									<td>
-										<span t-esc="r.ao"/>
+										<span t-esc="r.displacement" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td>
-										<span t-esc="r.delta" t-options='{"widget": "float", "precision": 3}'/>
+										<span t-esc="r.area_correction" t-options='{"widget": "float", "precision": 3}'/>
 									</td>
 									<td>
-										<span t-esc="r.proving_ring_reading" t-options='{"widget": "float", "precision": 3}'/>
+										<span t-esc="r.corrected_area" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td>
-										<span t-esc="r.normal_stress" t-options='{"widget": "float", "precision": 3}'/>
+										<span t-esc="r.proving_ring_05" />
 									</td>
 									<td>
-										<span t-esc="r.horizontal_load" t-options='{"widget": "float", "precision": 3}'/>
+										<span t-esc="r.shear_force_05" t-options='{"widget": "float", "precision": 3}'/>
 									</td>
 									<td>
-										<span t-esc="r.corrected_area" t-options='{"widget": "float", "precision": 3}'/>
+										<span t-esc="r.shear_stress_05" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									<td>
-										<span t-esc="r.shear_stress" t-options='{"widget": "float", "precision": 3}'/>
+										<span t-esc="r.proving_ring_10" />
+									</td>
+									<td>
+										<span t-esc="r.shear_force_10" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td>
+										<span t-esc="r.shear_stress_10" t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+									<td>
+										<span t-esc="r.proving_ring_15" />
+									</td>
+									<td>
+										<span t-esc="r.shear_force_15" t-options='{"widget": "float", "precision": 3}'/>
+									</td>
+									<td>
+										<span t-esc="r.shear_stress_15" t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 									
 								</tr>
@@ -1778,13 +1905,48 @@
 						<div style="margin-top:20px" t-if="data.direct_shear_visible">
 							<table>
 								<tr cols="12">
-									<td colspan="6">Average Shear Stress (τ_avg) :
+									<td colspan="6">Maximum Shear Stress 0.5 kg/cm² :
 										<![CDATA[&nbsp;]]>
-										<span t-field="data.avg_shear_stress"  t-options='{"widget": "float", "precision": 3}'/>
+										<span t-field="data.max_shear_stress_05"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+								<tr cols="12">
+									<td colspan="6">Maximum Shear Stress 1.0 kg/cm² :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.max_shear_stress_10"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+								<tr cols="12">
+									<td colspan="6">Maximum Shear Stress 1.5 kg/cm² :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.max_shear_stress_15"  t-options='{"widget": "float", "precision": 2}'/>
 									</td>
 								</tr>
 							</table>
 						</div>
+
+						<div style="margin-top:20px" t-if="data.direct_shear_visible">
+							<table>
+								<tr cols="12">
+									<td colspan="6">Cohesion (c) :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.cohesion"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+								<tr cols="12">
+									<td colspan="6">phi :
+										<![CDATA[&nbsp;]]>
+										<span t-field="data.phi"  t-options='{"widget": "float", "precision": 2}'/>
+									</td>
+								</tr>
+							</table>
+						</div>
+
+						<div t-if="data.graph_image_shear" style="margin-top: 20px;">
+								<img t-att-src="'data:image/png;base64,' + data.graph_image_shear.decode('utf-8')" style="max-width: 100%;"/>
+						</div>
+
+
 						<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].sudo().search([('eln_id','=', eln.id), ('parameter.internal_id','=','21457888hhhllly1-ca64-44dd-b0ae-3214hhhtr')], limit=1).technician"/>
 						<div class="signatureContainer girdgird">
 							<div>
@@ -1846,144 +2008,6 @@
 					</div>
 						
 					</div>
-
-
-
-
-					 
-					 <!--  -->
-					 <div t-if="data.angle_shear_visible" style="page-break-before: always;">
-				           	<div style="text-align:center;margin-top: 20px;">
-								<p style="font-size:15px"><b><span t-field="data.angle_shear_name"/></b></p>
-								<span>
-									<t t-foreach="env['lerm.parameter.master'].search([('internal_id','=','00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr')]).parameter_table" t-as="parameter">
-										<!-- <t t-if="parameter.grade.id == eln.grade_id.id">
-											<span t-field="parameter.specification"/>
-										</t> -->
-									</t>
-								</span>
-							</div>
-
-						
-						<table style="margin-top:30px;">
-							<thead>
-								<tr>
-									<th>
-										<span>
-											Sr. No
-										</span>
-									</th>
-									<th>
-										<span>
-									Normal stress σ (kPa)
-										</span>
-									</th>
-									<th>
-										<span>
-									Shear stress τ (kPa)
-										</span>
-									</th>
-									
-								</tr>
-							</thead>
-							<tbody>
-								<t t-set="n" t-value="0"/>
-								<tr t-foreach="data.angleshear_line_ids" t-as="r">
-									<td>
-										<div>
-											<span t-esc="n + 1" />
-											<t t-set="n" t-value="n+1"/>
-										</div>
-									</td>
-									<td>
-										<span t-esc="r.normal_stress"/>
-									</td>
-									<td>
-										<span t-esc="r.shear_strength" t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-									
-								</tr>
-							</tbody>
-						</table>
-						<div style="margin-top:20px" t-if="data.angle_shear_visible">
-							<table>
-								<tr cols="12">
-									<td colspan="6">Angle of Internal Friction φ (°) :
-										<![CDATA[&nbsp;]]>
-										<span t-field="data.phi_deg"  t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-								</tr>
-								<tr cols="12">
-									<td colspan="6">Cohesion c (kPa) :
-										<![CDATA[&nbsp;]]>
-										<span t-field="data.cohesion"  t-options='{"widget": "float", "precision": 3}'/>
-									</td>
-								</tr>
-							</table>
-						</div>
-
-						<t t-set="prepared_by_obj" t-value="env['eln.parameters.result'].sudo().search([('eln_id','=', eln.id), ('parameter.internal_id','=','00fh7888hhhllly1-ca64-44dd-b0ae-897456ghtr')], limit=1).technician"/>
-						<div class="signatureContainer girdgird">
-							<div>
-								<div>
-									<b>
-										Prepared By
-									</b>
-								</div>
-							<div style="height: 40px;">
-							<t t-if="eln.tested_by_signature_datasheet and prepared_by_obj">
-
-								<div t-if="prepared_by_obj.employee_id.signature">
-									<img t-att-src="'data:image/png;base64,%s' % prepared_by_obj.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-								</div>
-								
-							</t>
-						</div>
-                            <div>
-                                <b>
-                                <span t-esc="prepared_by_obj.name or ''"/>
-                                </b>
-                            </div>
-                            <div>
-                                <b>
-                                    (<span t-esc="prepared_by_obj.job_title or ''"/>)
-                                </b>
-                            </div>
-                        </div>
-                        
-                        <div style="margin-left:600px">
-                                    
-                            <div>
-                                <b>
-                                    Checked By
-                                </b>
-                            </div>
-							<div style="height: 40px;">
-								<t t-if="eln.sample_id.checked_by_signature_datasheet">
-									<div t-if="eln.sample_id.check_by.employee_id.signature">
-										<img t-att-src="'data:image/png;base64,' + eln.sample_id.check_by.employee_id.signature.decode('utf-8')" style="max-width: 200px;max-height: 35px;margin-top:1px; z-index: -10;"/>
-									</div>
-									
-								</t>
-							</div>
-								<div>
-									<b>
-									<span t-esc="eln.sample_id.approved_by.name"/>
-									</b>
-								</div>
-							
-								<div>
-									<b>
-										 (<span t-esc="eln.sample_id.approved_by.job_title"/>)
-									</b>
-								</div>
-								
-							
-						</div>
-					</div>
-						
-					</div>
-
 
 					 <!--  -->
 						 <div t-if="data.moisture_content_visible" style="page-break-before: always;">
@@ -2053,7 +2077,7 @@
 								</tr>
 							</tbody>
 						</table>
-						<div style="margin-top:20px" t-if="data.direct_shear_visible">
+						<div style="margin-top:20px" t-if="data.moisture_content_visible">
 							<table>
 								<tr cols="12">
 									<td colspan="6">Average Moisture Content % :

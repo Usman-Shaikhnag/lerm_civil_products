@@ -84,7 +84,7 @@
                             <field name="serial_no"/>
 
                             <field name="sieve_size" />
-                            <field name="particle_size" class="blue-input" decoration-info="particle_size != 0"/>
+                            <!-- <field name="particle_size" class="blue-input" decoration-info="particle_size != 0"/> -->
                             <field name="wt_retained" class="blue-input" decoration-info="wt_retained != 0"/>
 
                             <field name="percent_retained"/>
@@ -856,154 +856,201 @@
                     </div>
 
 
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
-                        <tbody>
+                    <div class= "d-flex gap-2">
+                       <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
+                         <tbody>
                             <tr>
-                                <td><label for="proving_ring_constant">Proving Ring Constant (k)</label></td>
-                                <td><field name="proving_ring_constant"/></td>
+                                <td><label for="sample_type">Sample Type (DS / UDS)</label></td>
+                                <td><field name="sample_type" class="blue-input"/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="specimen_size">Specimen Size (LXB) cm²</label></td> 
+                                <td><field name="specimen_size" class="blue-input"/> <span> (cm²)</span> </td>
+                            </tr>
+                            <tr>
+                                <td><label for="specimen_area">Specimen Area (cm²)</label></td>
+                                <td><field name="specimen_area" class="blue-input"/> <span> (cm²)</span> </td>
+                            </tr>
+                            <tr>
+                                <td><label for="specimen_weight">Weight of Specimen, W1 (gm)</label></td>
+                                <td><field name="specimen_weight" class="blue-input"/> <span> (gm)</span> </td>
+                            </tr>
+                            <tr>
+                                <td><label for="water_content">Water Content (%)</label></td>
+                                <td><field name="water_content" class="blue-input"/> <span> (%)</span> </td>
+                            </tr>
+                            <tr>
+                                <td><label for="least_count_dial">Least Count, Dial Gauge (mm)</label></td>
+                                <td><field name="least_count_dial" class="blue-input"/> <span> (mm)</span> </td>
+                            </tr>
+                            <tr>
+                                <td><label for="proving_ring_factor">Proving Ring Factor </label></td>
+                                <td><field name="proving_ring_factor" class="blue-input"/> <span> (kN/div)</span> </td>
                             </tr>
                           
                             
-                        </tbody>
-                    </table>
+                         </tbody>
+                        </table>
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
+                         <tbody>
+                            <tr>
+                                <td><label for="sample_depth">Sample Depth from EGL (m) </label></td>
+                                <td><field name="sample_depth" class="blue-input"/> <span> (m)</span> </td>
+                            </tr>
+                            <tr>
+                                <td><label for="thickness">Thickness (cm) </label></td>
+                                <td><field name="thickness" class="blue-input"/> <span> (cm)</span> </td>
+                            </tr>
+                            <tr>
+                                <td><label for="volume_sample">Volume of Sample (cm³) </label></td>
+                                <td><field name="volume_sample" /> <span> (cm³)</span> </td>
+                            </tr>
+                            <tr>
+                                <td><label for="bulk_density">Bulk Density (gm/cc) </label></td>
+                                <td><field name="bulk_density" class="blue-input"/> <span> (gm/cc)</span> </td>
+                            </tr>
+                            <tr>
+                                <td><label for="dry_density">Dry Density (gm/cc) </label></td>
+                                <td><field name="dry_density" class="blue-input"/> <span> (gm/cc)</span> </td>
+                            </tr>
+                            <tr>
+                                <td><label for="rate_of_shearing">Rate of Shearing (mm/min) </label></td>
+                                <td><field name="rate_of_shearing" class="blue-input"/> <span> (mm/min)</span> </td>
+                            </tr>
+                          
+                            
+                         </tbody>
+                        </table>
+                      </div>
 
                      <div invisible = "direct_shear_visible == False">
                         <field name="direct_shear_ids">
                             <tree editable="bottom" class="custom_table_borders">
-                                <field name='serial_no'/>
-                                <field name='ao'  class="blue-input" decoration-info="ao != 0"/>
-                                <field name='delta' class="blue-input" decoration-info="delta != 0"/>
-                                <field name='proving_ring_reading' class="blue-input" decoration-info="proving_ring_reading != 0"/>
-                                <field name='normal_stress' class="blue-input" decoration-info="normal_stress != 0"/>
-                                <field name='horizontal_load'/>
-                                <field name='corrected_area'/>
-                                <field name='shear_stress'/>
+                                <!-- <field name='serial_no'/> -->
+                                <field name='horizontal_dial_reading'  class="blue-input" decoration-info="horizontal_dial_reading != 0"/>
+                                <field name='displacement' />
+                                <field name='area_correction' />
+                                <field name='corrected_area' />
+
+                                <field name='proving_ring_05' class="blue-input" decoration-info="proving_ring_05 != 0"/>
+                                <field name='shear_force_05'/>
+                                <field name='shear_stress_05'/>
+
+                                <field name='proving_ring_10' class="blue-input" decoration-info="proving_ring_10 != 0"/>
+                                <field name='shear_force_10'/>
+                                <field name='shear_stress_10'/>
+
+                                <field name='proving_ring_15' class="blue-input" decoration-info="proving_ring_15 != 0"/>
+                                <field name='shear_force_15'/>
+                                <field name='shear_stress_15'/>
                               
                             </tree>
                         </field>
                     </div>
+
+                    <div class= "d-flex gap-2">
+
+                       <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
+                         <tbody>
+                            <tr>
+                                <td><label for="max_shear_stress_05">Maximum Shear Stress 0.5 kg/cm²</label></td>
+                                <td><field name="max_shear_stress_05" /> </td>
+                            </tr>
+                         </tbody>
+                        </table>
+
+                       <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
+                         <tbody>
+                            <tr>
+                                <td><label for="max_shear_stress_10">Maximum Shear Stress 1.0 kg/cm²</label></td>
+                                <td><field name="max_shear_stress_10" /></td>
+                            </tr>
+                            
+                         </tbody>
+                        </table>
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
+                         <tbody>
+                            <tr>
+                                <td><label for="max_shear_stress_15">Maximum Shear Stress 1.5 kg/cm² </label></td>
+                                <td><field name="max_shear_stress_15" /></td>
+                            </tr>
+                         </tbody>
+                        </table>
+                        
+                      </div>
+
+                    <div class="d-flex gap-2">
 
                     <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
                             <tbody>
                                 <tr>
-                                <td><label for="avg_shear_stress">Average Shear Stress (τ_avg) </label></td>
-                                <td><field name="avg_shear_stress"/><span> kg/cm²</span></td>
+                                <td><label for="cohesion">Cohesion (c) </label></td>
+                                <td><field name="cohesion"/></td>
                             </tr>
                                 <tr>
-                                <td><label for="avg_shear_stress_conformity"></label></td>
-                                <td><field name="avg_shear_stress_conformity"
-                                            decoration-success="avg_shear_stress_conformity == 'pass'" 
-                                            decoration-danger="avg_shear_stress_conformity == 'fail'" 
+                                <td><label for="cohesion_conformity"></label></td>
+                                <td><field name="cohesion_conformity"
+                                            decoration-success="cohesion_conformity == 'pass'" 
+                                            decoration-danger="cohesion_conformity == 'fail'" 
                                             readonly="1" /></td>
                                 </tr>
                                 <tr>
-                                <td><label for="avg_shear_stress_nabl"></label></td>
-                                <td><field name="avg_shear_stress_nabl"
-                                            decoration-success="avg_shear_stress_nabl == 'pass'" 
-                                            decoration-danger="avg_shear_stress_nabl == 'fail'" 
+                                <td><label for="cohesion_nabl"></label></td>
+                                <td><field name="cohesion_nabl"
+                                            decoration-success="cohesion_nabl == 'pass'" 
+                                            decoration-danger="cohesion_nabl == 'fail'" 
                                             readonly="1" /></td>
                                 </tr>
                             </tbody>
                         </table>
 
-                    <!-- direct shear -->
-
-                    <div invisible = "angle_shear_visible == False">
-                        <h1 class="text-center">
-                            <field name="angle_shear_name" readonly="1" nolabel="1"/>
-                            <field name="angle_shear_visible" invisible="1"/>
-                        </h1>
-                    </div>
-
-                    <div invisible = "angle_shear_visible == False">
-                        <field name="angleshear_line_ids">
-                            <tree editable="bottom" class="custom_table_borders">
-                                <field name='serial_no'/>
-                                <field name='normal_stress'  class="blue-input" decoration-info="normal_stress != 0"/>
-                                <field name='shear_strength' class="blue-input" decoration-info="shear_strength != 0"/>
-                                
-                              
-                            </tree>
-                        </field>
-                    </div>
-
-                      <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not angle_shear_visible">
+                        <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not direct_shear_visible">
                             <tbody>
                                 <tr>
-                                <td><label for="phi_deg">Angle of Internal Friction φ (°)</label></td>
-                                <td><field name="phi_deg"/><span> </span></td>
-                            </tr>
-                              <tr>
-                                <td><label for="cohesion">Cohesion c (kPa)</label></td>
-                                <td><field name="cohesion"/><span> </span></td>
+                                <td><label for="phi">Phi (φ)</label></td>
+                                <td><field name="phi"/></td>
                             </tr>
                                 <tr>
-                                <td><label for="phi_deg_conformity"></label></td>
-                                <td><field name="phi_deg_conformity"
-                                            decoration-success="phi_deg_conformity == 'pass'" 
-                                            decoration-danger="phi_deg_conformity == 'fail'" 
+                                <td><label for="phi_conformity"></label></td>
+                                <td><field name="phi_conformity"
+                                            decoration-success="phi_conformity == 'pass'" 
+                                            decoration-danger="phi_conformity == 'fail'" 
                                             readonly="1" /></td>
                                 </tr>
                                 <tr>
-                                <td><label for="phi_deg_nabl"></label></td>
-                                <td><field name="phi_deg_nabl"
-                                            decoration-success="phi_deg_nabl == 'pass'" 
-                                            decoration-danger="phi_deg_nabl == 'fail'" 
+                                <td><label for="phi_nabl"></label></td>
+                                <td><field name="phi_nabl"
+                                            decoration-success="phi_nabl == 'pass'" 
+                                            decoration-danger="phi_nabl == 'fail'" 
                                             readonly="1" /></td>
                                 </tr>
                             </tbody>
                         </table>
 
-
-                        <!-- Direct Shear Test -->
-                          <div invisible = "moisture_content_visible == False">
-                        <h1 class="text-center">
-                            <field name="moisture_content_name" readonly="1" nolabel="1"/>
-                            <field name="moisture_content_visible" invisible="1"/>
-                        </h1>
                     </div>
 
-                     <div invisible = "moisture_content_visible == False">
-                        <field name="moisture_content_ids">
-                            <tree editable="bottom" class="custom_table_borders">
-                                <field name='serial_no'/>
-                                <field name='wet_weight'  class="blue-input" decoration-info="wet_weight != 0"/>
-                                <field name='dry_weight' class="blue-input" decoration-info="dry_weight != 0"/>
-                                <field name='container_weight' class="blue-input" decoration-info="container_weight != 0"/>
-                                <field name='moisture_content'/>
-                              
-                            </tree>
-                        </field>
-                    </div>
+                    <button invisible="not direct_shear_visible" name="action_generate_shear_graph"
+                    string="Generate Graph" 
+                    type="object"
+                    class="oe_highlight"
+                    icon="fa-bar-chart"/>
 
-                    <table class="table table-sm o_form_table table-bordered custom_table_borders w-50" invisible="not moisture_content_visible">
-                            <tbody>
-                                <tr>
-                                <td><label for="avg_moisture_content">Average Moisture Content %  </label></td>
-                                <td><field name="avg_moisture_content"/><span> kg/cm²</span></td>
+                    <table class="table table-sm o_form_table table-bordered w-50 custom_table_borders" invisible="not direct_shear_visible">
+                        <tbody>
+                            <tr>
+                                <td style="width:10%;"><label for="show_shear_graph">Print Graph</label></td>
+                                <td style="width:10%;"><field name="show_shear_graph" class="blue-input" decoration-info="show_shear_graph != 0"/></td>
                             </tr>
-                                <tr>
-                                <td><label for="avg_moisture_content_conformity"></label></td>
-                                <td><field name="avg_moisture_content_conformity"
-                                            decoration-success="avg_moisture_content_conformity == 'pass'" 
-                                            decoration-danger="avg_moisture_content_conformity == 'fail'" 
-                                            readonly="1" /></td>
-                                </tr>
-                                <tr>
-                                <td><label for="avg_moisture_content_nabl"></label></td>
-                                <td><field name="avg_moisture_content_nabl"
-                                            decoration-success="avg_moisture_content_nabl == 'pass'" 
-                                            decoration-danger="avg_moisture_content_nabl == 'fail'" 
-                                            readonly="1" /></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                       </tbody>
+                    </table>
+
+                    <div invisible = "direct_shear_visible == False" class="custom_table_borders text-center">
+                        <field name="graph_image_shear" widget="image" readonly="1"/>
+                    </div>
 
 
-                 
 
-
-                
+                    
                   
 
                     <notebook>

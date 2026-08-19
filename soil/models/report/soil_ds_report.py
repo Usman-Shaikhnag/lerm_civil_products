@@ -116,6 +116,10 @@ class SoilReport(models.AbstractModel):
         if getattr(general_data, 'show_liquid_graph', False):
             graph_liquid = self.generate_line_chart_liquid(general_data)
 
+        graph_shear = False
+        if getattr(general_data, 'show_shear_graph', False):
+            graph_shear = self.action_generate_shear_graph(general_data)
+
         graph_heavy = False
         heavy_omc = 0
         heavy_mdd = 0
@@ -154,6 +158,7 @@ class SoilReport(models.AbstractModel):
             'lightomc' : light_omc,
             'lightmdd' : light_mdd,
             'graphcbr' : graph_cbr,
+            'graph_shear' :graph_shear,
             
             
             # 'graphLight' : graph_image1,
@@ -164,6 +169,252 @@ class SoilReport(models.AbstractModel):
             # 'load2': cbry_values[5] if len(cbry_values) > 5 else 0,
             # 'load5': cbry_values[8] if len(cbry_values) > 8 else 0,
         }
+
+
+
+    def action_generate_shear_graph(self, data):
+
+      import io
+      import base64
+      import math
+
+      import numpy as np
+      import matplotlib.pyplot as plt
+
+    # ----------------------------------
+    # Normal Stress
+    # ----------------------------------
+      x_value = [
+        0.5,
+        1.0,
+        1.5
+    ]
+
+    # ----------------------------------
+    # Maximum Shear Stress
+    # ----------------------------------
+      y_value = [
+        data.max_shear_stress_05,
+        data.max_shear_stress_10,
+        data.max_shear_stress_15
+    ]
+
+    # ----------------------------------
+    # Check values
+    # ----------------------------------
+      points = [
+        (x, y)
+        for x, y in zip(x_value, y_value)
+        if y is not None
+    ]
+
+      if len(points) < 2:
+        return False
+
+      x_value = [
+        p[0]
+        for p in points
+    ]
+
+      y_value = [
+        p[1]
+        for p in points
+    ]
+
+    # ----------------------------------
+    # Linear Regression
+    #
+    # y = mx + c
+    # ----------------------------------
+      n = len(x_value)
+
+      sum_x = sum(x_value)
+      sum_y = sum(y_value)
+
+      sum_xy = sum(
+        x * y
+        for x, y in zip(
+            x_value,
+            y_value
+        )
+    )
+
+      sum_x2 = sum(
+        x * x
+        for x in x_value
+    )
+
+      denominator = (
+        n * sum_x2
+        - sum_x ** 2
+    )
+
+      if denominator == 0:
+        return False
+
+    # ----------------------------------
+    # Slope
+    # ----------------------------------
+      slope = (
+        n * sum_xy
+        - sum_x * sum_y
+    ) / denominator
+
+    # ----------------------------------
+    # Intercept / Cohesion
+    # ----------------------------------
+      intercept = (
+        sum_y
+        - slope * sum_x
+    ) / n
+
+    # ----------------------------------
+    # Phi
+    # ----------------------------------
+      phi_value = (
+        math.atan(slope)
+        * 180.0
+        / math.pi
+    )
+
+    # ----------------------------------
+    # Regression line
+    # ----------------------------------
+      x_fit = np.linspace(
+        min(x_value),
+        max(x_value),
+        200
+    )
+
+      y_fit = (
+        slope * x_fit
+        + intercept
+    )
+
+    # ----------------------------------
+    # Create Graph
+    # ----------------------------------
+      fig, ax = plt.subplots(
+        figsize=(10, 5)
+    )
+
+    # ----------------------------------
+    # Actual points + connecting line
+    # ----------------------------------
+      ax.plot(
+        x_value,
+        y_value,
+        color='#4A90E2',
+        linewidth=2,
+        marker='o',
+        markersize=7,
+        markerfacecolor='#4A90E2',
+        markeredgecolor='#4A90E2',
+        zorder=5
+    )
+
+    # ----------------------------------
+    # Trend line
+    # ----------------------------------
+      ax.plot(
+        x_fit,
+        y_fit,
+        color='#4A90E2',
+        linestyle=':',
+        linewidth=1.5,
+        zorder=2
+    )
+
+    # ----------------------------------
+    # Labels
+    # ----------------------------------
+      ax.set_xlabel(
+        'Normal Stress (kg/cm²)',
+        fontsize=11,
+        fontweight='bold'
+    )
+
+      ax.set_ylabel(
+        'Shear Stress (kg/cm²)',
+        fontsize=11,
+        fontweight='bold'
+    )
+
+      ax.set_title(
+        'Direct Shear Test',
+        fontsize=14,
+        fontweight='bold'
+    )
+
+    # ----------------------------------
+    # X Axis
+    # ----------------------------------
+      ax.set_xlim(
+        0,
+        2
+    )
+
+      ax.set_xticks(
+        np.arange(
+            0,
+            2.1,
+            0.5
+        )
+    )
+
+    # ----------------------------------
+    # Y Axis
+    # ----------------------------------
+      ax.set_ylim(
+        0,
+        1.0
+    )
+
+      ax.set_yticks(
+        np.arange(
+            0,
+            1.01,
+            0.2
+        )
+    )
+
+    # ----------------------------------
+    # Grid
+    # ----------------------------------
+      ax.grid(
+        True,
+        linestyle='-',
+        linewidth=0.5,
+        alpha=0.5
+    )
+
+    # ----------------------------------
+    # Layout
+    # ----------------------------------
+      plt.tight_layout()
+
+    # ----------------------------------
+    # Save PNG
+    # ----------------------------------
+      buffer = io.BytesIO()
+
+      plt.savefig(
+        buffer,
+        format='png',
+        dpi=100,
+        bbox_inches='tight'
+    )
+
+      plt.close(fig)
+
+      buffer.seek(0)
+
+    # ----------------------------------
+    # Return Base64
+    # ----------------------------------
+      return base64.b64encode(
+        buffer.read()
+    ).decode('utf-8')
     
 
     def generate_cbr_chart(self, data):
