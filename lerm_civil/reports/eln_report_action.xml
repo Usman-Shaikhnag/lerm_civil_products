@@ -1306,5 +1306,23 @@
     <field name="binding_type">report</field>
 </record>
 
+<record id="threaded_steel_datasheet_action" model="ir.actions.report">
+    <field name="name">Threaded Steel DataSheet</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">threaded_steel.threaded_steel_mech_datasheet</field>
+    <field name="report_file">threaded_steel.threaded_steel_mech_datasheet</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
+    <record id="threaded_steel_report_action" model="ir.actions.report">
+    <field name="name">Threaded Steel Report</field>
+    <field name="model">lerm.eln</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">threaded_steel.threaded_steel_mech_report</field>
+    <field name="report_file">threaded_steel.threaded_steel_mech_report</field>
+    <field name="binding_model_id" ref="model_lerm_eln"/>
+    <field name="binding_type">report</field>
+</record>
 
 </odoo>
