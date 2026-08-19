@@ -3,25 +3,18 @@
 
     <template id="custom_layout_header_footer_lateral_pile_load">
         <div class="header" style="padding:0; width:100%; margin:0;">
-            <t t-set="lab" t-value="o.lab_id.sudo()"/>
-            <t t-set="master_lab" t-value="env['lerm.lab.master'].sudo().search([], limit=1)"/>
-
-            <img t-if="lab.header_image"
-                t-att-src="'data:image/png;base64,' + lab.header_image.decode('utf-8')"
+            <img t-if="header_image"
+                t-att-src="header_image"
                 style="width:100%; height:auto; display:block; margin:0; padding:0;"/>
 
-            <img t-elif="master_lab.header_image"
-                t-att-src="'data:image/png;base64,' + master_lab.header_image.decode('utf-8')"
-                style="width:100%; height:auto; display:block; margin:0; padding:0;"/>
-            
             <table style="width:100%;" class="text-center">
                 <tr>
                     <td>Test Report No :</td>
-                    <td><t t-esc="o.report_no"/></td>
+                    <td><t t-esc="report_no or o.report_no"/></td>
                     <td>Report Issue Date :</td>
-                    <td><t t-esc="o.rec_date_str"/></td>
+                    <td><t t-esc="report_date or o.rec_date_str"/></td>
                     <td>ULR No.</td>
-                    <td><t t-esc="o.ulr"/></td>
+                    <td><t t-esc="ulr or o.ulr"/></td>
                 </tr>
             </table>
         </div>
